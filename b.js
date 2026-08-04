@@ -14,6 +14,10 @@ const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* Only a real pointer gets auto-focus. On touch, focus() summons the keyboard
+   unasked and covers the very field it just focused. */
+const FINE = matchMedia('(hover:hover) and (pointer:fine)').matches;
+const focusPrompt = () => { if (FINE) promptInput.focus({ preventScroll: true }); };
 
 /* ─────────────────────────── STATE ─────────────────────────── */
 
@@ -224,9 +228,13 @@ async function askStep() {
   else if (q.optionsFor) await addOptions(thread.lastElementChild.querySelector('.ai__body'), q.optionsFor());
   promptInput.value = ''; prompt.classList.remove('is-ready');
   S.busy = false;
-  promptInput.focus();
+  focusPrompt();
 }
 
+promptInput.addEventListener('focus', () => {
+  if (FINE) return;
+  setTimeout(() => $('.chat__panel').scrollIntoView({ block: 'end', behavior: 'smooth' }), 320);
+});
 promptInput.addEventListener('input', () =>
   prompt.classList.toggle('is-ready', promptInput.value.trim().length > 0));
 promptForm.addEventListener('submit', e => { e.preventDefault(); submit(promptInput.value); });
@@ -327,6 +335,7 @@ async function runMachine() {
   promptInput.placeholder = 'Ask a follow-up, or type another website';
   S.done = true;
   $('#navNew').hidden = false;
+  $('.mnav__new').hidden = false;
 
   think.classList.add('is-out');
   document.body.style.overflow = '';
@@ -624,6 +633,7 @@ function resetB() {
   $('#chatHint').hidden = false;
   $('#dash').hidden = true; $('#dash').innerHTML = '';
   $('#navNew').hidden = true;
+  $('.mnav__new').hidden = true;
   hero.classList.remove('is-chatting');
   $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell AI · The Machine';
   $('#hero2Title').innerHTML = 'Let\u2019s start with your <span class="accent">website.</span>';
@@ -632,7 +642,7 @@ function resetB() {
   promptInput.value = ''; promptInput.placeholder = SCRIPT[0].placeholder;
   prompt.classList.remove('is-ready');
   scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
-  setTimeout(() => promptInput.focus({ preventScroll: true }), 420);
+  setTimeout(focusPrompt, 420);
 }
 $('#navNew').addEventListener('click', resetB);
 document.addEventListener('click', e => { if (e.target.closest('[data-new]')) resetB(); });
@@ -672,9 +682,12 @@ document.addEventListener('click', e => { if (e.target.closest('[data-new]')) re
   }, { passive: true });
 })();
 
+const closeNav = () => document.body.classList.remove('nav-open');
 $('#navMenu').addEventListener('click', () => document.body.classList.toggle('nav-open'));
-$('#navScrim').addEventListener('click', () => document.body.classList.remove('nav-open'));
-$$('.nav__links a').forEach(a => a.addEventListener('click', () => document.body.classList.remove('nav-open')));
+$('#navScrim').addEventListener('click', closeNav);
+$('#mnavClose').addEventListener('click', closeNav);
+$$('.mnav__links a, .nav__links a').forEach(a => a.addEventListener('click', closeNav));
+$$('.mnav [data-cta], .mnav [data-new]').forEach(b => b.addEventListener('click', closeNav));
 
 const modal = $('#modal'), modalBody = $('#modalBody');
 const closeModal = () => { modal.hidden = true; };
@@ -757,10 +770,11 @@ $('#studies').innerHTML = STUDIES.map(s =>
     blurWords($('#hero2Title'), 120);
     $('#chatHint').hidden = true;
     $('#navNew').hidden = false;
+    $('.mnav__new').hidden = false;
     return;
   }
   blurWords($('#hero2Title'), 120);
-  promptInput.focus({ preventScroll: true });
+  focusPrompt();
 })();
 
 })();

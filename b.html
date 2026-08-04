@@ -65,6 +65,27 @@
 </header>
 <div class="navscrim" id="navScrim" aria-hidden="true"></div>
 
+<!-- mobile drawer lives at body level: the header's backdrop-filter makes it a
+     containing block, which would size any fixed child against the bar -->
+<aside class="mnav" id="mnav" aria-label="Menu">
+  <div class="mnav__head">
+    <svg class="mnav__mark" viewBox="0 0 28.44 28"><use href="#sw-mark"/></svg>
+    <button class="mnav__close" id="mnavClose" aria-label="Close menu">
+      <svg viewBox="0 0 16 16" width="18" height="18"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <nav class="mnav__links">
+    <a href="#whatwedo">What We Do</a>
+    <a href="#mission">Our Mission</a>
+    <a href="#research">Research</a>
+    <a href="#partners">Our Partners</a>
+  </nav>
+  <div class="mnav__foot">
+    <button class="btn btn--ghost mnav__new" data-new hidden>New analysis</button>
+    <button class="btn btn--dark" data-cta="expert">Talk to an AI expert</button>
+  </div>
+</aside>
+
 <main id="top">
 
   <!-- ─────────────── HERO + CHAT ─────────────── -->
