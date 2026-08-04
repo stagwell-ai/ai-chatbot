@@ -132,7 +132,9 @@ function addOptions(body, list) {
       b.addEventListener('click', () => submit(b.textContent.trim()));
       wrap.appendChild(b);
     });
-    body.appendChild(wrap); scrollThread();
+    body.appendChild(wrap);
+    /* pin the options into view rather than leaving them below the fold */
+    requestAnimationFrame(() => wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' }));
     setTimeout(resolve, 120);
   });
 }
@@ -358,6 +360,8 @@ function chartSVG(seed) {
   const y = v => H - (v / 110) * H;
   const line = pts.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
   const area = `${line} L${W},${H} L0,${H} Z`;
+  const rival = Array.from({ length: n }, (_, i) => pick(seed >> (i + 7), 34, 104));
+  const line2 = rival.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Coverage over time">
     <defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#009CBD" stop-opacity=".22"/>
@@ -365,6 +369,7 @@ function chartSVG(seed) {
     </linearGradient></defs>
     ${[0, .25, .5, .75, 1].map(f => `<line class="chart__g" x1="0" y1="${(H * f).toFixed(0)}" x2="${W}" y2="${(H * f).toFixed(0)}"/>`).join('')}
     <path class="chart__area" d="${area}"/>
+    <path class="chart__line2" d="${line2}"/>
     <path class="chart__line" d="${line}"/>
     ${pts.map((v, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3" fill="#009CBD"/>`).join('')}
   </svg>`;
@@ -447,7 +452,7 @@ function buildDashboard() {
               ${stat('Coverage, 30d', pick(S.seed >> 3, 88, 190), '', `+${pick(S.seed >> 5, 6, 22)}`, 'up', S.seed >> 4)}
               ${stat('Share of voice', S.sov + '%', '', '— flat', 'flat', S.seed >> 6)}
 
-              <div class="pnl g5">
+              <div class="pnl g4">
                 <div class="pnl__h"><h4>Share of voice</h4><span class="pnl__k">30 days</span></div>
                 <div class="sov">
                   ${sov.map(r => `<div class="sovrow${r.you ? ' is-you' : ''}">
@@ -457,8 +462,9 @@ function buildDashboard() {
                 </div>
               </div>
 
-              <div class="pnl g7">
-                <div class="pnl__h"><h4>Coverage over time</h4><span class="pnl__k">6 months</span></div>
+              <div class="pnl g8">
+                <div class="pnl__h"><h4>Coverage over time</h4>
+                  <span class="legend" style="margin:0"><span><i></i>You</span><span><i class="them" style="background:var(--amber)"></i>${esc(A.c1)}</span></span></div>
                 <div class="chart">${chartSVG(S.seed)}</div>
                 <div class="chart__x">${months.map(m => `<span>${m}</span>`).join('')}</div>
               </div>
@@ -602,6 +608,26 @@ function buildDashboard() {
 
 /* ─────────────────────────── NAV / MODAL ─────────────────────────── */
 
+/* The header rides with you: away on the way down, back on the way up. */
+(() => {
+  const nav = $('#nav');
+  let lastY = scrollY, ticking = false;
+  const onScroll = () => {
+    const y = Math.max(0, scrollY);
+    nav.classList.toggle('is-stuck', y > 8);
+    if (!document.body.classList.contains('nav-open')) {
+      if (y < 90) nav.classList.remove('is-up');
+      else if (y > lastY + 5) nav.classList.add('is-up');
+      else if (y < lastY - 5) nav.classList.remove('is-up');
+    }
+    lastY = y; ticking = false;
+  };
+  addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true; requestAnimationFrame(onScroll);
+  }, { passive: true });
+})();
+
 $('#navMenu').addEventListener('click', () => document.body.classList.toggle('nav-open'));
 $('#navScrim').addEventListener('click', () => document.body.classList.remove('nav-open'));
 $$('.nav__links a').forEach(a => a.addEventListener('click', () => document.body.classList.remove('nav-open')));
@@ -659,11 +685,8 @@ document.addEventListener('submit', e => {
 /* Two rows drifting in opposite directions, each doubled so the loop is seamless. */
 const mCell = ([k, n]) => `<div class="mcell" title="${n}"><img src="${partnerSrc(k)}" alt="${n}"
   loading="lazy" style="--s:${LOGO_SCALE[k] || 1}"></div>`;
-const half = Math.ceil(PARTNERS.length / 2);
-const rowA = PARTNERS.slice(0, half).map(mCell).join('');
-const rowB = PARTNERS.slice(half).map(mCell).join('');
-$('#marquee').innerHTML =
-  `<div class="mrow mrow--a">${rowA}${rowA}</div><div class="mrow mrow--b">${rowB}${rowB}</div>`;
+const row = PARTNERS.map(mCell).join('');
+$('#marquee').innerHTML = `<div class="mrow">${row}${row}</div>`;   // doubled → -50% loops seamlessly
 $('#studies').innerHTML = STUDIES.map(s =>
   `<li class="study"><span class="study__t">${s[0]}</span><span class="study__m">${s[1]}</span></li>`).join('');
 
