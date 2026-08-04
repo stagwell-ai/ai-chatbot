@@ -30,6 +30,12 @@ body.vB main{position:relative;z-index:1}
 .nav__links a:hover::after{transform:scaleX(1);transform-origin:left}
 .nav__acts{display:flex;align-items:center;gap:12px;flex:none}
 .nav__cta{height:40px;padding:0 18px}
+.nav__new{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;
+  border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-2);transition:border-color var(--d-1),color var(--d-1),background var(--d-1)}
+.nav__new:hover{border-color:var(--ink);color:var(--ink);background:var(--surface-2)}
+.nav__new svg{color:var(--teal)}
 .nav__menu{display:none;place-items:center;width:38px;height:38px;background:var(--navy);color:#fff;border-radius:var(--r)}
 .navscrim{display:none;position:fixed;inset:0;z-index:45;background:rgba(0,18,28,.34);
   opacity:0;visibility:hidden;transition:opacity var(--d-3) var(--ease),visibility var(--d-3)}
@@ -86,7 +92,7 @@ body.vB main{position:relative;z-index:1}
   scrollbar-color:var(--line-2) transparent;
   background:var(--surface-2)}
 /* every turn is its own row, divided — no more one long column of floating text */
-.chat__thread .turn{padding:20px 24px;border-bottom:1px solid var(--line)}
+.chat__thread .turn{padding:18px 20px;border-bottom:1px solid var(--line)}
 .chat__thread .turn:last-child{border-bottom:0}
 .chat__thread .turn--user{background:var(--surface)}
 body.vB .ai__who{color:var(--teal)}
@@ -98,12 +104,12 @@ body.vB .opt:hover{border-color:var(--teal);color:var(--navy);background:rgba(0,
 .chat__eg{color:var(--ink-2);border-bottom:1px solid var(--line-2);transition:color var(--d-1)}
 .chat__eg:hover{color:var(--ink);border-color:var(--ink)}
 
-body.vB .prompt{padding:14px;background:var(--surface)}
-body.vB .prompt__field{height:60px;padding:0 8px 0 20px;border-radius:var(--r-full);
+body.vB .prompt{padding:11px;background:var(--surface)}
+body.vB .prompt__field{height:54px;padding:0 6px 0 18px;border-radius:var(--r-full);
   border-color:var(--line);background:var(--surface-2);box-shadow:none}
 body.vB .prompt__field:focus-within{background:var(--surface);border-color:var(--line-2)}
-body.vB .prompt__send{width:46px;height:46px}
-body.vB .prompt__input{font-size:1.0625rem}
+body.vB .prompt__send{width:42px;height:42px}
+body.vB .prompt__input{font-size:1rem}
 body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px solid var(--line)}
 
 /* ── Thinking ─────────────────────────────────────────────── */
@@ -150,7 +156,7 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 
 .dapp__body{min-width:0;display:flex;flex-direction:column}
 .dapp__top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
-  padding:20px clamp(20px,2.4vw,28px) 16px}
+  padding:18px 20px 14px}
 .dapp__top h3{font-size:1.1875rem;font-weight:600;letter-spacing:-.02em}
 .dapp__top p{font-size:var(--t-sm);color:var(--ink-3);margin-top:5px}
 .live{display:inline-flex;align-items:center;gap:9px;background:rgba(15,138,95,.1);color:var(--ok);
@@ -159,7 +165,7 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 .live i{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:livep 2.2s var(--ease) infinite}
 @keyframes livep{0%,100%{opacity:1}50%{opacity:.35}}
 
-.tabs{display:flex;gap:2px;padding:0 clamp(20px,2.4vw,32px);border-bottom:1px solid var(--line);
+.tabs{display:flex;gap:2px;padding:0 12px;border-bottom:1px solid var(--line);
   overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{position:relative;padding:12px 14px;font-size:var(--t-sm);color:var(--ink-3);white-space:nowrap;
@@ -173,7 +179,7 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 
 /* one fixed height for every tab — the frame must not jump when you switch.
    flex:1 would let content win, so the panel area is sized outright. */
-.panels{padding:clamp(18px,2vw,26px);background:var(--surface-2);flex:0 0 auto;
+.panels{padding:16px;background:var(--surface-2);flex:0 0 auto;overscroll-behavior:contain;
   height:clamp(560px,66vh,760px);overflow-y:auto;scrollbar-width:thin;
   scrollbar-color:var(--line-2) transparent}
 .panels::-webkit-scrollbar{width:9px}
@@ -187,7 +193,7 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 .g3{grid-column:span 3}.g4{grid-column:span 4}.g5{grid-column:span 5}
 .g6{grid-column:span 6}.g7{grid-column:span 7}.g8{grid-column:span 8}.g12{grid-column:span 12}
 
-.pnl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;
+.pnl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 16px;
   display:flex;flex-direction:column;gap:14px;min-width:0}
 .pnl__h{display:flex;align-items:center;justify-content:space-between;gap:14px}
 .pnl__h h4{font-size:1rem;font-weight:600;letter-spacing:-.012em}
@@ -195,7 +201,7 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
   text-transform:uppercase;color:var(--ink-3)}
 
 /* stat tiles */
-.dstat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+.dstat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 16px;
   display:flex;flex-direction:column;gap:7px}
 .dstat__v{font-size:1.875rem;font-weight:600;letter-spacing:-.032em;line-height:1;
   display:flex;align-items:baseline;gap:9px}
@@ -268,8 +274,8 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
   color:var(--ink-4);white-space:nowrap}
 
 /* opportunities */
-.oppcard{display:grid;grid-template-columns:auto 1fr 176px;gap:20px;align-items:start;
-  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.oppcard{display:grid;grid-template-columns:auto 1fr 168px;gap:18px;align-items:start;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 .oppcard + .oppcard{margin-top:12px}
 .oppcard__r{font-family:var(--serif);font-size:1.75rem;color:var(--ink-4);line-height:1}
 .oppcard h4{font-size:1.0625rem;font-weight:600;letter-spacing:-.014em}
@@ -299,7 +305,9 @@ body.vB .study__t{font-size:var(--t-body)}
 .sec--tint{background:var(--paper)}
 .sec--flush{padding-inline:0;overflow:hidden}
 .sec__in{position:relative;max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
-.sec__in--head{margin-bottom:56px;padding-inline:clamp(20px,4vw,48px);gap:22px}
+.sec__in--head{margin-bottom:52px;padding-inline:clamp(20px,4vw,48px);gap:18px;
+  align-items:center;text-align:center}
+.sec__in--head .eyebrow{justify-content:center}
 .sec__title{font-family:var(--serif);font-size:var(--t-h1);font-weight:400;letter-spacing:-.03em;line-height:1.04}
 .sec__title .accent{color:var(--teal)}
 .sec__lede{font-family:var(--serif);font-size:clamp(1.25rem,1.9vw,1.6rem);line-height:1.48;
@@ -328,7 +336,7 @@ body.vB .studies{border-top:1px solid var(--line);margin-top:6px}
   animation:marq 58s linear infinite;will-change:transform}
 @keyframes marq{to{transform:translateX(-50%)}}
 .marquee:hover .mrow{animation-play-state:paused}
-.mcell{display:grid;place-items:center;width:clamp(146px,12vw,190px);height:clamp(96px,11vh,124px);flex:none}
+.mcell{display:grid;place-items:center;width:172px;height:112px;flex:none}
 .mcell img{max-height:32px;max-width:74%;width:auto;object-fit:contain;
   filter:grayscale(1) contrast(1.2);mix-blend-mode:multiply;opacity:.58;
   transform:scale(var(--s,1));transition:opacity var(--d-2) var(--ease)}

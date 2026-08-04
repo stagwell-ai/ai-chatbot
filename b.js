@@ -326,6 +326,7 @@ async function runMachine() {
   $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Analysis complete';
   promptInput.placeholder = 'Ask a follow-up, or type another website';
   S.done = true;
+  $('#navNew').hidden = false;
 
   think.classList.add('is-out');
   document.body.style.overflow = '';
@@ -418,6 +419,7 @@ function buildDashboard() {
       <div class="dash__acts">
         <button class="btn btn--dark" data-cta="workspace">Request the full workspace</button>
         <button class="btn btn--ghost" data-cta="pdf">Export</button>
+        <button class="btn btn--ghost" data-new>New analysis</button>
       </div>
     </div>
 
@@ -606,6 +608,35 @@ function buildDashboard() {
   });
 }
 
+/* ─────────────────────────── START OVER ─────────────────────────── */
+
+/* Anyone already holding a dashboard can run another company without reloading. */
+function resetB() {
+  if (S.busy) return;
+  Object.assign(S, {
+    step:0, busy:false, done:false, domain:'', brand:'', who:'', firstName:'', role:'',
+    roleArticle:'board', industryLabel:'', data:DEFAULT_INDUSTRY, profile:null, comps:[],
+    challenge:'', focus:'Growth opportunities',
+    focusLine:'where the next points of growth actually sit', focusLead:1,
+  });
+  thread.innerHTML = ''; thread.hidden = true;
+  $('#chatBar').hidden = true;
+  $('#chatHint').hidden = false;
+  $('#dash').hidden = true; $('#dash').innerHTML = '';
+  $('#navNew').hidden = true;
+  hero.classList.remove('is-chatting');
+  $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell AI · The Machine';
+  $('#hero2Title').innerHTML = 'Let\u2019s start with your <span class="accent">website.</span>';
+  blurWords($('#hero2Title'));
+  $('#hero2Sub').textContent = 'One link. I\u2019ll read the company, map the market, and build your dashboard — live, in about a minute.';
+  promptInput.value = ''; promptInput.placeholder = SCRIPT[0].placeholder;
+  prompt.classList.remove('is-ready');
+  scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+  setTimeout(() => promptInput.focus({ preventScroll: true }), 420);
+}
+$('#navNew').addEventListener('click', resetB);
+document.addEventListener('click', e => { if (e.target.closest('[data-new]')) resetB(); });
+
 /* ─────────────────────────── NAV / MODAL ─────────────────────────── */
 
 /* The header rides with you: away on the way down, back on the way up. */
@@ -712,6 +743,7 @@ $('#studies').innerHTML = STUDIES.map(s =>
     $('#hero2Title').innerHTML = `Here is <span class="accent">${esc(S.brand)}.</span>`;
     blurWords($('#hero2Title'), 120);
     $('#chatHint').hidden = true;
+    $('#navNew').hidden = false;
     return;
   }
   blurWords($('#hero2Title'), 120);
