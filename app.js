@@ -1026,8 +1026,18 @@ document.addEventListener('submit', e => {
 
 /* ─────────────────────────── STATIC VIEWS ─────────────────────────── */
 
+/* Each logo file carries its own whitespace and aspect, so a single max-height
+   makes some read huge and others tiny. These multipliers balance them by eye. */
+const LOGO_SCALE = {
+  'ad-fontes':1.3, 'free-press':1.25, guardian:1.35, 'business-insider':1.2,
+  rebooting:1.2, 'usa-today':1.15, 'trade-desk':1.12, 'press-gazette':1.05,
+  bbc:.95, ft:.72, huffpost:.88, 'ny-post':.88, axios:.9, politico:.9,
+  newsweek:.92, teads:.9, '1440':.82, npr:.95, nyt:.95, 'washington-post':.95,
+};
+
 $('#partners').innerHTML = PARTNERS.map(([k, n]) =>
-  `<div class="partner" title="${n}"><img src="${partnerSrc(k)}" alt="${n}" loading="lazy"></div>`).join('');
+  `<div class="partner" title="${n}"><img src="${partnerSrc(k)}" alt="${n}" loading="lazy"
+     style="--s:${LOGO_SCALE[k] || 1}"></div>`).join('');
 $('#studies').innerHTML = STUDIES.map(s =>
   `<li class="study"><span class="study__t">${s[0]}</span><span class="study__m">${s[1]}</span></li>`).join('');
 

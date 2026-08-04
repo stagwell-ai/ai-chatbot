@@ -191,7 +191,8 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
 .topbar > *{pointer-events:auto}
 .topbar__menu{display:none;color:var(--ink-2)}
 .topbar__crumb{flex:1;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.12em;
-  text-transform:uppercase;color:var(--ink-4)}
+  text-transform:uppercase;color:var(--ink-4);transition:opacity var(--d-2) var(--ease)}
+body[data-state="partners"] .topbar__crumb{opacity:0}
 .restart{display:inline-flex;align-items:center;gap:9px;height:34px;padding:0 14px;border-radius:var(--r-full);
   border:1px solid var(--line-2);font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;
   text-transform:uppercase;color:var(--ink-2);opacity:0;transform:translateY(-6px);pointer-events:none;
@@ -345,7 +346,7 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
 .site__bar .sp{flex:1}
 .site__rows{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 .site__row{padding:16px 18px;display:flex;flex-direction:column;gap:5px;
-  box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
+  box-shadow:inset -1px 0 0 var(--line),inset 0 -1px 0 var(--line)}
 .site__row b{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.11em;text-transform:uppercase;
   color:var(--ink-4);font-weight:400}
 .site__row span{font-size:var(--t-sm);color:var(--ink)}
@@ -636,23 +637,26 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
 .doc__cta p{color:var(--ink-2);font-size:var(--t-sm);max-width:44ch}
 .doc__cta b{color:var(--ink);font-weight:500}
 
-/* Partners is nothing but the wall of logos — edge to edge, no copy */
-.view--partners{overflow:auto}
-/* 4 across × 7 down — 28 logos, no orphan cells. Same shape as the real page. */
-.partners{display:grid;grid-template-columns:repeat(4,1fr);
-  min-height:100%;align-content:stretch;background:var(--surface)}
-.partner{display:grid;place-items:center;padding:30px 26px;min-height:clamp(104px,13.5vh,160px);
-  box-shadow:1px 0 0 var(--line),0 1px 0 var(--line);transition:background var(--d-2) var(--ease)}
+/* A logo wall, not a page: 7 across × 4 down = 28, rows sized to the viewport
+   so this section never scrolls and carries no copy at all. */
+.view--partners{overflow:hidden}
+.partners{display:grid;height:100%;
+  grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(4,1fr);
+  background:var(--surface)}
+.partner{display:grid;place-items:center;padding:20px 16px;min-height:0;
+  box-shadow:inset -1px 0 0 var(--line),inset 0 -1px 0 var(--line);
+  transition:background var(--d-2) var(--ease)}
 .partner:hover{background:var(--surface-2)}
-.partner img{max-height:38px;max-width:100%;width:auto;object-fit:contain;
-  filter:grayscale(1) contrast(1.2);mix-blend-mode:multiply;opacity:.88;
+.partner img{max-height:min(30px,4.4vh);max-width:100%;width:auto;object-fit:contain;
+  filter:grayscale(1) contrast(1.2);mix-blend-mode:multiply;opacity:.66;
+  transform:scale(var(--s,1));
   transition:opacity var(--d-2) var(--ease),transform var(--d-2) var(--ease)}
-.partner:hover img{opacity:1;transform:scale(1.04)}
+.partner:hover img{opacity:1;transform:scale(calc(var(--s,1) * 1.06))}
 
 /* Cell hairlines drawn by the cells, so partial rows leave clean space */
-.kpi,.card,.horizon,.stat{box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
-.opp{box-shadow:0 1px 0 var(--line)}
-.ctacard{box-shadow:1px 0 0 var(--line-void),0 1px 0 var(--line-void)}
+.kpi,.card,.horizon,.stat{box-shadow:inset -1px 0 0 var(--line),inset 0 -1px 0 var(--line)}
+.opp{box-shadow:inset 0 -1px 0 var(--line)}
+
 
 /* ═══════════════════════════════════════════════════════════
    MODAL
@@ -686,6 +690,9 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
   .app.has-ctx{grid-template-columns:var(--rail-w) minmax(0,1fr) 0}
   .ctx{display:none}
 }
+@media (max-width:1180px){
+  .partners{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(7,1fr)}
+}
 @media (max-width:1000px){
   .opp{grid-template-columns:40px 1fr;gap:18px}
   .opp__m{grid-column:2}
@@ -701,7 +708,9 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
   .topbar__menu{display:grid;place-items:center;width:32px;height:32px}
   .restart span{display:none}
   .restart{padding:0 11px}
-  .partners{grid-template-columns:repeat(2,1fr)}   /* 2 × 14, still no orphans */
+  .view--partners{overflow:auto}
+  .partners{height:auto;min-height:100%;grid-template-columns:repeat(2,1fr);grid-template-rows:none}
+  .partner{min-height:104px}
   .view--workspace .scroll{padding:78px 20px 0}
   /* the percentage mask reads as a wireframe on a tall narrow screen — grain is enough */
   .view--workspace.is-welcome::after{display:none}
