@@ -108,10 +108,10 @@ input{font:inherit;color:inherit}
 .btn--dark:hover{background:#00374f}
 .btn--light{background:var(--on-void);color:var(--navy)}
 .btn--light:hover{background:#fff}
-.btn--ghost{border:1px solid var(--line-2);color:var(--ink)}
-.btn--ghost:hover{border-color:var(--ink)}
-.btn--ghost-void{border:1px solid var(--line-void);color:var(--on-void)}
-.btn--ghost-void:hover{border-color:var(--on-void)}
+.btn--ghost{border:1px solid var(--line-2);color:var(--ink);background:var(--surface)}
+.btn--ghost:hover{border-color:var(--ink);background:var(--surface-2)}
+.btn--ghost-void{border:1px solid var(--line-void);color:var(--on-void);background:rgba(234,242,245,.05)}
+.btn--ghost-void:hover{border-color:var(--on-void);background:rgba(234,242,245,.1)}
 .btn:active{transform:translateY(1px)}
 .btn::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:12px;border-radius:50%;
   background:currentColor;opacity:0;transform:translate(-50%,-50%) scale(1);pointer-events:none}
@@ -197,12 +197,13 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
   text-transform:uppercase;color:var(--ink-4);transition:opacity var(--d-2) var(--ease)}
 body[data-state="partners"] .topbar__crumb{opacity:0}
 .restart{display:inline-flex;align-items:center;gap:9px;height:34px;padding:0 14px;border-radius:var(--r-full);
-  border:1px solid var(--line-2);font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;
+  border:1px solid var(--line-2);background:var(--surface);
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;
   text-transform:uppercase;color:var(--ink-2);opacity:0;transform:translateY(-6px);pointer-events:none;
   transition:opacity var(--d-3) var(--ease),transform var(--d-3) var(--ease),
              border-color var(--d-1),color var(--d-1),background var(--d-1)}
 .restart.is-on{opacity:1;transform:none;pointer-events:auto}
-.restart:hover{border-color:var(--ink);color:var(--ink)}
+.restart:hover{border-color:var(--ink);color:var(--ink);background:var(--surface-2)}
 .restart svg{transition:transform var(--d-3) var(--ease)}
 .restart:hover svg{transform:rotate(-180deg)}
 
@@ -723,12 +724,16 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   .stage{height:100dvh}
 
   /* logo left, menu right, and the drawer comes in from the right */
-  .topbar{padding:0 18px}
+  .topbar{padding:0 18px;background:var(--surface);border-bottom:1px solid var(--line);
+    pointer-events:auto}
   .topbar__brand{display:flex;order:0}
   .topbar__crumb{display:none}
   .restart{order:1;margin-left:auto;padding:0 11px}
   .restart span{display:none}   /* icon only — the label wrapped to two lines */
-  .topbar__menu{display:grid;place-items:center;width:34px;height:34px;order:2}
+  /* the burger becomes a real, obvious control */
+  .topbar__menu{display:grid;place-items:center;width:38px;height:38px;order:2;
+    background:var(--navy);color:#fff;border-radius:var(--r)}
+  .topbar__menu:active{transform:translateY(1px)}
   .rail{position:fixed;inset:0 0 0 auto;width:min(var(--rail-w),86vw);transform:translateX(100%);
     border-right:0;border-left:1px solid var(--line);
     transition:transform var(--d-3) var(--ease);box-shadow:0 0 60px rgba(0,18,28,.16)}
@@ -741,7 +746,12 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   .view--workspace .scroll{padding:78px 20px 0}
   /* the percentage mask reads as a wireframe on a tall narrow screen — grain is enough */
   .view--workspace.is-welcome::after{display:none}
-  .dock{padding:0 20px 20px}
+  /* solid, not a fade — the conversation was showing through the composer.
+     A short gradient above it stops the last line being sliced in half. */
+  .dock{padding:14px 20px 20px;background:var(--surface);border-top:1px solid var(--line)}
+  .dock::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:30px;
+    background:linear-gradient(to top,var(--surface),transparent);pointer-events:none}
+  .view--workspace.is-welcome .dock{border-top:0}
   .bubble{max-width:88%}
   .run{padding:72px 22px 24px}
 
