@@ -120,7 +120,7 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 .dash{scroll-margin-top:76px;background:var(--paper);position:relative;
   border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   padding:clamp(44px,7vh,86px) clamp(16px,3vw,40px) clamp(56px,8vh,104px)}
-.dash__in{position:relative;max-width:1280px;margin:0 auto}
+.dash__in{position:relative;max-width:1140px;margin:0 auto}
 
 /* everything above the frame is page, not product */
 .dash__head{display:flex;align-items:flex-end;justify-content:space-between;gap:26px;
@@ -174,7 +174,7 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 /* one fixed height for every tab — the frame must not jump when you switch.
    flex:1 would let content win, so the panel area is sized outright. */
 .panels{padding:clamp(18px,2vw,26px);background:var(--surface-2);flex:0 0 auto;
-  height:clamp(380px,46vh,520px);overflow-y:auto;scrollbar-width:thin;
+  height:clamp(560px,66vh,760px);overflow-y:auto;scrollbar-width:thin;
   scrollbar-color:var(--line-2) transparent}
 .panels::-webkit-scrollbar{width:9px}
 .panels::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:9px;
