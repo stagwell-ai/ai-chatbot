@@ -787,14 +787,16 @@ document.addEventListener('submit', e => {
 
 /* ─────────────────────────── STATIC VIEWS ─────────────────────────── */
 
-whenVisible($$('.stat, .study'), el => el.classList.add('is-in'));
-countAllIn(document);
-
 $('#partners').innerHTML = PARTNERS.map(([k, n]) =>
   `<div class="partner" title="${n}"><img src="${partnerSrc(k)}" alt="${n}" loading="lazy"
      style="--s:${LOGO_SCALE[k] || 1}"></div>`).join('');
 $('#studies').innerHTML = STUDIES.map(s =>
   `<li class="study"><span class="study__t">${s[0]}</span><span class="study__m">${s[1]}</span></li>`).join('');
+
+/* Wired after the lists render — observing an empty selector would leave
+   those rows at opacity 0 permanently. */
+whenVisible($$('.stat, .study'), el => el.classList.add('is-in'));
+countAllIn(document);
 
 /* Placeholder breathes through a few inspiring examples — the only hint on screen. */
 const IDEAS = ['nike.com','airbnb.com','openai.com','yourcompany.com'];

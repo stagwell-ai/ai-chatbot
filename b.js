@@ -788,12 +788,6 @@ document.addEventListener('submit', e => {
   if (e.target.matches('form[data-cta]')) { e.preventDefault(); openModal(e.target.dataset.cta); }
 });
 
-/* ─────────────────────────── REVEALS ─────────────────────────── */
-
-whenVisible($$('.sec__in, .sec__in--head, .bcta__in'), el => el.classList.add('is-in'));
-whenVisible($$('.stat, .studies li, .ctacard'), el => el.classList.add('is-in'));
-countAllIn(document);
-
 /* ─────────────────────────── STATIC ─────────────────────────── */
 
 /* Two rows drifting in opposite directions, each doubled so the loop is seamless. */
@@ -803,6 +797,13 @@ const row = PARTNERS.map(mCell).join('');
 $('#marquee').innerHTML = `<div class="mrow">${row}${row}</div>`;   // doubled → -50% loops seamlessly
 $('#studies').innerHTML = STUDIES.map(s =>
   `<li class="study"><span class="study__t">${s[0]}</span><span class="study__m">${s[1]}</span></li>`).join('');
+
+/* ─────────────────────────── REVEALS ───────────────────────────
+   Wired only once the lists above exist — observing an empty selector
+   leaves those rows sitting at opacity 0 for good. */
+whenVisible($$('.sec__in, .sec__in--head, .bcta__in'), el => el.classList.add('is-in'));
+whenVisible($$('.stat, .study, .ctacard'), el => el.classList.add('is-in'));
+countAllIn(document);
 
 /* ─────────────────────────── BOOT ─────────────────────────── */
 
