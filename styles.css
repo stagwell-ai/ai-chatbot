@@ -614,9 +614,22 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 /* ═══════════════════════════════════════════════════════════
    DOC VIEWS
    ═══════════════════════════════════════════════════════════ */
-.view--doc .scroll{padding:clamp(84px,13vh,150px) clamp(28px,6vw,88px) 96px}
+.view--doc .scroll{padding:clamp(76px,11vh,124px) clamp(28px,6vw,88px) 40px}
 .doc{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
 .doc__title{font-family:var(--serif);font-size:var(--t-h1);font-weight:400;letter-spacing:-.03em;line-height:1.05}
+/* one word carries the teal, the full stop carries the amber — the logo's
+   two accents, used once each */
+.doc__title .accent{color:var(--teal)}
+.doc__title .dot{font-style:normal;color:var(--amber)}
+.doc .eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--amber);flex:none}
+
+/* A quiet close to each document */
+.docfoot{margin-top:auto;padding-top:30px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-4)}
+.docfoot__logo{width:104px;height:16px;opacity:.75}
+.docfoot__sp{flex:1;min-width:12px}
 .doc__lede{font-family:var(--serif);font-size:clamp(1.125rem,1.7vw,1.4rem);line-height:1.5;letter-spacing:-.014em;
   color:var(--ink-2);max-width:60ch}
 .doc__rule{height:1px;background:var(--line)}

@@ -207,6 +207,7 @@ const S = {
   domain:'', brand:'', legal:'', who:'', firstName:'', industryLabel:'', data:DEFAULT_INDUSTRY,
   profile:null, comps:[], challenge:'', pages:42,
   focus:'Growth opportunities', focusLine:'where the next points of growth actually sit', focusLead:1,
+  role:'', roleArticle:'board',
   equity:62, aiVis:41, sov:18, gap:40, creators:'1,204', seed:1,
 };
 
@@ -472,8 +473,10 @@ const FOCUS = {
   'Brand perception':        { lead:2, line:'what the market — and the machines — currently believe about you' },
 };
 
-/* ── Two beats. The machine does the research, then asks the one thing
-      it genuinely cannot know: what you want from it. ── */
+/* ── The machine does the research first, then asks only what it cannot
+      know: what you want from it, and who you are. ── */
+
+const ROLES = ['Chief Marketing Officer','VP / Head of Marketing','Founder or CEO','Communications & PR lead'];
 
 const SCRIPT = [
   {
@@ -509,20 +512,36 @@ const SCRIPT = [
     key: 'focus',
     placeholder: 'Or tell me in your own words',
     async reply() {
-      /* Only asked when it genuinely helps: benchmarking needs a name. */
-      if (S.focus === 'Competitive positioning') {
-        await say(`Then let me get the set right. I am benchmarking you against <em>${S.comps.join('</em>, <em>')}</em> — anyone else you measure yourself by?`,
-          { options: [`Those three are right`, `Add someone I should watch`] });
-      } else {
-        await say(`Good. I will lead on ${esc(S.focusLine)}. <span class="hl">Give me forty seconds.</span>`);
-      }
+      await say(`Good. I will lead on ${esc(S.focusLine)}.`);
       addCtx('Focus', `Brief will lead on <b>${S.focus}</b>`);
+    },
+  },
+  {
+    key: 'who',
+    placeholder: 'Your name',
+    question: () => `Before I build it — who am I speaking to?`,
+    async reply() {
+      await say(`Good to meet you, <em>${esc(S.firstName)}</em>.`);
+      addCtx('Contact', `Brief addressed to <b>${S.firstName}</b>`);
+    },
+  },
+  {
+    key: 'role',
+    placeholder: 'Your role',
+    question: () => `And what is your role at <em>${esc(S.brand)}</em>?`,
+    optionsFor: () => ROLES,
+    async reply() {
+      const more = S.focus === 'Competitive positioning' ? '' : ' <span class="hl">Give me forty seconds.</span>';
+      await say(`Noted — I will write this at ${esc(S.roleArticle)} altitude.${more}`);
+      addCtx('Seniority', `Written for a <b>${S.role}</b>`);
     },
   },
   {
     key: 'competitors',
     skipIf: () => S.focus !== 'Competitive positioning',
     placeholder: 'A name, or press enter to keep mine',
+    question: () => `One last thing. I am benchmarking you against <em>${S.comps.join('</em>, <em>')}</em> — anyone else you measure yourself by?`,
+    optionsFor: () => ['Those three are right', 'Add someone I should watch'],
     async reply() {
       await say(`Locked. NewIntel now has every move <em>${esc(S.comps[0])}</em> made in the last seven days. <span class="hl">Give me forty seconds.</span>`);
       addCtx('NewIntel', `<b>${S.comps.length} rivals</b> under live surveillance`);
@@ -586,6 +605,16 @@ async function submit(raw) {
     S.focusLine = FOCUS[S.focus].line;
     S.focusLead = FOCUS[S.focus].lead;
     if (!match) S.challenge = text.slice(0, 90);   // they typed their own goal — keep their words
+  }
+  if (q.key === 'who') {
+    S.who = text.slice(0, 48);
+    S.firstName = (S.who.split(/[\s,]+/)[0] || '').replace(/[^\p{L}\p{N}'’-]/gu, '') || 'there';
+    S.firstName = S.firstName.charAt(0).toUpperCase() + S.firstName.slice(1);
+  }
+  if (q.key === 'role') {
+    const match = ROLES.find(r => r.toLowerCase() === text.toLowerCase());
+    S.role = match || text.slice(0, 40);
+    S.roleArticle = /chief|founder|ceo/i.test(S.role) ? 'board' : 'leadership';
   }
   if (q.key === 'competitors') {
     const keep = /^(those three|yes|correct|right|keep|no|none)/i.test(text);
@@ -705,7 +734,7 @@ function buildBrief() {
   <header class="bmast reveal">
     <div class="bmast__top">
       <span class="bmast__badge"><i class="pulse"></i>Executive AI Brief</span>
-      <span class="bmast__badge">${S.firstName ? 'Prepared for ' + esc(S.firstName) : 'Confidential preview'}</span>
+      <span class="bmast__badge">${S.firstName ? 'Prepared for ' + esc(S.firstName) + (S.role ? ' · ' + esc(S.role) : '') : 'Confidential preview'}</span>
     </div>
     <h1>${esc(b)}.<br><span>Read, diagnosed, and priced.</span></h1>
     <div class="bmast__meta">
@@ -955,6 +984,7 @@ async function restart() {
     step:0, busy:false, briefReady:false, domain:'', brand:'', legal:'', who:'', firstName:'',
     industryLabel:'', data:DEFAULT_INDUSTRY, profile:null, comps:[], challenge:'',
     focus:'Growth opportunities', focusLine:'where the next points of growth actually sit', focusLead:1,
+    role:'', roleArticle:'board',
   });
   thread.innerHTML = ''; thread.hidden = true;
   ctxList.innerHTML = ''; ctx.hidden = true; app.classList.remove('has-ctx');
@@ -997,7 +1027,7 @@ function openModal(kind) {
     <form class="modal__form" id="leadForm">
       <input type="text" placeholder="Full name" value="${esc(S.who || '')}" required>
       <input type="email" placeholder="Work email" required>
-      <input type="text" placeholder="Role — e.g. CMO, VP Marketing" required>
+      <input type="text" placeholder="Role — e.g. CMO, VP Marketing" value="${esc(S.role || '')}" required>
       <button class="btn btn--dark" type="submit">${kind === 'callback' ? 'Call me now' : 'Continue'}</button>
     </form>
     <p class="modal__fine">Prototype only — nothing is submitted or stored.</p>`;
