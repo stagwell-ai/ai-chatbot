@@ -916,6 +916,12 @@ function buildBrief() {
           <button class="btn btn--light" type="submit">Call me now</button>
         </form>
       </div>
+
+      <div class="bcta__acts">
+        <button class="btn btn--light" data-cta="workspace">Request the full workspace</button>
+        <button class="btn btn--ghost-void" data-cta="pdf">Download as PDF</button>
+        <button class="btn btn--ghost-void" data-cta="share">Share with my team</button>
+      </div>
     </div>
   </section>
 
@@ -1022,7 +1028,7 @@ const CTA_COPY = {
 function openModal(kind) {
   const [t, p] = CTA_COPY[kind] || CTA_COPY.expert;
   modalBody.innerHTML = `
-    <p class="eyebrow"><i class="pulse"></i>Stagwell AI</p>
+    <div class="modal__brand"><svg><use href="#sw-logo"/></svg><span>AI</span></div>
     <h3>${t}</h3><p>${p}</p>
     <form class="modal__form" id="leadForm">
       <input type="text" placeholder="Full name" value="${esc(S.who || '')}" required>

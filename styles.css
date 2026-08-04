@@ -606,6 +606,10 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   padding:0 16px;color:var(--on-void);min-width:210px;outline:none;transition:border-color var(--d-2)}
 .callback input::placeholder{color:var(--on-void-3)}
 .callback input:focus{border-color:var(--teal)}
+/* the masthead's actions, repeated where the decision actually gets made */
+.bcta__acts{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px;padding-top:32px;
+  border-top:1px solid var(--line-void)}
+
 .bfoot{background:var(--surface);padding:34px clamp(28px,6vw,104px);
   display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;align-items:center;
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
@@ -617,10 +621,8 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .view--doc .scroll{padding:clamp(76px,11vh,124px) clamp(28px,6vw,88px) 40px}
 .doc{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
 .doc__title{font-family:var(--serif);font-size:var(--t-h1);font-weight:400;letter-spacing:-.03em;line-height:1.05}
-/* one word carries the teal, the full stop carries the amber — the logo's
-   two accents, used once each */
+/* One accent per title, full stop included — never two colours in one word */
 .doc__title .accent{color:var(--teal)}
-.doc__title .dot{font-style:normal;color:var(--amber)}
 .doc .eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--amber);flex:none}
 
 /* A quiet close to each document */
@@ -685,7 +687,9 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .modal__x:hover{color:var(--ink)}
 .modal h3{font-family:var(--serif);font-size:1.75rem;font-weight:400;letter-spacing:-.024em;line-height:1.15}
 .modal p{color:var(--ink-2);margin-top:15px;font-size:var(--t-body);line-height:1.6}
-.modal .eyebrow{margin-bottom:18px}
+.modal__brand{display:flex;align-items:flex-end;gap:9px;margin-bottom:22px}
+.modal__brand svg{width:132px;height:20px}
+.modal__brand span{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--teal);padding-bottom:2px}
 .modal__form{display:flex;flex-direction:column;gap:10px;margin-top:28px}
 .modal__form input{height:46px;border:1px solid var(--line-2);border-radius:var(--r);padding:0 16px;outline:none;
   transition:border-color var(--d-2)}
