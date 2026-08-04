@@ -25,6 +25,28 @@ const S = {
   equity:62, aiVis:41, sov:18, gap:40, creators:'1,204', seed:1,
 };
 
+/* Split a headline into words so it can arrive out of a blur, not just fade. */
+function blurWords(el, delay = 0) {
+  const html = el.innerHTML;
+  const tmp = document.createElement('div'); tmp.innerHTML = html;
+  let i = 0;
+  const walk = node => [...node.childNodes].forEach(n => {
+    if (n.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      n.nodeValue.split(/(\s+)/).forEach(w => {
+        if (!w.trim()) return frag.appendChild(document.createTextNode(w));
+        const sp = document.createElement('span');
+        sp.className = 'wd'; sp.textContent = w;
+        sp.style.animationDelay = `${delay + i++ * 62}ms`;
+        frag.appendChild(sp);
+      });
+      n.replaceWith(frag);
+    } else walk(n);
+  });
+  walk(tmp);
+  el.innerHTML = tmp.innerHTML;
+}
+
 const thread = $('#thread'), promptForm = $('#promptForm'), promptInput = $('#promptInput');
 const prompt = $('.prompt'), hero = $('#hero2');
 
@@ -195,6 +217,7 @@ async function askStep() {
   const q = SCRIPT[S.step];
   if (!q) return runMachine();
   promptInput.placeholder = q.placeholder;
+  $('#chatStep').textContent = ['Reading the site','Choosing a focus','Who you are','Your role','Your set'][S.step] || 'Ready';
   if (q.question) await say(q.question(), { options: q.optionsFor ? q.optionsFor() : null });
   else if (q.optionsFor) await addOptions(thread.lastElementChild.querySelector('.ai__body'), q.optionsFor());
   promptInput.value = ''; prompt.classList.remove('is-ready');
@@ -226,6 +249,7 @@ async function submit(raw) {
     S.comps = S.profile.peers.slice(0, 3);
     Object.assign(S, numbersFor(S.domain, S.brand));
     thread.hidden = false;
+    $('#chatBar').hidden = false;
     $('#chatHint').hidden = true;
     $('#heroEyebrow').textContent = '';
     hero.classList.add('is-chatting');
@@ -295,6 +319,7 @@ async function runMachine() {
   thread.innerHTML = ''; thread.hidden = true;
   hero.classList.remove('is-chatting');
   $('#hero2Title').innerHTML = `Here is <span class="accent">${esc(S.brand)}.</span>`;
+  blurWords($('#hero2Title'));
   $('#hero2Sub').textContent = `Built from one link, ${S.firstName || 'for you'} — ask me anything else below, or read the dashboard.`;
   $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Analysis complete';
   promptInput.placeholder = 'Ask a follow-up, or type another website';
@@ -310,43 +335,79 @@ async function runMachine() {
 
 /* ─────────────────────────── DASHBOARD ─────────────────────────── */
 
+const ICONS = {
+  home:'<path d="M3 8.5 10 3l7 5.5V16a1 1 0 0 1-1 1h-3.5v-5h-5v5H4a1 1 0 0 1-1-1V8.5Z"/>',
+  chat:'<path d="M3.5 4.5h13v9h-7l-3.5 3v-3h-2.5v-9Z"/>',
+  chart:'<path d="M3.5 13.5 7.5 9l3 3 6-7"/><path d="M3.5 16.5h13"/>',
+  grid:'<rect x="3.5" y="3.5" width="5.5" height="5.5" rx="1"/><rect x="11" y="3.5" width="5.5" height="5.5" rx="1"/><rect x="3.5" y="11" width="5.5" height="5.5" rx="1"/><rect x="11" y="11" width="5.5" height="5.5" rx="1"/>',
+  cal:'<rect x="3.5" y="4.5" width="13" height="12" rx="1.5"/><path d="M3.5 8h13M7 3v3M13 3v3"/>',
+  doc:'<path d="M5 3h6l4 4v10H5V3Z"/><path d="M11 3v4h4"/>',
+  users:'<circle cx="7.5" cy="8" r="2.6"/><circle cx="13" cy="8" r="2.6"/><path d="M3.5 16c0-2.2 1.8-3.5 4-3.5s4 1.3 4 3.5"/>',
+};
+
 function sparkBars(seed, n = 14) {
   return Array.from({ length: n }, (_, i) =>
     `<i style="height:${pick(seed >> (i % 12), 22, 100)}%;animation-delay:${i * 34}ms"></i>`).join('');
 }
 
+/* A six-month area chart drawn from the seed, so it matches the numbers above it. */
+function chartSVG(seed) {
+  const W = 560, H = 170, n = 6;
+  const pts = Array.from({ length: n }, (_, i) => pick(seed >> (i + 2), 26, 96));
+  const x = i => (i / (n - 1)) * W;
+  const y = v => H - (v / 110) * H;
+  const line = pts.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area = `${line} L${W},${H} L0,${H} Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Coverage over time">
+    <defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#009CBD" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#009CBD" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${[0, .25, .5, .75, 1].map(f => `<line class="chart__g" x1="0" y1="${(H * f).toFixed(0)}" x2="${W}" y2="${(H * f).toFixed(0)}"/>`).join('')}
+    <path class="chart__area" d="${area}"/>
+    <path class="chart__line" d="${line}"/>
+    ${pts.map((v, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3" fill="#009CBD"/>`).join('')}
+  </svg>`;
+}
+
 function buildDashboard() {
   const A = computeAnalysis(S);
   const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const months = ['Jan','Feb','Mar','Apr','May','Jun'];
 
   const TABS = [
-    ['overview', 'Overview', ''],
-    ['visibility', 'AI visibility', '8'],
-    ['competitors', 'Competitors', String(S.comps.length)],
-    ['opportunities', 'Opportunities', '3'],
-    ['market', 'Market', '3'],
-    ['plan', 'Plan', '90d'],
-    ['research', 'Research', '9'],
+    ['overview','Overview','',                'home'],
+    ['visibility','AI visibility','8',        'chart'],
+    ['competitors','Competitors',String(S.comps.length),'users'],
+    ['opportunities','Opportunities','3',     'grid'],
+    ['market','Market','3',                   'doc'],
+    ['plan','Plan','90d',                     'cal'],
+    ['research','Research','9',               'chat'],
   ];
 
-  const kpi = (k, v, unit, d, cls, seed) => `
-    <div class="card2 card2--4">
-      <span class="card2__k">${k}</span>
-      <span class="card2__v">${v}${unit ? `<small>${unit}</small>` : ''}</span>
-      <span class="card2__d ${cls}">${d}</span>
-      <span class="spark">${sparkBars(seed)}</span>
+  const stat = (k, v, unit, d, cls, seed) => `
+    <div class="dstat g3">
+      <span class="pnl__k">${k}</span>
+      <span class="dstat__v">${v}${unit ? `<small>${unit}</small>` : ''}<em class="dstat__d ${cls}" style="font-style:normal">${d}</em></span>
+      <span class="dstat__spark">${sparkBars(seed)}</span>
     </div>`;
+
+  const sov = [{ n: A.b, v: S.aiVis, you: true }, ...A.competitors.map(c => ({ n: c.name, v: c.vis }))]
+    .sort((a, b2) => b2.v - a.v);
+  const top = sov[0].v;
 
   $('#dash').innerHTML = `
   <div class="dash__in">
+
+    <!-- page-level: the title and the actions live outside the product -->
     <div class="dash__head">
       <div class="dash__id">
-        <p class="eyebrow"><i class="pulse"></i>Live dashboard${S.firstName ? ' · for ' + esc(S.firstName) : ''}</p>
+        <p class="eyebrow"><i class="pulse"></i>Built for ${S.firstName ? esc(S.firstName) : 'you'} · ${esc(S.domain)}</p>
         <h2>${esc(S.brand)}</h2>
         <div class="dash__meta">
-          <span>Source <b>${esc(S.domain)}</b></span><span>Built <b>${today}</b></span>
-          <span>Elapsed <b>41s</b></span><span>Engines <b>10</b></span>
-          <span>Category <b>${esc(S.industryLabel)}</b></span><span>Focus <b>${esc(S.focus)}</b></span>
+          <span>Built <b>${today}</b></span><span>Elapsed <b>41s</b></span>
+          <span>Engines <b>10</b></span><span>Category <b>${esc(S.industryLabel)}</b></span>
+          <span>Focus <b>${esc(S.focus)}</b></span>
         </div>
       </div>
       <div class="dash__acts">
@@ -355,150 +416,187 @@ function buildDashboard() {
       </div>
     </div>
 
-    <div class="tabs" id="tabs">
-      ${TABS.map((t, i) => `<button class="tab${i ? '' : ' is-on'}" data-tab="${t[0]}">${t[1]}${t[2] ? `<em>${t[2]}</em>` : ''}</button>`).join('')}
-    </div>
+    <!-- the product -->
+    <div class="dapp">
+      <aside class="dapp__rail">
+        <span class="dapp__logo"><svg viewBox="0 0 28.44 28"><use href="#sw-mark"/></svg></span>
+        ${TABS.map((t, i) => `<button class="dapp__ico${i ? '' : ' is-on'}" data-tab="${t[0]}" title="${t[1]}">
+          <svg viewBox="0 0 20 20">${ICONS[t[3]]}</svg></button>`).join('')}
+      </aside>
 
-    <!-- OVERVIEW -->
-    <div class="panel is-on" data-panel="overview">
-      <div class="grid">
-        ${kpi('Brand equity · BERA', S.equity, '/100', '▲ 4 pts vs last quarter', 'up', S.seed)}
-        ${kpi('AI visibility · GEOPulse', S.aiVis, '/100', `▼ ${S.gap} pts behind ${esc(A.c1)}`, 'down', S.seed >> 2)}
-        ${kpi('Share of voice · NewIntel', S.sov, '%', '— flat, 3 quarters', 'flat', S.seed >> 4)}
-        ${kpi('Creator affinity · IMAI', S.creators, '', '▲ unpaid, unmanaged', 'up', S.seed >> 6)}
-
-        <div class="card2 card2--8">
-          <span class="card2__k">The read</span>
-          <p style="font-size:var(--t-lede);line-height:1.62;color:var(--ink-2)">
-            You asked me to lead on ${esc(S.focusLine)}. ${esc(A.b)} holds a defensible position in ${A.cat} — equity sits at <b style="color:var(--ink)">${S.equity}</b> against a category mean of 58. The machines that now mediate your category do not know it: across eight models ${esc(A.b)} is named in <b style="color:var(--ink)">${S.aiVis}%</b> of relevant answers where ${esc(A.c1)} is named in <b style="color:var(--ink)">${A.lead}%</b>. The gap is a supply problem in earned citation — the cheapest thing here to fix.
-          </p>
-        </div>
-        <div class="card2 card2--4">
-          <span class="card2__k">This week · NewIntel</span>
-          <div class="feed">
-            ${A.competitors.map((c, i) => `<div class="feedrow">
-              <span class="feedrow__w"></span>
-              <span class="feedrow__t"><b>${esc(c.name)}</b> — ${c.move.replace(/\.$/, '')}</span>
-              <span class="feedrow__m">${['2d','4d','6d'][i] || '7d'}</span></div>`).join('')}
+      <div class="dapp__body">
+        <div class="dapp__top">
+          <div>
+            <h3 id="dappTitle">Overview</h3>
+            <p>Coverage, AI citations, and your share of the answer.</p>
           </div>
+          <span class="live"><i></i>Live data</span>
         </div>
-      </div>
-    </div>
 
-    <!-- AI VISIBILITY -->
-    <div class="panel" data-panel="visibility">
-      <div class="grid">
-        <div class="card2 card2--8">
-          <span class="card2__k">Share of relevant answers · 30-day window</span>
-          <div class="bars">
-            ${A.models.map(m => `<div class="barrow">
-              <span class="barrow__n">${m.m}</span>
-              <span class="barrow__t"><i class="me" style="--w:${m.me}%"></i><i class="them" style="--w:${m.them}%"></i></span>
-              <span class="barrow__v">${m.me}% · ${m.them}%</span></div>`).join('')}
-          </div>
-          <div class="legend"><span><i></i>${esc(A.b)}</span><span><i class="them"></i>${esc(A.c1)}</span></div>
+        <div class="tabs" id="tabs">
+          ${TABS.map((t, i) => `<button class="tab${i ? '' : ' is-on'}" data-tab="${t[0]}">${t[1]}${t[2] ? `<em>${t[2]}</em>` : ''}</button>`).join('')}
         </div>
-        <div class="card2 card2--4">
-          <span class="card2__k">What the models say</span>
-          ${A.quotes.map(q => `<div style="padding:14px 0;border-bottom:1px solid var(--line)">
-            <p style="font-family:var(--serif);font-size:1rem;line-height:1.5;letter-spacing:-.01em">${q[0]}</p>
-            <b style="display:block;margin-top:8px;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);font-weight:400">${q[1]}</b>
-          </div>`).join('')}
-        </div>
-      </div>
-    </div>
 
-    <!-- COMPETITORS -->
-    <div class="panel" data-panel="competitors">
-      <div class="grid">
-        <div class="card2 card2--12">
-          <span class="card2__k">AI visibility · ranked</span>
-          <div class="rank">
-            <div class="rankrow rankrow--you">
-              <b>${esc(A.b)}</b>
-              <span class="rankrow__bar"><i style="--w:${S.aiVis}%"></i></span>
-              <span class="rankrow__v">${S.aiVis} · you</span>
+        <div class="panels">
+
+          <!-- OVERVIEW -->
+          <div class="panel is-on" data-panel="overview">
+            <div class="grid">
+              ${stat('AI citation share', S.aiVis + '%', '', `+${pick(S.seed, 3, 9)}%`, 'up', S.seed)}
+              ${stat('Brand equity', S.equity, '/100', '+4', 'up', S.seed >> 2)}
+              ${stat('Coverage, 30d', pick(S.seed >> 3, 88, 190), '', `+${pick(S.seed >> 5, 6, 22)}`, 'up', S.seed >> 4)}
+              ${stat('Share of voice', S.sov + '%', '', '— flat', 'flat', S.seed >> 6)}
+
+              <div class="pnl g5">
+                <div class="pnl__h"><h4>Share of voice</h4><span class="pnl__k">30 days</span></div>
+                <div class="sov">
+                  ${sov.map(r => `<div class="sovrow${r.you ? ' is-you' : ''}">
+                    <span class="sovrow__n">${esc(r.n)}</span>
+                    <span class="sovrow__t"><i style="--w:${Math.round(r.v / top * 100)}%"></i></span>
+                    <span class="sovrow__v">${r.v}</span></div>`).join('')}
+                </div>
+              </div>
+
+              <div class="pnl g7">
+                <div class="pnl__h"><h4>Coverage over time</h4><span class="pnl__k">6 months</span></div>
+                <div class="chart">${chartSVG(S.seed)}</div>
+                <div class="chart__x">${months.map(m => `<span>${m}</span>`).join('')}</div>
+              </div>
+
+              <div class="pnl g12">
+                <div class="pnl__h"><h4>Recent mentions</h4><span class="pnl__k">NewIntel · live</span></div>
+                <div class="feed">
+                  ${[['ChatGPT', `<b>${esc(A.c1)}</b> cited ahead of you in an answer on ${A.cat}`, '2m ago'],
+                     ['Perplexity', `<b>${esc(A.b)}</b> referenced for “best ${A.cat} brands”`, '18m ago'],
+                     ['NewIntel', `<b>${esc(A.competitors[0]?.name || A.c1)}</b> — ${(A.competitors[0]?.move || '').replace(/\.$/, '')}`, '1h ago'],
+                     ['Gemini', `<b>${esc(A.c2)}</b> quoted on category trends`, '3h ago'],
+                     ['BERA', `Equity read refreshed — <b>${S.equity}/100</b>`, '6h ago']]
+                    .map(f => `<div class="feedrow"><span class="chip">${f[0]}</span>
+                      <span class="feedrow__t">${f[1]}</span><span class="feedrow__m">${f[2]}</span></div>`).join('')}
+                </div>
+              </div>
             </div>
-            ${A.competitors.map(c => `<div class="rankrow">
-              <b>${esc(c.name)}</b>
-              <span class="rankrow__bar"><i style="--w:${c.vis}%"></i></span>
-              <span class="rankrow__v">${c.vis} · ${c.up ? '▲' : '▼'} ${c.delta}</span></div>`).join('')}
+          </div>
+
+          <!-- AI VISIBILITY -->
+          <div class="panel" data-panel="visibility">
+            <div class="grid">
+              <div class="pnl g8">
+                <div class="pnl__h"><h4>Share of relevant answers</h4><span class="pnl__k">8 models · 30 days</span></div>
+                <div class="bars">
+                  ${A.models.map(m => `<div class="barrow">
+                    <span class="barrow__n">${m.m}</span>
+                    <span class="barrow__t"><i class="me" style="--w:${m.me}%"></i><i class="them" style="--w:${m.them}%"></i></span>
+                    <span class="barrow__v">${m.me}% · ${m.them}%</span></div>`).join('')}
+                </div>
+                <div class="legend"><span><i></i>${esc(A.b)}</span><span><i class="them"></i>${esc(A.c1)}</span></div>
+              </div>
+              <div class="pnl g4">
+                <div class="pnl__h"><h4>What the models say</h4><span class="pnl__k">verbatim</span></div>
+                ${A.quotes.map(q => `<div style="padding:13px 0;border-bottom:1px solid var(--line)">
+                  <p style="font-family:var(--serif);font-size:1rem;line-height:1.5;letter-spacing:-.01em">${q[0]}</p>
+                  <b class="pnl__k" style="display:block;margin-top:9px;font-weight:400">${q[1]}</b></div>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- COMPETITORS -->
+          <div class="panel" data-panel="competitors">
+            <div class="grid">
+              <div class="pnl g12">
+                <div class="pnl__h"><h4>AI visibility · ranked</h4><span class="pnl__k">you vs the set</span></div>
+                <div class="sov">
+                  ${sov.map(r => `<div class="sovrow${r.you ? ' is-you' : ''}">
+                    <span class="sovrow__n">${esc(r.n)}</span>
+                    <span class="sovrow__t"><i style="--w:${Math.round(r.v / top * 100)}%"></i></span>
+                    <span class="sovrow__v">${r.v}</span></div>`).join('')}
+                </div>
+              </div>
+              ${A.competitors.map(c => `<div class="pnl g4">
+                <div class="pnl__h"><h4>${esc(c.name)}</h4>
+                  <span class="dstat__d ${c.up ? 'up' : 'down'}">${c.up ? '▲' : '▼'} ${c.delta}</span></div>
+                <span class="pnl__k">${c.momentum} creator momentum</span>
+                <p style="font-size:var(--t-sm);color:var(--ink-2);line-height:1.58">${c.move}</p>
+                <span class="pnl__k" style="margin-top:auto">Visibility ${c.vis}</span>
+              </div>`).join('')}
+            </div>
+          </div>
+
+          <!-- OPPORTUNITIES -->
+          <div class="panel" data-panel="opportunities">
+            ${A.opps.map((o, i) => `<article class="oppcard">
+              <span class="oppcard__r">0${i + 1}</span>
+              <div>
+                <h4>${o.h}</h4><p>${o.p}</p>
+                <div class="opp__engines" style="margin-top:12px">${o.e.map(e => `<span class="tagx">${e}</span>`).join('')}</div>
+              </div>
+              <div class="oppcard__m">
+                <span class="lift">${o.lift}<small>${o.l}</small></span>
+                <span class="meter"><b>Impact<span>${o.impact}</span></b><i style="--w:${o.impact}%"></i></span>
+                <span class="meter"><b>Effort<span>${o.effort}</span></b><i style="--w:${o.effort}%"></i></span>
+              </div></article>`).join('')}
+            <div class="grid" style="margin-top:14px">
+              ${A.solutions.map(s2 => `<div class="pnl g4">
+                <span class="pnl__k" style="color:var(--teal)">${s2[0]}</span>
+                <h4 style="font-size:1rem;font-weight:600;letter-spacing:-.012em">${s2[1]}</h4>
+                <p style="font-size:var(--t-sm);color:var(--ink-2);line-height:1.58">${s2[2]}</p>
+                <span class="pnl__k" style="margin-top:auto">${s2[3]}</span></div>`).join('')}
+            </div>
+          </div>
+
+          <!-- MARKET -->
+          <div class="panel" data-panel="market">
+            <div class="grid">
+              ${A.trends.map((t, i) => `<div class="pnl g4">
+                <span class="pnl__k">Trend 0${i + 1}</span>
+                <h4 style="font-size:1rem;font-weight:600;letter-spacing:-.012em;line-height:1.35">${t[0]}</h4>
+                <p style="font-size:var(--t-sm);color:var(--ink-2);line-height:1.6">${t[1]}</p>
+                <span class="pnl__k" style="margin-top:auto">${i === 2 ? 'HarrisX · six markets' : 'Stagwell signal index'}</span>
+              </div>`).join('')}
+              <div class="pnl g12">
+                <div class="pnl__h"><h4>Your audience</h4><span class="pnl__k">SATS · 260M ID graph</span></div>
+                <p style="font-size:var(--t-lede);color:var(--ink);line-height:1.5">${esc(S.data.segment)}</p>
+                <p style="font-size:var(--t-sm);color:var(--ink-2);line-height:1.6">Resolved and matched to addressable inventory. ${esc(S.creators)} creators already reference ${esc(A.b)} with no commercial relationship.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- PLAN -->
+          <div class="panel" data-panel="plan">
+            <div class="plan">
+              ${A.horizons.map(h => `<div class="pnl plancol">
+                <div class="plancol__h"><b>${h[0]}</b><span>${h[1]}</span></div>
+                <ul>${h[2].map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('')}
+            </div>
+          </div>
+
+          <!-- RESEARCH -->
+          <div class="panel" data-panel="research">
+            <div class="pnl g12">
+              <div class="pnl__h"><h4>The research behind this</h4><span class="pnl__k">HarrisX</span></div>
+              <ul class="studies">
+                ${STUDIES.map(s2 => `<li class="study">
+                  <span class="study__t">${s2[0]}${s2[2] ? '<span class="rel">Relevant to you</span>' : ''}</span>
+                  <span class="study__m">${s2[1]}</span></li>`).join('')}
+              </ul>
+            </div>
           </div>
         </div>
-        ${A.competitors.map(c => `<div class="card2 card2--4">
-          <span class="card2__k">${esc(c.name)}</span>
-          <h3>${c.momentum} creator momentum</h3>
-          <p>${c.move}</p>
-          <span class="card2__foot">Equity ${c.up ? '▲' : '▼'} ${c.delta} · visibility ${c.vis}</span>
-        </div>`).join('')}
-      </div>
-    </div>
-
-    <!-- OPPORTUNITIES -->
-    <div class="panel" data-panel="opportunities">
-      ${A.opps.map((o, i) => `<article class="oppcard">
-        <span class="oppcard__r">0${i + 1}</span>
-        <div>
-          <h3>${o.h}</h3><p>${o.p}</p>
-          <div class="opp__engines">${o.e.map(e => `<span class="tagx">${e}</span>`).join('')}</div>
-        </div>
-        <div class="oppcard__m">
-          <span class="opp__lift">${o.lift}<small>${o.l}</small></span>
-          <span class="meter"><b>Impact<span>${o.impact}</span></b><i style="--w:${o.impact}%"></i></span>
-          <span class="meter"><b>Effort<span>${o.effort}</span></b><i style="--w:${o.effort}%"></i></span>
-        </div></article>`).join('')}
-      <div class="grid" style="margin-top:14px">
-        ${A.solutions.map(s => `<div class="card2 card2--4">
-          <span class="card2__k" style="color:var(--teal)">${s[0]}</span>
-          <h3>${s[1]}</h3><p>${s[2]}</p>
-          <span class="card2__foot">${s[3]}</span></div>`).join('')}
-      </div>
-    </div>
-
-    <!-- MARKET -->
-    <div class="panel" data-panel="market">
-      <div class="grid">
-        ${A.trends.map((t, i) => `<div class="card2 card2--4">
-          <span class="card2__k">Trend 0${i + 1}</span>
-          <h3>${t[0]}</h3><p>${t[1]}</p>
-          <span class="card2__foot">${i === 2 ? 'HarrisX · six markets' : 'Stagwell signal index'}</span>
-        </div>`).join('')}
-        <div class="card2 card2--12">
-          <span class="card2__k">Your audience · SATS</span>
-          <h3>${esc(S.data.segment)}</h3>
-          <p>Resolved against a 260M identity graph and matched to addressable inventory. ${esc(S.creators)} creators already reference ${esc(A.b)} with no commercial relationship.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- PLAN -->
-    <div class="panel" data-panel="plan">
-      <div class="plan">
-        ${A.horizons.map(h => `<div class="plancol">
-          <div class="plancol__h"><b>${h[0]}</b><span>${h[1]}</span></div>
-          <ul>${h[2].map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('')}
-      </div>
-    </div>
-
-    <!-- RESEARCH -->
-    <div class="panel" data-panel="research">
-      <div class="card2 card2--12">
-        <span class="card2__k">HarrisX · cited where relevant to ${esc(A.b)}</span>
-        <ul class="studies">
-          ${STUDIES.map(s => `<li class="study">
-            <span class="study__t">${s[0]}${s[2] ? '<span class="rel">Relevant to you</span>' : ''}</span>
-            <span class="study__m">${s[1]}</span></li>`).join('')}
-        </ul>
       </div>
     </div>
   </div>`;
 
   $('#dash').hidden = false;
 
-  $('#tabs').addEventListener('click', e => {
-    const t = e.target.closest('.tab'); if (!t) return;
-    $$('.tab', $('#tabs')).forEach(x => x.classList.toggle('is-on', x === t));
-    $$('.panel', $('#dash')).forEach(p => p.classList.toggle('is-on', p.dataset.panel === t.dataset.tab));
+  const setTab = name => {
+    $$('.tab', $('#dash')).forEach(x => x.classList.toggle('is-on', x.dataset.tab === name));
+    $$('.dapp__ico', $('#dash')).forEach(x => x.classList.toggle('is-on', x.dataset.tab === name));
+    $$('.panel', $('#dash')).forEach(p => p.classList.toggle('is-on', p.dataset.panel === name));
+    $('#dappTitle').textContent = (TABS.find(t => t[0] === name) || TABS[0])[1];
+  };
+  $('#dash').addEventListener('click', e => {
+    const t = e.target.closest('[data-tab]'); if (!t) return;
+    setTab(t.dataset.tab);
   });
 }
 
@@ -558,9 +656,14 @@ document.addEventListener('submit', e => {
 
 /* ─────────────────────────── STATIC ─────────────────────────── */
 
-$('#partnersGrid').innerHTML = PARTNERS.map(([k, n]) =>
-  `<div class="partner" title="${n}"><img src="${partnerSrc(k)}" alt="${n}" loading="lazy"
-     style="--s:${LOGO_SCALE[k] || 1}"></div>`).join('');
+/* Two rows drifting in opposite directions, each doubled so the loop is seamless. */
+const mCell = ([k, n]) => `<div class="mcell" title="${n}"><img src="${partnerSrc(k)}" alt="${n}"
+  loading="lazy" style="--s:${LOGO_SCALE[k] || 1}"></div>`;
+const half = Math.ceil(PARTNERS.length / 2);
+const rowA = PARTNERS.slice(0, half).map(mCell).join('');
+const rowB = PARTNERS.slice(half).map(mCell).join('');
+$('#marquee').innerHTML =
+  `<div class="mrow mrow--a">${rowA}${rowA}</div><div class="mrow mrow--b">${rowB}${rowB}</div>`;
 $('#studies').innerHTML = STUDIES.map(s =>
   `<li class="study"><span class="study__t">${s[0]}</span><span class="study__m">${s[1]}</span></li>`).join('');
 
@@ -584,9 +687,11 @@ $('#studies').innerHTML = STUDIES.map(s =>
     S.step = SCRIPT.length; S.done = true;
     buildDashboard();
     $('#hero2Title').innerHTML = `Here is <span class="accent">${esc(S.brand)}.</span>`;
+    blurWords($('#hero2Title'), 120);
     $('#chatHint').hidden = true;
     return;
   }
+  blurWords($('#hero2Title'), 120);
   promptInput.focus({ preventScroll: true });
 })();
 

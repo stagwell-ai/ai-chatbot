@@ -71,16 +71,24 @@
       <p class="hero2__sub" id="hero2Sub">One link. I’ll read the company, map the market, and build your dashboard — live, in about a minute.</p>
 
       <div class="chat" id="chat">
-        <div class="chat__thread" id="thread" hidden></div>
-        <form class="prompt" id="promptForm" autocomplete="off">
-          <div class="prompt__field">
-            <span class="prompt__caret"></span>
-            <input class="prompt__input" id="promptInput" type="text" placeholder="nike.com" aria-label="Your answer" spellcheck="false">
-            <button class="prompt__send" id="promptSend" type="submit" aria-label="Send">
-              <svg viewBox="0 0 18 18" width="16" height="16"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
+        <div class="chat__panel" id="chatPanel">
+          <div class="chat__bar" id="chatBar" hidden>
+            <span class="chat__dot"><i class="pulse"></i></span>
+            <b>Stagwell AI</b>
+            <span class="chat__sp"></span>
+            <span class="chat__step" id="chatStep">Reading the site</span>
           </div>
-        </form>
+          <div class="chat__thread" id="thread" hidden></div>
+          <form class="prompt" id="promptForm" autocomplete="off">
+            <div class="prompt__field">
+              <span class="prompt__caret"></span>
+              <input class="prompt__input" id="promptInput" type="text" placeholder="nike.com" aria-label="Your answer" spellcheck="false">
+              <button class="prompt__send" id="promptSend" type="submit" aria-label="Send">
+                <svg viewBox="0 0 18 18" width="16" height="16"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </form>
+        </div>
         <p class="chat__hint" id="chatHint">Try <button class="chat__eg" data-eg="nike.com">nike.com</button>, <button class="chat__eg" data-eg="airbnb.com">airbnb.com</button> or your own</p>
       </div>
     </div>
@@ -140,7 +148,7 @@
       <p class="eyebrow">Future of News Initiative</p>
       <h2 class="sec__title">Our <span class="accent">partners.</span></h2>
     </div>
-    <div class="partners" id="partnersGrid"></div>
+    <div class="marquee" id="marquee"></div>
   </section>
 
   <!-- ─────────────── CTA ─────────────── -->
