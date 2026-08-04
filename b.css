@@ -16,7 +16,7 @@ body.vB main{position:relative;z-index:1}
 /* gets out of the way going down, comes back the moment you head up */
 .nav.is-up{transform:translateY(-101%)}
 .nav.is-stuck{box-shadow:0 12px 30px -22px rgba(0,35,52,.5)}
-.nav__in{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,48px);height:76px;
+.nav__in{max-width:1440px;margin:0 auto;padding:0 clamp(16px,2.2vw,30px);height:76px;
   display:flex;align-items:center;gap:clamp(20px,4vw,56px)}
 .nav__brand{display:flex;align-items:flex-end;gap:8px;text-decoration:none;flex:none}
 .nav__brand svg{width:142px;height:22px}
@@ -78,6 +78,7 @@ body.nav-open .mnav{transform:none}
 .hero2.is-chatting .display{font-size:clamp(1.5rem,2.6vw,2.125rem);margin-bottom:2px}
 .hero2.is-chatting .chat{margin-top:0}
 .hero2 .eyebrow{justify-content:center;min-height:1.2em}
+.hero2 .display .accent{color:var(--teal)}
 @media (min-width:800px){ .hero2 .display{white-space:nowrap} }
 .hero2__sub{color:var(--ink-3);font-size:var(--t-lede);line-height:1.6;max-width:46ch;text-wrap:balance}
 
@@ -196,14 +197,11 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 .tab.is-on::after{transform:scaleX(1)}
 .tab em{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--ink-4);margin-left:7px}
 
-/* one fixed height for every tab — the frame must not jump when you switch.
-   flex:1 would let content win, so the panel area is sized outright. */
-.panels{padding:16px;background:var(--surface-2);flex:0 0 auto;overscroll-behavior:contain;
-  height:clamp(560px,66vh,760px);overflow-y:auto;scrollbar-width:thin;
-  scrollbar-color:var(--line-2) transparent}
-.panels::-webkit-scrollbar{width:9px}
-.panels::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:9px;
-  border:3px solid transparent;background-clip:padding-box}
+/* No inner scroll. The frame grows to whatever the tab needs — a scroll
+   region inside a page just fights the page. */
+.panels{padding:16px;background:var(--surface-2);flex:1;
+  min-height:clamp(420px,52vh,600px);
+  transition:min-height var(--d-3) var(--ease)}
 .panel{display:none;animation:panelIn 460ms var(--ease)}
 .panel.is-on{display:block}
 @keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -332,8 +330,8 @@ body.vB .study__t{font-size:var(--t-body)}
 .sec__lede{font-family:var(--serif);font-size:clamp(1.25rem,1.9vw,1.6rem);line-height:1.48;
   letter-spacing:-.016em;color:var(--ink-2);max-width:56ch}
 body.vB .doc__cols{gap:0;margin-top:8px;border-top:1px solid var(--line)}
-body.vB .doc__cols p{padding:26px 34px 26px 0}
-body.vB .doc__cols p + p{border-left:1px solid var(--line);padding-left:34px;padding-right:0}
+body.vB .doc__cols p{padding:26px 28px 26px 0}
+body.vB .doc__cols p + p{border-left:1px solid var(--line);padding-left:28px;padding-right:0}
 body.vB .doc__cols p{font-size:var(--t-body);line-height:1.7;color:var(--ink-2)}
 body.vB .statrow{margin-top:34px;border-radius:var(--r-lg)}
 body.vB .stat{padding:32px 30px}
@@ -412,7 +410,7 @@ body.nav-open .ab{opacity:0;pointer-events:none;transition:opacity var(--d-2)}
 
   /* on a phone the dashboard flows with the page — a fixed inner scroll
      traps the gesture and the page stops moving under your thumb */
-  .panels{height:auto;overflow:visible;overscroll-behavior:auto;padding:14px}
+  .panels{min-height:0;padding:14px}
   .dash{padding-inline:14px}
   .dapp{border-radius:18px}
 
