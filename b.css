@@ -385,6 +385,33 @@ body.vB .bfoot{border-top:1px solid var(--line);padding:44px clamp(20px,4vw,48px
 .modal--wide .player{margin-top:24px}
 .modal--wide .modal__fine{text-align:center}
 
+/* sections rise as you reach them */
+.sec__in,.sec__in--head,.bcta__in{opacity:0;transform:translateY(16px);
+  transition:opacity 760ms var(--ease),transform 760ms var(--ease)}
+.sec__in.is-in,.sec__in--head.is-in,.bcta__in.is-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .sec__in,.sec__in--head,.bcta__in{opacity:1;transform:none;transition:none}
+}
+
+/* a tab's cards arrive in sequence rather than all at once */
+.panel.is-on .pnl,.panel.is-on .dstat,.panel.is-on .oppcard,.panel.is-on .plancol{
+  animation:cardUp 520ms var(--ease) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes cardUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .panel.is-on .pnl,.panel.is-on .dstat,.panel.is-on .oppcard,.panel.is-on .plancol{animation:none}
+}
+
+/* small, quiet hovers */
+.dstat,.pnl{transition:border-color var(--d-2) var(--ease),transform var(--d-2) var(--ease)}
+.dstat:hover,.pnl:hover{border-color:var(--line-2)}
+.feedrow{transition:padding-left var(--d-2) var(--ease)}
+.feedrow:hover{padding-left:6px}
+.sovrow{transition:background var(--d-2) var(--ease);border-radius:6px}
+.sovrow:hover{background:var(--surface-2)}
+.mcell img{transition:opacity var(--d-2) var(--ease),transform var(--d-2) var(--ease)}
+.mcell:hover img{transform:scale(calc(var(--s,1) * 1.08))}
+.study{transition:padding-left var(--d-2) var(--ease),background var(--d-2)}
+
 /* ── A / B switch ─────────────────────────────────────────── */
 .ab{position:fixed;right:20px;bottom:20px;z-index:60;display:flex;gap:2px;padding:4px;
   background:rgba(255,255,255,.9);backdrop-filter:blur(12px);

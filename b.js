@@ -8,7 +8,8 @@
 'use strict';
 
 const { esc, pick, PARTNERS, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES, DEFAULT_INDUSTRY,
-        readWebsite, STATUS_LINES, FOCUS, ROLES, numbersFor, computeAnalysis } = window.SWAI;
+        readWebsite, STATUS_LINES, FOCUS, ROLES, numbersFor, computeAnalysis,
+        countUp, whenVisible, countAllIn } = window.SWAI;
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -412,7 +413,7 @@ function buildDashboard() {
   const stat = (k, v, unit, d, cls, seed) => `
     <div class="dstat g3">
       <span class="pnl__k">${k}</span>
-      <span class="dstat__v">${v}${unit ? `<small>${unit}</small>` : ''}<em class="dstat__d ${cls}" style="font-style:normal">${d}</em></span>
+      <span class="dstat__v"><b class="num">${v}</b>${unit ? `<small>${unit}</small>` : ''}<em class="dstat__d ${cls}" style="font-style:normal">${d}</em></span>
       <span class="dstat__spark">${sparkBars(seed)}</span>
     </div>`;
 
@@ -528,7 +529,7 @@ function buildDashboard() {
                   ${sov.map(r => `<div class="sovrow${r.you ? ' is-you' : ''}">
                     <span class="sovrow__n">${esc(r.n)}</span>
                     <span class="sovrow__t"><i style="--w:${Math.round(r.v / top * 100)}%"></i></span>
-                    <span class="sovrow__v">${r.v}</span></div>`).join('')}
+                    <span class="sovrow__v num">${r.v}</span></div>`).join('')}
                 </div>
               </div>
               ${A.competitors.map(c => `<div class="pnl g4">
@@ -550,9 +551,9 @@ function buildDashboard() {
                 <div class="opp__engines" style="margin-top:12px">${o.e.map(e => `<span class="tagx">${e}</span>`).join('')}</div>
               </div>
               <div class="oppcard__m">
-                <span class="lift">${o.lift}<small>${o.l}</small></span>
-                <span class="meter"><b>Impact<span>${o.impact}</span></b><i style="--w:${o.impact}%"></i></span>
-                <span class="meter"><b>Effort<span>${o.effort}</span></b><i style="--w:${o.effort}%"></i></span>
+                <span class="lift"><b class="num">${o.lift}</b><small>${o.l}</small></span>
+                <span class="meter"><b>Impact<span class="num">${o.impact}</span></b><i style="--w:${o.impact}%"></i></span>
+                <span class="meter"><b>Effort<span class="num">${o.effort}</span></b><i style="--w:${o.effort}%"></i></span>
               </div></article>`).join('')}
           </div>
 
@@ -610,13 +611,25 @@ function buildDashboard() {
   </div>`;
 
   $('#dash').hidden = false;
+  whenVisible($$('.dstat, .pnl, .oppcard', $('#dash')), el => el.classList.add('is-in'));
+  countAllIn($('#dash'));
 
+  const stagger = panel => {
+    $$(':scope > .grid > *, :scope > .plan > *, :scope > .oppcard, :scope > .pnl', panel)
+      .forEach((el, i) => { el.style.setProperty('--i', i); });
+    $$('.num', panel).forEach(el => countUp(el));
+  };
   const setTab = name => {
     $$('.tab', $('#dash')).forEach(x => x.classList.toggle('is-on', x.dataset.tab === name));
     $$('.dapp__ico', $('#dash')).forEach(x => x.classList.toggle('is-on', x.dataset.tab === name));
     $$('.panel', $('#dash')).forEach(p => p.classList.toggle('is-on', p.dataset.panel === name));
     $('#dappTitle').textContent = (TABS.find(t => t[0] === name) || TABS[0])[1];
+    const on = $('.panel.is-on', $('#dash'));
+    if (on) stagger(on);
   };
+  $$('.panel', $('#dash')).forEach(p =>
+    $$(':scope > .grid > *, :scope > .plan > *, :scope > .oppcard, :scope > .pnl', p)
+      .forEach((el, i) => el.style.setProperty('--i', i)));
   $('#dash').addEventListener('click', e => {
     const t = e.target.closest('[data-tab]'); if (!t) return;
     setTab(t.dataset.tab);
@@ -796,6 +809,12 @@ document.addEventListener('click', e => {
 document.addEventListener('submit', e => {
   if (e.target.matches('form[data-cta]')) { e.preventDefault(); openModal(e.target.dataset.cta); }
 });
+
+/* ─────────────────────────── REVEALS ─────────────────────────── */
+
+whenVisible($$('.sec__in, .sec__in--head, .bcta__in'), el => el.classList.add('is-in'));
+whenVisible($$('.stat, .studies li, .ctacard'), el => el.classList.add('is-in'));
+countAllIn(document);
 
 /* ─────────────────────────── STATIC ─────────────────────────── */
 

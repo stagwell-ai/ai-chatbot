@@ -8,7 +8,7 @@
 
 const { esc, hash, pick, PARTNERS, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
         DEFAULT_INDUSTRY, KNOWN, readWebsite, STATUS_LINES, MODELS, FOCUS, ROLES,
-        numbersFor, computeAnalysis } = window.SWAI;
+        numbersFor, computeAnalysis, countUp, whenVisible, countAllIn } = window.SWAI;
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -470,19 +470,19 @@ function buildBrief() {
     <p class="bsum">You asked me to lead on ${esc(S.focusLine)}. Here is what I found. ${esc(b)} holds a defensible position in ${cat} — brand equity sits at <b>${S.equity}</b> against a category mean of 58. The machines that now mediate your category do not know it: across eight language models ${esc(b)} is named in <b>${S.aiVis}%</b> of relevant answers where ${esc(c1)} is named in <b>${lead}%</b>.${S.challenge ? ` You called it “${esc(S.challenge.slice(0, 88))}” — this brief prices it.` : ''} The gap is a supply problem in earned citation, and it is the cheapest thing on this page to fix.</p>
     <div class="kpis">
       <div class="kpi"><span class="kpi__k">Brand equity · BERA</span>
-        <span class="kpi__v">${S.equity}<small>/100</small></span>
+        <span class="kpi__v"><b class="num">${S.equity}</b><small>/100</small></span>
         <span class="kpi__d up">▲ 4 pts vs last quarter</span>
         <span class="kpi__bar" style="--w:${S.equity}%"><i></i></span></div>
       <div class="kpi"><span class="kpi__k">AI visibility · GEOPulse</span>
-        <span class="kpi__v">${S.aiVis}<small>/100</small></span>
+        <span class="kpi__v"><b class="num">${S.aiVis}</b><small>/100</small></span>
         <span class="kpi__d down">▼ ${S.gap} pts behind ${esc(c1)}</span>
         <span class="kpi__bar" style="--w:${S.aiVis}%"><i></i></span></div>
       <div class="kpi"><span class="kpi__k">Share of voice · NewIntel</span>
-        <span class="kpi__v">${S.sov}<small>%</small></span>
+        <span class="kpi__v"><b class="num">${S.sov}</b><small>%</small></span>
         <span class="kpi__d flat">— flat, 3 quarters</span>
         <span class="kpi__bar" style="--w:${S.sov * 3}%"><i></i></span></div>
       <div class="kpi"><span class="kpi__k">Creator affinity · IMAI</span>
-        <span class="kpi__v">${S.creators}</span>
+        <span class="kpi__v"><b class="num">${S.creators}</b></span>
         <span class="kpi__d up">▲ unpaid, unmanaged</span>
         <span class="kpi__bar" style="--w:64%"><i></i></span></div>
     </div>
@@ -539,9 +539,9 @@ function buildBrief() {
         <div class="opp__b"><h3>${o.h}</h3><p>${o.p}</p>
           <div class="opp__engines">${o.e.map(e => `<span class="tagx">${e}</span>`).join('')}</div></div>
         <div class="opp__m">
-          <span class="opp__lift">${o.lift}<small>${o.l}</small></span>
-          <span class="meter"><b>Impact<span>${o.impact}</span></b><i style="--w:${o.impact}%"></i></span>
-          <span class="meter"><b>Effort<span>${o.effort}</span></b><i style="--w:${o.effort}%"></i></span>
+          <span class="opp__lift"><b class="num">${o.lift}</b><small>${o.l}</small></span>
+          <span class="meter"><b>Impact<span class="num">${o.impact}</span></b><i style="--w:${o.impact}%"></i></span>
+          <span class="meter"><b>Effort<span class="num">${o.effort}</span></b><i style="--w:${o.effort}%"></i></span>
         </div></article>`).join('')}
     </div>
   </section>
@@ -639,6 +639,7 @@ function buildBrief() {
   </footer>`;
 
   observeReveals();
+  countAllIn($('#brief'));
   wirePlayer();
   $('#briefScroll').scrollTop = 0;
 }
@@ -777,6 +778,9 @@ document.addEventListener('submit', e => {
 });
 
 /* ─────────────────────────── STATIC VIEWS ─────────────────────────── */
+
+whenVisible($$('.stat, .study'), el => el.classList.add('is-in'));
+countAllIn(document);
 
 $('#partners').innerHTML = PARTNERS.map(([k, n]) =>
   `<div class="partner" title="${n}"><img src="${partnerSrc(k)}" alt="${n}" loading="lazy"

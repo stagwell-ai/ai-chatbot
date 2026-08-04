@@ -362,7 +362,55 @@ function computeAnalysis(S) {
            trends: [...S.data.trends, NEWS_TREND] };
 }
 
-return { esc, hash, pick, PARTNERS, EXT, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
+/* ─────────────────────── MOTION ───────────────────────
+   Small, shared, and quiet. Numbers should arrive rather than appear. */
+
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Counts an element's number up to whatever it already says, keeping any
+   prefix or suffix intact: "43%", "1,662", "+23pts", "2.1×". */
+function countUp(el, duration = 1100) {
+  const raw = el.dataset.count || el.textContent.trim();
+  el.dataset.count = raw;
+  const m = raw.match(/^([^\d-]*)(-?[\d,]+(?:\.\d+)?)(.*)$/s);
+  if (!m) return;
+  const [, pre, numStr, post] = m;
+  const target = parseFloat(numStr.replace(/,/g, ''));
+  if (!isFinite(target)) return;
+  if (REDUCE) { el.textContent = raw; return; }
+
+  const decimals = (numStr.split('.')[1] || '').length;
+  const grouped = numStr.includes(',');
+  const fmt = v => {
+    const n = Number(v.toFixed(decimals));
+    return grouped ? n.toLocaleString('en-US', { minimumFractionDigits: decimals }) : n.toFixed(decimals);
+  };
+  const t0 = performance.now();
+  el.textContent = pre + fmt(0) + post;
+  const tick = now => {
+    const p = Math.min(1, (now - t0) / duration);
+    el.textContent = pre + fmt(target * (1 - Math.pow(1 - p, 3))) + post;
+    if (p < 1) requestAnimationFrame(tick); else el.textContent = raw;
+  };
+  requestAnimationFrame(tick);
+}
+
+/* Runs a callback the first time each element is seen. */
+function whenVisible(els, fn, opts = {}) {
+  const list = [...els];
+  if (!list.length) return;
+  if (REDUCE || !('IntersectionObserver' in window)) return list.forEach(fn);
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); fn(e.target); } });
+  }, { threshold: 0.25, ...opts });
+  list.forEach(el => io.observe(el));
+}
+
+/* Counts every .num inside a container as it comes into view. */
+const countAllIn = root =>
+  whenVisible((root || document).querySelectorAll('.num'), el => countUp(el));
+
+return { esc, hash, pick, countUp, whenVisible, countAllIn, REDUCE, PARTNERS, EXT, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
          DEFAULT_INDUSTRY, NEWS_TREND, KNOWN, ALIAS, SIGNALS, readWebsite, STATUS_LINES,
          MODELS, FOCUS, ROLES, numbersFor, computeAnalysis };
 })();
