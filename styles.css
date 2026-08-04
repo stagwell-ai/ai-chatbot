@@ -147,6 +147,9 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
 .rail__logo{width:150px;height:23px}
 .rail__ai{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--teal);padding-bottom:2px}
 .rail__close{display:none;color:var(--ink-3)}
+/* tap-outside-to-close, mobile only */
+.railscrim{display:none;position:fixed;inset:0;z-index:35;background:rgba(0,18,28,.34);
+  opacity:0;visibility:hidden;transition:opacity var(--d-3) var(--ease),visibility var(--d-3)}
 
 .rail__body{flex:1;min-height:0;overflow-y:auto;padding:0 14px;display:flex;flex-direction:column;gap:30px}
 .rail__group{display:flex;flex-direction:column;gap:1px}
@@ -738,7 +741,13 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
     border-right:0;border-left:1px solid var(--line);
     transition:transform var(--d-3) var(--ease);box-shadow:0 0 60px rgba(0,18,28,.16)}
   .app.rail-open .rail{transform:none}
-  .rail__close{display:grid;place-items:center;width:30px;height:30px}
+  /* the close sits exactly where the burger was, and matches it */
+  .rail__close{display:grid;place-items:center;position:absolute;top:13px;right:18px;
+    width:38px;height:38px;background:var(--navy);color:#fff;border-radius:var(--r);z-index:2}
+  .rail__close:active{transform:translateY(1px)}
+  .rail__head{padding:28px 74px 26px 24px}
+  .railscrim{display:block}
+  .app.rail-open .railscrim{opacity:1;visibility:visible}
 
   .partners{grid-template-columns:repeat(2,1fr);grid-template-rows:none;height:auto;min-height:100%}
   .view--partners{overflow:auto}

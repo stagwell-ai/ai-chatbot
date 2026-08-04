@@ -346,6 +346,7 @@ $$('.scroll, .view--partners').forEach(trackTopbar);
 $$('[data-nav]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); show(b.dataset.nav); }));
 $('#railOpen').addEventListener('click', () => app.classList.add('rail-open'));
 $('#railClose').addEventListener('click', () => app.classList.remove('rail-open'));
+$('#railScrim').addEventListener('click', () => app.classList.remove('rail-open'));
 
 /* ── The composer physically lives inside the centred hero group, then flies
       to the foot of the page when the conversation starts. No measuring at
