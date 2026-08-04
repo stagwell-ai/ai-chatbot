@@ -32,7 +32,7 @@
   --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
 
-  --t-display:clamp(1.85rem,4.2vw,3.375rem);
+  --t-display:clamp(2.5rem,4.2vw,3.375rem);
   --t-h1:clamp(2rem,3.4vw,2.875rem);
   --t-h2:clamp(1.5rem,2.3vw,2rem);
   --t-lede:clamp(1rem,1.2vw,1.1875rem);
@@ -190,6 +190,9 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
   will-change:transform}
 .topbar > *{pointer-events:auto}
 .topbar__menu{display:none;color:var(--ink-2)}
+.topbar__brand{display:none;align-items:flex-end;gap:7px;text-decoration:none}
+.topbar__brand svg{width:118px;height:18px}
+.topbar__brand span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--teal);padding-bottom:1px}
 .topbar__crumb{flex:1;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.12em;
   text-transform:uppercase;color:var(--ink-4);transition:opacity var(--d-2) var(--ease)}
 body[data-state="partners"] .topbar__crumb{opacity:0}
@@ -718,15 +721,22 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 @media (max-width:820px){
   .app{display:block;height:100dvh}
   .stage{height:100dvh}
-  .rail{position:fixed;inset:0 auto 0 0;width:var(--rail-w);transform:translateX(-100%);
+
+  /* logo left, menu right, and the drawer comes in from the right */
+  .topbar{padding:0 18px}
+  .topbar__brand{display:flex;order:0}
+  .topbar__crumb{display:none}
+  .restart{order:1;margin-left:auto;padding:0 11px}
+  .restart span{display:none}   /* icon only — the label wrapped to two lines */
+  .topbar__menu{display:grid;place-items:center;width:34px;height:34px;order:2}
+  .rail{position:fixed;inset:0 0 0 auto;width:min(var(--rail-w),86vw);transform:translateX(100%);
+    border-right:0;border-left:1px solid var(--line);
     transition:transform var(--d-3) var(--ease);box-shadow:0 0 60px rgba(0,18,28,.16)}
   .app.rail-open .rail{transform:none}
   .rail__close{display:grid;place-items:center;width:30px;height:30px}
-  .topbar__menu{display:grid;place-items:center;width:32px;height:32px}
-  .restart span{display:none}
-  .restart{padding:0 11px}
+
+  .partners{grid-template-columns:repeat(2,1fr);grid-template-rows:none;height:auto;min-height:100%}
   .view--partners{overflow:auto}
-  .partners{height:auto;min-height:100%;grid-template-columns:repeat(2,1fr);grid-template-rows:none}
   .partner{min-height:104px}
   .view--workspace .scroll{padding:78px 20px 0}
   /* the percentage mask reads as a wireframe on a tall narrow screen — grain is enough */
@@ -734,6 +744,33 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   .dock{padding:0 20px 20px}
   .bubble{max-width:88%}
   .run{padding:72px 22px 24px}
+
+  /* section heads stack: the tag becomes an eyebrow instead of a broken tail */
+  .bhead{flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:30px}
+  .bhead i{display:none}
+  .bhead .tag{order:-1}
+
+  /* badges lose the pill — the stroke was breaking across two lines */
+  .bmast__top{gap:6px;flex-direction:column;align-items:flex-start}
+  .bmast__badge{border:0;padding:0;color:var(--ink-3)}
+  .bmast__badge .pulse{margin-right:2px}
+
+  /* buttons go full width rather than squeezing and clipping their labels */
+  .bmast__acts,.bcta__acts{flex-direction:column;align-items:stretch;width:100%}
+  .bmast__acts .btn,.bcta__acts .btn{width:100%;justify-content:center}
+
+  /* the competitor table restacks as cards — no page-wide horizontal scroll */
+  .tbl thead{display:none}
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tbl tr{border:1px solid var(--line);border-radius:var(--r-lg);padding:6px 18px;margin-bottom:12px}
+  .tbl tr.you{background:rgba(0,156,189,.05)}
+  .tbl td{border:0;padding:11px 0;display:flex;justify-content:space-between;align-items:baseline;
+    gap:20px;text-align:right;box-shadow:inset 0 -1px 0 var(--line)}
+  .tbl tr td:last-child{box-shadow:none}
+  .tbl td::before{content:attr(data-label);flex:none;text-align:left;
+    font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-3)}
+
   .visrow{grid-template-columns:96px 1fr;gap:14px}
   .visrow__v{grid-column:2;text-align:left}
   .callback{flex-direction:column;align-items:flex-start}
@@ -744,8 +781,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 }
 @media (max-width:520px){
   .kpis,.cards,.horizons,.statrow,.bcta__grid,.site__rows{grid-template-columns:1fr}
-  .bmast__acts{width:100%}
-  .bmast__acts .btn{flex:1;justify-content:center}
+
 }
 
 @media (prefers-reduced-motion:reduce){

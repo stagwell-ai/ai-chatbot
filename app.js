@@ -335,6 +335,7 @@ function trackTopbar(el) {
   el.dataset.topbarBound = '1';
   el.addEventListener('scroll', () => {
     if (!el.closest('.view').classList.contains('is-shown')) return;
+    if (innerWidth <= 820) { topbar.style.transform = ''; topbar.style.opacity = ''; return; }
     const y = Math.min(el.scrollTop, 64);
     topbar.style.transform = `translateY(${-y}px)`;
     topbar.style.opacity = String(1 - y / 64);
@@ -796,20 +797,22 @@ function buildBrief() {
     <table class="tbl">
       <thead><tr><th>Brand</th><th>AI visibility</th><th>Equity trend</th><th>Creator momentum</th><th>Last move — this week</th></tr></thead>
       <tbody>
-        <tr class="you"><td class="nm">${esc(b)}</td>
-          <td><span class="mini" style="--w:${S.aiVis}%"><i></i></span> ${S.aiVis}</td>
-          <td><span class="pill pill--up">▲ 4</span></td><td>Unmanaged</td><td>—</td></tr>
+        <tr class="you"><td class="nm" data-label="Brand">${esc(b)}</td>
+          <td data-label="AI visibility"><span class="mini" style="--w:${S.aiVis}%"><i></i></span> ${S.aiVis}</td>
+          <td data-label="Equity trend"><span class="pill pill--up">▲ 4</span></td>
+          <td data-label="Creator momentum">Unmanaged</td>
+          <td data-label="Last move">—</td></tr>
         ${S.comps.map((c, i) => {
           const v = Math.max(20, Math.min(94, lead - i * pick(S.seed >> (i + 2), 4, 13)));
           const up = i !== 1;
           const moves = ['Published category research picked up by three wire services.',
                          'Signed 18 creators to an exclusive always-on programme.',
                          'Shifted spend into news inventory at a 40% cost advantage.'];
-          return `<tr><td class="nm">${esc(c)}</td>
-            <td><span class="mini" style="--w:${v}%"><i></i></span> ${v}</td>
-            <td><span class="pill pill--${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${pick(S.seed >> (i + 6), 2, 11)}</span></td>
-            <td>${['Accelerating','Steady','Accelerating'][i] || 'Steady'}</td>
-            <td>${moves[i] || moves[0]}</td></tr>`;
+          return `<tr><td class="nm" data-label="Brand">${esc(c)}</td>
+            <td data-label="AI visibility"><span class="mini" style="--w:${v}%"><i></i></span> ${v}</td>
+            <td data-label="Equity trend"><span class="pill pill--${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${pick(S.seed >> (i + 6), 2, 11)}</span></td>
+            <td data-label="Creator momentum">${['Accelerating','Steady','Accelerating'][i] || 'Steady'}</td>
+            <td data-label="Last move">${moves[i] || moves[0]}</td></tr>`;
         }).join('')}
       </tbody>
     </table>
