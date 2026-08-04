@@ -639,20 +639,33 @@ document.addEventListener('click', e => { if (e.target.closest('[data-new]')) re
 
 /* ─────────────────────────── NAV / MODAL ─────────────────────────── */
 
-/* The header rides with you: away on the way down, back on the way up. */
+/* The header rides with you: away on the way down, back the moment you head up.
+   The distance is accumulated per direction — comparing against the last frame
+   alone means a slow trackpad scroll never clears the threshold and the bar
+   only ever returns at the top of the page. */
 (() => {
   const nav = $('#nav');
-  let lastY = scrollY, ticking = false;
+  const HIDE_AFTER = 64;   // px of continuous downward travel
+  const SHOW_AFTER = 18;   // px of upward travel — deliberately eager
+  let lastY = scrollY, acc = 0, ticking = false;
+
   const onScroll = () => {
+    ticking = false;
     const y = Math.max(0, scrollY);
+    const d = y - lastY;
+    lastY = y;
     nav.classList.toggle('is-stuck', y > 8);
-    if (!document.body.classList.contains('nav-open')) {
-      if (y < 90) nav.classList.remove('is-up');
-      else if (y > lastY + 5) nav.classList.add('is-up');
-      else if (y < lastY - 5) nav.classList.remove('is-up');
-    }
-    lastY = y; ticking = false;
+
+    if (document.body.classList.contains('nav-open')) return;
+    if (y < 90) { nav.classList.remove('is-up'); acc = 0; return; }
+
+    if ((d > 0) !== (acc > 0)) acc = 0;   // direction changed — start counting again
+    acc += d;
+
+    if (acc > HIDE_AFTER)  { nav.classList.add('is-up');    acc = 0; }
+    if (acc < -SHOW_AFTER) { nav.classList.remove('is-up'); acc = 0; }
   };
+
   addEventListener('scroll', () => {
     if (ticking) return;
     ticking = true; requestAnimationFrame(onScroll);

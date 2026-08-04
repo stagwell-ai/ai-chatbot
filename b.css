@@ -104,7 +104,9 @@ body.vB .opt:hover{border-color:var(--teal);color:var(--navy);background:rgba(0,
 .chat__eg{color:var(--ink-2);border-bottom:1px solid var(--line-2);transition:color var(--d-1)}
 .chat__eg:hover{color:var(--ink);border-color:var(--ink)}
 
-body.vB .prompt{padding:11px;background:var(--surface)}
+/* the form inherits a fixed column width from the shared sheet — inside the
+   panel it must fill it, or the side gap reads as a mistake against the top */
+body.vB .prompt{width:100%;padding:12px;background:var(--surface)}
 body.vB .prompt__field{height:54px;padding:0 6px 0 18px;border-radius:var(--r-full);
   border-color:var(--line);background:var(--surface-2);box-shadow:none}
 body.vB .prompt__field:focus-within{background:var(--surface);border-color:var(--line-2)}
