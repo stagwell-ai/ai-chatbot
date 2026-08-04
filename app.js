@@ -595,6 +595,7 @@ async function submit(raw) {
     $('#railSession').hidden = false;
     $('#railThreadLabel').textContent = S.brand;
     restartBtn.classList.add('is-on');
+    setAnalysisLabel(true);
     undockInput();
     thread.hidden = false;
   }
@@ -1001,12 +1002,20 @@ async function restart() {
   promptInput.value = ''; promptInput.placeholder = SCRIPT[0].placeholder;
   prompt.classList.remove('is-ready');
 
+  setAnalysisLabel(false);
   wsView.classList.add('is-welcome');
   seatComposer();
   requestAnimationFrame(() => promptInput.focus());
 }
 restartBtn.addEventListener('click', restart);
 $('#newAnalysis').addEventListener('click', restart);
+
+/* "Start analysis" until one exists in the session, "Start new analysis" after. */
+function setAnalysisLabel(hasOne) {
+  const label = hasOne ? 'Start new analysis' : 'Start analysis';
+  $('#newAnalysisLabel').textContent = label;
+  $('#restartLabel').textContent = label;
+}
 
 /* ─────────────────────────── MODAL ─────────────────────────── */
 
@@ -1108,6 +1117,7 @@ function jumpToBrief(params) {
   $('#railThreadLabel').textContent = S.brand;
   $('#railBriefLabel').textContent = `Executive Brief · ${S.brand}`;
   restartBtn.classList.add('is-on');
+  setAnalysisLabel(true);
   wsView.classList.remove('is-welcome');
   S.briefReady = true;
   show('brief');
