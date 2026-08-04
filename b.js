@@ -69,7 +69,7 @@ function typeHTML(el, html, speed = 14) {
     let ni = 0, ci = 0, stopped = false;
     const finish = () => {
       stopped = true; nodes.forEach(o => (o.node.nodeValue = o.full));
-      caret.remove(); if (skipType === finish) skipType = null; resolve();
+      caret.remove(); pin(); if (skipType === finish) skipType = null; resolve();
     };
     skipType = finish;
     const tick = () => {
@@ -80,6 +80,7 @@ function typeHTML(el, html, speed = 14) {
         if (ci >= o.full.length) { ni++; ci = 0; continue; }
         const ch = o.full[ci];
         o.node.nodeValue += ch; ci++;
+        pin();
         if ('.,—:?'.includes(ch)) { setTimeout(tick, 120); return; }
       }
       if (ni >= nodes.length) return finish();
@@ -91,8 +92,15 @@ function typeHTML(el, html, speed = 14) {
 
 /* ─────────────────────────── CONVERSATION ─────────────────────────── */
 
-const scrollThread = () => requestAnimationFrame(() =>
-  thread.scrollTo({ top: thread.scrollHeight, behavior: REDUCED ? 'auto' : 'smooth' }));
+/* Stay pinned to the newest line while it types — waiting for the whole
+   message and then jumping reads as though the thing has hung. Released the
+   moment the reader scrolls up themselves. */
+let stick = true;
+thread.addEventListener('scroll', () => {
+  stick = thread.scrollHeight - thread.scrollTop - thread.clientHeight < 48;
+}, { passive: true });
+const pin = () => { if (stick) thread.scrollTop = thread.scrollHeight; };
+const scrollThread = () => { stick = true; requestAnimationFrame(pin); };
 
 function aiTurn() {
   const t = document.createElement('div');

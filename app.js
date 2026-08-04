@@ -46,7 +46,7 @@ function typeHTML(el, html, speed = 14) {
     let ni = 0, ci = 0, stopped = false;
     const finish = () => {
       stopped = true; nodes.forEach(o => (o.node.nodeValue = o.full));
-      caret.remove(); if (skipType === finish) skipType = null; resolve();
+      caret.remove(); pin(); if (skipType === finish) skipType = null; resolve();
     };
     skipType = finish;
     const tick = () => {
@@ -57,6 +57,7 @@ function typeHTML(el, html, speed = 14) {
         if (ci >= o.full.length) { ni++; ci = 0; continue; }
         const ch = o.full[ci];
         o.node.nodeValue += ch; ci++;
+        pin();
         if ('.,—:?'.includes(ch)) { setTimeout(tick, 120); return; }
       }
       if (ni >= nodes.length) return finish();
@@ -136,10 +137,14 @@ function undockInput() {
 
 /* ─────────────────────────── CONVERSATION ─────────────────────────── */
 
-const scrollDown = () => {
+/* The thread follows the text as it is written, not once it is finished. */
+let stick = true;
+$('#wsScroll').addEventListener('scroll', () => {
   const sc = $('#wsScroll');
-  requestAnimationFrame(() => sc.scrollTo({ top: sc.scrollHeight, behavior: REDUCED ? 'auto' : 'smooth' }));
-};
+  stick = sc.scrollHeight - sc.scrollTop - sc.clientHeight < 60;
+}, { passive: true });
+const pin = () => { const sc = $('#wsScroll'); if (stick) sc.scrollTop = sc.scrollHeight; };
+const scrollDown = () => { stick = true; requestAnimationFrame(pin); };
 
 function aiTurn() {
   const t = document.createElement('div');
