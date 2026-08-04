@@ -734,6 +734,12 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   display:grid;place-items:center}
 
 
+/* headlines arrive out of a blur, a word at a time */
+.wd{display:inline-block;opacity:0;filter:blur(16px);transform:translateY(14px);
+  animation:wordIn 900ms var(--ease) forwards}
+@keyframes wordIn{to{opacity:1;filter:blur(0);transform:none}}
+@media (prefers-reduced-motion:reduce){ .wd{opacity:1;filter:none;transform:none;animation:none} }
+
 /* ═══════════════════════════════════════════════════════════
    MICRO-INTERACTIONS
    Nothing here changes the design; it only decides how it arrives.

@@ -8,7 +8,7 @@
 
 const { esc, hash, pick, PARTNERS, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
         DEFAULT_INDUSTRY, KNOWN, readWebsite, STATUS_LINES, MODELS, FOCUS, ROLES,
-        numbersFor, computeAnalysis, countUp, whenVisible, countAllIn } = window.SWAI;
+        numbersFor, computeAnalysis, countUp, whenVisible, countAllIn, blurWords } = window.SWAI;
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -83,6 +83,12 @@ function show(view) {
   $$('.rail__item').forEach(b => b.classList.toggle('is-active', !!b.dataset.nav && b.dataset.nav === view));
   if (view === 'workspace' && S.step > 0) $('#railThread').classList.add('is-active');
   crumb.innerHTML = `<span>${CRUMB[view] || 'Workspace'}</span>`;
+  /* A hidden view still "intersects", so its figures would count where nobody
+     can see them. Replay both when the section is actually opened. */
+  const shown = $(`[data-view="${view}"]`);
+  const t = $('.doc__title', shown || document.body);
+  if (t) blurWords(t, 60);
+  if (shown) $$('.num', shown).forEach((el, i) => setTimeout(() => countUp(el), 120 + i * 90));
   topbar.style.transform = ''; topbar.style.opacity = '';   // reset when the view changes
   app.classList.remove('rail-open');
   /* the rail stays put through the loader so nothing reflows while we wait;
@@ -640,6 +646,7 @@ function buildBrief() {
 
   observeReveals();
   countAllIn($('#brief'));
+  blurWords($('.bmast h1'), 120);
   wirePlayer();
   $('#briefScroll').scrollTop = 0;
 }
@@ -713,6 +720,7 @@ async function restart() {
   setAnalysisLabel(false);
   wsView.classList.add('is-welcome');
   seatComposer();
+  blurWords($('#heroTitle'), 80);
   requestAnimationFrame(() => promptInput.focus());
 }
 restartBtn.addEventListener('click', restart);
@@ -831,6 +839,7 @@ function jumpToBrief(params) {
   if (params.has('brief')) { jumpToBrief(params); return; }
   show('workspace');
   seatComposer();
+  blurWords($('#heroTitle'), 140);
   requestAnimationFrame(() => promptInput.focus());
   if (params.has('view')) show(params.get('view'));
 })();

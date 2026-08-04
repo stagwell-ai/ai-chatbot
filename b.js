@@ -9,7 +9,7 @@
 
 const { esc, pick, PARTNERS, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES, DEFAULT_INDUSTRY,
         readWebsite, STATUS_LINES, FOCUS, ROLES, numbersFor, computeAnalysis,
-        countUp, whenVisible, countAllIn } = window.SWAI;
+        countUp, whenVisible, countAllIn, blurWords } = window.SWAI;
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -29,28 +29,6 @@ const S = {
   focus:'Growth opportunities', focusLine:'where the next points of growth actually sit', focusLead:1,
   equity:62, aiVis:41, sov:18, gap:40, creators:'1,204', seed:1,
 };
-
-/* Split a headline into words so it can arrive out of a blur, not just fade. */
-function blurWords(el, delay = 0) {
-  const html = el.innerHTML;
-  const tmp = document.createElement('div'); tmp.innerHTML = html;
-  let i = 0;
-  const walk = node => [...node.childNodes].forEach(n => {
-    if (n.nodeType === 3) {
-      const frag = document.createDocumentFragment();
-      n.nodeValue.split(/(\s+)/).forEach(w => {
-        if (!w.trim()) return frag.appendChild(document.createTextNode(w));
-        const sp = document.createElement('span');
-        sp.className = 'wd'; sp.textContent = w;
-        sp.style.animationDelay = `${delay + i++ * 62}ms`;
-        frag.appendChild(sp);
-      });
-      n.replaceWith(frag);
-    } else walk(n);
-  });
-  walk(tmp);
-  el.innerHTML = tmp.innerHTML;
-}
 
 const thread = $('#thread'), promptForm = $('#promptForm'), promptInput = $('#promptInput');
 const prompt = $('.prompt'), hero = $('#hero2');

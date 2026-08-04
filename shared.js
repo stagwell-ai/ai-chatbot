@@ -395,6 +395,31 @@ function countUp(el, duration = 1100) {
   requestAnimationFrame(tick);
 }
 
+/* Splits a headline into words so it can arrive out of a blur rather than
+   simply appearing. Markup inside the heading is preserved. */
+function blurWords(el, delay = 0) {
+  if (REDUCE) return;
+  const tmp = document.createElement('div');
+  tmp.innerHTML = el.dataset.words || el.innerHTML;
+  el.dataset.words = tmp.innerHTML;
+  let i = 0;
+  const walk = node => [...node.childNodes].forEach(n => {
+    if (n.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      n.nodeValue.split(/(\s+)/).forEach(w => {
+        if (!w.trim()) return frag.appendChild(document.createTextNode(w));
+        const sp = document.createElement('span');
+        sp.className = 'wd'; sp.textContent = w;
+        sp.style.animationDelay = `${delay + i++ * 62}ms`;
+        frag.appendChild(sp);
+      });
+      n.replaceWith(frag);
+    } else walk(n);
+  });
+  walk(tmp);
+  el.innerHTML = tmp.innerHTML;
+}
+
 /* Runs a callback the first time each element is seen. */
 function whenVisible(els, fn, opts = {}) {
   const list = [...els];
@@ -410,7 +435,7 @@ function whenVisible(els, fn, opts = {}) {
 const countAllIn = root =>
   whenVisible((root || document).querySelectorAll('.num'), el => countUp(el));
 
-return { esc, hash, pick, countUp, whenVisible, countAllIn, REDUCE, PARTNERS, EXT, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
+return { esc, hash, pick, countUp, whenVisible, countAllIn, blurWords, REDUCE, PARTNERS, EXT, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
          DEFAULT_INDUSTRY, NEWS_TREND, KNOWN, ALIAS, SIGNALS, readWebsite, STATUS_LINES,
          MODELS, FOCUS, ROLES, numbersFor, computeAnalysis };
 })();
