@@ -145,6 +145,7 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
 .rail__head{display:flex;align-items:center;justify-content:space-between;padding:28px 24px 26px}
 .rail__brand{display:flex;align-items:flex-end;gap:9px;text-decoration:none}
 .rail__logo{width:150px;height:23px}
+.rail__mark{display:none}
 .rail__ai{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--teal);padding-bottom:2px}
 .rail__close{display:none;color:var(--ink-3)}
 /* tap-outside-to-close, mobile only */
@@ -741,16 +742,23 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
     border-right:0;border-left:1px solid var(--line);
     transition:transform var(--d-3) var(--ease);box-shadow:0 0 60px rgba(0,18,28,.16)}
   .app.rail-open .rail{transform:none}
+  /* just the mark in the drawer — the wordmark is already on the page behind it */
+  .rail__brand{width:38px;height:38px;align-items:center;justify-content:center}
+  .rail__logo,.rail__ai{display:none}
+  .rail__mark{display:block;width:28px;height:28px}
+  /* mark and close land on the same line as the header they replace */
+  .rail__head{align-items:center;padding:13px 74px 26px 18px}
+
   /* the close sits exactly where the burger was, and matches it */
   .rail__close{display:grid;place-items:center;position:absolute;top:13px;right:18px;
     width:38px;height:38px;background:var(--navy);color:#fff;border-radius:var(--r);z-index:2}
   .rail__close:active{transform:translateY(1px)}
-  .rail__head{padding:28px 74px 26px 24px}
   .railscrim{display:block}
   .app.rail-open .railscrim{opacity:1;visibility:visible}
 
-  .partners{grid-template-columns:repeat(2,1fr);grid-template-rows:none;height:auto;min-height:100%}
-  .view--partners{overflow:auto}
+  /* clears the fixed header — the first row of logos was sitting under it */
+  .view--partners{overflow:auto;padding-top:64px}
+  .partners{grid-template-columns:repeat(2,1fr);grid-template-rows:none;height:auto;min-height:0}
   .partner{min-height:104px}
   .view--workspace .scroll{padding:78px 20px 0}
   /* the percentage mask reads as a wireframe on a tall narrow screen — grain is enough */
