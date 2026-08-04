@@ -401,8 +401,9 @@ function buildDashboard() {
   const TABS = [
     ['overview','Overview','',                'home'],
     ['visibility','AI visibility','8',        'chart'],
-    ['competitors','Competitors',String(S.comps.length),'users'],
+    ['competitors','Competitors',String(S.comps.length),'chat'],
     ['opportunities','Opportunities','3',     'grid'],
+    ['solutions','Solutions','6',             'users'],
     ['market','Market','3',                   'doc'],
     ['plan','Plan','90d',                     'cal'],
     ['research','Research','9',               'chat'],
@@ -471,31 +472,20 @@ function buildDashboard() {
               ${stat('Coverage, 30d', pick(S.seed >> 3, 88, 190), '', `+${pick(S.seed >> 5, 6, 22)}`, 'up', S.seed >> 4)}
               ${stat('Share of voice', S.sov + '%', '', '— flat', 'flat', S.seed >> 6)}
 
-              <div class="pnl g4">
-                <div class="pnl__h"><h4>Share of voice</h4><span class="pnl__k">30 days</span></div>
-                <div class="sov">
-                  ${sov.map(r => `<div class="sovrow${r.you ? ' is-you' : ''}">
-                    <span class="sovrow__n">${esc(r.n)}</span>
-                    <span class="sovrow__t"><i style="--w:${Math.round(r.v / top * 100)}%"></i></span>
-                    <span class="sovrow__v">${r.v}</span></div>`).join('')}
-                </div>
-              </div>
-
-              <div class="pnl g8">
+              <div class="pnl g7">
                 <div class="pnl__h"><h4>Coverage over time</h4>
                   <span class="legend" style="margin:0"><span><i></i>You</span><span><i class="them" style="background:var(--amber)"></i>${esc(A.c1)}</span></span></div>
                 <div class="chart">${chartSVG(S.seed)}</div>
                 <div class="chart__x">${months.map(m => `<span>${m}</span>`).join('')}</div>
               </div>
 
-              <div class="pnl g12">
-                <div class="pnl__h"><h4>Recent mentions</h4><span class="pnl__k">NewIntel · live</span></div>
+              <div class="pnl g5">
+                <div class="pnl__h"><h4>Recent mentions</h4><span class="pnl__k">live</span></div>
                 <div class="feed">
-                  ${[['ChatGPT', `<b>${esc(A.c1)}</b> cited ahead of you in an answer on ${A.cat}`, '2m ago'],
-                     ['Perplexity', `<b>${esc(A.b)}</b> referenced for “best ${A.cat} brands”`, '18m ago'],
-                     ['NewIntel', `<b>${esc(A.competitors[0]?.name || A.c1)}</b> — ${(A.competitors[0]?.move || '').replace(/\.$/, '')}`, '1h ago'],
-                     ['Gemini', `<b>${esc(A.c2)}</b> quoted on category trends`, '3h ago'],
-                     ['BERA', `Equity read refreshed — <b>${S.equity}/100</b>`, '6h ago']]
+                  ${[['ChatGPT', `<b>${esc(A.c1)}</b> cited ahead of you`, '2m'],
+                     ['Perplexity', `<b>${esc(A.b)}</b> referenced for “best ${A.cat}”`, '18m'],
+                     ['NewIntel', `<b>${esc(A.competitors[0]?.name || A.c1)}</b> moved on creators`, '1h'],
+                     ['BERA', `Equity refreshed — <b>${S.equity}/100</b>`, '6h']]
                     .map(f => `<div class="feedrow"><span class="chip">${f[0]}</span>
                       <span class="feedrow__t">${f[1]}</span><span class="feedrow__m">${f[2]}</span></div>`).join('')}
                 </div>
@@ -560,7 +550,11 @@ function buildDashboard() {
                 <span class="meter"><b>Impact<span>${o.impact}</span></b><i style="--w:${o.impact}%"></i></span>
                 <span class="meter"><b>Effort<span>${o.effort}</span></b><i style="--w:${o.effort}%"></i></span>
               </div></article>`).join('')}
-            <div class="grid" style="margin-top:14px">
+          </div>
+
+          <!-- SOLUTIONS -->
+          <div class="panel" data-panel="solutions">
+            <div class="grid">
               ${A.solutions.map(s2 => `<div class="pnl g4">
                 <span class="pnl__k" style="color:var(--teal)">${s2[0]}</span>
                 <h4 style="font-size:1rem;font-weight:600;letter-spacing:-.012em">${s2[1]}</h4>

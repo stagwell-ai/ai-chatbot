@@ -197,11 +197,10 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 .tab.is-on::after{transform:scaleX(1)}
 .tab em{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--ink-4);margin-left:7px}
 
-/* No inner scroll. The frame grows to whatever the tab needs — a scroll
-   region inside a page just fights the page. */
-.panels{padding:16px;background:var(--surface-2);flex:1;
-  min-height:clamp(420px,52vh,600px);
-  transition:min-height var(--d-3) var(--ease)}
+/* One height, always. The frame is a fixed window onto each tab: no inner
+   scroll, no growing to fit. Every tab is composed to sit inside it. */
+.panels{padding:16px;background:var(--surface-2);flex:0 0 auto;
+  height:clamp(500px,62vh,640px);overflow:hidden}
 .panel{display:none;animation:panelIn 460ms var(--ease)}
 .panel.is-on{display:block}
 @keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -292,8 +291,8 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 
 /* opportunities */
 .oppcard{display:grid;grid-template-columns:auto 1fr 168px;gap:18px;align-items:start;
-  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-.oppcard + .oppcard{margin-top:12px}
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+.oppcard + .oppcard{margin-top:10px}
 .oppcard__r{font-family:var(--serif);font-size:1.75rem;color:var(--ink-4);line-height:1}
 .oppcard h4{font-size:1.0625rem;font-weight:600;letter-spacing:-.014em}
 .oppcard p{font-size:var(--t-sm);color:var(--ink-2);line-height:1.58;margin-top:7px}
@@ -311,7 +310,7 @@ body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px sol
 .plancol li{font-size:var(--t-sm);color:var(--ink-2);display:flex;gap:10px;line-height:1.5;margin-bottom:11px}
 .plancol li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--amber);flex:none;margin-top:7px}
 
-body.vB .study{padding:16px 0}
+body.vB .study{padding:11px 0}
 body.vB .study__t{font-size:var(--t-body)}
 
 /* ═══════════════════════════════════════════════════════════
@@ -410,7 +409,7 @@ body.nav-open .ab{opacity:0;pointer-events:none;transition:opacity var(--d-2)}
 
   /* on a phone the dashboard flows with the page — a fixed inner scroll
      traps the gesture and the page stops moving under your thumb */
-  .panels{min-height:0;padding:14px}
+  .panels{height:auto;overflow:visible;padding:14px}
   .dash{padding-inline:14px}
   .dapp{border-radius:18px}
 
