@@ -746,20 +746,19 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
    ═══════════════════════════════════════════════════════════ */
 .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
 
-/* things that rise into place, staggered by their index */
-.stat,.study,.ctacard,.dstat,.pnl,.oppcard{
-  opacity:0;transform:translateY(12px);
+/* Only elements the script has registered are hidden to begin with, so
+   anything rendered later and missed by an observer still shows. */
+.will-reveal{opacity:0;transform:translateY(12px);
   transition:opacity 620ms var(--ease),transform 620ms var(--ease);
   transition-delay:calc(var(--i,0) * 55ms)}
-.stat.is-in,.study.is-in,.ctacard.is-in,.dstat.is-in,.pnl.is-in,.oppcard.is-in{
-  opacity:1;transform:none}
+.will-reveal.is-in{opacity:1;transform:none}
 
 /* the live dot in a stat row keeps a slow pulse so the page never reads frozen */
 @media (prefers-reduced-motion:no-preference){
   .stat b,.dstat__v{will-change:contents}
 }
 @media (prefers-reduced-motion:reduce){
-  .stat,.study,.ctacard,.dstat,.pnl,.oppcard{opacity:1;transform:none;transition:none}
+  .will-reveal{opacity:1;transform:none;transition:none}
 }
 
 /* ═══════════════════════════════════════════════════════════

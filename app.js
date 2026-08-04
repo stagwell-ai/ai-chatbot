@@ -8,7 +8,7 @@
 
 const { esc, hash, pick, PARTNERS, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
         DEFAULT_INDUSTRY, KNOWN, readWebsite, STATUS_LINES, MODELS, FOCUS, ROLES,
-        numbersFor, computeAnalysis, countUp, whenVisible, countAllIn, blurWords } = window.SWAI;
+        numbersFor, computeAnalysis, countUp, whenVisible, countAllIn, blurWords, reveal } = window.SWAI;
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -645,6 +645,7 @@ function buildBrief() {
   </footer>`;
 
   observeReveals();
+  reveal($$('.study, .kpi, .card, .opp, .horizon, .quote', $('#brief')), $('#briefScroll'));
   countAllIn($('#brief'));
   blurWords($('.bmast h1'), 120);
   wirePlayer();
@@ -795,7 +796,7 @@ $('#studies').innerHTML = STUDIES.map(s =>
 
 /* Wired after the lists render — observing an empty selector would leave
    those rows at opacity 0 permanently. */
-whenVisible($$('.stat, .study'), el => el.classList.add('is-in'));
+reveal($$('.doc .stat, .doc .study'));
 countAllIn(document);
 
 /* Placeholder breathes through a few inspiring examples — the only hint on screen. */

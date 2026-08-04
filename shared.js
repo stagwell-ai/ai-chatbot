@@ -431,11 +431,31 @@ function whenVisible(els, fn, opts = {}) {
   list.forEach(el => io.observe(el));
 }
 
+/* Registers elements to rise into view. Critically, the hiding is applied HERE
+   rather than in the stylesheet: anything that is never registered simply
+   renders as normal. A blanket opacity:0 in CSS means any element rendered
+   later by script — and missed by an observer — disappears permanently. */
+function reveal(els, root) {
+  const list = [...els];
+  if (!list.length) return;
+  if (REDUCE || !('IntersectionObserver' in window)) {
+    return list.forEach(el => el.classList.add('is-in'));
+  }
+  list.forEach((el, i) => {
+    el.classList.add('will-reveal');
+    if (!el.style.getPropertyValue('--i')) el.style.setProperty('--i', i % 8);
+  });
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); e.target.classList.add('is-in'); } });
+  }, { threshold: 0.15, root: root || null });
+  list.forEach(el => io.observe(el));
+}
+
 /* Counts every .num inside a container as it comes into view. */
 const countAllIn = root =>
   whenVisible((root || document).querySelectorAll('.num'), el => countUp(el));
 
-return { esc, hash, pick, countUp, whenVisible, countAllIn, blurWords, REDUCE, PARTNERS, EXT, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
+return { esc, hash, pick, countUp, whenVisible, countAllIn, blurWords, reveal, REDUCE, PARTNERS, EXT, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES,
          DEFAULT_INDUSTRY, NEWS_TREND, KNOWN, ALIAS, SIGNALS, readWebsite, STATUS_LINES,
          MODELS, FOCUS, ROLES, numbersFor, computeAnalysis };
 })();

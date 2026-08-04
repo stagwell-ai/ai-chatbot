@@ -9,7 +9,7 @@
 
 const { esc, pick, PARTNERS, partnerSrc, LOGO_SCALE, STUDIES, INDUSTRIES, DEFAULT_INDUSTRY,
         readWebsite, STATUS_LINES, FOCUS, ROLES, numbersFor, computeAnalysis,
-        countUp, whenVisible, countAllIn, blurWords } = window.SWAI;
+        countUp, whenVisible, countAllIn, blurWords, reveal } = window.SWAI;
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -589,7 +589,6 @@ function buildDashboard() {
   </div>`;
 
   $('#dash').hidden = false;
-  whenVisible($$('.dstat, .pnl, .oppcard', $('#dash')), el => el.classList.add('is-in'));
   countAllIn($('#dash'));
 
   const stagger = panel => {
@@ -802,7 +801,7 @@ $('#studies').innerHTML = STUDIES.map(s =>
    Wired only once the lists above exist — observing an empty selector
    leaves those rows sitting at opacity 0 for good. */
 whenVisible($$('.sec__in, .sec__in--head, .bcta__in'), el => el.classList.add('is-in'));
-whenVisible($$('.stat, .study, .ctacard'), el => el.classList.add('is-in'));
+reveal($$('.sec .stat, .sec .study, .ctacard'));
 countAllIn(document);
 
 /* ─────────────────────────── BOOT ─────────────────────────── */
