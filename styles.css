@@ -638,14 +638,16 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
 
 /* Partners is nothing but the wall of logos — edge to edge, no copy */
 .view--partners{overflow:auto}
-.partners{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(210px,25vw),1fr));
+/* 4 across × 7 down — 28 logos, no orphan cells. Same shape as the real page. */
+.partners{display:grid;grid-template-columns:repeat(4,1fr);
   min-height:100%;align-content:stretch;background:var(--surface)}
-.partner{display:grid;place-items:center;padding:26px;min-height:clamp(112px,15vh,168px);
+.partner{display:grid;place-items:center;padding:30px 26px;min-height:clamp(104px,13.5vh,160px);
   box-shadow:1px 0 0 var(--line),0 1px 0 var(--line);transition:background var(--d-2) var(--ease)}
 .partner:hover{background:var(--surface-2)}
-.partner img{max-height:34px;max-width:100%;width:auto;object-fit:contain;
-  filter:grayscale(1) contrast(1.15);mix-blend-mode:multiply;opacity:.6;transition:opacity var(--d-2) var(--ease)}
-.partner:hover img{opacity:1}
+.partner img{max-height:38px;max-width:100%;width:auto;object-fit:contain;
+  filter:grayscale(1) contrast(1.2);mix-blend-mode:multiply;opacity:.88;
+  transition:opacity var(--d-2) var(--ease),transform var(--d-2) var(--ease)}
+.partner:hover img{opacity:1;transform:scale(1.04)}
 
 /* Cell hairlines drawn by the cells, so partial rows leave clean space */
 .kpi,.card,.horizon,.stat{box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
@@ -699,6 +701,7 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
   .topbar__menu{display:grid;place-items:center;width:32px;height:32px}
   .restart span{display:none}
   .restart{padding:0 11px}
+  .partners{grid-template-columns:repeat(2,1fr)}   /* 2 × 14, still no orphans */
   .view--workspace .scroll{padding:78px 20px 0}
   /* the percentage mask reads as a wireframe on a tall narrow screen — grain is enough */
   .view--workspace.is-welcome::after{display:none}

@@ -14,14 +14,15 @@ const esc = s => String(s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '
 
 /* ─────────────────────────── REFERENCE DATA ─────────────────────────── */
 
+/* Order and grouping mirror the Future of News page itself — 28 logos, 4 across. */
 const PARTNERS = [
-  ['ap','Associated Press'],['axios','Axios'],['axel-springer','Axel Springer'],['bbc','BBC'],
-  ['business-insider','Business Insider'],['cnn','CNN'],['ft','Financial Times'],['free-press','The Free Press'],
-  ['guardian','The Guardian'],['huffpost','HuffPost'],['independent','The Independent'],['news-corp','News Corp'],
-  ['newsweek','Newsweek'],['npr','NPR'],['ny-post','New York Post'],['nyt','The New York Times'],
-  ['ozone','Ozone'],['politico','Politico'],['press-gazette','Press Gazette'],['rebooting','Rebooting'],
-  ['reuters','Reuters'],['teads','Teads'],['trade-desk','The Trade Desk'],['usa-today','Gannett / USA Today'],
-  ['washington-post','The Washington Post'],['wsj','The Wall Street Journal'],['1440','1440'],['ad-fontes','Ad Fontes Media'],
+  ['ad-fontes','Ad Fontes Media'],['ap','Associated Press'],['axel-springer','Axel Springer'],['axios','Axios'],
+  ['business-insider','Business Insider'],['bbc','BBC'],['cnn','CNN'],['ft','Financial Times'],
+  ['free-press','The Free Press'],['guardian','The Guardian'],['usa-today','Gannett / USA Today'],['huffpost','HuffPost'],
+  ['independent','The Independent'],['npr','NPR'],['news-corp','News Corp'],['newsweek','Newsweek'],
+  ['ny-post','New York Post'],['nyt','The New York Times'],['ozone','Ozone'],['politico','Politico'],
+  ['press-gazette','Press Gazette'],['rebooting','Rebooting'],['reuters','Reuters'],['trade-desk','The Trade Desk'],
+  ['wsj','The Wall Street Journal'],['washington-post','The Washington Post'],['teads','Teads'],['1440','1440'],
 ];
 const EXT = {ap:'png','axel-springer':'png',axios:'png',bbc:'png','business-insider':'png',huffpost:'png',
   independent:'png',npr:'png','ny-post':'png',politico:'png',rebooting:'png',teads:'png',wsj:'png',
