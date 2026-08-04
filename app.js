@@ -317,6 +317,7 @@ function show(view) {
   $$('.rail__item').forEach(b => b.classList.toggle('is-active', !!b.dataset.nav && b.dataset.nav === view));
   if (view === 'workspace' && S.step > 0) $('#railThread').classList.add('is-active');
   crumb.innerHTML = `<span>${CRUMB[view] || 'Workspace'}</span>`;
+  topbar.style.transform = ''; topbar.style.opacity = '';   // reset when the view changes
   app.classList.remove('rail-open');
   /* the rail stays put through the loader so nothing reflows while we wait;
      it only steps aside for the brief, which wants the full width */
@@ -324,6 +325,20 @@ function show(view) {
   document.body.dataset.state = view;
   if (view === 'workspace' && S.step < SCRIPT.length) setTimeout(() => promptInput.focus(), 320);
 }
+
+/* The topbar rides with the content rather than hovering above it. */
+const topbar = $('.topbar');
+function trackTopbar(el) {
+  if (!el || el.dataset.topbarBound) return;
+  el.dataset.topbarBound = '1';
+  el.addEventListener('scroll', () => {
+    if (!el.closest('.view').classList.contains('is-shown')) return;
+    const y = Math.min(el.scrollTop, 64);
+    topbar.style.transform = `translateY(${-y}px)`;
+    topbar.style.opacity = String(1 - y / 64);
+  }, { passive: true });
+}
+$$('.scroll, .view--partners').forEach(trackTopbar);
 
 $$('[data-nav]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); show(b.dataset.nav); }));
 $('#railOpen').addEventListener('click', () => app.classList.add('rail-open'));
@@ -691,7 +706,7 @@ function buildBrief() {
       <span class="bmast__badge"><i class="pulse"></i>Executive AI Brief</span>
       <span class="bmast__badge">${S.firstName ? 'Prepared for ' + esc(S.firstName) : 'Confidential preview'}</span>
     </div>
-    <h1>${esc(b)}<span>.</span><br><span>Read, diagnosed, and priced.</span></h1>
+    <h1>${esc(b)}.<br><span>Read, diagnosed, and priced.</span></h1>
     <div class="bmast__meta">
       <span>Source <b>${esc(S.domain)}</b></span><span>Generated <b>${today}</b></span>
       <span>Elapsed <b>41 seconds</b></span><span>Engines <b>10</b></span>
@@ -822,22 +837,20 @@ function buildBrief() {
 
   <section class="bvideo reveal">
     <div class="bvideo__in">
-      <div>
-        <p class="eyebrow"><i class="pulse"></i>Section 09 · DoReel</p>
-        <h2>Your diagnosis, presented back to you.</h2>
-        <p>An AI presenter delivers these findings — about ${esc(b)}, addressed to ${S.firstName ? esc(S.firstName) : 'you'}, produced seconds after one website was typed. This is the version your CEO watches.</p>
-        <p style="margin-top:24px"><button class="btn btn--ghost-void" data-cta="video">Generate the full cut</button></p>
-      </div>
+      <p class="eyebrow"><i class="pulse"></i>Section 09 · DoReel</p>
+      <h2>Your diagnosis, presented back to you.</h2>
+      <p>An AI presenter delivers these findings — about ${esc(b)}, addressed to ${S.firstName ? esc(S.firstName) : 'you'}, produced seconds after one website was typed. This is the version your CEO watches.</p>
       <div class="player" id="player">
         <span class="player__grid"></span><span class="player__figure"></span>
         <span class="player__hud"><i></i>DoReel · rendered 41s ago</span>
         <button class="player__play" aria-label="Play">
-          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.2l11 6.8-11 6.8V5.2Z" fill="currentColor"/></svg>
+          <svg viewBox="0 0 26 26" width="24" height="24"><path d="M8 5.2l11 6.8-11 6.8V5.2Z" fill="currentColor"/></svg>
         </button>
         <p class="player__cap" id="playerCap"></p>
-        <span class="player__wave" id="playerWave">${'<i></i>'.repeat(38)}</span>
+        <span class="player__wave" id="playerWave">${'<i></i>'.repeat(46)}</span>
         <span class="player__bar"><i id="playerBar"></i></span>
       </div>
+      <button class="btn btn--ghost-void" data-cta="video">Generate the full cut</button>
     </div>
   </section>
 
@@ -873,12 +886,13 @@ function buildBrief() {
           <button class="btn btn--light" type="submit">Call me now</button>
         </form>
       </div>
-      <div class="bfoot">
-        <svg><use href="#sw-logo"/></svg>
-        <span>Prototype · scripted demonstration · figures illustrative · nothing leaves this page</span>
-      </div>
     </div>
-  </section>`;
+  </section>
+
+  <footer class="bfoot">
+    <svg><use href="#sw-logo"/></svg>
+    <span>Prototype · scripted demonstration · figures illustrative · nothing leaves this page</span>
+  </footer>`;
 
   observeReveals();
   wirePlayer();
