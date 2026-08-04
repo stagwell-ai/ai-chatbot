@@ -436,6 +436,10 @@ function buildDashboard() {
       </div>
       <div class="dash__acts">
         <button class="btn btn--dark" data-cta="workspace">Request the full workspace</button>
+        <button class="btn btn--ghost" id="watchBtn">
+          <svg viewBox="0 0 16 16" width="12" height="12"><path d="M5 3.4l8 4.6-8 4.6V3.4Z" fill="currentColor"/></svg>
+          Watch the video
+        </button>
         <button class="btn btn--ghost" data-cta="pdf">Export</button>
         <button class="btn btn--ghost" data-new>New analysis</button>
       </div>
@@ -619,6 +623,56 @@ function buildDashboard() {
   });
 }
 
+/* ─────────────────────────── VIDEO ─────────────────────────── */
+
+/* DoReel's presenter cut, opened over the page and closable. */
+function openVideo() {
+  const A = computeAnalysis(S);
+  const script = [
+    `${S.firstName ? S.firstName + ', here' : 'Here'} is ${S.brand}'s diagnosis — generated forty seconds ago.`,
+    `Your brand equity is strong. Your visibility inside AI answers is not.`,
+    `${A.c1} is named ${S.gap} points more often than you are.`,
+    `Three moves close that gap. The first one costs almost nothing.`,
+  ];
+  modalBody.innerHTML = `
+    <div class="modal__brand"><svg><use href="#sw-logo"/></svg><span>AI</span></div>
+    <h3>Your diagnosis, presented back to you.</h3>
+    <p>An AI presenter delivers these findings — about ${esc(S.brand)}, addressed to ${S.firstName ? esc(S.firstName) : 'you'}, produced seconds after one website was typed.</p>
+    <div class="player" id="player">
+      <span class="player__grid"></span><span class="player__figure"></span>
+      <span class="player__hud"><i></i>DoReel · rendered 41s ago</span>
+      <button class="player__play" aria-label="Play">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.2l11 6.8-11 6.8V5.2Z" fill="currentColor"/></svg>
+      </button>
+      <p class="player__cap" id="playerCap"></p>
+      <span class="player__wave" id="playerWave">${'<i></i>'.repeat(42)}</span>
+      <span class="player__bar"><i id="playerBar"></i></span>
+    </div>
+    <p class="modal__fine">Prototype — the presenter is illustrative.</p>`;
+  modal.hidden = false;
+  modal.classList.add('modal--wide');
+
+  const p = $('#player'), cap = $('#playerCap'), barEl = $('#playerBar'), bars = $$('#playerWave i');
+  let playing = false, timers = [];
+  const stop = () => {
+    playing = false; p.classList.remove('is-playing');
+    timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = [];
+    cap.textContent = ''; barEl.style.transition = 'none'; barEl.style.width = '0';
+  };
+  videoStop = stop;
+  p.addEventListener('click', () => {
+    if (playing) return stop();
+    playing = true; p.classList.add('is-playing');
+    timers.push(setInterval(() => bars.forEach(x => (x.style.height = (12 + Math.random() * 88) + '%')), 90));
+    let t = 0;
+    script.forEach(line => { timers.push(setTimeout(() => { cap.textContent = line; }, t)); t += 2600; });
+    barEl.style.transition = `width ${t + 600}ms linear`;
+    requestAnimationFrame(() => (barEl.style.width = '100%'));
+    timers.push(setTimeout(stop, t + 600));
+  });
+}
+let videoStop = null;
+
 /* ─────────────────────────── START OVER ─────────────────────────── */
 
 /* Anyone already holding a dashboard can run another company without reloading. */
@@ -692,7 +746,10 @@ $$('.mnav__links a, .nav__links a').forEach(a => a.addEventListener('click', clo
 $$('.mnav [data-cta], .mnav [data-new]').forEach(b => b.addEventListener('click', closeNav));
 
 const modal = $('#modal'), modalBody = $('#modalBody');
-const closeModal = () => { modal.hidden = true; };
+const closeModal = () => {
+  modal.hidden = true; modal.classList.remove('modal--wide');
+  if (videoStop) { videoStop(); videoStop = null; }
+};
 $$('[data-close]', modal).forEach(e => e.addEventListener('click', closeModal));
 
 const CTA_COPY = {
@@ -732,6 +789,7 @@ function openModal(kind) {
 }
 
 document.addEventListener('click', e => {
+  if (e.target.closest('#watchBtn')) { e.preventDefault(); return openVideo(); }
   const t = e.target.closest('[data-cta]');
   if (t && t.tagName !== 'FORM') { e.preventDefault(); openModal(t.dataset.cta); }
 });
