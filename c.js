@@ -27,7 +27,10 @@ const input = $('#concInput');
 const C = { step: 0, busy: true, company: '', goal: null, scale: null };
 const pin = () => { box.scrollTop = box.scrollHeight; };
 
+function openPanel() { if (box.hidden) box.hidden = false; }
+
 function line(html, me) {
+  openPanel();
   const el = document.createElement('div');
   el.className = me ? 'cline cline--me' : 'cline';
   /* the mark identifies a speaker, so it shows once per run of AI lines */
@@ -71,8 +74,8 @@ const clearOptions = () => $$('.chips--opt', box).forEach(w => {
 
 const STEPS = [
   {
-    placeholder: 'Your company',
-    async ask() { await says('Hi — what company are you with?', 380); },
+    placeholder: '',            /* the greeter loop below owns this slot */
+    async ask() {},             /* the pill itself asks the first question */
     take(t) { C.company = t.replace(/^(we are|we're|it's|its)\s+/i, '').trim(); },
   },
   {
@@ -93,6 +96,7 @@ const STEPS = [
 async function answer(text, id) {
   if (C.busy || C.step >= STEPS.length) return;
   C.busy = true;
+  stopGreet('');
   clearOptions();
   line(text, true);
   input.value = '';
@@ -145,21 +149,54 @@ async function recommend() {
   C.busy = false;
 }
 
+/* ── the greeter ──
+   Someone is typing at you: rotating questions typed character by
+   character into the placeholder, until the conversation starts. */
+const GREETS = [
+  'Hey — how can I help?',
+  'What company are you with?',
+  'What are you working on these days?',
+  'Looking for the right AI to start with?',
+];
+let greetOn = true;
+(async function greet() {
+  if (REDUCED) { input.placeholder = GREETS[0]; return; }
+  let gi = 0;
+  while (greetOn) {
+    const txt = GREETS[gi % GREETS.length];
+    for (let i = 1; i <= txt.length && greetOn; i++) {
+      input.placeholder = txt.slice(0, i);
+      await wait(34 + Math.random() * 40);
+    }
+    await wait(2400);
+    for (let i = txt.length; i >= 0 && greetOn; i--) {
+      input.placeholder = txt.slice(0, i);
+      await wait(11);
+    }
+    gi++;
+  }
+})();
+const stopGreet = txt => {
+  if (!greetOn) return;
+  greetOn = false;
+  input.placeholder = txt || '';
+};
+input.addEventListener('input', () => { if (input.value) stopGreet(); });
+
 form.addEventListener('submit', e => {
   e.preventDefault();
   const v = input.value.trim();
   if (v) answer(v);
 });
 
-$('#concReset').addEventListener('click', async () => {
+$('#concReset').addEventListener('click', () => {
   box.innerHTML = '';
-  Object.assign(C, { step: 0, busy: true, company: '', goal: null, scale: null });
+  box.hidden = true;
+  Object.assign(C, { step: 0, busy: false, company: '', goal: null, scale: null });
   input.disabled = false;
   input.value = '';
-  input.placeholder = STEPS[0].placeholder;
+  input.placeholder = GREETS[0];
   $('#concReset').hidden = true;
-  await STEPS[0].ask();
-  C.busy = false;
 });
 
 /* ══════════════════════ THE MARKETING CLOUD ══════════════════════
@@ -300,8 +337,6 @@ addEventListener('load', async () => {
   document.body.dataset.state = 'ready';
   $('#boot')?.classList.add('is-out');
   setTimeout(() => $('#boot')?.remove(), 700);
-  await wait(REDUCED ? 40 : 340);
-  await STEPS[0].ask();
   C.busy = false;
 });
 

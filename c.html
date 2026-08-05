@@ -61,9 +61,10 @@
     <p class="chero__p">Tell me what you are working on. I will point you to the right two.</p>
 
     <div class="conc" id="conc">
-      <div class="conc__body" id="concBody"></div>
+      <div class="conc__body" id="concBody" hidden></div>
       <form class="conc__form" id="concForm" autocomplete="off">
-        <input class="conc__input" id="concInput" type="text" placeholder="Your company" aria-label="Your answer" spellcheck="false">
+        <svg class="conc__fav" aria-hidden="true"><use href="#sw-mark"/></svg>
+        <input class="conc__input" id="concInput" type="text" placeholder="" aria-label="Your answer" spellcheck="false">
         <button class="conc__send" type="submit" aria-label="Send">
           <svg viewBox="0 0 18 18" width="15" height="15"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>

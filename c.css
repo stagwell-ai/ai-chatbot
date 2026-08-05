@@ -65,15 +65,16 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   line-height:1.05;font-size:clamp(2.375rem,5.6vw,4rem)}
 .chero__p{margin:0;font-size:clamp(1.0625rem,1.6vw,1.375rem);color:var(--ink-2);line-height:1.45}
 
-/* the concierge — compact, and the only chat on the page */
-.conc{width:min(520px,100%);margin-top:12px;text-align:left;
-  background:var(--surface);border-radius:var(--r-xl);
-  box-shadow:0 1px 2px rgba(0,35,52,.05),0 14px 38px -20px rgba(0,35,52,.26);
-  overflow:hidden}
+/* the concierge — one full-round pill, like A's hero composer.
+   The panel above it only exists once the visitor answers. */
+.conc{width:min(560px,100%);margin-top:12px;text-align:left}
 .conc__body{display:flex;flex-direction:column;gap:12px;
-  padding:18px 18px 2px;max-height:min(40vh,320px);overflow-y:auto;
-  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
-.conc__body:empty{display:none}
+  background:var(--surface);border-radius:var(--r-xl);
+  box-shadow:0 1px 2px rgba(0,35,52,.05),0 14px 38px -20px rgba(0,35,52,.24);
+  padding:18px;margin-bottom:10px;
+  max-height:min(40vh,320px);overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;
+  animation:lineIn 480ms var(--ease) both}
 .conc__body::-webkit-scrollbar{width:6px}
 .conc__body::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:8px;
   border:2px solid transparent;background-clip:padding-box}
@@ -114,19 +115,23 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .rec__x span{display:block;font-size:var(--t-xs);color:var(--ink-3)}
 .rec__go{font-size:var(--t-xs);color:var(--teal);flex:none}
 
-.conc__form{display:flex;align-items:center;gap:8px;padding:12px 12px 12px 18px}
-.conc__body:not(:empty) + .conc__form{border-top:1px solid var(--line);margin-top:10px}
+.conc__form{display:flex;align-items:center;gap:12px;height:62px;
+  padding:0 10px 0 22px;border-radius:var(--r-full);background:var(--surface);
+  box-shadow:0 1px 2px rgba(0,35,52,.05),0 14px 38px -20px rgba(0,35,52,.24);
+  transition:box-shadow var(--d-2) var(--ease)}
+.conc__form:focus-within{box-shadow:0 1px 2px rgba(0,35,52,.05),
+  0 18px 46px -20px rgba(0,35,52,.30)}
+.conc__fav{width:19px;height:19px;flex:none}
 .conc__input{flex:1;min-width:0;border:0;background:none;outline:none;
-  font-family:inherit;font-size:1rem;color:var(--ink)}
-.conc__input::placeholder{color:var(--ink-4)}
-.conc__send{width:32px;height:32px;flex:none;border:0;border-radius:50%;cursor:pointer;
+  font-family:inherit;font-size:1.0625rem;color:var(--ink)}
+.conc__input::placeholder{color:var(--ink-3)}
+.conc__send{width:42px;height:42px;flex:none;border:0;border-radius:50%;cursor:pointer;
   background:var(--ink);color:#fff;display:grid;place-items:center;
   transition:background var(--d-1)}
 .conc__send:hover{background:var(--teal)}
-.conc__reset{display:block;width:100%;border:0;border-top:1px solid var(--line);
-  background:none;padding:10px;cursor:pointer;font-family:var(--mono);
-  font-size:var(--t-label);letter-spacing:.11em;text-transform:uppercase;
-  color:var(--ink-3);transition:color var(--d-1)}
+.conc__reset{display:block;margin:10px auto 0;border:0;background:none;padding:4px 8px;
+  cursor:pointer;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3);transition:color var(--d-1)}
 .conc__reset:hover{color:var(--ink)}
 
 /* ── section band ─────────────────────────────────────────── */
@@ -304,25 +309,25 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   background:linear-gradient(150deg,rgba(0,156,189,.45),rgba(255,184,28,.5));opacity:var(--o)}
 
 /* ── footer ───────────────────────────────────────────────── */
-/* fine print — the reference's grey footnote block */
-.fine{background:var(--surface);padding:clamp(40px,6vh,64px) clamp(20px,4vw,28px) 8px}
-.fine__in{max-width:1080px;margin:0 auto;color:var(--ink-3);
-  font-size:var(--t-sm);line-height:1.65}
-.fine__in p{margin:0 0 14px}
-.fine__in ol{margin:0 0 14px;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+/* fine print — the reference's footnote block, on the page background */
+.fine{padding:clamp(56px,8vh,88px) clamp(20px,4vw,28px) 20px}
+.fine__in{max-width:960px;margin:0 auto;color:var(--ink);
+  font-size:var(--t-sm);line-height:1.75}
+.fine__in p{margin:0 0 22px}
+.fine__in ol{margin:0 0 22px;padding-left:20px;display:flex;flex-direction:column;gap:16px}
 
-.foot{background:var(--surface);padding:0 clamp(20px,4vw,28px) 36px}
-.foot__in{max-width:1080px;margin:0 auto}
-.foot__cols{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;
-  padding:26px 0 30px;border-top:1px solid var(--line)}
-.foot__col{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
-.foot__col b{font-size:var(--t-sm);font-weight:600;margin-bottom:3px}
+.foot{padding:0 clamp(20px,4vw,28px) 48px}
+.foot__in{max-width:960px;margin:0 auto}
+.foot__cols{display:grid;grid-template-columns:repeat(5,1fr);gap:30px 24px;
+  padding:38px 0 42px;border-top:1px solid var(--line)}
+.foot__col{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.foot__col b{font-size:var(--t-sm);font-weight:600;margin-bottom:4px}
 .foot__col a,.foot__col button{border:0;background:none;padding:0;cursor:pointer;
-  font-family:inherit;font-size:var(--t-sm);color:var(--ink-3);text-decoration:none;
+  font-family:inherit;font-size:var(--t-sm);color:var(--ink-2);text-decoration:none;
   text-align:left;transition:color var(--d-1)}
 .foot__col a:hover,.foot__col button:hover{color:var(--ink)}
 .foot__base{display:flex;align-items:center;gap:18px;flex-wrap:wrap;
-  padding-top:22px;border-top:1px solid var(--line)}
+  padding-top:30px;border-top:1px solid var(--line)}
 .foot__logo{width:104px;height:16px;opacity:.7}
 .foot__base p{margin:0 0 0 auto;font-size:var(--t-xs);color:var(--ink-4)}
 
