@@ -129,7 +129,6 @@ async function recommend() {
               fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="rec__x"><b>${esc(p.name)}</b><span>${esc(p.line)}</span></span>
       <span class="rec__go">Learn more ›</span>`;
-    el.addEventListener('click', () => openProduct(p.id));
     wrap.appendChild(el);
   });
   box.appendChild(wrap);
@@ -271,23 +270,6 @@ function closeModal() {
 modal.addEventListener('click', e => { if (e.target.closest('[data-close]')) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-function openProduct(id) {
-  const p = PRODUCTS.find(x => x.id === id);
-  if (!p) return;
-  showModal(`
-    <p style="margin:0;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.15em;
-              text-transform:uppercase;color:var(--teal)">${
-      p.suite === 'enterprise' ? 'The Machines' : 'Marketing Cloud'}${p.badge ? ` · ${esc(p.badge)}` : ''}</p>
-    <h3 style="margin:10px 0 0;font-size:2rem;font-weight:600;letter-spacing:-.034em">${esc(p.name)}</h3>
-    <p style="margin:6px 0 0;font-size:1.125rem;color:var(--ink-2)">${esc(p.line)}</p>
-    <p style="margin:18px 0 0;line-height:1.65">${esc(p.what)}</p>
-    <div style="display:flex;gap:11px;flex-wrap:wrap;margin-top:24px">
-      <button class="btn" data-cta="call">Book a call</button>
-      ${p.url ? `<a class="btn" style="background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)"
-                    href="${p.url}" target="_blank" rel="noopener">Visit the product ›</a>` : ''}
-    </div>`);
-}
-
 function openCall() {
   showModal(`
     <h3 style="margin:0;font-size:1.75rem;font-weight:600;letter-spacing:-.03em">Book a call</h3>
@@ -310,13 +292,11 @@ function openCall() {
   });
 }
 
-/* one listener for every entry point: tiles, cards, links, nav */
+/* Only the call CTA opens anything. Tiles, cards and Learn more are
+   inert for now — they will lead to the inner pages, which are not
+   part of this build. */
 document.addEventListener('click', e => {
-  if (e.target.closest('[data-cta]'))  { e.preventDefault(); return openCall(); }
-  const open = e.target.closest('[data-open]');
-  if (open) { e.preventDefault(); return openProduct(open.dataset.open); }
-  const holder = e.target.closest('.tile[data-id], .ccard[data-id]');
-  if (holder) openProduct(holder.dataset.id);
+  if (e.target.closest('[data-cta]')) { e.preventDefault(); return openCall(); }
 });
 
 $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {

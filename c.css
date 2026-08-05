@@ -104,7 +104,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 
 .recs{display:flex;flex-direction:column;gap:7px;padding-left:23px}
 .rec{display:flex;align-items:center;gap:10px;padding:11px 13px;width:100%;text-align:left;
-  border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2);cursor:pointer;
+  border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2);cursor:default;
   animation:lineIn 520ms var(--ease) both;
   transition:border-color var(--d-2),transform var(--d-2) var(--ease)}
 .rec:hover{border-color:var(--teal);transform:translateX(3px)}
@@ -148,7 +148,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile{position:relative;overflow:hidden;border-radius:0;
   display:flex;flex-direction:column;align-items:center;text-align:center;
   padding:clamp(44px,6vw,70px) clamp(20px,3vw,40px) 0;
-  min-height:clamp(520px,62vh,620px);cursor:pointer;background:var(--surface)}
+  min-height:clamp(520px,62vh,620px);cursor:default;background:var(--surface)}
 .tile--full{grid-column:span 2}
 .tile--half{min-height:clamp(460px,54vh,540px)}
 .tile--void{background:var(--void);color:var(--on-void)}
@@ -255,7 +255,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 /* big showcase — the art IS the card; text sits on top of it */
 .fcard{position:relative;overflow:hidden;flex:none;margin-right:12px;
   width:clamp(560px,58vw,860px);height:clamp(320px,46vh,430px);
-  border:0;border-radius:0;cursor:pointer;text-align:left;padding:0;
+  border:0;border-radius:0;cursor:default;text-align:left;padding:0;
   background:var(--surface);color:var(--ink)}
 .fcard--dark{background:linear-gradient(160deg,#01293B,#00121C);color:var(--on-void)}
 .fcard--sky{background:linear-gradient(165deg,#DDEEF4,#F4FAFC)}
@@ -283,7 +283,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 /* small card — drifts the other way */
 .scard{position:relative;overflow:hidden;flex:none;margin-right:12px;
   width:clamp(260px,24vw,320px);height:200px;
-  border:0;border-radius:0;cursor:pointer;text-align:left;padding:0;
+  border:0;border-radius:0;cursor:default;text-align:left;padding:0;
   background:var(--surface);color:var(--ink)}
 .scard__t{position:absolute;left:20px;top:18px;right:20px;z-index:2;
   display:flex;flex-direction:column;gap:3px}
@@ -297,7 +297,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .scard__art .ca-rows{padding:0 20px 14px}
 .scard__art .ca-bars,.scard__art .ca-dots{margin:0 20px}
 
-.btn--xs{height:30px;padding:0 14px;font-size:var(--t-xs);pointer-events:none}
+.btn--xs{height:30px;padding:0 14px;font-size:var(--t-xs)}
 
 .ca-bars{display:flex;align-items:flex-end;gap:6px;height:100%}
 .ca-bars i{flex:1;border-radius:4px 4px 0 0;height:var(--h);background:var(--teal);opacity:.32}
@@ -354,3 +354,6 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   .foot p{margin-left:0;flex-basis:100%}
   .crop__row{display:none}
 }
+
+/* Learn more is visual-only until the inner pages exist */
+.tile .btn,.fcard .btn,.scard .btn,.rec{pointer-events:none}
