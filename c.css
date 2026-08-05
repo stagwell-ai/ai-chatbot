@@ -207,11 +207,32 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   text-transform:uppercase;color:var(--ink-4)}
 .tile--void .crop__k span,.tile--ink .crop__k span{color:var(--on-void-3)}
 .crop__k b{font-size:1.125rem;font-weight:600;letter-spacing:-.028em}
-.crop__cols{display:flex;align-items:flex-end;gap:5px;height:96px}
-.crop__cols i{flex:1;border-radius:3px 3px 0 0;height:var(--h);
-  background:rgba(0,156,189,.42);
-  transform-origin:bottom;transform:scaleY(.15);transition:transform 1000ms var(--ease)}
-.is-in .crop__cols i{transform:scaleY(1)}
+/* a chart that reads as a chart: axes, gridlines, legend, two series */
+.crop__chart{display:flex;flex-direction:column;gap:8px}
+.crop__legend{display:flex;align-items:center;gap:16px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-3)}
+.crop__legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{width:8px;height:2px;border-radius:2px}
+.lg--teal{background:var(--teal)}
+.lg--amber{background:var(--amber)}
+.crop__live{margin-left:auto;color:var(--ink-4)}
+.crop__plot{display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr auto;
+  gap:2px 8px;height:132px}
+.crop__ylab{display:flex;flex-direction:column;justify-content:space-between;
+  font-family:var(--mono);font-size:9px;color:var(--ink-4);text-align:right;padding:2px 0 6px}
+.crop__ylab b,.crop__xlab b{font-weight:400}
+.crop__plot svg{width:100%;height:100%;min-height:0;overflow:visible}
+.crop__xlab{grid-column:2;display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:9px;color:var(--ink-4)}
+.grid line{stroke:var(--line);stroke-width:1}
+.area{fill:rgba(0,156,189,.10)}
+.ln{fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;stroke-dasharray:1000;stroke-dashoffset:1000;
+  transition:stroke-dashoffset 1600ms var(--ease) 200ms}
+.ln--teal{stroke:var(--teal)}
+.ln--amber{stroke:var(--amber);transition-delay:480ms}
+.is-in .ln{stroke-dashoffset:0}
+.now{fill:var(--teal)}
 .crop__lines{display:flex;flex-direction:column;gap:8px}
 .crop__lines i{height:9px;border-radius:var(--r-full);background:rgba(234,242,245,.10);
   width:var(--w)}
@@ -305,14 +326,17 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
   transition:background var(--d-1)}
 .vctl:hover{background:rgba(0,0,0,.62)}
 
-/* DoReel: its own reel runs silently behind the text */
-.fcard__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
-.fcard--video::after{content:"";position:absolute;inset:0;z-index:1;
+/* media cards: a video or an image owns the surface — flat dark
+   overlay, white text, white button */
+.fcard__video,.fcard__img{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:1}
+.fcard--video::after,.fcard--img::after{content:"";position:absolute;inset:0;z-index:1;
   background:rgba(0,0,0,.34)}
-.fcard--video .fcard__k,.fcard--video .fcard__t b{color:#fff}
-.fcard--video .fcard__t i{color:rgba(255,255,255,.88)}
-.fcard--video .btn{background:#fff;color:var(--navy)}
-.fcard--video .btn:hover{background:#D8E6EC}
+.fcard--video .fcard__k,.fcard--video .fcard__t b,
+.fcard--img .fcard__k,.fcard--img .fcard__t b{color:#fff}
+.fcard--video .fcard__t i,.fcard--img .fcard__t i{color:rgba(255,255,255,.88)}
+.fcard--video .btn,.fcard--img .btn{background:#fff;color:var(--navy)}
+.fcard--video .btn:hover,.fcard--img .btn:hover{background:#D8E6EC}
 
 /* PLACEHOLDER — swap for <img class="fcard__art" src="…"> */
 .fcard__art{position:absolute;inset:0;z-index:1;opacity:.8}

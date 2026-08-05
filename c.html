@@ -108,10 +108,27 @@
           <div class="crop__k"><span>Incremental reach</span><b>31.2M</b></div>
           <div class="crop__k"><span>Brand lift</span><b>+6.4pt</b></div>
         </div>
-        <div class="crop__cols">
-          <i style="--h:34%"></i><i style="--h:46%"></i><i style="--h:41%"></i><i style="--h:58%"></i>
-          <i style="--h:53%"></i><i style="--h:71%"></i><i style="--h:66%"></i><i style="--h:88%"></i>
-          <i style="--h:79%"></i><i style="--h:96%"></i>
+        <div class="crop__chart">
+          <div class="crop__legend">
+            <span><i class="lg lg--teal"></i>Working media</span>
+            <span><i class="lg lg--amber"></i>Brand lift</span>
+            <span class="crop__live"><i class="pulse"></i>Reallocated 4 min ago</span>
+          </div>
+          <div class="crop__plot">
+            <span class="crop__ylab"><b>$4M</b><b>$2M</b><b>0</b></span>
+            <svg viewBox="0 0 420 120" preserveAspectRatio="none" aria-hidden="true">
+              <g class="grid">
+                <line x1="0" y1="10" x2="420" y2="10"/>
+                <line x1="0" y1="60" x2="420" y2="60"/>
+                <line x1="0" y1="110" x2="420" y2="110"/>
+              </g>
+              <path class="area" d="M0,96 L47,88 L93,92 L140,74 L187,80 L233,62 L280,66 L327,48 L373,42 L420,30 L420,120 L0,120 Z"/>
+              <path class="ln ln--teal" d="M0,96 L47,88 L93,92 L140,74 L187,80 L233,62 L280,66 L327,48 L373,42 L420,30"/>
+              <path class="ln ln--amber" d="M0,104 L47,101 L93,97 L140,95 L187,89 L233,85 L280,78 L327,74 L373,69 L420,61"/>
+              <circle class="now" cx="420" cy="30" r="3.4"/>
+            </svg>
+            <span class="crop__xlab"><b>Jan</b><b>Mar</b><b>May</b><b>Jul</b><b>Sep</b><b>Nov</b></span>
+          </div>
         </div>
       </div>
     </div>

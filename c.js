@@ -204,13 +204,15 @@ $('#concReset').addEventListener('click', () => {
    smaller cards drifting the other way. Hover pauses a row.
    Art is PLACEHOLDER until the real images land. */
 
-const BIG = ['newvoices', 'bera', 'doreel', 'koalifyed'];
+const BIG = ['koalifyed', 'bera', 'doreel', 'newvoices'];
 const BIGART = {
   newvoices: ['fcard--dark',  voice()],
-  bera:      ['fcard--sky',   globe()],
+  bera:      ['fcard--img',
+    `<img class="fcard__img" src="./assets/img/bera.jpg" alt="" loading="lazy">`],
   doreel:    ['fcard--amber fcard--video',
     `<video class="fcard__video" src="./assets/img/doreel.mp4" autoplay muted loop playsinline></video>`],
-  koalifyed: ['fcard--teal',  dotfield()],
+  koalifyed: ['fcard--teal fcard--video',
+    `<video class="fcard__video" src="./assets/img/imai.mp4" autoplay muted loop playsinline></video>`],
 };
 const SMART = {
   'people-platform': `<img class="scard__img" src="./assets/img/numetrix.webp" alt="">`,
