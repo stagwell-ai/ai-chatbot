@@ -27,7 +27,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .nav{position:sticky;top:0;z-index:60;background:rgba(245,246,246,.78);
   backdrop-filter:saturate(1.8) blur(20px);-webkit-backdrop-filter:saturate(1.8) blur(20px)}
 /* full width, padded like the tile kickers (28px) */
-.nav__in{width:100%;height:52px;padding:0 28px;
+.nav__in{width:100%;height:58px;padding:0 28px;
   display:flex;align-items:center;gap:clamp(18px,3vw,34px)}
 .nav__brand{display:flex;align-items:flex-end;gap:7px;text-decoration:none;flex:none}
 .nav__brand svg{width:104px;height:16px}
@@ -38,8 +38,8 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .nav__links a{font-size:var(--t-sm);color:var(--ink-2);text-decoration:none;white-space:nowrap;
   transition:color var(--d-1)}
 .nav__links a:hover{color:var(--ink)}
-.nav__cta{flex:none;margin-left:auto;height:30px;padding:0 14px;border-radius:var(--r-full);border:0;
-  background:var(--ink);color:#fff;font-size:var(--t-sm);cursor:pointer;
+.nav__cta{flex:none;margin-left:auto;height:36px;padding:0 20px;border-radius:var(--r-full);border:0;
+  background:var(--ink);color:#fff;font-size:var(--t-body);cursor:pointer;
   transition:background var(--d-1)}
 .nav__cta:hover{background:#003D59}
 

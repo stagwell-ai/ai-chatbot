@@ -353,7 +353,7 @@ $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
   const el = $(a.getAttribute('href'));
   if (!el) return;
   e.preventDefault();
-  scrollTo({ top: el.getBoundingClientRect().top + scrollY - 60,
+  scrollTo({ top: el.getBoundingClientRect().top + scrollY - 66,
              behavior: REDUCED ? 'auto' : 'smooth' });
 }));
 
