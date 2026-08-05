@@ -157,11 +157,11 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile--ink{background:linear-gradient(165deg,#012A3D,#00121C);color:var(--on-void)}
 .tile--sky{background:linear-gradient(170deg,#E4F1F6 0%,#F5FAFC 60%)}
 /* light photo background — text stays ink, image anchors low */
-.tile--photo{background-color:#F4F4F5;background-size:cover;
+.tile--photo{background-color:#F4F4F5;background-size:cover;background-repeat:no-repeat;
   background-position:center calc(100% + 170px)}
 
 /* a real image behind the text — a scrim keeps the type readable */
-.tile--img{background-size:cover;background-position:center}
+.tile--img{background-size:cover;background-position:center;background-repeat:no-repeat}
 .tile--img::before{content:"";position:absolute;inset:0;z-index:1;
   background:radial-gradient(80% 90% at 50% 60%,rgba(0,0,0,.14),rgba(0,0,0,.42))}
 .tile--img .tile__k{color:#fff}
@@ -234,22 +234,32 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .art--stack i:nth-child(3){width:64%;transition-delay:260ms}
 .art--stack i:nth-child(4){width:44%;transition-delay:360ms}
 
-.art--field{position:relative;
+/* the glow stays inside the field — the SATS text never animates */
+.art--field{position:relative;overflow:hidden;
   -webkit-mask-image:radial-gradient(56% 76% at 50% 62%,#000,transparent 78%);
   mask-image:radial-gradient(56% 76% at 50% 62%,#000,transparent 78%)}
-.art--field::before,.art--field::after{content:"";position:absolute;inset:0;
-  background-image:radial-gradient(rgba(0,156,189,.9) 1.4px,transparent 1.8px),
-                   radial-gradient(rgba(0,156,189,.9) 1.4px,transparent 1.8px),
-                   radial-gradient(rgba(90,200,222,.8) 1.2px,transparent 1.6px);
-  background-size:44px 44px,62px 62px,52px 52px;
-  background-position:0 0,13px 29px,31px 7px;
-  animation:twinkle 2.6s var(--ease-io) infinite}
-.art--field::after{background-position:22px 11px,44px 3px,9px 41px;
-  animation:blink 1.9s steps(2,jump-none) infinite}
-@keyframes twinkle{0%,100%{opacity:.06}50%{opacity:1}}
-@keyframes blink{0%,100%{opacity:.9}50%{opacity:.1}}
+.art--field::before,.art--field::after{content:"";position:absolute;inset:0;z-index:1;
+  background-image:radial-gradient(rgba(0,156,189,.85) 1.4px,transparent 1.8px),
+                   radial-gradient(rgba(90,200,222,.7) 1.2px,transparent 1.6px);
+  background-size:34px 34px,46px 46px;
+  background-position:0 0,17px 23px;
+  animation:breathe 5.2s var(--ease-io) infinite}
+.art--field::after{background-position:17px 17px,39px 5px;
+  animation-duration:6.8s;animation-delay:-3.4s}
+@keyframes breathe{0%,100%{opacity:.28}50%{opacity:.85}}
+/* the roaming thought — a soft light that wanders the field */
+.art--field__mind{position:absolute;z-index:0;width:46%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,156,189,.55),rgba(0,156,189,.16) 48%,transparent 72%);
+  animation:wander 11s var(--ease-io) infinite}
+@keyframes wander{
+  0%,100%{transform:translate(8%,34%) scale(1)}
+  26%    {transform:translate(96%,10%) scale(.72)}
+  52%    {transform:translate(118%,66%) scale(1.18)}
+  76%    {transform:translate(46%,84%) scale(.8)}
+}
 @media (prefers-reduced-motion:reduce){
   .art--field::before,.art--field::after{animation:none;opacity:.7}
+  .art--field__mind{animation:none;transform:translate(60%,40%)}
 }
 
 /* ── the Marketing Cloud rows ─────────────────────────────────
@@ -290,6 +300,9 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .fcard--teal .btn:hover{background:#D8E6EC}
 /* image art inside a card */
 img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+/* the image card owns its whole surface — no art strip, no mask fade */
+.scard--img .scard__art{inset:0;height:100%;
+  -webkit-mask-image:none;mask-image:none}
 .scard--img::after{content:"";position:absolute;inset:0;z-index:1;
   background:rgba(0,0,0,.38)}
 .scard--img .scard__t{z-index:2}
@@ -366,11 +379,11 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 .ca-globe{position:absolute;inset:0;perspective:1100px;--gs:min(440px,110vh)}
 .ca-globe__tilt{position:absolute;right:-14%;bottom:-42%;
   width:var(--gs);height:var(--gs);transform-style:preserve-3d;
-  transform:rotateX(16deg)}
+  transform:rotateX(24deg)}
 .ca-globe__spin{position:absolute;inset:0;transform-style:preserve-3d;
   animation:globespin 30s linear infinite}
 .ca-globe__spin i,.ca-globe__spin b{position:absolute;border-radius:50%;
-  border:1px solid rgba(0,90,115,.30)}
+  border:1px solid rgba(0,45,62,.30)}
 .ca-globe__spin i{inset:0;transform:rotateY(var(--a))}
 .ca-globe__spin b{left:50%;top:50%;width:var(--d);height:var(--d);
   transform:translate(-50%,-50%) rotateX(90deg)

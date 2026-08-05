@@ -227,10 +227,14 @@ function wave()   { return `<div class="ca-wave">${Array.from({ length: 30 },
 function dotfield(){ return `<div class="ca-dots"></div>`; }
 /* a thin-line wireframe world, in slow full rotation */
 function globe() {
-  const mer = [0, 45, 90, 135]
-    .map(a => `<i style="--a:${a}deg"></i>`).join('');
-  const lat = [[100, 0], [80, .3], [-80, .3]]
-    .map(([d, z]) => `<b style="--d:${Math.abs(d)}%;--z:${d < 0 ? -z : z}"></b>`).join('');
+  /* a dense, even lat/long grid — the classic wireframe globe */
+  const mer = Array.from({ length: 9 }, (_, i) => `<i style="--a:${i * 20}deg"></i>`).join('');
+  const lat = [0, 22.5, 45, 67.5, -22.5, -45, -67.5].map(phi => {
+    const rad = phi * Math.PI / 180;
+    const d = (Math.cos(rad) * 100).toFixed(1);
+    const z = (Math.sin(rad) * 0.5).toFixed(3);
+    return `<b style="--d:${d}%;--z:${z}"></b>`;
+  }).join('');
   return `<span class="ca-globe"><span class="ca-globe__tilt">
     <span class="ca-globe__spin">${mer}${lat}</span></span></span>`;
 }
@@ -246,7 +250,7 @@ const bigCard = p => {
   const [cls, art] = BIGART[p.id];
   return `<button class="fcard ${cls}" data-id="${p.id}">
     <span class="fcard__art">${art}</span>
-    <span class="fcard__k">Marketing Cloud</span>
+    <span class="fcard__k">TMC</span>
     <span class="fcard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i>
       <em class="btn btn--sm">Learn more</em></span>
   </button>`;
