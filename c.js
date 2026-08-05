@@ -364,6 +364,76 @@ $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
              behavior: REDUCED ? 'auto' : 'smooth' });
 }));
 
+/* ══════════════════════ SATS CONSTELLATION ══════════════════════
+   A grid of quiet dots. Every couple of seconds one becomes a hub:
+   it grows, thin lines run out to its neighbours, the neighbours
+   brighten — then it all lets go and another node wakes elsewhere. */
+(function satsNet() {
+  const svg = $('#satsNet');
+  if (!svg) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  const COLS = 9, ROWS = 5, DX = 52, DY = 48, X0 = 22, Y0 = 24;
+  const dots = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const el = document.createElementNS(NS, 'circle');
+    const x = X0 + c * DX, y = Y0 + r * DY;
+    el.setAttribute('cx', x); el.setAttribute('cy', y);
+    el.setAttribute('r', (r * COLS + c) % 3 ? 1.6 : 2.2);
+    svg.appendChild(el);
+    dots.push({ el, x, y });
+  }
+
+  if (REDUCED) {           // one still constellation, no motion
+    const hub = dots[Math.floor(COLS * 1.5)];
+    burst(hub, true);
+    return;
+  }
+
+  let seed = 7;
+  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+  function burst(hub, still) {
+    hub.el.classList.add('on');
+    hub.el.setAttribute('r', 4.4);
+    const near = dots.filter(d => d !== hub &&
+      Math.hypot(d.x - hub.x, d.y - hub.y) < 118);
+    const lines = near.map(d => {
+      const l = document.createElementNS(NS, 'line');
+      l.setAttribute('x1', hub.x); l.setAttribute('y1', hub.y);
+      l.setAttribute('x2', d.x);   l.setAttribute('y2', d.y);
+      const len = Math.hypot(d.x - hub.x, d.y - hub.y);
+      l.style.strokeDasharray = len;
+      l.style.strokeDashoffset = still ? 0 : len;
+      svg.insertBefore(l, svg.firstChild);
+      d.el.classList.add('on');
+      d.el.setAttribute('r', 2.8);
+      return { l, d };
+    });
+    if (still) return;
+    requestAnimationFrame(() => requestAnimationFrame(() =>
+      lines.forEach(({ l }) => { l.style.strokeDashoffset = 0; })));
+    setTimeout(() => {                       // let go
+      lines.forEach(({ l, d }) => {
+        l.style.opacity = 0;
+        d.el.classList.remove('on');
+        d.el.setAttribute('r', (dots.indexOf(d)) % 3 ? 1.6 : 2.2);
+      });
+      hub.el.classList.remove('on');
+      hub.el.setAttribute('r', 2.2);
+      setTimeout(() => lines.forEach(({ l }) => l.remove()), 460);
+    }, 1750);
+  }
+
+  let lastHub = -1;
+  (function cycle() {
+    let i;
+    do { i = Math.floor(rand() * dots.length); } while (i === lastHub);
+    lastHub = i;
+    burst(dots[i]);
+    setTimeout(cycle, 2500 + rand() * 900);
+  })();
+})();
+
 /* ══════════════════════ MOTION ══════════════════════ */
 
 reveal($$('.r'));

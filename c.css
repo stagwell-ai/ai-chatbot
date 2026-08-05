@@ -234,33 +234,15 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .art--stack i:nth-child(3){width:64%;transition-delay:260ms}
 .art--stack i:nth-child(4){width:44%;transition-delay:360ms}
 
-/* the glow stays inside the field — the SATS text never animates */
-.art--field{position:relative;overflow:hidden;
-  -webkit-mask-image:radial-gradient(56% 76% at 50% 62%,#000,transparent 78%);
-  mask-image:radial-gradient(56% 76% at 50% 62%,#000,transparent 78%)}
-.art--field::before,.art--field::after{content:"";position:absolute;inset:0;z-index:1;
-  background-image:radial-gradient(rgba(0,156,189,.85) 1.4px,transparent 1.8px),
-                   radial-gradient(rgba(90,200,222,.7) 1.2px,transparent 1.6px);
-  background-size:34px 34px,46px 46px;
-  background-position:0 0,17px 23px;
-  animation:breathe 5.2s var(--ease-io) infinite}
-.art--field::after{background-position:17px 17px,39px 5px;
-  animation-duration:6.8s;animation-delay:-3.4s}
-@keyframes breathe{0%,100%{opacity:.28}50%{opacity:.85}}
-/* the roaming thought — a soft light that wanders the field */
-.art--field__mind{position:absolute;z-index:0;width:46%;aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,156,189,.55),rgba(0,156,189,.16) 48%,transparent 72%);
-  animation:wander 11s var(--ease-io) infinite}
-@keyframes wander{
-  0%,100%{transform:translate(8%,34%) scale(1)}
-  26%    {transform:translate(96%,10%) scale(.72)}
-  52%    {transform:translate(118%,66%) scale(1.18)}
-  76%    {transform:translate(46%,84%) scale(.8)}
-}
-@media (prefers-reduced-motion:reduce){
-  .art--field::before,.art--field::after{animation:none;opacity:.7}
-  .art--field__mind{animation:none;transform:translate(60%,40%)}
-}
+/* SATS: a constellation. A node wakes, reaches its neighbours with
+   thin lines, lets go, and another wakes somewhere else. */
+.art--net{position:relative;max-width:560px;height:clamp(200px,30vh,262px)}
+.art--net svg{width:100%;height:100%;overflow:visible}
+.art--net circle{fill:#EAF2F5;opacity:.42;
+  transition:opacity 480ms var(--ease),r 480ms var(--ease)}
+.art--net circle.on{opacity:1}
+.art--net line{stroke:#EAF2F5;stroke-width:.8;fill:none;
+  transition:stroke-dashoffset 560ms var(--ease),opacity 420ms var(--ease)}
 
 /* ── the Marketing Cloud rows ─────────────────────────────────
    The reference layout: big showcases on top, cropped at the
