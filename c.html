@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stagwell AI</title>
-<meta name="description" content="Tell me the company. I'll tell you which of Stagwell's AI belongs to you.">
+<meta name="description" content="Every AI Stagwell builds, in one place.">
 <link rel="icon" href="./assets/brand/favicon.svg">
 <link rel="stylesheet" href="./assets/fonts/fonts.css">
 <link rel="stylesheet" href="./styles.css">
@@ -32,97 +32,143 @@
     <path class="m-ink" d="M149.21,5.88h-5.37c-3.03,0-5.07,1.99-5.07,4.96v5.91c0,2.97,2.01,4.94,5.07,4.94h5.38c.32,0,.63-.05.93-.17.29-.12.56-.3.79-.52.22-.22.4-.49.52-.79.12-.29.18-.61.17-.93v-.64h-7.79c-1.15,0-1.89-.74-1.89-1.89v-1.55h8.56v-2.99h-8.57v-1.4c0-1.15.74-1.89,1.89-1.89h7.8v-.63c0-.32-.05-.64-.17-.93-.12-.3-.29-.56-.52-.79-.22-.23-.49-.4-.79-.52-.29-.12-.61-.18-.93-.17"/>
   </symbol>
 </svg>
-<!-- ─────────────── BOOT ─────────────── -->
+
 <div class="boot" id="boot" aria-hidden="true">
   <svg class="boot__mark"><use href="#sw-logo"/></svg>
   <div class="boot__line"><i></i></div>
 </div>
 
-<!-- ─────────────── HEADER ─────────────── -->
-<header class="cbar" id="cbar">
-  <a class="cbar__brand" href="./c.html" aria-label="Stagwell AI">
-    <svg><use href="#sw-logo"/></svg><span>AI</span>
-  </a>
-  <div class="cbar__steps" id="steps" hidden>
-    <span class="cstep is-on" data-step="0"><i></i>Company</span>
-    <span class="cstep" data-step="1"><i></i>Objective</span>
-    <span class="cstep" data-step="2"><i></i>Scale</span>
-    <span class="cstep" data-step="3"><i></i>Your stack</span>
+<!-- ═══════════ NAV ═══════════ -->
+<header class="nav">
+  <div class="nav__in">
+    <a class="nav__brand" href="./c.html" aria-label="Stagwell AI">
+      <svg><use href="#sw-logo"/></svg><span>AI</span>
+    </a>
+    <nav class="nav__links">
+      <a href="#enterprise">Enterprise</a>
+      <a href="#cloud">Marketing Cloud</a>
+    </nav>
+    <button class="nav__cta" data-cta="call">Talk to us</button>
   </div>
-  <button class="cbar__new" id="cNew" hidden>
-    <svg viewBox="0 0 16 16" width="13" height="13"><path d="M2.8 8h10.4M8 2.8v10.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    <span>Start again</span>
-  </button>
 </header>
 
-<main class="cmain">
+<main>
 
-  <!-- ─────────────── THE CONVERSATION ─────────────── -->
-  <section class="cstage" id="cstage">
-    <div class="cstage__in">
-      <div class="chero" id="chero">
-        <p class="eyebrow" id="cEyebrow"><i class="pulse"></i>Stagwell AI</p>
-        <h1 class="display" id="cTitle">Let’s start with your <span class="accent">company.</span></h1>
-        <p class="chero__sub" id="cSub">One link, two questions. I’ll tell you exactly which of Stagwell’s AI belongs to you — and put it in your hands today.</p>
-      </div>
+<!-- ═══════════ HERO ═══════════ -->
+<section class="chero">
+  <div class="chero__in">
+    <h1 class="chero__h">Every AI we build.<br><span class="accent">One place to begin.</span></h1>
+    <p class="chero__p">Tell me what you are working on. I will point you to the right two.</p>
 
-      <div class="cthread" id="cthread" hidden></div>
+    <div class="conc" id="conc">
+      <div class="conc__body" id="concBody"></div>
+      <form class="conc__form" id="concForm" autocomplete="off">
+        <input class="conc__input" id="concInput" type="text" placeholder="Your company" aria-label="Your answer" spellcheck="false">
+        <button class="conc__send" type="submit" aria-label="Send">
+          <svg viewBox="0 0 18 18" width="15" height="15"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+      <button class="conc__reset" id="concReset" hidden>Start over</button>
+    </div>
+  </div>
+</section>
 
-      <div class="cdock" id="cdock">
-        <form class="prompt" id="promptForm" autocomplete="off">
-          <div class="prompt__field">
-            <span class="prompt__caret"></span>
-            <input class="prompt__input" id="promptInput" type="text" placeholder="nike.com" aria-label="Your answer" spellcheck="false">
-            <button class="prompt__send" id="promptSend" type="submit" aria-label="Send">
-              <svg viewBox="0 0 18 18" width="16" height="16"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </div>
-        </form>
-        <p class="cdock__hint" id="cHint">Try <button class="chint" data-eg="nike.com">nike.com</button>, <button class="chint" data-eg="airbnb.com">airbnb.com</button> or your own</p>
+<!-- ═══════════ ENTERPRISE — the big tiles ═══════════ -->
+<h2 class="band" id="enterprise">Enterprise</h2>
+
+<section class="tiles">
+  <!-- two full-width heroes -->
+  <article class="tile tile--full tile--void r" data-id="machine-os">
+    <div class="tile__t">
+      <p class="tile__k">The Machines</p>
+      <h3>The Machine</h3>
+      <p class="tile__s">The operating system for modern marketing.</p>
+      <p class="tile__l"><button class="lnk" data-open="machine-os">Learn more ›</button><button class="lnk" data-cta="call">Talk to us ›</button></p>
+    </div>
+    <!-- PLACEHOLDER: a real interface cropped tight. Swap for <img class="tile__art"> -->
+    <div class="tile__art crop" aria-hidden="true">
+      <div class="crop__bar"><i></i><i></i><i></i><b>The Machine</b></div>
+      <div class="crop__in">
+        <div class="crop__row">
+          <div class="crop__k"><span>Time to first draft</span><b>4 hrs</b></div>
+          <div class="crop__k"><span>Sources read</span><b>41</b></div>
+          <div class="crop__k"><span>Workstreams</span><b>12</b></div>
+        </div>
+        <div class="crop__lines">
+          <i style="--w:100%"></i><i style="--w:84%"></i><i style="--w:62%"></i><i style="--w:73%"></i>
+        </div>
       </div>
     </div>
-  </section>
+  </article>
 
-  <!-- ─────────────── THE PRESCRIPTION ─────────────── -->
-  <section class="crx" id="crx" hidden></section>
-
-  <!-- ─────────────── THE INITIATIVE ─────────────── -->
-  <section class="csec" id="about" hidden>
-    <div class="csec__in">
-      <p class="eyebrow">Future of News Initiative</p>
-      <h2 class="csec__title">Why Stagwell <span class="accent">builds this.</span></h2>
-      <div class="csec__cols">
-        <p>A thriving news industry is not only the foundation of a healthy democracy, it is a critical platform for marketers. Brand-safety discourse has hurt that industry, as advertisers back away out of misconception.</p>
-        <p>The evidence is unambiguous: ads beside “not brand safe” stories performed on par with brand-safe content, across six markets with HarrisX. Twenty-eight news, research and adtech partners now sit inside the coalition.</p>
-      </div>
-      <div class="cstats">
-        <div class="cstat"><b class="num">28</b><span>Partners</span></div>
-        <div class="cstat"><b class="num">9</b><span>Studies</span></div>
-        <div class="cstat"><b class="num">6</b><span>Markets</span></div>
-        <div class="cstat"><b class="num">13</b><span>AI products</span></div>
-      </div>
-      <div class="marquee" id="marquee"></div>
+  <article class="tile tile--full tile--sky r" data-id="media-machine">
+    <div class="tile__t">
+      <p class="tile__k">The Machines</p>
+      <h3>The Media Machine</h3>
+      <p class="tile__s">Planning and buying that answers to the brand.</p>
+      <p class="tile__l"><button class="lnk" data-open="media-machine">Learn more ›</button><button class="lnk" data-cta="call">Talk to us ›</button></p>
     </div>
-  </section>
+    <!-- PLACEHOLDER: a real interface cropped tight. Swap for <img class="tile__art"> -->
+    <div class="tile__art crop" aria-hidden="true">
+      <div class="crop__bar"><i></i><i></i><i></i><b>The Media Machine</b></div>
+      <div class="crop__in">
+        <div class="crop__row">
+          <div class="crop__k"><span>Working media</span><b>$42.6M</b></div>
+          <div class="crop__k"><span>Incremental reach</span><b>31.2M</b></div>
+          <div class="crop__k"><span>Brand lift</span><b>+6.4pt</b></div>
+        </div>
+        <div class="crop__cols">
+          <i style="--h:34%"></i><i style="--h:46%"></i><i style="--h:41%"></i><i style="--h:58%"></i>
+          <i style="--h:53%"></i><i style="--h:71%"></i><i style="--h:66%"></i><i style="--h:88%"></i>
+          <i style="--h:79%"></i><i style="--h:96%"></i>
+        </div>
+      </div>
+    </div>
+  </article>
 
-  <footer class="cfoot" id="cfoot" hidden>
-    <svg><use href="#sw-logo"/></svg>
-    <span>Prototype · scripted demonstration · figures illustrative</span>
-  </footer>
+  <!-- then a pair -->
+  <article class="tile tile--half r" data-id="knowledge-machine">
+    <div class="tile__t">
+      <p class="tile__k">The Knowledge Machine</p>
+      <h3>Pulse</h3>
+      <p class="tile__s">Everything your organisation knows, answerable.</p>
+      <p class="tile__l"><button class="lnk" data-open="knowledge-machine">Learn more ›</button></p>
+    </div>
+    <div class="tile__art art--stack" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  </article>
+
+  <article class="tile tile--half tile--ink r" data-id="targeting-machine">
+    <div class="tile__t">
+      <p class="tile__k">The Targeting Machine</p>
+      <h3>SATS</h3>
+      <p class="tile__s">A 260M identity graph, made addressable.</p>
+      <p class="tile__l"><button class="lnk" data-open="targeting-machine">Learn more ›</button></p>
+    </div>
+    <div class="tile__art art--field" aria-hidden="true"></div>
+  </article>
+</section>
+
+<!-- ═══════════ MARKETING CLOUD — the small cards ═══════════ -->
+<section class="crail" id="cloud">
+  <div class="crail__h r">
+    <h2>The Marketing Cloud</h2>
+    <div class="crail__n">
+      <button class="crail__b" id="railPrev" aria-label="Previous">‹</button>
+      <button class="crail__b" id="railNext" aria-label="Next">›</button>
+    </div>
+  </div>
+  <div class="crail__track" id="railTrack"></div>
+</section>
+
+<footer class="foot">
+  <div class="foot__in">
+    <svg class="foot__logo"><use href="#sw-logo"/></svg>
+    <p>Prototype · scripted demonstration</p>
+  </div>
+</footer>
+
 </main>
 
-<!-- ─────────────── LOADER ─────────────── -->
-<div class="think" id="think" hidden>
-  <span class="loader__mark">
-    <span class="loader__ring"></span>
-    <svg viewBox="0 0 28.44 28"><use href="#sw-mark"/></svg>
-  </span>
-  <p class="loader__title">Matching you to the right Stagwell AI</p>
-  <p class="loader__status" id="thinkStatus" aria-live="polite"></p>
-  <span class="loader__bar"><i id="thinkMeter"></i></span>
-</div>
-
-<!-- ─────────────── MODAL ─────────────── -->
 <div class="modal" id="modal" hidden>
   <div class="modal__scrim" data-close></div>
   <div class="modal__panel" role="dialog" aria-modal="true">
