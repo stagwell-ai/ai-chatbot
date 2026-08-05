@@ -236,13 +236,9 @@ const SMMINI = {
   newintel: `<span class="cmini mini-feed">
       <span><i class="pulse"></i><b>Rival cut prices 4%</b><em>2h</em></span>
       <span><i class="pulse pulse--amber"></i><b>New creator campaign</b><em>9h</em></span></span>`,
-  'agent-cloud': `<span class="cmini mini-net">
-      <svg viewBox="0 0 84 34" aria-hidden="true">
-        <path d="M42,17 L12,7 M42,17 L20,29 M42,17 L64,5 M42,17 L72,23" stroke="currentColor" stroke-width="1"/>
-        <circle cx="12" cy="7" r="2.4"/><circle cx="20" cy="29" r="2.4"/>
-        <circle cx="64" cy="5" r="2.4"/><circle cx="72" cy="23" r="2.4"/>
-        <circle cx="42" cy="17" r="4" class="mini-net__hub"/>
-      </svg><b>10 agents, one place</b></span>`,
+  'agent-cloud': `<span class="cmini mini-agents">
+      <b class="agchip">Planner</b><b class="agchip">Copy</b><b class="agchip">Testing</b>
+      <b class="agchip agchip--more">+7</b></span>`,
   'people-platform': `<span class="cmini mini-saydo">
       <span><b>Say</b><span class="mini-bar"><i style="--w:34%"></i></span><em>34%</em></span>
       <span><b>Do</b><span class="mini-bar"><i style="--w:61%"></i></span><em>61%</em></span></span>`,
