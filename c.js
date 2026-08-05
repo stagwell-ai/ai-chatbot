@@ -207,7 +207,7 @@ $('#concReset').addEventListener('click', () => {
 const BIG = ['newvoices', 'bera', 'doreel', 'koalifyed'];
 const BIGART = {
   newvoices: ['fcard--dark',  voice()],
-  bera:      ['fcard--sky',   bars([30, 44, 39, 56, 62, 58, 76, 90])],
+  bera:      ['fcard--sky',   globe()],
   doreel:    ['fcard--amber fcard--video',
     `<video class="fcard__video" src="./assets/img/doreel.mp4" autoplay muted loop playsinline></video>`],
   koalifyed: ['fcard--teal',  dotfield()],
@@ -225,6 +225,16 @@ function rows(w)  { return `<div class="ca-rows">${w.map(v => `<i style="--w:${v
 function wave()   { return `<div class="ca-wave">${Array.from({ length: 30 },
   (_, i) => `<i style="--h:${16 + Math.round(Math.abs(Math.sin(i * 0.72)) * 74)}%"></i>`).join('')}</div>`; }
 function dotfield(){ return `<div class="ca-dots"></div>`; }
+/* a thin-line wireframe world, in slow full rotation */
+function globe() {
+  const mer = [0, 30, 60, 90, 120, 150]
+    .map(a => `<i style="--a:${a}deg"></i>`).join('');
+  const lat = [[100, 0], [86.6, .25], [57.4, .41], [-86.6, .25], [-57.4, .41]]
+    .map(([d, z]) => `<b style="--d:${Math.abs(d)}%;--z:${d < 0 ? -z : z}"></b>`).join('');
+  return `<span class="ca-globe"><span class="ca-globe__tilt">
+    <span class="ca-globe__spin">${mer}${lat}</span></span></span>`;
+}
+
 /* a small centred voice agent, mid-sentence */
 function voice(){ return `<div class="ca-voice">${Array.from({ length: 7 },
   (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>`; }
