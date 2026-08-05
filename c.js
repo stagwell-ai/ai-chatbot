@@ -208,7 +208,8 @@ const BIG = ['newvoices', 'bera', 'doreel', 'koalifyed'];
 const BIGART = {
   newvoices: ['fcard--dark',  voice()],
   bera:      ['fcard--sky',   bars([30, 44, 39, 56, 62, 58, 76, 90])],
-  doreel:    ['fcard--amber', film()],
+  doreel:    ['fcard--amber fcard--video',
+    `<video class="fcard__video" src="./assets/img/doreel.mp4" autoplay muted loop playsinline></video>`],
   koalifyed: ['fcard--teal',  dotfield()],
 };
 const SMART = {
@@ -240,7 +241,8 @@ const bigCard = p => {
       <em class="btn btn--sm">Learn more</em></span>
   </button>`;
 };
-const smCard = p => `<button class="scard" data-id="${p.id}">
+const SMCLS = { 'people-platform': 'scard--img' };
+const smCard = p => `<button class="scard ${SMCLS[p.id] || ''}" data-id="${p.id}">
     <span class="scard__art">${SMART[p.id] || dotfield()}</span>
     <span class="scard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i></span>
     <em class="btn btn--xs">Learn more</em>
@@ -269,7 +271,7 @@ let last = performance.now();
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
   FLOWS.forEach(f => {
-    if (!REDUCED && !f.hover) f.off += f.dir * f.speed * dt;
+    if (!REDUCED && !f.hover && now > (f.pauseUntil || 0)) f.off += f.dir * f.speed * dt;
     f.off += f.vel * dt;
     f.vel *= Math.pow(0.0016, dt);            // paddle impulse eases out
     if (Math.abs(f.vel) < 1) f.vel = 0;
@@ -284,6 +286,7 @@ function nudge(sign) {
     const card = f.el.firstElementChild;
     const w = (card ? card.getBoundingClientRect().width + 12 : 320);
     f.vel = sign * w * 4.2;                   // decays to ~one card of travel
+    f.pauseUntil = performance.now() + 2200;  // the drift waits while you steer
   });
 }
 $('#cloudNext').addEventListener('click', () => nudge(1));

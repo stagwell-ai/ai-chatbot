@@ -156,7 +156,8 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile--ink{background:linear-gradient(165deg,#012A3D,#00121C);color:var(--on-void)}
 .tile--sky{background:linear-gradient(170deg,#E4F1F6 0%,#F5FAFC 60%)}
 /* light photo background — text stays ink, image anchors low */
-.tile--photo{background-size:cover;background-position:center bottom}
+.tile--photo{background-color:#F4F4F5;background-size:cover;
+  background-position:center calc(100% + 96px)}
 
 /* a real image behind the text — a scrim keeps the type readable */
 .tile--img{background-size:cover;background-position:center}
@@ -282,9 +283,13 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .fcard--teal .btn{background:#fff;color:var(--navy)}
 .fcard--teal .btn:hover{background:#D8E6EC}
 /* image art inside a card */
-img.scard__img{position:absolute;inset:auto 0 0;width:100%;height:58%;object-fit:cover;
-  z-index:1;-webkit-mask-image:linear-gradient(transparent,#000 34%);
-  mask-image:linear-gradient(transparent,#000 34%)}
+img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.scard--img::after{content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(20,8,44,.62),rgba(20,8,44,.05) 62%)}
+.scard--img .scard__t{z-index:2}
+.scard--img .scard__t b{color:#fff}
+.scard--img .scard__t i{color:rgba(255,255,255,.85)}
+.scard--img .btn--xs{z-index:2;background:#fff;color:var(--navy)}
 .fcard__k{position:absolute;top:22px;left:26px;z-index:2;
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.14em;
   text-transform:uppercase;color:var(--teal)}
@@ -298,6 +303,15 @@ img.scard__img{position:absolute;inset:auto 0 0;width:100%;height:58%;object-fit
 .fcard__t .btn{margin-top:8px}
 .fcard--dark .btn{background:#fff;color:var(--navy)}
 .fcard--dark .btn:hover{background:#D8E6EC}
+/* DoReel: its own reel runs silently behind the text */
+.fcard__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.fcard--video::after{content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(0,10,16,.10) 40%,rgba(0,10,16,.58))}
+.fcard--video .fcard__k,.fcard--video .fcard__t b{color:#fff}
+.fcard--video .fcard__t i{color:rgba(255,255,255,.88)}
+.fcard--video .btn{background:#fff;color:var(--navy)}
+.fcard--video .btn:hover{background:#D8E6EC}
+
 /* PLACEHOLDER — swap for <img class="fcard__art" src="…"> */
 .fcard__art{position:absolute;inset:0;z-index:1;opacity:.8}
 .fcard__art .ca-wave{position:absolute;inset:auto 0 0;height:52%;padding:0 5%}
@@ -345,7 +359,7 @@ img.scard__img{position:absolute;inset:auto 0 0;width:100%;height:58%;object-fit
 .ca-voice{position:absolute;inset:0;display:flex;align-items:center;
   justify-content:center;gap:7px}
 .ca-voice i{width:7px;height:46px;border-radius:var(--r-full);background:#30D158;
-  box-shadow:0 0 18px rgba(48,209,88,.35);transform-origin:center;
+  transform-origin:center;
   animation:talk 1.15s var(--ease-io) calc(var(--i) * -173ms) infinite}
 .ca-voice i:nth-child(1),.ca-voice i:nth-child(7){height:22px}
 .ca-voice i:nth-child(2),.ca-voice i:nth-child(6){height:34px}

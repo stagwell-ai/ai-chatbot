@@ -100,7 +100,7 @@ const PRODUCTS = [
   },
   {
     id:'koalifyed', name:'Koalifyed', suite:'cloud',
-    line:'Influencer marketing, from discovery to proof',
+    line:'Influencer Marketing AI',
     what:'Stagwell’s influencer platform — vetted creator discovery, campaign management and performance measurement in one place, so influencer spend is judged like any other media.',
     proof:'Influencer discovery, activation and measurement.',
     goals:['audience','growth'], scale:'either',
