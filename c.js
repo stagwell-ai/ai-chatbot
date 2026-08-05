@@ -24,7 +24,7 @@ const box   = $('#concBody');
 const form  = $('#concForm');
 const input = $('#concInput');
 
-const C = { step: 0, busy: true, company: '', goal: null, scale: null };
+const C = { step: 0, busy: false, name: '', company: '', goal: null, scale: null };
 const pin = () => { box.scrollTop = box.scrollHeight; };
 
 function openPanel() { if (box.hidden) box.hidden = false; }
@@ -68,14 +68,21 @@ const clearOptions = () => $$('.chips--opt', box).forEach(w => {
 
 const STEPS = [
   {
-    placeholder: '',            /* the greeter loop below owns this slot */
-    async ask() {},             /* the pill itself asks the first question */
+    placeholder: 'What’s your name?',
+    async ask() {},                 /* the pill itself asks */
+    take(t) { C.name = t.replace(/^(i am|i'm|im|my name is|it's)\s+/i, '').trim(); },
+  },
+  {
+    placeholder: 'Your company',
+    async ask() {
+      await says(`Nice to meet you, <em>${esc(C.name)}</em>. What company are you with?`, 520);
+    },
     take(t) { C.company = t.replace(/^(we are|we're|it's|its)\s+/i, '').trim(); },
   },
   {
     placeholder: 'Or say it in your own words',
     async ask() {
-      await says(`Good to meet you, <em>${esc(C.company)}</em>. What are you trying to accomplish?`, 560);
+      await says(`<em>${esc(C.company)}</em> — what are you trying to accomplish?`, 520);
       options(GOALS);
     },
     take(t, id) { C.goal = id || 'growth'; },
@@ -90,7 +97,6 @@ const STEPS = [
 async function answer(text, id) {
   if (C.busy || C.step >= STEPS.length) return;
   C.busy = true;
-  stopGreet('');
   clearOptions();
   line(text, true);
   input.value = '';
@@ -108,7 +114,7 @@ async function answer(text, id) {
 
 async function recommend() {
   const [a, b] = match(C.goal, C.scale);
-  await says(`Start with these two.`, 760);
+  await says(`${C.name ? esc(C.name) : 'Right'} — start with these two.`, 760);
 
   const wrap = document.createElement('div');
   wrap.className = 'recs';
@@ -142,40 +148,6 @@ async function recommend() {
   C.busy = false;
 }
 
-/* ── the greeter ──
-   Someone is typing at you: rotating questions typed character by
-   character into the placeholder, until the conversation starts. */
-const GREETS = [
-  'Hey — how can I help?',
-  'What company are you with?',
-  'What are you working on these days?',
-  'Looking for the right AI to start with?',
-];
-let greetOn = true;
-(async function greet() {
-  if (REDUCED) { input.placeholder = GREETS[0]; return; }
-  let gi = 0;
-  while (greetOn) {
-    const txt = GREETS[gi % GREETS.length];
-    for (let i = 1; i <= txt.length && greetOn; i++) {
-      input.placeholder = txt.slice(0, i);
-      await wait(34 + Math.random() * 40);
-    }
-    await wait(2400);
-    for (let i = txt.length; i >= 0 && greetOn; i--) {
-      input.placeholder = txt.slice(0, i);
-      await wait(11);
-    }
-    gi++;
-  }
-})();
-const stopGreet = txt => {
-  if (!greetOn) return;
-  greetOn = false;
-  input.placeholder = txt || '';
-};
-input.addEventListener('input', () => { if (input.value) stopGreet(); });
-
 form.addEventListener('submit', e => {
   e.preventDefault();
   const v = input.value.trim();
@@ -188,7 +160,7 @@ $('#concReset').addEventListener('click', () => {
   Object.assign(C, { step: 0, busy: false, company: '', goal: null, scale: null });
   input.disabled = false;
   input.value = '';
-  input.placeholder = GREETS[0];
+  input.placeholder = STEPS[0].placeholder;
   $('#concReset').hidden = true;
 });
 
@@ -485,6 +457,7 @@ reveal($$('.r'));
 whenVisible($$('.tile'), el => el.classList.add('is-in'), { threshold: 0.2 });
 
 addEventListener('load', async () => {
+  input.placeholder = STEPS[0].placeholder;
   await wait(REDUCED ? 40 : 560);
   document.body.dataset.state = 'ready';
   $('#boot')?.classList.add('is-out');
