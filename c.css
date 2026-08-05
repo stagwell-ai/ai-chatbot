@@ -332,12 +332,12 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
    button — a piece of that product's dashboard. Micro-motion only. */
 .scard__mini{position:absolute;left:18px;right:18px;bottom:56px;z-index:2;
   display:flex;justify-content:center;color:var(--ink-3)}
-.mini{display:inline-flex;align-items:center;gap:8px;max-width:100%;
+.cmini{display:inline-flex;align-items:center;gap:8px;max-width:100%;
   border:1px solid var(--line);border-radius:10px;padding:9px 12px}
-.mini b{font-family:var(--mono);font-weight:400;font-size:9px;letter-spacing:.04em;
+.cmini b{font-family:var(--mono);font-weight:400;font-size:9px;letter-spacing:.04em;
   color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mini em{font-style:normal;font-family:var(--mono);font-size:9px;flex:none}
-.mini u{text-decoration:none;color:var(--teal)}
+.cmini em{font-style:normal;font-family:var(--mono);font-size:9px;flex:none}
+.cmini u{text-decoration:none;color:var(--teal)}
 
 .mini-ask{border-radius:var(--r-full)}
 .mini-ask b{max-width:0;animation:miniType 7s steps(44) infinite;text-overflow:clip}

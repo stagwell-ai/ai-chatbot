@@ -224,26 +224,26 @@ const BIGART = {
    the copy and the button, bordered like a piece of real UI, animated
    only in micro ways that never touch readability */
 const SMMINI = {
-  harrisquest: `<span class="mini mini-ask">
+  harrisquest: `<span class="cmini mini-ask">
       <svg viewBox="0 0 12 12" width="9" height="9"><circle cx="5.2" cy="5.2" r="3.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 8l2.6 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       <b>Would buyers pay more for repairability?</b><i class="mini-caret"></i></span>`,
-  newindex: `<span class="mini mini-row">
+  newindex: `<span class="cmini mini-row">
       <i class="pulse"></i><b>Ranked&nbsp;<u>#1</u>&nbsp;in AI answers</b><em class="up">↑ 2</em></span>`,
-  geopulse: `<span class="mini mini-col">
+  geopulse: `<span class="cmini mini-col">
       <svg viewBox="0 0 96 26" aria-hidden="true"><path class="mini-line" d="M2,22 L18,19 L34,21 L50,13 L66,15 L82,6 L94,3"
         fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <b>Answer share, 12 weeks</b></span>`,
-  newintel: `<span class="mini mini-feed">
+  newintel: `<span class="cmini mini-feed">
       <span><i class="pulse"></i><b>Rival cut prices 4%</b><em>2h</em></span>
       <span><i class="pulse pulse--amber"></i><b>New creator campaign</b><em>9h</em></span></span>`,
-  'agent-cloud': `<span class="mini mini-net">
+  'agent-cloud': `<span class="cmini mini-net">
       <svg viewBox="0 0 84 34" aria-hidden="true">
         <path d="M42,17 L12,7 M42,17 L20,29 M42,17 L64,5 M42,17 L72,23" stroke="currentColor" stroke-width="1"/>
         <circle cx="12" cy="7" r="2.4"/><circle cx="20" cy="29" r="2.4"/>
         <circle cx="64" cy="5" r="2.4"/><circle cx="72" cy="23" r="2.4"/>
         <circle cx="42" cy="17" r="4" class="mini-net__hub"/>
       </svg><b>10 agents, one place</b></span>`,
-  'people-platform': `<span class="mini mini-saydo">
+  'people-platform': `<span class="cmini mini-saydo">
       <span><b>Say</b><span class="mini-bar"><i style="--w:34%"></i></span><em>34%</em></span>
       <span><b>Do</b><span class="mini-bar"><i style="--w:61%"></i></span><em>61%</em></span></span>`,
 };
