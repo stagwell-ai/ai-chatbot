@@ -162,50 +162,56 @@ $('#concReset').addEventListener('click', async () => {
   C.busy = false;
 });
 
-/* ══════════════════════ THE SLIDER ══════════════════════
-   The nine Marketing Cloud products. Each ccard's art is a
-   PLACEHOLDER — replace .ccard__art with an <img> when the
-   real images land. */
+/* ══════════════════════ THE MARKETING CLOUD ══════════════════════
+   Two rows in constant motion, like the reference: three big
+   showcases drifting left with cropped neighbours, the rest as
+   smaller cards drifting the other way. Hover pauses a row.
+   Art is PLACEHOLDER until the real images land. */
 
-const ART = {
-  bera:              ['ccard--tint', bars([30, 44, 39, 56, 62, 58, 76, 90])],
-  newindex:          ['ccard--dark', rows([92, 68, 50, 34])],
-  geopulse:          ['',           rows([88, 70, 54, 36])],
-  newintel:          ['ccard--tint', rows([74, 90, 52, 66])],
-  newvoices:         ['ccard--dark', wave()],
-  'agent-cloud':     ['',           dotfield()],
-  doreel:            ['ccard--amber', film()],
-  harrisquest:       ['',           bars([41, 29, 18, 12, 26, 35, 48, 58])],
-  'people-platform': ['ccard--tint', dotfield()],
+const BIG = ['newvoices', 'bera', 'doreel'];
+const BIGART = {
+  newvoices: ['fcard--dark',  wave()],
+  bera:      ['fcard--sky',   bars([30, 44, 39, 56, 62, 58, 76, 90])],
+  doreel:    ['fcard--amber', film()],
+};
+const SMART = {
+  newindex:          rows([92, 68, 50, 34]),
+  geopulse:          rows([88, 70, 54, 36]),
+  newintel:          rows([74, 90, 52, 66]),
+  'agent-cloud':     dotfield(),
+  harrisquest:       bars([41, 29, 18, 12, 26, 35, 48, 58]),
+  'people-platform': dotfield(),
 };
 function bars(h)  { return `<div class="ca-bars">${h.map(v => `<i style="--h:${v}%"></i>`).join('')}</div>`; }
 function rows(w)  { return `<div class="ca-rows">${w.map(v => `<i style="--w:${v}%"></i>`).join('')}</div>`; }
-function wave()   { return `<div class="ca-wave">${Array.from({ length: 22 },
+function wave()   { return `<div class="ca-wave">${Array.from({ length: 30 },
   (_, i) => `<i style="--h:${16 + Math.round(Math.abs(Math.sin(i * 0.72)) * 74)}%"></i>`).join('')}</div>`; }
 function dotfield(){ return `<div class="ca-dots"></div>`; }
 function film()   { return `<div class="ca-film">${[1, .74, .5, .3].map(o => `<i style="--o:${o}"></i>`).join('')}</div>`; }
 
-const track = $('#railTrack');
-track.innerHTML = PRODUCTS.filter(p => p.suite === 'cloud').map(p => {
-  const [cls, art] = ART[p.id] || ['', dotfield()];
-  return `<button class="ccard ${cls}" data-id="${p.id}">
-    <p class="ccard__k">Marketing Cloud</p>
-    <h3>${esc(p.name)}</h3>
-    <p>${esc(p.line)}</p>
-    <span class="ccard__go">Learn more</span>
-    <span class="ccard__art">${art}</span>
-  </button>`;
-}).join('');
+const P = id => PRODUCTS.find(p => p.id === id);
 
-const step = () => ($('.ccard', track)?.offsetWidth || 280) + 12;
-$('#railNext').addEventListener('click', () => track.scrollBy({ left: step() * 2 }));
-$('#railPrev').addEventListener('click', () => track.scrollBy({ left: -step() * 2 }));
-const syncRail = () => {
-  $('#railPrev').disabled = track.scrollLeft < 8;
-  $('#railNext').disabled = track.scrollLeft > track.scrollWidth - track.clientWidth - 8;
+const bigCard = p => {
+  const [cls, art] = BIGART[p.id];
+  return `<button class="fcard ${cls}" data-id="${p.id}">
+    <span class="fcard__art">${art}</span>
+    <span class="fcard__k">Marketing Cloud</span>
+    <span class="fcard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i>
+      <em class="btn btn--sm">Learn more</em></span>
+  </button>`;
 };
-track.addEventListener('scroll', syncRail, { passive: true });
-syncRail();
+const smCard = p => `<button class="scard" data-id="${p.id}">
+    <span class="scard__art">${SMART[p.id] || dotfield()}</span>
+    <span class="scard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i></span>
+    <em class="btn btn--xs">Learn more</em>
+  </button>`;
+
+/* each row is its content twice, so translateX(-50%) loops seamlessly */
+const bigRow = BIG.map(id => bigCard(P(id))).join('');
+const smRow  = PRODUCTS.filter(p => p.suite === 'cloud' && !BIG.includes(p.id))
+  .map(smCard).join('');
+$('#flowBig').innerHTML = `<div class="flow__row">${bigRow}${bigRow}</div>`;
+$('#flowSm').innerHTML  = `<div class="flow__row">${smRow}${smRow}</div>`;
 
 /* ══════════════════════ MODAL ══════════════════════ */
 
