@@ -547,8 +547,11 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
   .fcard__t{left:20px;right:20px;bottom:20px;max-width:none}
   .scard{width:74vw}
   .vctl{right:12px;bottom:12px}
-  .tile{padding-inline:18px}
-  .tile__k{left:20px;top:20px}
+  /* the eyebrow is absolute, so the copy needs its own clearance —
+     The Machine gets it free from being centred; the rest do not */
+  .tile{padding:64px 18px 0}
+  .tile--center{padding-bottom:64px}
+  .tile__k{left:20px;top:22px}
   /* the greeting has less room to type into on a phone */
   .conc__form{height:56px;padding-left:18px;gap:9px}
   .conc__input{font-size:.9375rem}
