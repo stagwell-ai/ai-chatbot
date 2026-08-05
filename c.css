@@ -304,6 +304,13 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 .fcard__t .btn{margin-top:8px}
 .fcard--dark .btn{background:#fff;color:var(--navy)}
 .fcard--dark .btn:hover{background:#D8E6EC}
+/* pause/play for background videos — bottom right, out of the way */
+.vctl{position:absolute;right:16px;bottom:16px;z-index:3;width:34px;height:34px;
+  border-radius:50%;display:grid;place-items:center;cursor:pointer;color:#fff;
+  background:rgba(0,0,0,.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:background var(--d-1)}
+.vctl:hover{background:rgba(0,0,0,.62)}
+
 /* DoReel: its own reel runs silently behind the text */
 .fcard__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
 .fcard--video::after{content:"";position:absolute;inset:0;z-index:1;

@@ -364,6 +364,27 @@ $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
              behavior: REDUCED ? 'auto' : 'smooth' });
 }));
 
+/* every background video gets a small pause/play control, bottom right */
+const VICONS = {
+  pause: '<svg viewBox="0 0 14 14" width="12" height="12"><path d="M4 2.6v8.8M10 2.6v8.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  play:  '<svg viewBox="0 0 14 14" width="12" height="12"><path d="M4.4 2.5l7 4.5-7 4.5z" fill="currentColor"/></svg>',
+};
+$$('.fcard video').forEach(v => {
+  const b = document.createElement('span');
+  b.className = 'vctl';
+  b.setAttribute('role', 'button');
+  b.setAttribute('tabindex', '0');
+  b.setAttribute('aria-label', 'Pause video');
+  b.innerHTML = VICONS.pause;
+  const toggle = () => {
+    if (v.paused) { v.play(); b.innerHTML = VICONS.pause; b.setAttribute('aria-label', 'Pause video'); }
+    else { v.pause(); b.innerHTML = VICONS.play; b.setAttribute('aria-label', 'Play video'); }
+  };
+  b.addEventListener('click', e => { e.stopPropagation(); toggle(); });
+  b.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+  v.closest('.fcard').appendChild(b);
+});
+
 /* ══════════════════════ SATS CONSTELLATION ══════════════════════
    A grid of quiet dots. Every couple of seconds one becomes a hub:
    it grows, thin lines run out to its neighbours, the neighbours
