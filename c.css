@@ -334,7 +334,7 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
    grounded, not floating */
 .scard__mini{flex:1;width:100%;display:flex;align-items:center;
   justify-content:center;padding:14px;margin:16px 0;
-  background:#F0F1F3;border-radius:10px;color:var(--ink-3)}
+  background:#F5F6F7;border-radius:10px;color:var(--ink-3)}
 .cmini{display:inline-flex;align-items:center;gap:8px;max-width:100%;
   border:1px solid var(--line);border-radius:10px;padding:9px 12px;
   background:var(--surface)}
@@ -342,6 +342,8 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
   color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cmini em{font-style:normal;font-family:var(--mono);font-size:9px;flex:none}
 .cmini u{text-decoration:none;color:var(--teal)}
+.mini-row .up{animation:nudgeUp 3.4s var(--ease-io) infinite}
+@keyframes nudgeUp{0%,74%,100%{transform:none;opacity:1}82%{transform:translateY(-2px);opacity:.75}90%{transform:none}}
 
 .mini-ask{border-radius:var(--r-full)}
 .mini-ask b{max-width:0;animation:miniType 7s steps(44) infinite;text-overflow:clip}
@@ -353,8 +355,13 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 .mini-col{flex-direction:column;gap:5px}
 .mini-col svg{width:96px;height:26px;color:var(--teal)}
 .mini-line{stroke-dasharray:130;stroke-dashoffset:130;
-  animation:miniDraw 2.4s var(--ease) 400ms forwards}
-@keyframes miniDraw{to{stroke-dashoffset:0}}
+  animation:miniDraw 6.5s var(--ease) 400ms infinite}
+@keyframes miniDraw{
+  0%{stroke-dashoffset:130;opacity:1}
+  38%,80%{stroke-dashoffset:0;opacity:1}
+  90%{stroke-dashoffset:0;opacity:0}
+  96%,100%{stroke-dashoffset:130;opacity:0}
+}
 
 .mini-feed{flex-direction:column;align-items:stretch;gap:6px}
 .mini-feed > span{display:flex;align-items:center;gap:6px;min-width:0}
@@ -365,8 +372,15 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 .mini-agents{gap:5px}
 .agchip{font-family:var(--mono);font-weight:400;font-size:9px;letter-spacing:.03em;
   color:var(--ink-2);border:1px solid var(--line);border-radius:var(--r-full);
-  padding:3px 9px;white-space:nowrap}
-.agchip--more{background:var(--ink);border-color:var(--ink);color:#fff}
+  padding:3px 9px;white-space:nowrap;
+  animation:chipTurn 5.4s var(--ease-io) infinite}
+.agchip:nth-child(2){animation-delay:1.8s}
+.agchip:nth-child(3){animation-delay:3.6s}
+@keyframes chipTurn{
+  0%,26%,100%{border-color:var(--line);color:var(--ink-2)}
+  7%,18%{border-color:var(--teal);color:var(--navy)}
+}
+.agchip--more{background:var(--ink);border-color:var(--ink);color:#fff;animation:none}
 
 .mini-saydo{flex-direction:column;align-items:stretch;gap:6px;min-width:64%}
 .mini-saydo > span{display:flex;align-items:center;gap:7px}
@@ -374,13 +388,17 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 .mini-bar{flex:1;min-width:0;height:5px;border-radius:var(--r-full);background:var(--line)}
 .mini-bar i{display:block;height:100%;width:var(--w);border-radius:var(--r-full);
   background:var(--teal);transform-origin:left;
-  animation:miniGrow 1.1s var(--ease) 300ms both}
-.mini-saydo > span:last-child .mini-bar i{animation-delay:520ms}
-@keyframes miniGrow{from{transform:scaleX(0)}}
+  animation:miniGrow 7s var(--ease) 300ms infinite}
+.mini-saydo > span:last-child .mini-bar i{animation-delay:700ms}
+@keyframes miniGrow{
+  0%{transform:scaleX(0)}
+  16%,86%{transform:scaleX(1)}
+  96%,100%{transform:scaleX(0)}
+}
 @media (prefers-reduced-motion:reduce){
   .mini-ask b{animation:none;max-width:200px}
   .mini-line{animation:none;stroke-dashoffset:0}
-  .mini-bar i{animation:none}
+  .mini-bar i,.agchip,.mini-row .up{animation:none}
 }
 
 /* pause/play for background videos — bottom right, out of the way */
