@@ -33,13 +33,7 @@ function line(html, me) {
   openPanel();
   const el = document.createElement('div');
   el.className = me ? 'cline cline--me' : 'cline';
-  /* the mark identifies a speaker, so it shows once per run of AI lines */
-  const prev = box.lastElementChild;
-  const runOn = !me && prev?.classList.contains('cline') && !prev.classList.contains('cline--me');
-  el.innerHTML = me
-    ? `<span class="cline__t">${esc(html)}</span>`
-    : `<svg class="cline__mark"${runOn ? ' style="visibility:hidden"' : ''}><use href="#sw-mark"/></svg>
-       <span class="cline__t">${html}</span>`;
+  el.innerHTML = `<span class="cline__t">${me ? esc(html) : html}</span>`;
   box.appendChild(el);
   pin();
   return el;
@@ -383,6 +377,21 @@ $$('.fcard video').forEach(v => {
   b.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
   v.closest('.fcard').appendChild(b);
 });
+
+/* NewIndex's movement ticks upward on a loop — a number that lives */
+(function rankTick() {
+  const els = $$('.mini-row .up');
+  if (!els.length || REDUCED) return;
+  const steps = [2, 3, 4];
+  let i = 0;
+  setInterval(() => {
+    i = (i + 1) % steps.length;
+    els.forEach(el => {
+      el.style.opacity = 0;
+      setTimeout(() => { el.textContent = `↑ ${steps[i]}`; el.style.opacity = 1; }, 260);
+    });
+  }, 2800);
+})();
 
 /* ══════════════════════ SATS CONSTELLATION ══════════════════════
    A grid of quiet dots. Every couple of seconds one becomes a hub:

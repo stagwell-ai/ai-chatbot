@@ -71,7 +71,6 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .conc{width:min(560px,100%);margin-top:12px;text-align:left}
 .conc__body{display:flex;flex-direction:column;gap:12px;
   background:var(--surface);border-radius:var(--r-xl);
-  box-shadow:0 1px 2px rgba(0,35,52,.05),0 14px 38px -20px rgba(0,35,52,.24);
   padding:18px;margin-bottom:10px;
   max-height:min(40vh,320px);overflow-y:auto;
   scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;
@@ -342,7 +341,8 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
   color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cmini em{font-style:normal;font-family:var(--mono);font-size:9px;flex:none}
 .cmini u{text-decoration:none;color:var(--teal)}
-.mini-row .up{animation:nudgeUp 3.4s var(--ease-io) infinite}
+.mini-row .up{animation:nudgeUp 3.4s var(--ease-io) infinite;
+  transition:opacity 240ms var(--ease)}
 @keyframes nudgeUp{0%,74%,100%{transform:none;opacity:1}82%{transform:translateY(-2px);opacity:.75}90%{transform:none}}
 
 .mini-ask{border-radius:var(--r-full)}
