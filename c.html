@@ -119,14 +119,14 @@
   </article>
 
   <!-- then a pair -->
-  <article class="tile tile--half r" data-id="knowledge-machine">
+  <article class="tile tile--half tile--photo r" data-id="knowledge-machine"
+           style="background-image:url('./assets/img/pulse.jpg')">
     <p class="tile__k">The Knowledge Machine</p>
     <div class="tile__t">
       <h3>Pulse</h3>
       <p class="tile__s">Everything your organisation knows, answerable.</p>
       <p class="tile__l"><button class="btn btn--sm" data-open="knowledge-machine">Learn more</button></p>
     </div>
-    <div class="tile__art art--stack" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   </article>
 
   <article class="tile tile--half tile--ink r" data-id="targeting-machine">
@@ -146,6 +146,14 @@
   <!-- two always-moving rows: big showcases drift left, small cards drift right -->
   <div class="flow flow--big" id="flowBig"></div>
   <div class="flow flow--sm" id="flowSm"></div>
+  <div class="crail__nav">
+    <button class="paddle" id="cloudPrev" aria-label="Previous">
+      <svg viewBox="0 0 16 16" width="15" height="15"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="paddle" id="cloudNext" aria-label="Next">
+      <svg viewBox="0 0 16 16" width="15" height="15"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
 </section>
 
 <!-- ═══════════ FINE PRINT — Future of News, in the reference's footnote style ═══════════ -->

@@ -63,7 +63,8 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   display:flex;flex-direction:column;align-items:center;gap:16px}
 .chero__h{margin:0;font-family:var(--sans);font-weight:600;letter-spacing:-.038em;
   line-height:1.05;font-size:clamp(2.375rem,5.6vw,4rem)}
-.chero__p{margin:0;font-size:clamp(1.0625rem,1.6vw,1.375rem);color:var(--ink-2);line-height:1.45}
+/* one paragraph voice across the page: 17px, solid, easy to read */
+.chero__p{margin:0;font-size:1.0625rem;color:#3D5A66;line-height:1.5}
 
 /* the concierge — one full-round pill, like A's hero composer.
    The panel above it only exists once the visitor answers. */
@@ -154,12 +155,15 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile--void{background:var(--void);color:var(--on-void)}
 .tile--ink{background:linear-gradient(165deg,#012A3D,#00121C);color:var(--on-void)}
 .tile--sky{background:linear-gradient(170deg,#E4F1F6 0%,#F5FAFC 60%)}
+/* light photo background — text stays ink, image anchors low */
+.tile--photo{background-size:cover;background-position:center bottom}
+
 /* a real image behind the text — a scrim keeps the type readable */
 .tile--img{background-size:cover;background-position:center}
 .tile--img::before{content:"";position:absolute;inset:0;z-index:1;
   background:radial-gradient(80% 90% at 50% 60%,rgba(0,0,0,.14),rgba(0,0,0,.42))}
-.tile--img .tile__k{color:#FFD9A8}
-.tile--img .tile__s{color:rgba(255,244,232,.86)}
+.tile--img .tile__k{color:#fff}
+.tile--img .tile__s{color:#FFEDDE}
 .tile--img h3{color:#fff}
 
 .tile__t{position:relative;z-index:2;display:flex;flex-direction:column;
@@ -168,12 +172,12 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile__k{margin:0;position:absolute;top:24px;left:28px;z-index:3;text-align:left;
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.15em;
   text-transform:uppercase;color:var(--teal)}
-.tile--void .tile__k,.tile--ink .tile__k{color:#5AC8DE}
+.tile--void .tile__k,.tile--ink .tile__k{color:#fff}
 .tile h3{margin:2px 0 0;font-family:var(--sans);font-weight:600;letter-spacing:-.036em;
   line-height:1.04;font-size:clamp(2.25rem,4.4vw,3.5rem)}
 .tile--half h3{font-size:clamp(2rem,3.4vw,2.875rem)}
-.tile__s{margin:0;font-size:clamp(1.0625rem,1.5vw,1.375rem);line-height:1.35;color:var(--ink-2)}
-.tile--void .tile__s,.tile--ink .tile__s{color:var(--on-void-2)}
+.tile__s{margin:0;font-size:1.0625rem;line-height:1.5;color:#3D5A66}
+.tile--void .tile__s,.tile--ink .tile__s{color:#D7E4E9}
 .tile__l{margin:8px 0 0;display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
 
 /* ═══ PLACEHOLDER ART ═══
@@ -228,10 +232,18 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .art--stack i:nth-child(3){width:64%;transition-delay:260ms}
 .art--stack i:nth-child(4){width:44%;transition-delay:360ms}
 
-.art--field{background-image:radial-gradient(rgba(0,156,189,.8) 1.4px,transparent 1.8px);
-  background-size:22px 22px;
+.art--field{position:relative;
   -webkit-mask-image:radial-gradient(56% 76% at 50% 62%,#000,transparent 78%);
   mask-image:radial-gradient(56% 76% at 50% 62%,#000,transparent 78%)}
+.art--field::before,.art--field::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(0,156,189,.8) 1.4px,transparent 1.8px);
+  background-size:22px 22px;animation:twinkle 4.6s var(--ease-io) infinite}
+.art--field::after{background-position:11px 11px;
+  animation-duration:6.2s;animation-delay:-3.1s}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:.95}}
+@media (prefers-reduced-motion:reduce){
+  .art--field::before,.art--field::after{animation:none;opacity:.7}
+}
 
 /* ── the Marketing Cloud rows ─────────────────────────────────
    The reference layout: big showcases on top, cropped at the
@@ -242,15 +254,19 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   font-family:var(--sans);font-weight:600;letter-spacing:-.03em;
   font-size:clamp(1.375rem,2.4vw,1.875rem)}
 
+/* rows are driven from JS (c.js flowEngine) so the constant drift and
+   the arrow paddles share one transform */
 .flow{overflow:hidden;width:100%}
 .flow + .flow{margin-top:12px}
-.flow__row{display:flex;width:max-content;
-  animation:flowL 64s linear infinite;will-change:transform}
-.flow--sm .flow__row{animation:flowR 48s linear infinite}
-@keyframes flowL{to{transform:translateX(-50%)}}
-@keyframes flowR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
-.flow:hover .flow__row{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.flow__row{animation:none}}
+.flow__row{display:flex;width:max-content;will-change:transform}
+
+.crail__nav{max-width:1240px;margin:16px auto 0;padding:0 clamp(10px,1.4vw,14px);
+  display:flex;justify-content:flex-end;gap:8px}
+.paddle{width:36px;height:36px;border:0;border-radius:50%;cursor:pointer;
+  display:grid;place-items:center;background:rgba(0,35,52,.07);color:var(--ink-2);
+  transition:background var(--d-1),color var(--d-1)}
+.paddle:hover{background:rgba(0,35,52,.14);color:var(--ink)}
+.paddle:active{transform:translateY(1px)}
 
 /* big showcase — the art IS the card; text sits on top of it */
 .fcard{position:relative;overflow:hidden;flex:none;margin-right:12px;
@@ -260,17 +276,25 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .fcard--dark{background:linear-gradient(160deg,#01293B,#00121C);color:var(--on-void)}
 .fcard--sky{background:linear-gradient(165deg,#DDEEF4,#F4FAFC)}
 .fcard--amber{background:linear-gradient(160deg,#FFE9B8,#FFF9EC)}
+.fcard--teal{background:linear-gradient(160deg,#00303F,#00121C);color:var(--on-void)}
+.fcard--teal .fcard__k{color:#fff}
+.fcard--teal .fcard__t i{color:#D7E4E9}
+.fcard--teal .btn{background:#fff;color:var(--navy)}
+.fcard--teal .btn:hover{background:#D8E6EC}
+/* image art inside a card */
+img.scard__img{position:absolute;inset:auto 0 0;width:100%;height:58%;object-fit:cover;
+  z-index:1;-webkit-mask-image:linear-gradient(transparent,#000 34%);
+  mask-image:linear-gradient(transparent,#000 34%)}
 .fcard__k{position:absolute;top:22px;left:26px;z-index:2;
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.14em;
   text-transform:uppercase;color:var(--teal)}
-.fcard--dark .fcard__k{color:#5AC8DE}
+.fcard--dark .fcard__k{color:#fff}
 .fcard__t{position:absolute;left:26px;bottom:24px;z-index:2;
   display:flex;flex-direction:column;align-items:flex-start;gap:5px;max-width:60%}
 .fcard__t b{font-family:var(--sans);font-weight:600;letter-spacing:-.032em;
   font-size:clamp(1.75rem,3vw,2.5rem);line-height:1.05}
-.fcard__t i{font-style:normal;font-size:clamp(.9375rem,1.2vw,1.125rem);
-  color:var(--ink-2)}
-.fcard--dark .fcard__t i{color:var(--on-void-2)}
+.fcard__t i{font-style:normal;font-size:1.0625rem;color:#3D5A66}
+.fcard--dark .fcard__t i{color:#D7E4E9}
 .fcard__t .btn{margin-top:8px}
 .fcard--dark .btn{background:#fff;color:var(--navy)}
 .fcard--dark .btn:hover{background:#D8E6EC}
@@ -289,7 +313,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   display:flex;flex-direction:column;gap:3px}
 .scard__t b{font-family:var(--sans);font-weight:600;letter-spacing:-.024em;
   font-size:1.25rem}
-.scard__t i{font-style:normal;font-size:var(--t-sm);color:var(--ink-2);line-height:1.4}
+.scard__t i{font-style:normal;font-size:var(--t-sm);color:#3D5A66;line-height:1.4}
 .scard .btn--xs{position:absolute;left:20px;bottom:16px;z-index:2}
 .scard__art{position:absolute;inset:auto 0 0;height:52%;z-index:1;opacity:.65;
   -webkit-mask-image:linear-gradient(transparent,#000 40%);
@@ -309,8 +333,27 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .ca-wave i{flex:1;border-radius:var(--r-full) var(--r-full) 0 0;background:var(--teal);
   opacity:.45;height:var(--h)}
 .fcard--dark .ca-wave i{opacity:.6}
-.ca-dots{height:100%;background-image:radial-gradient(rgba(0,156,189,.7) 1.3px,transparent 1.7px);
-  background-size:18px 18px}
+.ca-dots{position:relative;height:100%}
+.ca-dots::before,.ca-dots::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(0,156,189,.7) 1.3px,transparent 1.7px);
+  background-size:18px 18px;animation:twinkle 4.2s var(--ease-io) infinite}
+.ca-dots::after{background-position:9px 9px;animation-duration:5.6s;animation-delay:-2.8s}
+@media (prefers-reduced-motion:reduce){
+  .ca-dots::before,.ca-dots::after{animation:none;opacity:.7}
+}
+/* the NewVoices agent: a minimal green equaliser, centred, talking */
+.ca-voice{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;gap:7px}
+.ca-voice i{width:7px;height:46px;border-radius:var(--r-full);background:#30D158;
+  box-shadow:0 0 18px rgba(48,209,88,.35);transform-origin:center;
+  animation:talk 1.15s var(--ease-io) calc(var(--i) * -173ms) infinite}
+.ca-voice i:nth-child(1),.ca-voice i:nth-child(7){height:22px}
+.ca-voice i:nth-child(2),.ca-voice i:nth-child(6){height:34px}
+.ca-voice i:nth-child(3),.ca-voice i:nth-child(5){height:52px}
+.ca-voice i:nth-child(4){height:64px}
+@keyframes talk{0%,100%{transform:scaleY(.35)}45%{transform:scaleY(1)}70%{transform:scaleY(.6)}}
+@media (prefers-reduced-motion:reduce){.ca-voice i{animation:none;transform:scaleY(.7)}}
+
 .ca-film{display:flex;gap:10px}
 .ca-film i{flex:1;border-radius:8px;
   background:linear-gradient(150deg,rgba(0,156,189,.45),rgba(255,184,28,.5));opacity:var(--o)}

@@ -204,25 +204,29 @@ $('#concReset').addEventListener('click', () => {
    smaller cards drifting the other way. Hover pauses a row.
    Art is PLACEHOLDER until the real images land. */
 
-const BIG = ['newvoices', 'bera', 'doreel'];
+const BIG = ['newvoices', 'bera', 'doreel', 'koalifyed'];
 const BIGART = {
-  newvoices: ['fcard--dark',  wave()],
+  newvoices: ['fcard--dark',  voice()],
   bera:      ['fcard--sky',   bars([30, 44, 39, 56, 62, 58, 76, 90])],
   doreel:    ['fcard--amber', film()],
+  koalifyed: ['fcard--teal',  dotfield()],
 };
 const SMART = {
+  'people-platform': `<img class="scard__img" src="./assets/img/numetrix.webp" alt="">`,
   newindex:          rows([92, 68, 50, 34]),
   geopulse:          rows([88, 70, 54, 36]),
   newintel:          rows([74, 90, 52, 66]),
   'agent-cloud':     dotfield(),
   harrisquest:       bars([41, 29, 18, 12, 26, 35, 48, 58]),
-  'people-platform': dotfield(),
 };
 function bars(h)  { return `<div class="ca-bars">${h.map(v => `<i style="--h:${v}%"></i>`).join('')}</div>`; }
 function rows(w)  { return `<div class="ca-rows">${w.map(v => `<i style="--w:${v}%"></i>`).join('')}</div>`; }
 function wave()   { return `<div class="ca-wave">${Array.from({ length: 30 },
   (_, i) => `<i style="--h:${16 + Math.round(Math.abs(Math.sin(i * 0.72)) * 74)}%"></i>`).join('')}</div>`; }
 function dotfield(){ return `<div class="ca-dots"></div>`; }
+/* a small centred voice agent, mid-sentence */
+function voice(){ return `<div class="ca-voice">${Array.from({ length: 7 },
+  (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>`; }
 function film()   { return `<div class="ca-film">${[1, .74, .5, .3].map(o => `<i style="--o:${o}"></i>`).join('')}</div>`; }
 
 const P = id => PRODUCTS.find(p => p.id === id);
@@ -248,6 +252,42 @@ const smRow  = PRODUCTS.filter(p => p.suite === 'cloud' && !BIG.includes(p.id))
   .map(smCard).join('');
 $('#flowBig').innerHTML = `<div class="flow__row">${bigRow}${bigRow}</div>`;
 $('#flowSm').innerHTML  = `<div class="flow__row">${smRow}${smRow}</div>`;
+
+/* Drift and paddles share one offset per row, so the arrows work while
+   the rows keep moving. Offsets wrap at half the row (content is doubled). */
+const FLOWS = [
+  { el: $('#flowBig .flow__row'), dir:  1, speed: 24, off: 0, vel: 0 },
+  { el: $('#flowSm .flow__row'),  dir: -1, speed: 30, off: 0, vel: 0 },
+];
+FLOWS.forEach(f => {
+  f.el.parentElement.addEventListener('mouseenter', () => { f.hover = true; });
+  f.el.parentElement.addEventListener('mouseleave', () => { f.hover = false; });
+});
+const mod = (n, m) => ((n % m) + m) % m;
+let last = performance.now();
+(function drift(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  FLOWS.forEach(f => {
+    if (!REDUCED && !f.hover) f.off += f.dir * f.speed * dt;
+    f.off += f.vel * dt;
+    f.vel *= Math.pow(0.0016, dt);            // paddle impulse eases out
+    if (Math.abs(f.vel) < 1) f.vel = 0;
+    const half = f.el.scrollWidth / 2;
+    if (half > 0) f.el.style.transform = `translateX(${-mod(f.off, half)}px)`;
+  });
+  requestAnimationFrame(drift);
+})(last);
+
+function nudge(sign) {
+  FLOWS.forEach(f => {
+    const card = f.el.firstElementChild;
+    const w = (card ? card.getBoundingClientRect().width + 12 : 320);
+    f.vel = sign * w * 4.2;                   // decays to ~one card of travel
+  });
+}
+$('#cloudNext').addEventListener('click', () => nudge(1));
+$('#cloudPrev').addEventListener('click', () => nudge(-1));
 
 /* ══════════════════════ MODAL ══════════════════════ */
 
