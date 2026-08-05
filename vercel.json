@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/workspace", "destination": "/machine/", "permanent": false },
+    { "source": "/dashboard", "destination": "/machine/b.html", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/catalogue", "destination": "/c.html" }
+  ]
+}
