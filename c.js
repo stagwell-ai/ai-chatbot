@@ -259,8 +259,8 @@ const smCard = p => `<button class="scard" data-id="${p.id}">
 const bigRow = BIG.map(id => bigCard(P(id))).join('');
 const smRow  = PRODUCTS.filter(p => p.suite === 'cloud' && !BIG.includes(p.id))
   .map(smCard).join('');
-$('#flowBig').innerHTML = `<div class="flow__row">${bigRow}${bigRow}</div>`;
-$('#flowSm').innerHTML  = `<div class="flow__row">${smRow}${smRow}</div>`;
+$('#flowBig').insertAdjacentHTML('afterbegin', `<div class="flow__row">${bigRow}${bigRow}</div>`);
+$('#flowSm').insertAdjacentHTML('afterbegin', `<div class="flow__row">${smRow}${smRow}</div>`);
 
 /* Drift and paddles share one offset per row, so the arrows work while
    the rows keep moving. Offsets wrap at half the row (content is doubled). */
@@ -288,16 +288,16 @@ let last = performance.now();
   requestAnimationFrame(drift);
 })(last);
 
-function nudge(sign) {
-  FLOWS.forEach(f => {
-    const card = f.el.firstElementChild;
-    const w = (card ? card.getBoundingClientRect().width + 12 : 320);
-    f.vel = sign * w * 4.2;                   // decays to ~one card of travel
-    f.pauseUntil = performance.now() + 2200;  // the drift waits while you steer
-  });
+function nudge(f, sign) {
+  const card = f.el.firstElementChild;
+  const w = (card ? card.getBoundingClientRect().width + 12 : 320);
+  f.vel = sign * w * 4.2;                   // decays to ~one card of travel
+  f.pauseUntil = performance.now() + 2200;  // the drift waits while you steer
 }
-$('#cloudNext').addEventListener('click', () => nudge(1));
-$('#cloudPrev').addEventListener('click', () => nudge(-1));
+$('#bigNext').addEventListener('click',   () => nudge(FLOWS[0], 1));
+$('#bigPrev').addEventListener('click',   () => nudge(FLOWS[0], -1));
+$('#cloudNext').addEventListener('click', () => nudge(FLOWS[1], 1));
+$('#cloudPrev').addEventListener('click', () => nudge(FLOWS[1], -1));
 
 /* ══════════════════════ MODAL ══════════════════════ */
 
@@ -467,7 +467,7 @@ $$('.fcard video').forEach(v => {
 
 /* the Machine's background drifts against the scroll — quiet parallax */
 const pxTile = $('.tile--img');
-if (pxTile && !REDUCED) {
+if (pxTile && !REDUCED && matchMedia('(min-width: 821px)').matches) {
   let raf = null;
   const drift = () => {
     raf = null;

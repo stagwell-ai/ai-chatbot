@@ -162,13 +162,19 @@
 <section class="crail" id="cloud">
   <h2 class="crail__t r">The Marketing Cloud</h2>
   <!-- two always-moving rows: big showcases drift left, small cards drift right -->
-  <div class="flow flow--big" id="flowBig"></div>
-  <div class="flow flow--sm" id="flowSm"></div>
-  <div class="crail__nav">
-    <button class="paddle" id="cloudPrev" aria-label="Previous">
+  <div class="flow flow--big" id="flowBig">
+    <button class="paddle paddle--l" id="bigPrev" aria-label="Previous">
       <svg viewBox="0 0 16 16" width="15" height="15"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
-    <button class="paddle" id="cloudNext" aria-label="Next">
+    <button class="paddle paddle--r" id="bigNext" aria-label="Next">
+      <svg viewBox="0 0 16 16" width="15" height="15"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="flow flow--sm" id="flowSm">
+    <button class="paddle paddle--l" id="cloudPrev" aria-label="Previous">
+      <svg viewBox="0 0 16 16" width="15" height="15"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="paddle paddle--r" id="cloudNext" aria-label="Next">
       <svg viewBox="0 0 16 16" width="15" height="15"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </div>
@@ -233,6 +239,12 @@
 </footer>
 
 </main>
+
+<div class="ab" role="group" aria-label="Design version">
+  <a href="./" class="ab__b">A</a>
+  <a href="./b.html" class="ab__b">B</a>
+  <a href="./c.html" class="ab__b is-on">C</a>
+</div>
 
 <div class="modal" id="modal" hidden>
   <div class="modal__scrim" data-close></div>

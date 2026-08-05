@@ -277,17 +277,21 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 
 /* rows are driven from JS (c.js flowEngine) so the constant drift and
    the arrow paddles share one transform */
-.flow{overflow:hidden;width:100%}
+.flow{position:relative;overflow:hidden;width:100%}
 .flow + .flow{margin-top:12px}
 .flow__row{display:flex;width:max-content;will-change:transform}
 
-.crail__nav{max-width:1240px;margin:16px auto 0;padding:0 clamp(10px,1.4vw,14px);
-  display:flex;justify-content:flex-end;gap:8px}
-.paddle{width:36px;height:36px;border:0;border-radius:50%;cursor:pointer;
-  display:grid;place-items:center;background:rgba(0,35,52,.07);color:var(--ink-2);
-  transition:background var(--d-1),color var(--d-1)}
-.paddle:hover{background:rgba(0,35,52,.14);color:var(--ink)}
-.paddle:active{transform:translateY(1px)}
+/* the paddles float inside each carousel, centred, quiet until hover */
+.paddle{position:absolute;top:50%;transform:translateY(-50%);z-index:6;
+  width:40px;height:40px;border:0;border-radius:50%;cursor:pointer;
+  display:grid;place-items:center;color:var(--ink);opacity:.45;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  transition:opacity var(--d-1),background var(--d-1)}
+.paddle--l{left:18px}
+.paddle--r{right:18px}
+.paddle:hover,.flow:hover .paddle{opacity:1}
+.paddle:active{background:#fff}
 
 /* big showcase — the art IS the card; text sits on top of it */
 .fcard{position:relative;overflow:hidden;flex:none;margin-right:12px;
@@ -537,6 +541,14 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
   .chips--opt,.recs{padding-left:0}
   .foot p{margin-left:0;flex-basis:100%}
   .crop__row{display:none}
+  /* big cloud cards fit the phone, one at a time */
+  .fcard{width:86vw;height:min(70vh,480px)}
+  .fcard__k{top:18px;left:20px}
+  .fcard__t{left:20px;right:20px;bottom:20px;max-width:none}
+  .scard{width:74vw}
+  .vctl{right:12px;bottom:12px}
+  .tile{padding-inline:18px}
+  .tile__k{left:20px;top:20px}
 }
 
 /* Learn more is visual-only until the inner pages exist */
