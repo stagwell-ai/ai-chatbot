@@ -220,29 +220,32 @@ const BIGART = {
 };
 /* small cards: a compact product-true dashboard fragment sits in the
    bottom-right corner — no backgrounds, never fighting the text */
-const SMIMG = {
-  'people-platform': `<img class="scard__img" src="./assets/img/numetrix.webp" alt="">`,
-};
+/* small cards: one framed dashboard fragment each — centred between
+   the copy and the button, bordered like a piece of real UI, animated
+   only in micro ways that never touch readability */
 const SMMINI = {
-  harrisquest: `<span class="mini-ask">
+  harrisquest: `<span class="mini mini-ask">
       <svg viewBox="0 0 12 12" width="9" height="9"><circle cx="5.2" cy="5.2" r="3.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 8l2.6 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       <b>Would buyers pay more for repairability?</b><i class="mini-caret"></i></span>`,
-  newindex: `<span class="mini-rank"><em>#1</em>
-      <span>in AI answers<b class="up">↑ 2 this week</b></span></span>`,
-  geopulse: `<span class="mini-spark">
-      <svg viewBox="0 0 96 30" aria-hidden="true"><path d="M2,26 L18,22 L34,24 L50,15 L66,17 L82,7 L94,4"
+  newindex: `<span class="mini mini-row">
+      <i class="pulse"></i><b>Ranked&nbsp;<u>#1</u>&nbsp;in AI answers</b><em class="up">↑ 2</em></span>`,
+  geopulse: `<span class="mini mini-col">
+      <svg viewBox="0 0 96 26" aria-hidden="true"><path class="mini-line" d="M2,22 L18,19 L34,21 L50,13 L66,15 L82,6 L94,3"
         fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <b class="up">+3 positions</b></span>`,
-  newintel: `<span class="mini-feed">
-      <span><i class="pulse"></i>Rival cut prices 4%<em>2h</em></span>
-      <span><i class="pulse pulse--amber"></i>New creator campaign<em>9h</em></span></span>`,
-  'agent-cloud': `<span class="mini-net">
-      <svg viewBox="0 0 84 40" aria-hidden="true">
-        <path d="M42,20 L10,8 M42,20 L20,34 M42,20 L64,6 M42,20 L74,26 M42,20 L58,36" stroke="currentColor" stroke-width="1"/>
-        <circle cx="10" cy="8" r="2.6"/><circle cx="20" cy="34" r="2.6"/><circle cx="64" cy="6" r="2.6"/>
-        <circle cx="74" cy="26" r="2.6"/><circle cx="58" cy="36" r="2.6"/>
-        <circle cx="42" cy="20" r="4.4" class="mini-net__hub"/>
-      </svg></span>`,
+      <b>Answer share, 12 weeks</b></span>`,
+  newintel: `<span class="mini mini-feed">
+      <span><i class="pulse"></i><b>Rival cut prices 4%</b><em>2h</em></span>
+      <span><i class="pulse pulse--amber"></i><b>New creator campaign</b><em>9h</em></span></span>`,
+  'agent-cloud': `<span class="mini mini-net">
+      <svg viewBox="0 0 84 34" aria-hidden="true">
+        <path d="M42,17 L12,7 M42,17 L20,29 M42,17 L64,5 M42,17 L72,23" stroke="currentColor" stroke-width="1"/>
+        <circle cx="12" cy="7" r="2.4"/><circle cx="20" cy="29" r="2.4"/>
+        <circle cx="64" cy="5" r="2.4"/><circle cx="72" cy="23" r="2.4"/>
+        <circle cx="42" cy="17" r="4" class="mini-net__hub"/>
+      </svg><b>10 agents, one place</b></span>`,
+  'people-platform': `<span class="mini mini-saydo">
+      <span><b>Say</b><span class="mini-bar"><i style="--w:34%"></i></span><em>34%</em></span>
+      <span><b>Do</b><span class="mini-bar"><i style="--w:61%"></i></span><em>61%</em></span></span>`,
 };
 
 const P = id => PRODUCTS.find(p => p.id === id);
@@ -256,8 +259,7 @@ const bigCard = p => {
       <em class="btn btn--sm">Learn more</em></span>
   </button>`;
 };
-const smCard = p => `<button class="scard ${SMIMG[p.id] ? 'scard--img' : ''}" data-id="${p.id}">
-    ${SMIMG[p.id] ? `<span class="scard__art">${SMIMG[p.id]}</span>` : ''}
+const smCard = p => `<button class="scard" data-id="${p.id}">
     <span class="scard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i></span>
     ${SMMINI[p.id] ? `<span class="scard__mini">${SMMINI[p.id]}</span>` : ''}
     <em class="btn btn--xs">Learn more</em>
