@@ -154,6 +154,13 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile--void{background:var(--void);color:var(--on-void)}
 .tile--ink{background:linear-gradient(165deg,#012A3D,#00121C);color:var(--on-void)}
 .tile--sky{background:linear-gradient(170deg,#E4F1F6 0%,#F5FAFC 60%)}
+/* a real image behind the text — a scrim keeps the type readable */
+.tile--img{background-size:cover;background-position:center}
+.tile--img::before{content:"";position:absolute;inset:0;z-index:1;
+  background:radial-gradient(80% 90% at 50% 60%,rgba(0,0,0,.14),rgba(0,0,0,.42))}
+.tile--img .tile__k{color:#FFD9A8}
+.tile--img .tile__s{color:rgba(255,244,232,.86)}
+.tile--img h3{color:#fff}
 
 .tile__t{position:relative;z-index:2;display:flex;flex-direction:column;
   align-items:center;gap:8px;max-width:560px}
