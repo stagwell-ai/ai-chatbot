@@ -137,7 +137,8 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 
 /* ── the tiles ─────────────────────────────────────────────
    12px gutters, text at the top, the object below it. */
-.tiles{max-width:1240px;margin:0 auto;padding:0 clamp(10px,1.4vw,14px);
+/* full-bleed, like the Marketing Cloud rows */
+.tiles{width:100%;margin:0;padding:0;
   display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .tile{position:relative;overflow:hidden;border-radius:var(--r-xl);
   display:flex;flex-direction:column;align-items:center;text-align:center;
