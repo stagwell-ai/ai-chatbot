@@ -205,6 +205,10 @@ $('#concReset').addEventListener('click', () => {
    Art is PLACEHOLDER until the real images land. */
 
 const BIG = ['koalifyed', 'bera', 'doreel', 'newvoices'];
+/* a small centred voice agent, mid-sentence */
+const voice = () => `<div class="ca-voice">${Array.from({ length: 7 },
+  (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>`;
+
 const BIGART = {
   newvoices: ['fcard--dark',  voice()],
   bera:      ['fcard--img',
@@ -214,37 +218,32 @@ const BIGART = {
   koalifyed: ['fcard--teal fcard--video',
     `<video class="fcard__video" src="./assets/img/imai.mp4" autoplay muted loop playsinline></video>`],
 };
-const SMART = {
+/* small cards: a compact product-true dashboard fragment sits in the
+   bottom-right corner — no backgrounds, never fighting the text */
+const SMIMG = {
   'people-platform': `<img class="scard__img" src="./assets/img/numetrix.webp" alt="">`,
-  newindex:          rows([92, 68, 50, 34]),
-  geopulse:          rows([88, 70, 54, 36]),
-  newintel:          rows([74, 90, 52, 66]),
-  'agent-cloud':     dotfield(),
-  harrisquest:       bars([41, 29, 18, 12, 26, 35, 48, 58]),
 };
-function bars(h)  { return `<div class="ca-bars">${h.map(v => `<i style="--h:${v}%"></i>`).join('')}</div>`; }
-function rows(w)  { return `<div class="ca-rows">${w.map(v => `<i style="--w:${v}%"></i>`).join('')}</div>`; }
-function wave()   { return `<div class="ca-wave">${Array.from({ length: 30 },
-  (_, i) => `<i style="--h:${16 + Math.round(Math.abs(Math.sin(i * 0.72)) * 74)}%"></i>`).join('')}</div>`; }
-function dotfield(){ return `<div class="ca-dots"></div>`; }
-/* a thin-line wireframe world, in slow full rotation */
-function globe() {
-  /* a dense, even lat/long grid — the classic wireframe globe */
-  const mer = Array.from({ length: 9 }, (_, i) => `<i style="--a:${i * 20}deg"></i>`).join('');
-  const lat = [0, 22.5, 45, 67.5, -22.5, -45, -67.5].map(phi => {
-    const rad = phi * Math.PI / 180;
-    const d = (Math.cos(rad) * 100).toFixed(1);
-    const z = (Math.sin(rad) * 0.5).toFixed(3);
-    return `<b style="--d:${d}%;--z:${z}"></b>`;
-  }).join('');
-  return `<span class="ca-globe"><span class="ca-globe__tilt">
-    <span class="ca-globe__spin">${mer}${lat}</span></span></span>`;
-}
-
-/* a small centred voice agent, mid-sentence */
-function voice(){ return `<div class="ca-voice">${Array.from({ length: 7 },
-  (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>`; }
-function film()   { return `<div class="ca-film">${[1, .74, .5, .3].map(o => `<i style="--o:${o}"></i>`).join('')}</div>`; }
+const SMMINI = {
+  harrisquest: `<span class="mini-ask">
+      <svg viewBox="0 0 12 12" width="9" height="9"><circle cx="5.2" cy="5.2" r="3.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 8l2.6 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <b>Would buyers pay more for repairability?</b><i class="mini-caret"></i></span>`,
+  newindex: `<span class="mini-rank"><em>#1</em>
+      <span>in AI answers<b class="up">↑ 2 this week</b></span></span>`,
+  geopulse: `<span class="mini-spark">
+      <svg viewBox="0 0 96 30" aria-hidden="true"><path d="M2,26 L18,22 L34,24 L50,15 L66,17 L82,7 L94,4"
+        fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <b class="up">+3 positions</b></span>`,
+  newintel: `<span class="mini-feed">
+      <span><i class="pulse"></i>Rival cut prices 4%<em>2h</em></span>
+      <span><i class="pulse pulse--amber"></i>New creator campaign<em>9h</em></span></span>`,
+  'agent-cloud': `<span class="mini-net">
+      <svg viewBox="0 0 84 40" aria-hidden="true">
+        <path d="M42,20 L10,8 M42,20 L20,34 M42,20 L64,6 M42,20 L74,26 M42,20 L58,36" stroke="currentColor" stroke-width="1"/>
+        <circle cx="10" cy="8" r="2.6"/><circle cx="20" cy="34" r="2.6"/><circle cx="64" cy="6" r="2.6"/>
+        <circle cx="74" cy="26" r="2.6"/><circle cx="58" cy="36" r="2.6"/>
+        <circle cx="42" cy="20" r="4.4" class="mini-net__hub"/>
+      </svg></span>`,
+};
 
 const P = id => PRODUCTS.find(p => p.id === id);
 
@@ -257,10 +256,10 @@ const bigCard = p => {
       <em class="btn btn--sm">Learn more</em></span>
   </button>`;
 };
-const SMCLS = { 'people-platform': 'scard--img' };
-const smCard = p => `<button class="scard ${SMCLS[p.id] || ''}" data-id="${p.id}">
-    <span class="scard__art">${SMART[p.id] || dotfield()}</span>
+const smCard = p => `<button class="scard ${SMIMG[p.id] ? 'scard--img' : ''}" data-id="${p.id}">
+    ${SMIMG[p.id] ? `<span class="scard__art">${SMIMG[p.id]}</span>` : ''}
     <span class="scard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i></span>
+    ${SMMINI[p.id] ? `<span class="scard__mini">${SMMINI[p.id]}</span>` : ''}
     <em class="btn btn--xs">Learn more</em>
   </button>`;
 
