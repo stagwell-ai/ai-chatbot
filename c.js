@@ -227,9 +227,9 @@ function wave()   { return `<div class="ca-wave">${Array.from({ length: 30 },
 function dotfield(){ return `<div class="ca-dots"></div>`; }
 /* a thin-line wireframe world, in slow full rotation */
 function globe() {
-  const mer = [0, 30, 60, 90, 120, 150]
+  const mer = [0, 45, 90, 135]
     .map(a => `<i style="--a:${a}deg"></i>`).join('');
-  const lat = [[100, 0], [86.6, .25], [57.4, .41], [-86.6, .25], [-57.4, .41]]
+  const lat = [[100, 0], [80, .3], [-80, .3]]
     .map(([d, z]) => `<b style="--d:${Math.abs(d)}%;--z:${d < 0 ? -z : z}"></b>`).join('');
   return `<span class="ca-globe"><span class="ca-globe__tilt">
     <span class="ca-globe__spin">${mer}${lat}</span></span></span>`;
