@@ -54,7 +54,6 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile--void .btn,.tile--ink .btn{background:#fff;color:var(--navy)}
 .tile--void .btn:hover,.tile--ink .btn:hover{background:#D8E6EC}
 .tile--center{justify-content:center;padding-bottom:clamp(44px,6vw,70px)}
-.tile--center .tile__k{margin-bottom:clamp(30px,5vh,52px)}
 .tile--center .tile__t{gap:10px}
 
 /* ── hero ─────────────────────────────────────────────────── */
@@ -168,9 +167,10 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile__t{position:relative;z-index:2;display:flex;flex-direction:column;
   align-items:center;gap:8px;max-width:560px}
 .tile h3{white-space:nowrap}
-/* Enterprise eyebrows sit centred above the name, in the flow, so the
-   air below them matches The Machine everywhere */
-.tile__k{margin:0 0 clamp(38px,7vh,72px);align-self:center;text-align:center;z-index:3;
+/* Desktop: eyebrows pinned top-left of the tile, including the
+   centred one — so every tag sits on the same line. Mobile centres
+   them in the flow (see the 560px block). */
+.tile__k{margin:0;position:absolute;top:24px;left:28px;z-index:3;text-align:left;
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.15em;
   text-transform:uppercase;color:var(--teal)}
 .tile--void .tile__k,.tile--ink .tile__k{color:#fff}
@@ -550,8 +550,11 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
   .fcard__t{left:20px;right:20px;bottom:20px;max-width:none}
   .scard{width:74vw}
   .vctl{right:12px;bottom:12px}
-  .tile{padding:44px 18px 0}
-  .tile--center{padding-bottom:44px}
+  .tile{padding:40px 18px 0}
+  .tile--center{padding-bottom:40px}
+  .tile__k{position:static;margin:0 0 clamp(40px,6vh,64px);
+    align-self:center;text-align:center}
+  .tile--center{justify-content:flex-start}
   /* the greeting has less room to type into on a phone */
   .conc__form{height:56px;padding-left:18px;gap:9px}
   .conc__input{font-size:.9375rem}
