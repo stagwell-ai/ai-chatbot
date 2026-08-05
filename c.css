@@ -157,7 +157,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile--sky{background:linear-gradient(170deg,#E4F1F6 0%,#F5FAFC 60%)}
 /* light photo background — text stays ink, image anchors low */
 .tile--photo{background-color:#F4F4F5;background-size:cover;
-  background-position:center calc(100% + 96px)}
+  background-position:center calc(100% + 170px)}
 
 /* a real image behind the text — a scrim keeps the type readable */
 .tile--img{background-size:cover;background-position:center}
@@ -237,11 +237,16 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   -webkit-mask-image:radial-gradient(56% 76% at 50% 62%,#000,transparent 78%);
   mask-image:radial-gradient(56% 76% at 50% 62%,#000,transparent 78%)}
 .art--field::before,.art--field::after{content:"";position:absolute;inset:0;
-  background-image:radial-gradient(rgba(0,156,189,.8) 1.4px,transparent 1.8px);
-  background-size:22px 22px;animation:twinkle 4.6s var(--ease-io) infinite}
-.art--field::after{background-position:11px 11px;
-  animation-duration:6.2s;animation-delay:-3.1s}
-@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:.95}}
+  background-image:radial-gradient(rgba(0,156,189,.9) 1.4px,transparent 1.8px),
+                   radial-gradient(rgba(0,156,189,.9) 1.4px,transparent 1.8px),
+                   radial-gradient(rgba(90,200,222,.8) 1.2px,transparent 1.6px);
+  background-size:44px 44px,62px 62px,52px 52px;
+  background-position:0 0,13px 29px,31px 7px;
+  animation:twinkle 2.6s var(--ease-io) infinite}
+.art--field::after{background-position:22px 11px,44px 3px,9px 41px;
+  animation:blink 1.9s steps(2,jump-none) infinite}
+@keyframes twinkle{0%,100%{opacity:.06}50%{opacity:1}}
+@keyframes blink{0%,100%{opacity:.9}50%{opacity:.1}}
 @media (prefers-reduced-motion:reduce){
   .art--field::before,.art--field::after{animation:none;opacity:.7}
 }
@@ -285,7 +290,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 /* image art inside a card */
 img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
 .scard--img::after{content:"";position:absolute;inset:0;z-index:1;
-  background:linear-gradient(180deg,rgba(20,8,44,.62),rgba(20,8,44,.05) 62%)}
+  background:linear-gradient(180deg,rgba(0,0,0,.52),rgba(0,0,0,.06) 62%)}
 .scard--img .scard__t{z-index:2}
 .scard--img .scard__t b{color:#fff}
 .scard--img .scard__t i{color:rgba(255,255,255,.85)}
@@ -306,7 +311,7 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 /* DoReel: its own reel runs silently behind the text */
 .fcard__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
 .fcard--video::after{content:"";position:absolute;inset:0;z-index:1;
-  background:linear-gradient(180deg,rgba(0,10,16,.10) 40%,rgba(0,10,16,.58))}
+  background:linear-gradient(180deg,rgba(0,0,0,.10) 40%,rgba(0,0,0,.55))}
 .fcard--video .fcard__k,.fcard--video .fcard__t b{color:#fff}
 .fcard--video .fcard__t i{color:rgba(255,255,255,.88)}
 .fcard--video .btn{background:#fff;color:var(--navy)}
@@ -350,8 +355,8 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 .ca-dots{position:relative;height:100%}
 .ca-dots::before,.ca-dots::after{content:"";position:absolute;inset:0;
   background-image:radial-gradient(rgba(0,156,189,.7) 1.3px,transparent 1.7px);
-  background-size:18px 18px;animation:twinkle 4.2s var(--ease-io) infinite}
-.ca-dots::after{background-position:9px 9px;animation-duration:5.6s;animation-delay:-2.8s}
+  background-size:18px 18px;animation:twinkle 2.4s var(--ease-io) infinite}
+.ca-dots::after{background-position:9px 9px;animation:blink 1.7s steps(2,jump-none) infinite}
 @media (prefers-reduced-motion:reduce){
   .ca-dots::before,.ca-dots::after{animation:none;opacity:.7}
 }

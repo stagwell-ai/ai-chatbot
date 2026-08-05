@@ -99,8 +99,8 @@ const PRODUCTS = [
     goals:['speed','organise'], scale:'either',
   },
   {
-    id:'koalifyed', name:'Koalifyed', suite:'cloud',
-    line:'Influencer Marketing AI',
+    id:'koalifyed', name:'Influencer Marketing AI', suite:'cloud',
+    line:'Creator campaigns, from discovery to proof',
     what:'Stagwell’s influencer platform — vetted creator discovery, campaign management and performance measurement in one place, so influencer spend is judged like any other media.',
     proof:'Influencer discovery, activation and measurement.',
     goals:['audience','growth'], scale:'either',
