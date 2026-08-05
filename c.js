@@ -192,7 +192,7 @@ track.innerHTML = PRODUCTS.filter(p => p.suite === 'cloud').map(p => {
     <p class="ccard__k">Marketing Cloud</p>
     <h3>${esc(p.name)}</h3>
     <p>${esc(p.line)}</p>
-    <span class="ccard__go">Learn more ›</span>
+    <span class="ccard__go">Learn more</span>
     <span class="ccard__art">${art}</span>
   </button>`;
 }).join('');

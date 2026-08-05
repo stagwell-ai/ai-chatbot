@@ -48,6 +48,11 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   border-radius:var(--r-full);border:0;font-size:var(--t-body);cursor:pointer;
   background:var(--ink);color:#fff;transition:background var(--d-1)}
 .btn:hover{background:#003D59}
+.btn--sm{height:38px;padding:0 19px;font-size:var(--t-sm)}
+.tile--void .btn,.tile--ink .btn{background:#fff;color:var(--navy)}
+.tile--void .btn:hover,.tile--ink .btn:hover{background:#D8E6EC}
+.tile--center{justify-content:center;padding-bottom:clamp(44px,6vw,70px)}
+.tile--center .tile__t{gap:10px}
 
 /* ── hero ─────────────────────────────────────────────────── */
 .chero{position:relative;overflow:hidden;text-align:center;
@@ -147,7 +152,8 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile__t{position:relative;z-index:2;display:flex;flex-direction:column;
   align-items:center;gap:8px;max-width:560px}
 .tile h3{white-space:nowrap}
-.tile__k{margin:0;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.15em;
+.tile__k{margin:0;position:absolute;top:24px;left:28px;z-index:3;text-align:left;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.15em;
   text-transform:uppercase;color:var(--teal)}
 .tile--void .tile__k,.tile--ink .tile__k{color:#5AC8DE}
 .tile h3{margin:2px 0 0;font-family:var(--sans);font-weight:600;letter-spacing:-.036em;
@@ -217,10 +223,11 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 /* ── the slider ───────────────────────────────────────────── */
 .crail{max-width:1240px;margin:clamp(48px,7vh,86px) auto clamp(56px,8vh,96px);
   padding:0 clamp(10px,1.4vw,14px)}
-.crail__h{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.crail__h{position:relative;display:flex;align-items:center;justify-content:center;
+  margin-bottom:22px}
 .crail__h h2{margin:0;font-family:var(--sans);font-weight:600;letter-spacing:-.03em;
-  font-size:clamp(1.375rem,2.4vw,1.875rem)}
-.crail__n{margin-left:auto;display:flex;gap:8px}
+  text-align:center;font-size:clamp(1.375rem,2.4vw,1.875rem)}
+.crail__n{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;gap:8px}
 .crail__b{width:34px;height:34px;border:0;border-radius:50%;cursor:pointer;
   background:rgba(0,35,52,.07);color:var(--ink-2);font-size:19px;line-height:0;
   transition:background var(--d-1),color var(--d-1)}
@@ -231,7 +238,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   scroll-behavior:smooth;scrollbar-width:none;padding-bottom:4px}
 .crail__track::-webkit-scrollbar{display:none}
 .ccard{flex:0 0 clamp(240px,25vw,296px);scroll-snap-align:start;
-  border-radius:var(--r-lg);overflow:hidden;cursor:pointer;
+  border-radius:0;overflow:hidden;cursor:pointer;
   min-height:336px;display:flex;flex-direction:column;
   padding:26px 22px 0;text-align:left;position:relative;background:var(--surface);
   transition:transform var(--d-2) var(--ease)}
@@ -241,7 +248,11 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .ccard h3{margin:7px 0 0;font-family:var(--sans);font-weight:600;letter-spacing:-.028em;
   font-size:1.5rem;line-height:1.1}
 .ccard p{margin:6px 0 0;font-size:var(--t-body);line-height:1.45;color:var(--ink-2)}
-.ccard__go{margin-top:9px;font-size:var(--t-sm);color:var(--teal)}
+.ccard__go{margin-top:12px;align-self:flex-start;display:inline-flex;align-items:center;
+  height:34px;padding:0 16px;border-radius:var(--r-full);background:var(--ink);color:#fff;
+  font-size:var(--t-sm);transition:background var(--d-1)}
+.ccard:hover .ccard__go{background:#003D59}
+.ccard--dark .ccard__go{background:#fff;color:var(--navy)}
 .ccard--dark{background:linear-gradient(168deg,#012A3D,#00121C);color:var(--on-void)}
 .ccard--dark p{color:var(--on-void-2)}
 .ccard--tint{background:linear-gradient(168deg,#E6F2F7,#F7FBFC)}
