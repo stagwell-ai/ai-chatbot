@@ -458,6 +458,22 @@ $$('.fcard video').forEach(v => {
 
 /* ══════════════════════ MOTION ══════════════════════ */
 
+/* the Machine's background drifts against the scroll — quiet parallax */
+const pxTile = $('.tile--img');
+if (pxTile && !REDUCED) {
+  let raf = null;
+  const drift = () => {
+    raf = null;
+    const r = pxTile.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    const d = (r.top + r.height / 2 - innerHeight / 2) * 0.12;
+    pxTile.style.backgroundPosition = `center calc(50% + ${d.toFixed(1)}px)`;
+  };
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(drift); },
+    { passive: true });
+  drift();
+}
+
 reveal($$('.r'));
 whenVisible($$('.tile'), el => el.classList.add('is-in'), { threshold: 0.2 });
 

@@ -186,6 +186,8 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   max-width:660px;height:clamp(180px,26vh,262px);
   object-fit:cover;object-position:top center}
 .tile__art.crop{height:auto}
+/* the button never touches the dashboard, whatever the screen height */
+.tile--sky .tile__t{margin-bottom:clamp(26px,4vh,44px)}
 
 /* a real interface, cropped tight and faded out — used on two tiles only */
 .crop{border-radius:12px 12px 0 0;overflow:hidden;text-align:left;
