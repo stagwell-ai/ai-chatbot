@@ -184,6 +184,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .tile__art{position:relative;z-index:1;margin-top:auto;width:100%;
   max-width:660px;height:clamp(180px,26vh,262px);
   object-fit:cover;object-position:top center}
+.tile__art.crop{height:auto}
 
 /* a real interface, cropped tight and faded out — used on two tiles only */
 .crop{border-radius:12px 12px 0 0;overflow:hidden;text-align:left;
@@ -221,7 +222,12 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .crop__ylab{display:flex;flex-direction:column;justify-content:space-between;
   font-family:var(--mono);font-size:9px;color:var(--ink-4);text-align:right;padding:2px 0 6px}
 .crop__ylab b,.crop__xlab b{font-weight:400}
-.crop__plot svg{width:100%;height:100%;min-height:0;overflow:visible}
+.crop__stage{position:relative;min-height:0}
+.crop__stage svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+/* the live marker is HTML, not SVG — the stretched viewBox would
+   squash a circle into an oval */
+.crop__now{position:absolute;right:0;top:25%;width:7px;height:7px;
+  margin:-3.5px -3.5px 0 0;border-radius:50%;background:var(--teal)}
 .crop__xlab{grid-column:2;display:flex;justify-content:space-between;
   font-family:var(--mono);font-size:9px;color:var(--ink-4)}
 .grid line{stroke:var(--line);stroke-width:1}
@@ -232,7 +238,6 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .ln--teal{stroke:var(--teal)}
 .ln--amber{stroke:var(--amber);transition-delay:480ms}
 .is-in .ln{stroke-dashoffset:0}
-.now{fill:var(--teal)}
 .crop__lines{display:flex;flex-direction:column;gap:8px}
 .crop__lines i{height:9px;border-radius:var(--r-full);background:rgba(234,242,245,.10);
   width:var(--w)}
