@@ -117,10 +117,8 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 
 .conc__form{display:flex;align-items:center;gap:12px;height:62px;
   padding:0 10px 0 22px;border-radius:var(--r-full);background:var(--surface);
-  box-shadow:0 1px 2px rgba(0,35,52,.05),0 14px 38px -20px rgba(0,35,52,.24);
-  transition:box-shadow var(--d-2) var(--ease)}
-.conc__form:focus-within{box-shadow:0 1px 2px rgba(0,35,52,.05),
-  0 18px 46px -20px rgba(0,35,52,.30)}
+  border:1px solid var(--line);transition:border-color var(--d-2) var(--ease)}
+.conc__form:focus-within{border-color:var(--line-2)}
 .conc__fav{width:19px;height:19px;flex:none}
 .conc__input{flex:1;min-width:0;border:0;background:none;outline:none;
   font-family:inherit;font-size:1.0625rem;color:var(--ink)}
