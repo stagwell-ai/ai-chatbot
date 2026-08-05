@@ -58,8 +58,6 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 /* ── hero ─────────────────────────────────────────────────── */
 .chero{position:relative;overflow:hidden;text-align:center;
   padding:clamp(58px,11vh,116px) clamp(20px,4vw,28px) clamp(40px,7vh,72px)}
-.chero::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(64% 46% at 50% 0%,rgba(0,156,189,.10),transparent 70%)}
 .chero__in{position:relative;z-index:1;max-width:720px;margin:0 auto;
   display:flex;flex-direction:column;align-items:center;gap:16px}
 .chero__h{margin:0;font-family:var(--sans);font-weight:600;letter-spacing:-.038em;
@@ -191,9 +189,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 
 /* a real interface, cropped tight and faded out — used on two tiles only */
 .crop{border-radius:12px 12px 0 0;overflow:hidden;text-align:left;
-  border:1px solid var(--line-void);border-bottom:0;background:#05171F;
-  -webkit-mask-image:linear-gradient(#000 62%,transparent);
-  mask-image:linear-gradient(#000 62%,transparent)}
+  border:1px solid var(--line-void);border-bottom:0;background:#05171F}
 .tile--sky .crop{background:#fff;border-color:var(--line)}
 .crop__bar{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;
   border-bottom:1px solid var(--line-void)}
@@ -215,7 +211,7 @@ body.vC .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 .crop__k b{font-size:1.125rem;font-weight:600;letter-spacing:-.028em}
 .crop__cols{display:flex;align-items:flex-end;gap:5px;height:96px}
 .crop__cols i{flex:1;border-radius:3px 3px 0 0;height:var(--h);
-  background:linear-gradient(180deg,rgba(0,156,189,.55),rgba(0,156,189,.14));
+  background:rgba(0,156,189,.42);
   transform-origin:bottom;transform:scaleY(.15);transition:transform 1000ms var(--ease)}
 .is-in .crop__cols i{transform:scaleY(1)}
 .crop__lines{display:flex;flex-direction:column;gap:8px}
