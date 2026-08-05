@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stagwell AI — The Machine</title>
+<meta name="description" content="Give me one link. I'll read the company, find the competition, and build your executive brief.">
+
+<!-- Share kit — crawlers need absolute URLs, so the production host is hardcoded -->
+<link rel="canonical" href="https://stagwell-ai-julian.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stagwell AI">
+<meta property="og:title" content="Stagwell AI — The Machine">
+<meta property="og:description" content="Give me one link. I'll read the company, find the competition, and build your executive brief.">
+<meta property="og:url" content="https://stagwell-ai-julian.vercel.app/">
+<meta property="og:image" content="https://stagwell-ai-julian.vercel.app/assets/share/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stagwell AI — one link. Your brand, read, diagnosed and priced.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Stagwell AI — The Machine">
+<meta name="twitter:description" content="Give me one link. I'll read the company, find the competition, and build your executive brief.">
+<meta name="twitter:image" content="https://stagwell-ai-julian.vercel.app/assets/share/og.png">
+<meta name="theme-color" content="#00121C">
+
+<link rel="icon" href="./assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="./assets/share/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="./assets/share/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="./assets/share/apple-touch-icon.png">
+<link rel="stylesheet" href="./assets/fonts/fonts.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body data-state="boot">
+
+<!-- ─────────────────── SVG SYMBOLS ─────────────────── -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="sw-mark" viewBox="0 0 28.44 28">
+    <path class="m-ink" d="M16.74,19.93H0v7.59h12.33c2.71,0,4.41-1.69,4.41-4.41v-3.18Z"/>
+    <path class="m-amber" d="M11.7,7.59h16.74V0h-12.34c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+    <path class="m-teal" d="M0,17.55h24.04c2.71,0,4.41-1.69,4.41-4.41v-3.18H4.41c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+  </symbol>
+  <symbol id="sw-logo" viewBox="0 0 185 28">
+    <path class="m-ink" d="M16.74,19.93H0v7.59h12.33c2.71,0,4.41-1.69,4.41-4.41v-3.18Z"/>
+    <path class="m-amber" d="M11.7,7.59h16.74V0h-12.34c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+    <path class="m-teal" d="M0,17.55h24.04c2.71,0,4.41-1.69,4.41-4.41v-3.18H4.41c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+    <path class="m-ink" d="M100.64,14.54v.47h5.03v1.09c0,1.53-1,2.54-2.52,2.54h-3.69c-1.53,0-2.52-1.02-2.52-2.54v-4.79c0-1.53,1-2.54,2.52-2.54h8.26v-.64c0-.32-.05-.64-.17-.93-.12-.3-.3-.57-.52-.79-.23-.23-.5-.4-.79-.52-.3-.12-.61-.18-.93-.17h-5.85c-3.43,0-5.7,2.23-5.7,5.6v4.79c0,3.37,2.27,5.59,5.7,5.59h3.69c3.43,0,5.7-2.23,5.7-5.59v-3.96h-5.78c-.32,0-.63.05-.93.17s-.56.3-.79.52c-.22.22-.4.49-.52.79-.12.29-.18.61-.17.93"/>
+    <path class="m-ink" d="M55.33,8.76h5.83v12.93h3.18v-12.93h5.81v-3.05h-14.81v3.05Z"/>
+    <path class="m-ink" d="M47.97,12.11h-4.94c-1,0-1.63-.66-1.63-1.68s.64-1.67,1.63-1.67h8.82v-.64c0-.32-.05-.64-.17-.93-.12-.3-.3-.57-.52-.79-.23-.23-.5-.4-.79-.52-.3-.12-.61-.18-.93-.17h-6.4c-2.9,0-4.81,1.87-4.81,4.71s1.91,4.7,4.81,4.7h4.94c1.08,0,1.76.68,1.76,1.75s-.68,1.75-1.76,1.75h-9.4v.64c0,.32.05.63.17.93.12.3.3.56.52.79.23.22.49.4.79.52s.61.18.93.17h7c2.99,0,4.96-1.93,4.96-4.81s-1.99-4.77-4.96-4.77"/>
+    <path class="m-ink" d="M84.98,13.74h-8.2v-2.44c0-1.53,1-2.52,2.52-2.52h3.16c1.53,0,2.52,1,2.52,2.52v2.44ZM82.45,5.71h-3.16c-3.43,0-5.7,2.23-5.7,5.6v10.38h3.18v-4.94h8.2v4.94h3.18v-10.38c0-3.37-2.27-5.6-5.7-5.6Z"/>
+    <path class="m-ink" d="M159.93,16.75V5.88h-3.18v10.91c0,2.95,2.04,4.9,5.07,4.9h4.22c.32,0,.63-.05.93-.17.29-.12.56-.3.79-.52.22-.22.4-.49.52-.79.12-.29.18-.61.17-.93v-.64h-6.63c-1.14,0-1.89-.74-1.89-1.89"/>
+    <path class="m-ink" d="M130.16,16.33c0,1.48-.95,2.44-2.46,2.44s-2.44-.95-2.44-2.44V5.88h-3.18v10.45c0,1.48-.95,2.44-2.46,2.44s-2.44-.95-2.44-2.44V5.88h-3.18v10.45c0,3.33,2.22,5.49,5.62,5.49.78.01,1.55-.16,2.25-.49.7-.33,1.32-.83,1.8-1.44.48.6,1.1,1.09,1.79,1.42.7.33,1.46.51,2.23.51,3.41,0,5.64-2.19,5.64-5.49V5.88h-3.18v10.45Z"/>
+    <path class="m-ink" d="M177.55,18.64c-1.14,0-1.88-.74-1.88-1.89V5.88h-3.17v10.91c0,2.95,2.03,4.9,5.07,4.9h4.22c.32,0,.63-.05.93-.17.29-.12.56-.3.79-.52.22-.22.4-.49.52-.79.12-.29.18-.61.17-.93v-.64h-6.63Z"/>
+    <path class="m-ink" d="M149.21,5.88h-5.37c-3.03,0-5.07,1.99-5.07,4.96v5.91c0,2.97,2.01,4.94,5.07,4.94h5.38c.32,0,.63-.05.93-.17.29-.12.56-.3.79-.52.22-.22.4-.49.52-.79.12-.29.18-.61.17-.93v-.64h-7.79c-1.15,0-1.89-.74-1.89-1.89v-1.55h8.56v-2.99h-8.57v-1.4c0-1.15.74-1.89,1.89-1.89h7.8v-.63c0-.32-.05-.64-.17-.93-.12-.3-.29-.56-.52-.79-.22-.23-.49-.4-.79-.52-.29-.12-.61-.18-.93-.17"/>
+  </symbol>
+</svg>
+
+<!-- ─────────────────── BOOT ─────────────────── -->
+<div class="boot" id="boot" aria-hidden="true">
+  <svg class="boot__mark"><use href="#sw-logo"/></svg>
+  <div class="boot__line"><i></i></div>
+</div>
+
+<div class="app" id="app">
+
+  <!-- ─────────────── SIDEBAR ─────────────── -->
+  <aside class="rail" id="rail">
+    <header class="rail__head">
+      <a class="rail__brand" href="#" data-nav="workspace" aria-label="Stagwell AI">
+        <svg class="rail__logo"><use href="#sw-logo"/></svg>
+        <svg class="rail__mark" viewBox="0 0 28.44 28"><use href="#sw-mark"/></svg>
+        <span class="rail__ai">AI</span>
+      </a>
+      <button class="rail__close" id="railClose" aria-label="Close menu">
+        <svg viewBox="0 0 16 16" width="18" height="18"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <nav class="rail__body">
+      <div class="rail__group">
+        <button class="rail__item rail__item--new" id="newAnalysis">
+          <svg viewBox="0 0 16 16" class="ico"><path d="M2.8 8h10.4M8 2.8v10.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span id="newAnalysisLabel">Start analysis</span>
+        </button>
+      </div>
+
+      <div class="rail__group" id="railSession" hidden>
+        <p class="rail__label">This session</p>
+        <button class="rail__item rail__item--doc is-active" data-nav="workspace" id="railThread">
+          <svg viewBox="0 0 16 16" class="ico"><path d="M3 4.5h10M3 8h10M3 11.5h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span id="railThreadLabel">New analysis</span>
+        </button>
+        <button class="rail__item rail__item--doc" data-nav="brief" id="railBrief" hidden>
+          <svg viewBox="0 0 16 16" class="ico"><path d="M4 2.5h5.5L12.5 5.5V13a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M9.3 2.7v3h3" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+          <span id="railBriefLabel">Executive Brief</span>
+          <em class="rail__dot"></em>
+        </button>
+      </div>
+
+      <div class="rail__group">
+        <p class="rail__label">Future of News</p>
+        <button class="rail__item" data-nav="whatwedo"><svg viewBox="0 0 16 16" class="ico"><rect x="2.6" y="3.4" width="10.8" height="9.2" rx="1.2" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M2.6 6.4h10.8" stroke="currentColor" stroke-width="1.2"/></svg><span>What We Do</span></button>
+        <button class="rail__item" data-nav="mission"><svg viewBox="0 0 16 16" class="ico"><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg><span>Our Mission</span></button>
+        <button class="rail__item" data-nav="research"><svg viewBox="0 0 16 16" class="ico"><circle cx="7.2" cy="7.2" r="4.2" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M10.4 10.4L13.4 13.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Research</span><em class="rail__count">9</em></button>
+        <button class="rail__item" data-nav="partners"><svg viewBox="0 0 16 16" class="ico"><circle cx="6" cy="8" r="3.2" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="10" cy="8" r="3.2" stroke="currentColor" stroke-width="1.2" fill="none"/></svg><span>Our Partners</span><em class="rail__count">28</em></button>
+      </div>
+    </nav>
+
+    <footer class="rail__foot">
+      <a class="rail__orig" href="https://stagwell-ai-ruby.vercel.app/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" class="ico" aria-hidden="true"><path d="M6.5 3.5H3.4v9.1h9.1V9.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M9.4 3.5h3.1v3.1M12.5 3.5L7.8 8.2" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Original version</span>
+      </a>
+      <div class="rail__status"><i class="pulse"></i><span id="engineStatus">10 engines online</span></div>
+      <button class="rail__cta" data-cta="expert">Talk to an AI expert</button>
+    </footer>
+  </aside>
+
+  <div class="railscrim" id="railScrim" aria-hidden="true"></div>
+
+  <!-- ─────────────── STAGE ─────────────── -->
+  <main class="stage" id="stage">
+
+    <div class="topbar">
+      <button class="topbar__menu" id="railOpen" aria-label="Open menu">
+        <svg viewBox="0 0 16 16" width="18" height="18"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+      <a class="topbar__brand" href="#" data-nav="workspace" aria-label="Stagwell AI">
+        <svg><use href="#sw-logo"/></svg><span>AI</span>
+      </a>
+      <div class="topbar__crumb" id="crumb"><span>Workspace</span></div>
+      <button class="restart" id="restart">
+        <svg viewBox="0 0 16 16" width="13" height="13"><path d="M13.2 8a5.2 5.2 0 1 1-1.6-3.75" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M13.4 2.2v3.1h-3.1" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="restartLabel">Start new analysis</span>
+      </button>
+    </div>
+
+    <!-- ══════ WORKSPACE ══════ -->
+    <section class="view view--workspace is-shown is-welcome" data-view="workspace">
+      <div class="scroll" id="wsScroll">
+        <div class="hero" id="hero">
+          <h1 class="display" id="heroTitle">Let’s start with your <span class="accent">website.</span></h1>
+          <p class="hero__sub">One link. I’ll read the company, map the market, and build your brief.</p>
+          <!-- the composer lives here on the first screen, then flies to the dock -->
+          <div class="hero__dock" id="heroDock"></div>
+        </div>
+        <div class="thread" id="thread" hidden></div>
+        <div class="scrollpad" id="scrollpad"></div>
+      </div>
+
+      <div class="dock" id="dock">
+        <form class="prompt" id="promptForm" autocomplete="off">
+          <div class="prompt__field">
+            <span class="prompt__caret"></span>
+            <input class="prompt__input" id="promptInput" type="text" placeholder="nike.com" aria-label="Your answer" spellcheck="false">
+            <button class="prompt__send" id="promptSend" type="submit" aria-label="Send">
+              <svg viewBox="0 0 18 18" width="16" height="16"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ══════ LOADER ══════ -->
+    <section class="view view--run" data-view="run">
+      <div class="loader">
+        <span class="loader__mark">
+          <span class="loader__ring"></span>
+          <svg viewBox="0 0 28.44 28"><use href="#sw-mark"/></svg>
+        </span>
+        <p class="loader__title">Building your personalized brief</p>
+        <p class="loader__status" id="runStatus" aria-live="polite"></p>
+        <span class="loader__bar"><i id="runMeter"></i></span>
+      </div>
+    </section>
+
+    <!-- ══════ BRIEF ══════ -->
+    <section class="view view--brief" data-view="brief">
+      <div class="scroll" id="briefScroll"><div class="brief" id="brief"></div></div>
+    </section>
+
+    <!-- ══════ WHAT WE DO ══════ -->
+    <section class="view view--doc" data-view="whatwedo">
+      <div class="scroll"><article class="doc">
+        <p class="eyebrow">Future of News Initiative</p>
+        <h1 class="doc__title">What we <span class="accent">do.</span></h1>
+        <p class="doc__lede">The Future of News Initiative brings together a coalition of news media and marketing industry leaders for fulsome discussions about the opportunities for news media, rooted in groundbreaking research.</p>
+        <div class="doc__rule"></div>
+        <div class="doc__cols">
+          <p>Together, journalists, publishers and brand leaders identify opportunities for industry growth and partnership, showcasing news as an essential tool for driving successful business results.</p>
+          <p>At Stagwell, we believe a thriving news industry is not only the foundation of a healthy democracy, but also a critical platform for marketers and advertisers. Recent discourse around brand safety has disproportionately hurt the news industry, as advertisers back away from news due to misconceptions and an abundance of caution.</p>
+        </div>
+        <div class="statrow">
+          <div class="stat"><b class="num">28</b><span>News &amp; adtech partners</span></div>
+          <div class="stat"><b class="num">9</b><span>Global research studies</span></div>
+          <div class="stat"><b class="num">6</b><span>Markets surveyed</span></div>
+          <div class="stat"><b class="num">On par</b><span>News-adjacent ad performance</span></div>
+        </div>
+        <div class="doc__cta">
+          <p>The same coalition feeds the machine. Every analysis reads the partner network live.</p>
+          <button class="btn btn--dark" data-nav="workspace">Analyse my website</button>
+        </div>
+        <footer class="docfoot">
+          <svg class="docfoot__logo"><use href="#sw-logo"/></svg>
+          <span>Future of News Initiative</span>
+          <span class="docfoot__sp"></span>
+          <span>futureofnews@stagwellglobal.com</span>
+        </footer>
+      </article></div>
+    </section>
+
+    <!-- ══════ MISSION ══════ -->
+    <section class="view view--doc" data-view="mission">
+      <div class="scroll"><article class="doc">
+        <p class="eyebrow">Future of News Initiative</p>
+        <h1 class="doc__title">Our <span class="accent">mission.</span></h1>
+        <p class="doc__lede">The Future of News Initiative published its mission statement across half a dozen publications, with the goal of raising awareness and encouraging behavior change from partners in the advertising world.</p>
+        <div class="mission">
+          <figure class="mission__who">
+            <img src="./assets/brand/mark-penn.jpg" alt="Mark Penn"
+                 onerror="this.closest('.mission__who').classList.add('is-empty')">
+            <figcaption>
+              <b>Mark Penn</b>
+              <span>Chairman &amp; CEO</span>
+              <svg class="mission__logo"><use href="#sw-logo"/></svg>
+            </figcaption>
+          </figure>
+          <blockquote class="pull">
+            <p>Instead of feeding the vicious cycle of news demonetization that hurts quality journalism the most, advertisers should kickstart a virtuous cycle of investing in news that allows brands to reach valuable audiences and gives quality news content the financial stability it needs to thrive.</p>
+          </blockquote>
+        </div>
+        <div class="doc__cols">
+          <p>To debunk the assumptions that have pushed advertisers away from news, Stagwell launched the Future of News Initiative with a single goal: reinvigorating the relationship between news and marketing.</p>
+          <p>The evidence is unambiguous. Ads adjacent to stories judged “not brand safe” performed on par with ads next to “brand safe” content — a finding replicated across markets.</p>
+        </div>
+        <div class="doc__cta">
+          <p>Ask the machine what this means for your category.</p>
+          <button class="btn btn--dark" data-nav="workspace">Open the workspace</button>
+        </div>
+        <footer class="docfoot">
+          <svg class="docfoot__logo"><use href="#sw-logo"/></svg>
+          <span>Future of News Initiative</span>
+          <span class="docfoot__sp"></span>
+          <span>futureofnews@stagwellglobal.com</span>
+        </footer>
+      </article></div>
+    </section>
+
+    <!-- ══════ RESEARCH ══════ -->
+    <section class="view view--doc" data-view="research">
+      <div class="scroll"><article class="doc">
+        <p class="eyebrow">Future of News Initiative · with HarrisX</p>
+        <h1 class="doc__title"><span class="accent">Research.</span></h1>
+        <p class="doc__lede">Nine studies across six markets, fielded with HarrisX. Every one of them is inside the machine — cited automatically when it is relevant to your brand.</p>
+        <ul class="studies" id="studies"></ul>
+        <div class="doc__cta">
+          <p>Every analysis cites the studies that apply to your category.</p>
+          <button class="btn btn--dark" data-nav="workspace">Analyse my website</button>
+        </div>
+        <footer class="docfoot">
+          <svg class="docfoot__logo"><use href="#sw-logo"/></svg>
+          <span>Future of News Initiative</span>
+          <span class="docfoot__sp"></span>
+          <span>futureofnews@stagwellglobal.com</span>
+        </footer>
+      </article></div>
+    </section>
+
+    <!-- ══════ PARTNERS ══════ -->
+    <section class="view view--partners" data-view="partners">
+      <div class="partners" id="partners"></div>
+    </section>
+
+  </main>
+
+  <!-- ─────────────── CONTEXT RAIL ─────────────── -->
+  <aside class="ctx" id="ctx" hidden>
+    <p class="ctx__label">What the machine knows</p>
+    <div class="ctx__list" id="ctxList"></div>
+    <div class="ctx__foot">
+      <div class="ctx__bar"><i id="ctxBar"></i></div>
+      <p><span id="ctxPct">0</span>% context captured</p>
+    </div>
+  </aside>
+</div>
+
+<!-- ─────────────── A / B SWITCH ─────────────── -->
+<div class="ab" role="group" aria-label="Version">
+  <a href="https://stagwell-ai-ruby.vercel.app/" class="ab__b ab__b--orig" target="_blank"
+     rel="noopener" title="The original version — opens in a new tab"
+     aria-label="Original version, opens in a new tab">V0</a>
+  <span class="ab__sep" aria-hidden="true"></span>
+  <a href="./" class="ab__b is-on" title="This version">A</a>
+  <a href="./b.html" class="ab__b" title="Version B — landing page">B</a>
+</div>
+
+<!-- ─────────────── MODAL ─────────────── -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__scrim" data-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true">
+    <button class="modal__x" data-close aria-label="Close">
+      <svg viewBox="0 0 16 16" width="16" height="16"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="./shared.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
