@@ -570,3 +570,17 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 
 /* Learn more is visual-only until the inner pages exist */
 .tile .btn,.fcard .btn,.scard .btn,.rec{pointer-events:none}
+
+/* ── Prototype switch ──────────────────────────────────────────
+   The tabs name the three prototypes now, so each needs a pill rather
+   than the 34px circle a single letter sat in. Overridden here rather
+   than in styles.css, which b.html also loads. */
+.ab{max-width:calc(100vw - 40px)}
+.ab__b{
+  width:auto;height:32px;padding:0 13px;border-radius:var(--r-full);
+  white-space:nowrap;font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;
+}
+@media (max-width:460px){
+  .ab{right:12px;bottom:12px;gap:1px;padding:3px}
+  .ab__b{padding:0 9px;height:30px;letter-spacing:.05em}
+}
