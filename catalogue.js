@@ -27,7 +27,7 @@ const PRODUCTS = [
     goals:['speed','organise','growth'], scale:'enterprise',
   },
   {
-    id:'knowledge-machine', name:'Pulse', badge:'The Knowledge Machine', suite:'enterprise',
+    id:'knowledge-machine', name:'Pulse', badge:'The Knowledge Machine', suite:'cloud',
     line:'Everything your organisation knows, answerable',
     what:'Turns the research, decks and data scattered across your teams into something you can simply ask a question of.',
     proof:'Marketing Cloud · enterprise knowledge layer.',
@@ -76,7 +76,7 @@ const PRODUCTS = [
     goals:['ai','growth'], scale:'either',
   },
   {
-    id:'newintel', name:'NewIntel', suite:'cloud',
+    id:'newintel', name:'NewIntel', badge:'The Intelligence Machine', suite:'enterprise',
     line:'What your competitors did this week',
     what:'Live competitive signal — pricing, hiring, earned coverage, creator activity — rather than a quarterly deck that is already out of date.',
     proof:'Continuous competitive surveillance.',
