@@ -6,6 +6,7 @@
     { "source": "/b.html", "destination": "/machine/b.html", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/catalogue", "destination": "/c.html" }
+    { "source": "/catalogue", "destination": "/c.html" },
+    { "source": "/platform", "destination": "/d.html" }
   ]
 }
