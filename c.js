@@ -239,9 +239,29 @@ $('#flowSm').insertAdjacentHTML('afterbegin', `<div class="flow__row">${smRow}${
 /* Drift and paddles share one offset per row, so the arrows work while
    the rows keep moving. Offsets wrap at half the row (content is doubled). */
 const FLOWS = [
-  { el: $('#flowBig .flow__row'), dir:  1, speed: 24, off: 0, vel: 0 },
+  /* centre:true parks the big row so its first card — IMAI — sits mid-viewport
+     on load, holds long enough to be read, then drifts left so DoReel and
+     NewVoices arrive from the right. */
+  { el: $('#flowBig .flow__row'), dir:  1, speed: 24, off: 0, vel: 0, centre: true },
   { el: $('#flowSm .flow__row'),  dir: -1, speed: 30, off: 0, vel: 0 },
 ];
+
+/* The row is its content twice and the transform can only ever pull it left,
+   so centring means parking one full set back: the second copy's first card
+   then lands mid-viewport with the rest of the set queued to its right.
+   Deferred to the first frame that has a layout, since the card art loads
+   late and scrollWidth is 0 until it does. */
+const HOLD = 1600;
+function centreFirst(f, now) {
+  const half = f.el.scrollWidth / 2;
+  const card = f.el.firstElementChild;
+  if (!half || !card) return false;
+  const wrapW = f.el.parentElement.getBoundingClientRect().width;
+  const cardW = card.getBoundingClientRect().width;
+  f.off = half - Math.max(0, (wrapW - cardW) / 2);
+  f.pauseUntil = now + HOLD;
+  return true;
+}
 FLOWS.forEach(f => {
   f.el.parentElement.addEventListener('mouseenter', () => { f.hover = true; });
   f.el.parentElement.addEventListener('mouseleave', () => { f.hover = false; });
@@ -252,6 +272,7 @@ let last = performance.now();
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
   FLOWS.forEach(f => {
+    if (f.centre && centreFirst(f, now)) f.centre = false;
     if (!REDUCED && !f.hover && now > (f.pauseUntil || 0)) f.off += f.dir * f.speed * dt;
     f.off += f.vel * dt;
     f.vel *= Math.pow(0.0016, dt);            // paddle impulse eases out
