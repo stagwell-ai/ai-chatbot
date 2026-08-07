@@ -76,3 +76,12 @@ body.vD .chero{padding-bottom:clamp(56px,7vw,96px)}
   .dstat{min-width:44%}
   .roadmap{margin-top:22px}
 }
+
+/* ── capability-card media ──────────────────────────────────────
+   Two of the eight cards carry footage instead of a fragment. The base
+   .scard__art ships at 65% opacity for the fragment strip — full-bleed
+   footage wants none of that, and the kicker moves to white over film. */
+.dcap--media{background:linear-gradient(160deg,#01293B,#00121C)}
+.dcap--media .scard__art{opacity:1}
+.dcap__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dcap--media .dcap__k{position:relative;z-index:2;color:#8FD6E4}

@@ -17,21 +17,49 @@ const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ══════════════════════ CAPABILITIES ══════════════════════
    No sub-brands, just what the platform does — grouped loosely by
-   kicker so the row still reads as four moves, not eight loose cards. */
+   kicker so the row still reads as four moves, not eight loose cards.
+   Each card carries a framed dashboard fragment in C's cmini vocabulary,
+   or full-bleed footage where footage says it better than a fragment. */
 
 const CAPABILITIES = [
-  { k: 'See',   name: 'Social listening',            line: 'Every mention, everywhere, as it happens.' },
-  { k: 'See',   name: 'Competitive intelligence',     line: 'Pricing, hiring, coverage — what rivals did this week.' },
-  { k: 'See',   name: 'AI & GEO visibility',          line: 'How the answer engines describe you, tracked daily.' },
-  { k: 'Reach', name: 'Creator database',             line: '400M profiles, vetted and searchable.' },
-  { k: 'Make',  name: 'AI video-ad creation',         line: 'Presenter video and UGC from a brief, in minutes.' },
-  { k: 'Make',  name: 'Autonomous creative rotation',  line: 'The winning variant promotes itself.' },
-  { k: 'Talk',  name: 'AI voice agents',              line: 'Calls answered, qualified and booked, 24/7.' },
-  { k: 'Ask',   name: 'Surveys & brand tracking',      line: 'Ask the market, get an answer today.' },
+  { k: 'See',   name: 'Social listening',            line: 'Every mention, everywhere, as it happens.',
+    mini: `<span class="cmini mini-feed">
+      <span><i class="pulse"></i><b>Mentions up 214% this hour</b><em>now</em></span>
+      <span><i class="pulse pulse--amber"></i><b>New thread gaining ground</b><em>12m</em></span></span>` },
+  { k: 'See',   name: 'Competitive intelligence',     line: 'Pricing, hiring, coverage — what rivals did this week.',
+    mini: `<span class="cmini mini-feed">
+      <span><i class="pulse"></i><b>Rival cut prices 4%</b><em>2h</em></span>
+      <span><i class="pulse pulse--amber"></i><b>New creator campaign</b><em>9h</em></span></span>` },
+  { k: 'See',   name: 'AI & GEO visibility',          line: 'How the answer engines describe you, tracked daily.',
+    mini: `<span class="cmini mini-row">
+      <i class="pulse"></i><b>Ranked&nbsp;<u>#1</u>&nbsp;in AI answers</b><em class="up">↑ 2</em></span>` },
+  { k: 'Reach', name: 'Creator database',             line: '400M profiles, vetted and searchable.',
+    media: `<video class="dcap__video" src="./assets/img/imai.mp4" autoplay muted loop playsinline></video>` },
+  { k: 'Make',  name: 'AI video-ad creation',         line: 'Presenter video and UGC from a brief, in minutes.',
+    media: `<video class="dcap__video" src="./assets/img/doreel.mp4" autoplay muted loop playsinline></video>` },
+  { k: 'Make',  name: 'Autonomous creative rotation',  line: 'The winning variant promotes itself.',
+    mini: `<span class="cmini mini-col">
+      <svg viewBox="0 0 96 26" aria-hidden="true"><path class="mini-line" d="M2,22 L18,19 L34,21 L50,13 L66,15 L82,6 L94,3"
+        fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <b>Winning variant, 12 weeks</b></span>` },
+  { k: 'Talk',  name: 'AI voice agents',              line: 'Calls answered, qualified and booked, 24/7.',
+    mini: `<span class="cmini mini-row">
+      <i class="pulse"></i><b>“Booked you in for Tuesday, 2pm.”</b></span>` },
+  { k: 'Ask',   name: 'Surveys & brand tracking',      line: 'Ask the market, get an answer today.',
+    mini: `<span class="cmini mini-ask">
+      <svg viewBox="0 0 12 12" width="9" height="9"><circle cx="5.2" cy="5.2" r="3.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 8l2.6 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <b>Would buyers pay more for repairability?</b><i class="mini-caret"></i></span>` },
 ];
 
-const capCard = c => `<button class="scard dcap" type="button">
+const capCard = c => c.media
+  ? `<button class="scard scard--img dcap dcap--media" type="button">
+    <span class="scard__art">${c.media}</span>
     <span class="scard__t"><b>${esc(c.name)}</b><i>${esc(c.line)}</i></span>
+    <em class="dcap__k">${esc(c.k)}</em>
+  </button>`
+  : `<button class="scard dcap" type="button">
+    <span class="scard__t"><b>${esc(c.name)}</b><i>${esc(c.line)}</i></span>
+    <span class="scard__mini">${c.mini}</span>
     <em class="dcap__k">${esc(c.k)}</em>
   </button>`;
 
@@ -72,6 +100,21 @@ function nudge(f, sign) {
 }
 $('#doesNext').addEventListener('click', () => nudge(FLOWS[0], 1));
 $('#doesPrev').addEventListener('click', () => nudge(FLOWS[0], -1));
+
+/* the visibility fragment's movement ticks upward on a loop — a number that lives */
+(function rankTick() {
+  const els = $$('.mini-row .up');
+  if (!els.length || REDUCED) return;
+  const steps = [2, 3, 4];
+  let i = 0;
+  setInterval(() => {
+    i = (i + 1) % steps.length;
+    els.forEach(el => {
+      el.style.opacity = 0;
+      setTimeout(() => { el.textContent = `↑ ${steps[i]}`; el.style.opacity = 1; }, 260);
+    });
+  }, 2800);
+})();
 
 /* ══════════════════════ MODAL ══════════════════════ */
 
