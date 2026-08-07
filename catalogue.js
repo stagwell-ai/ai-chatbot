@@ -76,7 +76,7 @@ const PRODUCTS = [
     goals:['ai','growth'], scale:'either',
   },
   {
-    id:'newintel', name:'NewIntel', badge:'The Intelligence Machine', suite:'enterprise',
+    id:'newintel', name:'NewIntel', badge:'The Intelligence Machine', suite:'enterprise', leaders:true,
     line:'What your competitors did this week',
     what:'Live competitive signal — pricing, hiring, earned coverage, creator activity — rather than a quarterly deck that is already out of date.',
     proof:'Continuous competitive surveillance.',
@@ -84,7 +84,7 @@ const PRODUCTS = [
     goals:['understand','growth'], scale:'either',
   },
   {
-    id:'newvoices', name:'NewVoices', suite:'cloud',
+    id:'newvoices', name:'NewVoices', suite:'cloud', leaders:true,
     line:'Voice agents that hold a real conversation',
     what:'Outbound prospecting, inbound qualification and booking, running 24/7 inside your CRM. Deterministic, with a strict source-of-truth silo so it does not invent things.',
     proof:'In production across B2B sales orgs · $36k enterprise licence.',
@@ -99,14 +99,14 @@ const PRODUCTS = [
     goals:['speed','organise'], scale:'either',
   },
   {
-    id:'koalifyed', name:'IMAI', suite:'cloud',
+    id:'koalifyed', name:'IMAI', suite:'cloud', leaders:true,
     line:'Influencer Marketing AI',
     what:'Stagwell’s influencer platform — vetted creator discovery, campaign management and performance measurement in one place, so influencer spend is judged like any other media.',
     proof:'Influencer discovery, activation and measurement.',
     goals:['audience','growth'], scale:'either',
   },
   {
-    id:'doreel', name:'DoReel', suite:'cloud',
+    id:'doreel', name:'DoReel', suite:'cloud', leaders:true,
     line:'Creative at the speed of the insight',
     what:'AI-produced presenter video and UGC, generated from the brief rather than three weeks after it.',
     proof:'Generative production.',
@@ -158,6 +158,10 @@ function match(goal, scale) {
       if (scale === 'midmarket'  && p.suite === 'cloud')      score += 6;
       if (p.scale === scale || p.scale === 'either') score += 2;
       if (p.scale === 'enterprise' && scale === 'midmarket') score -= 8;
+      /* House weighting, deliberately small. A goal match is worth 10, so this
+         can never lift one of ours over a genuinely better fit — it only wins
+         ties and near-ties, which is where the ordering was arbitrary anyway. */
+      if (p.leaders) score += 3;
       return { ...p, score };
     })
     .sort((a, b) => b.score - a.score)

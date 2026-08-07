@@ -1079,7 +1079,7 @@ function buildBrief() {
     solutions: () => `
   <section class="bsec reveal">
     <div class="bhead"><h2>What we would put on it</h2><i></i><span class="tag">Section %N% · Stagwell AI</span></div>
-    <div class="cards">
+    <div class="cards cards--stack">
       ${SOLUTIONS.map(s => `<article class="card">
         <span class="card__k">${s[0]}</span><h3>${s[1]}</h3><p>${s[2]}</p>
         <span class="card__foot">${s[3]}</span></article>`).join('')}

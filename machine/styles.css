@@ -794,6 +794,10 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:0;background:var(--surface);
   border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+/* The stack is an odd count, so a card left alone on the final row stretches
+   across it rather than leaving empty bordered cells beside it. Scoped, so the
+   three-card grids elsewhere are untouched. */
+.cards--stack .card:last-child:nth-child(3n+1){grid-column:1/-1}
 .card{padding:32px 30px;display:flex;flex-direction:column;gap:14px;transition:background var(--d-2) var(--ease)}
 .card:hover{background:var(--surface-2)}
 .card__k{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.11em;text-transform:uppercase;color:var(--teal)}

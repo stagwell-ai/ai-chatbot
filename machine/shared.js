@@ -816,29 +816,34 @@ function computeAnalysis(S) {
   const leadOpp = opps.splice(S.focusLead || 0, 1)[0];
   if (leadOpp) opps.unshift(leadOpp);
 
+  /* House order: the four we build lead, then the rest of the stack. The list
+     is rendered in order and never indexed into, so the sequence is the only
+     thing carrying the emphasis — no copy is doing it. */
   const solutions = [
-    ['BERA.ai','Brand equity, priced','Ties perception movement to revenue so the board reads marketing as a P&L input, not a cost line.','Brand-to-Business'],
-    ['GEOPulse / NewIndex','Visibility in AI answers','Tracks how eight models describe you against your set, daily, and shows what moves the number.','Answer-layer analytics'],
-    ['SATS','The audience, resolved','A 260M identity graph turns a segment description into addressable, measurable people.','Activation'],
+    ['NewIntel','What rivals did this week','Live competitive signal — pricing, hiring, earned coverage, creator activity — instead of a quarterly deck that is already out of date.','Competitive intelligence'],
     ['IMAI','Creators, already yours','Finds the voices talking about you now and turns unpaid affinity into a managed programme.','Creator graph'],
     ['DoReel','Creative at the speed of insight','AI-produced UGC and presenter video, generated from the same brief you are reading.','Generative production'],
     ['NewVoices + Bestie','The conversation layer','Voice agents that arrive at a call already holding the full diagnosis.','Conversational AI'],
+    ['BERA.ai','Brand equity, priced','Ties perception movement to revenue so the board reads marketing as a P&L input, not a cost line.','Brand-to-Business'],
+    ['GEOPulse / NewIndex','Visibility in AI answers','Tracks how eight models describe you against your set, daily, and shows what moves the number.','Answer-layer analytics'],
+    ['SATS','The audience, resolved','A 260M identity graph turns a segment description into addressable, measurable people.','Activation'],
   ];
 
   const horizons = [
     ['0–30 days','Establish the baseline', [
-      `Instrument ${b} on GEOPulse across all eight models and publish the weekly delta to the leadership team.`,
-      `Stand up NewIntel surveillance on ${S.comps.join(', ')}.`,
+      `Stand up NewIntel surveillance on ${S.comps.join(', ')} and put the weekly movement in front of the leadership team.`,
+      `Instrument ${b} on GEOPulse across all eight models and publish the delta beside it.`,
       'Run the BERA equity read and translate it into a revenue sensitivity model.',
     ]],
     ['31–60 days','Correct the citation supply', [
-      'Repoint earned media at the sources models actually cite — wire services and quality news.',
       'Formalise the top 40 creators IMAI has already matched.',
+      'Put NewVoices on the highest-intent inbound, briefed with the same diagnosis the brief carries.',
+      'Repoint earned media at the sources models actually cite — wire services and quality news.',
       'Pilot news-adjacent inventory on Trade Desk and Ozone at a controlled weight.',
     ]],
     ['61–90 days','Compound it', [
-      'Publish the first quarterly AI Visibility read to the board alongside brand equity.',
       'Move DoReel creative into always-on production against the winning narratives.',
+      'Publish the first quarterly AI Visibility read to the board alongside brand equity.',
       `Open the full ${b} AI Workspace to the wider marketing team.`,
     ]],
   ];

@@ -170,7 +170,9 @@ $('#concReset').addEventListener('click', () => {
    smaller cards drifting the other way. Hover pauses a row.
    Art is PLACEHOLDER until the real images land. */
 
-const BIG = ['koalifyed', 'bera', 'doreel', 'newvoices'];
+/* House order: the three we build lead the row, BERA closes it. BIGART is keyed
+   by id, so the sequence here is the only thing that changes. */
+const BIG = ['koalifyed', 'doreel', 'newvoices', 'bera'];
 /* a small centred voice agent, mid-sentence */
 const voice = () => `<div class="ca-voice">${Array.from({ length: 7 },
   (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>`;
