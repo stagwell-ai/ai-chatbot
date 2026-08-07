@@ -7,6 +7,7 @@
   ],
   "rewrites": [
     { "source": "/catalogue", "destination": "/c.html" },
-    { "source": "/platform", "destination": "/d.html" }
+    { "source": "/platform", "destination": "/d.html" },
+    { "source": "/agent", "destination": "/e.html" }
   ]
 }
