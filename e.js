@@ -115,6 +115,12 @@ const litRows = () => $$('.rail__item.erail.is-live');
 
 let running = false;
 let hurried = false;
+/* Set when a run starts. The click (or Enter) that STARTED the run bubbles
+   up to the hurry listeners after startRun has already flagged the run as
+   in progress — without a settle window, every mouse-started run would
+   fast-forward itself instantly. */
+let runStartedAt = 0;
+const SETTLE = 800;
 
 /* the fast-forward flag folds every remaining wait down to almost nothing */
 const tick = ms => wait(hurried ? Math.min(ms, 60) : ms);
@@ -177,22 +183,24 @@ async function runStep(step, i, li, seed, opts = {}) {
   row?.classList.add('is-live');
   const sub = $('.estep__t i', li);
 
-  const total = REDUCED ? 200 : 2600 + i * 130;
+  /* paced to be read, not skimmed — a click fast-forwards for the presenter
+     who has seen it before */
+  const total = REDUCED ? 200 : 5200 + i * 250;
   let subs = step.subs;
   if (opts.echo) subs = [subs[0], `Focusing on: “${opts.echo}…”`, ...subs.slice(1)];
-  const beatMs = Math.max(REDUCED ? 40 : 300, Math.floor(total / subs.length));
+  const beatMs = Math.max(REDUCED ? 40 : 600, Math.floor(total / subs.length));
 
   for (let s = 0; s < subs.length - 1; s++) {
     sub.textContent = subs[s];
-    await tick(REDUCED ? 80 : Math.min(900, beatMs));
+    await tick(REDUCED ? 80 : Math.min(1700, beatMs));
   }
   /* the final beat: for steps with a count, the count-up plays alongside
      the last sub — it replaces the text as the running total climbs */
   if (step.count) {
-    await runCount(sub, step.count(seed), REDUCED ? 200 : Math.max(500, beatMs));
+    await runCount(sub, step.count(seed), REDUCED ? 200 : Math.max(1100, beatMs));
   } else {
     sub.textContent = subs[subs.length - 1];
-    await tick(REDUCED ? 80 : Math.min(900, beatMs));
+    await tick(REDUCED ? 80 : Math.min(1700, beatMs));
   }
 
   let doneTitle = step.doneTitle(seed);
@@ -292,6 +300,7 @@ function showHero() {
 async function startRun(sentence) {
   if (running) return;
   running = true;
+  runStartedAt = performance.now();
   hurried = false;
 
   /* window.ELIVE is a layer built in e-live.js — it may not be loaded at
@@ -318,7 +327,7 @@ async function startRun(sentence) {
 
   renderPlan(sentence, steps);
 
-  await tick(REDUCED ? 120 : 1200);
+  await tick(REDUCED ? 120 : 2000);
   const meta = $('#eplanMeta');
   if (meta) meta.textContent = 'Working — the agent moves between workspaces as each step needs it.';
 
@@ -328,6 +337,8 @@ async function startRun(sentence) {
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
     const isNewIndex = step.ws === 'newindex';
+    /* a breath between steps, so each check lands before the next spinner */
+    if (i) await tick(REDUCED ? 40 : 650);
     await runStep(step, i, lis[i], seed, {
       echo: i === 0 ? phrase : null,
       onTheatreDone: isNewIndex ? async () => {
@@ -352,6 +363,9 @@ async function startRun(sentence) {
   input.value = '';
   input.placeholder = 'Run another sentence…';
 
+  /* let the completion line land before the campaign takes over */
+  await tick(REDUCED ? 60 : 1400);
+
   const fGraceMs = hurried ? 500 : 5000;
   const findingsLive = await Promise.race([fLive, wait(fGraceMs).then(() => null)]);
 
@@ -365,15 +379,25 @@ async function startRun(sentence) {
    run is in progress hurries every remaining wait down to almost nothing */
 document.addEventListener('click', e => {
   if (!running || hurried) return;
+  if (performance.now() - runStartedAt < SETTLE) return;
   if (e.target.closest('.ab') || e.target.closest('a')) return;
+  if (e.target.closest('#promptForm') || e.target.closest('.chips')) return;
   hurried = true;
 });
 document.addEventListener('keydown', e => {
   if (!running || hurried) return;
+  if (performance.now() - runStartedAt < SETTLE) return;
+  if (e.target === input) return;
   if (e.key === 'Enter') hurried = true;
 });
 
 /* ══════════════════════ SUBMIT / RESET ══════════════════════ */
+
+/* The stylesheet ships the send button dark-but-dead (opacity .22,
+   pointer-events none) until the form carries is-ready — the Workspace
+   toggles it as you type. Here an empty submit runs the placeholder
+   sentence, so the button is always meaningful and stays lit. */
+form?.classList.add('is-ready');
 
 form?.addEventListener('submit', e => {
   e.preventDefault();

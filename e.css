@@ -338,3 +338,7 @@ body.vE .prompt__input{font-size:1.0625rem}
   .spin,.estep[data-state="running"] .estep__mark{animation:none}
   .erail.is-live .erail__dot::after{animation:none;opacity:.35}
 }
+
+/* while a run is in progress the send button is disabled — read as busy,
+   not broken */
+body.vE .prompt__send:disabled{opacity:.35;transform:none;cursor:default}
