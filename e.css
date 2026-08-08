@@ -157,6 +157,27 @@ body.vE .prompt__input{font-size:1.0625rem}
 }
 .eplan__done svg{width:13px;height:13px;color:var(--teal);flex:none}
 
+/* ── Live surfaces ────────────────────────────────────────────
+   .elive sits inside a .estep <li> (grid: 28px mark / 1fr title / auto tag).
+   As a fourth child it falls onto its own row — grid-column spans the full
+   width and padding-left aligns its text under .estep__t (28px + 16px gap).
+   Only rendered when a live model result actually arrived; the .pulse dot
+   and the word "unscripted" never appear in the scripted fallback. */
+.elive{grid-column:1/-1;margin-top:10px;padding-left:44px}
+.elive__q{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin:0;
+}
+.elive__a{
+  font-family:var(--serif);font-size:1.0625rem;line-height:1.55;color:var(--ink);
+  margin:6px 0;max-width:58ch;
+}
+.elive__meta,.ecard__meta{
+  font-family:var(--mono);font-size:var(--t-label);color:var(--ink-3);
+  display:flex;align-items:center;gap:6px;margin:0;
+}
+.ecard__meta{margin-top:12px}
+
 /* ── The finished campaign ────────────────────────────────── */
 .ekit{max-width:860px;margin:40px auto 0;animation:fadeUp 700ms var(--ease)}
 .ekit__k{
@@ -304,6 +325,7 @@ body.vE .prompt__input{font-size:1.0625rem}
   .ecard--findings{grid-column:auto}
   .estep{grid-template-columns:24px 1fr;gap:12px}
   .estep__ws{grid-column:2;justify-self:start;margin-top:2px}
+  .elive{padding-left:36px}
   .eads{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
 @media (max-width:460px){
