@@ -288,6 +288,127 @@ body.vE .prompt__input{font-size:1.0625rem}
 }
 .ekit__acts a.btn:hover{border-color:var(--teal);color:var(--teal)}
 
+/* ── Workspace peek ───────────────────────────────────────────
+   A rail row opens a right-anchored sheet holding what the agent left
+   in that workspace. Above the switcher (z-60), below the boot card
+   (z-90) and the modal (z-80) — this page has neither, but the stack
+   stays in the order the root sheet establishes.
+   The content reuses the results-card vocabulary (.ecard__row, .eavatar,
+   .eads, .ecard__quote, .elive) so a workspace never invents a second
+   look for the same artefact; only the shell and the few shapes the
+   cards don't have are new. */
+.esheet{position:fixed;inset:0;z-index:70}
+.esheet[hidden]{display:none}
+.esheet__scrim{
+  position:absolute;inset:0;background:rgba(0,18,28,.4);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  animation:fade var(--d-2) var(--ease);
+}
+.esheet__panel{
+  position:absolute;top:0;right:0;height:100%;
+  width:min(480px,calc(100vw - 24px));
+  background:var(--paper);border-left:1px solid var(--line);
+  padding:28px 26px;overflow-y:auto;overscroll-behavior:contain;
+  animation:esheetIn 320ms var(--ease);
+}
+@keyframes esheetIn{from{transform:translateX(100%)}to{transform:none}}
+.esheet__x{
+  position:absolute;right:16px;top:16px;width:30px;height:30px;border-radius:50%;
+  display:grid;place-items:center;color:var(--ink-3);
+  transition:background var(--d-1) var(--ease-io),color var(--d-1) var(--ease-io);
+}
+.esheet__x:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
+
+/* the shared spine of every sheet: mono label, serif heading, grey lede */
+.esheet__k{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 40px 16px 0;line-height:1.5;
+}
+.esheet__h{
+  font-family:var(--serif);font-weight:400;font-size:1.5rem;line-height:1.22;
+  letter-spacing:-.022em;color:var(--ink);margin:0 0 12px;
+}
+.esheet__p{font-size:var(--t-sm);line-height:1.6;color:var(--ink-2);margin:0 0 4px}
+.esheet__stat{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px;
+}
+/* the same two labels used again further down the sheet, where they need
+   air above them rather than under the heading */
+.esheet__k--mid{margin:26px 0 10px}
+.esheet__stat--mid{margin:22px 0 0}
+/* the spinner line, when the agent is inside this workspace right now */
+.esheet__work{display:flex;align-items:center;gap:9px;margin-top:16px;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3)}
+
+.esheet__empty{text-align:center;padding:14vh 0 0;color:var(--ink-3)}
+.esheet__empty .esheet__p{color:var(--ink-3);max-width:32ch;margin:0 auto}
+.esheet__empty .btn{margin-top:22px}
+
+/* NewIntel — the signal feed, in the house feed shape */
+.esheet__feed{display:flex;flex-direction:column;margin:6px 0 0}
+.esheet__feed > span{
+  display:flex;align-items:center;gap:10px;min-width:0;
+  padding:11px 0;box-shadow:inset 0 -1px 0 var(--line);font-size:var(--t-sm);
+}
+.esheet__feed > span:last-child{box-shadow:none}
+.esheet__feed b{font-weight:450;color:var(--ink);min-width:0}
+.esheet__feed em{
+  margin-left:auto;flex:none;padding-left:10px;font-style:normal;
+  font-family:var(--mono);font-size:var(--t-label);color:var(--ink-4);
+}
+/* three dots pinging in unison reads as an alarm — stagger them */
+.esheet__feed > span:nth-child(2) .pulse::after{animation-delay:.9s}
+.esheet__feed > span:nth-child(3) .pulse::after{animation-delay:1.8s}
+
+/* InfluencerMarketing.ai — overlap bars (styles.css has no bar shape) */
+.esheet__bars{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.esheet__bars > span{
+  display:grid;grid-template-columns:minmax(0,1fr) 110px auto;
+  align-items:center;gap:12px;font-size:var(--t-sm);color:var(--ink-2);
+}
+.ebar{height:5px;border-radius:var(--r-full);background:var(--line);min-width:0}
+.ebar i{
+  display:block;height:100%;width:var(--w);border-radius:var(--r-full);
+  background:var(--teal);transform-origin:left;
+  animation:ebarGrow 780ms var(--ease) both;
+}
+@keyframes ebarGrow{from{transform:scaleX(0)}to{transform:none}}
+.esheet__bars em{
+  font-style:normal;font-family:var(--mono);font-size:var(--t-label);
+  color:var(--ink-3);justify-self:end;
+}
+
+/* Research — the follow-up row is deliberately dead, and says so */
+.esheet__ask{
+  display:flex;align-items:center;gap:10px;margin-top:10px;
+  border:1px solid var(--line-2);border-radius:var(--r-full);
+  background:var(--surface);padding:10px 16px;color:var(--ink-4);
+}
+.esheet__ask svg{width:14px;height:14px;flex:none}
+.esheet__ask input{
+  flex:1;min-width:0;border:0;background:transparent;outline:none;
+  font-family:inherit;font-size:var(--t-sm);color:var(--ink-3);
+}
+.esheet__ask input:disabled{-webkit-text-fill-color:var(--ink-3);opacity:1}
+.esheet__note{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.04em;
+  color:var(--ink-4);line-height:1.55;margin-top:10px;
+}
+
+/* borrowed pieces, re-seated: .elive is built for a step <li> in a grid,
+   and the ad tiles get the sheet's width rather than the card's */
+.esheet .elive{grid-column:auto;padding-left:0;margin-top:0}
+.esheet .eads{grid-template-columns:repeat(6,minmax(0,1fr));margin:4px 0 14px}
+/* the findings rows sit directly under the heading here, not under a
+   card's h4 — :first-of-type can't reach them (the mono label is the
+   first <p> in the body), so the adjacency selector does it */
+.esheet__h + .ecard__row{padding-top:2px}
+.esheet .ecard__meta{margin-top:14px}
+.esheet .ecard__quote{margin-top:4px}
+.esheet .estatus{margin-top:16px}
+
 /* ── Fine print ───────────────────────────────────────────── */
 .efine{
   max-width:720px;margin:60px auto 40px;padding:0 20px;
@@ -337,6 +458,11 @@ body.vE .prompt__input{font-size:1.0625rem}
 @media (prefers-reduced-motion:reduce){
   .spin,.estep[data-state="running"] .estep__mark{animation:none}
   .erail.is-live .erail__dot::after{animation:none;opacity:.35}
+  /* the sheet still arrives, it just doesn't travel */
+  .esheet__panel{animation:fade var(--d-2) var(--ease);transform:none}
+  .esheet__scrim{animation:none}
+  .ebar i{animation:none}
+  .esheet__feed .pulse::after{animation:none;opacity:.35}
 }
 
 /* while a run is in progress the send button is disabled — read as busy,
