@@ -168,12 +168,17 @@
      e.js renders the body on every open, from the last run only. -->
 <div class="esheet" id="esheet" hidden><div class="esheet__scrim" data-sheet-close></div><aside class="esheet__panel" role="dialog" aria-modal="true" aria-label="Workspace"><button class="esheet__x" data-sheet-close aria-label="Close"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg></button><div id="esheetBody"></div></aside></div>
 
+<!-- ─────────────────── CLIP VIEWER ───────────────────
+     A clicked creator clip opens here, large and with its sound on.
+     e.js fills the video and the credit; nothing plays until clicked. -->
+<div class="elightbox" id="elightbox" hidden><div class="elightbox__scrim" data-lb-close></div><figure class="elightbox__panel"><button class="elightbox__x" data-lb-close aria-label="Close"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg></button><video id="elightboxVideo" controls playsinline loop></video><figcaption class="elightbox__cap" id="elightboxCap"></figcaption></figure></div>
+
 <div class="ab" role="group" aria-label="Prototype">
-  <a href="./machine/" class="ab__b" title="The Workspace">Workspace</a>
-  <a href="./machine/b.html" class="ab__b" title="The Dashboard">Dashboard</a>
-  <a href="./c.html" class="ab__b" title="The Catalogue">Catalogue</a>
-  <a href="./d.html" class="ab__b" title="The Platform">Platform</a>
   <a href="./e.html" class="ab__b is-on" title="The Agent — you are here">Agent</a>
+  <a href="./d.html" class="ab__b" title="The Platform">Platform</a>
+  <a href="./c.html" class="ab__b" title="The Catalogue">Catalogue</a>
+  <a href="./machine/b.html" class="ab__b" title="The Dashboard">Dashboard</a>
+  <a href="./machine/" class="ab__b" title="The Workspace">Workspace</a>
 </div>
 
 <script src="./shared.js"></script>

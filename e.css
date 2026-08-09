@@ -777,3 +777,27 @@ body.vE .prompt__send:disabled{opacity:.35;transform:none;cursor:default}
    there is no button, and the quote is what meets the rows. */
 .estep__detail .ecard__quote + .erows,
 .estep__detail .ecard__hear + .erows{margin-top:14px}
+
+/* ══════════════════════ THE CLIP VIEWER ══════════════════════
+   Click a creator clip and it opens here, large and with sound. The
+   cursor says a tile is watchable before the click proves it. */
+.ead--clip,.ecr__clip{cursor:zoom-in}
+.elightbox{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:24px}
+.elightbox[hidden]{display:none}
+.elightbox__scrim{position:absolute;inset:0;background:rgba(0,20,30,.62)}
+.elightbox__panel{position:relative;margin:0;width:min(400px,88vw)}
+.elightbox__panel video{
+  width:100%;max-height:78vh;display:block;border-radius:14px;
+  background:#000;object-fit:contain;
+}
+.elightbox__x{
+  position:absolute;top:-38px;right:-4px;width:30px;height:30px;
+  display:grid;place-items:center;border:0;background:none;
+  color:#fff;cursor:pointer;opacity:.8;
+}
+.elightbox__x:hover{opacity:1}
+.elightbox__cap{
+  margin-top:10px;text-align:center;font-family:var(--mono);
+  font-size:var(--t-label);letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.75);
+}

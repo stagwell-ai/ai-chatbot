@@ -1301,7 +1301,53 @@ document.addEventListener('keydown', e => {
   /* Escape stops the line being read aloud whether or not a sheet is open —
      the results card carries the same control */
   stopSpeech();
+  /* the viewer sits above the sheet, so Escape peels one layer at a time */
+  if (lightbox && !lightbox.hidden) { closeLightbox(); return; }
   if (sheet && !sheet.hidden) closeSheet();
+});
+
+/* ══════════════════════ THE CLIP VIEWER ══════════════════════
+   Click a creator clip — in the rack, the roster or a receipts panel —
+   and it opens large, with its sound on. The tiles themselves stay muted
+   and looping; sound only ever follows a deliberate click, which is also
+   what the browsers require of it. */
+const lightbox = $('#elightbox');
+const lbVideo  = $('#elightboxVideo');
+const lbCap    = $('#elightboxCap');
+
+/* the credit comes from the manifest, keyed by the clip that was clicked —
+   a tile's own title attribute covers anything the manifest doesn't name */
+function clipCredit(src, fallback) {
+  const c = CR?.list?.find(x => x.video === src);
+  return c ? `${c.name} (${c.handle}) — creator’s own video` : (fallback || '');
+}
+
+function openLightbox(src, credit) {
+  if (!lightbox || !lbVideo || !src) return;
+  lbVideo.src = src;
+  lbVideo.muted = false;
+  if (lbCap) lbCap.textContent = credit;
+  lightbox.hidden = false;
+  /* inside the click that opened the viewer, so unmuted playback is allowed;
+     a browser that refuses anyway leaves the controls to start it */
+  lbVideo.play?.()?.catch?.(() => {});
+}
+
+function closeLightbox() {
+  if (!lightbox || lightbox.hidden) return;
+  lightbox.hidden = true;
+  try { lbVideo.pause(); } catch {}
+  lbVideo.removeAttribute('src');
+  lbVideo.load?.();
+}
+
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-lb-close]')) { closeLightbox(); return; }
+  const host = e.target.closest('.ead--clip') || e.target.closest('.ecr__clip');
+  if (!host) return;
+  const src = $('video', host)?.getAttribute('src');
+  if (!src) return;
+  openLightbox(src, clipCredit(src, host.getAttribute('title')));
 });
 
 /* ══════════════════════ THE RUN ══════════════════════ */
@@ -1472,6 +1518,8 @@ document.addEventListener('click', e => {
   if (e.target.closest('.rail') || e.target.closest('#esheet') || e.target.closest('#econvo')) return;
   /* opening a done step's receipts mid-run is reading, not skipping */
   if (e.target.closest('[data-step-detail]') || e.target.closest('.estep__detail')) return;
+  /* likewise watching a clip large — the viewer and the tiles that open it */
+  if (e.target.closest('#elightbox') || e.target.closest('.ead--clip') || e.target.closest('.ecr__clip')) return;
   hurried = true;
 });
 document.addEventListener('keydown', e => {
