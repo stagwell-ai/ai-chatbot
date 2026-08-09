@@ -633,7 +633,7 @@ function creatorHTML(c, k) {
         <span class="ecr__niche">${esc(c.niche)}</span>
         ${overlap}
       </span>
-      <span class="ecr__clip"><video src="${esc(c.video)}" muted loop playsinline preload="metadata"></video></span>
+      <span class="ecr__clip"><video src="${esc(c.video)}"${c.poster ? ` poster="${esc(c.poster)}"` : ''} muted loop playsinline preload="metadata"></video></span>
     </span>
   </article>`;
 }
@@ -787,11 +787,14 @@ function voiceReceiptHTML() {
 const STUB_CLASSES = ['ead--s1', 'ead--s2', 'ead--s3', 'ead--s4', 'ead--s5', 'ead--s6'];
 const stubClassFor = k => STUB_CLASSES[k % STUB_CLASSES.length];
 const WIN_TAG = '<i class="ead__win">winning · +3.2×</i>';
-const videoHTML = src => `<video src="${src}" autoplay muted loop playsinline></video>`;
+/* the poster is the load-bearing thumbnail: browsers that defer video
+   bytes (iOS data-saver, low power mode) still paint the still */
+const videoHTML = (src, poster) =>
+  `<video src="${src}"${poster ? ` poster="${poster}"` : ''} autoplay muted loop playsinline preload="metadata"></video>`;
 
 const adClips = () => (CR?.list || [])
   .filter(c => c.video)
-  .map(c => ({ src: c.video, credit: `${c.name} (${c.handle}) — creator’s own video` }));
+  .map(c => ({ src: c.video, poster: c.poster || '', credit: `${c.name} (${c.handle}) — creator’s own video` }));
 
 function adsHTML(seed) {
   const clips = adClips();
@@ -799,7 +802,7 @@ function adsHTML(seed) {
     const win = k === 0 ? WIN_TAG : '';
     const clip = clips[k];
     const stub = stubClassFor(k);
-    if (clip) return `<span class="ead ead--clip" data-stub="${stub}" title="${esc(clip.credit)}">${videoHTML(esc(clip.src))}${win}</span>`;
+    if (clip) return `<span class="ead ead--clip" data-stub="${stub}" title="${esc(clip.credit)}">${videoHTML(esc(clip.src), esc(clip.poster))}${win}</span>`;
     return `<span class="ead ead--stub ${stub}">${win}</span>`;
   }).join('');
   return `<div class="eads">${tiles}</div>`;
@@ -833,7 +836,9 @@ const videoFailed = v => (v?.closest?.('.ecr__clip') ? creatorClipFailed(v) : cl
 document.addEventListener('error', e => {
   const t = e.target;
   if (!t || !t.tagName) return;
-  if (t.tagName === 'VIDEO') { videoFailed(t); return; }
+  /* a video that can't load or decode still has its poster — a real
+     thumbnail beats the gradient stub, so only posterless clips swap */
+  if (t.tagName === 'VIDEO') { if (!t.poster) videoFailed(t); return; }
   if (t.tagName !== 'IMG') return;
   /* a favicon that 404s leaves a broken-image glyph in the chip — drop the
      image and let the brand name stand on its own */
@@ -853,8 +858,11 @@ document.addEventListener('load', e => {
 document.addEventListener('stalled', e => {
   const t = e.target;
   /* readyState 0 is HAVE_NOTHING: stalled before a single byte of media —
-     a mid-playback stall is a slow network, not a missing file */
-  if (t && t.tagName === 'VIDEO' && t.readyState === 0) videoFailed(t);
+     a mid-playback stall is a slow network, not a missing file. A video
+     with a poster is exempt outright: browsers that defer video bytes on
+     purpose (iOS data-saver, low power mode) fire stalled at readyState 0
+     for files that exist, and the poster is already the thumbnail. */
+  if (t && t.tagName === 'VIDEO' && t.readyState === 0 && !t.poster) videoFailed(t);
 }, true);
 
 /* ── Roster clips on hover ────────────────────────────────────
@@ -1329,6 +1337,9 @@ function clipCredit(src, fallback) {
 
 function openLightbox(src, credit) {
   if (!lightbox || !lbVideo || !src) return;
+  /* the poster paints the viewer instantly while the bytes arrive */
+  const c = CR?.list?.find(x => x.video === src);
+  if (c?.poster) lbVideo.poster = c.poster; else lbVideo.removeAttribute('poster');
   lbVideo.src = src;
   lbVideo.muted = false;
   if (lbCap) lbCap.textContent = credit;

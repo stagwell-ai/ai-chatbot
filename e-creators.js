@@ -10,8 +10,9 @@
    posting Nike-related content implies no sponsorship or endorsement.
 
    Videos land in assets/img/nike/creators/video-N.mp4 (N matches the
-   entry). Slots without a file degrade to the gradient stub. Three clips
-   are in; three more are on their way.
+   entry), each with a poster-N.jpg still — the frame that shows where a
+   browser defers video loading (iOS data-saver, low power). Slots without
+   a file degrade to the gradient stub.
    ═══════════════════════════════════════════════════════════════════════════ */
 window.ECREATORS = (() => {
 'use strict';
@@ -39,6 +40,7 @@ const list = [
     niche: 'Footwear, golf, tech & entertainment',
     avatar: './assets/img/nike/creators/avatar-1.jpg',
     video: './assets/img/nike/creators/video-1.mp4',
+    poster: './assets/img/nike/creators/poster-1.jpg',
     url: 'https://www.youtube.com/channel/UCZ9l_6_f0PWRYXN5Y7Lcl2A',
   },
   {
@@ -54,6 +56,7 @@ const list = [
     niche: 'Fitness, running & gear testing',
     avatar: './assets/img/nike/creators/avatar-2.jpg',
     video: './assets/img/nike/creators/video-2.mp4',
+    poster: './assets/img/nike/creators/poster-2.jpg',
     url: 'https://www.tiktok.com/@keltieoconnor',
   },
   {
@@ -68,6 +71,7 @@ const list = [
     niche: 'Sneaker media brand · presenter Kevin Luyster',
     avatar: './assets/img/nike/creators/avatar-3.jpg',
     video: './assets/img/nike/creators/video-3.mp4',
+    poster: './assets/img/nike/creators/poster-3.jpg',
     url: 'https://x.com/ComplexSneakers',
   },
   {
@@ -82,6 +86,7 @@ const list = [
     niche: 'Sneaker photography · educator & collector',
     avatar: './assets/img/nike/creators/avatar-4.jpg',
     video: './assets/img/nike/creators/video-4.mp4',
+    poster: './assets/img/nike/creators/poster-4.jpg',
     url: 'https://x.com/ad__sneaks',
   },
   {
@@ -97,6 +102,7 @@ const list = [
     niche: 'Detailed sneaker reviews & on-foot breakdowns',
     avatar: './assets/img/nike/creators/avatar-5.jpg',
     video: './assets/img/nike/creators/video-5.mp4',
+    poster: './assets/img/nike/creators/poster-5.jpg',
     url: 'https://www.tiktok.com/@natureboichucktv',
   },
   {
@@ -110,6 +116,7 @@ const list = [
     niche: 'Gaming, music & tech · recurring sneaker reviews',
     avatar: './assets/img/nike/creators/avatar-6.jpg',
     video: './assets/img/nike/creators/video-6.mp4',
+    poster: './assets/img/nike/creators/poster-6.jpg',
     url: 'https://x.com/_Killa',
   },
 ];
