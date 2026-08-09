@@ -199,7 +199,7 @@ function seedFor(sentence) {
   const signals = 900 + (h % 701);                          // 900–1,600
   const rankIdx = Math.floor(h / 7) % 5;                     // 0–4 → 2nd–6th
   const creators = 12 + (Math.floor(h / 97) % 13);           // 12–24
-  const ads = 4 + (Math.floor(h / 977) % 3);                 // 4–6 — never more than the six creator clips
+  const ads = 6;                                             // one tile per curated creator, always all six
   /* the two audience-overlap figures the creator workspace shows — same
      seed, so the shortlist reads identically every time that sentence runs */
   const overlapA = 58 + (Math.floor(h / 13) % 22);           // 58–79
