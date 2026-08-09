@@ -12,8 +12,10 @@ window.ELIVE = (() => {
 
 /* The server clips a chat prompt at 600 chars and a plain one at 300, and it
    gives up on the model at 12s — this side gives up at the same moment so a
-   dead socket resolves like any other miss. */
+   dead socket resolves like any other miss. converse() below asks for less
+   patience: a stray "hi" cannot hold up the gate the way a brief can. */
 const TIMEOUT = 12000;
+const CONVERSE_TIMEOUT = 8000;
 
 /* ══════════════════════ THE PERSONA ══════════════════════
    The demo is anchored to one visitor: Nike's CMO. Everything below reads
@@ -95,7 +97,7 @@ function deriveQuestion(sentence) {
    Both live surfaces go through here. Anything that is not a clean ok:true
    with an answer — a 500, a bad body, a thrown fetch, a model that ran out of
    budget mid-thought and returned nothing — comes back as null. */
-function post(body) {
+function post(body, ms = TIMEOUT) {
   const call = (async () => {
     try {
       const r = await fetch('/api/ask', {
@@ -108,7 +110,7 @@ function post(body) {
       return d && d.ok && d.answer ? d : null;
     } catch { return null; }
   })();
-  return Promise.race([call, new Promise(r => setTimeout(() => r(null), TIMEOUT))]);
+  return Promise.race([call, new Promise(r => setTimeout(() => r(null), ms))]);
 }
 
 /* ══════════════════════ ASK ══════════════════════
@@ -193,6 +195,55 @@ function findings(sentence) {
     .catch(() => null);
 }
 
+/* ══════════════════════ CONVERSE ══════════════════════
+   The conversational gate (e.js) hands this whatever the CMO typed when it
+   is not a campaign directive — "is this an llm", "hi", "how does this work".
+   One short in-character reply, same chat persona fields as findings() uses,
+   but on an 8s leash: a stray greeting cannot hold up the gate the way a
+   brief can, so this races the server's own 12s budget with a shorter one.
+
+   Chat mode clips the prompt to 600 chars server-side (see api/ask.js). The
+   scaffold below is 443 chars; the typed-text slice adds up to 140 more, for
+   a worst case of 583 — 17 chars of headroom under the 600 cap. */
+function conversePrompt(text) {
+  const s = String(text == null ? '' : text).slice(0, 140);
+  return `You are The Agent, ${PERSONA.brand}'s marketing AI in this demo. The CMO typed: "${s}". Not a campaign directive — do not invent campaign work. Reply in at most 2 short sentences, in character, plainly and honestly (if asked what you are: this demo turns an outcome sentence into a campaign run; parts of it are enacted, but this reply and two run steps really do come from a live model). End by inviting an outcome sentence. No lists, no markdown, no quotes.`;
+}
+
+/* Strips whatever wrapping a model adds around a one-line answer: a code
+   fence, then any run of straight or typographic quote marks off each end,
+   repeated in case both got applied. Bounded so a pathological string of
+   quote characters cannot loop. */
+function unwrapReply(text) {
+  let t = String(text == null ? '' : text).trim();
+  t = t.replace(/^```[a-z]*\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  const EDGE_QUOTE = /^["'“”‘’`]|["'“”‘’`]$/;
+  for (let i = 0; i < 5 && t.length > 1 && EDGE_QUOTE.test(t[0]) && EDGE_QUOTE.test(t[t.length - 1]); i++) {
+    t = t.slice(1, -1).trim();
+  }
+  return t;
+}
+
+function converse(text) {
+  return Promise.resolve()
+    .then(() => post({
+      prompt: conversePrompt(text),
+      brands: [],
+      chat: true,
+      context: { brand: PERSONA.brand, domain: PERSONA.domain, industry: PERSONA.industry },
+    }, CONVERSE_TIMEOUT))
+    .then(d => {
+      if (!d) return null;
+      const reply = unwrapReply(d.answer);
+      if (!reply) return null;
+      if (reply.length > 320) return null;
+      if (reply[0] === '[') return null;
+      if (BAD.test(reply)) return null;
+      return { reply, model: d.model, ms: d.ms };
+    })
+    .catch(() => null);
+}
+
 /* ══════════════════════ BRAND MARK ══════════════════════
    Pure, no network — the favicon service is hit by the browser at render
    time when this URL lands in an <img src>. Mirrors the domainFor/faviconURL
@@ -204,5 +255,5 @@ function markURL(brandOrDomain) {
   return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 }
 
-return { PERSONA, deriveQuestion, ask, findings, markURL };
+return { PERSONA, deriveQuestion, ask, findings, converse, markURL };
 })();

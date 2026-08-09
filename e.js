@@ -2,10 +2,11 @@
    STAGWELL AI — VERSION E · the agent
 
    One sentence in, a finished campaign out — the run is scripted theatre.
-   Two exceptions: when window.ELIVE (built in e-live.js) can reach a real
-   model within its own budget, the "how AI answers rank you" step and the
-   findings card go live and carry a badge naming the model + latency.
-   Everything else stays an enactment — no badge, no "unscripted" copy.
+   Three exceptions: when window.ELIVE (built in e-live.js) can reach a real
+   model within its own budget, the "how AI answers rank you" step, the
+   findings card, and the reply the gate gives to anything that isn't a
+   campaign directive all go live and carry a badge naming the model +
+   latency. Everything else stays an enactment — no badge, no "unscripted".
    ═══════════════════════════════════════════════════════════════════════════ */
 (() => {
 'use strict';
@@ -73,6 +74,64 @@ function classifyIntent(sentence) {
   return 'share';
 }
 
+/* ── The gate ──────────────────────────────────────────────────
+   Not everything typed into the box is a campaign directive. “isd this an
+   llm”, “hi”, “how does this work” are conversation, and answering any of
+   them with a finished Nike campaign is the prototype talking past the
+   person in front of it. classifyUtterance sorts one from the other, in
+   this order and no other:
+
+     1. an INTENT_RULES keyword anywhere in the text → run. A directive
+        phrased as a question (“can you win back share from Hoka?”) is
+        still a directive, so the keyword tables get the first word.
+     2. conversational shape → chat: it ends in a question mark, or it
+        opens on a question word or a greeting, or it contains one of the
+        things people actually type at a demo to find out what it is.
+     3. under three words → chat. Too short to be an outcome.
+     4. otherwise → run. A declarative sentence with no keyword in it still
+        runs — the default 'share' profile takes it, exactly as today.
+
+   Pure: same string in, same verdict out, no DOM, no clock. An empty
+   submit never reaches here — the form runs the placeholder directly. */
+const CHAT_QUESTION_WORDS = [
+  'is', 'isd', 'are', 'am', 'was', 'what', 'whats', 'who', 'whos', 'how', 'hows',
+  'why', 'where', 'when', 'which', 'can', 'could', 'do', 'does', 'did',
+  'will', 'would', 'should',
+];
+const CHAT_GREETINGS = new Set(['hi', 'hello', 'hey', 'yo', 'sup']);
+const CHAT_ACKS = new Set(['thanks', 'thank', 'ok', 'okay', 'cool', 'nice', 'test', 'testing']);
+const CHAT_OPENERS = new Set([...CHAT_QUESTION_WORDS, ...CHAT_GREETINGS, ...CHAT_ACKS]);
+
+/* asking about the machine rather than asking it for something */
+const CHAT_META = [
+  'llm', 'language model', ' ai?', 'are you real', 'who are you', 'what is this',
+  'how does this work', 'what can you do', 'are you a bot', 'chatgpt',
+];
+
+/* the first run of letters, so leading punctuation and stray digits don't
+   hide the opening word: “Hi,” → hi, “...how?” → how */
+const firstWord = s => (s.match(/[a-z][a-z']*/) || [''])[0];
+
+/* takes an already-lowercased, already-trimmed string */
+const isConversational = s =>
+  s.endsWith('?') || CHAT_OPENERS.has(firstWord(s)) || CHAT_META.some(p => s.includes(p));
+
+function classifyUtterance(text) {
+  const raw = String(text == null ? '' : text).trim();
+  if (!raw) return 'run';
+  const s = raw.toLowerCase();
+  /* “are you chatgpt?” is a question about the machine even though it
+     carries an intent keyword — meta beats the tables, but only when the
+     utterance also has conversational shape, so “get us named in chatgpt
+     answers” still runs. */
+  const shaped = s.endsWith('?') || CHAT_OPENERS.has(firstWord(s));
+  if (shaped && CHAT_META.some(p => s.includes(p))) return 'chat';
+  if (INTENT_RULES.some(r => r.kws.some(k => s.includes(k)))) return 'run';
+  if (isConversational(s)) return 'chat';
+  if (raw.split(/\s+/).filter(Boolean).length < 3) return 'chat';
+  return 'run';
+}
+
 /* the visitor's key phrase — first six words, cleaned up at the edges —
    echoed back in the first step's second sub-line */
 function keyPhrase(sentence) {
@@ -122,6 +181,7 @@ const form   = $('#promptForm');
 const input  = $('#promptInput');
 const send   = $('#promptSend');
 const chips  = $('#chips');
+const convo  = $('#econvo');
 const hero   = $('#ehero');
 const erun   = $('#erun');
 const edone  = $('#edone');
@@ -174,13 +234,17 @@ const tick = ms => wait(hurried ? Math.min(ms, 60) : ms);
 
 /* ══════════════════════ CHIPS ══════════════════════ */
 
-/* clicking a chip fills the input and runs it immediately, through the
-   same submit path the form itself uses (trim/placeholder fallback included) */
-$$('.chip[data-fill]', chips).forEach(c => c.addEventListener('click', () => {
-  input.value = c.dataset.fill;
+/* clicking a chip fills the input and submits it immediately, through the
+   same path the form itself uses — gate included. Every chip sentence
+   carries an INTENT_RULES keyword, so every chip runs. */
+function fillAndSubmit(value) {
+  input.value = value;
   if (form?.requestSubmit) form.requestSubmit();
-  else startRun(input.value.trim() || PLACEHOLDER);
-}));
+  else submitTyped(input.value);
+}
+
+$$('.chip[data-fill]', chips).forEach(c =>
+  c.addEventListener('click', () => fillAndSubmit(c.dataset.fill)));
 
 /* ══════════════════════ RUN RENDER ══════════════════════ */
 
@@ -369,12 +433,14 @@ function findingsRowsHTML(rows) {
   ).join('');
 }
 
-/* ── The two badge lines ──────────────────────────────────────
-   These are the only two places the word "unscripted" is written, and
-   both take a live result as their argument — there is no way to reach
-   either one from a scripted path. Every caller (the run's NewIndex step,
-   the run's findings card, and the two sheets that re-show a stored live
-   result) hands over an object that came back from a real model. */
+/* ── The badge lines ──────────────────────────────────────────
+   Two of the three are here; the third is liveReplyMetaHTML, down in the
+   conversation. Those three are the only places the word "unscripted" is
+   written, and all three take a live result as their argument — there is
+   no way to reach any of them from a scripted path. Every caller (the
+   run's NewIndex step, the run's findings card, the two sheets that
+   re-show a stored live result, and the conversational reply) hands over
+   an object that came back from a real model. */
 /* ── The audit row ────────────────────────────────────────────
    Which of the six brands the model actually put in its answer — the
    whole point of asking brand-blind. Reachable only from liveAnswerHTML,
@@ -742,6 +808,10 @@ async function startRun(sentence) {
   running = true;
   runStartedAt = performance.now();
   hurried = false;
+  /* a run answers the sentence itself — whatever was said in the
+     conversation above is taken down, and any reply still in flight for it
+     is orphaned on the way past */
+  clearConvo();
 
   /* window.ELIVE is a layer built in e-live.js — it may not be loaded at
      all. Every use below is guarded; when it's undefined the whole run
@@ -849,25 +919,142 @@ async function startRun(sentence) {
 
 /* fast-forward: any click outside the switcher/links, or Enter, while a
    run is in progress hurries every remaining wait down to almost nothing */
-/* .rail and #esheet are exempt on both handlers: opening a workspace to
-   look at what the agent left there is reading, not skipping — and the
-   sheet's own buttons (close, "run a sentence") must never double as a
-   fast-forward. */
+/* .rail, #esheet and #econvo are exempt on both handlers: opening a
+   workspace to look at what the agent left there is reading, not skipping —
+   and neither the sheet's own buttons (close, "run a sentence") nor the
+   conversation's ("Run it as a campaign", which starts the very run below
+   it) may double as a fast-forward. */
 document.addEventListener('click', e => {
   if (!running || hurried) return;
   if (performance.now() - runStartedAt < SETTLE) return;
   if (e.target.closest('.ab') || e.target.closest('a')) return;
   if (e.target.closest('#promptForm') || e.target.closest('.chips')) return;
-  if (e.target.closest('.rail') || e.target.closest('#esheet')) return;
+  if (e.target.closest('.rail') || e.target.closest('#esheet') || e.target.closest('#econvo')) return;
   hurried = true;
 });
 document.addEventListener('keydown', e => {
   if (!running || hurried) return;
   if (performance.now() - runStartedAt < SETTLE) return;
   if (e.target === input) return;
-  if (e.target?.closest?.('.rail') || e.target?.closest?.('#esheet')) return;
+  if (e.target?.closest?.('.rail') || e.target?.closest?.('#esheet') || e.target?.closest?.('#econvo')) return;
   if (e.key === 'Enter') hurried = true;
 });
+
+/* ══════════════════════ THE CONVERSATION ══════════════════════
+   The other side of the gate. A conversation is not a run: nothing is
+   flagged as running, the composer is never disabled, the hero stays where
+   it is, and the visitor can type again the moment the reply lands — or
+   before it does.
+
+   One exchange at a time. A second question replaces the first, and a run
+   or a reset takes the block down outright. Conversations take a number for
+   the same reason runs do: converse() has an 8s leash of its own, and a
+   reply that arrives after the visitor has moved on must not write. */
+let CONVO = 0;
+
+function clearConvo() {
+  /* orphan a reply still in flight, then empty the block */
+  CONVO++;
+  if (!convo) return;
+  convo.innerHTML = '';
+  convo.hidden = true;
+  /* the reply re-offers the suggestions itself, so the originals come back
+     only once the conversation is gone */
+  chips?.removeAttribute('hidden');
+}
+
+/* ── The third badge line ─────────────────────────────────────
+   Like the other two it takes a live result as its argument, so there is
+   no way to reach it from a canned reply — a canned reply has no object
+   to hand over. No pulse, no model name and no "unscripted" ever appears
+   under an answer this page wrote itself. */
+function liveReplyMetaHTML(live) {
+  return `<p class="econvo__meta"><i class="pulse"></i>${esc(live.model)} · answered live in ${esc(live.ms)}ms · unscripted</p>`;
+}
+
+/* what the agent says when no model answered — sorted by the same signals
+   the gate classified on, so the reply addresses what was actually asked */
+const CANNED = {
+  meta: 'Partly — most of this run is choreography, but two moments really do reach a live model, and they carry a badge when they do. I turn an outcome into a campaign: tell me what you want to happen for Nike.',
+  greeting: 'Morning. You’re signed in as Nike’s CMO — tell me the outcome you want, and I’ll do the work across the six workspaces.',
+  ack: 'Here whenever you have an outcome in mind. Try one of the sentences below, or write your own.',
+  none: 'I didn’t catch an outcome in that. Describe what you want to happen — “Get Nike named first when buyers ask AI” — and I’ll run it.',
+};
+
+function cannedReply(text) {
+  const s = String(text == null ? '' : text).trim().toLowerCase();
+  if (CHAT_META.some(p => s.includes(p))) return CANNED.meta;
+  const w = firstWord(s);
+  if (CHAT_GREETINGS.has(w)) return CANNED.greeting;
+  if (CHAT_ACKS.has(w)) return CANNED.ack;
+  return CANNED.none;
+}
+
+/* the row under the reply: the three suggestions again — built fresh, the
+   originals stay where they are under the composer — and a way to run the
+   sentence as a campaign anyway. The escape hatch goes straight to
+   startRun with the text as typed: the visitor has overruled the gate. */
+function convoActs(typed) {
+  const acts = document.createElement('div');
+  acts.className = 'econvo__acts';
+
+  $$('.chip[data-fill]', chips).forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.type = 'button';
+    b.dataset.fill = c.dataset.fill;
+    b.textContent = c.textContent;
+    b.addEventListener('click', () => fillAndSubmit(b.dataset.fill));
+    acts.appendChild(b);
+  });
+
+  const go = document.createElement('button');
+  go.className = 'chip chip--go';
+  go.type = 'button';
+  go.textContent = 'Run it as a campaign';
+  go.addEventListener('click', () => { clearConvo(); startRun(typed); });
+  acts.appendChild(go);
+
+  return acts;
+}
+
+/* the reply is raced against six seconds, and held back for at least
+   seven hundred milliseconds: an answer that lands the instant the dots
+   appear reads as a lookup table, which is exactly what it isn't */
+const CONVO_GRACE = 6000;
+const CONVO_MIN = 700;
+
+async function converseFlow(text) {
+  if (running || !convo) return;
+  clearConvo();
+  const my = ++CONVO;
+  const isStale = () => my !== CONVO;
+
+  convo.innerHTML = `<p class="econvo__u">“${esc(text)}”</p>
+    <div class="econvo__a"><span class="econvo__dots"><i></i><i></i><i></i></span></div>`;
+  convo.hidden = false;
+  chips?.setAttribute('hidden', '');
+
+  /* window.ELIVE may not be loaded at all — then there is no live path and
+     the canned reply is the whole of it */
+  const L = window.ELIVE;
+  const live = L?.converse ? L.converse(text) : Promise.resolve(null);
+  const [r] = await Promise.all([
+    Promise.race([live, wait(CONVO_GRACE).then(() => null)]),
+    REDUCED ? null : wait(CONVO_MIN),
+  ]);
+  if (isStale()) return;
+
+  const body = $('.econvo__a', convo);
+  if (!body) return;
+  body.innerHTML = r
+    ? `<p class="econvo__t">${esc(r.reply)}</p>${liveReplyMetaHTML(r)}`
+    : `<p class="econvo__t">${esc(cannedReply(text))}</p>`;
+  convo.appendChild(convoActs(text));
+
+  /* the exchange above already shows what they said */
+  input.value = '';
+}
 
 /* ══════════════════════ SUBMIT / RESET ══════════════════════ */
 
@@ -877,10 +1064,18 @@ document.addEventListener('keydown', e => {
    sentence, so the button is always meaningful and stays lit. */
 form?.classList.add('is-ready');
 
+/* the one door in: an empty submit runs the placeholder as it always has —
+   the gate never sees it — and anything typed is sorted first */
+function submitTyped(raw) {
+  const typed = String(raw == null ? '' : raw).trim();
+  if (!typed) { startRun(PLACEHOLDER); return; }
+  if (classifyUtterance(typed) === 'chat') converseFlow(typed);
+  else startRun(typed);
+}
+
 form?.addEventListener('submit', e => {
   e.preventDefault();
-  const sentence = input.value.trim() || PLACEHOLDER;
-  startRun(sentence);
+  submitTyped(input.value);
 });
 
 function resetAll() {
@@ -889,6 +1084,7 @@ function resetAll() {
   RUN++;
   stopTimer();
   closeSheet();
+  clearConvo();
   erun.innerHTML = '';
   erun.hidden = true;
   edone.innerHTML = '';
@@ -952,7 +1148,9 @@ addEventListener('load', async () => {
   if (FINE) input.focus({ preventScroll: true });
 
   /* deep link: run=<sentence> starts the run automatically, boot skipped
-     to a minimum wait but pacing left un-hurried */
+     to a minimum wait but pacing left un-hurried. It goes straight to
+     startRun, past the gate — someone who put the sentence in the URL has
+     already said what they want, whatever shape it is in. */
   const params = new URLSearchParams(location.search);
   if (params.has('run')) {
     const sentence = params.get('run').trim() || PLACEHOLDER;

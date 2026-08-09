@@ -532,7 +532,39 @@ body.vE .prompt__input{font-size:1.0625rem}
   .ead--stub{animation:none}
   /* the sub-line still swaps, it just doesn't cross-fade */
   .estep__t i{transition:none}
+  /* the conversational gate: entrance and the typing dots are motion, not information */
+  .econvo{animation:none}
+  .econvo__dots i{animation:none;opacity:.6}
 }
+
+/* ── Conversational gate ──────────────────────────────────────
+   e.js renders this between the composer and the chips when what the
+   visitor typed isn't a campaign directive: their line, then a reply
+   (typing dots first, replaced by the answer), then the chips re-offered
+   alongside a way to run it as a campaign anyway. */
+.econvo{max-width:620px;margin:26px auto 0;text-align:left;animation:fadeUp 480ms var(--ease)}
+.econvo__u{font-family:var(--serif);font-size:1.05rem;line-height:1.4;color:var(--ink-3);margin:0 0 10px}
+.econvo__a{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:16px 18px}
+.econvo__t{margin:0;font-size:var(--t-body);line-height:1.6;color:var(--ink)}
+.econvo__meta{
+  display:flex;align-items:center;gap:6px;margin:10px 0 0;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.08em;color:var(--ink-3);
+}
+
+/* the typing state — three dots taking gentle turns before the reply lands */
+.econvo__dots{display:inline-flex;gap:4px;padding:4px 0}
+.econvo__dots i{
+  width:6px;height:6px;border-radius:50%;background:var(--ink-4);
+  animation:edot 1.1s var(--ease-io) infinite;
+}
+.econvo__dots i:nth-child(1){animation-delay:0s}
+.econvo__dots i:nth-child(2){animation-delay:.15s}
+.econvo__dots i:nth-child(3){animation-delay:.3s}
+@keyframes edot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+
+.econvo__acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip--go{border-color:var(--navy);color:var(--navy);font-weight:500}
+.chip--go:hover{background:var(--navy);color:#fff}
 
 /* while a run is in progress the send button is disabled — read as busy,
    not broken */
