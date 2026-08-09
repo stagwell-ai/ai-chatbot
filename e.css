@@ -842,3 +842,7 @@ body.vE .prompt__send:disabled{opacity:.35;transform:none;cursor:default}
   letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);line-height:1.7;
 }
 @media (prefers-reduced-motion:reduce){.elogin{transition:none}}
+
+/* ── the minimal opening: one question, the composer, a chip ── */
+body.vE .ehero--min{padding-top:clamp(90px,24vh,230px)}
+.ehero--min .ehero__h{font-size:clamp(2rem,4vw,3rem);margin:14px 0 0}

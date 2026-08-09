@@ -1571,14 +1571,19 @@ function liveReplyMetaHTML(live) {
 /* what the agent says when no model answered — sorted by the same signals
    the gate classified on, so the reply addresses what was actually asked */
 const CANNED = {
+  can: 'Quite a lot. I read the market in NewIntel, test how AI answers rank Nike in NewIndex, shortlist creators and clear their usage rights, generate AI UGC ads in DoReel, launch across Meta and TikTok, and stand up a voice agent. Tell me the outcome you want — I’ll run it end to end.',
   meta: 'Partly — most of this run is choreography, but two moments really do reach a live model, and they carry a badge when they do. I turn an outcome into a campaign: tell me what you want to happen for Nike.',
   greeting: 'Morning. You’re signed in as Nike’s CMO — tell me the outcome you want, and I’ll do the work across the six workspaces.',
   ack: 'Here whenever you have an outcome in mind. Try one of the sentences below, or write your own.',
   none: 'I didn’t catch an outcome in that. Describe what you want to happen — “Get Nike named first when buyers ask AI” — and I’ll run it.',
 };
 
+/* the flagship chip and its phrasings — answered with the actual tour */
+const CHAT_CAN = ['what can you do', 'what do you do', 'what can this do', 'what does this do', 'what are you able'];
+
 function cannedReply(text) {
   const s = String(text == null ? '' : text).trim().toLowerCase();
+  if (CHAT_CAN.some(p => s.includes(p))) return CANNED.can;
   if (CHAT_META.some(p => s.includes(p))) return CANNED.meta;
   const w = firstWord(s);
   if (CHAT_GREETINGS.has(w)) return CANNED.greeting;
@@ -1595,6 +1600,9 @@ function convoActs(typed) {
   acts.className = 'econvo__acts';
 
   $$('.chip[data-fill]', chips).forEach(c => {
+    /* the capabilities chip has just been answered — repeating it under
+       its own reply would be a loop, so only the campaign chips return */
+    if (c.classList.contains('chip--ask')) return;
     const b = document.createElement('button');
     b.className = 'chip';
     b.type = 'button';
