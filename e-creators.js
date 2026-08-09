@@ -1,114 +1,125 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    STAGWELL AI — VERSION E  ·  the creator roster
 
-   The single swap point for real creator data: replace the six entries
-   below, drop avatars and clips in assets/img/nike/creators/, set
-   placeholder to false, done. While placeholder is true the roster carries
-   an "illustrative" note.
+   REAL DATA. The six below are real public accounts, sourced from the
+   client's profile snapshot (2026-08-09). Every figure shown is a public
+   platform metric from that snapshot — nothing here is modelled, seeded or
+   invented, which is why these entries carry `stats` rows instead of the
+   old engagement/overlap fields: real people get real numbers or none.
+   The roster note is the snapshot's own caveat, kept verbatim in spirit:
+   posting Nike-related content implies no sponsorship or endorsement.
+
+   Videos land in assets/img/nike/creators/video-N.mp4 (N matches the
+   entry). Slots without a file degrade to the gradient stub. Three clips
+   are in; three more are on their way.
    ═══════════════════════════════════════════════════════════════════════════ */
 window.ECREATORS = (() => {
 'use strict';
 
-/* Flip to false the moment real creator data lands — this is the only
-   switch the rest of the app needs to read to drop the "illustrative"
-   caveat from the results card and workspace peek. */
-const placeholder = true;
+/* Real data is in — the "illustrative roster" caveat is retired. The note
+   below replaces it wherever the roster renders. */
+const placeholder = false;
+const note = 'Public profiles, snapshot 9 Aug 2026 · no affiliation or endorsement implied';
 
-/* Six clearly-fictional running/fitness personas, invented for the demo —
-   the placeholder note above covers them. Swap each entry's fields in
-   place for the real six; keep the shape identical (id/N pairing included)
-   so nothing downstream needs to change. */
+/* Ordered by the snapshot's practical ranking for a Nike-footwear
+   campaign. `stats` rows are printed as-is (label/value), so the
+   snapshot's own precision — exact counts, approximations, historical
+   qualifiers — survives into the UI. */
 const list = [
   {
     id: 'c1',
-    name: 'Mara Quinn',
-    handle: '@runwithmara',
-    platform: 'TikTok',
-    followers: 2400000,
-    engagement: 6.8,
-    avgViews: 890000,
-    niche: 'Marathon training',
-    overlap: 74,
+    name: 'Jacques Slade',
+    handle: '@kustoo',
+    platform: 'YouTube',
+    stats: [
+      { k: 'YouTube subs', v: '1.32M' },
+      { k: 'TikTok', v: '159K · 4.2M likes' },
+      { k: 'Instagram', v: '~181K' },
+    ],
+    niche: 'Footwear, golf, tech & entertainment',
     avatar: './assets/img/nike/creators/avatar-1.jpg',
     video: './assets/img/nike/creators/video-1.mp4',
-    url: '',
+    url: 'https://www.youtube.com/channel/UCZ9l_6_f0PWRYXN5Y7Lcl2A',
   },
   {
     id: 'c2',
-    name: 'Devon Tate',
-    handle: '@tatepace',
+    name: 'Keltie O’Connor',
+    handle: '@keltieoconnor',
     platform: 'TikTok',
-    followers: 1100000,
-    engagement: 5.2,
-    avgViews: 410000,
-    niche: 'Street running & sneaker culture',
-    overlap: 68,
+    stats: [
+      { k: 'YouTube subs', v: '772K' },
+      { k: 'Instagram', v: '169K' },
+      { k: 'TikTok', v: '122K · 4.2M likes' },
+    ],
+    niche: 'Fitness, running & gear testing',
     avatar: './assets/img/nike/creators/avatar-2.jpg',
     video: './assets/img/nike/creators/video-2.mp4',
-    url: '',
+    url: 'https://www.tiktok.com/@keltieoconnor',
   },
   {
     id: 'c3',
-    name: 'Aisha Solano',
-    handle: '@aishagoesfar',
-    platform: 'TikTok',
-    followers: 3700000,
-    engagement: 4.1,
-    avgViews: 1200000,
-    niche: 'Couch-to-5K coaching',
-    overlap: 61,
+    name: 'Complex Sneakers',
+    handle: '@ComplexSneakers',
+    platform: 'X',
+    stats: [
+      { k: 'X followers', v: '1,041,748' },
+      { k: 'Instagram', v: '~1.7M' },
+    ],
+    niche: 'Sneaker media brand · presenter Kevin Luyster',
     avatar: './assets/img/nike/creators/avatar-3.jpg',
     video: './assets/img/nike/creators/video-3.mp4',
-    url: '',
+    url: 'https://x.com/ComplexSneakers',
   },
   {
     id: 'c4',
-    name: 'Kenji Mori',
-    handle: '@kenjiruns',
-    platform: 'TikTok',
-    followers: 860000,
-    engagement: 8.9,
-    avgViews: 520000,
-    niche: 'Trail & ultra',
-    overlap: 57,
+    name: 'Andrew Dutton',
+    handle: '@ad__sneaks',
+    platform: 'X',
+    stats: [
+      { k: 'X followers', v: '21,937' },
+      { k: 'Instagram', v: '300K+ (2024, historical)' },
+    ],
+    niche: 'Sneaker photography · educator & collector',
     avatar: './assets/img/nike/creators/avatar-4.jpg',
     video: './assets/img/nike/creators/video-4.mp4',
-    url: '',
+    url: 'https://x.com/ad__sneaks',
   },
   {
     id: 'c5',
-    name: 'Priya Nair',
-    handle: '@priyaonpace',
+    name: 'Charles Matthews',
+    handle: '@natureboichuck',
     platform: 'TikTok',
-    followers: 1900000,
-    engagement: 5.9,
-    avgViews: 700000,
-    niche: 'Run-club culture',
-    overlap: 66,
+    stats: [
+      { k: 'TikTok', v: '28.8K · 947.9K likes' },
+      { k: 'X followers', v: '12,011' },
+      { k: 'YouTube subs', v: '7,950' },
+    ],
+    niche: 'Detailed sneaker reviews & on-foot breakdowns',
     avatar: './assets/img/nike/creators/avatar-5.jpg',
     video: './assets/img/nike/creators/video-5.mp4',
-    url: '',
+    url: 'https://www.tiktok.com/@natureboichucktv',
   },
   {
     id: 'c6',
-    name: 'Leo Brandt',
-    handle: '@brandtkicks',
-    platform: 'TikTok',
-    followers: 640000,
-    engagement: 7.4,
-    avgViews: 380000,
-    niche: 'Sneaker reviews',
-    overlap: 71,
+    name: 'Killadelphia',
+    handle: '@_Killa',
+    platform: 'X',
+    stats: [
+      { k: 'X followers', v: '24,229' },
+    ],
+    niche: 'Gaming, music & tech · recurring sneaker reviews',
     avatar: './assets/img/nike/creators/avatar-6.jpg',
     video: './assets/img/nike/creators/video-6.mp4',
-    url: '',
+    url: 'https://x.com/_Killa',
   },
 ];
 
 /* ══════════════════════ COMPACT FORMATTER ══════════════════════
    Pure, no DOM. 2400000 -> '2.4M', 890000 -> '890K', 640 -> '640'. One
    decimal, trailing '.0' dropped (JS's own number-to-string already drops
-   it, so no extra stripping is needed). Non-finite and zero read as '0'. */
+   it, so no extra stripping is needed). Non-finite and zero read as '0'.
+   Kept for callers even though the real entries above pre-format their
+   values to preserve the snapshot's own qualifiers. */
 function fmt(n) {
   const v = Number(n);
   if (!Number.isFinite(v) || v === 0) return '0';
@@ -119,5 +130,5 @@ function fmt(n) {
   return sign + String(Math.round(abs));
 }
 
-return { placeholder, list, fmt };
+return { placeholder, note, list, fmt };
 })();

@@ -526,6 +526,19 @@ function initialsOf(name) {
 }
 
 function creatorHTML(c, k) {
+  /* real entries carry pre-formatted `stats` rows (the snapshot's own
+     precision and qualifiers survive); the legacy shape carried numeric
+     followers/engagement fields plus a modelled overlap. Render whichever
+     this entry has — modelled bars never attach to real people. */
+  const rows = Array.isArray(c.stats)
+    ? c.stats.map(s => `<span class="ecr__stat">${esc(s.k)}<b>${esc(s.v)}</b></span>`).join('')
+    : `<span class="ecr__stat">Followers<b>${esc(CR.fmt(c.followers))}</b></span>
+       <span class="ecr__stat">Engagement<b>${esc(c.engagement)}%</b></span>
+       <span class="ecr__stat">Avg views<b>${esc(CR.fmt(c.avgViews))}</b></span>`;
+  const overlap = typeof c.overlap === 'number'
+    ? `<span class="ecr__stat">Audience overlap<b>${esc(c.overlap)}%</b></span>
+       <span class="ecr__bar"><i style="--w:${esc(c.overlap)}%"></i></span>`
+    : '';
   return `<article class="ecr" style="--i:${k}">
     <span class="ecr__head">
       <span class="ecr__avatar">${esc(initialsOf(c.name))}<img src="${esc(c.avatar)}" alt="" hidden></span>
@@ -534,12 +547,9 @@ function creatorHTML(c, k) {
     </span>
     <span class="ecr__body">
       <span class="ecr__stats">
-        <span class="ecr__stat">Followers<b>${esc(CR.fmt(c.followers))}</b></span>
-        <span class="ecr__stat">Engagement<b>${esc(c.engagement)}%</b></span>
-        <span class="ecr__stat">Avg views<b>${esc(CR.fmt(c.avgViews))}</b></span>
+        ${rows}
         <span class="ecr__niche">${esc(c.niche)}</span>
-        <span class="ecr__stat">Audience overlap<b>${esc(c.overlap)}%</b></span>
-        <span class="ecr__bar"><i style="--w:${esc(c.overlap)}%"></i></span>
+        ${overlap}
       </span>
       <span class="ecr__clip"><video src="${esc(c.video)}" muted loop playsinline preload="metadata"></video></span>
     </span>
@@ -552,9 +562,13 @@ function creatorHTML(c, k) {
    workspace sheet is already a detail view and never closes it. */
 function rosterHTML(seed, opts = {}) {
   if (!CR || !Array.isArray(CR.list) || !CR.list.length) return '';
-  const note = CR.placeholder
-    ? `<p class="eroster__note">${INFO}Illustrative roster — the real creator list is on its way</p>`
-    : '';
+  /* while placeholder stands, the caveat is about the people being
+     invented; with real data the manifest supplies its own provenance
+     note (public profiles, no affiliation) and that renders instead */
+  const noteText = CR.placeholder
+    ? 'Illustrative roster — the real creator list is on its way'
+    : (CR.note || '');
+  const note = noteText ? `<p class="eroster__note">${INFO}${esc(noteText)}</p>` : '';
   return `<div class="eroster"${opts.hidden ? ' hidden' : ''}>${note}`
        + CR.list.map(creatorHTML).join('')
        + `</div>`;
