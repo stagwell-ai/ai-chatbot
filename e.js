@@ -81,14 +81,24 @@ function classifyIntent(sentence) {
    person in front of it. classifyUtterance sorts one from the other, in
    this order and no other:
 
-     1. an INTENT_RULES keyword anywhere in the text → run. A directive
+     0. empty → run. An empty submit never actually reaches here (the form
+        runs the placeholder directly) but the function is total.
+     1. shaped (ends in “?” or opens on a question word/greeting/ack) AND
+        carries a CHAT_META phrase → chat. A question about the machine
+        beats every table below it, but only when it also reads like a
+        question — “get us named in chatgpt answers” still runs.
+     2. an INTENT_RULES keyword anywhere in the text → run. A directive
         phrased as a question (“can you win back share from Hoka?”) is
-        still a directive, so the keyword tables get the first word.
-     2. conversational shape → chat: it ends in a question mark, or it
+        still a directive, so the keyword tables get the next word.
+     3. a brand/rival name as a whole word → run. An executive naming a
+        competitor (“what is Hoka doing that we are not?”) is issuing
+        work, not making conversation — even though the sentence is
+        shaped like a question.
+     4. conversational shape → chat: it ends in a question mark, or it
         opens on a question word or a greeting, or it contains one of the
         things people actually type at a demo to find out what it is.
-     3. under three words → chat. Too short to be an outcome.
-     4. otherwise → run. A declarative sentence with no keyword in it still
+     5. under three words → chat. Too short to be an outcome.
+     6. otherwise → run. A declarative sentence with no keyword in it still
         runs — the default 'share' profile takes it, exactly as today.
 
    Pure: same string in, same verdict out, no DOM, no clock. An empty
@@ -116,6 +126,41 @@ const firstWord = s => (s.match(/[a-z][a-z']*/) || [''])[0];
 const isConversational = s =>
   s.endsWith('?') || CHAT_OPENERS.has(firstWord(s)) || CHAT_META.some(p => s.includes(p));
 
+/* ── Rival names ───────────────────────────────────────────────
+   An executive naming a competitor (“why are we behind Hoka?”) is issuing
+   work, not making conversation. Built once from window.ELIVE.PERSONA
+   (brand + rivals) when that layer is loaded — the same table the live
+   answer step audits against — with a hardcoded fallback for the offline
+   sandbox where ELIVE never mounts.
+
+   PERSONA.rivals contains 'On', which as a bare word is hopeless: “on”
+   appears in almost every sentence typed into this box. Single-word names
+   of two letters or fewer are dropped from the case-insensitive
+   word-boundary table entirely for that reason. To still catch a genuine
+   mention (“why are we behind On?”) without the false-positive flood, a
+   second, case-SENSITIVE table matches those short names only in the
+   casing PERSONA gives them (“On”, not “on”) — so the preposition never
+   fires but a capitalised brand mention still does. */
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+function rivalNameTables() {
+  const P = window.ELIVE?.PERSONA;
+  const names = (P ? [P.brand, ...(P.rivals || [])] : ['nike', 'hoka', 'adidas', 'new balance', 'brooks', 'pegasus'])
+    .map(n => String(n == null ? '' : n).trim())
+    .filter(Boolean);
+  const isShort = n => !/\s/.test(n) && n.length <= 2;
+  const long = names.filter(n => !isShort(n)).map(n => n.toLowerCase());
+  const short = names.filter(isShort);
+  const toRe = list => list.length ? new RegExp(`\\b(${list.map(escRe).join('|')})\\b`) : null;
+  return { longRe: toRe(long), shortRe: toRe(short) };
+}
+const { longRe: RIVAL_RE, shortRe: RIVAL_RE_CASED } = rivalNameTables();
+
+/* s is already lowercased; raw keeps its original casing for the
+   case-sensitive short-name table */
+const mentionsRival = (s, raw) =>
+  !!(RIVAL_RE && RIVAL_RE.test(s)) || !!(RIVAL_RE_CASED && RIVAL_RE_CASED.test(raw));
+
 function classifyUtterance(text) {
   const raw = String(text == null ? '' : text).trim();
   if (!raw) return 'run';
@@ -127,6 +172,7 @@ function classifyUtterance(text) {
   const shaped = s.endsWith('?') || CHAT_OPENERS.has(firstWord(s));
   if (shaped && CHAT_META.some(p => s.includes(p))) return 'chat';
   if (INTENT_RULES.some(r => r.kws.some(k => s.includes(k)))) return 'run';
+  if (mentionsRival(s, raw)) return 'run';
   if (isConversational(s)) return 'chat';
   if (raw.split(/\s+/).filter(Boolean).length < 3) return 'chat';
   return 'run';
@@ -362,6 +408,9 @@ async function runStep(step, i, li, seed, opts = {}) {
   const row = railRow(step.ws);
   row?.classList.add('is-live');
   LAST.runningWs = step.ws;
+  /* past the stale check above, so this is a live run: a sheet held open on
+     this workspace now says the agent is inside it */
+  refreshSheet();
   const sub = $('.estep__t i', li);
 
   /* paced to be read, not skimmed — a click fast-forwards for the presenter
@@ -407,6 +456,9 @@ async function runStep(step, i, li, seed, opts = {}) {
   /* the agent has left the room: the workspace now holds artefacts */
   LAST.runningWs = null;
   if (!LAST.doneWs.includes(step.ws)) LAST.doneWs.push(step.ws);
+  /* every return above this point is a stale run bailing out, so only a run
+     that still owns the screen ever repaints an open sheet */
+  refreshSheet();
 }
 
 /* ══════════════════════ RESULTS RENDER ══════════════════════
@@ -684,6 +736,106 @@ document.addEventListener('mouseout', e => {
 
 const VOICE_QUOTE = '“Booked you in for Tuesday at 2pm — you’ll get a calendar invite in a second.”';
 
+/* ── Hearing the voice agent ──────────────────────────────────
+   The voice agent was the one artefact on this page you could only read.
+   The line it says is now sayable, through the browser's own synthesiser —
+   which is exactly what it is, and what the button's title says it is.
+   It is an enactment like the rest of the run: no badge, no pulse dot and
+   no model name. The three badge lines are untouched — they remain the
+   only places on this page that claim a live model.
+
+   Feature-detected hard: a browser without speechSynthesis (or without
+   getVoices, or without the utterance constructor) renders no control at
+   all rather than a button that does nothing. */
+const CAN_SPEAK = !!(window.speechSynthesis
+  && typeof window.speechSynthesis.speak === 'function'
+  && typeof window.speechSynthesis.getVoices === 'function'
+  && typeof window.SpeechSynthesisUtterance === 'function');
+
+const SPEAKER = `<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M8.4 2.7L4.9 5.5H2.6v5h2.3l3.5 2.8z"
+  fill="currentColor"/><path d="M10.9 5.9a3 3 0 010 4.2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>`;
+
+const HEAR_IDLE = 'Hear it';
+const HEAR_BUSY = 'Playing…';
+
+/* nothing at all where the feature isn't there */
+const hearHTML = () => CAN_SPEAK
+  ? `<button class="ecard__hear" type="button" data-hear="${esc(VOICE_QUOTE)}" title="Enacted with your browser's voice">${SPEAKER}${HEAR_IDLE}</button>`
+  : '';
+
+/* one renderer, both surfaces: the results card and the NewVoices sheet
+   quote the same line and now carry the same control */
+const voiceQuoteHTML = () => `<p class="ecard__quote">${VOICE_QUOTE}</p>${hearHTML()}`;
+
+/* the button currently talking, or null */
+let speakingBtn = null;
+
+/* the label is the button's last child — the glyph before it is the
+   stylesheet's to animate and stays exactly where it was written */
+function setHearLabel(btn, text) {
+  const label = btn.lastChild;
+  if (label && label.nodeType === 3) label.nodeValue = text;
+}
+
+function restoreHearBtn() {
+  const btn = speakingBtn;
+  speakingBtn = null;
+  if (!btn) return;
+  btn.classList.remove('is-speaking');
+  setHearLabel(btn, HEAR_IDLE);
+}
+
+/* safe to call anywhere, including where the feature doesn't exist */
+function stopSpeech() {
+  if (CAN_SPEAK) {
+    try { window.speechSynthesis.cancel(); } catch { /* nothing was speaking */ }
+  }
+  restoreHearBtn();
+}
+
+/* an en-US voice if the browser has one, any English voice next, and
+   otherwise whatever the default is — getVoices is often empty on first
+   call, and an empty list is simply no preference */
+function pickVoice() {
+  let voices = [];
+  try { voices = window.speechSynthesis.getVoices() || []; } catch { return null; }
+  const lang = v => String(v?.lang || '').replace('_', '-').toLowerCase();
+  return voices.find(v => lang(v) === 'en-us')
+      || voices.find(v => lang(v).startsWith('en'))
+      || null;
+}
+
+/* delegated once, on document: both surfaces re-render freely and neither
+   ever needs wiring */
+if (CAN_SPEAK) {
+  document.addEventListener('click', e => {
+    const btn = e.target?.closest?.('[data-hear]');
+    if (!btn) return;
+    /* clicking the button that is talking stops it — the control is a toggle */
+    const wasSpeaking = btn === speakingBtn;
+    stopSpeech();
+    if (wasSpeaking) return;
+
+    const text = btn.dataset.hear || '';
+    if (!text) return;
+    const u = new window.SpeechSynthesisUtterance(text);
+    u.rate = 1.0;
+    u.pitch = 1.0;
+    const voice = pickVoice();
+    if (voice) { u.voice = voice; if (voice.lang) u.lang = voice.lang; }
+    /* a voice that never starts, is cut off, or fails must not leave the
+       button stuck on "Playing…" */
+    const done = () => { if (speakingBtn === btn) restoreHearBtn(); };
+    u.onend = done;
+    u.onerror = done;
+
+    speakingBtn = btn;
+    btn.classList.add('is-speaking');
+    setHearLabel(btn, HEAR_BUSY);
+    try { window.speechSynthesis.speak(u); } catch { restoreHearBtn(); }
+  });
+}
+
 function renderDone(seed, findingsLive) {
   const hasLive = hasLiveRows(findingsLive);
   const rowsHTML = findingsRowsHTML(hasLive ? findingsLive.rows : scriptedFindings(seed));
@@ -718,7 +870,7 @@ function renderDone(seed, findingsLive) {
         <p class="ecard__chips"><span class="echip">Meta</span><span class="echip">TikTok</span></p>
         <p class="ecard__sub">Pegasus spring push — pacing $1.8k a day against the audiences the shortlist reaches. The winning variant promotes itself.</p></article>
       <article class="ecard ecard--voice"><h4>Voice agent, on the phones</h4>
-        <p class="ecard__quote">${VOICE_QUOTE}</p>
+        ${voiceQuoteHTML()}
         <p class="ecard__sub"><em class="edot"></em>Answering inbound from the campaign, briefed on everything above.</p></article>
     </div>
     <div class="ekit__acts">
@@ -847,7 +999,7 @@ function wsArtifactsHTML(ws, seed) {
     case 'newvoices':
       /* the dot is decoration, not a claim — nothing here was answered live */
       return `<h3 class="esheet__h">On the phones.</h3>
-        <p class="ecard__quote">${VOICE_QUOTE}</p>
+        ${voiceQuoteHTML()}
         <p class="estatus"><i class="pulse"></i>Answering inbound from the campaign.</p>`;
 
     case 'research': {
@@ -911,11 +1063,42 @@ function sheetHTML(ws) {
 /* the row that opened the sheet, so focus can go back to it on close */
 let sheetOpener = null;
 
+/* ── Keeping an open sheet honest ─────────────────────────────
+   The body is rendered from LAST on open and never again — so a sheet
+   held open through the step it is watching kept saying "The agent is in
+   here now…" long after the agent had left, and a sheet opened early kept
+   saying "nothing here yet" after the run had filled it.
+
+   openWs is which workspace the open sheet is showing; sheetLast is the
+   exact HTML last written into it. refreshSheet re-renders from LAST at
+   the transitions the run already owns, and writes ONLY when the string
+   would actually differ — an identical re-render would restart the ad
+   clips and throw away focus for nothing. */
+let openWs = null;
+let sheetLast = '';
+
+function refreshSheet() {
+  if (!sheet || sheet.hidden || !sheetBody || !openWs) return;
+  const html = sheetHTML(openWs);
+  if (html === sheetLast) return;
+  /* the panel scrolls, not the body — a swap must not throw the reader
+     back to the top of a sheet they had scrolled down */
+  const panel = $('.esheet__panel', sheet);
+  const top = panel ? panel.scrollTop : 0;
+  /* if the line being spoken is about to be replaced, stop it: the button
+     carrying .is-speaking is going out of the document with it */
+  if (speakingBtn && sheetBody.contains(speakingBtn)) stopSpeech();
+  sheetBody.innerHTML = html;
+  sheetLast = html;
+  if (panel) panel.scrollTop = top;
+}
+
 function openSheet(ws) {
   if (!sheet || !sheetBody || !WS[ws]) return;
   const panel = $('.esheet__panel', sheet);
   panel?.setAttribute('aria-label', WS[ws].name);
-  sheetBody.innerHTML = sheetHTML(ws);
+  sheetBody.innerHTML = sheetLast = sheetHTML(ws);
+  openWs = ws;
   sheet.hidden = false;
   if (panel) panel.scrollTop = 0;
   $('.esheet__x', sheet)?.focus({ preventScroll: true });
@@ -927,6 +1110,10 @@ function closeSheet() {
   /* emptied, not hidden: nothing is cached between opens and the ad
      clips stop playing behind a closed sheet */
   if (sheetBody) sheetBody.innerHTML = '';
+  openWs = null;
+  sheetLast = '';
+  /* a line still being read aloud belongs to the sheet that is going away */
+  stopSpeech();
   const opener = sheetOpener;
   sheetOpener = null;
   opener?.focus({ preventScroll: true });
@@ -949,7 +1136,11 @@ sheet?.addEventListener('click', e => {
 });
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && sheet && !sheet.hidden) closeSheet();
+  if (e.key !== 'Escape') return;
+  /* Escape stops the line being read aloud whether or not a sheet is open —
+     the results card carries the same control */
+  stopSpeech();
+  if (sheet && !sheet.hidden) closeSheet();
 });
 
 /* ══════════════════════ THE RUN ══════════════════════ */
@@ -1064,7 +1255,13 @@ async function startRun(sentence) {
   }
 
   const doneMsg = $('#eplanDone');
-  if (doneMsg) doneMsg.hidden = false;
+  if (doneMsg) {
+    /* the clock is the truth — on a hurried run it may read 0:03, and that's
+       what the completion line says too, rather than a fixed script number
+       that would contradict it */
+    doneMsg.textContent = `Completed in ${clockText(performance.now() - timerFrom)} · No dashboards opened`;
+    doneMsg.hidden = false;
+  }
   stopTimer();
 
   input.disabled = false;
@@ -1088,6 +1285,10 @@ async function startRun(sentence) {
   /* the run is over: every workspace it used now holds something */
   LAST.done = true;
   LAST.runningWs = null;
+  /* the last isStale() gate is a few lines up, so this is the winning run:
+     a sheet still open on a skipped workspace stops saying "later in this
+     run" and says the sentence didn't call for it */
+  refreshSheet();
   indices.forEach(i => railRow(STEPS[i].ws)?.classList.add('is-done'));
 
   edone.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
@@ -1261,6 +1462,8 @@ function resetAll() {
      nobody answers to, and stops at its next check instead of writing */
   RUN++;
   stopTimer();
+  /* whatever was being read aloud belongs to the run being cleared away */
+  stopSpeech();
   closeSheet();
   clearConvo();
   erun.innerHTML = '';
@@ -1277,6 +1480,9 @@ function resetAll() {
   /* the workspaces empty with the page — nothing is kept from a run the
      visitor has cleared away */
   resetLast();
+  /* closeSheet above has already let go of openWs, so this is a no-op today;
+     it is here so the emptying of LAST can never outlive an open sheet */
+  refreshSheet();
   running = false;
   hurried = false;
   scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });

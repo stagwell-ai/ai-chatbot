@@ -330,6 +330,25 @@ body.vE .prompt__input{font-size:1.0625rem}
   font-family:var(--serif);font-size:1.0625rem;line-height:1.5;letter-spacing:-.012em;
   color:var(--ink);padding-left:14px;border-left:2px solid var(--line-2);
 }
+/* “Hear it” — the one artefact you could only read is now sayable, through
+   the browser's own synthesiser. e.js renders this button only where
+   speechSynthesis exists, so there is never a dead control to style.
+   Deliberately quiet: the same mono pill vocabulary as .ecard__expand, no
+   badge and no pulse dot — nothing here came from a model. */
+.ecard__hear{
+  display:inline-flex;align-items:center;gap:7px;margin-top:12px;
+  border:1px solid var(--line-2);border-radius:var(--r-full);padding:5px 13px;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-2);background:var(--surface);cursor:pointer;
+  transition:border-color var(--d-1) var(--ease-io),color var(--d-1) var(--ease-io);
+}
+.ecard__hear:hover{border-color:var(--teal);color:var(--teal)}
+.ecard__hear svg{width:12px;height:12px;flex:none;display:block}
+/* while the line is being read: teal, and the speaker glyph breathes */
+.ecard__hear.is-speaking{color:var(--teal);border-color:var(--teal)}
+.ecard__hear.is-speaking svg{animation:ehear 1.15s var(--ease-io) infinite}
+@keyframes ehear{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.16);opacity:1}}
+
 /* the teal dot that sits inline ahead of the status line */
 .edot{
   display:inline-block;width:5px;height:5px;border-radius:50%;
@@ -471,6 +490,7 @@ body.vE .prompt__input{font-size:1.0625rem}
 .esheet__h + .ecard__row{padding-top:2px}
 .esheet .ecard__meta{margin-top:14px}
 .esheet .ecard__quote{margin-top:4px}
+.esheet .ecard__hear{margin-top:14px}
 .esheet .estatus{margin-top:16px}
 
 /* ── Fine print ───────────────────────────────────────────── */
@@ -513,6 +533,22 @@ body.vE .prompt__input{font-size:1.0625rem}
   .elive{padding-left:36px}
   .eads{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
+/* ── Fine print under the switcher ────────────────────────────
+   The prototype switcher is fixed to the bottom-right corner and the fine
+   print is the last thing on the page, so on a narrow screen scrolled to
+   the end the tabs sat on top of the disclosure. Measured at 390×844:
+   ≤460px puts .ab at bottom:12px with 3px padding and 30px tabs, and at
+   that width the five labels no longer fit .ab's max-width (100vw−40px =
+   350px), so they wrap to two rows — 2×30 + 1px gap + 6px padding + 2px
+   border = 69px, sitting 81px up from the viewport bottom. Between 461
+   and 640px it is bottom:20px with 32px tabs: 62px single-row, 96px if it
+   wraps. 96px of padding inside .efine, on top of its own 40px bottom
+   margin, leaves 136px of clearance — clear of the worst of those.
+   Scoped to body.vE and to narrow screens: desktop spacing is untouched. */
+@media (max-width:640px){
+  body.vE .efine{padding-bottom:96px}
+}
+
 @media (max-width:460px){
   .chips{gap:6px}
   .chip{padding:6px 12px;font-size:var(--t-xs)}
@@ -535,6 +571,9 @@ body.vE .prompt__input{font-size:1.0625rem}
   /* the conversational gate: entrance and the typing dots are motion, not information */
   .econvo{animation:none}
   .econvo__dots i{animation:none;opacity:.6}
+  /* the speaker glyph's pulse is motion — the teal and the label carry the
+     "playing" state on their own */
+  .ecard__hear.is-speaking svg{animation:none}
   /* the roster: entrance stagger, chevron turn, and stub drift are motion, not information */
   .ecr{animation:none}
   .ecard__expand svg{transition:none}
