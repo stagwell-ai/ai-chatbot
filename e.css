@@ -846,3 +846,24 @@ body.vE .prompt__send:disabled{opacity:.35;transform:none;cursor:default}
 /* ── the minimal opening: one question, the composer, a chip ── */
 body.vE .ehero--min{padding-top:clamp(90px,24vh,230px)}
 .ehero--min .ehero__h{font-size:clamp(2rem,4vw,3rem);margin:14px 0 0}
+
+/* ── signed out: the chat-product opening ──
+   Just the question, the composer, the capabilities chip and a Log in
+   pill. The persona eyebrow, the campaign chips and the rail's account
+   card belong to the signed-in screen. */
+body.vE.is-guest .eacct{display:none}
+body.vE.is-guest .ehero__k{display:none}
+body.vE.is-guest #chips .chip:not(.chip--ask){display:none}
+.elogin-top{
+  position:fixed;top:18px;right:22px;z-index:80;
+  padding:9px 18px;border:0;border-radius:var(--r-full);cursor:pointer;
+  background:var(--navy);color:#fff;font-size:var(--t-sm);font-weight:600;
+  letter-spacing:-.01em;box-shadow:0 2px 10px rgba(0,35,52,.14);
+  transition:transform var(--d-1) var(--ease),box-shadow var(--d-1) var(--ease);
+}
+.elogin-top:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(0,35,52,.18)}
+body.vE:not(.is-guest) .elogin-top{display:none}
+/* the card now arrives on demand rather than at boot */
+.elogin:not([hidden]){animation:eloginIn 260ms var(--ease)}
+@keyframes eloginIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.elogin:not([hidden]){animation:none}}

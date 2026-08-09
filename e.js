@@ -1748,10 +1748,26 @@ reveal($$('.r'));
 
 /* ── The sign-in (enacted) ────────────────────────────────────
    One click, nothing typed, nothing checked, nothing stored — the note
-   on the card says exactly that. The short "Signing in…" beat is
-   theatre; there is no account and no request. */
+   on the card says exactly that. The page opens signed out, the way the
+   chat products do: just the question, the composer, one chip and a
+   Log in pill. Typing (or pressing Log in) raises this card; signing in
+   drops the guest state and the full option row appears. The
+   capabilities chip works signed out — a first question shouldn't
+   need an account. */
 const login    = $('#elogin');
 const loginBtn = $('#eloginBtn');
+const loginTop = $('#eloginTop');
+
+/* signed out until proven otherwise — the run= deep link signs in at load */
+document.body.classList.add('is-guest');
+
+const isGuest = () => document.body.classList.contains('is-guest');
+
+function openLogin() {
+  if (!login || !login.hidden) return;
+  login.classList.remove('is-out');
+  login.hidden = false;
+}
 
 function dismissLogin(instant) {
   if (!login || login.hidden) return;
@@ -1760,14 +1776,36 @@ function dismissLogin(instant) {
   setTimeout(() => { login.hidden = true; }, 460);
 }
 
+function completeSignIn() {
+  document.body.classList.remove('is-guest');
+}
+
 loginBtn?.addEventListener('click', () => {
   loginBtn.disabled = true;
   const b = $('.elogin__t b', loginBtn);
   if (b) b.textContent = 'Signing in…';
   setTimeout(() => {
     dismissLogin();
+    completeSignIn();
     if (FINE) input?.focus({ preventScroll: true });
   }, REDUCED ? 60 : 520);
+});
+
+loginTop?.addEventListener('click', openLogin);
+
+/* a signed-out visitor who starts typing is taken to the sign-in — the
+   chip goes through fillAndSubmit and never lands here, so asking what
+   the agent can do stays open to everyone */
+input?.addEventListener('keydown', e => {
+  if (!isGuest()) return;
+  if (['Tab', 'Shift', 'Meta', 'Alt', 'Control', 'Escape'].includes(e.key)) return;
+  e.preventDefault();
+  openLogin();
+});
+send?.addEventListener('pointerdown', e => {
+  if (!isGuest()) return;
+  e.preventDefault();
+  openLogin();
 });
 
 addEventListener('load', async () => {
@@ -1783,6 +1821,7 @@ addEventListener('load', async () => {
   const params = new URLSearchParams(location.search);
   if (params.has('run')) {
     dismissLogin(true);
+    completeSignIn();
     const sentence = params.get('run').trim() || PLACEHOLDER;
     startRun(sentence);
     return;

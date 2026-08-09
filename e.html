@@ -48,10 +48,11 @@
 
 <!-- ─────────────────── SIGN-IN (enacted) ───────────────────
      One click, no input: nothing is typed, checked or stored, and the
-     note below the button says so. e.js dismisses it and the page is
-     already signed in as the persona the rail shows. A run= deep link
-     skips it entirely. -->
-<div class="elogin" id="elogin" role="dialog" aria-modal="true" aria-label="Sign in">
+     note below the button says so. The page opens signed out — this
+     card appears when the visitor types or presses Log in, and signing
+     in reveals the full option row. A run= deep link skips it all. -->
+<button class="elogin-top" id="eloginTop" type="button">Log in</button>
+<div class="elogin" id="elogin" role="dialog" aria-modal="true" aria-label="Sign in" hidden>
   <div class="elogin__card">
     <svg class="elogin__logo"><use href="#sw-logo"/></svg>
     <p class="elogin__k">The Agent</p>
