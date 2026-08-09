@@ -757,3 +757,23 @@ body.vE .prompt__send:disabled{opacity:.35;transform:none;cursor:default}
   .efun{grid-template-columns:24px minmax(0,1fr) auto}
   .efun i{display:none}
 }
+
+/* plain receipt rows: a label and its value, no avatar column */
+.erows{display:flex;flex-direction:column}
+.erow{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;
+  align-items:baseline;padding:7px 0;box-shadow:0 1px 0 var(--line);
+}
+.erow:last-child{box-shadow:none}
+.erow b{font-weight:500;font-size:var(--t-sm);color:var(--ink);min-width:0}
+.erow em{font-style:normal;font-size:var(--t-sm);color:var(--ink-3);white-space:nowrap}
+
+/* the ad rack, reused as a step receipt, sits tight under its lead line */
+.estep__detail .eads{margin:2px 0 0}
+
+/* the NewVoices receipt is the one detail that puts a quote between its
+   lead line and its rows, so the rows lose the gap a lead line gives them.
+   Whichever of the two ends that quote block takes it: with no synthesiser
+   there is no button, and the quote is what meets the rows. */
+.estep__detail .ecard__quote + .erows,
+.estep__detail .ecard__hear + .erows{margin-top:14px}

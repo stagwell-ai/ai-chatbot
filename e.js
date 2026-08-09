@@ -36,7 +36,8 @@ const STEPS = [
     }) },
   { ws: 'newindex', tag: 'NewIndex', title: 'Testing how AI answers rank you',
     subs: ['Asking the money question eight ways…', 'Scoring who gets named first…'],
-    doneTitle: n => `Found Nike ranks ${n.rankWord} when buyers ask` },
+    doneTitle: n => `Found Nike ranks ${n.rankWord} when buyers ask`,
+    detail: n => ({ label: 'See the eight questions', html: eightQuestionsHTML(n) }) },
   { ws: 'imai', tag: 'InfluencerMarketing.ai', title: 'Shortlisting creators',
     /* the last sub is replaced by the count-up (see runStep), so the
        rights-outreach beat sits third, where it is actually read */
@@ -49,13 +50,16 @@ const STEPS = [
   { ws: 'doreel', tag: 'DoReel', title: 'Cutting creator footage into ads',
     subs: ['Pulling the shortlist’s Nike videos…', 'Cutting Meta and TikTok versions…'],
     doneTitle: n => `Cut ${n.ads} ad-ready versions from creator footage`,
-    count: n => [0, n.ads, ' ads'] },
+    count: n => [0, n.ads, ' ads'],
+    detail: n => ({ label: 'See the six cuts', html: `<p class="estep__dlead">Each cut is a creator’s own video, trimmed for feed — hover a tile for its credit.</p>${adsHTML(n)}` }) },
   { ws: 'research', tag: 'Activation', title: 'Launching the campaign',
     subs: ['Building audiences…', 'Setting pacing…', 'Going live…'],
-    doneTitle: () => 'Launched campaign across Meta and TikTok' },
+    doneTitle: () => 'Launched campaign across Meta and TikTok',
+    detail: () => ({ label: 'See the flight plan', html: flightPlanHTML() }) },
   { ws: 'newvoices', tag: 'NewVoices', title: 'Standing up the voice agent',
     subs: ['Briefing it on the campaign…', 'Connecting the number…'],
-    doneTitle: () => 'Voice agent live, answering inbound calls' },
+    doneTitle: () => 'Voice agent live, answering inbound calls',
+    detail: () => ({ label: 'Hear the agent', html: voiceReceiptHTML() }) },
 ];
 
 /* ── Intent engine ─────────────────────────────────────────────
@@ -648,11 +652,12 @@ function rosterHTML(seed, opts = {}) {
 }
 
 /* ── Step receipts ────────────────────────────────────────────
-   What the two counted steps show when asked. Scripted and seeded like
-   every unbadged figure on the page: the signals feed is the same one the
-   NewIntel sheet plays, and the funnel's six approvals are the same six
-   real accounts the roster and the ad rack show — so no surface can
-   disagree with another. */
+   What a done step shows when asked. Scripted and seeded like every
+   unbadged figure on the page: the signals feed is the same one the
+   NewIntel sheet plays, the eight questions rotate off the same hash that
+   sets Nike's rank, the funnel's six approvals are the same six real
+   accounts the roster shows, and the six cuts are the same clips the ad
+   rack plays — so no surface can disagree with another. */
 const SIGNAL_FEED = [
   { b: 'Hoka cut prices 4% on daily trainers', t: '2h' },
   { b: 'Adidas hiring spike in growth marketing', t: '9h' },
@@ -696,6 +701,76 @@ function funnelDetail(seed) {
     html: `<p class="estep__dlead">All ${esc(seed.creators)} were contacted for usage rights. The six who said yes are the campaign — the rest stay anonymous unless they clear.</p>
       <div class="efunnel">${yes}${others}</div>`,
   };
+}
+
+/* the eight phrasings NewIndex actually asks. Fixed copy — only who gets
+   named first varies, and it rotates off the same hash that sets Nike's
+   rank everywhere else, so the same sentence always shows the same eight
+   answers. Nike is never the answer here: the done title already says a
+   rival takes first place, this is that claim, row by row. */
+const EIGHT_QUESTIONS = [
+  'best running shoes right now',
+  'what running shoes should I buy',
+  'best shoes for a first marathon',
+  'top daily trainers this year',
+  'best running shoe brand',
+  'shoes for 10k training',
+  'best cushioned running shoes',
+  'what do serious runners wear',
+];
+const RIVALS_FIRST = ['Hoka', 'Brooks', 'On', 'New Balance', 'Adidas'];
+
+function eightQuestionsHTML(seed) {
+  const rows = EIGHT_QUESTIONS.map((q, k) => {
+    /* offset by row so eight questions don't all land on the same rival,
+       but still tied to seed.h so a re-run of the same sentence repeats */
+    const rival = RIVALS_FIRST[(Math.floor(seed.h / 7) + k * 3) % RIVALS_FIRST.length];
+    return `<span class="erow"><b>“${esc(q)}”</b><em>${esc(rival)} named first</em></span>`;
+  }).join('');
+  /* the live answer, when there is one, is pinned above this same step's
+     row (see onTheatreDone) — the lead just points at it */
+  const live = LAST.liveAnswer ? ' One of them ran live — its answer is pinned above.' : '';
+  return `<p class="estep__dlead">The money question, asked eight ways — who got named first each time.${live}</p>
+    <div class="erows">${rows}</div>`;
+}
+
+/* the flight plan behind "Launched campaign across Meta and TikTok". Fixed
+   copy, unseeded: a budget that moved between runs would be a different
+   campaign each time. The two daily figures are the one number this page
+   states twice — $1,100 + $700 is the "pacing $1.8k a day" the results
+   card claims (see renderDone), and neither may be changed alone. */
+const FLIGHT_PLAN = [
+  ['Meta · Advantage+ and Reels', '$1,100 a day'],
+  ['TikTok · Spark Ads from the six creators’ handles', '$700 a day'],
+  ['Audience · runners drifting to Hoka and On', 'from the NewIntel signals'],
+  ['Flight · six weeks, weekly creative rotation', 'starts on approval'],
+  ['Optimisation · the winning cut takes more of the spend', 'after 72 hours'],
+];
+
+function flightPlanHTML() {
+  const rows = FLIGHT_PLAN.map(([label, value]) =>
+    `<span class="erow"><b>${esc(label)}</b><em>${esc(value)}</em></span>`).join('');
+  return `<p class="estep__dlead">Where the budget goes on day one — pacing follows the winning cut.</p>
+    <div class="erows">${rows}</div>`;
+}
+
+/* what the voice agent was briefed on, under the line it says. The quote
+   and its control are the same renderer the results card and the NewVoices
+   sheet use — one line, one control, three surfaces, and where the browser
+   has no synthesiser all three render the quote alone. The three rows are
+   the scope of the thing: what it knows, what it does, and where it stops. */
+const VOICE_SCOPE = [
+  ['Knows', 'the findings, the roster, the spend'],
+  ['Handles', 'bookings, sizing, store stock'],
+  ['Hands off', 'anything off-script goes to a person'],
+];
+
+function voiceReceiptHTML() {
+  const rows = VOICE_SCOPE.map(([label, value]) =>
+    `<span class="erow"><b>${esc(label)}</b><em>${esc(value)}</em></span>`).join('');
+  return `<p class="estep__dlead">Briefed on everything above — the findings, the six creators, the pacing. This is how it answers.</p>
+    ${voiceQuoteHTML()}
+    <div class="erows">${rows}</div>`;
 }
 
 /* the rack shows only the curated creators' own Nike videos — the same six
@@ -985,6 +1060,9 @@ document.addEventListener('click', e => {
   const panel = btn.closest('.estep')?.querySelector('.estep__detail');
   if (!panel) return;
   const open = panel.hidden;
+  /* a panel being closed takes the line being read aloud with it — the same
+     bargain refreshSheet makes when the body it is speaking from is swapped */
+  if (!open && speakingBtn && panel.contains(speakingBtn)) stopSpeech();
   panel.hidden = !open;
   btn.setAttribute('aria-expanded', String(open));
   btn.textContent = `${open ? '−' : '+'} ${btn.dataset.label || ''}`;
