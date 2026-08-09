@@ -666,3 +666,9 @@ body.vE .prompt__send:disabled{opacity:.35;transform:none;cursor:default}
 @media (max-width:720px){
   .ecr__clip{width:72px}
 }
+
+/* the collapsed trio carries real photos once the manifest is in — same
+   monogram-under-image bargain the roster cards make */
+.eavatar{position:relative;overflow:hidden}
+.eavatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.eavatar--more{overflow:visible}

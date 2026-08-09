@@ -491,7 +491,15 @@ function liveFindingsMetaHTML(live) {
 }
 
 function avatarsHTML(seed) {
-  return `<div class="ecard__avatars"><span class="eavatar">MK</span><span class="eavatar">DT</span><span class="eavatar">AS</span>`
+  /* the collapsed trio is the roster's front door — real faces from the
+     manifest when it's loaded, so the shortlist is visible before the
+     expand. The legacy monograms only survive with no manifest at all. */
+  const three = window.ECREATORS?.list?.slice(0, 3);
+  const heads = three?.length === 3
+    ? three.map(c =>
+        `<span class="eavatar" title="${esc(c.name)}">${esc(initialsOf(c.name))}<img src="${esc(c.avatar)}" alt="" hidden></span>`).join('')
+    : `<span class="eavatar">MK</span><span class="eavatar">DT</span><span class="eavatar">AS</span>`;
+  return `<div class="ecard__avatars">${heads}`
        + `<span class="eavatar eavatar--more">+${esc(seed.creators - 3)}</span></div>`;
 }
 
@@ -634,14 +642,14 @@ document.addEventListener('error', e => {
   if (t.parentElement?.classList.contains('echip--brand')) { t.remove(); return; }
   /* a creator photo that isn't there is the same bargain the account mark
      makes: the monogram underneath was always the real thing */
-  if (t.parentElement?.classList.contains('ecr__avatar')) t.remove();
+  if (t.parentElement?.classList.contains('ecr__avatar') || t.parentElement?.classList.contains('eavatar')) t.remove();
 }, true);
 
 /* the optimistic half of that bargain — the photo is only unhidden once it
    has actually decoded. Delegated, so a re-rendered roster needs no rewiring. */
 document.addEventListener('load', e => {
   const t = e.target;
-  if (t?.tagName === 'IMG' && t.parentElement?.classList.contains('ecr__avatar')) t.hidden = false;
+  if (t?.tagName === 'IMG' && (t.parentElement?.classList.contains('ecr__avatar') || t.parentElement?.classList.contains('eavatar'))) t.hidden = false;
 }, true);
 
 document.addEventListener('stalled', e => {
