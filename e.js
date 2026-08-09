@@ -37,9 +37,9 @@ const STEPS = [
     subs: ['Filtering 400M profiles…', 'Checking brand safety…', 'Ranking by audience overlap…'],
     doneTitle: n => `Shortlisted ${n.creators} creators from 400M profiles`,
     count: n => [400, n.creators, ' creators'] },
-  { ws: 'doreel', tag: 'DoReel', title: 'Generating video ads',
-    subs: ['Writing scripts from the findings…', 'Rendering presenter variants…'],
-    doneTitle: n => `Generated ${n.ads} Pegasus spot variants`,
+  { ws: 'doreel', tag: 'DoReel', title: 'Cutting creator footage into ads',
+    subs: ['Pulling the shortlist’s Nike videos…', 'Cutting Meta and TikTok versions…'],
+    doneTitle: n => `Cut ${n.ads} ad-ready versions from creator footage`,
     count: n => [0, n.ads, ' ads'] },
   { ws: 'research', tag: 'Activation', title: 'Launching the campaign',
     subs: ['Building audiences…', 'Setting pacing…', 'Going live…'],
@@ -199,7 +199,7 @@ function seedFor(sentence) {
   const signals = 900 + (h % 701);                          // 900–1,600
   const rankIdx = Math.floor(h / 7) % 5;                     // 0–4 → 2nd–6th
   const creators = 12 + (Math.floor(h / 97) % 13);           // 12–24
-  const ads = 4 + (Math.floor(h / 977) % 5);                 // 4–8
+  const ads = 4 + (Math.floor(h / 977) % 3);                 // 4–6 — never more than the six creator clips
   /* the two audience-overlap figures the creator workspace shows — same
      seed, so the shortlist reads identically every time that sentence runs */
   const overlapA = 58 + (Math.floor(h / 13) % 22);           // 58–79
@@ -210,16 +210,6 @@ function seedFor(sentence) {
 /* byte-identical to the placeholder attribute on #promptInput in e.html —
    an empty submit runs this sentence, so the two must never drift */
 const PLACEHOLDER = 'Win back running-shoe share from Hoka this quarter.';
-
-/* the drop-zone manifest: assets/img/nike/README.md describes the four slots.
-   The files may or may not be there at runtime — a tile whose clip fails to
-   load swaps itself back to the gradient stub it would otherwise have been. */
-const NIKE_CLIPS = [
-  './assets/img/nike/ad-1.mp4',
-  './assets/img/nike/ad-2.mp4',
-  './assets/img/nike/ad-3.mp4',
-  './assets/img/nike/ad-4.mp4',
-];
 
 /* ══════════════════════ DOM ══════════════════════ */
 
@@ -634,26 +624,28 @@ function rosterHTML(seed, opts = {}) {
        + `</div>`;
 }
 
-/* two repo clips, then whatever the Nike drop-zone holds, and coloured
-   stubs for the rest — the tile grid the ads card shows, reused whole by
-   the DoReel sheet. The first tile carries the winning tag.
-
-   Every manifest tile names the stub it would have been, so a clip that
-   404s (the drop zone is empty until someone fills it) can be replaced by
-   exactly that stub — see the delegated failure handler below. */
-const REPO_CLIPS = ['./assets/img/doreel.mp4', './assets/img/imai.mp4'];
+/* the rack shows only the curated creators' own Nike videos — the same six
+   clips the roster plays, each credited by name and handle on hover.
+   seed.ads is capped at six above so every tile is one of them; a clip
+   that can't decode still swaps to the gradient stub named in data-stub
+   (see the delegated failure handler below), so the grid never gaps.
+   The first tile carries the winning tag. */
 const STUB_CLASSES = ['ead--s1', 'ead--s2', 'ead--s3', 'ead--s4', 'ead--s5', 'ead--s6'];
-const stubClassFor = k => STUB_CLASSES[(k - REPO_CLIPS.length) % STUB_CLASSES.length];
+const stubClassFor = k => STUB_CLASSES[k % STUB_CLASSES.length];
 const WIN_TAG = '<i class="ead__win">winning · +3.2×</i>';
 const videoHTML = src => `<video src="${src}" autoplay muted loop playsinline></video>`;
 
+const adClips = () => (CR?.list || [])
+  .filter(c => c.video)
+  .map(c => ({ src: c.video, credit: `${c.name} (${c.handle}) — creator’s own video` }));
+
 function adsHTML(seed) {
+  const clips = adClips();
   const tiles = Array.from({ length: Math.max(0, seed.ads) }, (_, k) => {
     const win = k === 0 ? WIN_TAG : '';
-    if (k < REPO_CLIPS.length) return `<span class="ead">${videoHTML(REPO_CLIPS[k])}${win}</span>`;
-    const clip = NIKE_CLIPS[k - REPO_CLIPS.length];
+    const clip = clips[k];
     const stub = stubClassFor(k);
-    if (clip) return `<span class="ead ead--clip" data-stub="${stub}">${videoHTML(clip)}${win}</span>`;
+    if (clip) return `<span class="ead ead--clip" data-stub="${stub}" title="${esc(clip.credit)}">${videoHTML(esc(clip.src))}${win}</span>`;
     return `<span class="ead ead--stub ${stub}">${win}</span>`;
   }).join('');
   return `<div class="eads">${tiles}</div>`;
@@ -863,9 +855,9 @@ function renderDone(seed, findingsLive) {
       <article class="ecard ecard--creators"><h4>${creatorsTotal} creators, shortlisted</h4>
         ${avatarsHTML(seed)}
         <p class="ecard__sub">${creatorsSub}</p>${creatorsExpand}</article>
-      <article class="ecard ecard--ads"><h4>${adsTotal} video ads, generated</h4>
+      <article class="ecard ecard--ads"><h4>${adsTotal} creator cuts, ready to run</h4>
         ${adsHTML(seed)}
-        <p class="ecard__sub">Presenter and UGC variants, written from the findings above.</p></article>
+        <p class="ecard__sub">The shortlist’s own Nike videos — hover a tile for its creator. Public content; no endorsement implied.</p></article>
       <article class="ecard ecard--campaign"><h4>Campaign, live</h4>
         <p class="ecard__chips"><span class="echip">Meta</span><span class="echip">TikTok</span></p>
         <p class="ecard__sub">Pegasus spring push — pacing $1.8k a day against the audiences the shortlist reaches. The winning variant promotes itself.</p></article>
@@ -928,8 +920,8 @@ const WS = {
     uses: 'A sentence about creators, influencers or a campaign launch brings the agent in here.',
   },
   doreel: {
-    name: 'DoReel · generated creative',
-    uses: 'Any sentence that ends in a campaign has its creative made in here.',
+    name: 'DoReel · creator cuts',
+    uses: 'Any sentence that ends in a campaign has its creative cut in here, from the shortlist’s own footage.',
   },
   newvoices: {
     name: 'NewVoices · the conversation layer',
@@ -992,9 +984,9 @@ function wsArtifactsHTML(ws, seed) {
     }
 
     case 'doreel':
-      return `<h3 class="esheet__h">${esc(seed.ads)} variants, ready.</h3>
+      return `<h3 class="esheet__h">${esc(seed.ads)} creator cuts, ready.</h3>
         ${adsHTML(seed)}
-        <p class="esheet__p">Written from the findings, rendered as presenter and UGC variants.</p>`;
+        <p class="esheet__p">The shortlist’s own Nike videos, cut for Meta and TikTok — hover a tile for its creator. Public content; no endorsement implied.</p>`;
 
     case 'newvoices':
       /* the dot is decoration, not a claim — nothing here was answered live */

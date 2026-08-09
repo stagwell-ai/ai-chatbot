@@ -1,56 +1,28 @@
-# Nike demo footage — drop zone
+# Nike demo footage
 
-The Agent's ad rack (e.html) fills itself from this folder. Drop clips in,
-redeploy, done — no code changes. Until files exist here, the rack shows
-its gradient stubs.
-
-## What to drop
-
-| Filename        | What it should feel like                          |
-| --------------- | ------------------------------------------------- |
-| ad-1.mp4        | runner at dawn, street or track                   |
-| ad-2.mp4        | sneaker close-up / product beauty shot            |
-| ad-3.mp4        | creator-style talking head or gym clip            |
-| ad-4.mp4        | city run, crowd energy                            |
-| hero.jpg        | (optional) wide athletic still for future use     |
-
-Specs: 5–10 seconds · portrait 9:16 preferred · H.264 mp4 · under 6MB each
-(match the existing clips in assets/img/). Silent — they autoplay muted.
-
-Sources that work: your own Nike-adjacent library, or free stock with no
-attribution required (Pexels, Mixkit, Coverr — search "running shoes",
-"sneakers", "athlete street"). The swoosh is not needed; the Nike context
-on the page does the branding.
+The Agent's ad rack (e.html) no longer reads loose `ad-N.mp4` drops from
+this folder — it fills itself from the curated creator roster instead.
+The rack shows only the six creators' own Nike videos, each credited to
+its creator on hover.
 
 ## Creator roster
 
-The results card and the InfluencerMarketing.ai workspace peek fill
-themselves from `e-creators.js` (repo root), which reads its avatars and
-clips from this `creators/` subfolder. Six creators, numbered 1–6, matching
-the six entries in `e-creators.js`:
+The results card, the ad rack, and the InfluencerMarketing.ai workspace
+peek all fill themselves from `e-creators.js` (repo root), which reads its
+avatars and clips from this `creators/` subfolder. Six creators, numbered
+1–6, matching the six entries in `e-creators.js`:
 
-| Filename       | What it should be                                          |
-| -------------- | ----------------------------------------------------------- |
-| avatar-1.jpg   | square headshot/profile photo, ≥200px, jpg/png/webp          |
-| avatar-2.jpg   | square headshot/profile photo, ≥200px, jpg/png/webp          |
-| avatar-3.jpg   | square headshot/profile photo, ≥200px, jpg/png/webp          |
-| avatar-4.jpg   | square headshot/profile photo, ≥200px, jpg/png/webp          |
-| avatar-5.jpg   | square headshot/profile photo, ≥200px, jpg/png/webp          |
-| avatar-6.jpg   | square headshot/profile photo, ≥200px, jpg/png/webp          |
-| video-1.mp4    | creator's actual Nike TikTok, portrait 9:16, 5–15s, H.264, <8MB |
-| video-2.mp4    | creator's actual Nike TikTok, portrait 9:16, 5–15s, H.264, <8MB |
-| video-3.mp4    | creator's actual Nike TikTok, portrait 9:16, 5–15s, H.264, <8MB |
-| video-4.mp4    | creator's actual Nike TikTok, portrait 9:16, 5–15s, H.264, <8MB |
-| video-5.mp4    | creator's actual Nike TikTok, portrait 9:16, 5–15s, H.264, <8MB |
-| video-6.mp4    | creator's actual Nike TikTok, portrait 9:16, 5–15s, H.264, <8MB |
+| Filename       | What it is                                                   |
+| -------------- | ------------------------------------------------------------ |
+| avatar-1..6    | square profile photo, ≥200px, jpg/png/webp                    |
+| video-1..6.mp4 | the creator's actual Nike video, portrait, H.264, <6MB        |
 
-Extension is free (jpg/png/webp for avatars) as long as the entry's
-`avatar` path in `e-creators.js` is updated to match. Names, handles,
-follower/engagement/avgViews/niche/overlap numbers, and the `url` field are
-all edited in `e-creators.js`, not here — this folder only holds the
-media the entries point at.
+All six slots are filled with real footage. To swap a clip, replace the
+matching `video-N.mp4` (N follows the roster order in `e-creators.js`) or
+edit that manifest. The existing files were cut with:
+`ffmpeg -t 30 -vf scale=540:-2 -c:v libx264 -preset veryfast -crf 29
+-pix_fmt yuv420p -an -movflags +faststart` — silent, they autoplay muted.
 
-`e-creators.js` starts with `placeholder: true`, which is what puts the
-"illustrative" note on the roster while these six are stand-ins. Once the
-real six creators' data and files are dropped in, flip that flag to
-`false` and the note goes away — no other change needed.
+Names, handles, public stats, niche lines, and the `url` field are all
+edited in `e-creators.js`, not here — this folder only holds the media
+the entries point at.
