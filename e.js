@@ -26,19 +26,19 @@ const NEWINTEL = 0, NEWINDEX = 1, IMAI = 2, DOREEL = 3, RESEARCH = 4, NEWVOICES 
 
 const STEPS = [
   { ws: 'newintel', tag: 'NewIntel', title: 'Analysing competitor signals',
-    subs: ['Reading pricing pages…', 'Scanning hiring feeds…', 'Cross-referencing earned coverage…'],
+    subs: ['Reading Hoka and On’s pricing pages…', 'Scanning Adidas hiring feeds…', 'Cross-referencing earned coverage…'],
     doneTitle: n => `Analysed ${n.signals.toLocaleString()} competitor signals`,
     count: n => [0, n.signals, ' signals'] },
   { ws: 'newindex', tag: 'NewIndex', title: 'Testing how AI answers rank you',
     subs: ['Asking the money question eight ways…', 'Scoring who gets named first…'],
-    doneTitle: n => `Found you rank ${n.rankWord} in ChatGPT answers` },
+    doneTitle: n => `Found Nike ranks ${n.rankWord} when buyers ask` },
   { ws: 'imai', tag: 'InfluencerMarketing.ai', title: 'Shortlisting creators',
     subs: ['Filtering 400M profiles…', 'Checking brand safety…', 'Ranking by audience overlap…'],
     doneTitle: n => `Shortlisted ${n.creators} creators from 400M profiles`,
     count: n => [400, n.creators, ' creators'] },
   { ws: 'doreel', tag: 'DoReel', title: 'Generating video ads',
     subs: ['Writing scripts from the findings…', 'Rendering presenter variants…'],
-    doneTitle: n => `Generated ${n.ads} video ads`,
+    doneTitle: n => `Generated ${n.ads} Pegasus spot variants`,
     count: n => [0, n.ads, ' ads'] },
   { ws: 'research', tag: 'Activation', title: 'Launching the campaign',
     subs: ['Building audiences…', 'Setting pacing…', 'Going live…'],
@@ -102,7 +102,19 @@ function seedFor(sentence) {
   return { h, signals, rankIdx, rankWord: ORDINALS[rankIdx], creators, ads, overlapA, overlapB };
 }
 
-const PLACEHOLDER = 'Find out why we’re losing share to our top competitor, then fix it.';
+/* byte-identical to the placeholder attribute on #promptInput in e.html —
+   an empty submit runs this sentence, so the two must never drift */
+const PLACEHOLDER = 'Win back running-shoe share from Hoka this quarter.';
+
+/* the drop-zone manifest: assets/img/nike/README.md describes the four slots.
+   The files may or may not be there at runtime — a tile whose clip fails to
+   load swaps itself back to the gradient stub it would otherwise have been. */
+const NIKE_CLIPS = [
+  './assets/img/nike/ad-1.mp4',
+  './assets/img/nike/ad-2.mp4',
+  './assets/img/nike/ad-3.mp4',
+  './assets/img/nike/ad-4.mp4',
+];
 
 /* ══════════════════════ DOM ══════════════════════ */
 
@@ -180,8 +192,11 @@ function stepMarkup(step) {
 }
 
 function renderPlan(sentence, steps) {
+  /* a long sentence set at hero size wraps to four lines and pushes the plan
+     off the fold — past ~90 characters it drops to the smaller cut */
+  const qClass = sentence.length > 90 ? 'eplan__q eplan__q--long' : 'eplan__q';
   erun.innerHTML = `<div class="eplan">
-    <p class="eplan__q">“${esc(sentence)}”</p>
+    <p class="${qClass}">“${esc(sentence)}”</p>
     <p class="eplan__meta" id="eplanMeta"><i class="spin"></i>Planning across ${steps.length} workspaces…</p>
     <ol class="esteps">${steps.map(stepMarkup).join('')}</ol>
     <p class="eplan__done" id="eplanDone" hidden>Completed in 4 minutes · No dashboards opened</p>
@@ -197,22 +212,88 @@ async function runCount(el, [from, to, suffix], ms) {
   const dur = hurried ? Math.min(ms, 60) : ms;
   return new Promise(resolve => {
     const frame = now => {
-      const p = Math.min(1, (now - start) / dur);
+      const t = Math.min(1, (now - start) / dur);
+      /* eased out: the number leaps away and settles onto its landing figure,
+         rather than arriving at a constant machine pace */
+      const p = 1 - Math.pow(1 - t, 3);
       const v = Math.round(from + (to - from) * p);
       el.textContent = `${v.toLocaleString()}${suffix}`;
-      if (p < 1) requestAnimationFrame(frame);
+      if (t < 1) requestAnimationFrame(frame);
       else resolve();
     };
     requestAnimationFrame(frame);
   });
 }
 
+/* ── The sub-line swap ────────────────────────────────────────
+   A step's second line changes three or four times as the step runs.
+   Snapping the text reads as a glitch; .is-swap fades it out, the text is
+   written while it is invisible, and removing the class fades it back.
+   Deliberately not awaited: the fade overlaps the beat that follows, so
+   the run's pacing is exactly what it was before the crossfade existed.
+   Reduced motion and a hurried run both write the text outright. */
+const SWAP_MS = 240;
+function swapSub(el, text, stale) {
+  if (!el) return;
+  if (REDUCED || hurried) { el.textContent = text; return; }
+  el.classList.add('is-swap');
+  setTimeout(() => {
+    if (stale && stale()) return;
+    el.textContent = text;
+    el.classList.remove('is-swap');
+  }, SWAP_MS);
+}
+
+/* ── The elapsed clock ────────────────────────────────────────
+   Sits at the right edge of the plan header and counts while the agent
+   works. It stops at the finish with the final time left on screen — the
+   run took what it took — and is cleared whenever the plan is torn down. */
+let timerId = 0;
+let timerFrom = 0;
+
+const clockText = ms => {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+};
+
+function startTimer() {
+  stopTimer();
+  const meta = $('#eplanMeta');
+  if (!meta) return;
+  /* renderPlan rewrites #erun wholesale, so a stale node can't survive —
+     but a second call within one run must not print a second clock */
+  if (!$('#etimer')) meta.insertAdjacentHTML('beforeend', '<span class="etimer" id="etimer">0:00</span>');
+  timerFrom = performance.now();
+  timerId = setInterval(() => {
+    const el = $('#etimer');
+    if (!el) { stopTimer(); return; }
+    el.textContent = clockText(performance.now() - timerFrom);
+  }, 1000);
+}
+
+function stopTimer() {
+  if (!timerId) return;
+  clearInterval(timerId);
+  timerId = 0;
+  /* the last interval can be up to a second behind the finish — land the
+     real figure rather than whichever second happened to tick last */
+  const el = $('#etimer');
+  if (el) el.textContent = clockText(performance.now() - timerFrom);
+}
+
 /* opts.echo: the key-phrase line inserted as this step's second sub-line
+   opts.isStale: () => boolean — true once this run has been superseded (see
+   the generation token in startRun). Checked after every await, before any
+   write: a run the visitor has cleared away must not finish in the dark and
+   deposit its step onto the screen that replaced it.
    opts.onTheatreDone: async () => null | { doneTitle, html } — run right
    after the theatre finishes and before the step is marked done, so a
    live surface (e.g. the NewIndex answer card) can override the scripted
    done-title and append markup into this step's <li>. */
 async function runStep(step, i, li, seed, opts = {}) {
+  const stale = opts.isStale || (() => false);
+  if (stale() || !li) return;
+
   li.dataset.state = 'running';
   const row = railRow(step.ws);
   row?.classList.add('is-live');
@@ -227,22 +308,26 @@ async function runStep(step, i, li, seed, opts = {}) {
   const beatMs = Math.max(REDUCED ? 40 : 600, Math.floor(total / subs.length));
 
   for (let s = 0; s < subs.length - 1; s++) {
-    sub.textContent = subs[s];
+    swapSub(sub, subs[s], stale);
     await tick(REDUCED ? 80 : Math.min(1700, beatMs));
+    if (stale()) return;
   }
   /* the final beat: for steps with a count, the count-up plays alongside
      the last sub — it replaces the text as the running total climbs */
   if (step.count) {
     await runCount(sub, step.count(seed), REDUCED ? 200 : Math.max(1100, beatMs));
+    if (stale()) return;
   } else {
-    sub.textContent = subs[subs.length - 1];
+    swapSub(sub, subs[subs.length - 1], stale);
     await tick(REDUCED ? 80 : Math.min(1700, beatMs));
+    if (stale()) return;
   }
 
   let doneTitle = step.doneTitle(seed);
   let extraHTML = '';
   if (opts.onTheatreDone) {
     const r = await opts.onTheatreDone();
+    if (stale()) return;
     if (r) {
       doneTitle = r.doneTitle;
       extraHTML = r.html || '';
@@ -252,7 +337,7 @@ async function runStep(step, i, li, seed, opts = {}) {
   li.dataset.state = 'done';
   $('.estep__mark', li).innerHTML = CHECK;
   $('.estep__t b', li).textContent = doneTitle;
-  sub.textContent = '';
+  swapSub(sub, '', stale);
   if (extraHTML) li.insertAdjacentHTML('beforeend', extraHTML);
   row?.classList.remove('is-live');
   /* the agent has left the room: the workspace now holds artefacts */
@@ -267,10 +352,10 @@ async function runStep(step, i, li, seed, opts = {}) {
 
 function scriptedFindings(seed) {
   return [
-    { lead: 'They cut price where it hurts.',
-      detail: 'Their hero SKU undercut yours by 4% in May — your consideration dipped within two weeks.' },
+    { lead: 'Hoka cut price where it hurts.',
+      detail: 'Their daily-trainer undercut the Pegasus by 4% in May — consideration dipped within two weeks.' },
     { lead: 'They own the question.',
-      detail: `Asked the money question, the models name them first. You rank ${seed.rankWord} in ChatGPT answers.` },
+      detail: `Asked for the best running shoes, the models name Hoka and Brooks first. Nike ranks ${seed.rankWord}.` },
     { lead: 'Their creators outspend yours 2:1.',
       detail: 'And earned coverage follows the creators.' },
   ];
@@ -290,9 +375,48 @@ function findingsRowsHTML(rows) {
    either one from a scripted path. Every caller (the run's NewIndex step,
    the run's findings card, and the two sheets that re-show a stored live
    result) hands over an object that came back from a real model. */
+/* ── The audit row ────────────────────────────────────────────
+   Which of the six brands the model actually put in its answer — the
+   whole point of asking brand-blind. Reachable only from liveAnswerHTML,
+   so like the badge it can never appear under a scripted answer.
+   Every name is a string that came back over the wire: esc'd on the way
+   in, and the favicon URL is built from it rather than interpolated raw. */
+function auditHTML(named) {
+  const P = window.ELIVE?.PERSONA;
+  if (!P) return '';
+  const mark = window.ELIVE?.markURL;
+  const list = Array.isArray(named) ? named : [];
+  const hit = b => list.some(n => String(n).trim().toLowerCase() === b.toLowerCase());
+
+  /* the mark is looked up from the brand, never from the chip's label —
+     "Nike · absent" is not a domain */
+  const chip = (brand, label, cls) => {
+    const img = mark ? `<img src="${esc(mark(brand))}" alt="" width="16" height="16">` : '';
+    return `<span class="echip--brand${cls}">${img}${esc(label)}</span>`;
+  };
+
+  const mine = hit(P.brand);
+  /* the rivals the model volunteered, in the persona's own order rather than
+     whatever order the answer happened to mention them in */
+  const rivals = (P.rivals || []).filter(hit);
+
+  /* nothing named at all is still a finding, and the strongest one — it just
+     has no chips to draw, so it is said in the kicker instead */
+  if (!rivals.length && !mine) {
+    return `<div class="eaudit"><span class="eaudit__k">Named in the answer: none of the six — ${esc(P.brand)} included</span></div>`;
+  }
+
+  const chips = rivals.map(b => chip(b, b, '')).join('')
+              + (mine
+                  ? chip(P.brand, `${P.brand} · named`, ' is-mine')
+                  : chip(P.brand, `${P.brand} · absent`, ' is-absent is-mine'));
+  return `<div class="eaudit"><span class="eaudit__k">Named in the answer</span>${chips}</div>`;
+}
+
 function liveAnswerHTML(live) {
   return `<div class="elive"><p class="elive__q">Asked, verbatim: “${esc(live.question)}”</p>`
        + `<p class="elive__a">“${esc(live.answer)}”</p>`
+       + auditHTML(live.named)
        + `<p class="elive__meta"><i class="pulse"></i>${esc(live.model)} · answered live in ${esc(live.ms)}ms · unscripted</p></div>`;
 }
 
@@ -305,20 +429,59 @@ function avatarsHTML(seed) {
        + `<span class="eavatar eavatar--more">+${esc(seed.creators - 3)}</span></div>`;
 }
 
-/* two real clips, the rest as coloured stubs — the tile grid the ads
-   card shows, reused whole by the DoReel sheet */
+/* two repo clips, then whatever the Nike drop-zone holds, and coloured
+   stubs for the rest — the tile grid the ads card shows, reused whole by
+   the DoReel sheet. The first tile carries the winning tag.
+
+   Every manifest tile names the stub it would have been, so a clip that
+   404s (the drop zone is empty until someone fills it) can be replaced by
+   exactly that stub — see the delegated failure handler below. */
+const REPO_CLIPS = ['./assets/img/doreel.mp4', './assets/img/imai.mp4'];
+const STUB_CLASSES = ['ead--s1', 'ead--s2', 'ead--s3', 'ead--s4', 'ead--s5', 'ead--s6'];
+const stubClassFor = k => STUB_CLASSES[(k - REPO_CLIPS.length) % STUB_CLASSES.length];
+const WIN_TAG = '<i class="ead__win">winning · +3.2×</i>';
+const videoHTML = src => `<video src="${src}" autoplay muted loop playsinline></video>`;
+
 function adsHTML(seed) {
-  const stubClasses = ['ead--s1', 'ead--s2', 'ead--s3', 'ead--s4', 'ead--s5', 'ead--s6'];
-  const stubCount = Math.max(0, seed.ads - 2);
-  const stubsHTML = Array.from({ length: stubCount }, (_, i) =>
-    `<span class="ead ead--stub ${stubClasses[i % stubClasses.length]}"></span>`
-  ).join('');
-  return `<div class="eads">
-          <span class="ead"><video src="./assets/img/doreel.mp4" autoplay muted loop playsinline></video></span>
-          <span class="ead"><video src="./assets/img/imai.mp4" autoplay muted loop playsinline></video></span>
-          ${stubsHTML}
-        </div>`;
+  const tiles = Array.from({ length: Math.max(0, seed.ads) }, (_, k) => {
+    const win = k === 0 ? WIN_TAG : '';
+    if (k < REPO_CLIPS.length) return `<span class="ead">${videoHTML(REPO_CLIPS[k])}${win}</span>`;
+    const clip = NIKE_CLIPS[k - REPO_CLIPS.length];
+    const stub = stubClassFor(k);
+    if (clip) return `<span class="ead ead--clip" data-stub="${stub}">${videoHTML(clip)}${win}</span>`;
+    return `<span class="ead ead--stub ${stub}">${win}</span>`;
+  }).join('');
+  return `<div class="eads">${tiles}</div>`;
 }
+
+/* A drop-zone file that isn't there must leave no trace: the tile becomes
+   the gradient stub it would have been if the manifest slot were empty.
+   error and stalled don't bubble, so both are caught on the way down. */
+function clipFailed(video) {
+  const host = video?.closest?.('.ead--clip');
+  if (!host || !host.parentElement) return;
+  const stub = document.createElement('span');
+  stub.className = `ead ead--stub ${host.dataset.stub || STUB_CLASSES[0]}`;
+  /* the winning tag belongs to the first tile, not to the clip in it */
+  if ($('.ead__win', host)) stub.innerHTML = WIN_TAG;
+  host.replaceWith(stub);
+}
+
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (!t || !t.tagName) return;
+  if (t.tagName === 'VIDEO') { clipFailed(t); return; }
+  /* a favicon that 404s leaves a broken-image glyph in the chip — drop the
+     image and let the brand name stand on its own */
+  if (t.tagName === 'IMG' && t.parentElement?.classList.contains('echip--brand')) t.remove();
+}, true);
+
+document.addEventListener('stalled', e => {
+  const t = e.target;
+  /* readyState 0 is HAVE_NOTHING: stalled before a single byte of media —
+     a mid-playback stall is a slow network, not a missing file */
+  if (t && t.tagName === 'VIDEO' && t.readyState === 0) clipFailed(t);
+}, true);
 
 const VOICE_QUOTE = '“Booked you in for Tuesday at 2pm — you’ll get a calendar invite in a second.”';
 
@@ -333,17 +496,17 @@ function renderDone(seed, findingsLive) {
   edone.innerHTML = `<div class="ekit">
     <p class="ekit__k">The finished campaign</p>
     <div class="ekit__grid">
-      <article class="ecard ecard--findings"><h4>Why you’re losing share</h4>
+      <article class="ecard ecard--findings"><h4>Why Nike is losing share</h4>
         ${rowsHTML}${findingsMeta}</article>
       <article class="ecard ecard--creators"><h4>${creatorsTotal} creators, shortlisted</h4>
         ${avatarsHTML(seed)}
-        <p class="ecard__sub">Vetted, on-audience, ranked by overlap with the buyers you’re losing.</p></article>
+        <p class="ecard__sub">Vetted, on-audience, ranked by overlap with the runners Nike is losing.</p></article>
       <article class="ecard ecard--ads"><h4>${adsTotal} video ads, generated</h4>
         ${adsHTML(seed)}
         <p class="ecard__sub">Presenter and UGC variants, written from the findings above.</p></article>
       <article class="ecard ecard--campaign"><h4>Campaign, live</h4>
         <p class="ecard__chips"><span class="echip">Meta</span><span class="echip">TikTok</span></p>
-        <p class="ecard__sub">Pacing $1.8k a day against the audiences the shortlist reaches. The winning variant promotes itself.</p></article>
+        <p class="ecard__sub">Pegasus spring push — pacing $1.8k a day against the audiences the shortlist reaches. The winning variant promotes itself.</p></article>
       <article class="ecard ecard--voice"><h4>Voice agent, on the phones</h4>
         <p class="ecard__quote">${VOICE_QUOTE}</p>
         <p class="ecard__sub"><em class="edot"></em>Answering inbound from the campaign, briefed on everything above.</p></article>
@@ -411,16 +574,16 @@ function wsArtifactsHTML(ws, seed) {
       return `<h3 class="esheet__h">What rivals did while you read this.</h3>
         <p class="esheet__stat">${esc(seed.signals.toLocaleString())} signals analysed this run</p>
         <div class="esheet__feed">
-          <span><i class="pulse"></i><b>Rival cut prices 4%</b><em>2h</em></span>
-          <span><i class="pulse"></i><b>Hiring spike in their growth team</b><em>9h</em></span>
-          <span><i class="pulse"></i><b>New creator campaign detected</b><em>1d</em></span>
+          <span><i class="pulse"></i><b>Hoka cut prices 4%</b><em>2h</em></span>
+          <span><i class="pulse"></i><b>Adidas hiring spike in growth</b><em>9h</em></span>
+          <span><i class="pulse"></i><b>New On creator campaign</b><em>1d</em></span>
         </div>`;
 
     /* the only branch in the sheet that can carry a badge: a stored answer
        from a model that really replied during this run */
     case 'newindex':
       if (LAST.liveAnswer) return liveAnswerHTML(LAST.liveAnswer);
-      return `<h3 class="esheet__h">You rank ${esc(seed.rankWord)} when buyers ask.</h3>
+      return `<h3 class="esheet__h">Nike ranks ${esc(seed.rankWord)} when buyers ask.</h3>
         <p class="esheet__p">Across the answer engines, rivals get named first. The campaign below is built to change that.</p>`;
 
     case 'imai':
@@ -447,7 +610,8 @@ function wsArtifactsHTML(ws, seed) {
       const live = LAST.liveFindings;
       const isLive = hasLiveRows(live);
       const rows = isLive ? live.rows : scriptedFindings(seed);
-      return `<h3 class="esheet__h">Why you’re losing share</h3>
+      /* the same heading the results card carries — one artefact, one name */
+      return `<h3 class="esheet__h">Why Nike is losing share</h3>
         ${findingsRowsHTML(rows)}
         ${isLive ? liveFindingsMetaHTML(live) : ''}
         <p class="esheet__k esheet__k--mid">Ask the market a follow-up</p>
@@ -560,8 +724,21 @@ function showHero() {
   if (chips) { chips.hidden = false; chips.classList.remove('is-gone'); }
 }
 
+/* ── The generation token ─────────────────────────────────────
+   A run is a chain of awaits that outlives any single frame: forty-odd
+   seconds of theatre, plus two live calls with their own grace windows.
+   Resetting mid-run used to leave that chain running in the dark, and it
+   would surface later to mark the rail and drop a finished campaign onto
+   a screen the visitor had already cleared. Every run takes a number on
+   the way in; anything that comes back to a stale number stops rather
+   than writes. resetAll bumps it too, so a reset with no run after it
+   kills the loop just the same. */
+let RUN = 0;
+
 async function startRun(sentence) {
   if (running) return;
+  const my = ++RUN;
+  const isStale = () => my !== RUN;
   running = true;
   runStartedAt = performance.now();
   hurried = false;
@@ -597,10 +774,18 @@ async function startRun(sentence) {
   send.disabled = true;
 
   renderPlan(sentence, steps);
+  startTimer();
 
   await tick(REDUCED ? 120 : 2000);
+  if (isStale()) return;
   const meta = $('#eplanMeta');
-  if (meta) meta.textContent = 'Working — the agent moves between workspaces as each step needs it.';
+  if (meta) {
+    /* the swap clears the line — including the planning spinner, as it always
+       has. The clock is lifted out and put back, so it keeps its own time. */
+    const timer = $('#etimer');
+    meta.textContent = 'Working — the agent moves between workspaces as each step needs it.';
+    if (timer) meta.appendChild(timer);
+  }
 
   const lis = $$('.estep', erun);
   const phrase = keyPhrase(sentence);
@@ -610,25 +795,29 @@ async function startRun(sentence) {
     const isNewIndex = step.ws === 'newindex';
     /* a breath between steps, so each check lands before the next spinner */
     if (i) await tick(REDUCED ? 40 : 650);
+    if (isStale()) return;
     await runStep(step, i, lis[i], seed, {
       echo: i === 0 ? phrase : null,
+      isStale,
       onTheatreDone: isNewIndex ? async () => {
         const graceMs = hurried ? 800 : 6000;
         const r = await Promise.race([qLive, wait(graceMs).then(() => null)]);
-        if (!r) return null;
+        if (!r || isStale()) return null;
         /* stored so the NewIndex sheet can re-show the same real answer —
-           the badge below travels with it and only with it */
-        LAST.liveAnswer = { question, answer: r.answer, model: r.model, ms: r.ms };
+           the badge and the audit row travel with it and only with it */
+        LAST.liveAnswer = { question, answer: r.answer, model: r.model, ms: r.ms, named: r.named };
         return {
-          doneTitle: 'Asked a real model how you rank',
+          doneTitle: 'Asked a real model how Nike ranks',
           html: liveAnswerHTML(LAST.liveAnswer),
         };
       } : null,
     });
+    if (isStale()) return;
   }
 
   const doneMsg = $('#eplanDone');
   if (doneMsg) doneMsg.hidden = false;
+  stopTimer();
 
   input.disabled = false;
   send.disabled = false;
@@ -637,9 +826,11 @@ async function startRun(sentence) {
 
   /* let the completion line land before the campaign takes over */
   await tick(REDUCED ? 60 : 1400);
+  if (isStale()) return;
 
   const fGraceMs = hurried ? 500 : 5000;
   const findingsLive = await Promise.race([fLive, wait(fGraceMs).then(() => null)]);
+  if (isStale()) return;
   /* only a real result is stored; a miss leaves null and the Research
      sheet falls back to the scripted three, unbadged */
   LAST.liveFindings = hasLiveRows(findingsLive) ? findingsLive : null;
@@ -693,6 +884,10 @@ form?.addEventListener('submit', e => {
 });
 
 function resetAll() {
+  /* orphan whatever is still awaiting: the run in flight now holds a number
+     nobody answers to, and stops at its next check instead of writing */
+  RUN++;
+  stopTimer();
   closeSheet();
   erun.innerHTML = '';
   erun.hidden = true;
@@ -723,6 +918,24 @@ $('#newRun')?.addEventListener('click', newRun);
 document.addEventListener('click', e => {
   if (e.target.closest('[data-act="reset"]')) resetAll();
 });
+
+/* ══════════════════════ THE ACCOUNT MARK ══════════════════════
+   The rail says who is signed in. The monogram square is rendered by the
+   stylesheet and is always correct; the favicon is an optimistic layer over
+   it, requested by the browser at render time. It arrives hidden and is only
+   revealed once it has actually decoded — a 404 (or an offline dev sandbox)
+   removes the <img> and the N underneath is what stays. Nothing here is on
+   the run's path, so a failure costs the page nothing. */
+function mountAccount() {
+  const L = window.ELIVE;
+  const img = $('#eacct .eacct__mark img');
+  if (!img || !L?.markURL || !L?.PERSONA?.domain) return;
+  img.addEventListener('load', () => { img.hidden = false; }, { once: true });
+  img.addEventListener('error', () => { img.remove(); }, { once: true });
+  img.src = L.markURL(L.PERSONA.domain);
+}
+
+mountAccount();
 
 /* ══════════════════════ MOTION ══════════════════════ */
 

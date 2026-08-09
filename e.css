@@ -43,6 +43,30 @@ body.vE .view{
   font-size:var(--t-xs);line-height:1.55;color:var(--ink-3);margin:0;
 }
 
+/* ── Rail account block ───────────────────────────────────────
+   Sits under the brand, above the rail items: who this run is signed
+   in as. The mark is a monogram square with a runtime favicon layered
+   on top — if the fetch fails the monogram underneath still reads. */
+.eacct{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;margin:0 0 14px;
+  border:1px solid var(--line);border-radius:var(--r);background:var(--surface);
+}
+.eacct__mark{
+  width:26px;height:26px;border-radius:6px;flex:none;
+  display:grid;place-items:center;background:var(--navy);color:#fff;
+  font-family:var(--mono);font-size:11px;overflow:hidden;position:relative;
+}
+.eacct__mark img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  padding:3px;background:#fff;
+}
+.eacct__t{min-width:0}
+.eacct__t b{display:block;font-size:var(--t-sm);font-weight:600;letter-spacing:-.01em}
+.eacct__t span{
+  display:block;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+
 /* ── Hero ─────────────────────────────────────────────────── */
 .ehero{text-align:center;padding-top:clamp(48px,10vh,110px)}
 .ehero__k{
@@ -91,14 +115,19 @@ body.vE .prompt__input{font-size:1.0625rem}
 .eplan__head{display:block}
 .eplan__q{
   font-family:var(--serif);font-size:clamp(1.25rem,2.1vw,1.55rem);line-height:1.35;
-  letter-spacing:-.018em;color:var(--ink);
+  letter-spacing:-.018em;color:var(--ink);overflow-wrap:break-word;
 }
+/* e.js adds this for prompts whose question sentence runs past ~90 chars */
+.eplan__q--long{font-size:1.05rem;line-height:1.5}
 .eplan__meta{
   display:flex;align-items:center;gap:9px;margin-top:12px;
   padding-bottom:20px;border-bottom:1px solid var(--line);
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
   text-transform:uppercase;color:var(--ink-3);line-height:1.5;
 }
+
+/* the running clock at the right edge of the plan header */
+.etimer{margin-left:auto;font-variant-numeric:tabular-nums;letter-spacing:.06em;color:var(--ink-3)}
 
 /* the little inline spinner used in the plan header */
 .spin{
@@ -127,15 +156,20 @@ body.vE .prompt__input{font-size:1.0625rem}
   border:2px solid var(--line-2);border-top-color:var(--teal);
   animation:espin .9s linear infinite;
 }
-.estep[data-state="done"] .estep__mark{background:var(--navy);border-color:var(--navy)}
+.estep[data-state="done"] .estep__mark{background:var(--navy);border-color:var(--navy);animation:emark 360ms var(--ease)}
 .estep__mark svg{width:10px;height:10px;color:#fff;display:block}
+/* the mark pops once when a step lands on done, rather than just snapping color */
+@keyframes emark{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
 
 .estep__t{min-width:0}
 .estep__t b{display:block;font-weight:550;font-size:var(--t-body);letter-spacing:-.006em}
 .estep__t i{
   display:block;font-style:normal;font-size:var(--t-sm);color:var(--ink-3);
   min-height:1.2em;line-height:1.4;
+  transition:opacity 240ms var(--ease);
 }
+/* e.js swaps the sub-line's text while it's invisible, then removes this */
+.estep__t i.is-swap{opacity:0}
 .estep__ws{
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
   text-transform:uppercase;color:var(--ink-3);white-space:nowrap;
@@ -177,6 +211,18 @@ body.vE .prompt__input{font-size:1.0625rem}
   display:flex;align-items:center;gap:6px;margin:0;
 }
 .ecard__meta{margin-top:12px}
+
+/* the audit row under a live answer — which brands the model actually named */
+.eaudit{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 6px}
+.eaudit__k{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:2px}
+.echip--brand{
+  display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--line-2);border-radius:var(--r-full);padding:3px 10px 3px 5px;
+  font-size:var(--t-xs);color:var(--ink-2);background:var(--surface);
+}
+.echip--brand img{width:16px;height:16px;border-radius:4px;display:block}
+.echip--brand.is-absent{border-style:dashed;color:var(--ink-3)}
+.echip--brand.is-mine{border-color:var(--navy)}
 
 /* ── The finished campaign ────────────────────────────────── */
 .ekit{max-width:860px;margin:40px auto 0;animation:fadeUp 700ms var(--ease)}
@@ -237,19 +283,37 @@ body.vE .prompt__input{font-size:1.0625rem}
   background:linear-gradient(160deg,#01293B,#00121C);border:1px solid var(--line);
 }
 .ead video,.ead img{width:100%;height:100%;object-fit:cover;display:block}
-.ead--stub{border-color:transparent;background:linear-gradient(150deg,#002334,#009CBD)}
+.ead--stub{
+  border-color:transparent;background:linear-gradient(150deg,#002334,#009CBD);
+  background-size:220% 220%;animation:edrift 9s var(--ease-io) infinite alternate;
+}
 .ead--stub::after{
   content:"";position:absolute;left:50%;top:50%;width:0;height:0;
   transform:translate(-40%,-50%);
   border-left:7px solid rgba(255,255,255,.82);
   border-top:4.5px solid transparent;border-bottom:4.5px solid transparent;
 }
+@keyframes edrift{to{background-position:120% 120%}}
 .ead--s1{background:linear-gradient(150deg,#002334,#009CBD)}
 .ead--s2{background:linear-gradient(150deg,#009CBD,#002334 78%)}
 .ead--s3{background:linear-gradient(150deg,#002334 20%,#FFB81C)}
 .ead--s4{background:linear-gradient(150deg,#FFB81C,#009CBD 82%)}
 .ead--s5{background:linear-gradient(150deg,#00121C,#009CBD 70%)}
 .ead--s6{background:linear-gradient(150deg,#009CBD 12%,#FFB81C)}
+/* stagger the stub tiles so the drift doesn't read as one shared clock */
+.ead--s2,.ead--s4{animation-delay:-3s}
+.ead--s3,.ead--s5{animation-delay:-6s}
+
+/* the amber tag naming which tile is the pick */
+.ead__win{
+  position:absolute;left:4px;bottom:4px;right:4px;border-radius:4px;
+  background:var(--amber);color:var(--navy);
+  font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;
+  text-align:center;padding:2px 0;
+}
+
+/* a manifest clip — same dark ground as the video tiles, no border tint */
+.ead--clip{border-color:transparent;background:linear-gradient(160deg,#01293B,#00121C)}
 
 /* campaign */
 .ecard__chips,.echips{display:flex;flex-wrap:wrap;gap:6px}
@@ -463,6 +527,11 @@ body.vE .prompt__input{font-size:1.0625rem}
   .esheet__scrim{animation:none}
   .ebar i{animation:none}
   .esheet__feed .pulse::after{animation:none;opacity:.35}
+  /* the landing pop and the stub drift are motion, not information */
+  .estep[data-state="done"] .estep__mark{animation:none}
+  .ead--stub{animation:none}
+  /* the sub-line still swaps, it just doesn't cross-fade */
+  .estep__t i{transition:none}
 }
 
 /* while a run is in progress the send button is disabled — read as busy,

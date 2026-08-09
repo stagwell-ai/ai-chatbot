@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Agent — Stagwell AI</title>
-<meta name="description" content="One sentence in. A finished campaign out. Type the outcome you want — the machine plans, works across six workspaces, and finishes the job.">
+<meta name="description" content="One sentence in. A finished campaign out. Type the outcome you want — the machine plans, works across six workspaces, and finishes the job. Worked example: Nike.">
 <link rel="icon" href="./assets/brand/favicon.svg">
 <link rel="canonical" href="https://stagwell-ai-prototypes.vercel.app/e.html">
 <meta property="og:url" content="https://stagwell-ai-prototypes.vercel.app/e.html">
 <meta property="og:title" content="The Agent — one sentence in, a finished campaign out">
-<meta property="og:description" content="One sentence in. A finished campaign out. Type the outcome you want — the machine plans, works across six workspaces, and finishes the job.">
+<meta property="og:description" content="One sentence in. A finished campaign out. Type the outcome you want — the machine plans, works across six workspaces, and finishes the job. Worked example: Nike.">
 <meta property="og:image" content="https://stagwell-ai-prototypes.vercel.app/assets/share/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="./assets/fonts/fonts.css">
@@ -60,6 +60,9 @@
 
     <nav class="rail__body">
       <div class="rail__group">
+        <!-- who this run is signed in as — e.js layers the live favicon over the monogram -->
+        <div class="eacct" id="eacct"><span class="eacct__mark">N<img alt="" hidden></span><span class="eacct__t"><b>Nike</b><span>Signed in · CMO</span></span></div>
+
         <button class="rail__item rail__item--new" id="newRun">
           <svg viewBox="0 0 16 16" class="ico"><path d="M2.8 8h10.4M8 2.8v10.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           <span>New run</span>
@@ -117,16 +120,16 @@
     <section class="view" id="viewRun">
 
       <div class="ehero" id="ehero">
-        <p class="ehero__k">The Machine · every product on one codebase</p>
+        <p class="ehero__k">Nike · The Machine · every product on one codebase</p>
         <h1 class="ehero__h">One sentence in.<br><span class="accent">A finished campaign out.</span></h1>
-        <p class="ehero__p">No product to choose. No dashboard to learn. Describe the outcome you want and watch the work happen.</p>
+        <p class="ehero__p">No product to choose. No dashboard to learn. You’re signed in as Nike’s CMO — describe the outcome you want and watch the work happen.</p>
       </div>
 
       <div class="ecomposer">
         <form class="prompt" id="promptForm" autocomplete="off">
           <div class="prompt__field">
             <span class="prompt__caret"></span>
-            <input class="prompt__input" id="promptInput" type="text" placeholder="Find out why we’re losing share to our top competitor, then fix it." aria-label="Describe the outcome you want" spellcheck="false">
+            <input class="prompt__input" id="promptInput" type="text" placeholder="Win back running-shoe share from Hoka this quarter." aria-label="Describe the outcome you want" spellcheck="false" maxlength="160">
             <button class="prompt__send" id="promptSend" type="submit" aria-label="Send">
               <svg viewBox="0 0 18 18" width="16" height="16"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
@@ -134,9 +137,9 @@
         </form>
 
         <div class="chips" id="chips">
-          <button class="chip" type="button" data-fill="Find out why we’re losing share to our top competitor, then fix it.">Find out why we’re losing share, then fix it</button>
-          <button class="chip" type="button" data-fill="Get us named in AI answers for running shoes.">Get us named in AI answers for running shoes</button>
-          <button class="chip" type="button" data-fill="Launch a creator campaign for the spring drop.">Launch a creator campaign for the spring drop</button>
+          <button class="chip" type="button" data-fill="Win back running-shoe share from Hoka this quarter.">Win back share from Hoka</button>
+          <button class="chip" type="button" data-fill="Get Nike named first when buyers ask AI for running shoes.">Get Nike named first when buyers ask AI</button>
+          <button class="chip" type="button" data-fill="Launch a creator push for the Pegasus drop.">Launch a creator push for the Pegasus drop</button>
         </div>
       </div>
 
@@ -150,7 +153,7 @@
 
     <!-- ─────────────── FINE PRINT ─────────────── -->
     <section class="efine" id="about">
-      <p>A scripted prototype of the one-codebase vision — with two exceptions. When the run can reach a live model, the answer step and the findings are real and carry a badge naming the model and its latency; everything unbadged is an enactment, timings and figures are illustrative, and nothing is submitted or stored. “Completed in 4 minutes” is the production target the vision names, not a measurement.</p>
+      <p>A scripted prototype of the one-codebase vision — with two exceptions. When the run can reach a live model, the answer step and the findings are real and carry a badge naming the model and its latency; everything unbadged is an enactment, timings and figures are illustrative, and nothing is submitted or stored. “Completed in 4 minutes” is the production target the vision names, not a measurement. Nike is the worked example — a familiar brand standing in for yours; nothing here is affiliated with, endorsed by, or sent to Nike.</p>
       <p class="efine__thesis">Everyone in this market is adding a chat box to a dashboard. <b>We would be removing the dashboard.</b></p>
     </section>
 

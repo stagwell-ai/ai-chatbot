@@ -15,21 +15,39 @@ window.ELIVE = (() => {
    dead socket resolves like any other miss. */
 const TIMEOUT = 12000;
 
+/* ══════════════════════ THE PERSONA ══════════════════════
+   The demo is anchored to one visitor: Nike's CMO. Everything below reads
+   from this table rather than hard-coding the brand a second time. */
+const PERSONA = {
+  brand: 'Nike',
+  domain: 'nike.com',
+  industry: 'running shoes & athletic apparel',
+  category: 'running shoes',
+  rivals: ['Adidas', 'Hoka', 'On', 'New Balance', 'Brooks'],
+};
+/* singular form of the category, for the two fallbacks that read more
+   naturally as "running shoe brands" / "running shoe company" than the
+   plural — derived rather than hand-typed a second time */
+const PERSONA_CATEGORY_SINGULAR = PERSONA.category.replace(/s$/, '') || PERSONA.category;
+
 /* ══════════════════════ THE QUESTION ══════════════════════
    Local, no network. The visitor writes a marketing brief; a shopper writes a
    buying question. This turns one into the other, brand-blind — naming the
-   brand in the prompt would answer the question before it is asked. */
+   brand in the prompt would answer the question before it is asked. The
+   fallbacks are category-specific (Nike's CMO cares about running shoes,
+   not "this category" in the abstract) but never name Nike or a rival —
+   that blindness is what makes the model's answer honest. */
 
 /* The mapping is a table so a new signal is one row, not another branch. */
 const SIGNALS = [
   { hint: /\b(share|shares|rival|rivals|competitor|competitors|versus|vs)\b/,
-    q: 'which brand should I buy from in this category' },
+    q: `best ${PERSONA.category} for daily training` },
   { hint: /\b(creator|creators|influencer|influencers|campaign|campaigns|launch|launching)\b/,
-    q: 'which brands do creators actually recommend' },
+    q: `which ${PERSONA_CATEGORY_SINGULAR} brands do creators actually recommend` },
   { hint: /\b(call|calls|caller|callers|customer|customers|voice|support|service)\b/,
-    q: 'which company has the best customer service in this space' },
+    q: `which ${PERSONA_CATEGORY_SINGULAR} company has the best customer service` },
 ];
-const FALLBACK = 'best brands in this category';
+const FALLBACK = `best ${PERSONA.category}`;
 
 /* words that carry no category on their own — dropped off the front */
 const LEAD = /^(the|a|an|our|my|your|their|his|her|its|us|me|them|it|more|better|some|any)$/;
@@ -94,17 +112,23 @@ function post(body) {
 }
 
 /* ══════════════════════ ASK ══════════════════════
-   The derived question, put to a live model as a shopper would put it. No
-   brands are sent: the point is what the model volunteers unprompted.
-   A wall of text is a miss too — the card holds a short answer. */
+   The derived question, put to a live model as a shopper would put it.
+   Nike plus its five rivals ride along as the brands the server checks the
+   answer against (6 names, well inside the server's 8-name cap) — the
+   prompt itself still names none of them, so what comes back is whatever
+   the model volunteers unprompted. A wall of text is a miss too — the card
+   holds a short answer. */
 function ask(prompt) {
   return Promise.resolve()
-    .then(() => post({ prompt: String(prompt == null ? '' : prompt), brands: [] }))
+    .then(() => post({
+      prompt: String(prompt == null ? '' : prompt),
+      brands: [PERSONA.brand, ...PERSONA.rivals],
+    }))
     .then(d => {
       if (!d) return null;
       const answer = String(d.answer || '').trim();
       if (!answer || answer.length > 900) return null;
-      return { answer, model: d.model, ms: d.ms };
+      return { answer, named: Array.isArray(d.named) ? d.named : [], model: d.model, ms: d.ms };
     })
     .catch(() => null);
 }
@@ -112,12 +136,17 @@ function ask(prompt) {
 /* ══════════════════════ FINDINGS ══════════════════════
    The three rows on the results card, written by the model about the sentence
    the visitor actually typed. This runs down the chat path, so the server
-   composes the persona from typed fields — chatSystem() reads brand and
-   industry, and an empty object would have it introduce itself as the author
-   of a brief about "the brand" in category "general". Two fields fix that. */
+   composes the persona from typed fields — chatSystem() reads brand, domain
+   and industry, and an empty object would have it introduce itself as the
+   author of a brief about "the brand" in category "general". Three fields
+   fix that, and now name the visitor's actual brand: Nike.
+
+   Chat mode clips the prompt to 600 chars server-side (see api/ask.js). The
+   scaffold below is 410 chars; the sentence slice adds up to 180 more, for a
+   worst case of 590 — 10 chars of headroom under the 600 cap. */
 function findingsPrompt(sentence) {
-  const s = String(sentence == null ? '' : sentence).slice(0, 200);
-  return `You are the analysis layer of a marketing platform. A customer asked: "${s}". Write exactly three findings explaining what is going wrong, as JSON: [{"lead":"...","detail":"..."},...]. Each lead is a punchy claim under 8 words ending with a period. Each detail is one concrete sentence under 25 words with one plausible specific figure. Respond with ONLY the JSON array.`;
+  const s = String(sentence == null ? '' : sentence).slice(0, 180);
+  return `You are the analysis layer of ${PERSONA.brand}'s marketing platform. ${PERSONA.brand}'s CMO asked: "${s}". Write exactly three findings about ${PERSONA.brand}'s position in ${PERSONA.category} explaining what is going wrong, as JSON: [{"lead":"...","detail":"..."},...]. Each lead is a punchy claim under 8 words ending with a period. Each detail is one concrete sentence under 25 words with one plausible specific figure. Respond with ONLY the JSON array.`;
 }
 
 /* fences, prose either side of the array, a model that answered in sentences */
@@ -154,7 +183,7 @@ function findings(sentence) {
       prompt: findingsPrompt(sentence),
       brands: [],
       chat: true,
-      context: { brand: 'the customer', industry: 'their category' },
+      context: { brand: PERSONA.brand, domain: PERSONA.domain, industry: PERSONA.industry },
     }))
     .then(d => {
       if (!d) return null;
@@ -164,5 +193,16 @@ function findings(sentence) {
     .catch(() => null);
 }
 
-return { deriveQuestion, ask, findings };
+/* ══════════════════════ BRAND MARK ══════════════════════
+   Pure, no network — the favicon service is hit by the browser at render
+   time when this URL lands in an <img src>. Mirrors the domainFor/faviconURL
+   pattern in machine/shared.js: a dot means the caller already passed a
+   domain, otherwise it's a brand name and ".com" is the best guess. */
+function markURL(brandOrDomain) {
+  const v = String(brandOrDomain == null ? '' : brandOrDomain).trim();
+  const domain = v.includes('.') ? v : v.toLowerCase().replace(/\s+/g, '') + '.com';
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+}
+
+return { PERSONA, deriveQuestion, ask, findings, markURL };
 })();
