@@ -495,6 +495,71 @@ function avatarsHTML(seed) {
        + `<span class="eavatar eavatar--more">+${esc(seed.creators - 3)}</span></div>`;
 }
 
+/* ── The roster ───────────────────────────────────────────────
+   The six shortlisted accounts, in detail. One renderer, two surfaces:
+   the results card expands into it, and the InfluencerMarketing.ai sheet
+   shows it outright — so the shortlist can never read one way in the card
+   and another way in the workspace.
+
+   e-creators.js is the single swap point for the data and may not be
+   loaded at all; CR being falsy is not an error, it is simply no roster.
+   Every branch below returns nothing in that case and both surfaces fall
+   back to exactly what they showed before this existed.
+
+   Nothing here carries a badge: no part of the roster came from a live
+   model, and while CR.placeholder stands, the note says as much. */
+const CR = window.ECREATORS;
+
+const CHEVRON = `<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 6.4L8 10.4l4-4"
+  stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+const INFO = `<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6.1"
+  stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.4"
+  stroke-linecap="round"/><circle cx="8" cy="4.9" r=".9" fill="currentColor"/></svg>`;
+
+/* “Mara Quinn” → MQ, “Cher” → C — first and last, nothing in between */
+function initialsOf(name) {
+  const parts = String(name == null ? '' : name).trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '';
+  const last = parts.length > 1 ? parts[parts.length - 1] : '';
+  return (parts[0][0] + (last ? last[0] : '')).toUpperCase();
+}
+
+function creatorHTML(c, k) {
+  return `<article class="ecr" style="--i:${k}">
+    <span class="ecr__head">
+      <span class="ecr__avatar">${esc(initialsOf(c.name))}<img src="${esc(c.avatar)}" alt="" hidden></span>
+      <span class="ecr__id"><b>${esc(c.name)}</b><span>${esc(c.handle)}</span></span>
+      <span class="ecr__pf">${esc(c.platform)}</span>
+    </span>
+    <span class="ecr__body">
+      <span class="ecr__stats">
+        <span class="ecr__stat">Followers<b>${esc(CR.fmt(c.followers))}</b></span>
+        <span class="ecr__stat">Engagement<b>${esc(c.engagement)}%</b></span>
+        <span class="ecr__stat">Avg views<b>${esc(CR.fmt(c.avgViews))}</b></span>
+        <span class="ecr__niche">${esc(c.niche)}</span>
+        <span class="ecr__stat">Audience overlap<b>${esc(c.overlap)}%</b></span>
+        <span class="ecr__bar"><i style="--w:${esc(c.overlap)}%"></i></span>
+      </span>
+      <span class="ecr__clip"><video src="${esc(c.video)}" muted loop playsinline preload="metadata"></video></span>
+    </span>
+  </article>`;
+}
+
+/* seed is taken so both call sites read the same and a seeded roster has
+   its hook; the six are fixed data, so nothing in here varies by run yet.
+   opts.hidden starts the grid closed — the results card opens it, the
+   workspace sheet is already a detail view and never closes it. */
+function rosterHTML(seed, opts = {}) {
+  if (!CR || !Array.isArray(CR.list) || !CR.list.length) return '';
+  const note = CR.placeholder
+    ? `<p class="eroster__note">${INFO}Illustrative roster — the real creator list is on its way</p>`
+    : '';
+  return `<div class="eroster"${opts.hidden ? ' hidden' : ''}>${note}`
+       + CR.list.map(creatorHTML).join('')
+       + `</div>`;
+}
+
 /* two repo clips, then whatever the Nike drop-zone holds, and coloured
    stubs for the rest — the tile grid the ads card shows, reused whole by
    the DoReel sheet. The first tile carries the winning tag.
@@ -533,21 +598,67 @@ function clipFailed(video) {
   host.replaceWith(stub);
 }
 
+/* the roster's clips answer to the same rule: a file that isn't there
+   leaves the gradient stub it would have been, and no gap in the grid */
+function creatorClipFailed(video) {
+  const host = video?.closest?.('.ecr__clip');
+  if (!host || !host.parentElement) return;
+  const stub = document.createElement('span');
+  stub.className = 'ecr__clip ecr__clip--stub';
+  host.replaceWith(stub);
+}
+
+const videoFailed = v => (v?.closest?.('.ecr__clip') ? creatorClipFailed(v) : clipFailed(v));
+
 document.addEventListener('error', e => {
   const t = e.target;
   if (!t || !t.tagName) return;
-  if (t.tagName === 'VIDEO') { clipFailed(t); return; }
+  if (t.tagName === 'VIDEO') { videoFailed(t); return; }
+  if (t.tagName !== 'IMG') return;
   /* a favicon that 404s leaves a broken-image glyph in the chip — drop the
      image and let the brand name stand on its own */
-  if (t.tagName === 'IMG' && t.parentElement?.classList.contains('echip--brand')) t.remove();
+  if (t.parentElement?.classList.contains('echip--brand')) { t.remove(); return; }
+  /* a creator photo that isn't there is the same bargain the account mark
+     makes: the monogram underneath was always the real thing */
+  if (t.parentElement?.classList.contains('ecr__avatar')) t.remove();
+}, true);
+
+/* the optimistic half of that bargain — the photo is only unhidden once it
+   has actually decoded. Delegated, so a re-rendered roster needs no rewiring. */
+document.addEventListener('load', e => {
+  const t = e.target;
+  if (t?.tagName === 'IMG' && t.parentElement?.classList.contains('ecr__avatar')) t.hidden = false;
 }, true);
 
 document.addEventListener('stalled', e => {
   const t = e.target;
   /* readyState 0 is HAVE_NOTHING: stalled before a single byte of media —
      a mid-playback stall is a slow network, not a missing file */
-  if (t && t.tagName === 'VIDEO' && t.readyState === 0) clipFailed(t);
+  if (t && t.tagName === 'VIDEO' && t.readyState === 0) videoFailed(t);
 }, true);
+
+/* ── Roster clips on hover ────────────────────────────────────
+   Six autoplaying videos in a grid is a lot of decoding for something
+   nobody asked to watch, so a roster clip is a still until it is pointed
+   at. Delegated on document with mouseover/mouseout (which bubble, unlike
+   mouseenter/mouseleave) so every re-render of either surface is wired the
+   moment it is written. */
+function stopClip(v) {
+  try { v.pause(); v.currentTime = 0; } catch { /* no media stack: nothing to stop */ }
+}
+
+const hoverClip = e => e.target?.closest?.('.ecr__clip video') || null;
+
+document.addEventListener('mouseover', e => {
+  const v = hoverClip(e);
+  if (!v) return;
+  try { v.play()?.catch?.(() => {}); } catch { /* autoplay policy or no media stack */ }
+});
+
+document.addEventListener('mouseout', e => {
+  const v = hoverClip(e);
+  if (v) stopClip(v);
+});
 
 const VOICE_QUOTE = '“Booked you in for Tuesday at 2pm — you’ll get a calendar invite in a second.”';
 
@@ -559,6 +670,17 @@ function renderDone(seed, findingsLive) {
   const creatorsTotal = seed.creators;
   const adsTotal = seed.ads;
 
+  /* the roster names six by name while the heading counts the whole
+     shortlist — the sub-line reconciles the two rather than leaving the
+     visitor to. With no roster to open, the original line stands. */
+  const roster = rosterHTML(seed, { hidden: true });
+  const creatorsSub = roster
+    ? `The top six, in detail — ${esc(creatorsTotal)} made the cut.`
+    : 'Vetted, on-audience, ranked by overlap with the runners Nike is losing.';
+  const creatorsExpand = roster
+    ? `<button class="ecard__expand" type="button" data-expand aria-expanded="false">See the shortlist${CHEVRON}</button>${roster}`
+    : '';
+
   edone.innerHTML = `<div class="ekit">
     <p class="ekit__k">The finished campaign</p>
     <div class="ekit__grid">
@@ -566,7 +688,7 @@ function renderDone(seed, findingsLive) {
         ${rowsHTML}${findingsMeta}</article>
       <article class="ecard ecard--creators"><h4>${creatorsTotal} creators, shortlisted</h4>
         ${avatarsHTML(seed)}
-        <p class="ecard__sub">Vetted, on-audience, ranked by overlap with the runners Nike is losing.</p></article>
+        <p class="ecard__sub">${creatorsSub}</p>${creatorsExpand}</article>
       <article class="ecard ecard--ads"><h4>${adsTotal} video ads, generated</h4>
         ${adsHTML(seed)}
         <p class="ecard__sub">Presenter and UGC variants, written from the findings above.</p></article>
@@ -584,6 +706,31 @@ function renderDone(seed, findingsLive) {
   </div>`;
   edone.hidden = false;
 }
+
+/* ── Opening the shortlist ────────────────────────────────────
+   Delegated on #edone, which survives every innerHTML swap the results
+   card goes through — a run, a reset and another run rewire nothing.
+   Closing stops whatever clip was playing: a paused roster behind a
+   collapsed card is six videos nobody can see. */
+const EXPAND_LABELS = { open: 'Close the shortlist', closed: 'See the shortlist' };
+
+edone?.addEventListener('click', e => {
+  const btn = e.target?.closest?.('[data-expand]');
+  if (!btn) return;
+  const card = btn.closest('.ecard--creators');
+  const roster = card && $('.eroster', card);
+  if (!card || !roster) return;
+
+  const open = !card.classList.contains('is-open');
+  card.classList.toggle('is-open', open);
+  roster.hidden = !open;
+  btn.setAttribute('aria-expanded', String(open));
+  /* the label is the button's first child; the chevron after it is CSS's
+     to turn, and stays exactly where it was written */
+  const label = btn.firstChild;
+  if (label && label.nodeType === 3) label.nodeValue = open ? EXPAND_LABELS.open : EXPAND_LABELS.closed;
+  if (!open) $$('video', roster).forEach(stopClip);
+});
 
 /* ══════════════════════ WORKSPACE PEEK ══════════════════════
    A rail row opens a sheet showing what the agent left in that
@@ -652,14 +799,23 @@ function wsArtifactsHTML(ws, seed) {
       return `<h3 class="esheet__h">Nike ranks ${esc(seed.rankWord)} when buyers ask.</h3>
         <p class="esheet__p">Across the answer engines, rivals get named first. The campaign below is built to change that.</p>`;
 
-    case 'imai':
-      return `<h3 class="esheet__h">${esc(seed.creators)} creators, shortlisted.</h3>
-        ${avatarsHTML(seed)}
-        <p class="esheet__stat esheet__stat--mid">Audience overlap</p>
+    /* the sheet is already a detail view, so the roster is simply here —
+       no expand control, nothing to open. It carries an overlap bar per
+       creator, which is the same claim the two summary bars below make
+       but named and countable, so those two stand down while it is
+       showing and come back if the roster module ever isn't loaded. */
+    case 'imai': {
+      const roster = rosterHTML(seed);
+      const bars = roster ? '' : `<p class="esheet__stat esheet__stat--mid">Audience overlap</p>
         <div class="esheet__bars">
           <span><b>Buyers you’re losing</b><span class="ebar"><i style="--w:${esc(seed.overlapA)}%"></i></span><em>${esc(seed.overlapA)}%</em></span>
           <span><b>The wider category</b><span class="ebar"><i style="--w:${esc(seed.overlapB)}%"></i></span><em>${esc(seed.overlapB)}%</em></span>
         </div>`;
+      return `<h3 class="esheet__h">${esc(seed.creators)} creators, shortlisted.</h3>
+        ${avatarsHTML(seed)}
+        ${bars}
+        ${roster}`;
+    }
 
     case 'doreel':
       return `<h3 class="esheet__h">${esc(seed.ads)} variants, ready.</h3>
