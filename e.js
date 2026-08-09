@@ -47,11 +47,12 @@ const STEPS = [
       : `Shortlisted ${n.creators} creators from 400M profiles`),
     count: n => [400, n.creators, ' creators'],
     detail: n => funnelDetail(n) },
-  { ws: 'doreel', tag: 'DoReel', title: 'Cutting creator footage into ads',
-    subs: ['Pulling the shortlist’s Nike videos…', 'Cutting Meta and TikTok versions…'],
-    doneTitle: n => `Cut ${n.ads} ad-ready versions from creator footage`,
+  { ws: 'doreel', tag: 'DoReel', title: 'Generating AI UGC ads',
+    /* the last sub is replaced by the count-up (see runStep) */
+    subs: ['Reading each creator’s voice and format…', 'Writing scripts from the findings…', 'Rendering a publish-ready ad per creator…'],
+    doneTitle: n => `Generated ${n.ads} AI UGC ads — one per creator`,
     count: n => [0, n.ads, ' ads'],
-    detail: n => ({ label: 'See the six cuts', html: `<p class="estep__dlead">Each cut is a creator’s own video, trimmed for feed — hover a tile for its credit.</p>${adsHTML(n)}` }) },
+    detail: n => ({ label: 'See the six ads', html: `<p class="estep__dlead">One publish-ready ad drafted per creator, in their own voice — that is the vision. The tiles stand in with each creator’s real public video; hover for the credit.</p>${adsHTML(n)}` }) },
   { ws: 'research', tag: 'Activation', title: 'Launching the campaign',
     subs: ['Building audiences…', 'Setting pacing…', 'Going live…'],
     doneTitle: () => 'Launched campaign across Meta and TikTok',
@@ -1008,9 +1009,9 @@ function renderDone(seed, findingsLive) {
       <article class="ecard ecard--creators"><h4>${creatorsHead}</h4>
         ${avatarsHTML(seed)}
         <p class="ecard__sub">${creatorsSub}</p>${creatorsExpand}</article>
-      <article class="ecard ecard--ads"><h4>${adsTotal} creator cuts, ready to run</h4>
+      <article class="ecard ecard--ads"><h4>${adsTotal} AI UGC ads, generated</h4>
         ${adsHTML(seed)}
-        <p class="ecard__sub">The shortlist’s own Nike videos — hover a tile for its creator. Public content; no endorsement implied.</p></article>
+        <p class="ecard__sub">AI-generated UGC, one ad per creator, ready for them to publish. The tiles stand in with their real public videos — hover for the credit; no endorsement implied.</p></article>
       <article class="ecard ecard--campaign"><h4>Campaign, live</h4>
         <p class="ecard__chips"><span class="echip">Meta</span><span class="echip">TikTok</span></p>
         <p class="ecard__sub">Pegasus spring push — pacing $1.8k a day against the audiences the shortlist reaches. The winning variant promotes itself.</p></article>
@@ -1090,8 +1091,8 @@ const WS = {
     uses: 'A sentence about creators, influencers or a campaign launch brings the agent in here.',
   },
   doreel: {
-    name: 'DoReel · creator cuts',
-    uses: 'Any sentence that ends in a campaign has its creative cut in here, from the shortlist’s own footage.',
+    name: 'DoReel · AI UGC ads',
+    uses: 'Any sentence that ends in a campaign has its ads drafted in here — one per creator, for them to publish.',
   },
   newvoices: {
     name: 'NewVoices · the conversation layer',
@@ -1153,9 +1154,9 @@ function wsArtifactsHTML(ws, seed) {
     }
 
     case 'doreel':
-      return `<h3 class="esheet__h">${esc(seed.ads)} creator cuts, ready.</h3>
+      return `<h3 class="esheet__h">${esc(seed.ads)} AI UGC ads, generated.</h3>
         ${adsHTML(seed)}
-        <p class="esheet__p">The shortlist’s own Nike videos, cut for Meta and TikTok — hover a tile for its creator. Public content; no endorsement implied.</p>`;
+        <p class="esheet__p">One per creator, in their own voice, ready to publish to Meta and TikTok. The tiles stand in with each creator’s real public video — no endorsement implied.</p>`;
 
     case 'newvoices':
       /* the dot is decoration, not a claim — nothing here was answered live */
