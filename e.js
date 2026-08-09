@@ -52,6 +52,7 @@ const STEPS = [
     subs: ['Reading each creator’s voice and format…', 'Writing scripts from the findings…', 'Rendering a publish-ready ad per creator…'],
     doneTitle: n => `Generated ${n.ads} AI UGC ads — one per creator`,
     count: n => [0, n.ads, ' ads'],
+    detailOpen: true,
     detail: n => ({ label: 'See the six ads', html: `<p class="estep__dlead">One publish-ready ad drafted per creator, in their own voice — that is the vision. The tiles stand in with each creator’s real public video; hover for the credit.</p>${adsHTML(n)}` }) },
   { ws: 'research', tag: 'Activation', title: 'Launching the campaign',
     subs: ['Building audiences…', 'Setting pacing…', 'Going live…'],
@@ -462,9 +463,12 @@ async function runStep(step, i, li, seed, opts = {}) {
   if (step.detail) {
     const d = step.detail(seed);
     if (d && d.html) {
+      /* a step may declare its receipts arrive already open — the ads do,
+         because seeing them is the point of that step */
+      const open = !!step.detailOpen;
       $('.estep__t', li)?.insertAdjacentHTML('beforeend',
-        `<button class="estep__more" type="button" data-step-detail data-label="${esc(d.label)}" aria-expanded="false">+ ${esc(d.label)}</button>`);
-      li.insertAdjacentHTML('beforeend', `<div class="estep__detail" hidden>${d.html}</div>`);
+        `<button class="estep__more" type="button" data-step-detail data-label="${esc(d.label)}" aria-expanded="${open}">${open ? '−' : '+'} ${esc(d.label)}</button>`);
+      li.insertAdjacentHTML('beforeend', `<div class="estep__detail"${open ? '' : ' hidden'}>${d.html}</div>`);
     }
   }
   row?.classList.remove('is-live');
@@ -1734,25 +1738,51 @@ mountAccount();
 
 reveal($$('.r'));
 
+/* ── The sign-in (enacted) ────────────────────────────────────
+   One click, nothing typed, nothing checked, nothing stored — the note
+   on the card says exactly that. The short "Signing in…" beat is
+   theatre; there is no account and no request. */
+const login    = $('#elogin');
+const loginBtn = $('#eloginBtn');
+
+function dismissLogin(instant) {
+  if (!login || login.hidden) return;
+  if (instant) { login.hidden = true; return; }
+  login.classList.add('is-out');
+  setTimeout(() => { login.hidden = true; }, 460);
+}
+
+loginBtn?.addEventListener('click', () => {
+  loginBtn.disabled = true;
+  const b = $('.elogin__t b', loginBtn);
+  if (b) b.textContent = 'Signing in…';
+  setTimeout(() => {
+    dismissLogin();
+    if (FINE) input?.focus({ preventScroll: true });
+  }, REDUCED ? 60 : 520);
+});
+
 addEventListener('load', async () => {
   await wait(REDUCED ? 40 : 560);
   document.body.dataset.state = 'ready';
   $('#boot')?.classList.add('is-out');
   setTimeout(() => $('#boot')?.remove(), 700);
 
-  /* invite the visitor in — but only where focus won't summon a keyboard
-     over the very field it just focused */
-  if (FINE) input.focus({ preventScroll: true });
-
   /* deep link: run=<sentence> starts the run automatically, boot skipped
      to a minimum wait but pacing left un-hurried. It goes straight to
-     startRun, past the gate — someone who put the sentence in the URL has
-     already said what they want, whatever shape it is in. */
+     startRun, past the gate and past the sign-in — someone who put the
+     sentence in the URL has already said who they are and what they want. */
   const params = new URLSearchParams(location.search);
   if (params.has('run')) {
+    dismissLogin(true);
     const sentence = params.get('run').trim() || PLACEHOLDER;
     startRun(sentence);
+    return;
   }
+
+  /* invite the visitor in — but only once the sign-in is out of the way,
+     and only where focus won't summon a keyboard over the field */
+  if (FINE && (!login || login.hidden)) input.focus({ preventScroll: true });
 });
 
 })();
