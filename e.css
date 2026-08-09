@@ -711,3 +711,49 @@ body.vE .prompt__send:disabled{opacity:.35;transform:none;cursor:default}
 .eavatar{position:relative;overflow:hidden}
 .eavatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .eavatar--more{overflow:visible}
+
+/* ══════════════════════ STEP RECEIPTS ══════════════════════
+   A counted step's "+" and the detail it opens: the signals behind the
+   NewIntel figure, and the rights-clearance funnel behind the shortlist.
+   The button borrows .ecard__expand's vocabulary; the panel sits in the
+   plan's grid under the title column. */
+.estep__more{
+  display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  padding:0;border:0;background:none;cursor:pointer;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--teal);
+  transition:color var(--d-1) var(--ease-io);
+}
+.estep__more:hover{color:var(--navy)}
+.estep__detail{grid-column:2/-1;padding:0 0 18px;max-width:620px}
+.estep__detail[hidden]{display:none}
+.estep__dlead{
+  font-size:var(--t-sm);line-height:1.6;color:var(--ink-2);
+  margin:2px 0 10px;max-width:56ch;
+}
+
+/* the funnel rows: six real approvals, then the anonymised remainder */
+.efunnel{display:flex;flex-direction:column}
+.efun{
+  display:grid;grid-template-columns:28px auto minmax(0,1fr) auto;gap:10px;
+  align-items:center;padding:7px 0;box-shadow:0 1px 0 var(--line);
+}
+.efun:last-child{box-shadow:none}
+.efun .eavatar{width:28px;height:28px;font-size:10px}
+.efun b{font-weight:520;font-size:var(--t-sm);white-space:nowrap}
+.efun i{
+  font-style:normal;color:var(--ink-3);font-size:var(--t-sm);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.efun u{
+  text-decoration:none;font-family:var(--mono);font-size:var(--t-label);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);justify-self:end;
+}
+.efun__yes{color:var(--teal)}
+.efun--dim{opacity:.6}
+.eavatar--anon{background:var(--line)}
+
+@media (max-width:640px){
+  .efun{grid-template-columns:24px minmax(0,1fr) auto}
+  .efun i{display:none}
+}

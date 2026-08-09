@@ -29,14 +29,23 @@ const STEPS = [
   { ws: 'newintel', tag: 'NewIntel', title: 'Analysing competitor signals',
     subs: ['Reading Hoka and On’s pricing pages…', 'Scanning Adidas hiring feeds…', 'Cross-referencing earned coverage…'],
     doneTitle: n => `Analysed ${n.signals.toLocaleString()} competitor signals`,
-    count: n => [0, n.signals, ' signals'] },
+    count: n => [0, n.signals, ' signals'],
+    detail: n => ({
+      label: 'See the signals',
+      html: `<p class="estep__dlead">Six of the ${esc(n.signals.toLocaleString())} — the movements that shaped this plan.</p>${signalsFeedHTML(6)}`,
+    }) },
   { ws: 'newindex', tag: 'NewIndex', title: 'Testing how AI answers rank you',
     subs: ['Asking the money question eight ways…', 'Scoring who gets named first…'],
     doneTitle: n => `Found Nike ranks ${n.rankWord} when buyers ask` },
   { ws: 'imai', tag: 'InfluencerMarketing.ai', title: 'Shortlisting creators',
-    subs: ['Filtering 400M profiles…', 'Checking brand safety…', 'Ranking by audience overlap…'],
-    doneTitle: n => `Shortlisted ${n.creators} creators from 400M profiles`,
-    count: n => [400, n.creators, ' creators'] },
+    /* the last sub is replaced by the count-up (see runStep), so the
+       rights-outreach beat sits third, where it is actually read */
+    subs: ['Filtering 400M profiles…', 'Checking brand safety…', 'Contacting the shortlist for usage rights…', 'Ranking by audience overlap…'],
+    doneTitle: n => (CR?.list?.length
+      ? `Shortlisted ${n.creators} creators — ${CR.list.length} cleared for use`
+      : `Shortlisted ${n.creators} creators from 400M profiles`),
+    count: n => [400, n.creators, ' creators'],
+    detail: n => funnelDetail(n) },
   { ws: 'doreel', tag: 'DoReel', title: 'Cutting creator footage into ads',
     subs: ['Pulling the shortlist’s Nike videos…', 'Cutting Meta and TikTok versions…'],
     doneTitle: n => `Cut ${n.ads} ad-ready versions from creator footage`,
@@ -442,6 +451,17 @@ async function runStep(step, i, li, seed, opts = {}) {
   $('.estep__t b', li).textContent = doneTitle;
   swapSub(sub, '', stale);
   if (extraHTML) li.insertAdjacentHTML('beforeend', extraHTML);
+  /* a counted step offers its receipts: a "+" under the done title opens
+     the detail in place. Opening it is reading, not skipping — the hurry
+     listeners exempt it. */
+  if (step.detail) {
+    const d = step.detail(seed);
+    if (d && d.html) {
+      $('.estep__t', li)?.insertAdjacentHTML('beforeend',
+        `<button class="estep__more" type="button" data-step-detail data-label="${esc(d.label)}" aria-expanded="false">+ ${esc(d.label)}</button>`);
+      li.insertAdjacentHTML('beforeend', `<div class="estep__detail" hidden>${d.html}</div>`);
+    }
+  }
   row?.classList.remove('is-live');
   /* the agent has left the room: the workspace now holds artefacts */
   LAST.runningWs = null;
@@ -541,8 +561,11 @@ function avatarsHTML(seed) {
     ? three.map(c =>
         `<span class="eavatar" title="${esc(c.name)}">${esc(initialsOf(c.name))}<img src="${esc(c.avatar)}" alt="" hidden></span>`).join('')
     : `<span class="eavatar">MK</span><span class="eavatar">DT</span><span class="eavatar">AS</span>`;
+  /* with the manifest loaded the pill counts the cleared six, not the
+     whole shortlist — only the approved ever show as the campaign */
+  const moreN = three?.length === 3 ? window.ECREATORS.list.length - 3 : seed.creators - 3;
   return `<div class="ecard__avatars">${heads}`
-       + `<span class="eavatar eavatar--more">+${esc(seed.creators - 3)}</span></div>`;
+       + `<span class="eavatar eavatar--more">+${esc(moreN)}</span></div>`;
 }
 
 /* ── The roster ───────────────────────────────────────────────
@@ -622,6 +645,57 @@ function rosterHTML(seed, opts = {}) {
   return `<div class="eroster"${opts.hidden ? ' hidden' : ''}>${note}`
        + CR.list.map(creatorHTML).join('')
        + `</div>`;
+}
+
+/* ── Step receipts ────────────────────────────────────────────
+   What the two counted steps show when asked. Scripted and seeded like
+   every unbadged figure on the page: the signals feed is the same one the
+   NewIntel sheet plays, and the funnel's six approvals are the same six
+   real accounts the roster and the ad rack show — so no surface can
+   disagree with another. */
+const SIGNAL_FEED = [
+  { b: 'Hoka cut prices 4% on daily trainers', t: '2h' },
+  { b: 'Adidas hiring spike in growth marketing', t: '9h' },
+  { b: 'New On creator campaign, 40 accounts', t: '1d' },
+  { b: 'Brooks doubled search spend on “best running shoes”', t: '1d' },
+  { b: 'New Balance pulled the 990 restock forward in key metros', t: '2d' },
+  { b: 'Hoka review velocity up 18% month on month', t: '3d' },
+];
+
+function signalsFeedHTML(n) {
+  return `<div class="esheet__feed">` + SIGNAL_FEED.slice(0, n).map(s =>
+    `<span><i class="pulse"></i><b>${esc(s.b)}</b><em>${esc(s.t)}</em></span>`).join('') + `</div>`;
+}
+
+/* the rights funnel: everyone shortlisted was contacted, and the six who
+   said yes are the six real accounts everything downstream shows. The
+   candidates who declined or haven't replied are deliberately anonymous —
+   invented names would read as real people. */
+const FUNNEL_NICHES = ['marathon training', 'trail running', 'sneaker culture', 'gym & HIIT',
+  'run clubs', 'track & field', 'fitness tech', 'streetwear', 'college athletics',
+  'city running', 'yoga & recovery', 'basketball culture', 'trainer reviews',
+  'sports science', 'campus style', 'outdoor fitness', 'running form', 'race recaps'];
+
+function funnelDetail(seed) {
+  const six = CR?.list || [];
+  if (!six.length) return null;
+  const yes = six.map(c => `<span class="efun">
+      <span class="eavatar" title="${esc(c.name)}">${esc(initialsOf(c.name))}<img src="${esc(c.avatar)}" alt="" hidden></span>
+      <b>${esc(c.name)}</b><i>${esc(c.handle)}</i><u class="efun__yes">Approved</u></span>`).join('');
+  const rest = Math.max(0, seed.creators - six.length);
+  const others = Array.from({ length: rest }, (_, k) => {
+    const declined = ((seed.h >>> (k % 28)) & 1) === 1;
+    const reach = 40 + ((seed.h >>> ((k * 3) % 22)) % 360);
+    return `<span class="efun efun--dim">
+      <span class="eavatar eavatar--anon" aria-hidden="true"></span>
+      <b>Candidate ${six.length + k + 1}</b><i>${esc(FUNNEL_NICHES[k % FUNNEL_NICHES.length])} · ~${reach}K reach</i>
+      <u>${declined ? 'Declined' : 'No reply yet'}</u></span>`;
+  }).join('');
+  return {
+    label: `See all ${seed.creators} · who cleared`,
+    html: `<p class="estep__dlead">All ${esc(seed.creators)} were contacted for usage rights. The six who said yes are the campaign — the rest stay anonymous unless they clear.</p>
+      <div class="efunnel">${yes}${others}</div>`,
+  };
 }
 
 /* the rack shows only the curated creators' own Nike videos — the same six
@@ -836,15 +910,19 @@ function renderDone(seed, findingsLive) {
   const creatorsTotal = seed.creators;
   const adsTotal = seed.ads;
 
-  /* the roster names six by name while the heading counts the whole
-     shortlist — the sub-line reconciles the two rather than leaving the
-     visitor to. With no roster to open, the original line stands. */
+  /* with the roster loaded, the card tells the funnel's ending: the whole
+     shortlist was contacted for usage rights and these six approved — the
+     same six the run's step detail names. With no roster to open, the
+     original shortlist line stands. */
   const roster = rosterHTML(seed, { hidden: true });
+  const creatorsHead = roster
+    ? `${CR.list.length} creators, cleared to run`
+    : `${creatorsTotal} creators, shortlisted`;
   const creatorsSub = roster
-    ? `The top six, in detail — ${esc(creatorsTotal)} made the cut.`
+    ? `${esc(creatorsTotal)} shortlisted and contacted for usage rights — these six approved.`
     : 'Vetted, on-audience, ranked by overlap with the runners Nike is losing.';
   const creatorsExpand = roster
-    ? `<button class="ecard__expand" type="button" data-expand aria-expanded="false">See the shortlist${CHEVRON}</button>${roster}`
+    ? `<button class="ecard__expand" type="button" data-expand aria-expanded="false">${EXPAND_LABELS.closed}${CHEVRON}</button>${roster}`
     : '';
 
   edone.innerHTML = `<div class="ekit">
@@ -852,7 +930,7 @@ function renderDone(seed, findingsLive) {
     <div class="ekit__grid">
       <article class="ecard ecard--findings"><h4>Why Nike is losing share</h4>
         ${rowsHTML}${findingsMeta}</article>
-      <article class="ecard ecard--creators"><h4>${creatorsTotal} creators, shortlisted</h4>
+      <article class="ecard ecard--creators"><h4>${creatorsHead}</h4>
         ${avatarsHTML(seed)}
         <p class="ecard__sub">${creatorsSub}</p>${creatorsExpand}</article>
       <article class="ecard ecard--ads"><h4>${adsTotal} creator cuts, ready to run</h4>
@@ -878,7 +956,7 @@ function renderDone(seed, findingsLive) {
    card goes through — a run, a reset and another run rewire nothing.
    Closing stops whatever clip was playing: a paused roster behind a
    collapsed card is six videos nobody can see. */
-const EXPAND_LABELS = { open: 'Close the shortlist', closed: 'See the shortlist' };
+const EXPAND_LABELS = { open: 'Close the six', closed: 'See the cleared six' };
 
 edone?.addEventListener('click', e => {
   const btn = e.target?.closest?.('[data-expand]');
@@ -896,6 +974,20 @@ edone?.addEventListener('click', e => {
   const label = btn.firstChild;
   if (label && label.nodeType === 3) label.nodeValue = open ? EXPAND_LABELS.open : EXPAND_LABELS.closed;
   if (!open) $$('video', roster).forEach(stopClip);
+});
+
+/* ── Opening a step's receipts ────────────────────────────────
+   Delegated on document: step rows are rewritten wholesale by renderPlan,
+   so nothing here needs rewiring. + opens, − closes. */
+document.addEventListener('click', e => {
+  const btn = e.target?.closest?.('[data-step-detail]');
+  if (!btn) return;
+  const panel = btn.closest('.estep')?.querySelector('.estep__detail');
+  if (!panel) return;
+  const open = panel.hidden;
+  panel.hidden = !open;
+  btn.setAttribute('aria-expanded', String(open));
+  btn.textContent = `${open ? '−' : '+'} ${btn.dataset.label || ''}`;
 });
 
 /* ══════════════════════ WORKSPACE PEEK ══════════════════════
@@ -952,11 +1044,7 @@ function wsArtifactsHTML(ws, seed) {
     case 'newintel':
       return `<h3 class="esheet__h">What rivals did while you read this.</h3>
         <p class="esheet__stat">${esc(seed.signals.toLocaleString())} signals analysed this run</p>
-        <div class="esheet__feed">
-          <span><i class="pulse"></i><b>Hoka cut prices 4%</b><em>2h</em></span>
-          <span><i class="pulse"></i><b>Adidas hiring spike in growth</b><em>9h</em></span>
-          <span><i class="pulse"></i><b>New On creator campaign</b><em>1d</em></span>
-        </div>`;
+        ${signalsFeedHTML(3)}`;
 
     /* the only branch in the sheet that can carry a badge: a stored answer
        from a model that really replied during this run */
@@ -977,7 +1065,10 @@ function wsArtifactsHTML(ws, seed) {
           <span><b>Buyers you’re losing</b><span class="ebar"><i style="--w:${esc(seed.overlapA)}%"></i></span><em>${esc(seed.overlapA)}%</em></span>
           <span><b>The wider category</b><span class="ebar"><i style="--w:${esc(seed.overlapB)}%"></i></span><em>${esc(seed.overlapB)}%</em></span>
         </div>`;
-      return `<h3 class="esheet__h">${esc(seed.creators)} creators, shortlisted.</h3>
+      return `<h3 class="esheet__h">${roster
+          ? `Six cleared, from ${esc(seed.creators)} contacted.`
+          : `${esc(seed.creators)} creators, shortlisted.`}</h3>
+        ${roster ? `<p class="esheet__p">Everyone shortlisted was asked for usage rights — these are the six who said yes.</p>` : ''}
         ${avatarsHTML(seed)}
         ${bars}
         ${roster}`;
@@ -1301,6 +1392,8 @@ document.addEventListener('click', e => {
   if (e.target.closest('.ab') || e.target.closest('a')) return;
   if (e.target.closest('#promptForm') || e.target.closest('.chips')) return;
   if (e.target.closest('.rail') || e.target.closest('#esheet') || e.target.closest('#econvo')) return;
+  /* opening a done step's receipts mid-run is reading, not skipping */
+  if (e.target.closest('[data-step-detail]') || e.target.closest('.estep__detail')) return;
   hurried = true;
 });
 document.addEventListener('keydown', e => {
@@ -1308,6 +1401,7 @@ document.addEventListener('keydown', e => {
   if (performance.now() - runStartedAt < SETTLE) return;
   if (e.target === input) return;
   if (e.target?.closest?.('.rail') || e.target?.closest?.('#esheet') || e.target?.closest?.('#econvo')) return;
+  if (e.target?.closest?.('[data-step-detail]') || e.target?.closest?.('.estep__detail')) return;
   if (e.key === 'Enter') hurried = true;
 });
 
