@@ -1377,6 +1377,19 @@ function hideHero() {
   }, 400);
 }
 
+/* tapping into the composer after the chips have lifted away brings the
+   sample sentences back under the box — ideas to read or tap, mid-run and
+   after alike. A conversation keeps them away: the reply row re-offers
+   them itself. */
+function revealChips() {
+  if (!chips || !chips.hidden) return;
+  if (convo && !convo.hidden) return;
+  chips.hidden = false;
+  requestAnimationFrame(() => chips.classList.remove('is-gone'));
+}
+
+input?.addEventListener('focus', revealChips);
+
 function showHero() {
   if (hero) { hero.hidden = false; hero.classList.remove('is-gone'); }
   if (chips) { chips.hidden = false; chips.classList.remove('is-gone'); }
