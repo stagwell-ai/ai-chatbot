@@ -65,13 +65,16 @@ const STEPS = [
 ];
 
 /* ── Intent engine ─────────────────────────────────────────────
-   Each profile is an ordered list of indexes into STEPS. Order matters,
-   omissions are skips — the plan only renders the profile's steps. */
+   Each profile is an ordered list of indexes into STEPS. Every run now
+   visits all six workspaces — the results grid always shows the full
+   campaign, so the plan should too. What the sentence still decides is
+   the ORDER: the workspace that answers the ask leads, and the rest
+   fall in behind it. */
 const PROFILES = {
   share:    [NEWINTEL, NEWINDEX, IMAI, DOREEL, RESEARCH, NEWVOICES],
-  ai:       [NEWINDEX, NEWINTEL, IMAI, DOREEL, RESEARCH],
-  creators: [IMAI, DOREEL, RESEARCH, NEWVOICES],
-  voice:    [NEWVOICES, NEWINTEL, NEWINDEX, IMAI, RESEARCH],
+  ai:       [NEWINDEX, NEWINTEL, IMAI, DOREEL, RESEARCH, NEWVOICES],
+  creators: [IMAI, NEWINTEL, NEWINDEX, DOREEL, RESEARCH, NEWVOICES],
+  voice:    [NEWVOICES, NEWINTEL, NEWINDEX, IMAI, DOREEL, RESEARCH],
 };
 
 const INTENT_RULES = [
