@@ -1582,19 +1582,43 @@ function liveReplyMetaHTML(live) {
 /* what the agent says when no model answered — sorted by the same signals
    the gate classified on, so the reply addresses what was actually asked */
 const CANNED = {
-  can: 'Quite a lot. I read the market in NewIntel, test how AI answers rank Nike in NewIndex, shortlist creators and clear their usage rights, generate AI UGC ads in DoReel, launch across Meta and TikTok, and stand up a voice agent. Tell me the outcome you want — I’ll run it end to end.',
   meta: 'Partly — most of this run is choreography, but two moments really do reach a live model, and they carry a badge when they do. I turn an outcome into a campaign: tell me what you want to happen for Nike.',
   greeting: 'Morning. You’re signed in as Nike’s CMO — tell me the outcome you want, and I’ll do the work across the six workspaces.',
   ack: 'Here whenever you have an outcome in mind. Try one of the sentences below, or write your own.',
   none: 'I didn’t catch an outcome in that. Describe what you want to happen — “Get Nike named first when buyers ask AI” — and I’ll run it.',
 };
 
-/* the flagship chip and its phrasings — answered with the actual tour */
+/* the flagship chip and its phrasings — these get the agent roster below,
+   intercepted in converseFlow before any live call is made */
 const CHAT_CAN = ['what can you do', 'what do you do', 'what can this do', 'what does this do', 'what are you able'];
+
+/* ── The capabilities answer ──────────────────────────────────
+   The one reply with fixed copy: the agent roster, supplied verbatim.
+   A product answer should not vary run to run, so this never goes to
+   the model — scripted, and therefore never badged. */
+const AGENT_ROSTER = [
+  ['Intelligence Agent', 'watches your competitors around the clock, detects anomalies on its own, and delivers a daily 08:00 brief with recommended moves — no prompt needed', 'NewIntel'],
+  ['Visibility Agent', 'continuously monitors how your brand shows up inside AI answers and acts to improve your GEO presence', 'NewIndex'],
+  ['Creative Agent', 'generates autonomous UGC video ads end-to-end, from brief to finished cut, and drafts briefs and visuals on demand', 'DoReel, Propellers'],
+  ['Voice Agent', 'enterprise-grade AI agents that talk to your customers and act on their behalf', 'NewVoices'],
+  ['Research Agents', 'track brand health, run surveys, and quantify brand impact autonomously', 'QuestBrand, QuestDIY, BERA.ai — built by The Harris Poll'],
+  ['Comms Agents', 'global media intelligence, influencer discovery, and campaign management that runs itself', 'UNICEPTA, IMAI, Monitor, Pulse'],
+  ['Media Agents', 'build and activate custom audiences from proprietary data and push them straight to your DSP', 'SATS, Activate'],
+  ['Agent Cloud', 'one secure login to build and deploy custom agents on every major LLM (GPT-5, Gemini 2.5 Pro, Veo3)', ''],
+];
+
+function capabilitiesHTML() {
+  const items = AGENT_ROSTER.map(([name, text, brands]) =>
+    `<li><b>${esc(name)}</b> — ${esc(text)}${brands ? ` <i>(${esc(brands)})</i>` : ''}.</li>`).join('');
+  return `<div class="econvo__t econvo__caps">
+    <ul class="ecaps">${items}</ul>
+    <p class="ecaps__foot">Every agent runs on IMAI’s creator intelligence — 400M+ profiles, 2 trillion data points, 30+ markets — and Stagwell’s proprietary attitudinal &amp; behavioral data.</p>
+    <p class="ecaps__tag">First to Know. First to Move. First to Win.</p>
+  </div>`;
+}
 
 function cannedReply(text) {
   const s = String(text == null ? '' : text).trim().toLowerCase();
-  if (CHAT_CAN.some(p => s.includes(p))) return CANNED.can;
   if (CHAT_META.some(p => s.includes(p))) return CANNED.meta;
   const w = firstWord(s);
   if (CHAT_GREETINGS.has(w)) return CANNED.greeting;
@@ -1649,6 +1673,20 @@ async function converseFlow(text) {
     <div class="econvo__a"><span class="econvo__dots"><i></i><i></i><i></i></span></div>`;
   convo.hidden = false;
   chips?.setAttribute('hidden', '');
+
+  /* the capabilities question has a fixed product answer — the roster is
+     rendered outright, and the model is never asked */
+  const canQ = text.trim().toLowerCase();
+  if (CHAT_CAN.some(p => canQ.includes(p))) {
+    if (!REDUCED) await wait(CONVO_MIN);
+    if (isStale()) return;
+    const capBody = $('.econvo__a', convo);
+    if (!capBody) return;
+    capBody.innerHTML = capabilitiesHTML();
+    convo.appendChild(convoActs(text));
+    input.value = '';
+    return;
+  }
 
   /* window.ELIVE may not be loaded at all — then there is no live path and
      the canned reply is the whole of it */
