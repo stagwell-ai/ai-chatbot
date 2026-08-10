@@ -155,16 +155,18 @@
           </div>
         </form>
 
-        <!-- the conversational gate — e.js renders an exchange in here when
-             what was typed isn't a campaign directive -->
-        <div class="econvo" id="econvo" hidden></div>
-
+        <!-- the sample sentences sit above the exchange, so a folded
+             conversation reads samples-first -->
         <div class="chips" id="chips">
           <button class="chip chip--ask" type="button" data-fill="What can you do?">What can you do?</button>
           <button class="chip" type="button" data-fill="Win back running-shoe share from Hoka this quarter.">Win back share from Hoka</button>
           <button class="chip" type="button" data-fill="Get Nike named first when buyers ask AI for running shoes.">Get Nike named first when buyers ask AI</button>
           <button class="chip" type="button" data-fill="Launch a creator push for the Pegasus drop.">Launch a creator push for the Pegasus drop</button>
         </div>
+
+        <!-- the conversational gate — e.js renders an exchange in here when
+             what was typed isn't a campaign directive -->
+        <div class="econvo" id="econvo" hidden></div>
       </div>
 
       <!-- the run — e.js renders the plan and the steps in here -->

@@ -880,3 +880,16 @@ body.vE:not(.is-guest) .elogin-top{display:none}
   margin:12px 0 0;font-family:var(--mono);font-size:var(--t-label);
   letter-spacing:.12em;text-transform:uppercase;color:var(--navy);font-weight:600;
 }
+
+/* ── the folded capabilities exchange: samples above, answer one tap away ── */
+.ecaps__more{
+  display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;
+  padding:0;border:0;background:none;cursor:pointer;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--teal);
+  transition:color var(--d-1) var(--ease-io);
+}
+.ecaps__more:hover{color:var(--navy)}
+.econvo.caps-collapsed .ecaps__body{display:none}
+.econvo.caps-collapsed .ecaps__more{margin:0}
+.econvo.caps-collapsed .econvo__acts{display:none}

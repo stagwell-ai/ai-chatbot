@@ -1386,7 +1386,8 @@ function hideHero() {
    them itself. */
 function revealChips() {
   if (!chips || !chips.hidden) return;
-  if (convo && !convo.hidden) return;
+  /* an open reply offers its own chips — unless it has folded away */
+  if (convo && !convo.hidden && !convo.classList.contains('caps-collapsed')) return;
   chips.hidden = false;
   requestAnimationFrame(() => chips.classList.remove('is-gone'));
 }
@@ -1581,9 +1582,11 @@ function clearConvo() {
   if (!convo) return;
   convo.innerHTML = '';
   convo.hidden = true;
+  convo.classList.remove('caps-collapsed');
   /* the reply re-offers the suggestions itself, so the originals come back
-     only once the conversation is gone */
+     only once the conversation is gone — the capabilities chip included */
   chips?.removeAttribute('hidden');
+  $('.chip--ask', chips)?.removeAttribute('hidden');
 }
 
 /* ── The third badge line ─────────────────────────────────────
@@ -1627,11 +1630,39 @@ function capabilitiesHTML() {
   const items = AGENT_ROSTER.map(([name, text, brands]) =>
     `<li><b>${esc(name)}</b> — ${esc(text)}${brands ? ` <i>(${esc(brands)})</i>` : ''}.</li>`).join('');
   return `<div class="econvo__t econvo__caps">
-    <ul class="ecaps">${items}</ul>
-    <p class="ecaps__foot">Every agent runs on IMAI’s creator intelligence — 400M+ profiles, 2 trillion data points, 30+ markets — and Stagwell’s proprietary attitudinal &amp; behavioral data.</p>
-    <p class="ecaps__tag">First to Know. First to Move. First to Win.</p>
+    <button class="ecaps__more" type="button" data-caps-toggle aria-expanded="true">− Hide the answer</button>
+    <div class="ecaps__body">
+      <ul class="ecaps">${items}</ul>
+      <p class="ecaps__foot">Every agent runs on IMAI’s creator intelligence — 400M+ profiles, 2 trillion data points, 30+ markets — and Stagwell’s proprietary attitudinal &amp; behavioral data.</p>
+      <p class="ecaps__tag">First to Know. First to Move. First to Win.</p>
+    </div>
   </div>`;
 }
+
+/* ── Folding the capabilities answer ──────────────────────────
+   Signing in mid-conversation tidies the exchange: the roster folds to
+   its question and a one-tap toggle, and the sample sentences surface
+   above it. The question's own chip stays away while its answer is on
+   screen — clearConvo brings it back. */
+function collapseCaps() {
+  if (!convo || convo.hidden || !$('.econvo__caps', convo)) return;
+  convo.classList.add('caps-collapsed');
+  const t = $('[data-caps-toggle]', convo);
+  if (t) { t.textContent = '+ See the answer'; t.setAttribute('aria-expanded', 'false'); }
+  $('.chip--ask', chips)?.setAttribute('hidden', '');
+  if (chips) {
+    chips.hidden = false;
+    requestAnimationFrame(() => chips.classList.remove('is-gone'));
+  }
+}
+
+document.addEventListener('click', e => {
+  const t = e.target?.closest?.('[data-caps-toggle]');
+  if (!t || !convo) return;
+  const expanded = !convo.classList.toggle('caps-collapsed');
+  t.textContent = expanded ? '− Hide the answer' : '+ See the answer';
+  t.setAttribute('aria-expanded', String(expanded));
+});
 
 function cannedReply(text) {
   const s = String(text == null ? '' : text).trim().toLowerCase();
@@ -1843,6 +1874,9 @@ function dismissLogin(instant) {
 
 function completeSignIn() {
   document.body.classList.remove('is-guest');
+  /* a capabilities answer read while signed out folds away now that the
+     full option row is available — still one tap from reopening */
+  collapseCaps();
 }
 
 loginBtn?.addEventListener('click', () => {
