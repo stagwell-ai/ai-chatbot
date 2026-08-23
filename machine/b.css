@@ -530,3 +530,9 @@ body.nav-open .ab{opacity:0;pointer-events:none;transition:opacity var(--d-2)}
   .mcell{width:132px;height:82px}
   .ab{right:14px;bottom:14px}
 }
+
+/* the previous prototypes live one quiet link away */
+body.vB .bfoot{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.bfoot__versions{margin-left:auto;font-family:var(--mono);font-size:var(--t-label);
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-decoration:none}
+.bfoot__versions:hover{color:var(--teal)}
