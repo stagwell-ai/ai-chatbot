@@ -343,6 +343,11 @@ async function liveProbe() {
     { node: body, delay: 240 });
 }
 
+/* The example address the delivery step shows — used by the placeholder and
+   by the nudge when what was typed isn't an email, so the two can't drift. */
+const emailExample = () =>
+  (S.mode === 'owner' || S.mode === 'duel') && S.domain ? `you@${S.domain}` : 'you@company.com';
+
 const SCRIPT = [
   {
     key: 'website', placeholder: 'nike.com',
@@ -400,8 +405,8 @@ const SCRIPT = [
     optionsFor: () => ROLES,
     async reply() { await say(`Noted — I will build this at ${esc(S.roleArticle)} altitude.`); } },
   { key: 'email',
-    placeholder: () => S.mode === 'owner' || S.mode === 'duel' ? `you@${S.domain}` : 'you@company.com',
-    question: () => `Last thing. Where should the finished dashboard land?`,
+    placeholder: () => emailExample(),
+    question: () => `Last thing — what email address should I send the finished dashboard to?`,
     async reply() {
       await say(S.firstName
         ? `Thank you, <em>${esc(S.firstName)}</em>. Everything goes to <em>${esc(S.email)}</em> the moment it is built.`
@@ -479,7 +484,7 @@ async function submit(raw) {
       S.emailNudged = true; S.busy = true;
       promptInput.value = ''; prompt.classList.remove('is-ready');
       addUser(text);
-      await say(`That is not an address I can reach — and the dashboard only goes by email. Try again?`);
+      await say(`I need an email address to send it to — something like <em>${esc(emailExample())}</em>.`);
       S.busy = false; focusPrompt();
     }
     return;
