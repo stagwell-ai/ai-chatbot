@@ -1226,8 +1226,12 @@ document.addEventListener('submit', e => {
 const mCell = ([k, n]) => `<div class="mcell" title="${n}"><img src="${partnerSrc(k)}" alt="${n}"
   loading="lazy" style="--s:${LOGO_SCALE[k] || 1}"></div>`;
 const row = PARTNERS.map(mCell).join('');
-$('#marquee').innerHTML = `<div class="mrow">${row}${row}</div>`;   // doubled → -50% loops seamlessly
-$('#studies').innerHTML = STUDIES.map(s =>
+/* the landing's news sections are gone, so these hosts may not exist —
+   the dashboard's own research panel builds its list inline */
+const mq = $('#marquee');
+if (mq) mq.innerHTML = `<div class="mrow">${row}${row}</div>`;   // doubled → -50% loops seamlessly
+const st = $('#studies');
+if (st) st.innerHTML = STUDIES.map(s =>
   `<li class="study"><span class="study__t">${s[0]}</span><span class="study__m">${s[1]}</span></li>`).join('');
 
 /* ─────────────────────────── REVEALS ───────────────────────────

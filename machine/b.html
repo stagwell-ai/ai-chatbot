@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="/machine/assets/fonts/fonts.css">
 <link rel="stylesheet" href="/machine/styles.css">
 <link rel="stylesheet" href="/machine/b.css">
+<link rel="stylesheet" href="/machine/cloud.css">
 </head>
 <body class="vB" data-state="boot">
 
@@ -67,10 +68,7 @@
       <svg><use href="#sw-logo"/></svg><span>AI</span>
     </a>
     <nav class="nav__links">
-      <a href="#whatwedo">What We Do</a>
-      <a href="#mission">Our Mission</a>
-      <a href="#research">Research</a>
-      <a href="#partners">Our Partners</a>
+      <a href="#cloud">The Marketing Cloud</a>
     </nav>
     <div class="nav__acts">
       <button class="nav__new" id="navNew" hidden>
@@ -96,10 +94,7 @@
     </button>
   </div>
   <nav class="mnav__links">
-    <a href="#whatwedo">What We Do</a>
-    <a href="#mission">Our Mission</a>
-    <a href="#research">Research</a>
-    <a href="#partners">Our Partners</a>
+    <a href="#cloud">The Marketing Cloud</a>
   </nav>
   <div class="mnav__foot">
     <button class="btn btn--ghost mnav__new" data-new hidden>New analysis</button>
@@ -143,72 +138,27 @@
   <!-- ─────────────── DASHBOARD ─────────────── -->
   <section class="dash" id="dash" hidden></section>
 
-  <!-- ─────────────── WHAT WE DO ─────────────── -->
-  <section class="sec" id="whatwedo">
-    <div class="sec__in">
-      <p class="eyebrow">Future of News Initiative</p>
-      <h2 class="sec__title">What we <span class="accent">do.</span></h2>
-      <p class="sec__lede">The Future of News Initiative brings together a coalition of news media and marketing industry leaders for fulsome discussions about the opportunities for news media, rooted in groundbreaking research.</p>
-      <div class="doc__cols">
-        <p>Together, journalists, publishers and brand leaders identify opportunities for industry growth and partnership, showcasing news as an essential tool for driving successful business results.</p>
-        <p>At Stagwell, we believe a thriving news industry is not only the foundation of a healthy democracy, but also a critical platform for marketers and advertisers. Recent discourse around brand safety has disproportionately hurt the news industry, as advertisers back away from news due to misconceptions and an abundance of caution.</p>
-      </div>
-      <div class="statrow">
-        <div class="stat"><b class="num">28</b><span>News &amp; adtech partners</span></div>
-        <div class="stat"><b class="num">9</b><span>Global research studies</span></div>
-        <div class="stat"><b class="num">6</b><span>Markets surveyed</span></div>
-        <div class="stat"><b class="num">On par</b><span>News-adjacent ad performance</span></div>
-      </div>
+  <!-- ─────────────── THE MARKETING CLOUD ───────────────
+       The Catalogue's carousel, verbatim: what Stagwell actually ships,
+       between the dashboard flow and the CTA. cloud.js drives it. -->
+  <section class="crail" id="cloud">
+    <h2 class="crail__t">The Marketing Cloud</h2>
+    <div class="flow flow--big" id="flowBig">
+      <button class="paddle paddle--l" id="bigPrev" aria-label="Previous">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="paddle paddle--r" id="bigNext" aria-label="Next">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
-  </section>
-
-  <!-- ─────────────── MISSION ─────────────── -->
-  <section class="sec sec--tint" id="mission">
-    <div class="sec__in">
-      <p class="eyebrow">Future of News Initiative</p>
-      <h2 class="sec__title">Our <span class="accent">mission.</span></h2>
-
-      <div class="mission">
-        <figure class="mission__who">
-          <img src="/machine/assets/brand/mark-penn.jpg" alt="Mark Penn"
-               onerror="this.closest('.mission__who').classList.add('is-empty')">
-          <figcaption>
-            <b>Mark Penn</b>
-            <span>Chairman &amp; CEO</span>
-            <svg class="mission__logo"><use href="#sw-logo"/></svg>
-          </figcaption>
-        </figure>
-
-        <div class="mission__say">
-          <blockquote class="pull">
-            <p>Instead of feeding the vicious cycle of news demonetization that hurts quality journalism the most, advertisers should kickstart a virtuous cycle of investing in news that allows brands to reach valuable audiences and gives quality news content the financial stability it needs to thrive.</p>
-          </blockquote>
-          <div class="doc__cols">
-            <p>Brand safety discourse has hurt the news industry, as advertisers back away out of misconception. The initiative exists to reverse that.</p>
-            <p>The evidence is unambiguous: ads beside “not brand safe” stories performed on par with brand-safe content, across six markets.</p>
-          </div>
-        </div>
-      </div>
+    <div class="flow flow--sm" id="flowSm">
+      <button class="paddle paddle--l" id="cloudPrev" aria-label="Previous">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="paddle paddle--r" id="cloudNext" aria-label="Next">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
-  </section>
-
-  <!-- ─────────────── RESEARCH ─────────────── -->
-  <section class="sec" id="research">
-    <div class="sec__in">
-      <p class="eyebrow">Future of News Initiative · with HarrisX</p>
-      <h2 class="sec__title"><span class="accent">Research.</span></h2>
-      <p class="sec__lede">Nine studies across six markets, fielded with HarrisX. Every one of them is inside the machine — cited automatically when it is relevant to your brand.</p>
-      <ul class="studies" id="studies"></ul>
-    </div>
-  </section>
-
-  <!-- ─────────────── PARTNERS ─────────────── -->
-  <section class="sec sec--flush" id="partners">
-    <div class="sec__in sec__in--head">
-      <p class="eyebrow">Future of News Initiative</p>
-      <h2 class="sec__title">Our <span class="accent">partners.</span></h2>
-    </div>
-    <div class="marquee" id="marquee"></div>
   </section>
 
   <!-- ─────────────── CTA ─────────────── -->
@@ -270,5 +220,6 @@
 
 <script src="/machine/shared.js"></script>
 <script src="/machine/b.js"></script>
+<script src="/machine/cloud.js"></script>
 </body>
 </html>
