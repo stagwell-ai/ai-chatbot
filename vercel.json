@@ -1,16 +1,51 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
-    { "source": "/workspace", "destination": "/machine/", "permanent": false },
-    { "source": "/dashboard", "destination": "/", "permanent": false },
-    { "source": "/b.html", "destination": "/", "permanent": false },
-    { "source": "/index.html", "destination": "/versions", "permanent": false }
+    {
+      "source": "/workspace",
+      "destination": "/machine/",
+      "permanent": false
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/b.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/index.html",
+      "destination": "/versions",
+      "permanent": false
+    }
   ],
   "rewrites": [
-    { "source": "/", "destination": "/machine/b.html" },
-    { "source": "/versions", "destination": "/versions.html" },
-    { "source": "/catalogue", "destination": "/c.html" },
-    { "source": "/platform", "destination": "/d.html" },
-    { "source": "/agent", "destination": "/e.html" }
+    {
+      "source": "/",
+      "destination": "/machine/b.html"
+    },
+    {
+      "source": "/solve",
+      "destination": "/machine/solve.html"
+    },
+    {
+      "source": "/versions",
+      "destination": "/versions.html"
+    },
+    {
+      "source": "/catalogue",
+      "destination": "/c.html"
+    },
+    {
+      "source": "/platform",
+      "destination": "/d.html"
+    },
+    {
+      "source": "/agent",
+      "destination": "/e.html"
+    }
   ]
 }
