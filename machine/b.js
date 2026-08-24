@@ -1119,7 +1119,7 @@ function resetB() {
   $('#navNew').hidden = true;
   $('.mnav__new').hidden = true;
   hero.classList.remove('is-chatting');
-  $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell AI · The Machine';
+  $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell.AI · Agentic solutions built by marketing experts for modern marketers';
   $('#hero2Title').innerHTML = 'Build your dashboard <span class="accent">live, in about a minute.</span>';
   blurWords($('#hero2Title'));
   $('#hero2Sub').textContent = 'One link. I\u2019ll read the company, map the market, and put the numbers on screen.';

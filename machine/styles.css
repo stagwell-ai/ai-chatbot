@@ -3,7 +3,7 @@
    Tokens. One light room throughout — the brief is the only reveal.
    ═══════════════════════════════════════════════════════════ */
 :root{
-  --navy:#002334;
+  --navy:#003349;   /* Pantone 2189 C — the guidelines' navy, replacing the old #002334 */
   --teal:#009CBD;
   --amber:#FFB81C;
 
@@ -28,8 +28,8 @@
   --bubble:#002334;
   --bubble-ink:#FFFFFF;
 
-  --serif:"Newsreader",Georgia,"Times New Roman",serif;
-  --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --serif:"Spectral",Georgia,"Times New Roman",serif;
+  --sans:"Montserrat","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
 
   --t-display:clamp(2.5rem,4.2vw,3.375rem);
@@ -93,8 +93,11 @@ input{font:inherit;color:inherit}
   animation:ping 2.6s var(--ease) infinite}
 @keyframes ping{0%{transform:scale(.6);opacity:.9}70%,100%{transform:scale(1.9);opacity:0}}
 
-.display{font-family:var(--serif);font-size:var(--t-display);font-weight:400;
-  letter-spacing:-.03em;line-height:1.04}
+.display{font-family:var(--sans);font-size:var(--t-display);font-weight:600;
+  letter-spacing:-.025em;line-height:1.08}
+/* per the guidelines, Spectral accents words inside a Montserrat headline —
+   set a touch larger to balance the x-height difference */
+.display .accent{font-family:var(--serif);font-weight:600;font-size:1.04em;letter-spacing:-.01em}
 
 .btn{
   display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 22px;
