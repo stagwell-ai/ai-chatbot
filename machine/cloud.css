@@ -32,6 +32,13 @@
   width:clamp(540px,52vw,780px);height:clamp(380px,54vh,520px);
   border:0;border-radius:0;cursor:default;text-align:left;padding:0;
   background:var(--surface);color:var(--ink)}
+/* cards are <a> elements now (real links out), not <button> — reset the
+   anchor defaults so they render identically to the old buttons. .fcard
+   had no explicit display (buttons default to inline-block, which its
+   width/height rely on); .scard already declares display:flex below and
+   is left alone here so that rule keeps governing it. */
+a.fcard{display:block}
+a.fcard,a.scard{text-decoration:none;color:inherit;cursor:pointer}
 .fcard--dark{background:linear-gradient(160deg,#004766,#003349);color:var(--on-void)}
 .fcard--sky{background:linear-gradient(165deg,#DDEEF4,#F4FAFC)}
 .fcard--amber{background:linear-gradient(160deg,#FFE9B8,#FFF9EC)}
@@ -163,6 +170,11 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 .fcard__art .ca-wave{position:absolute;inset:auto 0 0;height:52%;padding:0 5%}
 .fcard__art .ca-bars{position:absolute;inset:auto 6% 0;height:62%}
 .fcard__art .ca-film{position:absolute;inset:16% 6% 18%}
+/* GEOPulse: a scatter of citation chips, a few lit — "your brand, cited" */
+.fcard__art .ca-chips{position:absolute;inset:auto 8% 14%;display:flex;
+  flex-wrap:wrap;gap:8px;max-width:230px}
+.ca-chips i{width:32px;height:32px;border-radius:9px;background:rgba(0,51,73,.14)}
+.ca-chips i.on{background:var(--navy);opacity:.82}
 
 /* small card — drifts the other way */
 /* flex column: copy on top, fragment truly centred in the leftover
@@ -220,19 +232,6 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
 @keyframes globespin{to{transform:rotateY(360deg)}}
 @media (prefers-reduced-motion:reduce){.ca-globe__spin{animation:none}}
 
-/* the NewVoices agent: a minimal green equaliser, centred, talking */
-.ca-voice{position:absolute;inset:0;display:flex;align-items:center;
-  justify-content:center;gap:7px}
-.ca-voice i{width:7px;height:46px;border-radius:var(--r-full);background:#30D158;
-  transform-origin:center;
-  animation:talk 1.15s var(--ease-io) calc(var(--i) * -173ms) infinite}
-.ca-voice i:nth-child(1),.ca-voice i:nth-child(7){height:22px}
-.ca-voice i:nth-child(2),.ca-voice i:nth-child(6){height:34px}
-.ca-voice i:nth-child(3),.ca-voice i:nth-child(5){height:52px}
-.ca-voice i:nth-child(4){height:64px}
-@keyframes talk{0%,100%{transform:scaleY(.35)}45%{transform:scaleY(1)}70%{transform:scaleY(.6)}}
-@media (prefers-reduced-motion:reduce){.ca-voice i{animation:none;transform:scaleY(.7)}}
-
 .ca-film{display:flex;gap:10px}
 .ca-film i{flex:1;border-radius:8px;
   background:linear-gradient(150deg,rgba(0,156,189,.45),rgba(255,184,28,.5));opacity:var(--o)}
@@ -251,5 +250,5 @@ img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover
   .scard{width:74vw}
 }
 
-/* the inner Learn more is visual-only — the whole card is the button */
+/* the inner "Visit site" label is visual-only — the whole card is the link */
 .fcard .btn,.scard .btn{pointer-events:none}

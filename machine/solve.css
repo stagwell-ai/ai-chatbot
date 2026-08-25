@@ -90,13 +90,16 @@ body.vS .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
 
 /* ── recommendation cards ── */
 .recs{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+/* the card is a plain div now — it can hold two links, so the hover
+   affordance lives on the actions rather than the card. */
 .rec{
   display:block;background:var(--surface);border:1px solid var(--line);
   border-radius:var(--r-lg);padding:20px 22px;text-align:left;
-  transition:border-color var(--d-1) var(--ease-io),transform var(--d-1) var(--ease);
+  transition:border-color var(--d-1) var(--ease-io);
 }
-.rec:hover{border-color:var(--teal);transform:translateY(-1px)}
+.rec:hover{border-color:var(--line-2)}
 .rec--primary{border-left:3px solid var(--teal)}
+.rec--primary:hover{border-left-color:var(--teal)}
 .rec__k{
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.12em;
   text-transform:uppercase;color:var(--ink-3);
@@ -107,12 +110,21 @@ body.vS .btn{font-family:var(--sans);letter-spacing:-.006em;text-transform:none}
   margin:6px 0 4px;color:var(--ink);
 }
 .rec__line{font-size:var(--t-sm);line-height:1.55;color:var(--ink-2);max-width:56ch}
+.rec__acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;margin-top:14px}
 .rec__act{
-  display:inline-flex;align-items:center;gap:7px;margin-top:12px;
+  display:inline-flex;align-items:center;gap:7px;
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
   text-transform:uppercase;color:var(--teal);
+  transition:color var(--d-1) var(--ease-io);
 }
-.rec:hover .rec__act{color:var(--navy)}
+.rec__act:hover{color:var(--navy)}
+.rec__act svg{flex:none;transition:transform var(--d-1) var(--ease-io)}
+.rec__act:hover svg{transform:translateX(2px)}
+/* primary: the real product site. secondary: our prototype, quieter. */
+.rec__act--go{color:var(--teal);font-weight:600}
+.rec__act--go:hover svg{transform:translate(1px,-1px)}
+.rec__act--quiet{color:var(--ink-3);font-weight:400}
+.rec__act--quiet:hover{color:var(--ink)}
 
 /* ── fine print ── */
 .solve__fine{
