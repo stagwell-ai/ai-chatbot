@@ -4,7 +4,7 @@ PROMPT to paste as-is. Target file names once rendered: /assets/img/<id>.mp4.
 
 PRODUCTION NOTES (read once)
 - Resolution, aspect ratio, and duration are generator SETTINGS in Seedance,
-  not prompt text. Set them in the tool: 1080p, 16:9, 10 seconds. The prompts
+  not prompt text. Set them in the tool: 1080p, 16:9, 5 seconds. The prompts
   below contain no pixel specs on purpose.
 - Looping: a text prompt cannot guarantee a seamless loop. Either use
   Seedance's first-frame/last-frame image conditioning with the same still,
@@ -21,7 +21,7 @@ PRODUCTION NOTES (read once)
 ════════════════════════════════════════════════════════════════════
 1. QUESTBRAND — Brand Performance Tracking          (file: questbrand.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 A brand strategist stands in a bright modern studio before a wall-sized
@@ -43,7 +43,7 @@ lines and shapes.
 ════════════════════════════════════════════════════════════════════
 2. QUESTDIY — AI Survey Creation                    (file: questdiy.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 Close over-the-shoulder shot of hands at a laptop in warm morning
@@ -66,7 +66,7 @@ every interface element is a blank shape.
 ════════════════════════════════════════════════════════════════════
 3. BERA.AI — Brand Growth Drivers                   (file: bera.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 A modern boardroom at golden hour; on the glass wall, a translucent
@@ -85,7 +85,7 @@ watermarks, or readable UI copy.
 ════════════════════════════════════════════════════════════════════
 4. UNLOCK — Audience Sampling                       (file: unlock.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 A softly lit wall of eight large portrait tiles in a clean 4x2 grid —
@@ -107,7 +107,7 @@ watermarks, or readable UI copy.
 ════════════════════════════════════════════════════════════════════
 5. THE KNOWLEDGE MACHINE — Reputation Intelligence  (file: knowledge-machine.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 A calm, dark monitoring space; a large ambient wall of slow radar
@@ -125,7 +125,7 @@ captions, logos, watermarks, or readable UI copy.
 ════════════════════════════════════════════════════════════════════
 6. UNICEPTA — Global Media Monitoring               (file: unicepta.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 A night-side globe rendered in fine teal light, thin luminous traces
@@ -144,7 +144,7 @@ watermarks, or readable UI copy.
 ════════════════════════════════════════════════════════════════════
 7. IMAI — Influencer Campaign Management            (file: imai.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 A creator's home studio: ring light halo, phone on a gimbal, a young
@@ -163,7 +163,7 @@ logos, watermarks, or readable UI copy.
 ════════════════════════════════════════════════════════════════════
 8. GEOPULSE — AI Search Visibility                  (file: geopulse.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 A hand holds a phone in soft light; above the screen, three luminous
@@ -184,7 +184,7 @@ logos, or watermarks — every interface element is a blank shape.
 ════════════════════════════════════════════════════════════════════
 9. THE TARGETING MACHINE — Audience Activation      (file: targeting-machine.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 Full-frame abstract data choreography: thousands of teal particles form
@@ -201,7 +201,7 @@ on-screen text, captions, logos, watermarks, or readable UI copy.
 ════════════════════════════════════════════════════════════════════
 10. NUMETRIX — Location Intelligence                (file: numetrix.mp4)
 ════════════════════════════════════════════════════════════════════
-SETTINGS: 1080p · 16:9 · 10s
+SETTINGS: 1080p · 16:9 · 5s
 
 PROMPT:
 Aerial drone shot over a city intersection at dusk; pedestrians and
