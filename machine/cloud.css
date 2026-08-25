@@ -32,10 +32,10 @@
   width:clamp(540px,52vw,780px);height:clamp(380px,54vh,520px);
   border:0;border-radius:0;cursor:default;text-align:left;padding:0;
   background:var(--surface);color:var(--ink)}
-.fcard--dark{background:linear-gradient(160deg,#01293B,#00121C);color:var(--on-void)}
+.fcard--dark{background:linear-gradient(160deg,#004766,#003349);color:var(--on-void)}
 .fcard--sky{background:linear-gradient(165deg,#DDEEF4,#F4FAFC)}
 .fcard--amber{background:linear-gradient(160deg,#FFE9B8,#FFF9EC)}
-.fcard--teal{background:linear-gradient(160deg,#00303F,#00121C);color:var(--on-void)}
+.fcard--teal{background:linear-gradient(160deg,#009CBD,#003349);color:var(--on-void)}
 .fcard--teal .fcard__k{color:#fff}
 .fcard--teal .fcard__t i{color:#D7E4E9}
 .fcard--teal .btn{background:#fff;color:var(--navy)}

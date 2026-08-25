@@ -7,10 +7,10 @@
   --teal:#009CBD;
   --amber:#FFB81C;
 
-  --paper:#F5F6F6;
+  --paper:#F5F7F6;   /* Pantone Bright White, per the guidelines */
   --surface:#FFFFFF;
   --surface-2:#FAFBFB;
-  --void:#00121C;
+  --void:#003349;   /* dark surfaces sit on the brand navy, not an off-palette near-black */
   --void-2:#002334;
 
   --ink:#002334;
@@ -84,7 +84,8 @@ input{font:inherit;color:inherit}
 
 /* ── Atoms ────────────────────────────────────────────────── */
 .eyebrow{
-  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.14em;
+  /* the guidelines' subhead voice: Montserrat Light, all caps */
+  font-family:var(--sans);font-weight:300;font-size:var(--t-label);letter-spacing:.14em;
   text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:8px;
 }
 .muted{color:var(--ink-3)}
@@ -101,14 +102,14 @@ input{font:inherit;color:inherit}
 
 .btn{
   display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 22px;
-  border-radius:var(--r);font-family:var(--mono);font-size:var(--t-xs);
-  letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;
+  border-radius:var(--r);font-family:var(--sans);font-weight:600;font-size:var(--t-xs);
+  letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;
   transition:background var(--d-1) var(--ease-io),color var(--d-1) var(--ease-io),
              border-color var(--d-1) var(--ease-io),transform var(--d-1) var(--ease);
   position:relative;overflow:hidden;
 }
 .btn--dark{background:var(--navy);color:#fff}
-.btn--dark:hover{background:#00374f}
+.btn--dark:hover{background:#004766}
 .btn--light{background:var(--on-void);color:var(--navy)}
 .btn--light:hover{background:#fff}
 .btn--ghost{border:1px solid var(--line-2);color:var(--ink);background:var(--surface)}
