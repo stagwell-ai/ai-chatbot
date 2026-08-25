@@ -1,0 +1,180 @@
+SEEDANCE 2 PROMPTS — STAGWELL.AI MARKETING CLOUD CAROUSEL
+One standalone prompt per company. Each is complete — copy the full block into Seedance 2 as-is.
+Target file names once rendered: /assets/img/<id>.mp4 (id noted per prompt).
+
+
+════════════════════════════════════════════════════════════════════
+1. QUESTBRAND — Brand Performance Tracking          (file: questbrand.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. A brand strategist stands in a bright
+modern studio before a wall-sized ambient display of abstract shifting bar
+charts and one slowly climbing line, glowing teal (#009CBD) on deep navy
+(#003349). She sips coffee, calm and unhurried — the data updates itself.
+Slow lateral dolly, no cuts. Premium brand-film grade: deep navy shadows,
+teal accents, warm amber (#FFB81C) highlights, soft editorial daylight,
+shallow depth of field. Slow continuous motion with first and last frames
+near-identical for a seamless loop. Keep the subject center-weighted and
+the lower-left quadrant calm and slightly darker (a white title is
+overlaid there, and the frame edges are cropped to roughly 3:2).
+Absolutely no on-screen text, captions, logos, watermarks, or readable UI
+copy.
+
+
+════════════════════════════════════════════════════════════════════
+2. QUESTDIY — AI Survey Creation                    (file: questdiy.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. Close over-the-shoulder shot of hands
+at a laptop in warm morning light; translucent survey cards and
+answer-option blocks — pure geometric shapes, no words — assemble
+themselves on the screen faster than the person types, snapping neatly
+into place. Slow push-in, no cuts. Premium brand-film grade: deep navy
+(#003349) shadows, teal (#009CBD) accents, warm amber (#FFB81C)
+highlights, soft editorial daylight, shallow depth of field. Slow
+continuous motion with first and last frames near-identical for a
+seamless loop. Keep the subject center-weighted and the lower-left
+quadrant calm and slightly darker (a white title is overlaid there, and
+the frame edges are cropped to roughly 3:2). Absolutely no on-screen
+text, captions, logos, watermarks, or readable UI copy.
+
+
+════════════════════════════════════════════════════════════════════
+3. BERA.AI — Brand Growth Drivers                   (file: bera.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. A modern boardroom at golden hour; on
+the glass wall, a translucent teal (#009CBD) growth curve rises and
+branches into glowing driver nodes, amber (#FFB81C) pulses traveling
+along the branches. An executive silhouette watches, reflected in the
+glass. Slow orbit, no cuts. Premium brand-film grade: deep navy (#003349)
+shadows, teal accents, warm amber highlights, soft editorial light,
+shallow depth of field. Slow continuous motion with first and last frames
+near-identical for a seamless loop. Keep the subject center-weighted and
+the lower-left quadrant calm and slightly darker (a white title is
+overlaid there, and the frame edges are cropped to roughly 3:2).
+Absolutely no on-screen text, captions, logos, watermarks, or readable UI
+copy.
+
+
+════════════════════════════════════════════════════════════════════
+4. UNLOCK — Audience Sampling                       (file: unlock.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. A softly lit wall of portrait tiles —
+dozens of diverse real people in their homes, each tile gently alive:
+nodding, tapping a phone, smiling. Tiles fade in and out as new faces
+join the grid. Slow drift across the mosaic, no cuts. Premium brand-film
+grade: deep navy (#003349) shadows, teal (#009CBD) accents, warm amber
+(#FFB81C) highlights, soft editorial daylight, shallow depth of field.
+Slow continuous motion with first and last frames near-identical for a
+seamless loop. Keep the mosaic center-weighted and the lower-left
+quadrant calm and slightly darker (a white title is overlaid there, and
+the frame edges are cropped to roughly 3:2). Absolutely no on-screen
+text, captions, logos, watermarks, or readable UI copy.
+
+
+════════════════════════════════════════════════════════════════════
+5. THE KNOWLEDGE MACHINE — Reputation Intelligence  (file: knowledge-machine.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. A calm, dark monitoring space; a
+large ambient wall of slow radar ripples in teal (#009CBD) — one ripple
+blooms amber (#FFB81C) and expands ahead of the others while a figure
+leans in, attentive but unalarmed. Slow push-in on the amber bloom, no
+cuts. Premium brand-film grade: deep navy (#003349) shadows, teal
+accents, warm amber highlights, low soft light, shallow depth of field.
+Slow continuous motion with first and last frames near-identical for a
+seamless loop. Keep the subject center-weighted and the lower-left
+quadrant calm and slightly darker (a white title is overlaid there, and
+the frame edges are cropped to roughly 3:2). Absolutely no on-screen
+text, captions, logos, watermarks, or readable UI copy.
+
+
+════════════════════════════════════════════════════════════════════
+6. UNICEPTA — Global Media Monitoring               (file: unicepta.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. A night-side globe rendered in fine
+teal (#009CBD) light, thin luminous traces arcing between continents and
+converging toward the viewer; in the foreground, the silhouette of a
+monitor wall glows with abstract blurred feeds — unreadable, purely
+suggestive. Slow rotation of the globe, no cuts. Premium brand-film
+grade: deep navy (#003349) shadows, teal accents, warm amber (#FFB81C)
+highlights, shallow depth of field. Slow continuous motion with first and
+last frames near-identical for a seamless loop. Keep the globe
+center-weighted and the lower-left quadrant calm and slightly darker (a
+white title is overlaid there, and the frame edges are cropped to roughly
+3:2). Absolutely no on-screen text, captions, logos, watermarks, or
+readable UI copy.
+
+
+════════════════════════════════════════════════════════════════════
+7. IMAI — Influencer Campaign Management            (file: imai.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. A creator's home studio: ring light
+halo, phone on a gimbal, a young creator mid-take laughing naturally,
+warm daylight bouncing off pale walls; soft-focus in the background a
+second screen glows with an abstract campaign grid of shapes — no words.
+Slow arc around the creator, no cuts. Premium brand-film grade: deep navy
+(#003349) shadows, teal (#009CBD) accents, warm amber (#FFB81C)
+highlights, soft editorial daylight, shallow depth of field. Slow
+continuous motion with first and last frames near-identical for a
+seamless loop. Keep the creator center-weighted and the lower-left
+quadrant calm and slightly darker (a white title is overlaid there, and
+the frame edges are cropped to roughly 3:2). Absolutely no on-screen
+text, captions, logos, watermarks, or readable UI copy.
+
+
+════════════════════════════════════════════════════════════════════
+8. GEOPULSE — AI Search Visibility                  (file: geopulse.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. A hand holds a phone in soft light;
+above the screen, a luminous answer-card materializes out of drifting
+particles — an abstract glowing rectangle with shimmering placeholder
+lines (no letters), teal (#009CBD) with one warm amber (#FFB81C)
+highlight line. Slow tilt up as the card resolves, no cuts. Premium
+brand-film grade: deep navy (#003349) shadows, teal accents, amber
+highlights, soft editorial light, shallow depth of field. Slow continuous
+motion with first and last frames near-identical for a seamless loop.
+Keep the card center-weighted and the lower-left quadrant calm and
+slightly darker (a white title is overlaid there, and the frame edges are
+cropped to roughly 3:2). Absolutely no on-screen text, captions, logos,
+watermarks, or readable UI copy.
+
+
+════════════════════════════════════════════════════════════════════
+9. THE TARGETING MACHINE — Audience Activation      (file: targeting-machine.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. Full-frame abstract data
+choreography: thousands of teal (#009CBD) particles form clustered
+constellations — audiences — then an amber (#FFB81C) current sweeps
+through and the clusters stream outward along clean channel lines toward
+the edges of frame. Deep navy (#003349) void, macro depth of field, no
+cuts. Premium brand-film grade. Slow continuous motion with first and
+last frames near-identical for a seamless loop. Keep the constellations
+center-weighted and the lower-left quadrant calm and slightly darker (a
+white title is overlaid there, and the frame edges are cropped to roughly
+3:2). Absolutely no on-screen text, captions, logos, watermarks, or
+readable UI copy.
+
+
+════════════════════════════════════════════════════════════════════
+10. NUMETRIX — Location Intelligence                (file: numetrix.mp4)
+════════════════════════════════════════════════════════════════════
+
+1920x1080, 16:9, 10 seconds, 30fps. Aerial drone shot over a city
+intersection at dusk; pedestrians and cars leave soft teal (#009CBD)
+light-trails that accumulate into flowing movement patterns, one
+storefront corner glowing gently amber (#FFB81C) where the trails
+converge. Slow forward glide, no cuts. Premium brand-film grade: deep
+navy (#003349) shadows, teal accents, amber highlights, dusk light,
+shallow depth of field. Slow continuous motion with first and last frames
+near-identical for a seamless loop. Keep the intersection center-weighted
+and the lower-left quadrant calm and slightly darker (a white title is
+overlaid there, and the frame edges are cropped to roughly 3:2).
+Absolutely no on-screen text, captions, logos, watermarks, or readable UI
+copy.
