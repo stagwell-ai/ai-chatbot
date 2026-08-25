@@ -490,6 +490,14 @@ async function submit(raw) {
     return;
   }
 
+  /* the fold asks for a problem first: a sentence walks over to the
+     concierge with the words carried along; a domain builds the dashboard
+     right here, exactly as before */
+  if (q.key === 'website' && (/\s/.test(text) || text.endsWith('?'))) {
+    location.href = '/solve?q=' + encodeURIComponent(text);
+    return;
+  }
+
   S.busy = true;
   promptInput.value = ''; prompt.classList.remove('is-ready');
   clearOptions();
@@ -505,6 +513,7 @@ async function submit(raw) {
     thread.hidden = false;
     $('#chatBar').hidden = false;
     $('#chatHint').hidden = true;
+    $('#solveChips').hidden = true;
     $('#heroEyebrow').textContent = '';
     hero.classList.add('is-chatting');
   }
@@ -1115,14 +1124,15 @@ function resetB() {
   chatBusy = false;
   $('#chatBar').hidden = true;
   $('#chatHint').hidden = false;
+  $('#solveChips').hidden = false;
   $('#dash').hidden = true; $('#dash').innerHTML = '';
   $('#navNew').hidden = true;
   $('.mnav__new').hidden = true;
   hero.classList.remove('is-chatting');
   $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell.AI · Agentic solutions built by marketing experts for modern marketers';
-  $('#hero2Title').innerHTML = 'Build your dashboard <span class="accent">live, in about a minute.</span>';
+  $('#hero2Title').innerHTML = 'What do you need help <span class="accent">solving today?</span>';
   blurWords($('#hero2Title'));
-  $('#hero2Sub').textContent = 'One link. I\u2019ll read the company, map the market, and put the numbers on screen.';
+  $('#hero2Sub').textContent = 'Tell the agent what you\u2019re trying to do \u2014 it knows every solution in the portfolio and will point you to the right one.';
   promptInput.value = ''; promptInput.placeholder = SCRIPT[0].placeholder;
   prompt.classList.remove('is-ready');
   scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
@@ -1227,6 +1237,12 @@ document.addEventListener('submit', e => {
 
 /* ─────────────────────────── STATIC ─────────────────────────── */
 
+/* the four solution questions walk over to the concierge tab */
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-solve]');
+  if (c) location.href = '/solve?need=' + encodeURIComponent(c.dataset.solve);
+});
+
 /* Two rows drifting in opposite directions, each doubled so the loop is seamless. */
 const mCell = ([k, n]) => `<div class="mcell" title="${n}"><img src="${partnerSrc(k)}" alt="${n}"
   loading="lazy" style="--s:${LOGO_SCALE[k] || 1}"></div>`;
@@ -1277,6 +1293,7 @@ countAllIn(document);
     $('#hero2Title').innerHTML = `Here is <span class="accent">${esc(S.brand)}.</span>`;
     blurWords($('#hero2Title'), 120);
     $('#chatHint').hidden = true;
+    $('#solveChips').hidden = true;
     $('#navNew').hidden = false;
     $('.mnav__new').hidden = false;
     return;

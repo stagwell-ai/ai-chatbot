@@ -267,4 +267,22 @@ resetBtn.addEventListener('click', resetAll);
 
 openerChips();
 
+/* ── arriving with the question already asked ──────────────────
+   The home fold hands over here: ?need=<key> is one of the four chips
+   chosen there, ?q=<text> is whatever was typed. Either way the words
+   appear as the visitor's own turn and the exchange continues. */
+const params = new URLSearchParams(location.search);
+const pNeed = params.get('need');
+const pQ = (params.get('q') || '').trim();
+if (pNeed && NEEDS[pNeed]) {
+  const opener = OPENERS.find(o => o.need === pNeed);
+  addYou(opener ? opener.label : NEEDS[pNeed].ack);
+  onNeed(pNeed);
+} else if (pQ) {
+  addYou(pQ);
+  const need = matchNeed(pQ);
+  if (need) onNeed(need);
+  else say('I want to route you right, and I didn’t catch the problem in that. Pick the closest below — or try again in different words.');
+}
+
 })();

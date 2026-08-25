@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stagwell.AI — Agentic solutions for modern marketers</title>
-<meta name="description" content="Give me one link. I'll read the company, map the market, and build your dashboard.">
+<meta name="description" content="Tell the agent what you're trying to do — or paste your website and get your dashboard live in about a minute.">
 
 <!-- Share kit — crawlers need absolute URLs, so the production host is hardcoded -->
 <link rel="canonical" href="https://stagwell-ai-prototypes.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Stagwell AI">
 <meta property="og:title" content="Stagwell.AI — Agentic solutions for modern marketers">
-<meta property="og:description" content="Give me one link. I'll read the company, map the market, and build your dashboard.">
+<meta property="og:description" content="Tell the agent what you're trying to do — or paste your website and get your dashboard live in about a minute.">
 <meta property="og:url" content="https://stagwell-ai-prototypes.vercel.app/">
 <meta property="og:image" content="https://stagwell-ai-prototypes.vercel.app/machine/assets/share/og.png">
 <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
 <meta property="og:image:alt" content="Stagwell AI — one link. Your brand, read, diagnosed and priced.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Stagwell.AI — Agentic solutions for modern marketers">
-<meta name="twitter:description" content="Give me one link. I'll read the company, map the market, and build your dashboard.">
+<meta name="twitter:description" content="Tell the agent what you're trying to do — or paste your website and get your dashboard live in about a minute.">
 <meta name="twitter:image" content="https://stagwell-ai-prototypes.vercel.app/machine/assets/share/og.png">
 <meta name="theme-color" content="#00121C">
 
@@ -110,8 +110,8 @@
   <section class="hero2" id="hero2">
     <div class="hero2__in">
       <p class="eyebrow" id="heroEyebrow"><i class="pulse"></i>Stagwell.AI · Agentic solutions built by marketing experts for modern marketers</p>
-      <h1 class="display" id="hero2Title">Build your dashboard <span class="accent">live, in about a minute.</span></h1>
-      <p class="hero2__sub" id="hero2Sub">One link. I’ll read the company, map the market, and put the numbers on screen.</p>
+      <h1 class="display" id="hero2Title">What do you need help <span class="accent">solving today?</span></h1>
+      <p class="hero2__sub" id="hero2Sub">Tell the agent what you’re trying to do — it knows every solution in the portfolio and will point you to the right one.</p>
 
       <div class="chat" id="chat">
         <div class="chat__panel" id="chatPanel">
@@ -125,14 +125,20 @@
           <form class="prompt" id="promptForm" autocomplete="off">
             <div class="prompt__field">
               <span class="prompt__caret"></span>
-              <input class="prompt__input" id="promptInput" type="text" placeholder="nike.com" aria-label="Your answer" spellcheck="false">
+              <input class="prompt__input" id="promptInput" type="text" placeholder="Describe the problem in your own words" aria-label="Your answer" spellcheck="false">
               <button class="prompt__send" id="promptSend" type="submit" aria-label="Send">
                 <svg viewBox="0 0 18 18" width="16" height="16"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
             </div>
           </form>
         </div>
-        <p class="chat__hint" id="chatHint">Try <button class="chat__eg" data-eg="nike.com">nike.com</button>, <button class="chat__eg" data-eg="airbnb.com">airbnb.com</button> or your own</p>
+        <div class="chat__solves" id="solveChips" role="group" aria-label="Common questions">
+          <button type="button" data-solve="brand-health">How can I track my brand’s health?</button>
+          <button type="button" data-solve="influencer">I need influencer marketing</button>
+          <button type="button" data-solve="ai-visibility">How do AI models describe my brand?</button>
+          <button type="button" data-solve="survey">I want to run a quick survey</button>
+        </div>
+        <p class="chat__hint" id="chatHint">Or paste your website — <button class="chat__eg" data-eg="nike.com">nike.com</button>, <button class="chat__eg" data-eg="airbnb.com">airbnb.com</button> — and I’ll build your dashboard live, in about a minute.</p>
       </div>
     </div>
   </section>
