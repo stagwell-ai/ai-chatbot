@@ -58,65 +58,37 @@ const PRODUCTS = [
     url: 'https://www.themarketingcloud.com/marketplace/numetrix' },
 ];
 
-/* house order: IMAI leads the big row (the engine centres it on load),
-   BERA closes it. The small row keeps the sheet's remaining order. */
-const BIG = ['imai', 'questbrand', 'geopulse', 'bera'];
-
-const BIGART = {
-  imai:       ['fcard--teal fcard--video',
-    `<video class="fcard__video" src="/assets/img/imai.mp4" autoplay muted loop playsinline></video>`],
-  /* Brand Performance Tracking: a quiet sparkline of bars, on navy */
-  questbrand: ['fcard--dark', `<span class="ca-bars">${[34, 48, 40, 60, 52, 74, 66]
-    .map(h => `<i style="--h:${h}%"></i>`).join('')}</span>`],
-  /* AI Search Visibility: a scatter of citation chips, a few lit up —
-     the "your brand, mentioned" motif */
-  geopulse:   ['fcard--amber', `<span class="ca-chips">${[0, 1, 0, 0, 1, 0, 1, 0]
-    .map(on => `<i${on ? ' class="on"' : ''}></i>`).join('')}</span>`],
-  bera:       ['fcard--img',
-    `<img class="fcard__img" src="/assets/img/bera.jpg" alt="" loading="lazy">`],
-};
-
-/* one framed dashboard fragment per small card — the Catalogue's minis.
-   Reused verbatim where a product survives the re-cut; dropped where the
-   product it illustrated is no longer in the lineup. */
-const SMMINI = {
-  questdiy: `<span class="cmini mini-ask">
-      <svg viewBox="0 0 12 12" width="9" height="9"><circle cx="5.2" cy="5.2" r="3.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 8l2.6 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-      <b>Would buyers pay more for repairability?</b><i class="mini-caret"></i></span>`,
-  numetrix: `<span class="cmini mini-saydo">
-      <span><b>Say</b><span class="mini-bar"><i style="--w:34%"></i></span><em>34%</em></span>
-      <span><b>Do</b><span class="mini-bar"><i style="--w:61%"></i></span><em>61%</em></span></span>`,
-};
+/* every product now carries its own ambient film (rendered Aug 26, from
+   assets/seedance-carousel-prompts.txt) at /assets/img/cloud/<id>.mp4 with
+   a matching poster frame — the poster keeps the tile from going blank on
+   iOS data-saver, which defers video bytes. All ten render as big cards,
+   split across the two bands: IMAI leads band one (the engine centres it
+   on load), band two drifts the other way. */
+const ROW1 = ['imai', 'questbrand', 'questdiy', 'bera', 'unlock'];
+const ROW2 = ['knowledge-machine', 'unicepta', 'geopulse', 'targeting-machine', 'numetrix'];
 
 const P = id => PRODUCTS.find(p => p.id === id);
 
-const bigCard = p => {
-  const [cls, art] = BIGART[p.id];
-  return `<a class="fcard ${cls}" href="${esc(p.url)}" target="_blank" rel="noopener">
-    <span class="fcard__art">${art}</span>
+const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(p.url)}" target="_blank" rel="noopener">
+    <span class="fcard__art"><video class="fcard__video" src="/assets/img/cloud/${p.id}.mp4"
+      poster="/assets/img/cloud/${p.id}.jpg" autoplay muted loop playsinline></video></span>
     <span class="fcard__k">${esc(p.name)}</span>
     <span class="fcard__t"><b>${esc(p.title)}</b><i>${esc(p.line)}</i>
       <em class="btn btn--sm">Visit site ↗</em></span>
   </a>`;
-};
-const smCard = p => `<a class="scard" href="${esc(p.url)}" target="_blank" rel="noopener">
-    <span class="scard__t"><b>${esc(p.title)}</b><i>${esc(p.line)}</i></span>
-    ${SMMINI[p.id] ? `<span class="scard__mini">${SMMINI[p.id]}</span>` : ''}
-    <em class="btn btn--xs">Visit site ↗</em>
-  </a>`;
 
 /* each row is its content twice, so translateX(-50%) loops seamlessly */
-const bigRow = BIG.map(id => bigCard(P(id))).join('');
-const smRow = PRODUCTS.filter(p => !BIG.includes(p.id)).map(smCard).join('');
-flowBig.insertAdjacentHTML('afterbegin', `<div class="flow__row">${bigRow}${bigRow}</div>`);
-flowSm.insertAdjacentHTML('afterbegin', `<div class="flow__row">${smRow}${smRow}</div>`);
+const row1 = ROW1.map(id => bigCard(P(id))).join('');
+const row2 = ROW2.map(id => bigCard(P(id))).join('');
+flowBig.insertAdjacentHTML('afterbegin', `<div class="flow__row">${row1}${row1}</div>`);
+flowSm.insertAdjacentHTML('afterbegin', `<div class="flow__row">${row2}${row2}</div>`);
 
 /* drift and paddles share one offset per row — same engine as the Catalogue */
 const FLOWS = [
   /* centre:true parks the big row so its first card — IMAI — sits mid-viewport
      on load, holds long enough to be read, then drifts left */
   { el: $('#flowBig .flow__row'), dir: 1, speed: 24, off: 0, vel: 0, centre: true },
-  { el: $('#flowSm .flow__row'), dir: -1, speed: 30, off: 0, vel: 0 },
+  { el: $('#flowSm .flow__row'), dir: -1, speed: 20, off: 0, vel: 0 },
 ];
 
 const HOLD = 1600;
