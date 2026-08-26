@@ -58,14 +58,31 @@ const PRODUCTS = [
     url: 'https://www.themarketingcloud.com/marketplace/numetrix' },
 ];
 
-/* every product now carries its own ambient film (rendered Aug 26, from
+/* every product carries its own ambient film (rendered Aug 26, from
    assets/seedance-carousel-prompts.txt) at /assets/img/cloud/<id>.mp4 with
    a matching poster frame — the poster keeps the tile from going blank on
-   iOS data-saver, which defers video bytes. All ten render as big cards,
-   split across the two bands: IMAI leads band one (the engine centres it
-   on load), band two drifts the other way. */
-const ROW1 = ['imai', 'questbrand', 'questdiy', 'bera', 'unlock'];
-const ROW2 = ['knowledge-machine', 'unicepta', 'geopulse', 'targeting-machine', 'numetrix'];
+   iOS data-saver, which defers video bytes. All ten films ride the big
+   band up top (IMAI leads; the engine centres it on load); the small band
+   below re-introduces each company by NAME — icon, name, description —
+   drifting the other way. */
+const BIG = ['imai', 'questbrand', 'questdiy', 'bera', 'unlock',
+  'knowledge-machine', 'unicepta', 'geopulse', 'targeting-machine', 'numetrix'];
+
+/* one line icon per company — themed to its solution, drawn in-house */
+const I = d => `<svg viewBox="0 0 24 24" width="26" height="26" fill="none"
+    stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const ICONS = {
+  questbrand:         I('<path d="M3 18l5-6 4 3 6-8"/><path d="M3 21h18" opacity=".4"/>'),
+  questdiy:           I('<rect x="4" y="3" width="16" height="18" rx="2.5"/><circle cx="8.6" cy="8.5" r="1.2"/><path d="M12 8.5h4.6"/><circle cx="8.6" cy="12.5" r="1.2"/><path d="M12 12.5h4.6"/><circle cx="8.6" cy="16.5" r="1.2"/><path d="M12 16.5h3"/>'),
+  bera:               I('<path d="M12 21V11"/><path d="M12 14c0-3 2.4-4.6 5-5"/><path d="M12 11c0-3-2.4-4.6-5-5"/><circle cx="18.6" cy="8.4" r="1.8"/><circle cx="5.4" cy="5.4" r="1.8"/><circle cx="12" cy="21" r="0.4"/>'),
+  unlock:             I('<circle cx="9" cy="8.6" r="3.1"/><path d="M3.6 19.4c.7-3 2.9-4.8 5.4-4.8s4.7 1.8 5.4 4.8"/><circle cx="16.8" cy="9.6" r="2.4" opacity=".55"/><path d="M15.2 14.9c2.4-.4 4.6 1 5.4 3.6" opacity=".55"/>'),
+  'knowledge-machine': I('<circle cx="12" cy="12" r="2"/><path d="M12 5.5a6.5 6.5 0 016.5 6.5" opacity=".85"/><path d="M12 2a10 10 0 0110 10" opacity=".45"/><path d="M12 12l5.4 5.4"/>'),
+  unicepta:           I('<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c-5.5 5.4-5.5 12.6 0 18"/><path d="M12 3c5.5 5.4 5.5 12.6 0 18"/>'),
+  imai:               I('<circle cx="11" cy="9" r="3.2"/><path d="M5 20c.8-3.4 3.2-5.4 6-5.4 1.4 0 2.7.5 3.8 1.4"/><path d="M18 13.6l.9 2 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z"/>'),
+  geopulse:           I('<circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.3 15.3L21 21"/><path d="M10.5 7.6l.9 2 2.1.3-1.6 1.4.4 2.1-1.8-1-1.8 1 .4-2.1-1.6-1.4 2.1-.3z" stroke-width="1.2"/>'),
+  'targeting-machine': I('<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="4.6" opacity=".6"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/><path d="M12 1.8v3M12 19.2v3M1.8 12h3M19.2 12h3" opacity=".5"/>'),
+  numetrix:           I('<path d="M12 21s6.4-5.5 6.4-10.4A6.4 6.4 0 0012 4.2a6.4 6.4 0 00-6.4 6.4C5.6 15.5 12 21 12 21z"/><circle cx="12" cy="10.6" r="2.1"/>'),
+};
 
 const P = id => PRODUCTS.find(p => p.id === id);
 
@@ -77,11 +94,18 @@ const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(p.ur
       <em class="btn btn--sm">Visit site ↗</em></span>
   </a>`;
 
+/* the small card leads with the company itself: icon, name, description */
+const smCard = p => `<a class="scard" href="${esc(p.url)}" target="_blank" rel="noopener">
+    <span class="scard__ico">${ICONS[p.id] || ''}</span>
+    <span class="scard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i></span>
+    <em class="btn btn--xs">Visit site ↗</em>
+  </a>`;
+
 /* each row is its content twice, so translateX(-50%) loops seamlessly */
-const row1 = ROW1.map(id => bigCard(P(id))).join('');
-const row2 = ROW2.map(id => bigCard(P(id))).join('');
-flowBig.insertAdjacentHTML('afterbegin', `<div class="flow__row">${row1}${row1}</div>`);
-flowSm.insertAdjacentHTML('afterbegin', `<div class="flow__row">${row2}${row2}</div>`);
+const bigRow = BIG.map(id => bigCard(P(id))).join('');
+const smRow = PRODUCTS.map(smCard).join('');
+flowBig.insertAdjacentHTML('afterbegin', `<div class="flow__row">${bigRow}${bigRow}</div>`);
+flowSm.insertAdjacentHTML('afterbegin', `<div class="flow__row">${smRow}${smRow}</div>`);
 
 /* drift and paddles share one offset per row — same engine as the Catalogue */
 const FLOWS = [
