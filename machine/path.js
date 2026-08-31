@@ -151,15 +151,16 @@ function subSentence(matched) {
     : "Here's the capability that fits what you told us.";
 }
 
-/* utm_source=stagwell-ai · utm_medium=routing · utm_campaign (session's, or
-   'master') · sai_route — every external product link carries all four. */
-function attributedUrl(baseUrl, session, route) {
+/* utm_source=stagwell-ai · utm_medium (routing, or 'cross-discovery' for the
+   surface-D row) · utm_campaign (session's, or 'master') · sai_route — every
+   external product link carries all four. */
+function attributedUrl(baseUrl, session, route, medium) {
   if (!baseUrl) return null;
   let u;
   try { u = new URL(baseUrl); } catch (e) { return baseUrl; }
   const params = new URLSearchParams(u.search);
   params.set('utm_source', 'stagwell-ai');
-  params.set('utm_medium', 'routing');
+  params.set('utm_medium', medium || 'routing');
   params.set('utm_campaign', (session && session.attribution && session.attribution.utm_campaign) || 'master');
   params.set('sai_route', route || '');
   u.search = params.toString();
@@ -170,13 +171,93 @@ function attributedUrl(baseUrl, session, route) {
    — solutions.json's own url:null products (no public site yet) render the
    kit's placeholder discipline instead of a dead link. handoff_click fires
    only from the real link; a disabled placeholder emits nothing. */
-function productLinkHTML(solution, session, route, label, cls) {
+function productLinkHTML(solution, session, route, label, cls, medium) {
   if (solution && solution.url) {
-    const href = attributedUrl(solution.url, session, route);
+    const href = attributedUrl(solution.url, session, route, medium);
     return `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener"
       data-handoff data-solution="${esc(solution.id)}" data-url="${esc(solution.url)}" data-route="${esc(route)}">${esc(label)}</a>`;
   }
   return `<span class="${cls} is-disabled" aria-disabled="true">${esc(label)} <i>[PRODUCT SITE — pending]</i></span>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SURFACE D — "Teams solving this usually also ask about…"
+
+   solutions.json names four surfaces; D is this row, and its own definition
+   says when it runs: "shown after the primary match is established". So it
+   reads the PRIMARY matched solution's companions list and nothing else —
+   the sibling products that entry itself points at, resolved back through
+   solutions.json for the facts a quiet card needs.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const CROSS_HEADER = 'Teams solving this usually also ask about…';
+const CROSS_MAX = 3;
+
+/* One entry's companions list is not a list at all: GEOPulse carries
+   companions:["all"] — "D: universal companion" in its own shownWhen, a
+   statement about GEOPulse rather than a set of ids. 'all' is therefore
+   skipped and these two stand in: its shownWhen also puts it beside brand
+   work and the reputation/knowledge conversation, which is what these are. */
+const COMPANIONS_ALL_FALLBACK = ['questbrand', 'knowledge_machine'];
+
+/* solutions.json, numetrix: "firmographic trigger: retail/QSR/venue
+   footprint detected — offered even unasked". The visitor never has to ask
+   for real-world behavior measurement; a category with a physical footprint
+   is the ask. restaurant/hospitality are the same footprint said in the
+   other words research.industry (free text from the LLM) tends to use. */
+const FOOTPRINT_RE = /retail|qsr|restaurant|venue|hospitalit/i;
+const FOOTPRINT_REASON = 'Suggested for your category';
+
+function companionIds(primary) {
+  const raw = (primary && Array.isArray(primary.companions)) ? primary.companions.map(String) : [];
+  const real = raw.filter(id => id && id !== 'all');
+  if (raw.indexOf('all') === -1) return real;
+  return real.concat(COMPANIONS_ALL_FALLBACK.filter(id => real.indexOf(id) === -1));
+}
+
+function researchIndustry(session) {
+  try {
+    const r = (session && session.research) || (eng() && eng().session && eng().session.research);
+    return String((r && r.industry) || '');
+  } catch (e) { return ''; }
+}
+
+/* one quiet card's data — never the solution object itself, so the render
+   side can stay dumb about solutions.json's shape. */
+function crossCard(solution, reason) {
+  return {
+    id: solution.id,
+    name: solution.name,
+    body: firstSentences(solution.positioning),
+    whoFor: solution.whoFor || '',
+    reason: reason || null,
+    solution
+  };
+}
+
+function buildCrossDiscovery(primary, matchedIds, list, session) {
+  const seen = (matchedIds || []).slice();
+  if (primary && primary.id && seen.indexOf(primary.id) === -1) seen.push(primary.id);
+
+  const cards = [];
+  companionIds(primary).forEach(id => {
+    if (cards.length >= CROSS_MAX) return;
+    if (seen.indexOf(id) !== -1) return;          /* already a matched card */
+    const s = list.find(x => x && x.id === id);
+    if (!s) return;
+    seen.push(id);
+    cards.push(crossCard(s, null));
+  });
+
+  /* the unasked one, appended after the companions it did not displace.
+     (With today's data every companions list is ≤ 2, so the row is still
+     three cards at most; the CROSS_MAX cap above is on companions alone.) */
+  if (FOOTPRINT_RE.test(researchIndustry(session)) && seen.indexOf('numetrix') === -1) {
+    const s = list.find(x => x && x.id === 'numetrix');
+    if (s) cards.push(crossCard(s, FOOTPRINT_REASON));
+  }
+
+  return cards;
 }
 
 /* ─────────────────────────── VIEW MODEL ─────────────────────────── */
@@ -186,8 +267,10 @@ function buildViewModel(session, decision) {
   const tier = decision.tier;
   const matchedRaw = Array.isArray(decision.matched) ? decision.matched : [];
 
+  const matchedIds = [];
   const matched = matchedRaw.map(m => {
     const solution = resolveSolution(m, tier, solutions);
+    if (solution && solution.id) matchedIds.push(solution.id);
     const body = solution ? firstSentences(solution.positioning)
       : (decision.cellNote || 'A dedicated capability matched to what you told us.');
     return {
@@ -199,7 +282,10 @@ function buildViewModel(session, decision) {
     };
   });
 
+  /* matchedRaw[0] is the primary because engine.js already ranked it there
+     (sprint 6 ICP boosts) — surface D follows whatever it decided. */
   const primarySolution = matchedRaw.length ? resolveSolution(matchedRaw[0], tier, solutions) : null;
+  const cross = buildCrossDiscovery(primarySolution, matchedIds, solutions, session);
 
   let askedCount = 0;
   try {
@@ -213,6 +299,7 @@ function buildViewModel(session, decision) {
     eyebrow: `BASED ON YOUR ${countWord(askedCount)} ANSWERS`,
     sub: subSentence(matchedRaw),
     matched,
+    cross,
     route: decision.route,
     primarySolution,
     session
@@ -229,6 +316,35 @@ function cardHTML(m) {
       <p class="pathcard__why">Why matched: ${esc(m.why)}</p>
       ${m.credit ? `<span class="pathcard__credit">powered by ${esc(m.credit)}</span>` : ''}
     </article>`;
+}
+
+/* surface D's quiet card: name, the positioning opener, who it's for, and an
+   attributed link out (utm_medium=cross-discovery, so the row's traffic is
+   separable from the routing screen's own handoffs). url:null products get
+   the same disabled placeholder discipline as everywhere else, via the same
+   productLinkHTML — which also means these links carry [data-handoff] and
+   ride the existing handoff_click wiring with no second code path. */
+function crossCardHTML(c, session, route) {
+  const label = 'See ' + c.name + ' →';
+  return `
+    <article class="crosscard">
+      <h3>${esc(c.name)}</h3>
+      <p class="crosscard__body">${esc(c.body)}</p>
+      ${c.whoFor ? `<p class="crosscard__who">${esc(c.whoFor)}</p>` : ''}
+      <div class="crosscard__foot">
+        ${c.reason ? `<p class="crosscard__tag">${esc(c.reason)}</p>` : ''}
+        ${productLinkHTML(c.solution, session, route, label, 'crosscard__link', 'cross-discovery')}
+      </div>
+    </article>`;
+}
+
+function crossSectionHTML(vm) {
+  if (!vm.cross.length) return '';
+  return `
+    <div class="path__section path__section--cross">
+      <p class="cross__head">${esc(CROSS_HEADER)}</p>
+      <div class="crosscards">${vm.cross.map(c => crossCardHTML(c, vm.session, vm.route)).join('')}</div>
+    </div>`;
 }
 
 /* [RECOMMENDED] / [SALES-LED] / [SELF-SERVICE] — three fixed columns, the
@@ -335,6 +451,8 @@ function sectionHTML(vm) {
         </div>
         <div class="pathcards">${vm.matched.map(cardHTML).join('')}</div>
       </div>` : ''}
+
+      ${crossSectionHTML(vm)}
 
       <div class="path__section">
         <p class="path__label">CHOOSE HOW TO CONTINUE</p>

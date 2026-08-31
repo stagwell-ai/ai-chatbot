@@ -23,7 +23,8 @@
      .classify(text)       → Promise<domain ids[]>, multi-domain, ranked
      .classifyFull(text)   → Promise<{domains,company,employees,human,live}>
      .tierFromEmployees(n) .tierFromText(t)   → 'smb'|'mid_market'|'enterprise'
-     .route()              → the full decision object
+     .boostScore(id)       → 0–3 ICP score for a domain (+2 industry, +1 role)
+     .route()              → the full decision object (matched[] boost-ranked)
      .extractDomain(text)  a website in the first message
      .reset()              fresh session (keeps the event log)
      ._ask(body, ms)       POST /api/ask, rejects on anything but ok:true
@@ -695,14 +696,88 @@ function whyLine(domain, tier) {
   return parts.join(' + ');
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ICP BOOSTS (sprint 6) — routing.json already says who each domain is for:
+   industryBoost lists the categories that domain sells into, icpRoles the
+   titles that buy it. When a visitor names two or more problems, those two
+   lists are the only evidence in the contract for which problem to lead
+   with — so they, and nothing else, order the match.
+
+   THE GATE: boosts change ranking, never override the matrix. Everything
+   below reorders matched[] (and therefore primaryDomain); the route itself
+   is still the first passing override, else the primary domain's own cell,
+   tested exactly as it was before. Two consequences worth naming:
+     · a single-domain visitor is untouched — one domain has nothing to
+       reorder, and a score of 3 does not promote it out of its cell;
+     · override 1 (2+ domains → consultative) fires for every visitor whose
+       order could change at all, so a reordering can never move the route.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* q3 stores four chip values; routing.json writes titles the way a marketer
+   would ("Agency MD", "Chief Data Officer", "Head of Insights"). This is the
+   join between the two vocabularies — a seniority matches a domain's ICP
+   when any of its words appears as a whole word in any icpRoles entry. */
+const ROLE_AFFINITY = {
+  c_suite:     ['cmo', 'cco', 'cfo', 'chief', 'md'],
+  director_vp: ['vp', 'director', 'head'],
+  founder:     ['founder', 'owner'],
+  manager:     ['manager']
+};
+
+/* +2 — research.industry is free text (the model's own words, or a seeded
+   category), and industryBoost entries are short category names, so the
+   comparison has to run both ways: "Retail & Ecommerce" contains "Retail",
+   and "QSR" is contained by "QSR / fast casual". Anything shorter than two
+   characters is treated as unknown rather than as a match on everything. */
+function industryBoosted(domain) {
+  const industry = norm(session.research && session.research.industry);
+  if (industry.length < 2) return false;
+  return ((domain && domain.industryBoost) || []).some(entry => {
+    const t = norm(entry);
+    return t.length >= 2 && (t.indexOf(industry) !== -1 || industry.indexOf(t) !== -1);
+  });
+}
+
+/* +1 — the visitor's seniority lands inside this domain's icpRoles. */
+function roleBoosted(domain) {
+  const tokens = ROLE_AFFINITY[session.slots.role_seniority];
+  if (!tokens) return false;
+  return ((domain && domain.icpRoles) || []).some(role => {
+    const t = norm(role);
+    return tokens.some(tok => kwRe(tok).test(t));
+  });
+}
+
+/* the whole score in one number: 0–3. Public as SAI.boostScore(id) so a
+   surface can explain an ordering without re-deriving the rule. */
+function boostScore(domainId) {
+  const d = (domainId && typeof domainId === 'object') ? domainId : domainById(domainId);
+  if (!d) return 0;
+  return (industryBoosted(d) ? 2 : 0) + (roleBoosted(d) ? 1 : 0);
+}
+
+/* stable sort, highest first: ties keep the order the visitor said them in.
+   (Array#sort is stable per ES2019, but the index tiebreak states it rather
+   than relying on it.) */
+function rankByBoost(domains) {
+  if (domains.length < 2) return domains.slice();
+  return domains
+    .map((id, i) => ({ id, i, boost: boostScore(id) }))
+    .sort((a, b) => (b.boost - a.boost) || (a.i - b.i))
+    .map(x => x.id);
+}
+
 let lastDecisionKey = null;
 
 function route() {
   const known = domainIds();
-  const domains = (Array.isArray(session.slots.problem_domains) ? session.slots.problem_domains : [])
+  const stated = (Array.isArray(session.slots.problem_domains) ? session.slots.problem_domains : [])
     .map(String)
     .filter(id => known.indexOf(id) !== -1)
     .filter((id, i, a) => a.indexOf(id) === i);
+
+  /* the one thing boosts do: which of the visitor's problems leads. */
+  const domains = rankByBoost(stated);
 
   const tier = resolveTier();
   const primaryDomain = domains.length ? domains[0] : null;
@@ -738,7 +813,8 @@ function route() {
       domain: id,
       label: d.label || id,
       solution: d.solution || null,
-      why: whyLine(d, tier)
+      why: whyLine(d, tier),
+      boost: boostScore(d.id ? d : id)    /* why this one is where it is */
     };
   });
 
@@ -796,6 +872,7 @@ const SAI = {
   employeesFromText,
   employeesFromClaim,
   resolveTier,
+  boostScore,                   /* 0–3: ICP evidence for leading with a domain */
   route,
   extractDomain,
   domainIds,

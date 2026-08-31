@@ -127,3 +127,27 @@
   font-size:var(--t-sm);color:var(--navy);font-weight:600;text-decoration:underline;
   text-underline-offset:3px;cursor:pointer}
 .snapcap__pathlink:hover{color:var(--teal)}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SURFACE D — "Teams solving this usually also ask about…" (machine/path.js).
+   Deliberately quieter than a matched card: no amber rule, no credit chip,
+   flat surface. It is a suggestion, and it should read like one.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.path__section--cross{margin-top:34px;padding-top:26px;border-top:1px solid var(--line)}
+.cross__head{margin:0 0 14px;font-size:var(--t-sm);font-weight:600;color:var(--ink-2)}
+.crosscards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.crosscard{background:transparent;border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:16px 18px 18px;display:flex;flex-direction:column;gap:7px}
+.crosscard h3{margin:0;font-size:.9375rem;font-weight:600;letter-spacing:-.006em;color:var(--ink)}
+.crosscard__foot{margin-top:auto;padding-top:6px;display:flex;flex-direction:column;
+  align-items:flex-start;gap:8px}
+.crosscard__tag{margin:0;align-self:flex-start;font-family:var(--mono);font-size:9px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--teal);
+  border:1px solid var(--line-2);border-radius:999px;padding:3px 8px}
+.crosscard__body{margin:0;font-size:var(--t-xs);color:var(--ink-2);line-height:1.55}
+.crosscard__who{margin:0;font-size:var(--t-xs);color:var(--ink-3);font-style:italic}
+.crosscard__link{align-self:flex-start;font-family:var(--sans);
+  font-size:var(--t-xs);font-weight:600;color:var(--navy);text-decoration:none}
+.crosscard__link:hover{text-decoration:underline;text-underline-offset:3px}
+.crosscard__link.is-disabled{color:var(--ink-4);font-weight:400;cursor:not-allowed}
+.crosscard__link i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.02em}
