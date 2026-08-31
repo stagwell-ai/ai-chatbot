@@ -17,7 +17,8 @@
      .data                 the resolved STAGDATA bundle
      .session              { attribution, slots, research, humanAsk }
      .events               emit / list / stored / clear  ("sent to HubSpot")
-     .captureAttribution() silent UTM + referrer capture, campaign prefill
+     .captureAttribution() silent UTM + referrer capture, campaign prefill;
+                           /p/{id} counts as ?utm_campaign={id} (real params win)
      .setSlot(n, v, src)   later writes win; visitor overwrites correct
      .classify(text)       → Promise<domain ids[]>, multi-domain, ranked
      .classifyFull(text)   → Promise<{domains,company,employees,human,live}>
@@ -314,6 +315,24 @@ const events = {
    ATTRIBUTION — SPEC non-negotiable #4: captured silently on entry and it
    rides with every handoff after. Nothing here is ever shown or asked.
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* A product landing is /p/{campaign} (vercel.json rewrites it to the campaign
+   page, so the id only ever survives in the path). Standing on that page IS
+   the campaign — it says exactly what ?utm_campaign={id} says, and it has to
+   pre-fill the same slots, or the page's own creative would get asked back as
+   a question. Only ids that campaigns.json actually declares count; a real
+   utm param always wins, because that one came from the ad. */
+const CAMPAIGN_PATH = /^\/p\/([a-z0-9-]+)\/?$/;
+
+function campaignFromPath() {
+  let pathname;
+  try { pathname = (window.location && window.location.pathname) || ''; }
+  catch (e) { return null; }
+  const m = String(pathname).match(CAMPAIGN_PATH);
+  if (!m) return null;
+  return campaignById(m[1]) ? m[1] : null;
+}
+
 function captureAttribution() {
   const a = session.attribution;
   let params;
@@ -327,6 +346,9 @@ function captureAttribution() {
     else if (k === 'source' && !a.utm_source) a.utm_source = value;
     else if (k === 'product' || k === 'product_interest') a.product_interest = value;
   });
+
+  const pathCampaign = campaignFromPath();
+  if (pathCampaign && !a.utm_campaign) a.utm_campaign = pathCampaign;
 
   try { a.referrer = document.referrer || null; } catch (e) { a.referrer = null; }
   a.landedAt = new Date().toISOString();
@@ -779,6 +801,7 @@ const SAI = {
   domainIds,
   domain: domainById,
   campaign: campaignById,
+  campaignFromPath,             /* /p/{id} → the campaign id, or null */
   reset,
 
   /* the seams. Swap either for a test double; both fall back to keywords. */

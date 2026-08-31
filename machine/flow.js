@@ -17,6 +17,15 @@
      .reset()                          → back to before start()
      .researchWaitMs                   → how long q4 waits for research (4s)
 
+   A campaign entry (attribution matched a campaigns.json id other than
+   master) opens on that campaign's own opener — id 'campaign-opener', slot
+   domain_detail, copy and chips straight out of the JSON plus the
+   cross-discovery chip. It is one question that does the work of two (q1 is
+   already answered by the ad's prefill, its answer is q6's detail), so a
+   product entry always reaches the snapshot in fewer questions than the
+   master landing does. "What else fits my problem?" drops the campaign bias
+   and hands the visitor back to the ordinary q1.
+
    The skip rules, in one place (SPEC F2 · questions.json):
      · a question whose slot the visitor has ALREADY filled in their own words
        is never asked again — that is q1 after a chip or an opening message,
@@ -36,6 +45,18 @@
 
 const ORDER = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'];
 const MAX_DOMAINS = 3;
+
+/* ── the campaign opener (SPEC S2) ──
+   A product landing's agent panel is pre-seeded from campaigns.json: the
+   opener sentence, the product's chips, and the cross-discovery chip. The
+   opener is not a seventh question — campaigns.json calls it "fuses Q1 +
+   adaptive Q6 — one less question": q1 is already answered by the ad's
+   prefill, and the opener's answer IS the q6 detail, so both are skipped
+   behind it. It carries a stable id of its own so the event console can
+   tell the exchange apart from the six standard ones. */
+const OPENER_ID = 'campaign-opener';
+const CROSS_VALUE = '__cross__';
+const CROSS_LABEL = 'What else fits my problem?';
 
 const eng = () => (typeof window !== 'undefined' && window.SAI) || null;
 const res = () => (typeof window !== 'undefined' && window.SAIRESEARCH) || null;
@@ -61,6 +82,15 @@ function campaign() {
   return id ? S.campaign(id) : null;
 }
 
+/* The campaign whose opener this session should open on: a real product
+   campaign (master is the plain landing, which opens on q1) that actually
+   declares an opener. */
+function openerCampaign() {
+  const c = campaign();
+  if (!c || c.id === 'master' || !c.opener) return null;
+  return c;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    STATE — everything the flow itself knows. The answers live in the engine's
    session; this is only the pointer and the ledger of what was asked.
@@ -68,10 +98,12 @@ function campaign() {
 function blank() {
   return {
     started: false,
-    idx: -1,            /* how far through ORDER we are */
-    current: null,      /* the question on screen, or null */
-    phase: 'asking',    /* 'asking' | 'waiting-research' | 'done' */
-    log: [],            /* [{ id, status:'asked'|'skipped', reason }] */
+    seq: ORDER.slice(),  /* the questions this session will walk, in order —
+                            a campaign entry puts its opener in front of q1 */
+    idx: -1,             /* how far through seq we are */
+    current: null,       /* the question on screen, or null */
+    phase: 'asking',     /* 'asking' | 'waiting-research' | 'done' */
+    log: [],             /* [{ id, status:'asked'|'skipped', reason }] */
     route: null
   };
 }
@@ -82,9 +114,17 @@ let listeners = [];
    SKIP RULES
    ═══════════════════════════════════════════════════════════════════════════ */
 const SLOT_OF = { q1: 'problem_domains', q2: 'company', q3: 'role_seniority',
-  q4: 'size_tier', q5: 'timing_intent', q6: 'domain_detail' };
+  q4: 'size_tier', q5: 'timing_intent', q6: 'domain_detail',
+  [OPENER_ID]: 'domain_detail' };
 
 const slotOf = id => (qById(id) && qById(id).slot) || SLOT_OF[id] || null;
+
+/* the opener was put to the visitor and they answered it with something
+   other than the cross-discovery chip — so q6's slot is already full */
+function openerAnswered() {
+  return st.log.some(e => e.id === OPENER_ID && e.status === 'asked') &&
+    !isEmpty(slots().domain_detail);
+}
 
 /* Why we would not ask this question, or null if we would.
    The general rule is "never ask what the visitor has already told us" —
@@ -95,7 +135,18 @@ function skipReason(id) {
   const S = eng();
   const s = slots();
 
-  if (id === 'q6') return q6SkipReason();
+  /* the opener is the campaign entry's first move; it is never skipped
+     while it still has an answer to collect */
+  if (id === OPENER_ID) return isEmpty(s.domain_detail) ? null : 'answered_earlier';
+
+  /* q6 owns domain_detail, and the campaign opener has just filled it —
+     campaigns.json's "one less question", made good. */
+  if (id === 'q6') {
+    if (!isEmpty(s.domain_detail)) {
+      return openerAnswered() ? 'answered_in_campaign_opener' : 'answered_earlier';
+    }
+    return q6SkipReason();
+  }
 
   if (id === 'q2' && !isEmpty(s.company_domain)) return 'website_in_first_message';
 
@@ -327,9 +378,53 @@ function chipsFromCopy(copy) {
   return parts.map(p => ({ label: p.charAt(0).toUpperCase() + p.slice(1), value: p }));
 }
 
+/* ── the opener as the UI sees it ──
+   campaigns.json chips are bare strings, so the value is the label. Two
+   rules on top of that:
+
+     · the cross-discovery chip is always on the panel (SPEC S2 names it as
+       part of the pattern). Campaigns that already list it keep their own
+       position for it; the rest get it appended.
+     · a chip whose label is a bracketed placeholder — "[CHIP SET — from
+       NewVoices positioning]" — is passed through flagged, not hidden. The
+       kit mandates visible placeholders for copy nobody has written yet;
+       the UI renders it disabled, and answering it is a no-op here. */
+const isCrossLabel = label => norm(label) === norm(CROSS_LABEL);
+const isPlaceholder = label => String(label == null ? '' : label).trim().charAt(0) === '[';
+
+function openerChips(c) {
+  const chips = ((c && c.chips) || []).map(raw => {
+    const label = String(raw);
+    if (isCrossLabel(label)) return { label, value: CROSS_VALUE };
+    const chip = { label, value: label };
+    if (isPlaceholder(label)) chip.placeholder = true;
+    return chip;
+  });
+  if (!chips.some(ch => ch.value === CROSS_VALUE)) {
+    chips.push({ label: CROSS_LABEL, value: CROSS_VALUE });
+  }
+  return chips;
+}
+
+function openerView(c) {
+  return {
+    id: OPENER_ID,
+    slot: 'domain_detail',
+    copy: c.opener || '',
+    chips: openerChips(c),
+    mode: null,
+    campaign: c.id,
+    allowFreeText: true
+  };
+}
+
 function questionView() {
   const id = st.current;
   if (!id) return null;
+  if (id === OPENER_ID) {
+    const c = openerCampaign();
+    return c ? openerView(c) : null;
+  }
   const q = qById(id);
   if (!q) return null;
 
@@ -377,7 +472,7 @@ function questionView() {
 function progress() {
   const askedCount = st.log.filter(e => e.status === 'asked').length;
   let ahead = 0;
-  for (let i = st.idx + 1; i < ORDER.length; i++) if (!skipReason(ORDER[i])) ahead++;
+  for (let i = st.idx + 1; i < st.seq.length; i++) if (!skipReason(st.seq[i])) ahead++;
 
   const total = Math.max(1, askedCount + ahead);
   const done = st.phase === 'done';
@@ -430,9 +525,9 @@ async function settleResearch() {
 }
 
 async function advance() {
-  while (st.idx < ORDER.length - 1) {
+  while (st.idx < st.seq.length - 1) {
     st.idx++;
-    const id = ORDER[st.idx];
+    const id = st.seq[st.idx];
 
     const reason = skipReason(id);
     if (reason) { skip(id, reason); continue; }
@@ -466,9 +561,31 @@ function matchChip(chips, input) {
     String(c.value) === raw || norm(c.value) === t || norm(c.label) === t) || null;
 }
 
+/* "What else fits my problem?" — the visitor is telling us the ad brought
+   them to the wrong door. The campaign stops steering: the pre-filled
+   domains go (so q1 gets asked for real), the product interest survives as
+   attribution only — it is still true that this ad paid for the click — and
+   domain_detail stays empty so the adaptive q6 can still do its job once we
+   know what the problem actually is. */
+function clearCampaignBias() {
+  const S = eng();
+  if (!isEmpty(slots().problem_domains)) S.setSlot('problem_domains', [], 'visitor');
+  if (!isEmpty(slots().product_interest)) S.setSlot('product_interest', null, 'visitor');
+}
+
 async function applyAnswer(id, chip, text) {
   const S = eng();
   const value = chip ? chip.value : String(text || '').trim();
+
+  if (id === OPENER_ID) {
+    if (chip && chip.value === CROSS_VALUE) { clearCampaignBias(); return; }
+    S.setSlot('domain_detail', value, 'visitor');
+    /* free text here reads exactly as it does anywhere else: a website
+       answers q2 and starts research, a headcount answers q4, and a domain
+       joins only if the ad left us without one. */
+    if (!chip) applySide(await read(text), {});
+    return;
+  }
 
   if (id === 'q1') {
     if (chip) S.setSlot('problem_domains', [chip.value], 'visitor');
@@ -520,9 +637,15 @@ async function answer(input) {
   const text = String(input == null ? '' : input);
   if (!chip && !text.trim()) return state();
 
-  eng().events.emit('answer_given', {
-    id, slot: slotOf(id), text, chip: chip ? chip.value : null
-  });
+  /* a placeholder chip is unwritten copy standing in for a real option; it
+     is rendered disabled and it answers nothing */
+  if (chip && chip.placeholder) return state();
+
+  const payload = { id, slot: slotOf(id), text, chip: chip ? chip.value : null };
+  /* the cross-discovery tap is an answer like any other — same event, no new
+     type — but it says something the raw chip value doesn't */
+  if (chip && chip.value === CROSS_VALUE) payload.value = 'cross_discovery';
+  eng().events.emit('answer_given', payload);
 
   await applyAnswer(id, chip, text);
 
@@ -568,6 +691,20 @@ async function start(opts) {
 
   const chipLabel = o.chipLabel == null ? null : String(o.chipLabel);
   const initialText = o.initialText == null ? null : String(o.initialText);
+
+  /* A campaign entry opens on its own opener rather than on q1 — unless the
+     visitor arrived having already tapped a q1 chip on the master landing,
+     in which case they have answered the very question the opener fuses. */
+  const opener = chipLabel ? null : openerCampaign();
+  if (opener) st.seq = [OPENER_ID].concat(ORDER);
+
+  /* The product landing shows the opener on its own panel and hands the
+     answer over as the opening message (see convo.js's autostart). Log the
+     exchange that already happened instead of asking it a second time. */
+  if (opener && initialText) {
+    present(OPENER_ID);
+    return answer(initialText);
+  }
 
   if (chipLabel) {
     S.events.emit('answer_given', {
@@ -658,7 +795,11 @@ const api = {
   /* exposed for tests and for anyone auditing the skip decisions */
   _skipReason: skipReason,
   _q6SkipReason: q6SkipReason,
-  _domainFromLabel: domainFromLabel
+  _q6Copy: q6Copy,
+  _domainFromLabel: domainFromLabel,
+  _openerCampaign: openerCampaign,
+  _openerId: OPENER_ID,
+  _crossValue: CROSS_VALUE
 };
 
 window.SAIFLOW = api;

@@ -150,10 +150,13 @@ function renderChips(body, chips) {
   chips.forEach((c, i) => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'opt';
+    b.className = 'opt' + (c.placeholder ? ' opt--placeholder' : '');
     b.innerHTML = `<span class="opt__dot"></span>${esc(c.label)}`;
     b.style.animationDelay = `${80 + i * 60}ms`;
-    b.addEventListener('click', () => handleAnswer(c.value, c.label));
+    /* a bracketed placeholder chip is copy nobody has written yet — the kit
+       wants it visible, so it renders, disabled, and answers nothing */
+    if (c.placeholder) b.disabled = true;
+    else b.addEventListener('click', () => handleAnswer(c.value, c.label));
     wrap.appendChild(b);
   });
   body.appendChild(wrap);
@@ -517,6 +520,75 @@ async function bootstrap(raw) {
   render();
 }
 
+/* ─────────────────────────── AUTOSTART ───────────────────────────
+   The product landing (/p/{campaign}) hands its visitor to the master page
+   with what they said already in the URL:
+
+     /?utm_campaign={id}&q={their%20answer}   → begin() with that answer
+     /?utm_campaign={id}&autostart=1          → begin() cold; the campaign
+                                                opener is the first bubble
+
+   Consumed exactly once, and only on a page that actually has the composer
+   (the campaign page loads this file too). The params are wiped off the
+   visible URL before the conversation pushes /chat, so a reload or a back
+   button lands on a clean master landing rather than replaying the handoff. */
+
+let autostarted = false;
+
+function autostartRequest() {
+  let p;
+  try { p = new URLSearchParams(location.search || ''); } catch (e) { return null; }
+  /* URLSearchParams has already percent-decoded the value */
+  const q = (p.get('q') || '').trim();
+  const flag = p.get('autostart') === '1';
+  if (!q && !flag) return null;
+  return { q, flag };
+}
+
+function stripAutostartParams() {
+  try {
+    const url = new URL(location.href);
+    url.searchParams.delete('q');
+    url.searchParams.delete('autostart');
+    history.replaceState(history.state || {}, '', url.pathname + url.search + url.hash);
+  } catch (e) { /* no history API — the conversation still runs */ }
+}
+
+/* anything the visitor has already done owns the page; an autostart must
+   never interrupt a conversation or overwrite something half-typed */
+function visitorInteracted() {
+  if (active) return true;
+  const { thread, promptInput } = els();
+  if (thread && thread.children.length) return true;
+  if (promptInput && promptInput.value.trim()) return true;
+  return false;
+}
+
+async function autostart() {
+  if (autostarted) return false;
+  const req = autostartRequest();
+  if (!req) return false;
+
+  const { thread, promptForm, promptInput } = els();
+  if (!thread || !promptForm || !promptInput) return false;   /* not the master page */
+
+  autostarted = true;
+  stripAutostartParams();
+
+  try { if (window.SAI && window.SAI.ready) await window.SAI.ready; } catch (e) { /* carry on */ }
+  if (!window.SAIFLOW) return false;
+
+  /* a bare autostart=1 only means anything when an ad actually briefed this
+     session — otherwise there is nothing to open with */
+  if (!req.q) {
+    const a = (window.SAI && window.SAI.session && window.SAI.session.attribution) || {};
+    if (!a.utm_campaign) return false;
+  }
+
+  if (visitorInteracted()) return false;
+  return window.SAICONVO.begin(req.q);
+}
+
 document.addEventListener('sai:event', onSaiEvent);
 window.addEventListener('popstate', () => {
   if (location.pathname === '/chat') return;
@@ -534,6 +606,8 @@ window.SAICONVO = {
     return true;
   },
   active: () => active,
+  /* exposed for the campaign handoff's own tests; init calls it once */
+  autostart,
   submit(raw) {
     const text = (raw || '').trim();
     if (!text) { shakePrompt(); return; }
@@ -543,5 +617,11 @@ window.SAICONVO = {
     handleAnswer(text, text);
   },
 };
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => { autostart(); }, { once: true });
+} else {
+  autostart();
+}
 
 })();
