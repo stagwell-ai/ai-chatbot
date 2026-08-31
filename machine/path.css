@@ -152,7 +152,9 @@
 .crosscard__link.is-disabled{color:var(--ink-4);font-weight:400;cursor:not-allowed}
 .crosscard__link i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.02em}
 
-/* on a ~800px-tall laptop viewport, the self-serve variant's navy hero band
+/* on a laptop-height viewport (≤~920px — both 1280×800 and 1440×900 land
+   here once a matched card plus a cross-discovery row precede it), the
+   self-serve variant's navy hero band
    (route === 'self_serve' — see heroHTML in path.js) otherwise lands with its
    own sub-copy right under the fixed corner pills (.sc-pill / .vercorner,
    ~46px tall at the viewport's bottom-left/right) — three stacked
@@ -162,9 +164,15 @@
    reachable without moving or resizing anything else. Placed after the
    .path__section--cross rule above so it can win the (otherwise tied)
    cascade at this equal specificity. */
-@media(max-height:860px){
-  .path__in{padding-top:clamp(24px,3.5vh,36px)}
-  .path__section{margin-top:12px}
-  .path__section--cross{margin-top:12px}
-  .pathhero{padding:18px clamp(20px,3vw,28px)}
+@media(max-height:920px){
+  .path__in{padding-top:clamp(20px,3vh,32px)}
+  .path__section{margin-top:6px}
+  .path__section--cross{margin-top:6px}
+  .pathhero{padding:16px clamp(20px,3vw,28px)}
+  .pathcollapse{margin-top:6px}
+  .pathcol{padding:16px}
+  .pathcards{gap:12px}
 }
+
+/* same sticky-nav offset as the snapshot view */
+#pathView{scroll-margin-top:84px}

@@ -188,3 +188,7 @@
   .snapeng__row{border-color:#ccc;background:#fff}
   .snap__printfoot{margin-top:22px}
 }
+
+/* the sticky nav is ~77px tall — without this, scrollIntoView parks the
+   eyebrow underneath it (acceptance finding #4) */
+#snapView{scroll-margin-top:84px}
