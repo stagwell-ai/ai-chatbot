@@ -111,7 +111,7 @@
     <div class="hero2__in">
       <p class="eyebrow" id="heroEyebrow"><i class="pulse"></i>Stagwell.AI · Agentic solutions built by marketing experts for modern marketers</p>
       <h1 class="display" id="hero2Title">What do you need help <span class="accent">solving today?</span></h1>
-      <p class="hero2__sub" id="hero2Sub">Tell the agent what you’re trying to do — it knows every solution in the portfolio and will point you to the right one.</p>
+      <p class="hero2__sub" id="hero2Sub">Tell the agent what you’re trying to do — or just paste your website — and it will point you to the right solution, with a live snapshot of your brand to show for it.</p>
 
       <div class="chat" id="chat">
         <div class="chat__panel" id="chatPanel">
@@ -125,10 +125,8 @@
           <form class="prompt" id="promptForm" autocomplete="off">
             <div class="prompt__field">
               <span class="prompt__caret"></span>
-              <input class="prompt__input" id="promptInput" type="text" placeholder="Describe the problem in your own words" aria-label="Your answer" spellcheck="false">
-              <button class="prompt__send" id="promptSend" type="submit" aria-label="Send">
-                <svg viewBox="0 0 18 18" width="16" height="16"><path d="M9 14.5V3.5M4.4 8.1L9 3.5l4.6 4.6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
+              <input class="prompt__input" id="promptInput" type="text" placeholder="Describe your problem — or paste your website, like nike.com — and we’ll take it from there…" aria-label="Your answer" spellcheck="false">
+              <button class="prompt__send btn--gold" id="promptSend" type="submit">Ask the agent</button>
             </div>
           </form>
         </div>
@@ -138,7 +136,6 @@
           <button type="button" data-solve="ai-visibility">How do AI models describe my brand?</button>
           <button type="button" data-solve="survey">I want to run a quick survey</button>
         </div>
-        <p class="chat__hint" id="chatHint">Or paste your website — <button class="chat__eg" data-eg="nike.com">nike.com</button>, <button class="chat__eg" data-eg="airbnb.com">airbnb.com</button> — and I’ll build your dashboard live, in about a minute.</p>
       </div>
     </div>
   </section>
@@ -228,6 +225,7 @@
 <a class="vercorner" href="/versions" aria-label="Previous versions of this demo">Previous versions</a>
 
 <script src="/machine/data-loader.js"></script>
+<script src="/machine/engine.js"></script>
 <script src="/machine/shared.js"></script>
 <script src="/machine/b.js"></script>
 <script src="/machine/cloud.js"></script>

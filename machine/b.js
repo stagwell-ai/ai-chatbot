@@ -517,7 +517,7 @@ async function submit(raw) {
     Object.assign(S, numbersFor(S.domain, S.brand));
     thread.hidden = false;
     $('#chatBar').hidden = false;
-    $('#chatHint').hidden = true;
+    if ($('#chatHint')) $('#chatHint').hidden = true;
     $('#solveChips').hidden = true;
     $('#heroEyebrow').textContent = '';
     hero.classList.add('is-chatting');
