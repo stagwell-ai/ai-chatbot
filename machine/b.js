@@ -350,7 +350,8 @@ const emailExample = () =>
 
 const SCRIPT = [
   {
-    key: 'website', placeholder: 'nike.com',
+    key: 'website',
+    placeholder: 'Describe your problem — or paste your website, like nike.com — and we’ll take it from there…',
     async reply() {
       const body = aiTurn();
       await wait(REDUCED ? 40 : 460);
@@ -1137,7 +1138,7 @@ function resetB() {
   $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell.AI · Agentic solutions built by marketing experts for modern marketers';
   $('#hero2Title').innerHTML = 'What do you need help <span class="accent">solving today?</span>';
   blurWords($('#hero2Title'));
-  $('#hero2Sub').textContent = 'Tell the agent what you\u2019re trying to do \u2014 it knows every solution in the portfolio and will point you to the right one.';
+  $('#hero2Sub').textContent = 'Tell the agent what you\u2019re trying to do \u2014 or just paste your website \u2014 and it will point you to the right solution, with a live snapshot of your brand to show for it.';
   promptInput.value = ''; promptInput.placeholder = SCRIPT[0].placeholder;
   prompt.classList.remove('is-ready');
   scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
