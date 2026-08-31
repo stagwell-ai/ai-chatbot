@@ -28,8 +28,20 @@
       "destination": "/machine/b.html"
     },
     {
-      "source": "/solve",
-      "destination": "/machine/solve.html"
+      "source": "/chat",
+      "destination": "/machine/b.html"
+    },
+    {
+      "source": "/snapshot",
+      "destination": "/machine/b.html"
+    },
+    {
+      "source": "/path",
+      "destination": "/machine/b.html"
+    },
+    {
+      "source": "/p/:campaign",
+      "destination": "/machine/campaign.html"
     },
     {
       "source": "/versions",

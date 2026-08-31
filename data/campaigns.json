@@ -1,0 +1,57 @@
+{
+  "sharedRules": "Attribution captured silently on entry · a website in the first message skips the company question · snapshot revealed free after the last question · email + permission checkbox at the reveal · routing per routing.json overrides in order",
+  "campaigns": [
+    {
+      "id": "master",
+      "name": "Master campaign (Stagwell.AI brand ad)",
+      "landing": "S1 master pattern — no product branding",
+      "opener": "What do you need help solving today?",
+      "chips": ["How can I track my brand's health?", "I need influencer marketing", "How do AI models describe my brand?", "I want to run a quick survey"],
+      "prefill": { "attribution": true },
+      "routeBias": "none — the matrix decides",
+      "status": "confirmed"
+    },
+    {
+      "id": "the-machine",
+      "name": "The Machine",
+      "landing": "S2 product-branded pattern",
+      "opener": "You've just seen The Machine. Which part of your marketing workflow feels most fragmented — planning, creation, media, or measurement?",
+      "openerNote": "fuses Q1 + adaptive Q6 — one less question",
+      "chips": ["Planning & strategy", "Content creation", "Media", "Measurement", "Something else entirely"],
+      "prefill": { "attribution": true, "product_interest": "the_machine", "problem_domains": ["marketing_ops"] },
+      "routeBias": "consultative — core ICP is CMO/CCO/CDO at $1B+ enterprises; mid-market gets consultative scoping; SMB gets redirected to the concrete need the answers surface",
+      "status": "confirmed"
+    },
+    {
+      "id": "agent-cloud",
+      "name": "Agent Cloud",
+      "landing": "S2 product-branded pattern",
+      "opener": "You've just seen Agent Cloud. Which task would you hand to an agent first?",
+      "chips": ["[CHIP SET — from Agent Cloud positioning]", "What else fits my problem?"],
+      "prefill": { "attribution": true, "product_interest": "agent_cloud" },
+      "routeBias": "[to confirm with TMC] — self-serve trial if Agent Cloud ships one, otherwise demo",
+      "status": "pending_positioning"
+    },
+    {
+      "id": "targeting-machine",
+      "name": "The Targeting Machine",
+      "landing": "S2 product-branded pattern (reference wireframe W2)",
+      "opener": "You've just seen The Targeting Machine. Want me to show what it would do with your audiences?",
+      "chips": ["Build audiences from my first-party data", "Activate straight into my channels", "Find high-value niche audiences", "What else fits my problem?"],
+      "q6Override": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?",
+      "prefill": { "attribution": true, "product_interest": "targeting_machine", "problem_domains": ["audiences"] },
+      "routeBias": "demo for mid-market/enterprise; data scattered in platforms → consultative scoping; SMB → nurture with snapshot",
+      "status": "confirmed"
+    },
+    {
+      "id": "newvoices",
+      "name": "NewVoices",
+      "landing": "S2 product-branded pattern",
+      "opener": "You've just seen NewVoices. Want to see what it could do for your brand?",
+      "chips": ["[CHIP SET — from NewVoices positioning]", "What else fits my problem?"],
+      "prefill": { "attribution": true, "product_interest": "newvoices" },
+      "routeBias": "[to confirm — NewVoices to supply positioning, chips, self-serve vs. demo packaging]; the 'Let the machine call you' callback CTA is a natural fit",
+      "status": "pending_positioning"
+    }
+  ]
+}

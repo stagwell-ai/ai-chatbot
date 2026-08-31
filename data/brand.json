@@ -1,0 +1,27 @@
+{
+  "source": "Stagwell Visual Brand Guidelines 2021 (reference/StagwellVisualBrandGuidelines2021.pdf)",
+  "colors": {
+    "marigold": "#FFB81C",
+    "lightBlue": "#009CBD",
+    "navy": "#003349",
+    "brightWhite": "#F5F7F6",
+    "glacierGrey": "#C5C6C7",
+    "black": "#212322"
+  },
+  "usage": {
+    "primaryCta": "marigold bg, navy text",
+    "headlinesAndBody": "navy on brightWhite/white",
+    "accentsAndLinks": "lightBlue",
+    "darkBands": "navy bg, brightWhite text, marigold highlights"
+  },
+  "typography": {
+    "primary": { "family": "Montserrat", "headlines": "semi-bold (600), sentence case", "subheads": "light, all caps allowed", "body": "regular (400)" },
+    "accent": { "family": "Spectral", "use": "semi-bold italic, accent words in headlines ONLY — never full headlines, subheads, or body" },
+    "webFallbacks": "Montserrat, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif · Spectral, Georgia, serif"
+  },
+  "logo": {
+    "rules": ["never rotate, recolor, distort, frame, or add drop shadow", "full-color logo never on busy or dark backgrounds (use white one-color version on navy/black)", "no tagline below 150px width", "clearance = half the symbol height on all sides", "place top-left or bottom-left; don't center unless unavoidable"],
+    "note": "Stagwell.AI wordmark treatment for the demo: STAGWELL in navy + .AI in light blue (per wireframes) until an official lockup is supplied"
+  },
+  "accessibility": "minimum 44px hit targets; body text ≥14px; check contrast on marigold (use navy text, never white)"
+}

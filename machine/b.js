@@ -490,11 +490,16 @@ async function submit(raw) {
     return;
   }
 
-  /* the fold asks for a problem first: a sentence walks over to the
-     concierge with the words carried along; a domain builds the dashboard
-     right here, exactly as before */
+  /* the fold asks for a problem first: until the kit's conversation engine
+     lands (Sprint 2), a problem sentence gets a bridge reply inviting the
+     website; a domain builds the dashboard right here, exactly as before */
   if (q.key === 'website' && (/\s/.test(text) || text.endsWith('?'))) {
-    location.href = '/solve?q=' + encodeURIComponent(text);
+    S.busy = true;
+    promptInput.value = ''; prompt.classList.remove('is-ready');
+    addUser(text);
+    thread.hidden = false;
+    await say('Heard. Paste your website — like <em>nike.com</em> — and I’ll pull a live read of your brand with that problem in mind.');
+    S.busy = false; focusPrompt();
     return;
   }
 
@@ -1237,10 +1242,14 @@ document.addEventListener('submit', e => {
 
 /* ─────────────────────────── STATIC ─────────────────────────── */
 
-/* the four solution questions walk over to the concierge tab */
+/* the four solution chips pre-fill the one prompt box (wireframe W1) —
+   the conversation engine takes it from there once Sprint 2 lands */
 document.addEventListener('click', e => {
   const c = e.target.closest('[data-solve]');
-  if (c) location.href = '/solve?need=' + encodeURIComponent(c.dataset.solve);
+  if (!c) return;
+  promptInput.value = c.textContent.trim();
+  prompt.classList.add('is-ready');
+  promptInput.focus();
 });
 
 /* Two rows drifting in opposite directions, each doubled so the loop is seamless. */

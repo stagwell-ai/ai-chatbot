@@ -1,0 +1,101 @@
+{
+  "tiers": {
+    "smb": "Under ~250 employees, or annual marketing budget under ~$1M (small/boutique agencies included)",
+    "mid_market": "~250–2,500 employees, active brand and media investment",
+    "enterprise": "2,500+ employees, or $1B+ revenue, or global / multi-brand footprint"
+  },
+  "routes": {
+    "self_serve": "Trial CTA dominates the routing screen; attributed signup on the product's site; activation tracked",
+    "demo": "Sales-led demo booked with the owning product team, pre-briefed with the snapshot",
+    "consultative": "One Stagwell conversation, multi-product capable, flagged first-class in CRM",
+    "follow_up": "Snapshot by email + light follow-up / nurture; no meeting push"
+  },
+  "overrides_in_order": [
+    { "order": 1, "if": "problem_domains.length >= 2", "then": "consultative", "why": "multi-product opportunity outranks any single cell, whatever the tier" },
+    { "order": 2, "if": "timing_intent == 'exploring'", "then": "follow_up", "why": "capture, deliver the snapshot, don't force a meeting" },
+    { "order": 3, "if": "role == 'c_suite' && tier in ['mid_market','enterprise']", "then": "consultative", "why": "senior decision-makers get the portfolio conversation, not a single-product demo" },
+    { "order": 4, "if": "visitor asked for a human", "then": "demo", "why": "a human ask always wins" },
+    { "order": 5, "if": "otherwise", "then": "use domains[domain].cells[tier]" }
+  ],
+  "notes": "Attribution is always captured; contact rides with the route wherever it was given — a visitor who declines email keeps the on-screen snapshot and is logged anonymously.",
+  "domains": [
+    {
+      "id": "brand_health",
+      "label": "Track brand health & benchmark competitors",
+      "solution": "QuestBrand",
+      "icpRoles": ["VP Consumer Insights", "Director of Research", "VP Brand/Marketing"],
+      "industryBoost": ["QSR", "Retail & Ecommerce", "CPG"],
+      "cells": { "smb": { "route": "self_serve", "note": "trial dashboard" }, "mid_market": { "route": "demo" }, "enterprise": { "route": "demo", "note": "if 'prove impact' language also present → consultative with BERA.ai" } }
+    },
+    {
+      "id": "research",
+      "label": "Run research myself (surveys, concept & message testing)",
+      "solution": "QuestDIY",
+      "icpRoles": ["VP Consumer Insights", "Director of Research", "Insights Manager"],
+      "industryBoost": ["Consumer Products", "Travel", "Financial Services", "Media", "Agencies"],
+      "cells": { "smb": { "route": "self_serve", "note": "signup → first survey" }, "mid_market": { "route": "self_serve", "note": "demo offered" }, "enterprise": { "route": "self_serve", "note": "'run it regularly' (Q6) → demo for team plan" } }
+    },
+    {
+      "id": "business_impact",
+      "label": "Prove brand's business impact (pricing power, revenue, market value)",
+      "solution": "BERA.ai",
+      "icpRoles": ["CMO", "VP Brand", "CFO", "Agency MD"],
+      "industryBoost": ["CPG", "Food/Beverage", "Retail", "Automotive", "Financial Services", "Telecom"],
+      "cells": { "smb": { "route": "follow_up", "note": "no self-serve" }, "mid_market": { "route": "demo" }, "enterprise": { "route": "consultative", "note": "board/CFO audience makes this an executive sale" } }
+    },
+    {
+      "id": "audiences",
+      "label": "Reach better audiences (build & activate from first-party data)",
+      "solution": "The Targeting Machine",
+      "icpRoles": ["Head of Insights", "Chief Analytics Officer", "Chief Growth Officer", "Chief Data Officer", "CMO"],
+      "industryBoost": ["brands with multi-channel ad spend"],
+      "cells": { "smb": { "route": "follow_up", "note": "usually below paid-media threshold" }, "mid_market": { "route": "demo", "note": "data in CDP/warehouse (Q6) → demo now" }, "enterprise": { "route": "demo", "note": "data scattered in platforms (Q6) → consultative scoping" } }
+    },
+    {
+      "id": "influencer",
+      "label": "Influencer & creator marketing",
+      "solution": "Stagwell AI for SMBs (small teams) / IMAI Enterprise (100+ creators)",
+      "icpRoles": ["Marketing Manager", "Founder", "CMO", "VP Marketing", "Director of Influencer Marketing"],
+      "cells": { "smb": { "route": "self_serve", "note": "SMB platform signup" }, "mid_market": { "route": "demo", "note": "creator count (Q6) picks platform tier" }, "enterprise": { "route": "demo", "note": "IMAI Enterprise, full workflow" } }
+    },
+    {
+      "id": "reputation",
+      "label": "Protect reputation — see risks before they become stories",
+      "solution": "The Knowledge Machine (Pulse)",
+      "icpRoles": ["CCO", "CMO", "VP Comms"],
+      "industryBoost": ["Pharma", "Finance", "Insurance", "Energy", "Government"],
+      "cells": { "smb": { "route": "follow_up", "note": "below ICP floor" }, "mid_market": { "route": "demo" }, "enterprise": { "route": "demo", "note": "core ICP" } }
+    },
+    {
+      "id": "media_monitoring",
+      "label": "Monitor everything said about us, globally (Q6: global, multi-language)",
+      "solution": "UNICEPTA",
+      "icpRoles": ["CCO", "VP Corporate Comms", "Head of Public Affairs"],
+      "industryBoost": ["multinational corporations"],
+      "cells": { "smb": { "route": "follow_up", "note": "below ICP floor" }, "mid_market": { "route": "demo", "note": "if genuinely multi-market" }, "enterprise": { "route": "demo" } }
+    },
+    {
+      "id": "ai_visibility",
+      "label": "Show up in AI answers (ChatGPT, Gemini, Perplexity)",
+      "solution": "GEOPulse",
+      "icpRoles": ["brand & comms marketers"],
+      "cells": { "smb": { "route": "self_serve", "note": "trial [confirm packaging]" }, "mid_market": { "route": "demo", "note": "visibility program" }, "enterprise": { "route": "demo", "note": "multi-brand / multi-market program" } }
+    },
+    {
+      "id": "real_world_behavior",
+      "label": "Measure real-world behavior (visits, foot traffic, say/do gap)",
+      "solution": "Numetrix",
+      "icpRoles": ["marketing & insights leads with physical locations"],
+      "industryBoost": ["Retail", "QSR", "venues"],
+      "cells": { "smb": { "route": "follow_up", "note": "nurture unless multi-location" }, "mid_market": { "route": "demo" }, "enterprise": { "route": "demo", "note": "often pairs with brand tracking → multi-product check" } }
+    },
+    {
+      "id": "marketing_ops",
+      "label": "Connect our marketing ops into one system (workflows, media, knowledge)",
+      "solution": "The Machine / The Media Machine",
+      "icpRoles": ["CMO", "CCO", "CDO", "Chief Media Officer"],
+      "industryBoost": ["enterprise ($1B+ revenue), multi-brand, global"],
+      "cells": { "smb": { "route": "follow_up", "note": "route to nearest concrete need instead" }, "mid_market": { "route": "consultative", "note": "scoping conversation" }, "enterprise": { "route": "consultative", "note": "Q6 picks the entry Machine" } }
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "model": "fixed data contract, flexible conversation — ask only what can't be inferred; confirm inferences, never assume; visitor corrections always win",
+  "slots": ["problem_domains", "company", "role_seniority", "size_tier", "timing_intent", "product_interest", "work_email", "contact_consent"],
+  "questions": [
+    {
+      "id": "q1",
+      "slot": "problem_domains",
+      "copy": "What do you need help solving today?",
+      "input": "chips_or_free_text",
+      "chips": [
+        { "label": "How can I track my brand's health?", "domain": "brand_health" },
+        { "label": "I need influencer marketing", "domain": "influencer" },
+        { "label": "How do AI models describe my brand?", "domain": "ai_visibility" },
+        { "label": "I want to run a quick survey", "domain": "research" }
+      ],
+      "freeTextDomains": ["business_impact", "audiences", "reputation", "media_monitoring", "real_world_behavior", "marketing_ops"],
+      "notes": "Free text can carry multiple domains at once — that is how multi-product opportunities surface.",
+      "skipWhen": "entry came from a product ad (product_interest pre-filled; opener names the product)"
+    },
+    {
+      "id": "q2",
+      "slot": "company",
+      "copy": "Got it. What's your company? A website works — I'll start pulling your snapshot together.",
+      "input": "free_text",
+      "sideEffect": "starts background research (size, industry, competitors, AI-search presence) and the snapshot build",
+      "skipWhen": "the visitor's first message included a website (the landing's single prompt box invites it)"
+    },
+    {
+      "id": "q3",
+      "slot": "role_seniority",
+      "copy": "And what's your role there?",
+      "input": "chips_or_free_text",
+      "chips": [
+        { "label": "Founder / owner", "value": "founder" },
+        { "label": "Manager", "value": "manager" },
+        { "label": "Director / VP", "value": "director_vp" },
+        { "label": "C-suite", "value": "c_suite" }
+      ]
+    },
+    {
+      "id": "q4",
+      "slot": "size_tier",
+      "confirmMode": {
+        "when": "research is confident about size and industry",
+        "copy": "Looks like {company} is around {employees} people, in {industry} — did I get that right?",
+        "chips": [
+          { "label": "That's right", "value": "confirm" },
+          { "label": "Not quite — we're smaller", "value": "smaller" },
+          { "label": "Not quite — we're bigger", "value": "bigger" }
+        ]
+      },
+      "askMode": {
+        "copy": "Roughly how big is the company?",
+        "chips": [
+          { "label": "Under 50 people", "tier": "smb" },
+          { "label": "50–250", "tier": "smb" },
+          { "label": "250–2,500", "tier": "mid_market" },
+          { "label": "2,500+", "tier": "enterprise" }
+        ]
+      }
+    },
+    {
+      "id": "q5",
+      "slot": "timing_intent",
+      "copy": "When do you want this working — this quarter, this year, or just exploring?",
+      "input": "chips_or_free_text",
+      "chips": [
+        { "label": "This quarter", "value": "now" },
+        { "label": "This year", "value": "this_year" },
+        { "label": "Just exploring", "value": "exploring" }
+      ]
+    },
+    {
+      "id": "q6",
+      "slot": "domain_detail",
+      "adaptive": true,
+      "skipWhen": "the solution match is already obvious from prior answers",
+      "byDomain": {
+        "brand_health": { "copy": "How do you track your brand today — an agency, in-house dashboards, or not really yet?", "decides": "always-on tracking subscription vs. deeper analytics; upgrade path" },
+        "research": { "copy": "Is this a one-off study, or something you'll run regularly?", "decides": "self-service platform vs. serviced research; trial-readiness" },
+        "business_impact": { "copy": "Who needs convincing — the board, the CFO, or your own team?", "decides": "seniority of the sale; executive audience biases consultative" },
+        "audiences": { "copy": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?", "decides": "data readiness; demo now vs. consultative scoping" },
+        "influencer": { "copy": "Roughly how many creators do you work with in a year?", "decides": "SMB platform vs. enterprise program (~100+ creators)" },
+        "reputation": { "copy": "Are you watching one market, or monitoring globally in multiple languages?", "decides": "early-warning narrative intelligence vs. global media monitoring" },
+        "ai_visibility": { "copy": "Which platforms matter most to you — ChatGPT, Gemini, Perplexity?", "decides": "scope of the visibility program" },
+        "marketing_ops": { "copy": "Which part of the workflow feels most fragmented — planning, creation, media, or measurement?", "decides": "which agentic-workflow conversation to open" }
+      }
+    }
+  ],
+  "captureMoment": {
+    "when": "at the snapshot reveal — never before",
+    "emailCopy": "Get the full report — and keep it updated.",
+    "consentCheckbox": "It's OK to contact me about these results",
+    "onCapture": ["unlock PDF download", "email the report", "record consent state to CRM", "show routing card"],
+    "onDecline": ["keep on-screen snapshot", "log session as anonymous", "no nagging"]
+  }
+}
