@@ -9,6 +9,10 @@ body.vB main{position:relative;z-index:1}
   --ok:#0F8A5F;
 }
 
+/* Primary CTA per brand.json: marigold bg, navy text — never white on marigold */
+.btn--gold{background:var(--amber);color:var(--navy)}
+.btn--gold:hover{background:#ffc247}
+
 /* ── Header ───────────────────────────────────────────────── */
 .nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);
   backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid var(--line);
@@ -155,6 +159,19 @@ body.vB .prompt__field{height:54px;padding:0 6px 0 18px;border-radius:var(--r-fu
 body.vB .prompt__field:focus-within{background:var(--surface);border-color:var(--line-2)}
 body.vB .prompt__send{width:42px;height:42px}
 body.vB .prompt__input{font-size:1rem}
+
+/* the one prompt box's one action: a labeled marigold button, always live —
+   per brand.json, marigold bg always pairs with navy text, never white */
+body.vB .prompt__send.btn--gold{
+  width:auto;height:44px;padding:0 20px;border-radius:var(--r-full);
+  background:var(--amber);color:var(--navy);opacity:1;pointer-events:auto;
+  font-family:var(--sans);font-weight:600;font-size:var(--t-xs);letter-spacing:.04em;
+  white-space:nowrap;transition:background var(--d-1) var(--ease-io),transform var(--d-1) var(--ease)}
+body.vB .prompt__send.btn--gold:hover{background:#ffc247;transform:none}
+body.vB .prompt__send.btn--gold:active{transform:translateY(1px)}
+@media (max-width:480px){
+  body.vB .prompt__send.btn--gold{padding:0 14px;font-size:.7rem}
+}
 body.vB .chat__panel:not(:has(.chat__thread[hidden])) .prompt{border-top:1px solid var(--line)}
 
 /* ── Thinking ─────────────────────────────────────────────── */

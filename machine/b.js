@@ -1128,7 +1128,7 @@ function resetB() {
   removeFollowChips();
   chatBusy = false;
   $('#chatBar').hidden = true;
-  $('#chatHint').hidden = false;
+  if ($('#chatHint')) $('#chatHint').hidden = false;
   $('#solveChips').hidden = false;
   $('#dash').hidden = true; $('#dash').innerHTML = '';
   $('#navNew').hidden = true;
@@ -1301,7 +1301,7 @@ countAllIn(document);
     buildDashboard();
     $('#hero2Title').innerHTML = `Here is <span class="accent">${esc(S.brand)}.</span>`;
     blurWords($('#hero2Title'), 120);
-    $('#chatHint').hidden = true;
+    if ($('#chatHint')) $('#chatHint').hidden = true;
     $('#solveChips').hidden = true;
     $('#navNew').hidden = false;
     $('.mnav__new').hidden = false;
