@@ -66,7 +66,7 @@
 .pathhero__text{min-width:0;max-width:48ch}
 .pathhero__title{margin:0 0 10px;font-family:var(--serif);font-weight:400;
   font-size:clamp(1.5rem,2.6vw,var(--t-h1));line-height:1.16}
-.pathhero__title .accent{font-style:italic;color:var(--amber)}
+.pathhero__title .accent{font-style:italic;font-weight:600;color:var(--amber)}
 .pathhero__sub{margin:0;color:var(--on-void-2);font-size:var(--t-sm);line-height:1.55}
 .pathhero__act{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
 .pathhero__cta{height:52px;padding:0 28px;font-size:.9375rem}
@@ -151,3 +151,20 @@
 .crosscard__link:hover{text-decoration:underline;text-underline-offset:3px}
 .crosscard__link.is-disabled{color:var(--ink-4);font-weight:400;cursor:not-allowed}
 .crosscard__link i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.02em}
+
+/* on a ~800px-tall laptop viewport, the self-serve variant's navy hero band
+   (route === 'self_serve' — see heroHTML in path.js) otherwise lands with its
+   own sub-copy right under the fixed corner pills (.sc-pill / .vercorner,
+   ~46px tall at the viewport's bottom-left/right) — three stacked
+   .path__section gaps plus the page's own top padding are enough, on their
+   own, to push it that far down. Trimming the rhythm here (never at
+   1440×900, which already clears them) keeps the hero's own CTAs and text
+   reachable without moving or resizing anything else. Placed after the
+   .path__section--cross rule above so it can win the (otherwise tied)
+   cascade at this equal specificity. */
+@media(max-height:860px){
+  .path__in{padding-top:clamp(24px,3.5vh,36px)}
+  .path__section{margin-top:12px}
+  .path__section--cross{margin-top:12px}
+  .pathhero{padding:18px clamp(20px,3vw,28px)}
+}

@@ -98,7 +98,7 @@ input{font:inherit;color:inherit}
   letter-spacing:-.025em;line-height:1.08}
 /* per the guidelines, Spectral accents words inside a Montserrat headline —
    set a touch larger to balance the x-height difference */
-.display .accent{font-family:var(--serif);font-weight:600;font-size:1.04em;letter-spacing:-.01em}
+.display .accent{font-family:var(--serif);font-weight:600;font-style:italic;font-size:1.04em;letter-spacing:-.01em}
 
 .btn{
   display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 22px;

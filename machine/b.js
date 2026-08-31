@@ -1272,6 +1272,20 @@ document.addEventListener('submit', e => {
 
 /* ─────────────────────────── STATIC ─────────────────────────── */
 
+/* the landing chips render from data/questions.json q1.chips (SPEC S1 —
+   the client tunes them with a data edit, no code change), falling back
+   to the static markup if the data file fails to load. Rendering from
+   the JSON also keeps the labels byte-identical to what the flow's chip
+   matcher expects, apostrophes included. */
+if (window.STAGDATA) window.STAGDATA.then(d => {
+  const chips = d && d.questions && d.questions.questions
+    && (d.questions.questions.find(q => q.id === 'q1') || {}).chips;
+  const wrap = $('#solveChips');
+  if (!wrap || !Array.isArray(chips) || !chips.length) return;
+  wrap.innerHTML = chips.map(c =>
+    `<button type="button" data-solve="${esc(c.domain || '')}">${esc(c.label)}</button>`).join('');
+});
+
 /* the four solution chips pre-fill the one prompt box (wireframe W1) —
    the conversation engine takes it from there once Sprint 2 lands */
 document.addEventListener('click', e => {

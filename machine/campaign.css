@@ -27,7 +27,7 @@ body.vCampaign main{position:relative;z-index:1}
 .nav__links a{font-size:var(--t-sm);color:var(--ink-2);text-decoration:none;transition:color var(--d-1) var(--ease-io)}
 .nav__links a:hover{color:var(--ink)}
 .nav__acts{display:flex;align-items:center;gap:12px;flex:none}
-.nav__cta{height:40px;padding:0 18px}
+.nav__cta{height:44px;padding:0 18px}
 .nav__menu{display:none;place-items:center;width:38px;height:38px;background:var(--navy);color:#fff;border-radius:var(--r)}
 .navscrim{display:none;position:fixed;inset:0;z-index:45;background:rgba(0,18,28,.34);
   opacity:0;visibility:hidden;transition:opacity var(--d-3) var(--ease),visibility var(--d-3)}

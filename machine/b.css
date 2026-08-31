@@ -33,7 +33,7 @@ body.vB main{position:relative;z-index:1}
 .nav__links a:hover{color:var(--ink)}
 .nav__links a:hover::after{transform:scaleX(1);transform-origin:left}
 .nav__acts{display:flex;align-items:center;gap:12px;flex:none}
-.nav__cta{height:40px;padding:0 18px}
+.nav__cta{height:44px;padding:0 18px}
 .nav__new{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;
   border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;text-transform:uppercase;
@@ -558,7 +558,7 @@ body.vB .bfoot{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .chat__solves{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
 .chat__solves[hidden]{display:none}
 .chat__solves button{
-  display:inline-flex;align-items:center;border:1px solid var(--line-2);
+  display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--line-2);
   border-radius:var(--r-full);padding:9px 16px;cursor:pointer;background:var(--surface);
   font-size:var(--t-sm);color:var(--ink-2);
   transition:border-color var(--d-1) var(--ease-io),color var(--d-1);
