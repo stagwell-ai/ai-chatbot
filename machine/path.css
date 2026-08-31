@@ -1,0 +1,129 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PATH — S5 routing/handoff layout (reference/kit/W5-Routing-Handoff.png).
+   Brand tokens from machine/styles.css; the same white-card/dark-band idioms
+   as machine/snapshot.css, scoped fresh here so nothing here has to touch
+   snapshot.css. Nothing renders until machine/path.js mounts #pathView.
+
+   Loads after snapshot.css in machine/b.html, so the two small rules under
+   "confirmation-band hooks" below are the only place this sprint styles the
+   path CTA that machine/snapshot.js's capture/decline confirmations add —
+   that CTA's markup lives in snapshot.js, but its stylesheet lives here.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.path{background:var(--paper);animation:heroIn 620ms var(--ease) both}
+
+.path__in{max-width:1180px;margin:0 auto;
+  padding:clamp(40px,6vh,72px) clamp(20px,4vw,48px) clamp(48px,7vh,72px)}
+
+.path__eyebrow{margin-bottom:14px}
+.path__title{margin:0 0 10px;font-size:clamp(1.625rem,3vw,var(--t-h1));line-height:1.14}
+.path__sub{margin:0;max-width:72ch;color:var(--ink-2);font-size:var(--t-sm);line-height:1.6}
+
+.path__section{margin-top:36px}
+.path__sectionhead{display:flex;align-items:baseline;justify-content:space-between;
+  gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.path__label{margin:0;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3)}
+.path__note{font-size:var(--t-xs);color:var(--ink-3)}
+
+/* ── matched capability cards ── */
+.pathcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.pathcard{background:var(--surface);border:1px solid var(--line-2);border-left:3px solid var(--amber);
+  border-radius:var(--r-lg);padding:22px;display:flex;flex-direction:column;gap:10px;
+  min-width:0;animation:fadeUp 460ms var(--ease) both}
+.pathcards .pathcard:nth-child(2){animation-delay:60ms}
+.pathcards .pathcard:nth-child(3){animation-delay:120ms}
+.pathcard h3{margin:0;font-size:1.0625rem;font-weight:600;letter-spacing:-.008em;color:var(--ink)}
+.pathcard__body{margin:0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.58}
+.pathcard__why{margin:0;font-size:var(--t-xs);font-weight:600;color:var(--teal)}
+.pathcard__credit{align-self:flex-start;margin-top:2px;font-family:var(--mono);font-size:9px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4);
+  border:1px solid var(--line-2);border-radius:var(--r-sm);padding:3px 8px}
+
+/* ── choose how to continue: three columns ── */
+.pathcols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pathcol{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:26px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pathcol__eyebrow{margin:0;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3)}
+.pathcol h3{margin:0;font-size:1.0625rem;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.pathcol__body{margin:0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.55}
+.pathcol__slot{border:1px dashed var(--line-2);border-radius:var(--r);padding:22px 14px;
+  text-align:center;font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.03em;color:var(--ink-3)}
+.pathcol__cta{margin-top:auto;align-self:flex-start}
+.pathcol__cta.is-disabled{opacity:.55;cursor:not-allowed}
+.pathcol__cta.is-disabled i{font-style:normal;font-family:var(--mono);font-size:9px;margin-left:2px}
+
+.pathcol.is-recommended{background:var(--navy);border-color:var(--navy);color:var(--on-void)}
+.pathcol.is-recommended .pathcol__eyebrow{color:var(--amber)}
+.pathcol.is-recommended h3{color:var(--on-void)}
+.pathcol.is-recommended .pathcol__body{color:var(--on-void-2)}
+
+/* ── self-serve state variant: dominant navy hero ── */
+.pathhero{background:var(--navy);color:var(--on-void);border-radius:var(--r-lg);
+  padding:clamp(28px,4vw,44px);display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;gap:24px 32px}
+.pathhero__text{min-width:0;max-width:48ch}
+.pathhero__title{margin:0 0 10px;font-family:var(--serif);font-weight:400;
+  font-size:clamp(1.5rem,2.6vw,var(--t-h1));line-height:1.16}
+.pathhero__title .accent{font-style:italic;color:var(--amber)}
+.pathhero__sub{margin:0;color:var(--on-void-2);font-size:var(--t-sm);line-height:1.55}
+.pathhero__act{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.pathhero__cta{height:52px;padding:0 28px;font-size:.9375rem}
+.pathhero__cta.is-disabled{opacity:.6;cursor:not-allowed}
+.pathhero__cta.is-disabled i{font-style:normal;font-family:var(--mono);font-size:9px;display:block;margin-top:2px}
+.pathhero__walk{background:none;border:0;padding:0;font-family:var(--sans);font-size:var(--t-sm);
+  color:var(--on-void-2);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.pathhero__walk:hover{color:var(--on-void)}
+
+/* ── collapsed text links (self-serve & follow-up states) ── */
+.pathcollapse{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px 22px}
+.pathcollapse__link{background:none;border:0;padding:0;font-family:var(--sans);font-size:var(--t-sm);
+  color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.pathcollapse__link:hover{color:var(--ink)}
+
+/* ── follow-up quiet state ── */
+.pathquiet{background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:30px 28px;text-align:center}
+.pathquiet__eyebrow{margin:0 0 8px;font-family:var(--mono);font-size:var(--t-label);
+  letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.pathquiet h3{margin:0 0 8px;font-size:1.125rem;font-weight:600;color:var(--ink)}
+.pathquiet p{margin:0 0 14px;color:var(--ink-2);font-size:var(--t-sm);line-height:1.55}
+.pathquiet__link{font-family:var(--sans);font-size:var(--t-sm);font-weight:600;color:var(--navy);
+  text-decoration:underline;text-underline-offset:3px}
+
+/* ── footer strip ── */
+.pathfoot{margin-top:44px;padding-top:24px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 28px}
+.pathfoot__lede{margin:0;font-size:var(--t-sm);color:var(--ink-2)}
+.pathfoot__links{display:flex;flex-wrap:wrap;gap:10px 22px}
+.pathfoot__link{background:none;border:0;padding:0;font-family:var(--sans);font-size:var(--t-sm);
+  font-weight:600;color:var(--navy);cursor:pointer;text-decoration:none}
+.pathfoot__link:hover{text-decoration:underline}
+.pathfoot__link.is-disabled{color:var(--ink-4);font-weight:400;cursor:not-allowed}
+.pathfoot__link i,.pathquiet__link i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.02em}
+
+/* ── responsive ── */
+@media(max-width:900px){
+  .pathcols{grid-template-columns:1fr}
+  .pathhero{flex-direction:column;align-items:flex-start}
+  .pathhero__act{align-items:flex-start;width:100%}
+  .pathfoot{flex-direction:column;align-items:flex-start}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .path,.pathcard{animation:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONFIRMATION-BAND HOOKS — the "See your recommended path →" control
+   machine/snapshot.js's capture/decline confirmations add. Their markup
+   lives in snapshot.js (see its wireCapture()); their rules live here since
+   this sprint's edit to snapshot.js is scoped to markup only.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.snapcap.is-done,.snapcap.is-quiet{flex-direction:column;gap:10px}
+.snapcap__pathbtn{margin-top:2px}
+.snapcap__pathlink{margin-top:2px;background:none;border:0;padding:0;font-family:var(--sans);
+  font-size:var(--t-sm);color:var(--navy);font-weight:600;text-decoration:underline;
+  text-underline-offset:3px;cursor:pointer}
+.snapcap__pathlink:hover{color:var(--teal)}

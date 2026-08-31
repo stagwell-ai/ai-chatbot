@@ -270,7 +270,15 @@ function shakeCap(cap) {
   cap.classList.add('is-shake');
 }
 
-function wireCapture(root) {
+/* the routing screen's own entry point — swapped in defensively so a
+   missing/broken machine/path.js still leaves the confirmation intact. */
+function goToPath(session) {
+  try {
+    if (window.SAIPATH && typeof window.SAIPATH.show === 'function') window.SAIPATH.show(session);
+  } catch (e) { /* the confirmation already shown is the fallback */ }
+}
+
+function wireCapture(root, session) {
   const cap = $('#snapCapture', root);
   if (!cap) return;
   const form = $('#snapCaptureForm', cap);
@@ -293,7 +301,11 @@ function wireCapture(root) {
         window.SAISNAPDATA.emailCaptured(val, consent);
     } catch (err) { /* the confirmation still shows — a broken bus isn't the visitor's problem */ }
     unlockPdf(root);
-    cap.innerHTML = `<p class="snapcap__quiet">Sent. Your report is on its way to <b>${esc(val)}</b>.</p>`;
+    cap.classList.add('is-done');
+    cap.innerHTML = `<p class="snapcap__quiet">Sent. Your report is on its way to <b>${esc(val)}</b>.</p>
+      <button type="button" class="btn btn--gold snapcap__pathbtn" id="snapPathGo">See your recommended path →</button>`;
+    const goBtn = $('#snapPathGo', cap);
+    if (goBtn) goBtn.addEventListener('click', () => goToPath(session));
   });
 
   if (decline) decline.addEventListener('click', () => {
@@ -301,7 +313,10 @@ function wireCapture(root) {
       if (window.SAISNAPDATA && typeof window.SAISNAPDATA.declined === 'function') window.SAISNAPDATA.declined();
     } catch (err) { /* still collapses the band */ }
     cap.classList.add('is-quiet');
-    cap.innerHTML = `<p class="snapcap__quiet">No problem — the snapshot stays right here.</p>`;
+    cap.innerHTML = `<p class="snapcap__quiet">No problem — the snapshot stays right here.</p>
+      <button type="button" class="snapcap__pathlink" id="snapPathGoDeclined">See your recommended path →</button>`;
+    const goBtn = $('#snapPathGoDeclined', cap);
+    if (goBtn) goBtn.addEventListener('click', () => goToPath(session));
   });
 }
 
@@ -372,7 +387,7 @@ function show(session) {
   el.hidden = false;
   mounted = true;
 
-  wireCapture(el);
+  wireCapture(el, session);
   wirePdf(el, session);
   wireBottom(el, session);
   animateIn(el);
