@@ -362,10 +362,15 @@ RAIL_BREAK.addEventListener ? RAIL_BREAK.addEventListener('change', placeRail)
 
 function mountLayout() {
   if ($('#convoWrap')) return;
-  const { hero, heroIn, chat, solveChips, thread } = els();
+  const { hero, heroIn, chat, solveChips, thread, promptInput, prompt } = els();
   hero.classList.add('is-chatting', 'is-convo');
   if (solveChips) solveChips.hidden = true;
   if (thread) thread.hidden = false;
+  /* whatever the visitor typed to get here (their opening message, or a
+     chip's pre-filled label) becomes the flow's initialText/chipLabel — it
+     doesn't belong sitting in the box once the conversation owns it */
+  if (promptInput) promptInput.value = '';
+  if (prompt) prompt.classList.remove('is-ready');
 
   const progress = document.createElement('div');
   progress.className = 'convo__progress';
@@ -473,13 +478,14 @@ function finish() {
   const remaining = $('#railRemaining');
   if (remaining) remaining.textContent = 'Ready to see.';
 
-  active = false; // hand the composer back — either to startDashboard's old-flow
-                   // takeover, or (no domain) to the old flow idling at its
-                   // first ("paste your website") step, ready for one.
-
   if (domain) {
     addAgentBubble('Here’s your live read — the full snapshot view is on its way.');
+    /* stay "active" through the handoff delay so a stray submit in this
+       window reaches SAIFLOW.answer() (a safe no-op once phase is 'done')
+       instead of b.js reading active()===false and restarting begin() on
+       top of the startDashboard call about to land */
     setTimeout(() => {
+      active = false;
       if (typeof window.startDashboard === 'function') window.startDashboard(domain);
     }, REDUCED ? 30 : 650);
   } else {
@@ -487,6 +493,8 @@ function finish() {
       '(like <em>nike.com</em>) and I’ll pull a live snapshot together.');
     const { promptInput } = els();
     if (promptInput) { promptInput.disabled = false; promptInput.placeholder = 'Paste your website…'; }
+    active = false; // hands the composer straight to the old flow, idling at
+                     // its first ("paste your website") step, ready for one
   }
 }
 

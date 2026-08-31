@@ -9,6 +9,16 @@
 /* the two-column stage needs more room than the plain hero copy did */
 .hero2.is-convo .hero2__in{max-width:1180px}
 
+/* convo.js reparents the existing #chat node into the new grid (moving it,
+   not cloning it, to keep its listeners) — but b.css's .chat{animation:
+   heroIn ...} is a one-shot entrance animation, and browsers restart a
+   running animation when its element is detached and reattached even to a
+   new parent. Without this the whole chat spine would fade back in from
+   transparent every time a conversation starts, well after its original
+   entrance already played once on page load. It's already fully visible by
+   the time convo mode exists, so pin it there instead of replaying. */
+.hero2.is-convo .chat{animation:none;opacity:1;filter:none;transform:none}
+
 /* ── progress header ── */
 .convo__progress{display:flex;align-items:center;gap:16px;width:100%;
   margin:0 0 4px;text-align:left;animation:heroIn 500ms var(--ease) both}
