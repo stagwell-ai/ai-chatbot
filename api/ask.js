@@ -4,6 +4,19 @@
    answer actually names. The key stays here: putting it in the client would
    publish it to anyone who opens devtools.
 
+   Four modes, one endpoint:
+     (default)          buyer-research answer + which of `brands` it named
+     body.chat          the composer answering follow-ups on a finished brief
+     mode:'classify'    visitor text → domain ids + company + size + human ask
+     mode:'research'    a website domain → what the model actually knows
+
+   Every system prompt is assembled HERE, from typed fields, and never
+   accepted from the client. That is the security boundary: a client-supplied
+   system prompt would let anyone repurpose the endpoint with a devtools
+   one-liner. The classify domain list is hardcoded below for the same reason —
+   it is the vocabulary the router trusts, so the client does not get to
+   extend it.
+
    Config comes from Vercel environment variables:
      LLM_API_KEY    required
      LLM_BASE_URL   default https://api.kimi.com/coding/v1  (OpenAI-compatible)
@@ -74,6 +87,174 @@ function chatSystem(c) {
   return lines.filter(Boolean).join(' ');
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   STRICT-JSON MODES — classify and research
+   Both ask the model for one JSON object and nothing else, and both assume
+   it will occasionally not comply. Nothing downstream ever sees a parse
+   error: a mangled answer comes back as ok:false and the client falls through
+   to its offline path (engine.js keyword classifier / seeded fiction).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* The router's whole vocabulary, hardcoded server-side. Ids mirror
+   data/routing.json `domains[].id`; the one-line meanings are its labels in
+   the words a buyer would use. The client never supplies this list — if it
+   could, it could invent a domain the routing matrix has no cell for. */
+export const CLASSIFY_DOMAINS = [
+  ['brand_health', 'track brand health, equity and awareness; benchmark against competitors'],
+  ['research', 'run their own research — surveys, polls, concept and message testing'],
+  ['business_impact', "prove the brand's business impact — pricing power, revenue, market value, ROI"],
+  ['audiences', 'reach better audiences — build and activate segments from first-party data'],
+  ['influencer', 'influencer and creator marketing'],
+  ['reputation', 'protect reputation — see risks before they become stories'],
+  ['media_monitoring', 'monitor what is said about them globally, across markets and languages'],
+  ['ai_visibility', 'show up in AI answers — ChatGPT, Gemini, Perplexity'],
+  ['real_world_behavior', 'measure real-world behaviour — store visits, foot traffic, the say/do gap'],
+  ['marketing_ops', 'connect marketing operations into one system — workflows, media, knowledge'],
+];
+
+export const CLASSIFY_IDS = CLASSIFY_DOMAINS.map(d => d[0]);
+
+const CLASSIFY_SYSTEM = [
+  'You classify a marketing buyer\'s message for a routing system.',
+  'Choose zero or more of EXACTLY these domain ids — never invent one:',
+  CLASSIFY_DOMAINS.map(([id, meaning]) => `- ${id}: ${meaning}`).join('\n'),
+  'A message can carry several domains at once; list them strongest first.',
+  'Choose none rather than guessing: an empty array is a correct answer.',
+  'Also extract, only if the message actually states them:',
+  '- company: the company website domain mentioned (e.g. "nike.com"), else null.',
+  '- employees: the employee count as a plain number, else null.',
+  '- human: true only if they ask to speak to a person, book a call, or contact sales.',
+  'Reply with ONE JSON object and nothing else — no prose, no code fences:',
+  '{"domains":[],"company":null,"employees":null,"human":false}',
+].join('\n');
+
+const RESEARCH_SYSTEM = [
+  'You are given a company website domain. Report ONLY what you already know',
+  'about that company. This feeds a product that must never state a fact about',
+  'a real company that it invented.',
+  'If you do not recognise the domain, or are not confident it is a company you',
+  'know, set known to false and every other field to null or an empty array.',
+  'Never guess a name, a size, an industry or a competitor. Guessing is worse',
+  'than an empty answer.',
+  'competitors: up to 3 real, well-known competitor brand names, and only if you',
+  'genuinely know the company. Names only, no descriptions.',
+  'employees: your best-known approximate headcount as a plain number, else null.',
+  'Reply with ONE JSON object and nothing else — no prose, no code fences:',
+  '{"known":false,"name":null,"employees":null,"industry":null,"competitors":[]}',
+].join('\n');
+
+/* Reasoning models pad the front of an answer, wrap it in fences, apologise
+   first, or emit a <think> block. Take the widest brace span left after the
+   obvious wrappers come off, then retry once with the usual dirt (smart
+   quotes, trailing commas) normalised. Returns null rather than throwing —
+   an unparseable answer is a fallback, never a 500. */
+export function parseLooseJSON(raw) {
+  if (raw == null) return null;
+  let s = String(raw);
+  s = s.replace(/<think>[\s\S]*?<\/think>/gi, ' ');   /* hidden reasoning */
+  s = s.replace(/```[a-z]*\s*/gi, ' ').replace(/```/g, ' ');
+  const a = s.indexOf('{');
+  const b = s.lastIndexOf('}');
+  if (a === -1 || b === -1 || b < a) return null;
+  const span = s.slice(a, b + 1);
+  try { return JSON.parse(span); } catch { /* one more try */ }
+  const patched = span
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .replace(/,\s*([}\]])/g, '$1')
+    .replace(/\bNone\b/g, 'null').replace(/\bTrue\b/g, 'true').replace(/\bFalse\b/g, 'false');
+  try { return JSON.parse(patched); } catch { return null; }
+}
+
+/* "https://www.Nike.com/uk" → "nike.com". Anything that is not a hostname —
+   a bare company name, a sentence, an empty string — is null, because the
+   only thing the client does with this field is start research on it. */
+export function asDomain(v) {
+  if (v == null) return null;
+  const m = String(v).trim().toLowerCase()
+    .match(/^(?:https?:\/\/)?(?:www\.)?([a-z0-9][a-z0-9-]*(?:\.[a-z0-9][a-z0-9-]*)*\.[a-z]{2,})(?:[/?#]|$)/);
+  return m ? m[1] : null;
+}
+
+const asCount = v => {
+  const n = typeof v === 'string' ? Number(v.replace(/[,\s]/g, '')) : v;
+  return typeof n === 'number' && isFinite(n) && n > 0 ? Math.round(n) : null;
+};
+
+/* Shape-check whatever came back. Unknown ids are dropped rather than
+   rejected — a model that adds one good id and one hallucinated one should
+   still be useful. */
+export function normalizeClassify(obj) {
+  const o = obj && typeof obj === 'object' ? obj : {};
+  const seen = [];
+  (Array.isArray(o.domains) ? o.domains : []).forEach(d => {
+    const id = String(d == null ? '' : d).trim();
+    if (CLASSIFY_IDS.indexOf(id) !== -1 && seen.indexOf(id) === -1) seen.push(id);
+  });
+  return {
+    domains: seen,
+    company: asDomain(o.company),
+    employees: asCount(o.employees),
+    human: o.human === true || o.human === 'true',
+  };
+}
+
+export function normalizeResearch(obj) {
+  const o = obj && typeof obj === 'object' ? obj : {};
+  const known = o.known === true || o.known === 'true';
+  const str = (v, n) => {
+    const s = clean(v);
+    return s && s.toLowerCase() !== 'null' && s.toLowerCase() !== 'unknown' ? s.slice(0, n) : null;
+  };
+  const competitors = (Array.isArray(o.competitors) ? o.competitors : [])
+    .map(c => str(c, 60)).filter(Boolean).slice(0, 3);
+  /* known:false means the model told us it does not recognise the domain.
+     Honour that completely — any fields it filled in anyway are guesses. */
+  if (!known) return { known: false, name: null, employees: null, industry: null, competitors: [] };
+  return {
+    known: true,
+    name: str(o.name, 80),
+    employees: asCount(o.employees),
+    industry: str(o.industry, 60),
+    competitors,
+  };
+}
+
+/* One completion, all the failure modes already flattened into a result
+   object. The existing default/chat path keeps its own inline call — this
+   helper exists for the two new modes and deliberately does not touch it. */
+async function complete(system, user, maxTokens, timeoutMs) {
+  const ac = new AbortController();
+  const bail = setTimeout(() => ac.abort(), timeoutMs || 12000);
+  try {
+    const r = await fetch(BASE + '/chat/completions', {
+      method: 'POST',
+      signal: ac.signal,
+      headers: { 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: user },
+        ],
+        max_tokens: maxTokens,
+        temperature: 1,          /* the gateway rejects anything but 1 */
+        stream: false,
+      }),
+    });
+    const raw = await r.text();
+    if (!r.ok) return { ok: false, error: 'upstream_' + r.status };
+    let data; try { data = JSON.parse(raw); } catch { return { ok: false, error: 'bad_json' }; }
+    const content = data?.choices?.[0]?.message?.content;
+    if (!content) return { ok: false, error: 'empty' };
+    return { ok: true, content: String(content), model: data.model || MODEL };
+  } catch (e) {
+    return { ok: false, error: e.name === 'AbortError' ? 'timeout' : 'network' };
+  } finally {
+    clearTimeout(bail);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
@@ -91,6 +272,54 @@ export default async function handler(req, res) {
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
   body = body || {};
+
+  const mode = clean(body.mode).toLowerCase();
+
+  /* ── mode:'classify' — visitor text → routing vocabulary ──
+     Body: { mode:'classify', prompt }. The prompt is the visitor's own words
+     and nothing else; the instructions live in CLASSIFY_SYSTEM above. */
+  if (mode === 'classify') {
+    const text = clean(body.prompt).slice(0, 300);
+    if (!text) { res.status(400).json({ ok: false, error: 'no_prompt' }); return; }
+    const started = Date.now();
+
+    /* 800, not the 1,100 the answer path uses: the payload is one short JSON
+       object, but this gateway is a reasoning model that spends 200-400
+       tokens thinking before it writes anything, and an exhausted budget
+       returns an empty string rather than an error. 800 clears the observed
+       tail on a task this small with room to spare. */
+    const out = await complete(CLASSIFY_SYSTEM, text, 800, 12000);
+    if (!out.ok) { res.status(200).json({ ok: false, error: out.error }); return; }
+
+    const parsed = parseLooseJSON(out.content);
+    if (!parsed) { res.status(200).json({ ok: false, error: 'unparseable' }); return; }
+
+    res.status(200).json(Object.assign({ ok: true }, normalizeClassify(parsed), {
+      model: out.model, ms: Date.now() - started,
+    }));
+    return;
+  }
+
+  /* ── mode:'research' — a website domain → what the model actually knows ──
+     Body: { mode:'research', domain }. known:false is a first-class answer,
+     not a failure: the client draws its seeded fiction instead and labels the
+     confidence low. Nothing here is ever allowed to invent a real company. */
+  if (mode === 'research') {
+    const domain = asDomain(body.domain);
+    if (!domain) { res.status(400).json({ ok: false, error: 'bad_domain' }); return; }
+    const started = Date.now();
+
+    const out = await complete(RESEARCH_SYSTEM, domain, 900, 12000);
+    if (!out.ok) { res.status(200).json({ ok: false, error: out.error }); return; }
+
+    const parsed = parseLooseJSON(out.content);
+    if (!parsed) { res.status(200).json({ ok: false, error: 'unparseable' }); return; }
+
+    res.status(200).json(Object.assign({ ok: true, domain }, normalizeResearch(parsed), {
+      model: out.model, ms: Date.now() - started,
+    }));
+    return;
+  }
 
   /* 300 is plenty for a typed question. Chat mode also carries instructions the
      client composes — the executive summary asks for a lens, a quote back, and

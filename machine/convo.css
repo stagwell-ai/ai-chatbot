@@ -1,0 +1,111 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONVO — S3 qualification conversation layout (reference/kit/W3-Qualification.png)
+   Chat spine left (reuses b.css's .chat/.chat__panel/.turn/.opt classes
+   verbatim), "YOUR SNAPSHOT" build rail right. Brand tokens from
+   machine/styles.css. Nothing here renders until .hero2.is-convo is set —
+   the landing fold is untouched until convo.js mounts this layout.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* the two-column stage needs more room than the plain hero copy did */
+.hero2.is-convo .hero2__in{max-width:1180px}
+
+/* ── progress header ── */
+.convo__progress{display:flex;align-items:center;gap:16px;width:100%;
+  margin:0 0 4px;text-align:left;animation:heroIn 500ms var(--ease) both}
+.convo__progress-label{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);white-space:nowrap;flex:none}
+.convo__progress-bar{flex:1;height:4px;border-radius:var(--r-full);
+  background:var(--line-2);overflow:hidden;max-width:260px}
+.convo__progress-bar i{display:block;height:100%;width:0%;border-radius:inherit;
+  background:linear-gradient(90deg,var(--teal),var(--amber));
+  transition:width 560ms var(--ease-io)}
+
+/* the quiet "waiting on research" turn — dots plus one muted line naming
+   what it's waiting on, never a loud spinner */
+.ai__text--muted{color:var(--ink-4);font-size:var(--t-sm);font-family:var(--sans)}
+
+/* ── the two columns ── */
+.convo{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:26px;
+  align-items:start;width:100%}
+.convo__main{min-width:0}
+.convo__main .chat{margin-top:0}
+
+/* ── the rail ── */
+.convo__rail{position:sticky;top:96px;display:flex;flex-direction:column;gap:14px;
+  text-align:left;animation:heroIn 620ms var(--ease) 120ms both}
+.rail__head{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3)}
+.rail__card{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  overflow:hidden}
+.rail__cardbar{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 16px;border-bottom:1px solid var(--line)}
+.rail__cardbar b{font-size:.9375rem;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.rail__cardstatus{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-4);white-space:nowrap;flex:none}
+.rail__cardstatus[data-status="building"]{color:var(--amber);animation:railPulse 1.8s ease-in-out infinite}
+.rail__cardstatus[data-status="ready"]{color:var(--teal)}
+
+.rail__modules{display:flex;flex-direction:column;gap:14px;padding:14px 16px}
+.rail__mod{display:flex;flex-direction:column;gap:7px}
+.rail__modhead{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:var(--t-sm);color:var(--ink-2)}
+.rail__chip{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-4);white-space:nowrap;flex:none}
+.rail__chip[data-status="building"]{color:var(--amber);animation:railPulse 1.8s ease-in-out infinite}
+.rail__chip[data-status="ready"]{color:var(--teal);font-weight:600}
+.rail__modbar{height:20px;border-radius:6px;background:var(--surface-2);
+  border:1px solid var(--line);overflow:hidden;position:relative}
+.rail__modbar i{position:absolute;inset:0;background:var(--line-2);
+  transform:scaleX(0);transform-origin:left;transition:transform 640ms var(--ease-io),background var(--d-2)}
+.rail__mod[data-status="building"] .rail__modbar i{transform:scaleX(.55);
+  background:linear-gradient(90deg,rgba(255,184,28,.35),rgba(255,184,28,.15));
+  animation:railShimmer 1.6s ease-in-out infinite}
+.rail__mod[data-status="ready"] .rail__modbar i{transform:scaleX(1);
+  background:linear-gradient(90deg,rgba(0,156,189,.32),rgba(0,156,189,.16))}
+@keyframes railPulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes railShimmer{0%,100%{opacity:.75}50%{opacity:1}}
+
+/* ── narration log — the feature: legible, one line per research step ── */
+.rail__narration{display:flex;flex-direction:column;gap:7px;padding:0 16px 14px;
+  max-height:168px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.rail__narration[hidden]{display:none}
+.rail__logline{display:flex;align-items:flex-start;gap:8px;font-size:var(--t-xs);
+  color:var(--ink-2);line-height:1.45;animation:fadeUp 420ms var(--ease) both}
+.rail__logdot{width:5px;height:5px;border-radius:50%;background:var(--teal);
+  flex:none;margin-top:6px}
+.rail__logtext{flex:1;min-width:0}
+.rail__live{font-family:var(--mono);font-size:9px;letter-spacing:.1em;font-weight:600;
+  color:var(--teal);border:1px solid var(--teal);border-radius:4px;padding:1px 5px;
+  flex:none;line-height:1.5}
+
+.rail__remaining{margin:0;padding:12px 16px 14px;border-top:1px solid var(--line);
+  font-size:var(--t-sm);color:var(--ink-2)}
+.rail__fine{margin:0;font-size:var(--t-xs);color:var(--ink-4);line-height:1.5}
+
+/* ── mobile: the rail becomes a collapsible strip that sits right above the
+   composer, inside the same chat panel (convo.js reparents it here at the
+   breakpoint) — collapsed by default so the input stays reachable ── */
+@media(max-width:900px){
+  .convo{grid-template-columns:1fr}
+  .convo__rail{position:static;animation:none}
+}
+.convo__rail--strip{border-top:1px solid var(--line)}
+.convo__rail--strip .rail__head{padding:10px 20px 0;cursor:pointer;user-select:none;
+  display:flex;align-items:center;gap:8px}
+.convo__rail--strip .rail__head::after{content:"Show snapshot";margin-left:auto;
+  font-family:var(--sans);font-size:var(--t-xs);letter-spacing:0;text-transform:none;
+  color:var(--teal);font-weight:600}
+.convo__rail--strip.is-open .rail__head::after{content:"Hide snapshot"}
+.convo__rail--strip .rail__card{border:0;border-radius:0;margin:8px 0 0}
+.convo__rail--strip:not(.is-open) .rail__modules,
+.convo__rail--strip:not(.is-open) .rail__narration,
+.convo__rail--strip:not(.is-open) .rail__remaining,
+.convo__rail--strip:not(.is-open) .rail__fine{display:none}
+.convo__rail--strip .rail__fine{padding:0 16px 12px}
+
+@media(prefers-reduced-motion:reduce){
+  .convo__progress-bar i,.rail__modbar i{transition:none}
+  .rail__cardstatus[data-status="building"],.rail__chip[data-status="building"],
+  .rail__mod[data-status="building"] .rail__modbar i{animation:none}
+  .convo__progress,.convo__rail,.rail__logline{animation:none}
+}

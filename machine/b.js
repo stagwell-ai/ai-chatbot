@@ -464,7 +464,20 @@ promptInput.addEventListener('focus', () => {
 });
 promptInput.addEventListener('input', () =>
   prompt.classList.toggle('is-ready', promptInput.value.trim().length > 0));
-promptForm.addEventListener('submit', e => { e.preventDefault(); submit(promptInput.value); });
+promptForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const val = promptInput.value;
+  /* the kit conversation (machine/convo.js) owns the composer once it has
+     taken over — every other submit while it's live is a free-text answer
+     to whatever question it's showing */
+  if (window.SAICONVO && window.SAICONVO.active()) { window.SAICONVO.submit(val); return; }
+  /* every first submission from the landing hands off to the kit conversation
+     when it's available; the old scripted SCRIPT flow only ever runs again
+     from here on via window.startDashboard's internal call to submit() */
+  if (window.SAIFLOW && window.SAICONVO && !S.busy && S.step === 0 && !S.done
+      && window.SAICONVO.begin(val)) return;
+  submit(val);
+});
 $$('.chat__eg').forEach(b => b.addEventListener('click', () => submit(b.dataset.eg)));
 
 /* Options arrive a beat before the machine is ready for them — hold an eager
@@ -1147,6 +1160,22 @@ function resetB() {
 $('#navNew').addEventListener('click', resetB);
 document.addEventListener('click', e => { if (e.target.closest('[data-new]')) resetB(); });
 
+/* ─────────────────────────── KIT CONVERSATION HANDOFF ───────────────────────────
+   machine/convo.js drives S3's qualification chat; once SAIFLOW reaches
+   phase 'done' with a company_domain, it calls this to run the existing
+   website → profile → build machinery so the dashboard "wow" still happens.
+   Interim handoff — Sprint 3 replaces this with the kit's own snapshot
+   reveal (S4) instead of reusing this SCRIPT's later questions. It works
+   while the convo UI is still on screen: submit() takes the thread over
+   exactly as it does when a domain is typed straight into the box. */
+window.startDashboard = domain => {
+  const d = String(domain || '').trim();
+  if (!d) return;
+  if (S.busy) { pending = d; return; }
+  submit(d);
+};
+window.resetLanding = resetB;
+
 /* ─────────────────────────── NAV / MODAL ─────────────────────────── */
 
 /* The header rides with you: away on the way down, back the moment you head up.
@@ -1248,9 +1277,17 @@ document.addEventListener('submit', e => {
 document.addEventListener('click', e => {
   const c = e.target.closest('[data-solve]');
   if (!c) return;
-  promptInput.value = c.textContent.trim();
+  const label = c.textContent.trim();
+  const already = promptInput.value.trim() === label;
+  promptInput.value = label;
   prompt.classList.add('is-ready');
   promptInput.focus();
+  /* the box already carries this chip's text — a second tap on it is asking
+     to go, same as pressing "Ask the agent" */
+  if (already) {
+    if (promptForm.requestSubmit) promptForm.requestSubmit();
+    else promptForm.dispatchEvent(new Event('submit', { cancelable: true }));
+  }
 });
 
 /* Two rows drifting in opposite directions, each doubled so the loop is seamless. */

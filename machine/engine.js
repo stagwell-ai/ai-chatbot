@@ -20,11 +20,14 @@
      .captureAttribution() silent UTM + referrer capture, campaign prefill
      .setSlot(n, v, src)   later writes win; visitor overwrites correct
      .classify(text)       → Promise<domain ids[]>, multi-domain, ranked
+     .classifyFull(text)   → Promise<{domains,company,employees,human,live}>
      .tierFromEmployees(n) .tierFromText(t)   → 'smb'|'mid_market'|'enterprise'
      .route()              → the full decision object
      .extractDomain(text)  a website in the first message
      .reset()              fresh session (keeps the event log)
-     ._classifyLLM         null in sprint 1 — the seam the LLM path plugs into
+     ._ask(body, ms)       POST /api/ask, rejects on anything but ok:true
+     ._classifyLLM         wired to /api/ask mode:'classify' — swap to stub it
+     ._classifyFullLLM     the same call, whole answer instead of just domains
    ═══════════════════════════════════════════════════════════════════════════ */
 (() => {
 'use strict';
@@ -374,10 +377,12 @@ function setSlot(name, value, source) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   CLASSIFICATION — sprint 1 is the offline keyword pass. _classifyLLM is the
-   seam: set it to an async fn(text) → domain ids and classify() awaits it,
-   falling back to keywords on any error, timeout or unusable answer. The
-   demo must always work with no key set (KIT-BRIEF).
+   CLASSIFICATION — the offline keyword pass, which is also the floor under
+   the live one. _classifyLLM is the seam: an async fn(text) → domain ids that
+   classify() awaits, falling back to keywords on any error, timeout or
+   unusable answer. Sprint 2 wires it to /api/ask (see THE LIVE SEAM below);
+   with no key set that call fails fast and this is what answers, so the demo
+   still works offline (KIT-BRIEF).
    ═══════════════════════════════════════════════════════════════════════════ */
 function detectHumanAsk(text) {
   const t = norm(text);
@@ -436,6 +441,114 @@ function classify(text) {
       return clean.length ? clean : fallback();
     })
     .catch(() => fallback());
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE LIVE SEAM — sprint 2. /api/ask holds the key and every system prompt;
+   this side only knows the shape of the answer it gets back. Two seams, both
+   swappable for a test double or a different backend:
+
+     _classifyFullLLM(text)  → { domains, company, employees, human }
+     _classifyLLM(text)      → domain ids   (what classify() consumes)
+
+   Neither is allowed to be the reason a demo stalls. Every call is time-boxed
+   twice — an abort on the request and withTimeout() around the promise — and
+   every failure path lands on the offline keyword classifier, which is the
+   only path that runs when no key is configured (KIT-BRIEF: the demo must
+   work offline).
+   ═══════════════════════════════════════════════════════════════════════════ */
+const ASK_URL = '/api/ask';
+
+/* One POST, one shape of answer: resolves with the body on ok:true and
+   rejects on anything else — HTTP error, {ok:false}, abort, no fetch at all.
+   Callers only ever have to write one .catch. */
+function ask(body, ms) {
+  if (typeof fetch !== 'function') return Promise.reject(new Error('no_fetch'));
+
+  let ac = null, timer = null;
+  try { ac = new AbortController(); } catch (e) { ac = null; }
+  if (ac) timer = setTimeout(() => { try { ac.abort(); } catch (e) { /* gone */ } }, ms || LLM_TIMEOUT_MS);
+  const clear = () => { if (timer) { clearTimeout(timer); timer = null; } };
+
+  return fetch(ASK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: ac ? ac.signal : undefined
+  })
+    .then(r => r.json())
+    .then(
+      j => { clear(); if (!j || j.ok !== true) throw new Error((j && j.error) || 'ask_failed'); return j; },
+      e => { clear(); throw e; }
+    );
+}
+
+function askClassify(text) {
+  return ask({ mode: 'classify', prompt: String(text || '').slice(0, 300) }, LLM_TIMEOUT_MS)
+    .then(j => ({
+      domains: Array.isArray(j.domains) ? j.domains : [],
+      company: j.company || null,
+      employees: typeof j.employees === 'number' ? j.employees : null,
+      human: j.human === true
+    }));
+}
+
+/* A number in free text is only a headcount when the sentence says so.
+   "a 3,000-person retailer" is a size; "the top 5 in our category" is not,
+   and mistaking the second for the first would tier the visitor as SMB. */
+const PEOPLE_HINT = /(employee|people|person|headcount|staff|workforce|fte|team of|seats|strong)/;
+
+function employeesFromClaim(text) {
+  const t = norm(text);
+  if (!t || !/\d/.test(t) || !PEOPLE_HINT.test(t)) return null;
+  return employeesFromText(t);
+}
+
+/* Everything one message can tell us, in one call. The flow uses this for
+   the opening message and for every free-text answer after it: a website
+   answers q2, a headcount answers q4, "can I talk to someone" is override 4,
+   and the domains are still the routing decision. `live` says whether the
+   model actually answered — the UI is allowed to say so, and must not claim
+   it otherwise. */
+function classifyFull(text) {
+  const raw = String(text || '');
+  const human = detectHumanAsk(raw);
+  if (human) {
+    session.humanAsk = true;
+    events.emit('human_requested', { text: raw });
+  }
+
+  const offline = () => ({
+    domains: classifyKeywords(raw),
+    company: extractDomain(raw),
+    employees: employeesFromClaim(raw),
+    human,
+    live: false
+  });
+
+  if (typeof SAI._classifyFullLLM !== 'function') return Promise.resolve(offline());
+
+  return withTimeout(SAI._classifyFullLLM(raw), LLM_TIMEOUT_MS)
+    .then(result => {
+      const r = result || {};
+      const known = domainIds();
+      const domains = (Array.isArray(r.domains) ? r.domains : [])
+        .map(String)
+        .filter(id => known.indexOf(id) !== -1)
+        .filter((id, i, a) => a.indexOf(id) === i);
+      const off = offline();
+      const employees = typeof r.employees === 'number' && isFinite(r.employees) && r.employees > 0
+        ? r.employees : off.employees;
+      return {
+        /* the model leads, the keyword pass fills the gaps it left */
+        domains: domains.length ? domains : off.domains,
+        company: extractDomain(String(r.company || '')) || off.company,
+        employees,
+        human: human || r.human === true,
+        live: true
+      };
+    })
+    .catch(() => offline());
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -655,9 +768,11 @@ const SAI = {
   classify,
   classifyKeywords,
   detectHumanAsk,
+  classifyFull,
   tierFromEmployees,
   tierFromText,
   employeesFromText,
+  employeesFromClaim,
   resolveTier,
   route,
   extractDomain,
@@ -665,7 +780,11 @@ const SAI = {
   domain: domainById,
   campaign: campaignById,
   reset,
-  _classifyLLM: null              /* sprint 2: async (text) => domain ids */
+
+  /* the seams. Swap either for a test double; both fall back to keywords. */
+  _ask: ask,                      /* research.js reuses this POST wrapper */
+  _classifyFullLLM: askClassify,  /* async (text) => {domains,company,employees,human} */
+  _classifyLLM: text => askClassify(text).then(r => r.domains)
 };
 
 SAI.ready = Promise.resolve(window.STAGDATA || {})

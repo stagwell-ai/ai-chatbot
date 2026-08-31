@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="/machine/assets/fonts/fonts.css">
 <link rel="stylesheet" href="/machine/styles.css">
 <link rel="stylesheet" href="/machine/b.css">
+<link rel="stylesheet" href="/machine/convo.css">
 <link rel="stylesheet" href="/machine/cloud.css">
 </head>
 <body class="vB" data-state="boot">
@@ -226,6 +227,11 @@
 
 <script src="/machine/data-loader.js"></script>
 <script src="/machine/engine.js"></script>
+<!-- kit conversation engine — built in parallel; convo.js degrades to the
+     old landing flow if any of these fail to load (see machine/b.js) -->
+<script src="/machine/flow.js"></script>
+<script src="/machine/research.js"></script>
+<script src="/machine/convo.js"></script>
 <script src="/machine/shared.js"></script>
 <script src="/machine/b.js"></script>
 <script src="/machine/cloud.js"></script>
