@@ -1,0 +1,176 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SNAPSHOT — S4 reveal layout (reference/kit/W4-Snapshot-Output.png). Brand
+   tokens from machine/styles.css; the same white-card-on-paper and dark-band
+   idioms as the rest of the page (.rail__card, .bcta), scoped fresh here so
+   nothing here has to touch b.css. Nothing renders until machine/snapshot.js
+   mounts #snapView.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.snap{background:var(--paper);animation:heroIn 620ms var(--ease) both}
+
+.snap__in{max-width:1180px;margin:0 auto;
+  padding:clamp(40px,6vh,72px) clamp(20px,4vw,48px) clamp(48px,7vh,72px)}
+
+/* the printed brand header — invisible on screen, see the @media print block */
+.snap__printhead{display:none;align-items:center;gap:14px;margin-bottom:26px}
+.snap__printhead svg{width:124px;height:19px}
+.snap__printhead b{display:block;font-size:.9375rem;font-weight:600;color:var(--ink)}
+.snap__printhead span{display:block;font-size:var(--t-sm);color:var(--ink-3)}
+
+/* ── header ── */
+.snap__head{display:flex;align-items:flex-start;justify-content:space-between;
+  gap:28px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.snap__headtext{min-width:0;max-width:62ch}
+.snap__eyebrow{margin-bottom:14px}
+.snap__title{margin:0 0 10px;font-size:clamp(1.625rem,3vw,var(--t-h1));line-height:1.14}
+.snap__title .accent{font-style:italic;color:inherit}
+.snap__sub{margin:0;color:var(--ink-2);font-size:var(--t-sm)}
+
+.snap__pdf{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.snap__pdfbtn{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 20px;
+  border-radius:var(--r);font-family:var(--sans);font-weight:600;font-size:var(--t-xs);
+  letter-spacing:.01em;background:var(--surface);border:1px solid var(--line-2);
+  color:var(--ink-3);cursor:not-allowed;
+  transition:background var(--d-2) var(--ease),border-color var(--d-2) var(--ease),color var(--d-2) var(--ease)}
+.snap__pdfbtn:not(:disabled){cursor:pointer;color:var(--navy)}
+.snap__pdfbtn:not(:disabled):hover{border-color:var(--ink);background:var(--surface-2)}
+.snap__pdficon{display:inline-flex}
+.snap__pdfhint{font-size:var(--t-xs);color:var(--ink-4);text-align:right;max-width:220px;line-height:1.4}
+
+/* ── the three modules ── */
+.snap__modules{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.snapmod{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0;
+  animation:fadeUp 460ms var(--ease) both}
+.snap__modules .snapmod:nth-child(2){animation-delay:60ms}
+.snap__modules .snapmod:nth-child(3){animation-delay:120ms}
+.snapmod__head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.snapmod__head h3{margin:0;font-size:.9375rem;font-weight:600;letter-spacing:-.008em;color:var(--ink)}
+.snapmod__tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-4);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:2px 7px;flex:none}
+.snapmod__finding{margin:auto 0 0;padding-top:14px;border-top:1px solid var(--line);
+  font-size:var(--t-sm);color:var(--ink-2);line-height:1.58}
+
+/* competitive bars */
+.snapbars{display:flex;flex-direction:column;gap:11px}
+.snapbar{display:grid;grid-template-columns:minmax(0,112px) 1fr 30px;align-items:center;gap:10px}
+.snapbar__n{font-size:var(--t-sm);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.snapbar.is-you .snapbar__n{color:var(--ink);font-weight:600}
+.snapbar__t{position:relative;height:20px;border-radius:6px;background:var(--surface-2);
+  border:1px solid var(--line);overflow:hidden}
+.snapbar__t i{position:absolute;inset:0;width:0%;border-radius:inherit;background:var(--navy);
+  transition:width 680ms var(--ease-io)}
+.snapbar.is-you .snapbar__t i{background:var(--amber)}
+.snapbar__v{font-family:var(--mono);font-weight:600;text-align:right;color:var(--ink);
+  font-variant-numeric:tabular-nums;font-size:var(--t-sm)}
+
+/* AI-search engine rows */
+.snapeng{display:flex;flex-direction:column;gap:8px}
+.snapeng__row{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:11px 13px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r)}
+.snapeng__row b{font-size:var(--t-sm);font-weight:600;color:var(--ink)}
+.snapeng__row span{font-size:var(--t-sm);color:var(--ink-2);font-variant-numeric:tabular-nums;flex:none}
+
+/* brand signal dial */
+.snapmod__body{display:flex;align-items:center;gap:20px}
+.snapdial{position:relative;width:104px;height:104px;flex:none}
+.snapdial__svg{width:100%;height:100%;transform:rotate(-90deg)}
+.snapdial__bg{fill:none;stroke:var(--line-2);stroke-width:9}
+.snapdial__fg{fill:none;stroke:var(--teal);stroke-width:9;stroke-linecap:round;
+  transition:stroke-dashoffset 900ms var(--ease-io)}
+.snapdial__num{position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--sans);font-weight:700;font-size:1.5rem;color:var(--navy);
+  font-variant-numeric:tabular-nums}
+.snapdial__meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.snapdial__label{font-size:var(--t-xs);color:var(--ink-3)}
+.snapdial__delta{font-size:1.0625rem;font-weight:700;color:var(--teal)}
+.snapdial__delta.is-down{color:var(--ink)}
+.snapdial__window{font-size:var(--t-xs);color:var(--ink-3)}
+
+/* ── capture band ── */
+.snapcap{margin-top:22px;background:var(--surface-2);border:1px solid var(--line-2);
+  border-radius:var(--r-lg);padding:26px 28px;display:flex;flex-wrap:wrap;
+  align-items:center;justify-content:space-between;gap:22px 28px}
+.snapcap.is-shake{animation:shake 420ms var(--ease-io)}
+.snapcap__text{display:flex;flex-direction:column;gap:6px;max-width:38ch}
+.snapcap__text b{font-size:1.0625rem;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.snapcap__text span{font-size:var(--t-sm);color:var(--ink-2);line-height:1.5}
+.snapcap__form{display:flex;flex-wrap:wrap;align-items:flex-start;gap:14px}
+.snapcap__field{display:flex;flex-direction:column;gap:6px}
+.snapcap__email{height:44px;min-width:220px;border-radius:var(--r);border:1px solid var(--line-2);
+  background:var(--surface);padding:0 16px;font-size:var(--t-sm);color:var(--ink);outline:none;
+  transition:border-color var(--d-2) var(--ease)}
+.snapcap__email::placeholder{color:var(--ink-4)}
+.snapcap__email:focus{border-color:color-mix(in srgb,var(--ink) 42%,transparent)}
+.snapcap__hint{margin:0;font-size:var(--t-xs);color:#a7660a}
+.snapcap__consent{display:flex;align-items:center;gap:8px;font-size:var(--t-sm);color:var(--ink-2);
+  max-width:220px;line-height:1.4;cursor:pointer;align-self:center}
+.snapcap__consent input{width:16px;height:16px;flex:none;accent-color:var(--teal)}
+.snapcap__decline{flex:none;background:none;border:0;padding:0;margin-left:auto;
+  font-family:var(--sans);font-size:var(--t-sm);color:var(--ink-3);text-decoration:underline;
+  text-underline-offset:3px;cursor:pointer}
+.snapcap__decline:hover{color:var(--ink)}
+.snapcap.is-quiet{justify-content:center;text-align:center;padding:16px 28px}
+.snapcap__quiet{margin:0;font-size:var(--t-sm);color:var(--ink-2)}
+
+/* ── bottom band ── */
+.snapband{background:var(--void);color:var(--on-void);
+  padding:clamp(56px,9vh,96px) clamp(20px,4vw,48px)}
+.snapband__in{max-width:1180px;margin:0 auto}
+.snapband h2{margin:0;font-family:var(--serif);font-weight:400;font-size:var(--t-h1);
+  letter-spacing:-.024em;line-height:1.12}
+.snapband h2 .accent{font-style:italic;font-weight:400;color:var(--amber)}
+.snaptiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+.snaptile{padding:26px;border-radius:var(--r-lg);text-align:left;display:flex;flex-direction:column;
+  gap:9px;background:rgba(234,242,245,.04);border:1px solid var(--line-void);color:var(--on-void);
+  cursor:pointer;font:inherit;
+  transition:background var(--d-2) var(--ease),border-color var(--d-2) var(--ease),transform var(--d-2) var(--ease)}
+.snaptile:hover{background:rgba(234,242,245,.08);border-color:rgba(234,242,245,.28);transform:translateY(-2px)}
+.snaptile b{font-size:1.0625rem;font-weight:500;letter-spacing:-.012em;display:flex;align-items:center;gap:9px}
+.snaptile b svg{opacity:0;transform:translateX(-5px);transition:all var(--d-2) var(--ease);flex:none}
+.snaptile:hover b svg{opacity:1;transform:none}
+.snaptile span{font-size:var(--t-sm);color:rgba(234,242,245,.74);line-height:1.55}
+.snaptile__note{font-style:normal;font-size:var(--t-xs);font-weight:600;color:var(--teal)}
+.snaptile.is-primary{background:var(--amber);border-color:var(--amber);color:var(--navy)}
+.snaptile.is-primary span{color:rgba(0,51,73,.72)}
+.snaptile.is-primary .snaptile__note{color:var(--navy)}
+.snaptile.is-primary:hover{background:#ffc247}
+
+/* fine print — visible on screen too, quietly, per the site's honesty rule */
+.snap__printfoot{margin:26px 0 0;font-size:var(--t-xs);color:var(--ink-4);line-height:1.5}
+
+/* ── responsive ── */
+@media(max-width:900px){
+  .snap__modules{grid-template-columns:1fr}
+  .snaptiles{grid-template-columns:1fr}
+  .snap__pdf{align-items:flex-start;width:100%}
+  .snapcap{flex-direction:column;align-items:stretch}
+  .snapcap__decline{margin-left:0}
+  .snapcap__form{width:100%}
+  .snapcap__email{flex:1;min-width:0}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .snap,.snapmod{animation:none}
+  .snapbar__t i,.snapdial__fg,.snaptile,.snap__pdfbtn{transition:none}
+  .snapcap.is-shake{animation:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRINT — the PDF placeholder. Everything but the snapshot itself drops out;
+   a plain brand header stands in for a designed cover, and the fine print
+   under the modules says so rather than pretending otherwise.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media print{
+  #nav,.navscrim,#mnav,.vercorner,.bfoot,.boot,.think,.modal{display:none!important}
+  .snap__pdf,.snapcap,.snapband{display:none!important}
+  .snap{background:#fff;animation:none}
+  .snap__in{max-width:none;padding:0;margin:0}
+  .snap__printhead{display:flex}
+  .snap__eyebrow{display:none}
+  .snap__head{border-bottom-color:#ccc}
+  .snapmod{border-color:#ccc;box-shadow:none;break-inside:avoid;background:#fff}
+  .snapbar__t{border-color:#ccc}
+  .snapeng__row{border-color:#ccc;background:#fff}
+  .snap__printfoot{margin-top:22px}
+}

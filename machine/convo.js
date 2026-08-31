@@ -469,7 +469,6 @@ function finish() {
   const FLOW = window.SAIFLOW;
   const result = (FLOW && typeof FLOW.result === 'function') ? FLOW.result() : null;
   const session = (result && result.session) || (window.SAI && window.SAI.session) || {};
-  const domain = (session.slots && session.slots.company_domain) || null;
 
   setCardStatus('ready');
   setModuleStatus('competitive', 'ready');
@@ -478,24 +477,17 @@ function finish() {
   const remaining = $('#railRemaining');
   if (remaining) remaining.textContent = 'Ready to see.';
 
-  if (domain) {
-    addAgentBubble('Here’s your live read — the full snapshot view is on its way.');
-    /* stay "active" through the handoff delay so a stray submit in this
-       window reaches SAIFLOW.answer() (a safe no-op once phase is 'done')
-       instead of b.js reading active()===false and restarting begin() on
-       top of the startDashboard call about to land */
-    setTimeout(() => {
-      active = false;
-      if (typeof window.startDashboard === 'function') window.startDashboard(domain);
-    }, REDUCED ? 30 : 650);
-  } else {
-    addAgentBubble('I don’t have a website to read yet — paste one whenever you’re ready ' +
-      '(like <em>nike.com</em>) and I’ll pull a live snapshot together.');
-    const { promptInput } = els();
-    if (promptInput) { promptInput.disabled = false; promptInput.placeholder = 'Paste your website…'; }
-    active = false; // hands the composer straight to the old flow, idling at
-                     // its first ("paste your website") step, ready for one
-  }
+  /* S4 (reference/kit/W4-Snapshot-Output.png): the kit's own snapshot reveal,
+     not the old SCRIPT's later questions. window.SAISNAPDATA.build() handles
+     a session with no company_domain just as well as one with — so the
+     domain-less visitor gets the same reveal, not a bounce back to the old
+     flow's composer. */
+  addAgentBubble('Your snapshot is ready.');
+  setTimeout(() => {
+    active = false;
+    teardown();
+    if (window.SAISNAP && typeof window.SAISNAP.show === 'function') window.SAISNAP.show(session);
+  }, REDUCED ? 30 : 650);
 }
 
 /* ─────────────────────────── ENTRY ─────────────────────────── */
