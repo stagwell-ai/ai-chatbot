@@ -512,6 +512,18 @@ async function bootstrap(raw) {
   const chip = matchingChip(raw);
   const startArgs = chip ? { chipLabel: chip.label } : { initialText: raw };
 
+  /* A campaign handoff: the product landing put the campaign opener on its
+     own panel and the visitor answered it there — the flow takes that text
+     as the opener's answer rather than asking it again, so replay the
+     exchange here instead of opening mid-sentence. */
+  const opener = (!chip && String(raw || '').trim() &&
+    typeof window.SAIFLOW._openerCampaign === 'function')
+    ? window.SAIFLOW._openerCampaign() : null;
+  if (opener) {
+    addAgentBubble(esc(opener.opener));
+    addUserBubble(raw);
+  }
+
   if (typeof window.SAIFLOW.onChange === 'function') window.SAIFLOW.onChange(render);
 
   try { await window.SAIFLOW.start(startArgs); }
@@ -569,8 +581,10 @@ async function autostart() {
   const req = autostartRequest();
   if (!req) return false;
 
-  const { thread, promptForm, promptInput } = els();
-  if (!thread || !promptForm || !promptInput) return false;   /* not the master page */
+  /* only where this file's own layout can actually mount — the campaign page
+     loads convo.js too, and it is not the master conversation shell */
+  const { hero, heroIn, chat, thread, promptForm, promptInput } = els();
+  if (!hero || !heroIn || !chat || !thread || !promptForm || !promptInput) return false;
 
   autostarted = true;
   stripAutostartParams();

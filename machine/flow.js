@@ -702,6 +702,8 @@ async function start(opts) {
      answer over as the opening message (see convo.js's autostart). Log the
      exchange that already happened instead of asking it a second time. */
   if (opener && initialText) {
+    st.idx = 0;                    /* the opener IS seq[0] — answering it
+                                      must advance from there, not re-ask it */
     present(OPENER_ID);
     return answer(initialText);
   }

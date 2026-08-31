@@ -119,3 +119,6 @@
   .rail__mod[data-status="building"] .rail__modbar i{animation:none}
   .convo__progress,.convo__rail,.rail__logline{animation:none}
 }
+
+/* campaign-opener placeholder chips: visible but plainly inert */
+.opt:disabled,.opt--placeholder{opacity:.45;cursor:not-allowed;border-style:dashed}
