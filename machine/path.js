@@ -290,8 +290,11 @@ function bandHTML(solution, size) {
   if (!solution || !solution.name) return '';
   const cls = 'pathband pathband--' + size;
   if (solution.lockup) {
+    /* not lazy: the first band is above the fold the moment show() scrolls the
+       section into view, and a card that fades in with an empty navy strip is
+       exactly the "not visually impressive" note this band answers. */
     return `<div class="${cls}"><img class="pathband__lockup" src="${esc(solution.lockup)}"
-      alt="${esc(solution.name)}" loading="lazy"></div>`;
+      alt="${esc(solution.name)}" decoding="async"></div>`;
   }
   return `<div class="${cls}"><span class="pathband__word">${esc(solution.name)}</span></div>`;
 }
@@ -423,7 +426,12 @@ function buildViewModel(session, decision) {
 
   return {
     company: companyName(session),
-    eyebrow: `BASED ON YOUR ${countWord(askedCount)} ANSWERS`,
+    /* 'BASED ON YOUR ZERO ANSWERS' is never a sentence worth showing — a
+       visitor who reached the path without a counted question (a deep link,
+       or a campaign whose prefill answered everything) gets the plain line */
+    eyebrow: askedCount > 0
+      ? `BASED ON YOUR ${countWord(askedCount)} ANSWER${askedCount === 1 ? '' : 'S'}`
+      : 'BASED ON WHAT YOU TOLD US',
     sub: subSentence(matchedRaw),
     matched,
     cross,
