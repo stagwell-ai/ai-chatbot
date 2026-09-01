@@ -66,6 +66,7 @@ function quotedPhrase(m) {
    the only thing that can go stale here. */
 const CAPABILITY_TITLES = {
   brand_health: 'Brand health tracking & benchmarking',
+  competitive: 'Competitive benchmarking & intelligence',
   research: 'Do-it-yourself consumer research',
   business_impact: 'Predictive brand analytics',
   audiences: 'Audience building & activation',

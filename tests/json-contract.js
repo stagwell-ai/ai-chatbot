@@ -63,7 +63,11 @@ function routingWithFlippedCell() {
 
 async function driveToQ3(page) {
   await H.open(page, '/');
-  await H.landingChip(page, 'I want to run a quick survey');
+  /* sprint 7: the survey chip left the landing (data/questions.json q1.chips —
+     its slot went to competitor analysis). The sentence still classifies to
+     research, so the three contract tests keep the visitor they were written
+     around; only the gesture that starts them changed. */
+  await H.typeAnswer(page, 'I want to run a quick survey');
   await H.waitQuestion(page, 'q2', 30000);
   await H.typeAnswer(page, J.SMB_DOMAIN);
   await H.waitQuestion(page, 'q3', 30000);

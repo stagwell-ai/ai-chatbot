@@ -142,7 +142,11 @@ async function liveResearchModules(page, check) {
 /* ── PASS B · seeded fiction ────────────────────────────────────────────── */
 async function seededModules(page, check) {
   await H.open(page, '/');
-  await H.landingChip(page, 'I want to run a quick survey');
+  /* sprint 7: the survey chip left the landing (its slot went to competitor
+     analysis). Typing the same sentence keeps this pass on exactly the same
+     journey — an unknown domain, so research must fall back to seeded fiction,
+     which is the whole point of pass B. */
+  await H.typeAnswer(page, 'I want to run a quick survey');
   await H.waitQuestion(page, 'q2', 30000);
   await H.typeAnswer(page, J.SMB_DOMAIN);
   await H.waitQuestion(page, 'q3', 30000);

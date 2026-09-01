@@ -28,6 +28,14 @@
       "cells": { "smb": { "route": "self_serve", "note": "trial dashboard" }, "mid_market": { "route": "demo" }, "enterprise": { "route": "demo", "note": "if 'prove impact' language also present → consultative with BERA.ai" } }
     },
     {
+      "id": "competitive",
+      "label": "Track competitors and benchmark against them",
+      "solution": "QuestBrand",
+      "icpRoles": ["VP Brand/Marketing", "VP Consumer Insights", "Director of Research", "CMO", "Head of Strategy"],
+      "industryBoost": ["QSR", "Retail & Ecommerce", "CPG", "Automotive", "Financial Services"],
+      "cells": { "smb": { "route": "self_serve", "note": "named-competitor tracking on the trial dashboard" }, "mid_market": { "route": "demo" }, "enterprise": { "route": "demo", "note": "if 'prove impact' or CFO language is also present → consultative with BERA.ai" } }
+    },
+    {
       "id": "research",
       "label": "Run research myself (surveys, concept & message testing)",
       "solution": "QuestDIY",

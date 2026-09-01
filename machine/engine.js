@@ -86,16 +86,51 @@ const kwRe = kw => new RegExp('(?<![a-z0-9])' + escRe(norm(kw)) + 's?(?![a-z0-9]
    actually types. Free text can carry several domains at once, and that is
    the point: two domains is how a multi-product opportunity surfaces
    (questions.json q1 notes, routing override 1).
+
+   ── THE brand_health / competitive COLLISION, and the rule that settles it ──
+   Adding `competitive` put two domains in reach of the same vocabulary, and
+   classifyKeywords() returns EVERY domain that hits — so a phrase owned by
+   both comes back as two domains, which is routing override 1, which sends a
+   single-minded visitor to a consultative multi-product conversation they did
+   not ask for. An overlap here is not a tie to be ranked; it is a bug.
+
+   The rule: WHO the sentence is about decides which domain owns it.
+
+     · brand_health owns the words about the visitor's OWN numbers — health,
+       tracking, equity, awareness, consideration, momentum, perception.
+     · competitive owns every word that names SOMEONE ELSE — competitor,
+       rival, category leader, share, versus — and that includes the bare
+       "benchmark"/"benchmarking", which moved here in full. You cannot
+       benchmark against yourself: the word always implies a comparison set,
+       so the domain that exists to name that set should own it.
+
+   Eight terms therefore MOVED out of brand_health and into competitive:
+   benchmark · benchmarking · competitive benchmark · competitor benchmark ·
+   share of voice · competitive position · against competitors · versus
+   competitors. They are not duplicated — a term lives in exactly one list, so
+   "competitive benchmarking" resolves to competitive ALONE, and "how is my
+   brand doing" to brand_health alone. Longest-match then still does its job
+   inside each list.
+
+   (routing.json's brand_health label is still "Track brand health & benchmark
+   competitors" — typed verbatim that sentence genuinely is about both, and it
+   classifying as both is the correct answer, not a leak.)
    ═══════════════════════════════════════════════════════════════════════════ */
 const KEYWORDS = {
   brand_health: [
     'brand health', 'brand tracking', 'brand tracker', 'tracking study', 'track my brand',
     'track our brand', 'always-on tracking', 'brand equity', 'equity', 'awareness',
-    'unaided awareness', 'consideration', 'brand consideration', 'benchmark',
-    'benchmarking', 'competitive benchmark', 'competitor benchmark', 'share of voice',
+    'unaided awareness', 'consideration', 'brand consideration',
     'brand momentum', 'brand perception', 'brand performance', 'brand metrics',
-    'competitive position', 'against competitors', 'versus competitors',
     'how is my brand doing', 'how our brand is doing', 'funnel metrics'
+  ],
+  competitive: [
+    'competitor', 'competitors', 'competitive', 'competitive analysis',
+    'competitive intelligence', 'competitive benchmarking', 'competitive benchmark',
+    'competitor benchmark', 'benchmark', 'benchmarking', 'rival', 'rivals',
+    'market share', 'share of voice', 'category leader', 'stack up', 'stacks up',
+    'outperform', 'losing share', 'blind spot', 'versus', 'head to head',
+    "who's winning", 'competitive position', 'against competitors', 'versus competitors'
   ],
   research: [
     'survey', 'poll', 'polling', 'questionnaire', 'concept test', 'concept testing',

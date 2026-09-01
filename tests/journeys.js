@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   JOURNEYS — the five demo scripts from reference/kit/KIT-BRIEF.md
+   JOURNEYS — the five demo scripts from reference/kit/KIT-BRIEF.md, plus the
+   sixth the client asked for in the sprint-7 round (competitor analysis)
    ("Demo script to satisfy"), run end to end against the real pages and the
    real /api/ask, and asserted twice over: once on what the visitor SEES, and
    once on the event trail the demo claims it sends to HubSpot
@@ -10,6 +11,7 @@
      J3  SMB founder   → "I want to run a quick survey" → self-serve, dominant
      J4  just exploring → follow_up, and no meeting push
      J5  decline email → snapshot survives, PDF stays locked, session anonymous
+     J6  competitor analysis → chip → real rivals at q6 → QuestBrand (sprint 7)
 
    ── ON LIVE RESEARCH ──────────────────────────────────────────────────────
    /api/ask is proxied to the deployed function, so research is genuinely
@@ -25,6 +27,8 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const H = require('./harness');
 
 const NIKE_MSG = "Reach better audiences — and prove it moved the business, we're at nike.com";
@@ -264,12 +268,19 @@ async function j2(page, check, opts) {
    ═══════════════════════════════════════════════════════════════════════════ */
 async function j3(page, check) {
   await H.open(page, '/');
-  await H.landingChip(page, 'I want to run a quick survey');
+  /* CHANGED, sprint 7: "I want to run a quick survey" is no longer a landing
+     chip — the fourth slot went to competitor analysis (data/questions.json
+     q1.chips), which is where the client says the demand is. Research did not
+     go anywhere: it is reachable by typing, and by the solution directory. So
+     this journey types the sentence the chip used to carry, which is a
+     STRONGER test than the chip was — the chip resolved through a label
+     lookup in the data, this goes through the classifier for real. */
+  await H.typeAnswer(page, 'I want to run a quick survey');
 
   await H.waitQuestion(page, 'q2', 30000);
-  check.eq('the chip answered q1; q2 is the first question asked',
+  check.eq('the typed sentence answered q1; q2 is the first question asked',
     (await H.flowState(page)).id, 'q2');
-  check.eq('domain classified from the chip',
+  check.eq('the classifier still resolves the survey sentence to research',
     await page.evaluate(() => window.SAI.session.slots.problem_domains), ['research']);
 
   await H.typeAnswer(page, SMB_DOMAIN);
@@ -458,6 +469,145 @@ async function j5(page, check) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   J6 · COMPETITOR ANALYSIS — the sprint-7 entry point, end to end
+
+   The client's ask, verbatim intent: "competitor analysis is going to be a big
+   part of what people come to us to find out." This journey is the whole chain
+   that answer produced, asserted in one run:
+
+     landing chip  → data/questions.json q1.chips, domain `competitive`
+     research      → nike.com, so /api/ask returns REAL rivals
+     q6            → the peers form, reading those rivals back by name
+     snapshot      → leads with Competitive position, naming the same rivals
+     path          → "Competitive benchmarking & intelligence", QuestBrand
+     route         → routing.json's own cell for the tier, read off the file
+
+   ── ON THE TWO FACES OF Q6 ────────────────────────────────────────────────
+   q6 has a peers form and a generic form, and which one a visitor gets is a
+   live-research question — the same non-determinism q4 has, handled the same
+   honest way. flow.js will only use the peers form when research came back
+   live AND its peers step reported live AND there are two or more names,
+   because research.js invents plausible competitor names whenever the model
+   did not answer, and reading invented names back as "your closest comparison
+   set" would be the demo asserting a fact about the visitor's market that it
+   made up. So: when the peers form appears, this journey asserts the names in
+   the question are the names on session.research; when it does not, it
+   asserts the generic form and RECORDS which mode it got. Both are correct
+   behaviour, and the route assertions are identical either way.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const COMPETITIVE_CHIP = 'How do I stack up against my competitors?';
+
+/* routing.json is the contract; the assertion reads the file rather than
+   restating it, so a cell edit moves the test with it. */
+function routingCell(tier) {
+  const r = JSON.parse(fs.readFileSync(path.join(H.REPO, 'data', 'routing.json'), 'utf8'));
+  const d = r.domains.find(x => x.id === 'competitive');
+  return d && d.cells[tier];
+}
+
+async function j6(page, check) {
+  await H.open(page, '/');
+
+  const landing = await page.$$eval('#solveChips button', e => e.map(x => x.textContent.trim()));
+  check.eq('the landing still offers exactly four suggestion chips (W1)', landing.length, 4);
+  check.ok('competitor analysis is one of them', landing.includes(COMPETITIVE_CHIP), landing.join(' | '));
+  check.ok('and the survey chip it replaced is gone',
+    !landing.includes('I want to run a quick survey'), landing.join(' | '));
+
+  await H.landingChip(page, COMPETITIVE_CHIP);
+
+  await H.waitQuestion(page, 'q2', 30000);
+  check.eq('the chip answered q1; q2 is the first question asked',
+    (await H.flowState(page)).id, 'q2');
+  check.eq('one problem domain, and it is the new one',
+    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['competitive']);
+
+  /* a company the model actually knows, so the competitive set is real */
+  await H.typeAnswer(page, 'nike.com');
+  await H.waitQuestion(page, 'q3', 30000);
+  await H.clickChip(page, 'Director / VP');
+
+  const sizeMode = await H.answerSize(page, { confirm: "That's right", ask: '2,500+' });
+  check.note('q4 mode', sizeMode);
+
+  await H.waitQuestion(page, 'q5', 25000);
+  const q5 = await H.flowState(page);
+  check.includes('q5 names the new goal back before asking the timing of it',
+    q5.copy, 'So you want to track competitors and benchmark against them');
+  await H.clickChip(page, 'This quarter');
+
+  /* ── Q6 · the moment the live research pays off ── */
+  await H.waitQuestion(page, 'q6', 25000);
+  const q6 = await H.flowState(page);
+  const research = await page.evaluate(() => window.SAI.session.research);
+  const peers = (research && research.competitors) || [];
+  check.note('research', `live=${research && research.live} competitors=${JSON.stringify(peers)}`);
+  check.note('q6 mode', q6.mode);
+
+  if (q6.mode === 'peers') {
+    check.ok('q6 arrived in the PEERS form — live research named a real comparison set', true, q6.copy);
+    const named = peers.filter(p => q6.copy.indexOf(p) !== -1);
+    check.ok('the question names at least TWO of them, verbatim',
+      named.length >= 2, `${named.length} of ${peers.length}: ${named.join(', ')}`);
+    check.ok('every name in the question came off session.research.competitors',
+      named.length === Math.min(peers.length, 3), `named ${named.join(', ')} | research ${peers.join(', ')}`);
+    check.absent('no unfilled template slot reached the screen', q6.copy, '{');
+    check.eq('and it brings the peers chips', q6.chips,
+      ["That's the set", 'There are others', 'Widen to the category']);
+    await H.clickChip(page, "That's the set");
+  } else {
+    /* the honest-fallback path — the same protocol the suite uses for q4 */
+    check.note('q6 fell back to the GENERIC form — live research did not return a real ' +
+      'comparison set in time (legitimate offline path; the peers form is never shown with ' +
+      'the seeded fallback names)',
+      `mode=${q6.mode} live=${research && research.live} competitors=${JSON.stringify(peers)}`);
+    check.eq('the generic form asks the same decision in the abstract', q6.copy,
+      'Who are you measuring against — competitors you name, or the whole category?');
+    check.eq('with its own explicit chips, not derived ones', q6.chips,
+      ['Competitors I name', 'The whole category']);
+    await H.clickChip(page, 'Competitors I name');
+  }
+
+  /* ── SNAPSHOT · already led by Competitive position ── */
+  await H.waitSnapshot(page);
+  const mods = await page.$$eval('#snapView .snapmod',
+    e => e.map(x => ({ mod: x.dataset.mod, head: x.querySelector('h3').textContent.trim(),
+      text: x.textContent.replace(/\s+/g, ' ').trim() })));
+  check.eq('three modules', mods.length, 3);
+  check.eq('the FIRST is Competitive position — the domain the visitor came for leads',
+    mods[0] && mods[0].head, 'Competitive position');
+  const inSnap = peers.filter(p => mods[0] && mods[0].text.indexOf(p) !== -1);
+  check.ok('and it names the same rivals the research found',
+    inSnap.length >= 2, `${inSnap.join(', ')} | research ${peers.join(', ')}`);
+  await H.shot(page, 'j6-snapshot');
+
+  await H.captureEmail(page, 'demo@nike.com', true);
+  await H.goToPath(page, '#snapPathGo');
+
+  /* ── PATH · the capability, and the product credited under it ── */
+  const cards = await page.$$eval('#pathView .pathcard h3', e => e.map(x => x.textContent.trim()));
+  check.eq('one capability card', cards.length, 1);
+  check.eq('titled as a CAPABILITY, not a product', cards[0], 'Competitive benchmarking & intelligence');
+  const credits = await page.$$eval('#pathView .pathcard .pathband', e => e.map(b => {
+    const i = b.querySelector('img.pathband__lockup');
+    return i ? i.getAttribute('alt') : b.textContent.trim();
+  }));
+  check.eq('QuestBrand credited on the card band', credits, ['QuestBrand']);
+
+  const route = H.lastOf(await H.allEvents(page), 'route_decided');
+  const tier = route && route.payload.tier;
+  const cell = routingCell(tier);
+  check.eq('routed on the competitive domain', route && route.payload.primaryDomain, 'competitive');
+  check.eq(`route matches routing.json's own competitive/${tier} cell`,
+    route && route.payload.route, cell && cell.route);
+  check.eq('…and the decision carries that cell\'s note',
+    route && route.payload.cellNote, (cell && cell.note) || null);
+
+  assertAttributed(check, await handoffLinks(page), route.payload.route, 'handoff');
+  await H.shot(page, 'j6-path');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    RUN
    ═══════════════════════════════════════════════════════════════════════════ */
 const counts = {};
@@ -467,13 +617,14 @@ const JOURNEYS = [
     run: (p, c) => j1(p, c, { onDone: r => { counts.J1 = r.asked; } }) },
   { id: 'J2', name: 'product ad · /p/targeting-machine → pre-seeded opener → demo',
     run: (p, c) => j2(p, c, { onDone: r => { counts.J2 = r.standardAsked; } }) },
-  { id: 'J3', name: 'SMB founder · quick survey → self-serve with a dominant, honest CTA', run: j3 },
+  { id: 'J3', name: 'SMB founder · types "a quick survey" → self-serve with a dominant, honest CTA', run: j3 },
   { id: 'J4', name: 'just exploring → follow_up, no meeting push', run: j4 },
-  { id: 'J5', name: 'anonymous · decline email → snapshot survives, PDF stays locked', run: j5 }
+  { id: 'J5', name: 'anonymous · decline email → snapshot survives, PDF stays locked', run: j5 },
+  { id: 'J6', name: 'competitor analysis · landing chip → real rivals named at q6, snapshot and path', run: j6 }
 ];
 
 if (require.main === module) {
-  H.runSuite('ACCEPTANCE · the five KIT-BRIEF demo scripts', JOURNEYS).then(ok => {
+  H.runSuite('ACCEPTANCE · the five KIT-BRIEF demo scripts, plus J6 (competitor analysis)', JOURNEYS).then(ok => {
     if (counts.J1 && counts.J2) {
       process.stdout.write(
         '\nQUESTION BUDGET (for the record — see tests/README.md "Question counts"):\n' +
@@ -484,4 +635,5 @@ if (require.main === module) {
   }).catch(e => { console.error('SUITE ERROR:', e); process.exit(1); });
 }
 
-module.exports = { JOURNEYS, j1, j2, j3, j4, j5, NIKE_MSG, SMB_DOMAIN, EXPLORER_DOMAIN };
+module.exports = { JOURNEYS, j1, j2, j3, j4, j5, j6,
+  NIKE_MSG, SMB_DOMAIN, EXPLORER_DOMAIN, COMPETITIVE_CHIP };

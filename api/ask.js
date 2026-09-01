@@ -101,6 +101,7 @@ function chatSystem(c) {
    could, it could invent a domain the routing matrix has no cell for. */
 export const CLASSIFY_DOMAINS = [
   ['brand_health', 'track brand health, equity and awareness; benchmark against competitors'],
+  ['competitive', 'comparing the brand against named rivals — benchmarking, share, competitive blind spots'],
   ['research', 'run their own research — surveys, polls, concept and message testing'],
   ['business_impact', "prove the brand's business impact — pricing power, revenue, market value, ROI"],
   ['audiences', 'reach better audiences — build and activate segments from first-party data'],

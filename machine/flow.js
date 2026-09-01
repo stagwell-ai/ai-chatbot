@@ -402,6 +402,113 @@ function chipsFromCopy(copy) {
   return parts.map(p => ({ label: p.charAt(0).toUpperCase() + p.slice(1), value: p }));
 }
 
+/* An explicit chips array on a byDomain entry, normalised to the {label,value}
+   shape the UI renders. Null (not []) when there isn't one, so the caller can
+   tell "no explicit chips, derive them" from "explicitly no chips". */
+function chipList(arr) {
+  if (!Array.isArray(arr) || !arr.length) return null;
+  const out = arr.filter(c => c && c.label != null && String(c.label).trim())
+    .map(c => ({ label: String(c.label), value: c.value == null ? String(c.label) : c.value }));
+  return out.length ? out : null;
+}
+
+/* "Adidas, Puma and Under Armour" — a list a sentence can swallow whole. */
+function joinNames(list) {
+  const n = list.slice(0, 3);
+  if (n.length < 2) return n[0] || '';
+  return n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1];
+}
+
+/* ── THE PEERS RULE, and why it is this strict ──
+   research.js always hands back three competitor names. When the model
+   recognised the company those are real brands; when it did not, they are
+   invented morphemes ("Vellora Group") that exist so the demo has something
+   to draw a bar chart with. The snapshot is allowed to use either, because it
+   stamps every module "Illustrative". A QUESTION cannot do that: reading
+   invented names back as "your closest comparison set — is that who you're
+   measuring against?" is the machine asserting a fact about the visitor's
+   market that it made up, to their face, and inviting them to agree with it.
+
+   So the peers form is gated on proof that the names came from outside, and
+   the gate is deliberately three-deep:
+
+     1. research.live — the model recognised the company at all;
+     2. the 'peers' narration step reports live — research.js flags that step
+        live ONLY when the model supplied the names, so it is the one signal
+        that separates a real set from the seeded fallback (a company the
+        model knows but has no competitors for is live:true with SEEDED
+        names, and step 2 is exactly what catches that case);
+     3. at least two names to read out — one name is not a "set".
+
+   A session assembled by hand (a test, the console) may have no steps array;
+   there, rule 2 falls back to asking research.js for the fiction it would
+   have invented for this domain and refusing to present it as real.
+   Anything short of all three and the generic form is asked instead. */
+function realPeers() {
+  const S = eng();
+  const r = S.session.research;
+  if (!r || r.live !== true) return [];
+
+  const names = (Array.isArray(r.competitors) ? r.competitors : [])
+    .map(n => String(n == null ? '' : n).trim()).filter(Boolean);
+  if (names.length < 2) return [];
+
+  const steps = Array.isArray(r.steps) ? r.steps : null;
+  if (steps && steps.length) {
+    const peers = steps.find(s => s && s.step === 'peers');
+    return peers && peers.live === true ? names : [];
+  }
+
+  /* no narration to check — compare against the fiction itself */
+  const R = res();
+  if (R && typeof R._seeded === 'function' && r.domain) {
+    try {
+      const fiction = (R._seeded(r.domain) || {}).competitors || [];
+      if (names.every(n => fiction.indexOf(n) !== -1)) return [];
+    } catch (e) { /* couldn't check — fall through to the honest default */ }
+  }
+  return names;
+}
+
+/* Q6 as the UI should render it: which face of the question, its copy, and
+   its chips. Precedence, highest first:
+
+     1. a product campaign's own q6Override (it replaces the question);
+     2. the byDomain entry's PEERS form, when realPeers() allows it;
+     3. the byDomain entry's generic form.
+
+   Chips in every case: the entry's explicit `chips`/`chipsWithPeers` array
+   wins, and chipsFromCopy() stays as the fallback for the entries that carry
+   no array — it only ever worked on copy shaped "stem — a, b, or c?", and
+   an explicit array is the way an entry escapes that shape. */
+function q6View(primary) {
+  const c = campaign();
+  const seeded = (c && c.prefill && c.prefill.problem_domains) || [];
+  if (c && c.q6Override && primary && seeded.indexOf(primary) !== -1) {
+    return { form: 'campaign', copy: c.q6Override, chips: chipsFromCopy(c.q6Override), peers: [] };
+  }
+
+  const q6 = qById('q6');
+  const entry = (primary && ((q6 && q6.byDomain) || {})[primary]) || null;
+  if (!entry) return { form: 'none', copy: '', chips: [], peers: [] };
+
+  if (entry.copyWithPeers) {
+    const peers = realPeers();
+    if (peers.length >= 2) {
+      const copy = tpl(entry.copyWithPeers, { competitors: joinNames(peers) });
+      return {
+        form: 'peers',
+        copy,
+        chips: chipList(entry.chipsWithPeers) || chipsFromCopy(copy),
+        peers: peers.slice(0, 3)
+      };
+    }
+  }
+
+  const copy = entry.copy || '';
+  return { form: 'generic', copy, chips: chipList(entry.chips) || chipsFromCopy(copy), peers: [] };
+}
+
 /* ── the opener as the UI sees it ──
    campaigns.json chips are bare strings, so the value is the label. Two
    rules on top of that:
@@ -481,8 +588,12 @@ function questionView() {
     }
   } else if (id === 'q6') {
     const domains = slots().problem_domains || [];
-    copy = q6Copy(domains[0]) || '';
-    chips = chipsFromCopy(copy);
+    const view = q6View(domains[0] || null);
+    copy = view.copy;
+    chips = view.chips;
+    mode = view.form;      /* 'peers' | 'generic' | 'campaign' — the console and
+                              the suite read which face the visitor actually got,
+                              the same way they read q4's confirm/ask */
   }
 
   return {
@@ -829,6 +940,8 @@ const api = {
   _skipReason: skipReason,
   _q6SkipReason: q6SkipReason,
   _q6Copy: q6Copy,
+  _q6View: q6View,
+  _realPeers: realPeers,
   _domainFromLabel: domainFromLabel,
   _openerCampaign: openerCampaign,
   _openerId: OPENER_ID,

@@ -11,9 +11,9 @@
         { "label": "How can I track my brand's health?", "domain": "brand_health" },
         { "label": "I need influencer marketing", "domain": "influencer" },
         { "label": "How do AI models describe my brand?", "domain": "ai_visibility" },
-        { "label": "I want to run a quick survey", "domain": "research" }
+        { "label": "How do I stack up against my competitors?", "domain": "competitive" }
       ],
-      "freeTextDomains": ["business_impact", "audiences", "reputation", "media_monitoring", "real_world_behavior", "marketing_ops"],
+      "freeTextDomains": ["research", "business_impact", "audiences", "reputation", "media_monitoring", "real_world_behavior", "marketing_ops"],
       "notes": "Free text can carry multiple domains at once — that is how multi-product opportunities surface.",
       "skipWhen": "entry came from a product ad (product_interest pre-filled; opener names the product)"
     },
@@ -78,6 +78,21 @@
       "skipWhen": "the solution match is already obvious from prior answers",
       "byDomain": {
         "brand_health": { "copy": "How do you track your brand today — an agency, in-house dashboards, or not really yet?", "decides": "always-on tracking subscription vs. deeper analytics; upgrade path" },
+        "competitive": {
+          "copy": "Who are you measuring against — competitors you name, or the whole category?",
+          "chips": [
+            { "label": "Competitors I name", "value": "named" },
+            { "label": "The whole category", "value": "category" }
+          ],
+          "copyWithPeers": "I'm seeing {competitors} as your closest comparison set — is that who you're measuring against?",
+          "chipsWithPeers": [
+            { "label": "That's the set", "value": "named" },
+            { "label": "There are others", "value": "add" },
+            { "label": "Widen to the category", "value": "category" }
+          ],
+          "peersNote": "the {competitors} form is only ever asked when research came back with the visitor's REAL comparison set — never with the seeded fallback names (machine/flow.js q6View)",
+          "decides": "named-rival tracking vs category-wide benchmarking"
+        },
         "research": { "copy": "Is this a one-off study, or something you'll run regularly?", "decides": "self-service platform vs. serviced research; trial-readiness" },
         "business_impact": { "copy": "Who needs convincing — the board, the CFO, or your own team?", "decides": "seniority of the sale; executive audience biases consultative" },
         "audiences": { "copy": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?", "decides": "data readiness; demo now vs. consultative scoping" },

@@ -6,7 +6,7 @@
       "name": "Master campaign (Stagwell.AI brand ad)",
       "landing": "S1 master pattern — no product branding",
       "opener": "What do you need help solving today?",
-      "chips": ["How can I track my brand's health?", "I need influencer marketing", "How do AI models describe my brand?", "I want to run a quick survey"],
+      "chips": ["How can I track my brand's health?", "I need influencer marketing", "How do AI models describe my brand?", "How do I stack up against my competitors?"],
       "prefill": { "attribution": true },
       "routeBias": "none — the matrix decides",
       "status": "confirmed"
