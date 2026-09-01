@@ -36,6 +36,7 @@
 <link rel="stylesheet" href="/machine/directory.css">
 <link rel="stylesheet" href="/machine/console.css">
 <link rel="stylesheet" href="/machine/cloud.css">
+<link rel="stylesheet" href="/machine/ribbon.css">
 </head>
 <body class="vB" data-state="boot">
 
@@ -139,7 +140,7 @@
           <button type="button" data-solve="brand-health">How can I track my brand’s health?</button>
           <button type="button" data-solve="influencer">I need influencer marketing</button>
           <button type="button" data-solve="ai-visibility">How do AI models describe my brand?</button>
-          <button type="button" data-solve="survey">I want to run a quick survey</button>
+          <button type="button" data-solve="competitive">How do I stack up against my competitors?</button>
         </div>
       </div>
     </div>
@@ -227,10 +228,13 @@
   </div>
 </div>
 
+<a class="democorner" href="/ads" aria-label="Demo control — choose the ad this run starts from">Demo control</a>
 <a class="vercorner" href="/versions" aria-label="Previous versions of this demo">Previous versions</a>
 
 <script src="/machine/data-loader.js"></script>
 <script src="/machine/engine.js"></script>
+<!-- "arrived from {campaign} ad" — renders only for a campaign the JSON knows -->
+<script src="/machine/ribbon.js"></script>
 <!-- kit conversation engine — built in parallel; convo.js degrades to the
      old landing flow if any of these fail to load (see machine/b.js) -->
 <script src="/machine/flow.js"></script>

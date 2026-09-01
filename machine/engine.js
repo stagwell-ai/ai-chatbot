@@ -94,27 +94,27 @@ const kwRe = kw => new RegExp('(?<![a-z0-9])' + escRe(norm(kw)) + 's?(?![a-z0-9]
    single-minded visitor to a consultative multi-product conversation they did
    not ask for. An overlap here is not a tie to be ranked; it is a bug.
 
-   The rule: WHO the sentence is about decides which domain owns it.
+   THE RULE (client decision, sprint 7): the BARE words "benchmark" and
+   "benchmarking" belong to competitive. You cannot benchmark against
+   yourself — the word always implies a comparison set, so the domain that
+   exists to name that set owns it. Around that:
 
-     · brand_health owns the words about the visitor's OWN numbers — health,
-       tracking, equity, awareness, consideration, momentum, perception.
+     · brand_health owns the words about the visitor's OWN numbers — brand
+       health, brand tracking, equity, awareness, consideration, momentum,
+       perception — and it keeps the multi-word phrases where the brand is
+       explicitly the subject, "brand benchmarking" included.
      · competitive owns every word that names SOMEONE ELSE — competitor,
-       rival, category leader, share, versus — and that includes the bare
-       "benchmark"/"benchmarking", which moved here in full. You cannot
-       benchmark against yourself: the word always implies a comparison set,
-       so the domain that exists to name that set should own it.
+       rival, category leader, share, versus — plus bare benchmark(ing).
 
-   Eight terms therefore MOVED out of brand_health and into competitive:
-   benchmark · benchmarking · competitive benchmark · competitor benchmark ·
-   share of voice · competitive position · against competitors · versus
-   competitors. They are not duplicated — a term lives in exactly one list, so
-   "competitive benchmarking" resolves to competitive ALONE, and "how is my
-   brand doing" to brand_health alone. Longest-match then still does its job
-   inside each list.
+   Eight terms MOVED out of brand_health and into competitive: benchmark ·
+   benchmarking · competitive benchmark · competitor benchmark · share of
+   voice · competitive position · against competitors · versus competitors.
+   A term now lives in exactly one list, so "competitive benchmarking" and
+   "benchmark against our rivals" resolve to competitive, and "how is my
+   brand doing" to brand_health.
 
-   (routing.json's brand_health label is still "Track brand health & benchmark
-   competitors" — typed verbatim that sentence genuinely is about both, and it
-   classifying as both is the correct answer, not a leak.)
+   "brand benchmarking" is the one case a term list alone cannot settle, and
+   ECLIPSE (below) is what settles it.
    ═══════════════════════════════════════════════════════════════════════════ */
 const KEYWORDS = {
   brand_health: [
@@ -122,6 +122,7 @@ const KEYWORDS = {
     'track our brand', 'always-on tracking', 'brand equity', 'equity', 'awareness',
     'unaided awareness', 'consideration', 'brand consideration',
     'brand momentum', 'brand perception', 'brand performance', 'brand metrics',
+    'brand benchmark', 'brand benchmarking',
     'how is my brand doing', 'how our brand is doing', 'funnel metrics'
   ],
   competitive: [
@@ -447,6 +448,37 @@ function detectHumanAsk(text) {
   return HUMAN_PATTERNS.some(re => re.test(t));
 }
 
+/* one normalised phrase inside another, on whole-word boundaries:
+   "benchmarking" is in "brand benchmarking", but "pr" is not in
+   "pricing power". Both sides are already norm()-ed. */
+function containsPhrase(hay, needle) {
+  return new RegExp('(?<![a-z0-9])' + escRe(needle) + '(?![a-z0-9])').test(hay);
+}
+
+/* ── ECLIPSE ──
+   Longest-match orders the answer; it does not decide OWNERSHIP between two
+   domains, and it has to. Every domain that hits is returned, and two
+   returned domains is routing override 1 — a consultative multi-product
+   route. So a single-minded sentence that grazes two vocabularies would
+   reroute the visitor, which is worse than either answer alone.
+
+   When one domain matched a phrase that wholly CONTAINS every phrase another
+   domain matched, the shorter domain has not found a second problem — it has
+   found a fragment of the first. "brand benchmarking" is brand_health asking
+   about its own numbers, not brand_health AND competitive; competitive's only
+   evidence, "benchmarking", is a word inside brand_health's phrase.
+
+   A domain is therefore eclipsed only when EVERY term it matched sits, whole-
+   word, inside a strictly longer term some other domain matched. One term of
+   its own anywhere in the sentence and it survives — which is why a genuine
+   two-problem message ("reach better audiences and prove it moved the
+   business") still comes back as two domains. Strictly-longer also makes
+   mutual eclipse impossible, so the result can never come back empty. */
+function eclipsed(d, all) {
+  return all.some(o => o.id !== d.id && d.terms.every(kw =>
+    o.terms.some(other => other.length > kw.length && containsPhrase(other, kw))));
+}
+
 /* every distinct domain the text touches, strongest first — strength being
    the longest keyword that hit, then how many hit, then contract order. */
 function classifyKeywords(text) {
@@ -455,16 +487,20 @@ function classifyKeywords(text) {
   const known = domainIds();
   const order = id => { const i = known.indexOf(id); return i < 0 ? 999 : i; };
 
-  return (COMPILED || compileKeywords())
+  const scored = (COMPILED || compileKeywords())
     .filter(d => known.indexOf(d.id) !== -1)
     .map(d => {
-      let longest = 0, hits = 0;
+      const terms = [];
+      let longest = 0;
       d.terms.forEach(term => {
-        if (term.re.test(t)) { hits++; if (term.kw.length > longest) longest = term.kw.length; }
+        if (term.re.test(t)) { terms.push(term.kw); if (term.kw.length > longest) longest = term.kw.length; }
       });
-      return { id: d.id, longest, hits };
+      return { id: d.id, longest, hits: terms.length, terms };
     })
-    .filter(d => d.hits > 0)
+    .filter(d => d.hits > 0);
+
+  return scored
+    .filter(d => !eclipsed(d, scored))
     .sort((a, b) => (b.longest - a.longest) || (b.hits - a.hits) || (order(a.id) - order(b.id)))
     .map(d => d.id);
 }

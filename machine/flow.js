@@ -378,7 +378,13 @@ function goalPhrase() {
       .replace(/\s+/g, ' ').trim();
     return t ? t.charAt(0).toLowerCase() + t.slice(1) : null;
   }).filter(Boolean);
-  return phrases.length ? phrases.join(' and ') : null;
+  if (!phrases.length) return null;
+  if (phrases.length === 1) return phrases[0];
+  /* two goals joined with "and" read as a run-on when a label carries its own
+     "and" ("reach better audiences and track brand health and campaign
+     impact"). Joining two, each phrase is trimmed to its own head so the
+     sentence has exactly one conjunction. */
+  return phrases.map(t => t.split(/\s+and\s+/)[0]).join(' and ');
 }
 
 /* Confirm mode is the moment the demo is built around: research came back

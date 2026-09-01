@@ -21,7 +21,7 @@
   "domains": [
     {
       "id": "brand_health",
-      "label": "Track brand health & benchmark competitors",
+      "label": "Track brand health and campaign impact",
       "solution": "QuestBrand",
       "icpRoles": ["VP Consumer Insights", "Director of Research", "VP Brand/Marketing"],
       "industryBoost": ["QSR", "Retail & Ecommerce", "CPG"],

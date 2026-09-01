@@ -398,7 +398,14 @@ function buildViewModel(session, decision) {
   const matched = matchedRaw.map(m => {
     const solution = resolveSolution(m, tier, solutions);
     if (solution && solution.id) matchedIds.push(solution.id);
-    const body = solution ? firstSentences(solution.positioning)
+    /* a product that answers more than one problem can carry a line written
+       for each: solutions.json positioningByDomain[domain] wins over the
+       general positioning, so QuestBrand's competitive card leads with the
+       benchmarking half rather than the brand-tracking half */
+    const perDomain = solution && solution.positioningByDomain
+      && solution.positioningByDomain[m.domain];
+    const body = solution
+      ? firstSentences(perDomain || solution.positioning)
       : (decision.cellNote || 'A dedicated capability matched to what you told us.');
     return {
       domain: m.domain,
