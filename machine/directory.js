@@ -177,7 +177,7 @@
     /* one pass over the groups in routing.json's own order, remembering which
        products have already been shown and under which label */
     const seen = Object.create(null);
-    return domains.map(d => {
+    const built = domains.map(d => {
       const entries = resolveDomain(d, list).map(entry => {
         const s = entry.solution;
         const byDomain = s && s.positioningByDomain && s.positioningByDomain[d.id];
@@ -190,8 +190,16 @@
         if (s && s.id && !seen[s.id]) seen[s.id] = d.label;
         return out;
       });
-      return groupHTML(d, entries);
-    }).join('');
+      /* a group every one of whose cards is a product already listed above
+         sinks to the foot of the panel: the same product twice in a row reads
+         as a mistake, however differently the two cards are written. The group
+         itself is kept — the problem is real and the product does answer it —
+         it just stops sitting under its own first appearance. */
+      const allRepeats = entries.length > 0 && entries.every(e => e.repeatOf);
+      return { html: groupHTML(d, entries), allRepeats };
+    });
+    return built.filter(g => !g.allRepeats).map(g => g.html).join('')
+         + built.filter(g =>  g.allRepeats).map(g => g.html).join('');
   }
 
   /* ─────────────────────────── STATE + DOM ─────────────────────────── */
