@@ -1,0 +1,128 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RIBBON.CSS — "how you got here", made visible.
+
+   The demo's whole attribution claim ("we know which ad you came from, and
+   the conversation is already briefed on it") is invisible by design:
+   engine.js captures it silently and never says so. This band is the one
+   place it is said out loud, for the room watching the demo.
+
+   Placement, and why it is not a corner pill:
+     · bottom-LEFT is the event console's pill (z 70)
+     · bottom-RIGHT is the Previous-versions link (z 60) and, added here, the
+       Demo-control link stacked directly above it
+     · so this sits at the TOP, full width, and OFFSETS the sticky nav down by
+       its own height rather than sliding under it. That is a deliberate
+       trade: one 44px band of vertical budget, in exchange for a line the
+       back row of a room can actually read at any scroll position.
+
+   z-index budget it has to live inside (from styles.css / b.css / console.css):
+       .navscrim 45 · .nav 50 · .mnav 55 · .vercorner 60 · .sc-pill 70 ·
+       .think 70 · .modal 80 · .boot 90 · .sc (console drawer) 200
+   The band takes 44 — under everything. When the mobile drawer opens, the
+   scrim (45) correctly covers it; the drawer is never fighting it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{ --rbn-h:44px; }        /* 44px exactly = the guidelines' minimum hit target */
+
+.rbn{
+  position:fixed;top:0;left:0;right:0;height:var(--rbn-h);z-index:44;
+  display:flex;align-items:center;
+  background:#EAF6F9;                                   /* light blue at 8% over paper */
+  border-bottom:1px solid rgba(0,156,189,.28);
+  color:var(--ink);
+}
+.rbn__in{
+  width:100%;max-width:1440px;margin:0 auto;
+  padding:0 max(4px,calc(clamp(16px,2.2vw,30px) - 10px)); /* optical match to .nav__in */
+  display:flex;align-items:center;gap:10px;min-width:0;
+}
+
+/* the mono microlabel, same voice as .eyebrow / .vercorner elsewhere */
+.rbn__label{
+  flex:none;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(0,35,52,.58);padding-left:10px;
+}
+.rbn__name{
+  min-width:0;flex:1 1 auto;
+  font-family:var(--sans);font-size:14px;line-height:1.3;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.rbn__name b{font-weight:600}
+.rbn__name .rbn__word{color:var(--ink-2)}
+
+.rbn__acts{flex:none;display:flex;align-items:center;gap:2px}
+
+/* ≥44px hit targets on both controls — the band is exactly 44px tall, so the
+   links fill it rather than floating inside it */
+.rbn__link{
+  display:inline-flex;align-items:center;height:var(--rbn-h);padding:0 12px;
+  font-family:var(--sans);font-size:14px;font-weight:500;color:var(--teal);
+  text-decoration:none;white-space:nowrap;
+  transition:color var(--d-1) var(--ease-io);
+}
+.rbn__link:hover{color:var(--navy);text-decoration:underline}
+
+.rbn__x{
+  width:var(--rbn-h);height:var(--rbn-h);flex:none;
+  display:grid;place-items:center;color:rgba(0,35,52,.52);
+  transition:color var(--d-1) var(--ease-io);
+}
+.rbn__x:hover{color:var(--ink)}
+
+/* the offset: the band owns the top 44px, everything else starts below it.
+   .nav is position:sticky, so its stick point moves with it. */
+body.has-ribbon{padding-top:var(--rbn-h)}
+body.has-ribbon .nav{top:var(--rbn-h)}
+
+@media (max-width:820px){
+  .rbn__label{padding-left:6px;letter-spacing:.08em}
+  .rbn__link{padding:0 10px}
+}
+/* the two widths of the same words — the campaign name never shortens */
+.rbn__sm{display:none}
+@media (max-width:430px){
+  .rbn__lg{display:none}
+  .rbn__sm{display:inline}
+  .rbn__in{gap:6px;padding:0 2px}
+  .rbn__label{font-size:10px;letter-spacing:.06em;padding-left:8px}
+  .rbn__link{padding:0 8px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .rbn__link,.rbn__x{transition:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEMO-CONTROL CORNER LINK — the twin of .vercorner, stacked directly above
+   it. Lives here because this is the one stylesheet both b.html and
+   campaign.html now load; b.css and campaign.css each own their own copy of
+   .vercorner and neither is ours to edit.
+
+   Geometry: .vercorner is bottom:14 / right:14 and ~28px tall (11px mono,
+   6px+6px padding, 1px borders), so 14 + 28 + 10 gap = bottom:52px. Under
+   720px .vercorner drops to bottom:10 / 5px padding (~26px tall), so
+   10 + 26 + 8 = bottom:44px. Both stay clear of the console pill, which owns
+   bottom-LEFT — at 360px the two right-hand pills are stacked, never a row.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.democorner{
+  position:fixed;right:14px;bottom:52px;z-index:60;
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-full);padding:6px 12px;opacity:.78;text-decoration:none;
+  display:inline-flex;align-items:center;gap:7px;
+  transition:opacity var(--d-1) var(--ease-io),color var(--d-1),border-color var(--d-1);
+}
+.democorner:hover{opacity:1;color:var(--amber);border-color:var(--amber)}
+.democorner::before{
+  content:"";width:5px;height:5px;border-radius:50%;background:var(--amber);flex:none;
+}
+@media (max-width:720px){.democorner{right:10px;bottom:44px;padding:5px 10px}}
+@media (prefers-reduced-motion:reduce){.democorner{transition:none}}
+
+/* the snapshot's print view is a client-facing PDF placeholder: no demo
+   furniture in it, and no phantom 44px of top padding either */
+@media print{
+  .rbn,.democorner{display:none!important}
+  body.has-ribbon{padding-top:0}
+  body.has-ribbon .nav{top:0}
+}

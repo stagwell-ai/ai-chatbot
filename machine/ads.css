@@ -1,0 +1,173 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADS.CSS — /ads, the campaign switchboard.
+
+   Chrome (nav, mobile drawer, .btn--gold, .phbox, .vercorner) comes from
+   campaign.css, which this page loads on purpose: the hub and the four
+   landings it points at should look like one surface, and duplicating that
+   chrome here would be two places to drift.
+
+   This file owns only what is new: the header block, the four-up ad grid,
+   the card, and the master-campaign band that closes it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body.vAds{background:var(--paper)}
+
+.adhub{padding:clamp(30px,5vh,56px) clamp(20px,4vw,48px) clamp(56px,9vh,104px)}
+.adhub__in{max-width:1180px;margin:0 auto}
+
+/* ── header ─────────────────────────────────────────────────────────────── */
+.adhub__head{max-width:64ch;display:flex;flex-direction:column;gap:14px}
+.adhub__head .display{max-width:16ch}
+.adhub__sub{font-size:var(--t-lede);line-height:1.55;color:var(--ink-2);max-width:60ch}
+
+/* the honesty line, in the console's voice: a demo aid says it is one */
+.adhub__aid{
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  font-size:var(--t-sm);line-height:1.55;color:var(--ink-3);max-width:62ch;
+  border-left:2px solid var(--amber);padding:2px 0 2px 12px;
+}
+.adhub__aidtag{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);flex:none;
+}
+
+/* ── the four product ads ───────────────────────────────────────────────── */
+.adgrid{
+  margin-top:clamp(28px,4vh,42px);
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(16px,2vw,22px);
+}
+
+.adcard{
+  display:flex;flex-direction:column;gap:14px;min-width:0;
+  background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-xl);
+  padding:20px 20px 22px;
+  box-shadow:0 20px 48px -34px rgba(0,35,52,.26);
+  transition:border-color var(--d-1) var(--ease-io),transform var(--d-2) var(--ease);
+}
+.adcard:hover{border-color:var(--ink-4);transform:translateY(-2px)}
+@media (prefers-reduced-motion:reduce){
+  .adcard,.adcard:hover{transition:none;transform:none}
+}
+
+.adcard__top{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.adcard__slot{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-4);flex:none;padding-top:5px;
+}
+.adcard__name{
+  font-family:var(--sans);font-weight:600;font-size:1.25rem;letter-spacing:-.015em;
+  line-height:1.2;color:var(--ink);flex:1;min-width:0;
+}
+
+.pendtag{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);border:1px dashed var(--line-2);border-radius:var(--r-full);
+  padding:4px 9px;flex:none;background:var(--surface-2);white-space:nowrap;
+}
+
+/* the creative placeholder — quiet, obviously intentional, never a grey box
+   pretending to be artwork. .phbox comes from campaign.css; only the height
+   changes, because four of these stack in a grid rather than one hero. */
+.adcard .phbox{min-height:132px;font-size:var(--t-label);letter-spacing:.06em;line-height:1.6}
+.adcard--master .phbox{min-height:96px}
+
+/* what the ad promises, in the agent's own words */
+.adcard__opener{
+  margin:0;padding:13px 15px;
+  background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r-lg);border-top-left-radius:4px;
+  font-family:var(--serif);font-size:var(--t-body);font-style:italic;line-height:1.5;
+  color:var(--ink);
+}
+.adcard__opener::before{
+  content:"The agent opens with";
+  display:block;font-family:var(--mono);font-style:normal;
+  font-size:var(--t-label);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-4);margin-bottom:6px;
+}
+
+/* the facts row — read straight off campaigns.json, never re-worded */
+.adfacts{margin:0;display:flex;flex-direction:column;gap:9px}
+.adfact{display:grid;grid-template-columns:88px minmax(0,1fr);gap:12px;align-items:baseline}
+.adfact dt{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-4);
+}
+.adfact dd{margin:0;font-size:var(--t-sm);line-height:1.5;color:var(--ink-2);min-width:0}
+.adfact dd code{
+  font-family:var(--mono);font-size:.9em;color:var(--ink);
+  background:rgba(0,35,52,.05);border-radius:var(--r-sm);padding:1px 6px;
+}
+.adfact dd .none{color:var(--ink-4);font-style:italic}
+
+.adcard__go{margin-top:auto;align-self:flex-start}
+
+/* ── the master brand ad — deliberately not one of the four ─────────────── */
+.adhub__split{
+  display:flex;align-items:center;gap:14px;
+  margin:clamp(30px,4.5vh,46px) 0 clamp(16px,2vw,22px);
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-4);
+}
+.adhub__split::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.adcard--master{
+  background:var(--void);color:var(--on-void);border-color:transparent;
+  box-shadow:0 26px 60px -36px rgba(0,35,52,.5);
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:clamp(18px,3vw,34px);align-items:center;padding:clamp(20px,3vw,30px);
+}
+.adcard--master:hover{border-color:transparent}
+.adcard--master .adcard__name{color:var(--on-void);font-size:1.375rem}
+.adcard--master .adcard__slot{color:var(--on-void-3)}
+.adcard--master .adcard__body{display:flex;flex-direction:column;gap:13px;min-width:0}
+.adcard--master .adcard__opener{
+  background:rgba(234,242,245,.06);border-color:var(--line-void);color:var(--on-void);
+}
+.adcard--master .adcard__opener::before{color:var(--on-void-3)}
+.adcard--master .adfact dt{color:var(--on-void-3)}
+.adcard--master .adfact dd{color:var(--on-void-2)}
+.adcard--master .adfact dd code{color:var(--on-void);background:rgba(234,242,245,.09)}
+.adcard--master .adfact dd .none{color:var(--on-void-3)}
+.adcard--master .phbox{
+  border-color:var(--line-void);background:rgba(234,242,245,.04);color:var(--on-void-3);
+}
+.adcard--master .adcard__note{
+  font-size:var(--t-sm);line-height:1.6;color:var(--on-void-2);max-width:52ch;
+}
+.adcard--master .adcard__aside{display:flex;flex-direction:column;gap:14px;min-width:0}
+.adcard--master .adcard__go{margin-top:0;align-self:flex-start}
+
+/* ── footnote ───────────────────────────────────────────────────────────── */
+.adhub__foot{
+  margin-top:clamp(28px,4vh,44px);padding-top:16px;border-top:1px solid var(--line);
+  font-size:var(--t-sm);line-height:1.65;color:var(--ink-3);max-width:78ch;
+}
+.adhub__foot code{
+  font-family:var(--mono);font-size:.92em;color:var(--ink-2);
+  background:rgba(0,35,52,.05);border-radius:var(--r-sm);padding:1px 6px;
+}
+
+/* the load / failure state — the contract is a file, and a file can be missing */
+.adhub__empty{
+  margin-top:24px;padding:22px;border:1.5px dashed var(--line-2);border-radius:var(--r-lg);
+  background:var(--surface-2);color:var(--ink-3);
+  font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.03em;line-height:1.7;
+}
+
+/* ── responsive ─────────────────────────────────────────────────────────── */
+@media (max-width:900px){
+  .adgrid{grid-template-columns:1fr}
+  .adcard--master{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  /* "NewVoices" is one unbreakable word: rather than let it collide with the
+     pending tag, the tag takes its own line under the title */
+  .adcard__name{min-width:calc(100% - 62px)}
+  .pendtag{order:3}
+}
+@media (max-width:520px){
+  .adfact{grid-template-columns:1fr;gap:2px}
+  .adcard__go{width:100%;justify-content:center}
+}

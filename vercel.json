@@ -44,6 +44,10 @@
       "destination": "/machine/campaign.html"
     },
     {
+      "source": "/ads",
+      "destination": "/machine/ads.html"
+    },
+    {
       "source": "/versions",
       "destination": "/versions.html"
     },
