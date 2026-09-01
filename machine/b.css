@@ -575,3 +575,11 @@ body.vB .bfoot{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 }
 .vercorner:hover{opacity:1;color:var(--teal);border-color:var(--teal)}
 @media (max-width:720px){.vercorner{right:10px;bottom:10px;padding:5px 10px}}
+
+/* the CTA band predates the brand pass: its headline was full Spectral at
+   weight 400. Montserrat 600 with a Spectral semibold-italic accent line
+   matches .display everywhere else. Scoped to vB so the archived previous
+   versions keep the look they shipped with. */
+body.vB .bcta h2{font-family:var(--sans);font-weight:600;letter-spacing:-.025em}
+body.vB .bcta h2 span{font-family:var(--serif);font-weight:600;font-style:italic;
+  font-size:1.04em;letter-spacing:-.01em}

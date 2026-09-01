@@ -1227,11 +1227,11 @@ $$('[data-close]', modal).forEach(e => e.addEventListener('click', closeModal));
 
 const CTA_COPY = {
   session:   ['Book a strategy session','Sixty minutes with the team that built the machine. We arrive with your dashboard already open.'],
-  expert:    ['Talk to an AI expert','A working conversation about what the machine found — and what it would take to fix it.'],
-  workspace: ['Request your full AI workspace','All ten engines, pointed at your brand, running continuously. We provision in five working days.'],
-  possible:  ['See what’s possible','A walkthrough of the wider Stagwell AI product pool and the work it is already doing.'],
+  expert:    ['Talk to an AI expert','A working conversation about the problem you’re facing — and which of the ten products solve it.'],
+  workspace: ['Request your full AI workspace','All ten products, pointed at your brand and running continuously. We provision in five working days.'],
+  possible:  ['See all ten products','Every solution in the Marketing Cloud, grouped by the problem it solves.'],
   pdf:       ['Export this dashboard','We will send the full analysis as a designed PDF, plus the raw engine outputs.'],
-  callback:  ['The machine will call you','A NewVoices agent will call within two minutes, already holding this diagnosis.'],
+  callback:  ['The machine will call you','A NewVoices agent will call within two minutes, already briefed on what you told the agent.'],
 };
 
 function openModal(kind) {
@@ -1271,6 +1271,16 @@ document.addEventListener('submit', e => {
 });
 
 /* ─────────────────────────── STATIC ─────────────────────────── */
+
+/* 'See all ten products' opens the real directory (surface A) rather than a
+   lead form — the card promises the portfolio, so it should show it */
+document.addEventListener('click', e => {
+  const d = e.target.closest('[data-dir]');
+  if (!d) return;
+  e.preventDefault();
+  if (window.SAIDIR) window.SAIDIR.open();
+  else location.hash = 'solutions';
+});
 
 /* the landing chips render from data/questions.json q1.chips (SPEC S1 —
    the client tunes them with a data edit, no code change), falling back
