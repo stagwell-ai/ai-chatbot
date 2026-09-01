@@ -2,7 +2,15 @@
    CAMPAIGN.JS — S2 product landing (/p/:campaign), served by machine/campaign.html.
 
    One template renders all four product campaigns (the-machine, agent-cloud,
-   targeting-machine, newvoices) from data/campaigns.json + data/solutions.json.
+   targeting-machine, newvoices) from three data files, each owning one thing:
+
+     data/campaigns.json  the agent panel — opener, chips, pending_positioning
+     data/products.json   the product itself — copy, colours, assets, proof,
+                          quotes, sources. Every product word on this page
+                          comes from there; none is written in this file.
+     data/solutions.json  the fallback product-site URL when products.json
+                          has none.
+
    'master' is the brand campaign and belongs at "/", not here — it and any
    unknown id fall through to the not-found card.
 
@@ -10,7 +18,16 @@
    conversation itself, it just hands the visitor to the master page with the
    conversation pre-armed —
      /?utm_campaign={id}&autostart=1[&q=<label-or-text>]
-   engine.js on "/" (built in parallel) is what actually consumes autostart/q.
+   engine.js on "/" is what actually consumes autostart/q.
+
+   HONESTY — the rule this page exists to keep. These are real third-party
+   brands, real published claims and real named people:
+     · every proof figure carries its source line, rendered under the strip;
+     · every quote carries its source line, and a quote with no named speaker
+       gets no borrowed face and says so;
+     · nothing here is presented as a Stagwell.AI measurement;
+     · a [PLACEHOLDER] survives only where the kit genuinely supplies nothing.
+   The prototype footnote at the foot of the page stays on every product.
    ═══════════════════════════════════════════════════════════════════════════ */
 (() => {
   'use strict';
@@ -25,6 +42,19 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, ch => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
   ));
+
+  /* a colour or gradient straight out of JSON lands in a style attribute, so
+     it never gets to be anything but a colour: no quotes, no parens beyond a
+     gradient's own, no semicolons, no url(). */
+  const SAFE_PAINT = /^[#a-zA-Z0-9 ,.()%°-]+$/;
+  const paint = (v, fallback) => {
+    const s = String(v == null ? '' : v).trim();
+    if (!s || s.length > 120 || !SAFE_PAINT.test(s) || /url|expression|;/i.test(s)) return fallback;
+    return s;
+  };
+
+  const arr = v => (Array.isArray(v) ? v : []);
+  const has = v => !!(v && String(v).trim());
 
   function resolveCampaignId() {
     let m;
@@ -95,43 +125,249 @@
       </section>`;
   }
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     SECTION BUILDERS — each returns '' when the product has nothing for it,
+     so a thinner kit produces a shorter page rather than an empty frame.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* the lockup band: mirrors machine/path.css's .pathband idiom — a solid
+     product-coloured field carrying either the real logo or, where there is
+     no wordmark to use, the name set in type. */
+  function lockupHtml(product, campaign) {
+    const lk = product.lockup || {};
+    const band = paint(lk.band || product.accent, '#003349');
+    const ink = paint(product.accentInk, '#ffffff');
+    const name = product.name || campaign.name;
+    const sub = has(product.officialName) && product.officialName !== name
+      ? `<span class="camplock__sub">${esc(product.officialName)}</span>` : '';
+
+    const inner = has(lk.logo)
+      ? `<img class="camplock__logo" src="${esc(lk.logo)}" alt="${esc(lk.logoAlt || name)}" loading="eager" decoding="async">`
+      : `<span class="camplock__word">${esc(name)}</span>${sub}`;
+
+    return `<div class="camplock" style="background:${esc(band)};color:${esc(ink)}">${inner}</div>`;
+  }
+
+  function heroVisualHtml(product) {
+    const kind = product.heroKind;
+    if (kind === 'gradient' || !has(product.hero)) {
+      /* no borrowed picture: the brand's own signature gradient, or nothing */
+      if (kind !== 'gradient') return '';
+      const g = paint(product.gradient || product.accent, '#159CBD');
+      return `<div class="camphero__art camphero__art--wash" style="background:${esc(g)}" aria-hidden="true"></div>`;
+    }
+
+    const cap = has(product.heroCaption) || has(product.heroCredit)
+      ? `<figcaption class="camphero__cap">${esc(product.heroCaption || '')}${
+          has(product.heroCredit) ? ` <span class="src">${esc(product.heroCredit)}</span>` : ''}</figcaption>`
+      : '';
+
+    return `<figure class="camphero__art camphero__art--${esc(kind || 'image')}">
+        <img src="${esc(product.hero)}" alt="${esc(product.heroAlt || '')}" loading="eager" decoding="async">
+        ${cap}
+      </figure>`;
+  }
+
+  function valueHtml(product) {
+    const props = arr(product.valueProps);
+    if (!props.length) return '';
+
+    const cards = props.map((p, i) => {
+      const icon = has(p.icon)
+        ? `<span class="campvalue__icon"><img src="${esc(p.icon)}" alt="" loading="lazy" decoding="async"></span>`
+        : `<span class="campvalue__num">${String(i + 1).padStart(2, '0')}</span>`;
+      return `<li class="campvalue${has(p.icon) ? '' : ' campvalue--num'}">
+          ${icon}
+          <h3 class="campvalue__t">${esc(p.title)}</h3>
+          <p class="campvalue__l">${esc(p.line)}</p>
+        </li>`;
+    }).join('');
+
+    const powered = product.poweredBy && has(product.poweredBy.line)
+      ? `<p class="camppowered">${
+          has(product.poweredBy.icon)
+            ? `<img src="${esc(product.poweredBy.icon)}" alt="" loading="lazy" decoding="async">` : ''
+        }${esc(product.poweredBy.line)}</p>`
+      : '';
+
+    return `<section class="campsec campsec--value" aria-labelledby="valueH">
+        <h2 class="campsec__h" id="valueH">What it does for you</h2>
+        <ul class="campvalues">${cards}</ul>
+        ${powered}
+      </section>`;
+  }
+
+  /* the proof strip: big numeral + label on the product's deep band. The
+     source line under it is not optional — these are the companies' own
+     published figures and the page says so. */
+  function proofHtml(product) {
+    const figs = arr(product.proof).filter(p => has(p.figure));
+    if (!figs.length) return '';
+
+    const band = paint(product.band || product.accent, '#003349');
+    const ink = paint(product.bandInk, '#ffffff');
+    const fig = paint(product.bandFigure || product.bandInk, ink);
+
+    const items = figs.map(p => `
+      <li class="campproof">
+        <b class="campproof__fig" style="color:${esc(fig)}">${esc(p.figure)}</b>
+        <span class="campproof__lab">${esc(p.label)}</span>
+      </li>`).join('');
+
+    const src = has(product.proofSource)
+      ? `<p class="campsrc campsrc--onband">Source: ${esc(product.proofSource)}</p>` : '';
+
+    return `<section class="campstrip" style="background:${esc(band)};color:${esc(ink)}" aria-label="Published figures">
+        <div class="campstrip__in">
+          <ul class="campproofs">${items}</ul>
+          ${src}
+        </div>
+      </section>`;
+  }
+
+  function shotsHtml(product) {
+    const shots = arr(product.shots).filter(s => has(s.src));
+    const note = has(product.shotsNote)
+      ? `<p class="campph">${esc(product.shotsNote)}</p>` : '';
+    if (!shots.length && !note) return '';
+
+    const items = shots.map(s => `
+      <figure class="campshot campshot--${esc(s.frame === 'light' ? 'light' : 'dark')}">
+        <div class="campshot__plate"><img src="${esc(s.src)}" alt="${esc(s.alt || '')}" loading="lazy" decoding="async"></div>
+        <figcaption class="campshot__cap">${esc(s.caption || '')}${
+          has(s.credit) ? ` <span class="src">${esc(s.credit)}</span>` : ''}</figcaption>
+      </figure>`).join('');
+
+    return `<section class="campsec campsec--shots" aria-labelledby="shotsH">
+        <h2 class="campsec__h" id="shotsH">Inside the product</h2>
+        ${shots.length ? `<div class="campshots${shots.length === 1 ? ' campshots--one' : ''}">${items}</div>` : ''}
+        ${note}
+      </section>`;
+  }
+
+  function quoteCardHtml(q) {
+    if (!q || !has(q.text)) return '';
+
+    let who;
+    if (has(q.name)) {
+      const face = has(q.photo)
+        ? `<img class="campquote__face" src="${esc(q.photo)}" alt="${esc(q.name)}" loading="lazy" decoding="async">`
+        : (has(q.photoNote)
+          ? `<span class="campquote__facegap">${esc(q.photoNote)}</span>`
+          : '');
+      who = `${face}<span class="campquote__who"><b>${esc(q.name)}</b><i>${esc(q.title || '')}</i></span>`;
+    } else {
+      /* no named speaker on the source page — so no borrowed face, and the
+         page says why rather than quietly implying one */
+      who = `<span class="campquote__who campquote__who--none">${
+        esc(q.unattributedNote || '[SPEAKER — not named on the source page]')}</span>`;
+    }
+
+    return `<figure class="campquote">
+        <blockquote class="campquote__t">&ldquo;${esc(q.text)}&rdquo;</blockquote>
+        <figcaption class="campquote__by">${who}</figcaption>
+        ${has(q.source) ? `<p class="campsrc">Source: ${esc(q.source)}</p>` : ''}
+      </figure>`;
+  }
+
+  function quotesHtml(product) {
+    const cards = [quoteCardHtml(product.quote), quoteCardHtml(product.quoteSecondary)]
+      .filter(Boolean).join('');
+    if (!cards) return '';
+    const note = has(product.quoteNote)
+      ? `<p class="campnote">${esc(product.quoteNote)}</p>` : '';
+    return `<section class="campsec campsec--quotes" aria-label="What customers say">
+        <div class="campquotes${cards.indexOf('</figure>') !== cards.lastIndexOf('</figure>') ? ' campquotes--two' : ''}">${cards}</div>
+        ${note}
+      </section>`;
+  }
+
+  function trustHtml(product) {
+    const partners = arr(product.partners).filter(p => has(p.src));
+    const badges = arr(product.badges).filter(b => has(b.src));
+    if (!partners.length && !badges.length) return '';
+
+    const row = (items, cls) => items.map(i =>
+      `<li class="${cls}"><img src="${esc(i.src)}" alt="${esc(i.name || '')}" loading="lazy" decoding="async"><span class="vh">${esc(i.name || '')}</span></li>`
+    ).join('');
+
+    return `<section class="camptrust" aria-label="Partners and compliance">
+        <div class="camptrust__in">
+          ${partners.length ? `<div class="camptrust__grp">
+            <p class="camptrust__lab">${esc(product.partnersLabel || 'Technology partners')}</p>
+            <ul class="camptrust__row">${row(partners, 'camptrust__logo')}</ul>
+          </div>` : ''}
+          ${badges.length ? `<div class="camptrust__grp camptrust__grp--badges">
+            <p class="camptrust__lab">${esc(product.badgesLabel || 'Compliance')}</p>
+            <ul class="camptrust__row">${row(badges, 'camptrust__badge')}</ul>
+          </div>` : ''}
+        </div>
+        ${has(product.trustSource) ? `<p class="campsrc campsrc--center">${esc(product.trustSource)}</p>` : ''}
+      </section>`;
+  }
+
+  function builtByHtml(product) {
+    const b = product.builtBy;
+    if (!b || !has(b.line)) return '';
+    const logo = has(b.logo)
+      ? `<img class="campbuilt__logo" src="${esc(b.logo)}" alt="${esc(b.logoAlt || b.name || '')}" loading="lazy" decoding="async">`
+      : '';
+    return `<div class="campbuilt campbuilt--${esc(b.logoOn === 'dark' ? 'dark' : 'light')}">
+        ${logo}<p class="campbuilt__l">${esc(b.line)}</p>
+      </div>`;
+  }
+
   /* ── product landing ──────────────────────────────────────────────────── */
-  function renderCampaign(campaign, solutions) {
+  function renderCampaign(campaign, solutions, product) {
     const id = campaign.id;
+    const p = product || {};
 
-    document.title = `${campaign.name} — Stagwell.AI`;
+    document.title = `${p.name || campaign.name} — ${p.tagline || 'Stagwell.AI'}`;
     const descMeta = document.getElementById('pageDesc');
-    if (descMeta) descMeta.setAttribute('content', campaign.opener || `${campaign.name} — Stagwell.AI`);
+    if (descMeta) descMeta.setAttribute('content', p.summary || campaign.opener || `${campaign.name} — Stagwell.AI`);
 
-    const chips = Array.isArray(campaign.chips) ? campaign.chips.slice() : [];
+    const chips = arr(campaign.chips).slice();
     const hasCross = chips.some(c => String(c).trim() === CROSS);
     const chipList = hasCross ? chips : chips.concat([CROSS]);
 
+    /* products.json owns the official product URL; solutions.json is the
+       fallback for anything it doesn't carry. Attribution is unchanged. */
     const solution = resolveSolution(campaign, solutions);
-    const siteLinkHtml = (solution && solution.url)
-      ? `<a class="sitelink" href="${esc(withUtm(solution.url))}" target="_blank" rel="noopener">Explore ${esc(articled(campaign.name))} site &rarr;</a>`
+    const siteUrl = has(p.siteUrl) ? p.siteUrl : (solution && solution.url) || '';
+    const siteLabel = has(p.siteLabel) ? p.siteLabel : `Explore ${articled(campaign.name)} site`;
+    const siteLinkHtml = has(siteUrl)
+      ? `<a class="sitelink" href="${esc(withUtm(siteUrl))}" target="_blank" rel="noopener">${esc(siteLabel)} &rarr;</a>`
       : `<span class="sitelink sitelink--disabled" aria-disabled="true">[PRODUCT SITE — pending]</span>`;
 
     const pendingHtml = campaign.status === 'pending_positioning'
       ? `<p class="pendingNote">[POSITIONING PENDING — chips and route to confirm with the product team]</p>`
       : '';
 
+    /* per-product paint, set once on the section so the CSS can lean on it */
+    const vars = [
+      `--accent:${paint(p.accent, '#003349')}`,
+      `--accent-ink:${paint(p.accentInk, '#ffffff')}`,
+      `--band:${paint(p.band || p.accent, '#003349')}`,
+      `--band-ink:${paint(p.bandInk, '#ffffff')}`,
+      `--band-fig:${paint(p.bandFigure || p.bandInk, '#ffffff')}`,
+      `--tint:${paint(p.tint, '#F5F7F6')}`
+    ].join(';');
+
+    const parentLine = has(p.parent) ? p.parent : "One of Stagwell's Machines";
+
     root.innerHTML = `
-      <section class="camp camp--${esc(id)}" data-campaign="${esc(id)}">
+      <section class="camp camp--${esc(id)}" data-campaign="${esc(id)}" style="${esc(vars)}">
         <div class="camp__in">
 
           <div class="camp__id">
-            <div class="lockup">
-              <span class="lockup__name">${esc(campaign.name)}</span>
-              <span class="lockup__tag">[LOGO LOCKUP]</span>
-            </div>
-            <p class="eyebrow camp__kicker"><i class="pulse"></i>One of Stagwell's Machines</p>
+            ${lockupHtml(p, campaign)}
+            <p class="eyebrow camp__kicker"><i class="pulse"></i>${esc(parentLine)}</p>
 
-            <div class="phbox phbox--visual">[AD KEY VISUAL — mirrors the campaign creative when it lands]</div>
-            <div class="phgrid">
-              <div class="phbox">[PRODUCT UI]</div>
-              <div class="phbox">[PRODUCT UI]</div>
-            </div>
+            <h1 class="camp__h1">${esc(p.tagline || campaign.name)}</h1>
+            ${has(p.summary) ? `<p class="camp__sum">${esc(p.summary)}</p>` : ''}
+            ${has(p.category) ? `<p class="camp__cat">${esc(p.category)}</p>` : ''}
+
+            ${heroVisualHtml(p)}
 
             ${siteLinkHtml}
           </div>
@@ -155,6 +391,19 @@
         </div>
       </section>
 
+      <div class="campbody camp--${esc(id)}" style="${esc(vars)}">
+        <div class="campbody__in">
+          ${valueHtml(p)}
+        </div>
+        ${proofHtml(p)}
+        <div class="campbody__in">
+          ${shotsHtml(p)}
+          ${quotesHtml(p)}
+          ${builtByHtml(p)}
+        </div>
+        ${trustHtml(p)}
+      </div>
+
       <section class="band">
         <div class="band__in">
           <h2 class="band__h">One of ten AI products. <span class="accent">The agent finds your fit.</span></h2>
@@ -163,7 +412,10 @@
             <button class="btn btn--ghost-void" type="button" data-cta="expert">Talk to an AI expert</button>
           </div>
         </div>
-      </section>`;
+      </section>
+
+      <p class="campfoot">This is a working prototype of Stagwell.AI, not a live product page. ${
+        esc(p.name || campaign.name)} is a third-party product: its name, marks, copy, figures and quoted people belong to their owners and are reproduced here from published material, each line sourced above.</p>`;
 
     wireCampaignEvents(id);
   }
@@ -218,32 +470,43 @@
   }
 
   /* ── boot ─────────────────────────────────────────────────────────────── */
-  function boot(data) {
+  function boot(data, products) {
     const campaignsList = (data && data.campaigns && Array.isArray(data.campaigns.campaigns))
       ? data.campaigns.campaigns : [];
     const solutionsList = (data && data.solutions && Array.isArray(data.solutions.solutions))
       ? data.solutions.solutions : [];
+    const productList = (products && Array.isArray(products.products)) ? products.products : [];
 
     const id = resolveCampaignId();
     const campaign = campaignsList.find(c => c.id === id);
 
     if (!campaign || PRODUCT_IDS.indexOf(campaign.id) === -1) {
       renderNotFound(id);
-    } else {
-      renderCampaign(campaign, solutionsList);
+      return;
     }
+    /* a missing products.json entry degrades to the agent panel + opener
+       rather than blanking the page: the conversation is still this page's job */
+    renderCampaign(campaign, solutionsList, productList.find(p => p.id === campaign.id) || null);
   }
 
   wireChrome();
 
+  /* data-loader.js's fixed file list predates products.json, so this page
+     fetches it alongside — one extra request, no change to the shared spine. */
+  const grabProducts = () => fetch('/data/products.json')
+    .then(r => (r.ok ? r.json() : null)).catch(() => null);
+
   if (window.STAGDATA && typeof window.STAGDATA.then === 'function') {
-    window.STAGDATA.then(boot).catch(() => renderNotFound(resolveCampaignId()));
+    Promise.all([window.STAGDATA, grabProducts()])
+      .then(([data, products]) => boot(data, products))
+      .catch(() => renderNotFound(resolveCampaignId()));
   } else {
     /* data-loader.js failed to load entirely — fetch directly rather than blank the page */
     Promise.all([
       fetch('/data/campaigns.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
-      fetch('/data/solutions.json').then(r => (r.ok ? r.json() : null)).catch(() => null)
-    ]).then(([campaigns, solutions]) => boot({ campaigns, solutions }))
+      fetch('/data/solutions.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
+      grabProducts()
+    ]).then(([campaigns, solutions, products]) => boot({ campaigns, solutions }, products))
       .catch(() => renderNotFound(resolveCampaignId()));
   }
 })();
