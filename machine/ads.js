@@ -224,7 +224,7 @@
      ads.html already inlines for the nav. It is the one honest "creative" for
      an ad that names no product — and if the symbol ever goes, the band falls
      back to type rather than to an empty frame. */
-  function masterCreativeHtml(campaign) {
+  function masterCreativeHtml() {
     const hasSymbol = !!document.getElementById('sw-logo');
     const lock = hasSymbol
       ? '<svg class="adlock__sw" viewBox="0 0 185 28" role="img" aria-label="Stagwell"><use href="#sw-logo"/></svg>' +
