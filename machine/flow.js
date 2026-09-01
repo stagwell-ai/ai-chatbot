@@ -357,6 +357,22 @@ function companyName() {
   return slots().company || (r && r.name) || slots().company_domain || 'your company';
 }
 
+/* The visitor's stated goal as a phrase — the routing.json domain label with
+   its parenthetical trimmed and the first letter lowered, two domains joined
+   with 'and'. Feeds q5's copyWithGoal template so the timing question can
+   acknowledge what it is asking the timing OF. */
+function goalPhrase() {
+  const ids = slots().problem_domains || [];
+  const D = (eng().data.routing || {}).domains || [];
+  const phrases = ids.slice(0, 2).map(id => {
+    const d = D.find(x => x.id === id);
+    if (!d || !d.label) return null;
+    const t = d.label.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+    return t.charAt(0).toLowerCase() + t.slice(1);
+  }).filter(Boolean);
+  return phrases.length ? phrases.join(' and ') : null;
+}
+
 /* Confirm mode is the moment the demo is built around: research came back
    confident enough that the size question becomes one tap. */
 function q4Mode() {
@@ -436,6 +452,13 @@ function questionView() {
     chips = (q.chips || []).map(c => ({ label: c.label, value: c.domain }));
   } else if (id === 'q3' || id === 'q5') {
     chips = (q.chips || []).map(c => ({ label: c.label, value: c.value }));
+    /* the timing question earns its context: reiterate what the visitor said
+       they want before asking when they want it (client feedback, Aug 31) —
+       template lives in questions.json, the goal comes from their domains */
+    if (id === 'q5' && q.copyWithGoal) {
+      const goal = goalPhrase();
+      if (goal) copy = tpl(q.copyWithGoal, { goal });
+    }
   } else if (id === 'q4') {
     mode = q4Mode();
     const r = eng().session.research || {};

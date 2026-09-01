@@ -63,6 +63,7 @@
       "id": "q5",
       "slot": "timing_intent",
       "copy": "When do you want this working — this quarter, this year, or just exploring?",
+      "copyWithGoal": "So you want to {goal} — when do you want that working: this quarter, this year, or just exploring?",
       "input": "chips_or_free_text",
       "chips": [
         { "label": "This quarter", "value": "now" },
