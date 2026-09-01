@@ -77,7 +77,9 @@ body.nav-open .mnav{transform:none}
   --band-fig:#ffffff;--tint:#F5F7F6}
 
 .camp{padding:clamp(28px,5vh,56px) clamp(20px,4vw,48px) clamp(36px,5vh,56px);background:var(--paper)}
-.camp__in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 400px;
+/* the ask panel is the conversion control on this page — widened ~10%
+   (400 → 440) on the client's note, the text column absorbing it */
+.camp__in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 440px;
   gap:clamp(24px,4vw,48px);align-items:start}
 
 .camp__id{display:flex;flex-direction:column;gap:16px;min-width:0}
@@ -344,6 +346,12 @@ body.nav-open .mnav{transform:none}
 .campbuilt--dark{background:var(--void);color:var(--on-void)}
 .campbuilt--light{background:var(--surface);border:1px solid var(--line-2)}
 .campbuilt__logo{height:30px;width:auto;flex:none}
+/* the name set as a wordmark, where the company's own file isn't in hand:
+   plainly our typography, never a facsimile of their mark */
+.campbuilt__word{flex:none;font-family:var(--sans);font-weight:600;font-size:1.0625rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--on-void);
+  padding-right:18px;border-right:1px solid rgba(234,242,245,.22)}
+.campbuilt--light .campbuilt__word{color:var(--ink);border-right-color:var(--line-2)}
 .campbuilt__l{margin:0;font-size:var(--t-sm);color:var(--on-void-2)}
 .campbuilt--light .campbuilt__l{color:var(--ink-2)}
 /* the logo slot when the kit supplies none we can honestly use */

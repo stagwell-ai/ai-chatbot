@@ -6,23 +6,25 @@
   "fields": {
     "name": "Full name",
     "email": "Work email",
+    "phone": "Phone — so we can reach you faster",
     "role": "Role — e.g. CMO, VP Marketing"
   },
 
+  "phoneRule": "asked every time an email is asked, on every surface — never required, so a visitor who will not give it still converts",
   "emailHint": "That does not look like a work email — check the address.",
 
   "success": {
-    "title": "The machine has your brief.",
+    "title": "Stagwell.AI has your brief.",
     "line": "Your {brand} analysis has been enriched by SATS and scored. Someone who already understands the account will be in touch — not an SDR reading a script.",
     "close": "Back to the page"
   },
 
-  "human": ["session", "expert", "callback"],
+  "human": ["session", "expert", "callback", "demo"],
 
   "kinds": {
     "session": {
       "title": "Book a strategy session",
-      "line": "Sixty minutes with the team that built the machine. We arrive with your dashboard already open.",
+      "line": "Sixty minutes with the strategists behind Stagwell.AI. We arrive with your dashboard already open.",
       "submit": "Continue"
     },
     "expert": {
@@ -45,8 +47,13 @@
       "line": "We will send the full analysis as a designed PDF, plus the raw engine outputs.",
       "submit": "Continue"
     },
+    "demo": {
+      "title": "Book a demo",
+      "line": "Thirty minutes with the team who runs the product, walking through it against your brand — not a generic reel.",
+      "submit": "Book my demo"
+    },
     "callback": {
-      "title": "The machine will call you",
+      "title": "Stagwell.AI will call you",
       "line": "A NewVoices agent will call within two minutes, already briefed on what you told the agent.",
       "submit": "Call me now"
     }

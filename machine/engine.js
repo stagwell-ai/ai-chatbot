@@ -40,7 +40,7 @@ const EVENT_TYPES = [
   'session_started', 'attribution_captured', 'slot_filled', 'slot_corrected',
   'question_asked', 'question_skipped', 'answer_given',
   'research_started', 'research_step', 'research_done',
-  'snapshot_viewed', 'capture_email', 'capture_consent', 'capture_declined',
+  'snapshot_viewed', 'capture_email', 'capture_phone', 'capture_consent', 'capture_declined',
   'route_decided', 'handoff_click', 'human_requested', 'journey_converted'
 ];
 

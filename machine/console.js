@@ -61,6 +61,7 @@ const FAMILY = {
   snapshot_viewed:  'research',
 
   capture_email:    'capture',
+  capture_phone:    'capture',
   capture_consent:  'capture',
   capture_declined: 'capture',
 
@@ -210,6 +211,11 @@ const FORMAT = {
      its own event a beat later rather than as a second decision. */
   capture_email: p =>
     'Email captured @' + (p.domain || 'unknown domain'),
+
+  /* the number itself never reaches this bus — only whether one was given */
+  capture_phone: p =>
+    p.given ? 'Phone captured — direct line on the record'
+            : 'Phone asked, not given — email only',
 
   capture_consent: p =>
     p.consent ? 'Consent granted with the send — follow-up permitted'

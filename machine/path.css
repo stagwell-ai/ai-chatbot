@@ -90,6 +90,12 @@
   text-align:center;font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.03em;color:var(--ink-3)}
 .pathcol__act{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .pathcol__cta{align-self:flex-start}
+/* "Book a demo" is the ask this screen exists to make, so it is never a
+   quiet secondary — it carries the marigold and the larger frame in every
+   state it appears in (client, Sep 1) */
+.pathcol__cta--demo{height:54px;padding:0 28px;font-size:.9375rem;letter-spacing:.05em;
+  box-shadow:0 6px 20px rgba(10,23,67,.16)}
+.pathcol__cta--demo:hover{transform:translateY(-1px)}
 .pathcol__cta.is-disabled{opacity:.55;cursor:not-allowed}
 .pathcol__cta.is-disabled i{font-style:normal;font-family:var(--mono);font-size:9px;margin-left:2px}
 /* the honest caption under a self-serve button (machine/path.js: ctaFor) */
@@ -118,12 +124,16 @@
    stack below, where .pathhero__act flips to align-items:flex-start */
 .pathhero__note{margin:0;max-width:36ch;text-align:right;font-size:var(--t-xs);
   color:var(--on-void-2);line-height:1.45}
-.pathhero__walk{background:none;border:0;padding:0;font-family:var(--sans);font-size:var(--t-sm);
-  color:var(--on-void-2);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.pathhero__walk:hover{color:var(--on-void)}
+.pathhero__walkline{margin:6px 0 0;font-size:var(--t-sm);color:var(--on-void-2)}
+.pathhero__walk{height:52px;padding:0 26px;font-size:.9375rem}
+.pathhero__walk:hover{transform:translateY(-1px)}
 
 /* ── collapsed text links (self-serve & follow-up states) ── */
 .pathcollapse{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px 22px}
+.pathcollapse--demo{align-items:center;gap:14px 22px}
+.pathcollapse__demo{height:54px;padding:0 28px;font-size:.9375rem;letter-spacing:.05em;
+  box-shadow:0 6px 20px rgba(10,23,67,.16)}
+.pathcollapse__demo:hover{transform:translateY(-1px)}
 .pathcollapse__link{background:none;border:0;padding:0;font-family:var(--sans);font-size:var(--t-sm);
   color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .pathcollapse__link:hover{color:var(--ink)}

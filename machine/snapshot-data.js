@@ -26,8 +26,10 @@
      .build(session)          → the whole object the snapshot renders
      .rankActions(route)      → W4's three bottom tiles, ranked by routing
      .pdfMeta(session)        → { filename, title } for the print view
-     .emailCaptured(email, consent)   → capture_email / capture_consent /
-                                        journey_converted   (domain only)
+     .emailCaptured(email, consent, phone)
+                              → capture_email / capture_phone /
+                                capture_consent / journey_converted
+                                (email domain only; the phone as given/not)
      .declined()              → capture_declined, and nothing else
      .viewed()                → snapshot_viewed, once per session
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -364,6 +366,13 @@ const TILES = {
     title: 'Book a working session',
     line: 'Walk through your snapshot with the team behind these numbers.'
   },
+  /* the demo is the ask a sales-led route exists to make, so it leads the
+     band for those visitors rather than hiding behind a working session */
+  demo: {
+    id: 'demo',
+    title: 'Book a demo',
+    line: 'Thirty minutes with the team who runs the product, walked through against your brand.'
+  },
   workspace: {
     id: 'workspace',
     title: 'Request your full AI workspace',
@@ -371,7 +380,7 @@ const TILES = {
   },
   callback: {
     id: 'callback',
-    title: 'Let the machine call you',
+    title: 'Let Stagwell.AI call you',
     line: 'A five-minute call, at a time you pick.'
   }
 };
@@ -380,7 +389,7 @@ const TILES = {
    self_serve and follow_up both end in the product → the workspace leads. */
 const PRIMARY_BY_ROUTE = {
   consultative: 'session',
-  demo: 'session',
+  demo: 'demo',
   self_serve: 'workspace',
   follow_up: 'workspace'
 };
@@ -459,13 +468,18 @@ function emailDomain(email) {
   return m ? m[1] : null;
 }
 
-function emailCaptured(email, consent) {
+/* The phone rides the same submit as the email — asked every time, never
+   required. Like the address, the NUMBER never reaches the bus: capture_phone
+   carries whether one was given and nothing more. */
+function emailCaptured(email, consent, phone) {
   const domain = emailDomain(email);
   const granted = !!consent;
+  const gavePhone = !!String(phone == null ? '' : phone).trim();
   emit('capture_email', { domain });
+  emit('capture_phone', { given: gavePhone });
   emit('capture_consent', { consent: granted });
   emit('journey_converted', { kind: 'capture' });
-  return { domain, consent: granted };
+  return { domain, consent: granted, phone: gavePhone };
 }
 
 /* SPEC: keep the snapshot, log it anonymously, no nagging. One event, no

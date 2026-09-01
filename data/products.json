@@ -100,10 +100,12 @@
       "builtBy": {
         "name": "Code and Theory",
         "logo": null,
+        "wordmark": true,
         "logoAlt": "",
         "logoOn": "dark",
         "line": "Built by Code and Theory, a Stagwell network company.",
         "logoNote": "[CODE AND THEORY LOGO — the kit's shared/code-and-theory-logo.svg is a FOUR04 mark, not the Code and Theory wordmark]",
+        "logoHowToFix": "the credit now renders the name as a typographic wordmark rather than a placeholder. To use the real mark: drop the official file in assets/img/companies/shared/ and set `logo` to its path — machine/campaign.js prefers it over the wordmark with no code change.",
         "logoNoteWhy": "SOURCES.md pulled the file from Code and Theory's own Sanity CDN and README.md labels it “Code and Theory wordmark”, but rendered it reads FOUR04. Setting it under a Code and Theory credit would put a false mark on the page, so the credit runs as type and the mislabelled file is flagged for the client instead."
       },
 

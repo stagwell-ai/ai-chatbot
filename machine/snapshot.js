@@ -46,7 +46,7 @@ const ARROW_ICON = `<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden=
 const DEFAULT_ACTIONS = [
   { id: 'session',   title: 'Book a working session',            line: 'Walk through your snapshot with the team behind these numbers.', primary: true },
   { id: 'workspace', title: 'Request your full AI workspace',    line: 'Your snapshot, tracked and updated, in a workspace of your own.' },
-  { id: 'callback',  title: 'Let the machine call you',          line: 'A five-minute call, at a time you pick.' },
+  { id: 'callback',  title: 'Let Stagwell.AI call you',          line: 'A five-minute call, at a time you pick.' },
 ];
 
 const isValidEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v || '').trim());
@@ -145,7 +145,10 @@ function buildTiles(actions, domain) {
         <em class="snaptile__note">Preview it live below</em>
       </button>`;
     }
-    const cta = a.id === 'callback' ? 'callback' : (a.id === 'workspace' ? 'workspace' : 'session');
+    const cta = a.id === 'callback' ? 'callback'
+      : a.id === 'workspace' ? 'workspace'
+      : a.id === 'demo' ? 'demo'
+      : 'session';
     return `<button type="button" class="${cls}" data-cta="${cta}">
       <b>${esc(a.title)}${ARROW_ICON}</b>
       <span>${esc(a.line)}</span>
@@ -163,6 +166,11 @@ function captureFormHTML() {
       <div class="snapcap__field">
         <input class="snapcap__email" id="snapEmail" type="email" placeholder="Work email" aria-label="Work email" autocomplete="email">
         <p class="snapcap__hint" id="snapEmailHint" hidden>That doesn't look like a work email yet.</p>
+      </div>
+      <!-- every email ask carries a phone ask; never required, so it can't
+           cost us the conversion -->
+      <div class="snapcap__field">
+        <input class="snapcap__email snapcap__phone" id="snapPhone" type="tel" placeholder="Phone (optional)" aria-label="Phone number, optional" autocomplete="tel" inputmode="tel">
       </div>
       <div class="snapcap__go">
         <button class="btn btn--gold" type="submit">Send my report</button>
@@ -328,9 +336,11 @@ function wireCapture(root, session) {
     /* one decision, not two: the line under the button says that sending the
        report is the consent, so submitting it grants consent. Declining is
        still one click away, and still asks nothing of them. */
+    const phoneEl = $('#snapPhone', cap);
+    const phone = phoneEl ? phoneEl.value.trim() : '';
     try {
       if (window.SAISNAPDATA && typeof window.SAISNAPDATA.emailCaptured === 'function')
-        window.SAISNAPDATA.emailCaptured(val, true);
+        window.SAISNAPDATA.emailCaptured(val, true, phone);
     } catch (err) { /* the confirmation still shows — a broken bus isn't the visitor's problem */ }
     unlockPdf(root);
     cap.classList.add('is-done');

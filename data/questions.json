@@ -6,6 +6,7 @@
       "id": "q1",
       "slot": "problem_domains",
       "copy": "What do you need help solving today?",
+      "copyAfterOpener": "Got it — \u201c{said}\u201d. So I point that at the right product, which of these is closest?",
       "input": "chips_or_free_text",
       "chips": [
         { "label": "How can I track my brand's health?", "domain": "brand_health" },

@@ -1,0 +1,105 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   /products — the dedicated page that replaced the slide-over directory.
+   Chrome (nav, drawer, corners) comes from solution.css, which this page
+   loads first; everything below is the page's own body.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.vProducts main { background: var(--paper); }
+
+/* ── hero ── */
+.prodhero { background: var(--paper); border-bottom: 1px solid var(--line); }
+.prodhero__in { max-width: 1180px; margin: 0 auto;
+  padding: clamp(44px,7vh,84px) clamp(20px,4vw,48px) clamp(32px,5vh,56px); }
+.prodhero__eyebrow { margin-bottom: 16px; }
+.prodhero__title { margin: 0 0 16px; max-width: 22ch;
+  font-size: clamp(1.75rem,3.4vw,var(--t-h1)); line-height: 1.12; }
+.prodhero__title .accent { font-style: italic; color: var(--teal); }
+.prodhero__sub { margin: 0; max-width: 68ch; font-size: 1.0625rem; line-height: 1.6; color: var(--ink-2); }
+.prodhero__acts { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px; }
+.prodhero__cta { height: 52px; padding: 0 26px; font-size: .9375rem; }
+.prodhero__alt { height: 52px; padding: 0 24px; font-size: .9375rem; }
+
+/* ── contents rail ── */
+.prodtoc { max-width: 1180px; margin: 0 auto; padding: 22px clamp(20px,4vw,48px) 0;
+  display: flex; flex-wrap: wrap; gap: 8px; }
+.prodtoc a { font-size: var(--t-xs); color: var(--ink-2); text-decoration: none;
+  border: 1px solid var(--line-2); border-radius: var(--r-full); padding: 7px 14px;
+  background: var(--surface); transition: border-color var(--d-2) var(--ease), color var(--d-2) var(--ease); }
+.prodtoc a:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ── groups ── */
+.prodbody { max-width: 1180px; margin: 0 auto;
+  padding: clamp(28px,4vh,44px) clamp(20px,4vw,48px) clamp(48px,7vh,80px); }
+.prodbody__note { margin: 0; font-family: var(--mono); font-size: var(--t-sm); color: var(--ink-3); }
+
+.prodgroup { padding-top: 34px; scroll-margin-top: 88px; }
+.prodgroup + .prodgroup { border-top: 1px solid var(--line); margin-top: 34px; }
+.prodgroup__head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; }
+.prodgroup__n { margin: 0; font-family: var(--mono); font-size: var(--t-label); letter-spacing: .1em;
+  color: var(--ink-4); flex: none; }
+.prodgroup__h { margin: 0; font-size: clamp(1.125rem,2vw,1.375rem); font-weight: 600;
+  letter-spacing: -.014em; color: var(--ink); }
+.prodgroup__cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+/* ── cards ── */
+.prodcard { background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-lg);
+  padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0;
+  transition: border-color var(--d-2) var(--ease), transform var(--d-2) var(--ease),
+              box-shadow var(--d-2) var(--ease); }
+.prodcard:hover { border-color: var(--ink-4); transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(10,23,67,.07); }
+.prodcard--again { background: var(--surface-2); }
+.prodcard--pending { border-style: dashed; }
+.prodcard--pending h3 { margin: 0; font-family: var(--mono); font-size: var(--t-sm); color: var(--ink-3); }
+
+.prodcard__again { margin: 0; font-family: var(--mono); font-size: var(--t-label); letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink-4); }
+.prodcard__id { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.prodcard__mark { flex: none; width: 116px; height: 46px; border-radius: var(--r);
+  background: #0A1743; display: grid; place-items: center; overflow: hidden; padding: 7px 10px; }
+.prodcard__mark img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.prodcard__mark--word { font-family: var(--sans); font-weight: 600; font-size: var(--t-sm);
+  color: #EAF2F5; letter-spacing: .01em; text-align: center; line-height: 1.2; }
+.prodcard__name { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -.012em;
+  color: var(--ink); min-width: 0; }
+.prodcard__fit { font-family: var(--mono); font-size: var(--t-label); font-weight: 400;
+  letter-spacing: .04em; color: var(--ink-3); }
+.prodcard__pos { margin: 0; font-size: var(--t-sm); line-height: 1.58; color: var(--ink-2); }
+.prodcard__who { margin: 0; font-size: var(--t-xs); color: var(--ink-3); }
+.prodcard__pills { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.prodcard__pills li { font-size: var(--t-label); letter-spacing: .02em; color: var(--ink-2);
+  border: 1px solid var(--line-2); border-radius: var(--r-full); padding: 4px 10px; background: var(--paper); }
+.prodcard__link { margin-top: auto; padding-top: 4px; font-family: var(--mono); font-size: var(--t-xs);
+  letter-spacing: .04em; color: var(--teal); text-decoration: none; align-self: flex-start; }
+.prodcard__link i { font-style: normal; margin-left: 4px; display: inline-block;
+  transition: transform var(--d-2) var(--ease); }
+.prodcard__link:hover i { transform: translateX(3px); }
+
+/* ── closing band ── */
+.prodband { background: var(--void); color: var(--on-void);
+  padding: clamp(48px,8vh,88px) clamp(20px,4vw,48px); }
+.prodband__in { max-width: 1180px; margin: 0 auto; }
+.prodband h2 { margin: 0 0 14px; font-family: var(--serif); font-weight: 400; font-size: var(--t-h1);
+  letter-spacing: -.024em; line-height: 1.14; }
+.prodband h2 .accent { font-style: italic; font-weight: 600; color: var(--amber); }
+.prodband p { margin: 0; max-width: 64ch; font-size: var(--t-sm); line-height: 1.6;
+  color: rgba(234,242,245,.72); }
+.prodband__acts { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px; }
+/* the demo is the loud ask on this page too */
+.prodband__demo { height: 54px; padding: 0 28px; font-size: .9375rem; letter-spacing: .05em;
+  box-shadow: 0 6px 20px rgba(0,0,0,.24); }
+.prodband__acts .btn--light { height: 54px; padding: 0 26px; font-size: .9375rem; }
+
+@media (max-width: 640px) {
+  .prodcard__mark { width: 96px; height: 40px; }
+  .prodgroup__cards { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prodcard, .prodcard__link i { transition: none; }
+  .prodcard:hover { transform: none; }
+}
+
+/* the honest note under the contents rail: ten products, twelve cards */
+.prodtoc__note { max-width: 1180px; margin: 12px auto 0; padding: 0 clamp(20px,4vw,48px);
+  font-size: var(--t-xs); line-height: 1.5; color: var(--ink-3); }

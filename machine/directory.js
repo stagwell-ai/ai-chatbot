@@ -350,20 +350,37 @@
 
   function toggle(trigger) { if (isOpen) close(); else open(trigger); }
 
-  /* ── wiring: any current or future `#solutions` link opens the panel,
-     no matter which page or which drawer it lives in ── */
+  /* ── THE PANEL IS NO LONGER A DESTINATION ──────────────────────────────
+     The client, pointing at "See all ten products": "instead of a sidebar
+     with the companies, i want to see a dedicated page that showcases all
+     the companies." That page is /products (machine/products.js), which
+     inherits this file's grouping, de-duplication and ordering rules
+     wholesale — they were the client's calls and none of them changed.
+
+     Every entry point now links straight there. What survives here is the
+     legacy `#solutions` contract: an old link, a bookmark or a deep link
+     still resolves, by going to the page rather than sliding the panel over
+     the one behind it. window.SAIDIR keeps its shape so nothing that calls
+     it breaks; open() navigates. ─────────────────────────────────────── */
+  const PAGE = '/products';
+  const goPage = () => { try { window.location.href = PAGE; } catch (e) { /* nothing else to try */ } };
+
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href="#solutions"]');
     if (!a) return;
     e.preventDefault();
-    open(a);
+    goPage();
   });
 
-  if (window.location.hash === '#solutions') {
-    /* deep link: /#solutions opens on load — DOM is already parsed since
-       this script tag sits at the end of body */
-    open(null);
-  }
+  /* on load, and on a hash change that never reloads the document — an old
+     bookmark opens fresh, but `location.hash = 'solutions'` from anything
+     still holding the legacy contract is a same-document change, and would
+     otherwise sit there doing nothing at all */
+  const hashCheck = () => {
+    if (window.location.hash === '#solutions' && window.location.pathname !== PAGE) goPage();
+  };
+  window.addEventListener('hashchange', hashCheck);
+  hashCheck();
 
-  window.SAIDIR = { open: () => open(null), close, toggle: () => toggle(null) };
+  window.SAIDIR = { open: goPage, close, toggle: goPage, page: PAGE };
 })();

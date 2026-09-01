@@ -343,12 +343,26 @@
   function builtByHtml(product) {
     const b = product.builtBy;
     if (!b || !has(b.line)) return '';
-    /* a logo we don't have — or, here, one the kit mislabelled — is named as
-       missing rather than substituted: a wrong mark under a real company's
-       credit is exactly the failure this page exists not to make */
+    /* THE CREDIT MARK, in three states, in order of preference:
+
+         b.logo       the company's own file — used as-is the moment one is
+                      dropped in and named here, no code change;
+         b.wordmark   the name set in type, as a wordmark. Honest: it is
+                      plainly our typography, not a facsimile of anyone's
+                      trademark, and it reads as a finished credit rather
+                      than a hole in the page;
+         b.logoNote   the visible bracketed placeholder, for a credit where
+                      even the name is unconfirmed.
+
+       The kit's shared/code-and-theory-logo.svg is NOT the third state's
+       fault: that file renders "FOUR04", so setting it here would put a
+       different company's mark under a Code and Theory credit. It stays
+       unused until the real file arrives. */
     const logo = has(b.logo)
       ? `<img class="campbuilt__logo" src="${esc(b.logo)}" alt="${esc(b.logoAlt || b.name || '')}" loading="lazy" decoding="async">`
-      : (has(b.logoNote) ? `<span class="campbuilt__gap">${esc(b.logoNote)}</span>` : '');
+      : b.wordmark && has(b.name)
+        ? `<span class="campbuilt__word">${esc(b.name)}</span>`
+        : (has(b.logoNote) ? `<span class="campbuilt__gap">${esc(b.logoNote)}</span>` : '');
     return `<div class="campbuilt campbuilt--${esc(b.logoOn === 'dark' ? 'dark' : 'light')}">
         ${logo}<p class="campbuilt__l">${esc(b.line)}</p>
       </div>`;

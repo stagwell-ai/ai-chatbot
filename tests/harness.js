@@ -87,6 +87,9 @@ function fulfilHtml(route, file) {
 async function applyRewrites(ctx) {
   await ctx.route(u => pathnameOf(u) === '/', r => fulfilHtml(r, HTML['/']));
   await ctx.route(u => CAMPAIGN_PATH.test(pathnameOf(u) || ''), r => fulfilHtml(r, 'machine/campaign.html'));
+  /* vercel.json rewrites /products → machine/products.html; the bridge is a
+     plain static server, so it is emulated by EXACT pathname, never a glob */
+  await ctx.route(u => pathnameOf(u) === '/products', r => fulfilHtml(r, 'machine/products.html'));
 }
 
 /* An extra exact-path interception, layered on top of the rewrites. Used by

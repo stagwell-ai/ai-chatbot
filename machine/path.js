@@ -549,7 +549,7 @@ function threeColumnsHTML(vm) {
       <h3>Get a demo of one capability</h3>
       <p class="pathcol__body">30 minutes with the product's own team, scheduled now.</p>
       <div class="pathcol__slot">[CALENDAR / SCHEDULER EMBED]</div>
-      <button type="button" class="${ctaCls(demoRecommended)}" data-cta="expert">Request a demo</button>
+      <button type="button" class="btn btn--gold pathcol__cta pathcol__cta--demo" data-cta="demo">Book a demo →</button>
     </div>
     <div class="pathcol">
       <p class="pathcol__eyebrow">SELF-SERVICE</p>
@@ -586,7 +586,8 @@ function heroHTML(vm) {
       <div class="pathhero__act">
         ${ctaHTML(cta, primarySolution, route, cls)}
         ${captionHTML(cta, 'pathhero__note')}
-        <button type="button" class="pathhero__walk" data-cta="expert">Prefer a walkthrough? Book a demo</button>
+        <p class="pathhero__walkline">Would rather be walked through it?</p>
+        <button type="button" class="btn btn--light pathhero__walk" data-cta="demo">Book a demo →</button>
       </div>
     </div>
     <div class="pathcollapse">
@@ -605,9 +606,15 @@ function followUpHTML() {
       <p>Your snapshot goes out by email, and we'll follow up if it makes sense. No calendar invite required.</p>
       <a class="pathquiet__link" href="/">Ask something else</a>
     </div>
+    <!-- The ONE state where the demo is deliberately not a loud ask. This
+         visitor said they are just exploring, and routing.json's follow_up
+         cell is explicit: "Snapshot by email + light follow-up; no meeting
+         push." A marigold "Book a demo" here would contradict the route we
+         just told them we were taking — so the demo stays offered, quietly,
+         and gets its big treatment in every state that IS an ask. -->
     <div class="pathcollapse">
+      <button type="button" class="pathcollapse__link" data-cta="demo">Want a demo when you're ready? Book one</button>
       <button type="button" class="pathcollapse__link" data-cta="session">Prefer to talk it through? Book a working session</button>
-      <button type="button" class="pathcollapse__link" data-cta="expert">Or see a demo of one capability</button>
     </div>`;
 }
 
@@ -662,7 +669,7 @@ function sectionHTML(vm) {
         <p class="pathfoot__lede">Prefer to read first? Deeper education continues on the product sites.</p>
         <div class="pathfoot__links">
           ${footerWorkspaceHTML(vm.session)}
-          <button type="button" class="pathfoot__link" data-cta="callback">Let the machine call you</button>
+          <button type="button" class="pathfoot__link" data-cta="callback">Let Stagwell.AI call you</button>
           ${productLinkHTML(siteSolution(vm.primarySolution), vm.session, vm.route, 'Explore the product site →', 'pathfoot__link pathfoot__link--arrow')}
         </div>
       </div>

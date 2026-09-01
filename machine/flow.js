@@ -580,6 +580,17 @@ function questionView() {
 
   if (id === 'q1') {
     chips = (q.chips || []).map(c => ({ label: c.label, value: c.domain }));
+    /* THE CAMPAIGN CONTINUATION. A visitor who answered the ad's opener on
+       the product landing has already told us something; if the classifier
+       could not place it in a routing domain we still have to ask, but
+       asking "What do you need help solving today?" reads as though we threw
+       their answer away and started over (client, Sep 1: "i shouldn't start
+       at the beginning"). So when the opener was answered, q1 quotes it back
+       and asks only for the narrowing — same question, continuing tone. */
+    if (q.copyAfterOpener && openerAnswered()) {
+      const said = String(slots().domain_detail || '').trim();
+      if (said) copy = tpl(q.copyAfterOpener, { said });
+    }
   } else if (id === 'q3' || id === 'q5') {
     chips = (q.chips || []).map(c => ({ label: c.label, value: c.value }));
     /* the timing question earns its context: reiterate what the visitor said

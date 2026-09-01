@@ -46,23 +46,30 @@
   /* ── the copy, mirrored from data/cta.json for the fetch-failed case ───── */
   const FALLBACK = {
     fine: 'Prototype only — nothing is submitted or stored.',
-    fields: { name: 'Full name', email: 'Work email', role: 'Role — e.g. CMO, VP Marketing' },
+    fields: { name: 'Full name', email: 'Work email', phone: 'Phone — so we can reach you faster', role: 'Role — e.g. CMO, VP Marketing' },
     emailHint: 'That does not look like a work email — check the address.',
     success: {
-      title: 'The machine has your brief.',
+      title: 'Stagwell.AI has your brief.',
       line: 'Your {brand} analysis has been enriched by SATS and scored. Someone who already understands the account will be in touch — not an SDR reading a script.',
       close: 'Back to the page'
     },
-    human: ['session', 'expert', 'callback'],
+    human: ['session', 'expert', 'callback', 'demo'],
     kinds: {
-      session:   { title: 'Book a strategy session', line: 'Sixty minutes with the team that built the machine. We arrive with your dashboard already open.', submit: 'Continue' },
+      session:   { title: 'Book a strategy session', line: 'Sixty minutes with the strategists behind Stagwell.AI. We arrive with your dashboard already open.', submit: 'Continue' },
       expert:    { title: 'Talk to an AI expert', line: 'A working conversation about the problem you’re facing — and which of the ten products solve it.', submit: 'Continue' },
       workspace: { title: 'Request your full AI workspace', line: 'All ten products, pointed at your brand and running continuously. We provision in five working days.', submit: 'Continue' },
       possible:  { title: 'See all ten products', line: 'Every solution in the Marketing Cloud, grouped by the problem it solves.', submit: 'Continue' },
       pdf:       { title: 'Export this dashboard', line: 'We will send the full analysis as a designed PDF, plus the raw engine outputs.', submit: 'Continue' },
-      callback:  { title: 'The machine will call you', line: 'A NewVoices agent will call within two minutes, already briefed on what you told the agent.', submit: 'Call me now' }
+      demo:      { title: 'Book a demo', line: 'Thirty minutes with the team who runs the product, walking through it against your brand — not a generic reel.', submit: 'Book my demo' },
+      callback:  { title: 'Stagwell.AI will call you', line: 'A NewVoices agent will call within two minutes, already briefed on what you told the agent.', submit: 'Call me now' }
     }
   };
+
+  /* Every email ask carries a phone ask (client, Sep 1). It is never
+     required — a visitor who will not give a number still converts — and the
+     number itself never reaches an event: capture_phone says only whether one
+     was given, the same discipline that keeps full addresses out of the bus. */
+  const phoneLabel = c => (c && c.fields && c.fields.phone) || FALLBACK.fields.phone;
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, ch => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
@@ -201,6 +208,12 @@
         </label>
         <p class="lead__hint" id="saiLeadHint" role="alert" hidden>${esc(c.emailHint)}</p>
         <label class="lead__row">
+          <span class="vh">${esc(phoneLabel(c))}</span>
+          <input type="tel" name="phone" autocomplete="tel" inputmode="tel"
+                 placeholder="${esc(phoneLabel(c))}" aria-label="${esc(phoneLabel(c))}"
+                 value="${esc(p.phone || s.phone || '')}">
+        </label>
+        <label class="lead__row">
           <span class="vh">${esc(c.fields.role)}</span>
           <input type="text" name="role" autocomplete="organization-title"
                  placeholder="${esc(c.fields.role)}" aria-label="${esc(c.fields.role)}"
@@ -259,6 +272,10 @@
       /* THE POINT OF THE SECOND ASK — the click on "Talk to an AI expert"
          has now captured a lead, and the demo console can prove it. */
       emit('capture_email', { domain: emailDomain(email), kind });
+      emit('capture_phone', {
+        given: !!String((form.elements.phone && form.elements.phone.value) || '').trim(),
+        kind
+      });
       if (c.human.indexOf(kind) !== -1) {
         /* console.js renders human_requested's `text`; the CTA's own title is
            the truest thing to show there, and it carries no personal data */
@@ -272,11 +289,25 @@
       if (back) back.focus();
     });
 
-    /* focus the first EMPTY field: a visitor deep in the flow whose role and
-       email the session already knows lands on the one thing still missing */
+    /* Focus the first EMPTY field: a visitor deep in the flow whose role and
+       email the session already knows lands on the one thing still missing.
+
+       The delay is what makes this safe on mobile — and what made it unsafe
+       for a fast typist. Someone who clicks a field and starts typing inside
+       those 60ms had their keystrokes yanked into another input when the
+       timer fired (caught in QA: a phone number typed straight after opening
+       landed in the name field, and a password manager filling the form does
+       the same thing faster than any human). So the timer stands down the
+       moment the visitor has put focus anywhere inside the form themselves. */
     const first = Array.prototype.find.call(
       form.querySelectorAll('input'), i => !String(i.value || '').trim()) || form.elements.name;
-    setTimeout(() => { try { first.focus(); } catch (e) { panel.focus(); } }, 60);
+    setTimeout(() => {
+      try {
+        const active = document.activeElement;
+        if (active && active !== document.body && form.contains(active)) return;
+        first.focus();
+      } catch (e) { panel.focus(); }
+    }, 60);
   }
 
   function render(c, kind, prefill) {

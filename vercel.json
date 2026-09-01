@@ -52,6 +52,10 @@
       "destination": "/machine/ads.html"
     },
     {
+      "source": "/products",
+      "destination": "/machine/products.html"
+    },
+    {
       "source": "/versions",
       "destination": "/versions.html"
     },
