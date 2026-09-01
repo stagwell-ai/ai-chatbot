@@ -136,7 +136,10 @@
   function lockupHtml(product, campaign) {
     const lk = product.lockup || {};
     const band = paint(lk.band || product.accent, '#003349');
-    const ink = paint(product.accentInk, '#ffffff');
+    /* the band's ink, NOT the accent's: a lockup band is often a different
+       surface from the accent fill (The Machine's band is its logo's own
+       black, which takes white; ink on its orange accent is black) */
+    const ink = paint(lk.ink || product.accentInk, '#ffffff');
     const name = product.name || campaign.name;
     const sub = has(product.officialName) && product.officialName !== name
       ? `<span class="camplock__sub">${esc(product.officialName)}</span>` : '';
@@ -145,17 +148,22 @@
       ? `<img class="camplock__logo" src="${esc(lk.logo)}" alt="${esc(lk.logoAlt || name)}" loading="eager" decoding="async">`
       : `<span class="camplock__word">${esc(name)}</span>${sub}`;
 
-    return `<div class="camplock" style="background:${esc(band)};color:${esc(ink)}">${inner}</div>`;
+    /* the category rides the band as a pill — machine/path.css's value-pill
+       idiom, and it stops a wide band being a metre of empty product colour.
+       pillInk exists for a gradient band, where one ink can be legible at one
+       end and not the other. */
+    const pillInk = has(lk.pillInk) ? paint(lk.pillInk, ink) : null;
+    const cat = has(product.category)
+      ? `<span class="camplock__cat"${pillInk ? ` style="color:${esc(pillInk)}"` : ''}>${esc(product.category)}</span>`
+      : '';
+
+    const bleed = (lk.fit === 'bleed' && has(lk.logo)) ? ' camplock--bleed' : '';
+    return `<div class="camplock${bleed}" style="background:${esc(band)};color:${esc(ink)}">${inner}${cat}</div>`;
   }
 
   function heroVisualHtml(product) {
     const kind = product.heroKind;
-    if (kind === 'gradient' || !has(product.hero)) {
-      /* no borrowed picture: the brand's own signature gradient, or nothing */
-      if (kind !== 'gradient') return '';
-      const g = paint(product.gradient || product.accent, '#159CBD');
-      return `<div class="camphero__art camphero__art--wash" style="background:${esc(g)}" aria-hidden="true"></div>`;
-    }
+    if (kind === 'none' || !has(product.hero)) return '';
 
     const cap = has(product.heroCaption) || has(product.heroCredit)
       ? `<figcaption class="camphero__cap">${esc(product.heroCaption || '')}${
@@ -309,9 +317,12 @@
   function builtByHtml(product) {
     const b = product.builtBy;
     if (!b || !has(b.line)) return '';
+    /* a logo we don't have — or, here, one the kit mislabelled — is named as
+       missing rather than substituted: a wrong mark under a real company's
+       credit is exactly the failure this page exists not to make */
     const logo = has(b.logo)
       ? `<img class="campbuilt__logo" src="${esc(b.logo)}" alt="${esc(b.logoAlt || b.name || '')}" loading="lazy" decoding="async">`
-      : '';
+      : (has(b.logoNote) ? `<span class="campbuilt__gap">${esc(b.logoNote)}</span>` : '');
     return `<div class="campbuilt campbuilt--${esc(b.logoOn === 'dark' ? 'dark' : 'light')}">
         ${logo}<p class="campbuilt__l">${esc(b.line)}</p>
       </div>`;
@@ -364,8 +375,8 @@
             <p class="eyebrow camp__kicker"><i class="pulse"></i>${esc(parentLine)}</p>
 
             <h1 class="camp__h1">${esc(p.tagline || campaign.name)}</h1>
+            ${has(p.kicker) ? `<p class="camp__kick">${esc(p.kicker)}</p>` : ''}
             ${has(p.summary) ? `<p class="camp__sum">${esc(p.summary)}</p>` : ''}
-            ${has(p.category) ? `<p class="camp__cat">${esc(p.category)}</p>` : ''}
 
             ${heroVisualHtml(p)}
 

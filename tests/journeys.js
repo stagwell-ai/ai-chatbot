@@ -35,6 +35,13 @@ const NIKE_MSG = "Reach better audiences — and prove it moved the business, we
 const SMB_DOMAIN = 'smallco-fictional-demo.example';
 const EXPLORER_DOMAIN = 'northwind-demo-brand.example';
 
+/* the campaign opener is client copy and has been rewritten once already —
+   read it from the contract rather than pinning a literal that goes stale
+   the next time the wording changes */
+const OPENER = JSON.parse(fs.readFileSync(
+  path.join(__dirname, '..', 'data', 'campaigns.json'), 'utf8'))
+  .campaigns.find(c => c.id === 'targeting-machine').opener;
+
 /* every handoff link must carry all four params (SPEC S5, path.js) */
 function assertAttributed(check, links, route, label) {
   check.ok(`${label}: at least one attributed handoff link`, links.length > 0, `${links.length} link(s)`);
@@ -186,7 +193,7 @@ async function j2(page, check, opts) {
   await H.open(page, '/p/targeting-machine');
   await page.waitForSelector('#agentPanel');
   check.includes('product landing shows the pre-seeded opener (campaigns.json)',
-    await page.textContent('#agentPanel .bubble'), "You've just seen The Targeting Machine");
+    await page.textContent('#agentPanel .bubble'), OPENER);
   check.ok('cross-discovery chip is on the panel (SPEC S2)',
     await page.locator('#agentPanel .chip:text-is("What else fits my problem?")').count() === 1);
   await H.shot(page, 'j2-product-landing');
@@ -205,7 +212,7 @@ async function j2(page, check, opts) {
 
   const thread = await page.$$eval('#thread .ai__text, #thread .bubble', e => e.map(x => x.textContent.trim()));
   check.ok('the opener exchange is REPLAYED, not re-asked',
-    thread[0] && thread[0].startsWith("You've just seen The Targeting Machine") &&
+    thread[0] && thread[0].startsWith(OPENER) &&
     thread[1] === 'Build audiences from my first-party data', thread.slice(0, 2).join(' >> '));
 
   const attrib = await page.evaluate(() => window.SAI.session.attribution);

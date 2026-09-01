@@ -5,6 +5,7 @@
   "_schema": {
     "accent": "the product's own brand hue — hairlines, numerals, small marks, the lockup band",
     "accentInk": "ink proven legible on a solid fill of accent (>= 4.5:1 for body, >= 3:1 for display)",
+    "lockup.ink": "ink for the LOCKUP BAND, which is often not the accent fill — The Machine's band is its logo's own black, whose ink is white, while ink on its orange accent is black. lockup.pillInk overrides it for the category pill where a gradient band makes one colour work at one end and not the other.",
     "accentNote": "why THIS hex, out of the several the README lists",
     "band": "the deep surface the proof strip and lockup sit on; bandInk / bandFigure are its text and numeral colours",
     "tint": "a wash of accent light enough to carry the icon sets, which are all solid-colour-on-transparent",
@@ -35,7 +36,9 @@
         "band": "#000000",
         "logo": "/assets/img/companies/the-machine/logo.png",
         "logoAlt": "The Machine — orange mark and wordmark",
-        "note": "logo.png ships with its own black field baked in, so the band is set to the same #000000 and the image has no visible edge — the same trick machine/path.css plays with the lockup PNGs on #0A1743."
+        "fit": "bleed",
+        "ink": "#FFFFFF",
+        "note": "logo.png ships with its own black field baked in, so the band is set to the same #000000 and the image has no visible edge — the same trick machine/path.css plays with the lockup PNGs on #0A1743. fit:bleed lets the image fill the band and crop its own dead space, so the wordmark reads at size instead of floating in the middle of a black rectangle."
       },
 
       "heroKind": "image",
@@ -96,10 +99,12 @@
 
       "builtBy": {
         "name": "Code and Theory",
-        "logo": "/assets/img/companies/shared/code-and-theory-logo.svg",
-        "logoAlt": "Code and Theory",
+        "logo": null,
+        "logoAlt": "",
         "logoOn": "dark",
-        "line": "Built by Code and Theory, a Stagwell network company."
+        "line": "Built by Code and Theory, a Stagwell network company.",
+        "logoNote": "[CODE AND THEORY LOGO — the kit's shared/code-and-theory-logo.svg is a FOUR04 mark, not the Code and Theory wordmark]",
+        "logoNoteWhy": "SOURCES.md pulled the file from Code and Theory's own Sanity CDN and README.md labels it “Code and Theory wordmark”, but rendered it reads FOUR04. Setting it under a Code and Theory credit would put a false mark on the page, so the credit runs as type and the mislabelled file is flagged for the client instead."
       },
 
       "partners": [],
@@ -128,6 +133,7 @@
 
       "lockup": {
         "band": "#0C49B9",
+        "ink": "#FFFFFF",
         "logo": null,
         "logoAlt": "",
         "note": "The Agent Cloud mark is #0C49B9 on transparent — it would disappear on its own colour — so the band carries the name set in type and the mark is used at size in the hero instead."
@@ -221,6 +227,7 @@
 
       "lockup": {
         "band": "#0A2A62",
+        "ink": "#FFFFFF",
         "logo": null,
         "logoAlt": "",
         "note": "There is no Targeting Machine wordmark — Stagwell goes to market as SATS, and the one identity file in the kit is an architecture diagram, not a logo. So the band carries the name set in type with the official product name beneath it, the way machine/path.css handles a product with no lockup."
@@ -273,7 +280,7 @@
         "name": "Lauren Lazarus",
         "title": "SVP Insights & Analytics, GSTV",
         "photo": null,
-        "photoNote": "[HEADSHOT — not supplied in the asset kit]",
+        "photoNote": "[NO HEADSHOT IN KIT]",
         "source": "GSTV press release, 11 June 2026."
       },
       "quoteSecondary": {
@@ -281,7 +288,7 @@
         "name": "Peter Choi",
         "title": "VP Marketing, Conagra Brands",
         "photo": null,
-        "photoNote": "[HEADSHOT — not supplied in the asset kit]",
+        "photoNote": "[NO HEADSHOT IN KIT]",
         "source": "GSTV press release, 11 June 2026."
       },
 
@@ -320,8 +327,8 @@
       "summary": "Lifelike voice and chat agents for sales, support, retention, payments and feedback — 24/7, in any language. They adapt in real time to customer history, context and intent, and plug into Salesforce, HubSpot, Stripe and Make. Built in Agent Studio, no code required.",
 
       "accent": "#159CBD",
-      "accentInk": "#FFFFFF",
-      "accentNote": "Sky #159CBD and Mint #57BF94 come from the NewVoices Brand Book v1.0, which the README marks authoritative over the older site teal #0D9488. Sky is the darker of the pair so it takes the accent role; Mint is bright enough to be the numeral colour on the brand's Ink. Bands are set on Ink #16181A rather than Sky, because white on Sky is only 3.2:1 — fine for a logo, not for a label.",
+      "accentInk": "#16181A",
+      "accentNote": "Sky #159CBD and Mint #57BF94 come from the NewVoices Brand Book v1.0, which the README marks authoritative over the older site teal #0D9488. Sky is the darker of the pair so it takes the accent role. Its ink is the brand's own Ink #16181A, not white — white on Sky is 3.2:1 and fails, Ink is 5.5:1. Deep bands are set on Ink rather than Sky for the same reason.",
       "band": "#16181A",
       "bandInk": "#FFFFFF",
       "bandFigure": "#57BF94",
@@ -329,16 +336,19 @@
       "gradient": "linear-gradient(90deg,#159CBD,#57BF94)",
 
       "lockup": {
-        "band": "linear-gradient(90deg,#159CBD,#57BF94)",
+        "band": "linear-gradient(90deg,#159CBD 0%,#159CBD 58%,#57BF94 100%)",
+        "ink": "#FFFFFF",
+        "pillInk": "#16181A",
         "logo": "/assets/img/companies/newvoices/logo-white.png",
         "logoAlt": "NewVoices AI",
-        "note": "The Brand Book's signature Sky→Mint gradient at 90°, carrying the white lockup — the brand's own pairing. Only the logo sits on it; no small text, because white on Mint is 2.3:1."
+        "note": "The Brand Book's signature Sky→Mint gradient at 90°, carrying the white lockup — the brand's own pairing — but WEIGHTED. A straight two-stop ramp puts the tail of the white wordmark on Mint at 2.3:1, under the 3:1 a graphical object needs; holding Sky to 58% keeps the whole lockup on Sky (3.2:1) and lets Mint run out behind the category pill, which takes brand Ink instead of white (5.5:1 on Sky, 7.9:1 on Mint). Same two brand colours, same direction, legible at both ends."
       },
 
-      "heroKind": "gradient",
+      "heroKind": "none",
       "hero": null,
       "heroAlt": "",
       "heroCaption": "",
+      "heroNote": "The kit ships no NewVoices hero image, and its one product visual earns its place lower down under “Inside the product”. Rather than pad the hero with a decorative gradient slab, the column runs lockup → headline → summary and lets the agent panel keep the fold.",
 
       "valueProps": [
         {
