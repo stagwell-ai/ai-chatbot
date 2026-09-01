@@ -317,12 +317,28 @@ async function j3(page, check) {
   check.includes('dominant hero copy',
     await page.textContent('#pathView .pathhero__title'), 'You can start right now');
   const trial = await page.$$eval('#pathView .pathhero__cta',
-    e => e.map(x => ({ text: x.textContent.trim(), href: x.href })));
-  check.eq('one dominant trial CTA', trial.length, 1);
-  check.includes('CTA copy', trial[0] && trial[0].text, 'Start your free trial');
+    e => e.map(x => ({ text: x.textContent.trim(), href: x.href,
+      gold: x.classList.contains('btn--gold'), disabled: x.classList.contains('is-disabled') })));
+  check.eq('one dominant CTA', trial.length, 1);
+  /* CHANGED, client round Aug 31 (complaint A): the hero used to promise
+     "Start your free trial" for every self-serve route, whether or not the
+     product had a signup to go to. solutions.json now says: QuestDIY has a
+     product site (url) and no public self-serve door (signupUrl:null), so the
+     honest hero sends the visitor to the product site and says why underneath.
+     The offer only reads "Start your free trial →" where a signupUrl exists
+     (today: IMAI and the SMB platform). */
+  check.includes('CTA copy names the product site, not an invented trial',
+    trial[0] && trial[0].text, 'Start on QuestDIY');
+  check.ok('and it is a real, enabled marigold button',
+    trial[0] && trial[0].gold === true && trial[0].disabled === false);
+  check.includes('the honest caption under it',
+    await page.textContent('#pathView .pathhero__note'), 'Self-serve signup is coming');
   check.includes('trial link points at harrisquest questdiy', trial[0] && trial[0].href,
     'harrisquest.com/suite/questdiy');
   check.includes('trial link carries sai_route=self_serve', trial[0] && trial[0].href, 'sai_route=self_serve');
+  check.eq('no enabled marigold button anywhere says PENDING',
+    await page.$$eval('#pathView .btn--gold:not(.is-disabled)',
+      e => e.filter(x => /PRODUCT SITE/i.test(x.textContent)).length), 0);
   assertAttributed(check, await handoffLinks(page), 'self_serve', 'handoff');
 
   const collapsed = await page.$$eval('#pathView .pathcollapse__link, #pathView .pathhero__walk',
@@ -451,7 +467,7 @@ const JOURNEYS = [
     run: (p, c) => j1(p, c, { onDone: r => { counts.J1 = r.asked; } }) },
   { id: 'J2', name: 'product ad · /p/targeting-machine → pre-seeded opener → demo',
     run: (p, c) => j2(p, c, { onDone: r => { counts.J2 = r.standardAsked; } }) },
-  { id: 'J3', name: 'SMB founder · quick survey → self-serve with a dominant trial CTA', run: j3 },
+  { id: 'J3', name: 'SMB founder · quick survey → self-serve with a dominant, honest CTA', run: j3 },
   { id: 'J4', name: 'just exploring → follow_up, no meeting push', run: j4 },
   { id: 'J5', name: 'anonymous · decline email → snapshot survives, PDF stays locked', run: j5 }
 ];

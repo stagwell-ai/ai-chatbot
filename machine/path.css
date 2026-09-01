@@ -182,7 +182,12 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 .path__section--cross{margin-top:34px;padding-top:26px;border-top:1px solid var(--line)}
 .cross__head{margin:0 0 14px;font-size:var(--t-sm);font-weight:600;color:var(--ink-2)}
-.crosscards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+/* auto-FILL, not auto-fit: the row is one, two or three cards depending on the
+   primary's companions, and an auto-fit track would stretch a lone card to the
+   full 1180px — a metre of navy band behind one small lockup. Empty tracks
+   stay, so a product's card is the same size however many it shares the row
+   with, which is the consistency the band is for. */
+.crosscards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .crosscard{background:transparent;border:1px solid var(--line);border-radius:var(--r-lg);
   overflow:hidden;display:flex;flex-direction:column}
 /* the same band and pills as a matched card, one size down — so a product

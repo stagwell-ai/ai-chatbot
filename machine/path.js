@@ -238,7 +238,9 @@ function ctaFor(solution, session, route, medium, pendingLabel) {
     };
   }
   return {
-    kind: 'pending', label: pendingLabel || 'Start on your own',
+    /* '' is a real choice here — the matched card wants the bare placeholder —
+       so only an absent label falls back. */
+    kind: 'pending', label: pendingLabel == null ? 'Start on your own' : pendingLabel,
     href: null, rawUrl: null, caption: null, captionScope: null
   };
 }
@@ -248,7 +250,12 @@ function ctaHTML(cta, solution, route, cls) {
     return `<a class="${cls}" href="${esc(cta.href)}" target="_blank" rel="noopener"
       data-handoff data-solution="${esc(solution.id)}" data-url="${esc(cta.rawUrl)}" data-route="${esc(route)}">${esc(cta.label)}</a>`;
   }
-  return `<span class="${cls} is-disabled" aria-disabled="true">${esc(cta.label)} <i>[PRODUCT SITE — pending]</i></span>`;
+  /* an empty pending label leaves the placeholder standing on its own — the
+     matched card already carries the product's lockup and name, and
+     "See Stagwell's Machines (family frame) → [PRODUCT SITE — pending]" is a
+     mouthful that says nothing the band above it has not said. */
+  return `<span class="${cls} is-disabled" aria-disabled="true">${
+    cta.label ? esc(cta.label) + ' ' : ''}<i>[PRODUCT SITE — pending]</i></span>`;
 }
 
 function captionHTML(cta, cls, scopes) {
@@ -435,7 +442,7 @@ function buildViewModel(session, decision) {
    type, and saying it twice was the duplication the band replaces. */
 function cardHTML(m, session, route) {
   const s = m.solution;
-  const cta = s ? ctaFor(s, session, route, 'routing', 'See ' + s.name + ' →') : null;
+  const cta = s ? ctaFor(s, session, route, 'routing', '') : null;
   return `
     <article class="pathcard">
       ${bandHTML(s, 'lg')}
@@ -591,6 +598,18 @@ function continueSectionHTML(vm) {
   return threeColumnsHTML(vm);
 }
 
+/* The footer's "Explore the product site" is about the PRIMARY solution — the
+   one this screen just routed the visitor to — so it uses the best URL we
+   actually know: the product site, or, where a product has no page of its own
+   yet, the self-serve platform it runs on. That is the client's point in
+   complaint A: if we know a URL, do not say pending. The cross-discovery row
+   deliberately keeps the strict product-site-only discipline — those are other
+   products, and a placeholder there is the honest answer, not a redirect. */
+function siteSolution(s) {
+  if (!s || s.url || !s.signupUrl) return s || null;
+  return { id: s.id, name: s.name, url: s.signupUrl };
+}
+
 function footerWorkspaceHTML(session) {
   const domain = session && session.slots && session.slots.company_domain;
   if (domain) return `<button type="button" class="pathfoot__link" data-action="workspace-live">Request your full AI workspace</button>`;
@@ -625,7 +644,7 @@ function sectionHTML(vm) {
         <div class="pathfoot__links">
           ${footerWorkspaceHTML(vm.session)}
           <button type="button" class="pathfoot__link" data-cta="callback">Let the machine call you</button>
-          ${productLinkHTML(vm.primarySolution, vm.session, vm.route, 'Explore the product site →', 'pathfoot__link pathfoot__link--arrow')}
+          ${productLinkHTML(siteSolution(vm.primarySolution), vm.session, vm.route, 'Explore the product site →', 'pathfoot__link pathfoot__link--arrow')}
         </div>
       </div>
     </div>`;

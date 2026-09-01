@@ -367,8 +367,16 @@ function goalPhrase() {
   const phrases = ids.slice(0, 2).map(id => {
     const d = D.find(x => x.id === id);
     if (!d || !d.label) return null;
-    const t = d.label.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
-    return t.charAt(0).toLowerCase() + t.slice(1);
+    /* the parenthetical goes, and so does anything after a dash or colon:
+       reputation's label is "Protect reputation — see risks before they become
+       stories", and q5's own copy is built around an em dash, so the whole
+       sentence came out with three of them and no readable clause. The goal is
+       the head of the label — "protect reputation" — not its gloss. */
+    const t = d.label
+      .replace(/\s*\(.*?\)\s*/g, ' ')
+      .split(/\s+[—–:-]\s+/)[0]
+      .replace(/\s+/g, ' ').trim();
+    return t ? t.charAt(0).toLowerCase() + t.slice(1) : null;
   }).filter(Boolean);
   return phrases.length ? phrases.join(' and ') : null;
 }
