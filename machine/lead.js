@@ -311,6 +311,21 @@
     if (back && document.contains(back)) { try { back.focus(); } catch (e) { /* gone */ } }
   }
 
+  /* ── the opt-in delegate ──────────────────────────────────────────────────
+     b.js and campaign.js each already own a [data-cta] click handler on their
+     own page, and two handlers would open the modal twice. So this one is
+     opt-in: a page with no CTA handler of its own — /ads — says so on <body>,
+     and gets the same behaviour with the same markup. */
+  if (document.body && document.body.hasAttribute('data-lead-cta')) {
+    document.addEventListener('click', e => {
+      const t = e.target.closest('[data-cta]');
+      if (!t || t.tagName === 'FORM') return;
+      e.preventDefault();
+      document.body.classList.remove('nav-open');
+      open(t.dataset.cta || 'expert');
+    });
+  }
+
   window.SAILEAD = {
     open,
     close,

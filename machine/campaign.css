@@ -170,7 +170,14 @@ body.nav-open .mnav{transform:none}
   border-top-left-radius:4px;padding:14px 16px;font-size:var(--t-body);color:var(--ink);line-height:1.5;
 }
 
-.chipstack{display:flex;flex-direction:column;gap:8px}
+/* the chips are the SHORTCUT, not the offer: they sit under the hero input,
+   below a quiet rule, with a label that says what they are. Six equal buttons
+   at the top of the panel read as a menu; a menu is not an invitation to talk. */
+.chipstack{display:flex;flex-direction:column;gap:8px;padding-top:16px;border-top:1px solid var(--line)}
+.chipstack__lab{
+  margin:0 0 2px;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);
+}
 .chip{
   display:block;width:100%;text-align:left;padding:11px 16px;
   border:1px solid var(--line-2);border-radius:var(--r-full);background:var(--surface);
@@ -195,14 +202,41 @@ body.nav-open .mnav{transform:none}
   padding:9px 12px;line-height:1.5;
 }
 
-.askform{display:flex;gap:8px;padding-top:4px;border-top:1px solid var(--line)}
+/* ── the ask: this page's primary action ──────────────────────────────────
+   The field was a squeezed remainder beside the gold button — a stub, not an
+   invitation. It is now the hero control: full panel width, 60px tall, 16px
+   type (below 16px iOS zooms the whole page on focus), with the button
+   directly beneath it at full width rather than beside it. Stacked, not
+   inset: the panel column is ~400px at 1440 and ~330px at 390, and a button
+   living inside the field would take a third of the placeholder back at both
+   widths — the exact squeeze this rework exists to undo.
+
+   The teal caret dot is the master page's .prompt idiom, so the field reads
+   as the same conversation the visitor is being handed to. */
+.askform{display:flex;flex-direction:column;gap:10px}
+.askform__field{
+  display:flex;align-items:center;gap:14px;height:60px;padding:0 20px;
+  border:1px solid var(--line-2);border-radius:var(--r-full);background:var(--surface);
+  transition:border-color var(--d-2) var(--ease),box-shadow var(--d-2) var(--ease);
+}
+.askform__field:hover{border-color:var(--ink-4)}
+.askform__field:focus-within{
+  border-color:color-mix(in srgb,var(--ink) 42%,transparent);
+  box-shadow:0 0 0 4px rgba(0,35,52,.05);
+}
+.askform__caret{
+  width:6px;height:6px;border-radius:50%;background:var(--teal);flex:none;
+  transition:transform var(--d-2) var(--ease);
+}
+.askform__field:focus-within .askform__caret{transform:scale(1.45)}
 .askform__input{
-  flex:1;height:46px;padding:0 16px;border:1px solid var(--line-2);border-radius:var(--r-full);
-  background:var(--surface);font-size:var(--t-sm);color:var(--ink);
+  /* stretch, not centre: the whole 60px band is the click target, so a tap
+     anywhere in the field lands in the conversation */
+  flex:1;min-width:0;align-self:stretch;border:0;background:none;outline:none;
+  font-family:var(--sans);font-size:1rem;letter-spacing:-.008em;color:var(--ink);
 }
 .askform__input::placeholder{color:var(--ink-4)}
-.askform__input:focus-visible{outline:none;border-color:var(--ink-3)}
-.askform__send{height:46px;padding:0 20px;flex:none}
+.askform__send{width:100%;height:52px;justify-content:center}
 
 /* ═══════════════════════════════════════════════════════════
    THE PRODUCT BODY — value cards, proof strip, screenshots, quotes, trust.
@@ -394,6 +428,9 @@ body.nav-open .mnav{transform:none}
   .camptrust__badge img{height:32px}
 }
 @media (max-width:480px){
-  .askform{flex-direction:column}
-  .askform__send{width:100%;justify-content:center}
+  /* the field is already full width and stacked; it only loses a little of
+     its side padding so a real sentence still fits on one line at 390 */
+  .askform__field{padding:0 16px;gap:12px;height:58px}
+  /* 16px is the floor: below it iOS zooms the page on focus */
+  .askform__input{font-size:1rem}
 }

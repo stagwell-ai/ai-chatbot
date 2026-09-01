@@ -1234,7 +1234,17 @@ const CTA_COPY = {
   callback:  ['The machine will call you','A NewVoices agent will call within two minutes, already briefed on what you told the agent.'],
 };
 
+/* The lead form now lives in machine/lead.js — one modal for "/", /p/{id} and
+   /ads, so "Talk to an AI expert" collects the same three fields wherever it
+   is clicked. This stays the entry point (the delegated [data-cta] handler
+   below is unchanged); everything under the SAILEAD branch is the inline
+   original, kept only as the fallback for lead.js failing to load. The
+   prefill hands over exactly what this file used to fill in by itself. */
 function openModal(kind) {
+  if (window.SAILEAD && typeof window.SAILEAD.open === 'function') {
+    window.SAILEAD.open(kind, { name: S.who || '', brand: S.brand || '' });
+    return;
+  }
   const [t, p] = CTA_COPY[kind] || CTA_COPY.expert;
   modalBody.innerHTML = `
     <div class="modal__brand"><svg><use href="#sw-logo"/></svg><span>AI</span></div>

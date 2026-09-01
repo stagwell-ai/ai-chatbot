@@ -113,6 +113,32 @@
     return `<button type="button" class="${cls}" data-label="${esc(trimmed)}">${esc(trimmed)}</button>`;
   }
 
+  /* ── the panel's status note ──────────────────────────────────────────────
+     What is still open differs by campaign, and the note has to say which —
+     a chip set drafted from a product's own published positioning is not the
+     same unknown as a campaign with no positioning at all, and neither may be
+     silently dropped.
+
+       pending_positioning  chips AND route are open — the original note
+       chips_drafted        chips are drawn from published material; the ROUTE
+                            is the thing still to confirm
+       anything else        nothing open, no note
+
+     campaigns.json's `chipsNote` says where a drafted chip set came from. It
+     cites an internal reference path, so it rides as the note's tooltip
+     rather than on the page: this panel is the visitor's invitation to talk,
+     not the place for the build's own paperwork. */
+  function statusNoteHtml(campaign) {
+    if (campaign.status === 'pending_positioning') {
+      return `<p class="pendingNote">[POSITIONING PENDING — chips and route to confirm with the product team]</p>`;
+    }
+    if (campaign.status === 'chips_drafted') {
+      const why = has(campaign.chipsNote) ? ` title="${esc(campaign.chipsNote)}"` : '';
+      return `<p class="pendingNote"${why}>[ROUTE PENDING — the chips are drafted from this product's published positioning; where the conversation routes is still to confirm with the product team]</p>`;
+    }
+    return '';
+  }
+
   /* ── not-found state ──────────────────────────────────────────────────── */
   function renderNotFound(id) {
     document.title = 'Campaign not found — Stagwell.AI';
@@ -350,9 +376,7 @@
       ? `<a class="sitelink" href="${esc(withUtm(siteUrl))}" target="_blank" rel="noopener">${esc(siteLabel)} &rarr;</a>`
       : `<span class="sitelink sitelink--disabled" aria-disabled="true">[PRODUCT SITE — pending]</span>`;
 
-    const pendingHtml = campaign.status === 'pending_positioning'
-      ? `<p class="pendingNote">[POSITIONING PENDING — chips and route to confirm with the product team]</p>`
-      : '';
+    const pendingHtml = statusNoteHtml(campaign);
 
     /* per-product paint, set once on the section so the CSS can lean on it */
     const vars = [
@@ -383,20 +407,38 @@
             ${siteLinkHtml}
           </div>
 
+          <!-- The panel leads with the conversation. The free-text field is the
+               hero control — full panel width, ~60px, 16px type so iOS doesn't
+               zoom on focus — with its gold button directly beneath it at full
+               width. The chips follow as quick answers, under a quiet label,
+               because they are the shortcut, not the offer. -->
           <div class="panel" id="agentPanel">
             <div class="panel__head">
               <span class="panel__avatar">S</span>
               <b>Stagwell.AI</b>
             </div>
             <div class="bubble">${esc(campaign.opener)}</div>
-            <div class="chipstack" role="group" aria-label="Suggested next steps">
+
+            <form class="askform" id="askForm" autocomplete="off">
+              <div class="askform__field">
+                <i class="askform__caret" aria-hidden="true"></i>
+                <!-- the placeholder has to fit, not ellipse: at 390 the field
+                     gives ~252px at 16px type, and a truncated invitation is
+                     not an invitation. This one fits at both 1440 and 390, and
+                     the agent framing is already carried by the panel head
+                     above it and the gold button below. -->
+                <input class="askform__input" id="askInput" type="text"
+                       placeholder="What are you trying to solve?"
+                       aria-label="Tell the agent what you are trying to solve">
+              </div>
+              <button class="btn btn--gold askform__send" type="submit">Ask the agent</button>
+            </form>
+
+            <div class="chipstack" role="group" aria-labelledby="chipsLab">
+              <p class="chipstack__lab" id="chipsLab">Or start with one of these</p>
               ${chipList.map(chipHtml).join('')}
             </div>
             ${pendingHtml}
-            <form class="askform" id="askForm" autocomplete="off">
-              <input class="askform__input" id="askInput" type="text" placeholder="Describe your problem — or paste your website…" aria-label="Describe your problem">
-              <button class="btn btn--gold askform__send" type="submit">Ask the agent</button>
-            </form>
           </div>
 
         </div>
@@ -463,8 +505,15 @@
   }
 
   /* ── chrome shared with the rest of the site: mobile drawer + the "Talk to
-     an AI expert" CTA, which points at the master page's own #cta section
-     rather than a modal (b.js's modal machinery isn't loaded here) ── */
+     an AI expert" CTA.
+
+     That CTA used to be `location.href = '/#cta'` — a product landing bounced
+     the visitor to the homepage and collected nothing, which is precisely the
+     bug behind "make it when someone clicks to talk to an AI expert, we
+     collect their info immediately". machine/lead.js now carries that modal
+     for every page, so the CTA captures the lead here, in place, without
+     losing the campaign the visitor is standing on. If lead.js somehow failed
+     to load, the old hop is still better than a dead button. ── */
   function wireChrome() {
     const navMenu = document.getElementById('navMenu');
     const navScrim = document.getElementById('navScrim');
@@ -475,8 +524,15 @@
     if (mnavClose) mnavClose.addEventListener('click', closeNav);
 
     document.addEventListener('click', e => {
-      const b = e.target.closest('[data-cta="expert"]');
-      if (b) window.location.href = '/#cta';
+      const b = e.target.closest('[data-cta]');
+      if (!b || b.tagName === 'FORM') return;
+      e.preventDefault();
+      closeNav();
+      if (window.SAILEAD && typeof window.SAILEAD.open === 'function') {
+        window.SAILEAD.open(b.dataset.cta || 'expert');
+        return;
+      }
+      window.location.href = '/#cta';
     });
   }
 
