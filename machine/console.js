@@ -206,13 +206,13 @@ const FORMAT = {
   /* ── capture & consent ────────────────────────────────────────────────── */
   /* the address itself never reaches this console — snapshot-data.js sends
      the domain and nothing else, on purpose (a work email on a projector is
-     a mistake you make once). Consent is its own event a beat later, so at
-     this moment it is genuinely still pending. */
+     a mistake you make once). Consent rides the same submit, so it lands as
+     its own event a beat later rather than as a second decision. */
   capture_email: p =>
-    'Email captured @' + (p.domain || 'unknown domain') + ' · consent pending',
+    'Email captured @' + (p.domain || 'unknown domain'),
 
   capture_consent: p =>
-    p.consent ? 'Consent granted — OK to contact about these results'
+    p.consent ? 'Consent granted with the send — follow-up permitted'
               : 'Consent withheld — report sent, no follow-up',
 
   capture_declined: () =>

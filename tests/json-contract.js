@@ -85,9 +85,12 @@ async function driveToPath(page) {
   await H.waitQuestion(page, 'q5', 25000);
   await H.clickChip(page, 'This quarter');
 
+  /* the questions now end on a reveal button rather than jumping straight to
+     the snapshot, so "the snapshot is next" means the button is on screen */
   const next = await page.waitForFunction(() => {
     const sv = document.querySelector('#snapView');
     if (sv && !sv.hidden) return 'snapshot';
+    if (document.querySelector('#convoReveal')) return 'snapshot';
     const s = window.SAIFLOW && window.SAIFLOW.state();
     if (s && s.question && s.question.id === 'q6') return 'q6';
     return false;

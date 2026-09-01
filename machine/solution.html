@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- A reload lands at the top. /chat, /snapshot and /path are pushState views of
+     this one document, so the browser's restored scroll offset belongs to a view
+     that no longer exists — it drops the visitor into the middle of a page they
+     have not seen build. Set before first paint; a real #hash still wins. -->
+<script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
 <title id="pageTitle">Stagwell.AI — Solution</title>
 <meta name="description" id="pageDesc" content="One solution in the Stagwell Marketing Cloud — what it does, the problems it answers, and the conversation that finds your fit.">
 

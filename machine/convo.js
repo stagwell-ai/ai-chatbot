@@ -485,12 +485,44 @@ function finish() {
      a session with no company_domain just as well as one with — so the
      domain-less visitor gets the same reveal, not a bounce back to the old
      flow's composer. */
-  addAgentBubble('Your snapshot is ready.');
-  setTimeout(() => {
+  /* The visitor decides when to leave the conversation. An automatic jump a
+     beat after "your snapshot is ready" reads as the page running away from
+     them — they never see what changed, or why the screen moved. So the
+     reveal is a button: it says what is behind it, and nothing moves until
+     it is pressed. */
+  /* The read has to answer the question they walked in with. Naming their
+     own problem back — and the product it points to — is what makes the
+     next screen make sense; without it the analysis arrives out of nowhere. */
+  let rec = null;
+  try { if (window.SAIPATH && typeof window.SAIPATH.recommend === 'function') rec = window.SAIPATH.recommend(); }
+  catch (e) { rec = null; }
+  const goal = (rec && rec.phrase) || null;
+  const brand = (session.slots && (session.slots.company || session.slots.company_domain)) || 'your brand';
+
+  const lead = goal
+    ? `You came here wanting to ${goal}, so that's what I read ${brand} against: where you stand today, how AI assistants describe you, and where your brand signal is moving.`
+    : `Your analysis of ${brand} is ready — where you stand, how AI assistants describe you, and where your brand signal is moving.`;
+  const follow = rec && rec.solutionName
+    ? ` And I know which of the ten products I'd point at it: <b>${esc(rec.solutionName)}</b> — the analysis shows you why.`
+    : '';
+  const body = addAgentBubble(esc(lead) + follow);
+  const wrap = document.createElement('div');
+  wrap.className = 'opts';
+  const go = document.createElement('button');
+  go.type = 'button';
+  go.className = 'btn btn--gold convo__reveal';
+  go.id = 'convoReveal';
+  go.textContent = 'Show me my snapshot →';
+  go.addEventListener('click', () => {
+    go.disabled = true;
     active = false;
     teardown();
     if (window.SAISNAP && typeof window.SAISNAP.show === 'function') window.SAISNAP.show(session);
-  }, REDUCED ? 30 : 650);
+  });
+  wrap.appendChild(go);
+  body.appendChild(wrap);
+  requestAnimationFrame(() =>
+    wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' }));
 }
 
 /* ─────────────────────────── ENTRY ─────────────────────────── */

@@ -77,12 +77,14 @@
   function resolveDomain(domain, list) {
     try {
       if (!domain || !domain.solution) return [];
+      /* IMAI leads this group: it is the full platform, and the SMB packaging
+         of it is the lighter alternative underneath. */
       if (domain.id === 'influencer') {
         const out = [];
-        const smb = list.find(s => s.id === 'smb_platform');
         const ent = list.find(s => s.id === 'imai');
-        if (smb) out.push({ solution: smb, fit: 'small teams' });
+        const smb = list.find(s => s.id === 'smb_platform');
         if (ent) out.push({ solution: ent, fit: '100+ creators' });
+        if (smb) out.push({ solution: smb, fit: 'small teams' });
         return out;
       }
       if (domain.id === 'marketing_ops') {

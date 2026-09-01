@@ -464,6 +464,9 @@ function cardHTML(m, session, route) {
       ${bandHTML(s, 'lg')}
       <div class="pathcard__in">
         <h3>${esc(m.title)}</h3>
+        ${s && s.name ? `<p class="pathcard__prod"><b>${esc(s.name)}</b>${
+          s.whoFor ? ` · built for ${esc(String(s.whoFor).charAt(0).toLowerCase() + String(s.whoFor).slice(1))}` : ''
+        }</p>` : ''}
         <p class="pathcard__body">${esc(m.body)}</p>
         ${pillsHTML(s)}
         <p class="pathcard__why">Why matched: ${esc(m.why)}</p>
@@ -758,6 +761,53 @@ window.addEventListener('popstate', () => {
   teardown();
 });
 
-window.SAIPATH = { show };
+/* The recommendation, before the visitor reaches this screen.
+
+   The conversation and the snapshot both need to say what the read is FOR —
+   "you asked about influencer marketing, and the product I'd point at it is
+   IMAI" — and they must name the same product this screen will. So the
+   resolution lives here, once, and they ask for it rather than re-deriving
+   it from routing.json themselves. Everything is optional: no route, no
+   match, no solutions file all return nulls, and the callers fall back to
+   copy that names nothing. */
+/* "Protect reputation — see risks before they become stories" → "protect
+   reputation". The head of the label is the goal; the rest is its gloss, and
+   a sentence built around the whole thing reads as three clauses joined by
+   dashes. Same trim as flow.js goalPhrase(), which q5 uses. */
+function goalOf(label) {
+  const t = String(label || '')
+    .replace(/\s*\(.*?\)\s*/g, ' ')
+    .split(/\s+[—–:-]\s+/)[0]
+    .replace(/[?.!]+$/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return t ? t.charAt(0).toLowerCase() + t.slice(1) : null;
+}
+
+function recommend() {
+  const S = eng();
+  try {
+    const decision = S ? S.route() : null;
+    if (!decision) return null;
+    const m = (decision.matched || [])[0] || null;
+    const list = solutionsList();
+    const solution = m ? resolveSolution(m, decision.tier, list) : null;
+    return {
+      domain: (m && m.domain) || decision.primaryDomain || null,
+      label: (m && m.label) || null,
+      /* the label as a sentence can swallow it: "track brand health and
+         campaign impact" — parenthetical gone, and the gloss after a dash or
+         colon gone too, the same trim machine/flow.js makes for q5's goal */
+      phrase: (m && goalOf(m.label)) || null,
+      capability: m ? capabilityTitle(m) : null,
+      solution: solution || null,
+      solutionName: (solution && solution.name) || null,
+      route: decision.route || null,
+      tier: decision.tier || null
+    };
+  } catch (e) { return null; }
+}
+
+window.SAIPATH = { show, recommend };
 
 })();

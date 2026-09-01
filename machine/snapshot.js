@@ -164,13 +164,38 @@ function captureFormHTML() {
         <input class="snapcap__email" id="snapEmail" type="email" placeholder="Work email" aria-label="Work email" autocomplete="email">
         <p class="snapcap__hint" id="snapEmailHint" hidden>That doesn't look like a work email yet.</p>
       </div>
-      <label class="snapcap__consent">
-        <input type="checkbox" id="snapConsent">
-        <span>It's OK to contact me about these results</span>
-      </label>
-      <button class="btn btn--gold" type="submit">Send my report</button>
+      <div class="snapcap__go">
+        <button class="btn btn--gold" type="submit">Send my report</button>
+        <p class="snapcap__terms">By sending, you agree someone from Stagwell can follow up about these results.</p>
+      </div>
     </form>
     <button type="button" class="snapcap__decline" id="snapDecline">No thanks — just browsing</button>`;
+}
+
+/* WHY THIS REPORT ANSWERS THE QUESTION THEY ASKED.
+
+   A visitor who came in about influencer marketing and lands on a page of
+   competitive bars has to be told, in their own words, what the connection
+   is — otherwise the analysis reads as a non-sequitur, however good it is.
+   So the header quotes their problem back and names the product the routing
+   already chose for it. machine/path.js owns that resolution (recommend());
+   this only renders it, and renders nothing at all when there is no route.
+
+   It sits in the HEADER, deliberately outside .snapmod: the diagnostic
+   modules stay product-name free (tests/diagnostics-name-free.js), while the
+   frame around them is allowed to say what the read is for. */
+function whyThisHTML(company) {
+  let rec = null;
+  try { if (window.SAIPATH && typeof window.SAIPATH.recommend === 'function') rec = window.SAIPATH.recommend(); }
+  catch (e) { rec = null; }
+  if (!rec || !rec.phrase) return '';
+
+  const who = company || 'your brand';
+  const lead = `You came here wanting to ${rec.phrase} — so this reads ${who} against exactly that`;
+  const tail = rec.solutionName
+    ? `, and points to <b>${esc(rec.solutionName)}</b> as the product for it.`
+    : '.';
+  return `<p class="snap__why">${esc(lead)}${tail}</p>`;
 }
 
 function sectionHTML(data, session) {
@@ -186,6 +211,7 @@ function sectionHTML(data, session) {
         <div class="snap__headtext">
           <p class="eyebrow snap__eyebrow"><i class="pulse"></i>YOUR STAGWELL.AI SNAPSHOT</p>
           <h1 class="display snap__title">${esc(data.company)} vs. your market, <span class="accent">right now</span></h1>
+          ${whyThisHTML(data.company)}
           <p class="snap__sub">${esc(data.builtLine)}</p>
         </div>
         <div class="snap__pdf">
@@ -221,7 +247,8 @@ function sectionHTML(data, session) {
 
     <div class="snapband">
       <div class="snapband__in">
-        <h2>This is the preview. <span class="accent">The workspace is the product.</span></h2>
+        <h2>One read. Ten AI products behind it. <span class="accent">The next step is the people who run them.</span></h2>
+        <p class="snapband__sub">Brand tracking, competitive benchmarking, creator marketing, AI-search visibility, consumer research, voice agents — matched to your problem by strategists who work with them every day.</p>
         <div class="snaptiles">${buildTiles(data.actions, domain)}</div>
       </div>
     </div>`;
@@ -298,10 +325,12 @@ function wireCapture(root, session) {
       if (emailInput) emailInput.focus();
       return;
     }
-    const consent = !!($('#snapConsent', cap) && $('#snapConsent', cap).checked);
+    /* one decision, not two: the line under the button says that sending the
+       report is the consent, so submitting it grants consent. Declining is
+       still one click away, and still asks nothing of them. */
     try {
       if (window.SAISNAPDATA && typeof window.SAISNAPDATA.emailCaptured === 'function')
-        window.SAISNAPDATA.emailCaptured(val, consent);
+        window.SAISNAPDATA.emailCaptured(val, true);
     } catch (err) { /* the confirmation still shows — a broken bus isn't the visitor's problem */ }
     unlockPdf(root);
     cap.classList.add('is-done');

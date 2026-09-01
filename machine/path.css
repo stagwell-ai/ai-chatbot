@@ -243,3 +243,8 @@
 
 /* same sticky-nav offset as the snapshot view */
 #pathView{scroll-margin-top:84px}
+
+/* the product behind the capability, named in words — the lockup shows the
+   mark, this says which of the ten it is */
+.pathcard__prod{margin:-4px 0 10px;font-size:var(--t-sm);color:var(--ink-2)}
+.pathcard__prod b{color:var(--ink);font-weight:600}

@@ -122,3 +122,7 @@
 
 /* campaign-opener placeholder chips: visible but plainly inert */
 .opt:disabled,.opt--placeholder{opacity:.45;cursor:not-allowed;border-style:dashed}
+
+/* the snapshot reveal: the conversation ends on a button, not on a jump —
+   the visitor decides when to leave the questions behind */
+.convo__reveal{margin-top:2px;padding:0 22px;height:46px}

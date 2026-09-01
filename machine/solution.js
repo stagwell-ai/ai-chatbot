@@ -149,7 +149,9 @@
      Kept local so this file depends on no other script's load order. */
   function domainSolutionIds(domain, list) {
     if (!domain || !domain.solution) return [];
-    if (domain.id === 'influencer') return ['smb_platform', 'imai'].filter(id => list.some(s => s.id === id));
+    /* IMAI first — the platform leads, its SMB packaging follows (same order
+       machine/directory.js renders the group in) */
+    if (domain.id === 'influencer') return ['imai', 'smb_platform'].filter(id => list.some(s => s.id === id));
     if (domain.id === 'marketing_ops') return list.some(s => s.id === 'machines_family') ? ['machines_family'] : [];
     const target = norm(domain.solution);
     if (!target) return [];

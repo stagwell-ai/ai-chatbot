@@ -103,9 +103,8 @@
 .snapcap__email::placeholder{color:var(--ink-4)}
 .snapcap__email:focus{border-color:color-mix(in srgb,var(--ink) 42%,transparent)}
 .snapcap__hint{margin:0;font-size:var(--t-xs);color:#a7660a}
-.snapcap__consent{display:flex;align-items:center;gap:8px;font-size:var(--t-sm);color:var(--ink-2);
-  max-width:220px;line-height:1.4;cursor:pointer;align-self:center}
-.snapcap__consent input{width:16px;height:16px;flex:none;accent-color:var(--teal)}
+.snapcap__go{display:flex;flex-direction:column;gap:8px;max-width:280px}
+.snapcap__terms{margin:0;font-size:var(--t-xs);color:var(--ink-3);line-height:1.45}
 .snapcap__decline{flex:none;background:none;border:0;padding:0;margin-left:auto;
   font-family:var(--sans);font-size:var(--t-sm);color:var(--ink-3);text-decoration:underline;
   text-underline-offset:3px;cursor:pointer}
@@ -120,6 +119,8 @@
 .snapband h2{margin:0;font-family:var(--serif);font-weight:400;font-size:var(--t-h1);
   letter-spacing:-.024em;line-height:1.12}
 .snapband h2 .accent{font-style:italic;font-weight:600;color:var(--amber)}
+.snapband__sub{margin:16px 0 0;max-width:66ch;font-size:var(--t-sm);line-height:1.6;
+  color:rgba(234,242,245,.72)}
 .snaptiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
 .snaptile{padding:26px;border-radius:var(--r-lg);text-align:left;display:flex;flex-direction:column;
   gap:9px;background:rgba(234,242,245,.04);border:1px solid var(--line-void);color:var(--on-void);
@@ -192,3 +193,8 @@
 /* the sticky nav is ~77px tall — without this, scrollIntoView parks the
    eyebrow underneath it (acceptance finding #4) */
 #snapView{scroll-margin-top:84px}
+
+/* the tie-back line: the visitor's own problem, quoted above the read */
+.snap__why{margin:14px 0 0;max-width:62ch;font-size:1.0625rem;line-height:1.55;color:var(--ink-2)}
+.snap__why b{color:var(--ink);font-weight:600}
+.snap__why + .snap__sub{margin-top:12px}

@@ -61,7 +61,7 @@
     },
     {
       "id": "influencer",
-      "label": "Influencer & creator marketing",
+      "label": "Run influencer and creator programs",
       "solution": "Stagwell AI for SMBs (small teams) / IMAI Enterprise (100+ creators)",
       "icpRoles": ["Marketing Manager", "Founder", "CMO", "VP Marketing", "Director of Influencer Marketing"],
       "cells": { "smb": { "route": "self_serve", "note": "SMB platform signup" }, "mid_market": { "route": "demo", "note": "creator count (Q6) picks platform tier" }, "enterprise": { "route": "demo", "note": "IMAI Enterprise, full workflow" } }

@@ -251,15 +251,23 @@ async function answerSize(page, opts) {
    SNAPSHOT / PATH
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* The conversation no longer jumps to the snapshot by itself — it offers a
+   button and waits, so the visitor sees what they are being taken to. Every
+   journey therefore ends the questions by pressing it. */
 async function waitSnapshot(page) {
+  const reveal = await page.waitForSelector('#convoReveal', { timeout: 30000 }).catch(() => null);
+  if (reveal) await reveal.click();
   await page.waitForSelector('#snapView:not([hidden])', { timeout: 30000 });
   await page.waitForSelector('#snapView .snapmod', { timeout: 10000 });
   await page.waitForTimeout(150);
 }
 
-async function captureEmail(page, email, consent) {
+/* Consent is not a second decision any more: the line under the button says
+   that sending the report is the permission to follow up, so submitting the
+   form grants it. The old `consent` argument is accepted and ignored so the
+   journeys read the same; declining is still declineEmail(). */
+async function captureEmail(page, email) {
   await page.fill('#snapEmail', email);
-  if (consent !== false) await page.check('#snapConsent');
   await page.click('#snapCaptureForm button[type="submit"]');
   await page.waitForSelector('#snapPathGo', { timeout: 10000 });
 }

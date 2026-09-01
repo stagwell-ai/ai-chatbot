@@ -94,11 +94,11 @@
           "peersNote": "the {competitors} form is only ever asked when research came back with the visitor's REAL comparison set — never with the seeded fallback names (machine/flow.js q6View)",
           "decides": "named-rival tracking vs category-wide benchmarking"
         },
-        "research": { "copy": "Is this a one-off study, or something you'll run regularly?", "decides": "self-service platform vs. serviced research; trial-readiness" },
+        "research": { "copy": "Is this a one-off study, or something you'll run regularly?", "chips": [{ "label": "A one-off study", "value": "one-off study" }, { "label": "Something we'll run regularly", "value": "run regularly" }, { "label": "Not sure yet", "value": "not sure yet" }], "decides": "self-service platform vs. serviced research; trial-readiness" },
         "business_impact": { "copy": "Who needs convincing — the board, the CFO, or your own team?", "decides": "seniority of the sale; executive audience biases consultative" },
         "audiences": { "copy": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?", "decides": "data readiness; demo now vs. consultative scoping" },
-        "influencer": { "copy": "Roughly how many creators do you work with in a year?", "decides": "SMB platform vs. enterprise program (~100+ creators)" },
-        "reputation": { "copy": "Are you watching one market, or monitoring globally in multiple languages?", "decides": "early-warning narrative intelligence vs. global media monitoring" },
+        "influencer": { "copy": "Roughly how many creators do you work with in a year?", "chips": [{ "label": "Under 25", "value": "under 25 creators a year" }, { "label": "25–100", "value": "25 to 100 creators a year" }, { "label": "100+", "value": "100+ creators a year" }], "decides": "SMB platform vs. enterprise program (~100+ creators)" },
+        "reputation": { "copy": "Are you watching one market, or monitoring globally in multiple languages?", "chips": [{ "label": "One market", "value": "one market" }, { "label": "A few markets", "value": "a few markets" }, { "label": "Global, multiple languages", "value": "global, multiple languages" }], "decides": "early-warning narrative intelligence vs. global media monitoring" },
         "ai_visibility": { "copy": "Which platforms matter most to you — ChatGPT, Gemini, Perplexity?", "decides": "scope of the visibility program" },
         "marketing_ops": { "copy": "Which part of the workflow feels most fragmented — planning, creation, media, or measurement?", "decides": "which agentic-workflow conversation to open" }
       }
@@ -107,8 +107,13 @@
   "captureMoment": {
     "when": "at the snapshot reveal — never before",
     "emailCopy": "Get the full report — and keep it updated.",
-    "consentCheckbox": "It's OK to contact me about these results",
-    "onCapture": ["unlock PDF download", "email the report", "record consent state to CRM", "show routing card"],
+    "consentLine": "By sending, you agree someone from Stagwell can follow up about these results.",
+    "consentModel": "one decision, not two — sending the report IS the consent, stated under the button; there is no separate checkbox to tick",
+    "bandTitle": "One read. Ten AI products behind it.",
+    "bandAccent": "The next step is the people who run them.",
+    "bandSub": "Brand tracking, competitive benchmarking, creator marketing, AI-search visibility, consumer research, voice agents — matched to your problem by strategists who work with them every day.",
+    "bandNote": "kept deliberately distinct from the landing CTA band lower on the same page ('Ten AI products. / Pointed at your hardest problem.')",
+    "onCapture": ["unlock PDF download", "email the report", "record consent granted to CRM", "show routing card"],
     "onDecline": ["keep on-screen snapshot", "log session as anonymous", "no nagging"]
   }
 }
