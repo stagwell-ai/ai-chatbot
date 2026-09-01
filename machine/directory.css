@@ -68,24 +68,62 @@
 }
 .dirgroup__cards{display:flex;flex-direction:column;gap:12px}
 
-/* ── cards: positioning line + who it's for + an attributed visit link ── */
+/* ── cards: brand mark + name, a line written for THIS problem, who it's
+   for, and an internal door to /s/{id} (or the richer /p/ landing where one
+   exists). The external product site is no longer the card's action — it
+   lives on the solution page now, where there is room to attribute it. ── */
 .dircard{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
-  padding:16px 17px;display:flex;flex-direction:column;gap:8px;
+  padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;
 }
-.dircard__name{font-size:.9375rem;font-weight:600;letter-spacing:-.006em;color:var(--ink)}
+
+/* the brand plate: --dir-lockup-navy is not a brand token, it is the measured
+   background of the lockup PNGs in assets/img/lockups/ (corner pixel #0A1743,
+   the ICP deck's own navy — see machine/path.css's longer note). Every card
+   gets the SAME plate; the mark is bounded by max-width/max-height inside it
+   and keeps its own aspect, so a 640×200 lockup and the one 1163×200 lockup
+   (the Knowledge Machine's) both sit inside the same box and neither is ever
+   stretched to fill it. */
+.dirgroup{--dir-lockup-navy:#0A1743}
+.dircard__id{display:flex;align-items:center;gap:11px;min-width:0}
+.dircard__mark{
+  flex:none;display:grid;place-items:center;width:92px;height:34px;
+  background:var(--dir-lockup-navy,#0A1743);border-radius:var(--r-sm);overflow:hidden;
+}
+.dircard__mark img{display:block;width:auto;height:auto;max-width:84px;max-height:26px}
+/* solutions.json's one entry with no lockup in the deck (Unlock): the plate
+   carries the name set in type rather than a broken image. */
+.dircard__mark--word{
+  font-family:var(--sans);font-weight:600;font-size:.5625rem;letter-spacing:.02em;
+  color:var(--on-void);text-align:center;line-height:1.15;padding:0 5px;
+}
+.dircard__name{flex:1;min-width:0;font-size:.9375rem;font-weight:600;letter-spacing:-.006em;color:var(--ink)}
 .dircard__fit{font-family:var(--mono);font-weight:400;font-size:var(--t-xs);letter-spacing:.02em;color:var(--ink-3)}
 .dircard__pos{font-size:var(--t-sm);color:var(--ink-2);line-height:1.55}
 .dircard__who{font-size:var(--t-xs);color:var(--ink-3);line-height:1.5}
+
+/* a product answering a second problem: said plainly, at label weight, above
+   the name — never a second identical card pretending to be a new product */
+.dircard--again{border-style:dashed;background:var(--surface-2)}
+.dircard__again{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.04em;line-height:1.55;
+  color:var(--ink-3);margin:-2px 0 -2px;
+}
+
 .dircard__link{
   align-self:flex-start;margin-top:2px;display:inline-flex;align-items:center;gap:6px;
   font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.05em;font-weight:600;color:var(--teal);
   text-decoration:none;transition:color var(--d-1) var(--ease-io);
 }
 .dircard__link:hover{color:var(--ink);text-decoration:underline}
-.dircard__link i{font-style:normal}
+.dircard__link i{font-style:normal;transition:transform var(--d-1) var(--ease-io)}
+.dircard__link:hover i{transform:translateX(3px)}
 .dircard__link.is-disabled{
   color:var(--ink-4);cursor:not-allowed;font-weight:400;
+}
+@media (prefers-reduced-motion:reduce){
+  .dircard__link i{transition:none}
+  .dircard__link:hover i{transform:none}
 }
 
 /* ── unresolved mapping: dashed-quiet, consistent with the rest of the

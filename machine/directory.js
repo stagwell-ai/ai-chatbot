@@ -11,6 +11,33 @@
    throwing if either is missing. Injects its own DOM on first open and
    never touches #cloud / #cta or any other homepage markup.
 
+   ── THE SPRINT'S REWORK ──────────────────────────────────────────────────
+   The client, pointing at this panel: "rework this, don't make it
+   repetitive, add the brand assets, and have each of these link to a
+   landing page within stagwell.ai." Three answers, all here:
+
+   1 REPETITION. The panel groups by problem, so one product can answer two
+     of them — QuestBrand is both "Track brand health and campaign impact"
+     and "Track competitors and benchmark against them". Both cards used to
+     be byte-identical, which reads like a bug rather than a fact. A card's
+     line now comes from solutions.json's `positioningByDomain[domain]`
+     where the entry has one, falling back to the general positioning; and
+     the SECOND appearance of a product says so, quietly, naming the group
+     it was first listed under. No two cards in the panel read alike.
+
+   2 BRAND. Every card carries the product's own lockup on a small plate of
+     the deck navy the lockups were normalised onto — one size for all of
+     them, contained, never stretched. The one entry with no lockup (Unlock)
+     gets its name set in type on the same plate.
+
+   3 INTERNAL LINKS. A card's action is no longer an exit to a third party's
+     marketing site: it is /s/{id}, the internal solution page, except for
+     the two ids that already have a richer campaign landing (see
+     CAMPAIGN_PAGES below). The external product site still exists — it now
+     lives on the solution page, where there is room to attribute it. The
+     handoff_click emit stays, route:'directory', now recording the internal
+     destination the card actually goes to.
+
    window.SAIDIR: .open() / .close() / .toggle()
    ═══════════════════════════════════════════════════════════════════════════ */
 (function () {
@@ -70,44 +97,68 @@
     } catch (e) { return []; }
   }
 
-  /* every external product link carries the directory's own attribution —
-     separate from routing's utm_medium so the two surfaces are countable
-     apart in analytics. */
-  function attributedUrl(baseUrl) {
-    if (!baseUrl) return null;
-    let u;
-    try { u = new URL(baseUrl, window.location.href); } catch (e) { return baseUrl; }
-    const params = new URLSearchParams(u.search);
-    params.set('utm_source', 'stagwell-ai');
-    params.set('utm_medium', 'directory');
-    u.search = params.toString();
-    return u.toString();
+  /* ── where a card goes ────────────────────────────────────────────────────
+     Every card is now an internal door. Two solutions.json ids already have
+     a RICHER landing built by machine/campaign.js from data/products.json,
+     so their cards go straight there rather than through a thinner /s/ page
+     that would only redirect. This table mirrors CAMPAIGN_PAGES in
+     machine/solution.js — that file's header block is the source of truth
+     for what belongs in it and why. */
+  const CAMPAIGN_PAGES = {
+    targeting_machine: '/p/targeting-machine',
+    machines_family: '/p/the-machine'
+  };
+
+  function internalHref(id) {
+    return CAMPAIGN_PAGES[id] || '/s/' + encodeURIComponent(id);
   }
 
   function pendingCardHTML() {
     return `<article class="dircard dircard--pending"><h3>[SOLUTION — pending]</h3></article>`;
   }
 
+  /* the brand mark: the lockup PNGs are all one normalised 640×200 canvas on
+     the ICP deck's navy (#0A1743, the plate colour in directory.css), so a
+     fixed plate with a contained image gives every product the same optical
+     weight and can never stretch one. Unlock ships no lockup — it gets its
+     name set in type on the same plate rather than a broken image. */
+  function markHTML(s) {
+    if (s.lockup) {
+      return `<span class="dircard__mark"><img src="${esc(s.lockup)}" alt="${esc(s.name)}"
+        loading="lazy" decoding="async"></span>`;
+    }
+    return `<span class="dircard__mark dircard__mark--word">${esc(s.name)}</span>`;
+  }
+
+  /* entry.repeatOf, when set, is the label of the group this product was
+     already listed under. Saying so is the honest treatment: the reader sees
+     one product answering two problems, not two products. */
   function cardHTML(entry) {
     if (!entry || !entry.solution) return pendingCardHTML();
     const s = entry.solution;
-    const body = firstSentences(s.positioning);
+    /* the per-domain line is authored for THIS problem — it is the whole
+       reason two cards for one product can't read alike */
+    const body = entry.line || firstSentences(s.positioning);
     const fit = entry.fit ? ` <span class="dircard__fit">(${esc(entry.fit)})</span>` : '';
-    const link = s.url
-      ? `<a class="dircard__link" href="${esc(attributedUrl(s.url))}" target="_blank" rel="noopener"
-           data-dir-handoff data-solution="${esc(s.id)}" data-url="${esc(s.url)}">Visit site <i aria-hidden="true">↗</i></a>`
-      : `<span class="dircard__link is-disabled" aria-disabled="true">[PRODUCT SITE — pending]</span>`;
+    const again = entry.repeatOf
+      ? `<p class="dircard__again">Also solves this &middot; first listed under &ldquo;${esc(entry.repeatOf)}&rdquo;</p>`
+      : '';
+    const href = internalHref(s.id);
     return `
-      <article class="dircard">
-        <h3 class="dircard__name">${esc(s.name)}${fit}</h3>
+      <article class="dircard${entry.repeatOf ? ' dircard--again' : ''}">
+        ${again}
+        <div class="dircard__id">
+          ${markHTML(s)}
+          <h3 class="dircard__name">${esc(s.name)}${fit}</h3>
+        </div>
         <p class="dircard__pos">${esc(body)}</p>
         <p class="dircard__who">Who it's for: ${esc(s.whoFor || '')}</p>
-        ${link}
+        <a class="dircard__link" href="${esc(href)}"
+           data-dir-handoff data-solution="${esc(s.id)}" data-url="${esc(href)}">See the solution <i aria-hidden="true">&rarr;</i></a>
       </article>`;
   }
 
-  function groupHTML(domain, list) {
-    const entries = resolveDomain(domain, list);
+  function groupHTML(domain, entries) {
     const cards = entries.length ? entries.map(cardHTML).join('') : pendingCardHTML();
     return `
       <section class="dirgroup">
@@ -122,7 +173,25 @@
     const domains = (routing && Array.isArray(routing.domains)) ? routing.domains : [];
     const list = (solutions && Array.isArray(solutions.solutions)) ? solutions.solutions : [];
     if (!domains.length) return `<p class="dir__note">[DIRECTORY — pending]</p>`;
-    return domains.map(d => groupHTML(d, list)).join('');
+
+    /* one pass over the groups in routing.json's own order, remembering which
+       products have already been shown and under which label */
+    const seen = Object.create(null);
+    return domains.map(d => {
+      const entries = resolveDomain(d, list).map(entry => {
+        const s = entry.solution;
+        const byDomain = s && s.positioningByDomain && s.positioningByDomain[d.id];
+        const out = {
+          solution: s,
+          fit: entry.fit,
+          line: byDomain ? String(byDomain) : null,
+          repeatOf: (s && seen[s.id]) || null
+        };
+        if (s && s.id && !seen[s.id]) seen[s.id] = d.label;
+        return out;
+      });
+      return groupHTML(d, entries);
+    }).join('');
   }
 
   /* ─────────────────────────── STATE + DOM ─────────────────────────── */
@@ -181,6 +250,9 @@
     });
   }
 
+  /* the handoff is internal now, so `url` records the /s/ or /p/ destination
+     the card actually goes to — same event type, same payload shape, same
+     route:'directory' the analytics already counts. */
   function wireCardLinks() {
     $$('[data-dir-handoff]', bodyEl).forEach(a => {
       a.addEventListener('click', () => {
@@ -193,7 +265,7 @@
               route: 'directory'
             });
           }
-        } catch (e) { /* the tab still opens without the log line */ }
+        } catch (e) { /* the page still opens without the log line */ }
       });
     });
   }
