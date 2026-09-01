@@ -139,7 +139,7 @@
           <div class="panel" id="agentPanel">
             <div class="panel__head">
               <span class="panel__avatar">S</span>
-              <b>The Stagwell.AI agent <span class="panel__sep">&middot;</span> briefed on ${esc(campaign.name)}</b>
+              <b>Stagwell.AI</b>
             </div>
             <div class="bubble">${esc(campaign.opener)}</div>
             <div class="chipstack" role="group" aria-label="Suggested next steps">

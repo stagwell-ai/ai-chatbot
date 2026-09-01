@@ -1,0 +1,281 @@
+{
+  "collectedAt": "2026-09-01",
+  "updatedAt": "2026-09-01",
+  "note": "Public brand copy and assets scraped from official Stagwell / Marketing Cloud / product sites and press, plus NewVoices internal brand book. Third-party copyrighted. Working reference only.",
+  "parent": {
+    "name": "Stagwell",
+    "ticker": "NASDAQ: STGW",
+    "url": "https://www.stagwellglobal.com/",
+    "about": "The challenger holding company built to transform marketing. Scaled creative performance connecting culture-moving creativity with leading-edge technology.",
+      "assets": [
+      "_shared/stagwell-logo.svg",
+      "_shared/stagwell-favicon-192.png",
+      "_shared/stagwell-logo-prnewswire.jpg",
+      "_shared/stagwell-icon-black.svg",
+      "_shared/stagwell-icon-blue.svg",
+      "_shared/stagwell-wordmark-black.svg",
+      "_shared/stagwell-wordmark-white.svg",
+      "_shared/code-and-theory-logo.svg",
+      "_shared/stagwell-brandbook/",
+      "_shared/Stagwell-VisualBrandGuidelines-2021.pdf"
+    ]
+  },
+  "companies": [
+    {
+      "id": "the-machine",
+      "name": "The Machine",
+      "alsoKnownAs": ["The Machine OS", "Stagwell's AI orchestration layer"],
+      "parent": "Stagwell",
+      "builtBy": "Code and Theory",
+      "category": "Agentic marketing operating system",
+      "folder": "the-machine/",
+      "urls": {
+        "product": "https://www.stagwellglobal.com/themachine/",
+        "signup": "https://share.hsforms.com/1X2aJBK_7TciCYN6OSQBVNg3tqht",
+        "sizzleVideo": "https://www.youtube.com/watch?v=w5tBw3I9Sas",
+        "annualReport": "https://www.stagwellglobal.com/13405-2/",
+        "press": "https://www.stagwellglobal.com/stagwell-stgw-launches-the-machine-marketings-first-agentic-operating-system/",
+        "codeAndTheory": "https://www.codeandtheory.com/single-page/introducing-the-machine-where-context-becomes-the-multiplier",
+        "ces": "https://www.codeandtheory.com/ces-2026-the-machine"
+      },
+      "contact": {
+        "email": "hello@stagwellglobal.com",
+        "phone": "+1-646-429-1800",
+        "address": "One World Trade Center, 65th Floor, New York, NY 10007"
+      },
+      "taglines": [
+        "Unlock the next era of work.",
+        "Meet the Machine",
+        "Marketing’s first agentic operating system",
+        "End-to-End Orchestration",
+        "It doesn’t replace marketers’ tools; it makes them more effective and predictive."
+      ],
+      "shortDescription": "AI-powered operating system that unifies people, tools, and data — enhancing creativity, eliminating silos, and streamlining workflows inside the stack marketers already use.",
+      "description": "Code and Theory built The Machine as marketing’s first agentic operating system — an intelligent infrastructure layer that activates a company’s existing stack via open APIs. It works inside Figma, Slack, Teams, Adobe, Jira, and performance dashboards, trained on each client’s brand, campaigns, audience data, and institutional knowledge. It handles competitive monitoring, brief generation, asset versioning, brand compliance, and performance optimization while humans focus on judgment and relationships.",
+      "integrations": ["Figma", "Slack", "Microsoft Teams", "Adobe", "Jira", "Workfront", "Monday", "performance dashboards"],
+      "proofPoints": [
+        "20-40% reduction in martech stack redundancy",
+        "~50% savings in strategy & insights workflows",
+        "~30% savings in creative production cost",
+        "10x content volume without proportional headcount growth"
+      ],
+      "colors": {
+        "markOrange": "#FF4500",
+        "wordmark": "#FFFFFF",
+        "background": "#000000",
+        "siteNavy": "#003349",
+        "siteCyan": "#009CBD",
+        "siteMarigold": "#FFB81C",
+        "siteSignup": "#2EA3F2",
+        "siteFill": "#F5F7F6"
+      },
+      "typography": {
+        "sans": "Montserrat",
+        "serifItalic": "Spectral",
+        "source": "https://www.stagwellglobal.com/themachine/"
+      },
+      "quotes": [
+        {
+          "speaker": "Dan Gardner",
+          "title": "Founder and Chairman, Code and Theory",
+          "text": "Most marketing AI tools ask you to rip out your infrastructure and start over. The Machine does the opposite. It works where you work, improves and AI enables the tools you already use, and transforms existing operations into an agentic system."
+        },
+        {
+          "speaker": "Mark Penn",
+          "title": "Chairman and CEO, Stagwell",
+          "text": "The launch of The Machine, combined with our recent release of newvoices.AI and strategic partnerships with Palantir and Gradial, marks another milestone in cementing Stagwell as a leader in marketing AI."
+        }
+      ],
+      "logos": [
+        "the-machine/logos/the-machine-logo-official.png",
+        "the-machine/logos/the-machine-logo-black.jpg",
+        "the-machine/logos/the-machine-wordmark-press.png",
+        "the-machine/logos/the-machine-from-stagwell.jpg"
+      ]
+    },
+    {
+      "id": "agent-cloud",
+      "name": "Agent Cloud",
+      "parent": "The Marketing Cloud (Stagwell)",
+      "category": "Secure AI workspace for marketers",
+      "folder": "agent-cloud/",
+      "urls": {
+        "product": "https://www.themarketingcloud.com/marketplace/agent-cloud",
+        "toolkit": "https://www.themarketingcloud.com/agent-cloud-marketing-toolkit",
+        "blog": "https://www.themarketingcloud.com/blog/introducing-agent-cloud",
+        "annualReport": "https://www.stagwellglobal.com/2025-agent-cloud/",
+        "press": "https://www.stagwellglobal.com/the-marketing-cloud-launches-agent-cloud-a-secure-and-flexible-way-for-brands-and-agencies-to-power-ai-driven-marketing/",
+        "parent": "https://www.themarketingcloud.com/"
+      },
+      "taglines": [
+        "Giving the Modern Marketer Access to the Best AI—Safely",
+        "Your team’s always-on AI powerhouse",
+        "Enterprise-grade access to major LLMs, plus the ability to create custom AI assistants"
+      ],
+      "shortDescription": "One login, one contract, and one security standard for leading multimodal LLMs, image/video tools, and custom marketing agents. Client data is not used to train models.",
+      "description": "Agent Cloud is a secure AI workspace that centralizes access to enterprise ChatGPT, Claude Sonnet, Grok, Gemini Pro, plus image and video tools, and lets teams build/share custom assistants for creative, media, communications, and research. It standardizes governance and eliminates unsanctioned AI use.",
+      "faq": {
+        "whatIs": "A secure AI workspace for marketers to access top LLMs and custom-built AI assistants through a single login.",
+        "models": "Enterprise ChatGPT, Claude Sonnet, Grok, Gemini Pro, image/video tools, plus third-party integrations for synthetic audiences, social listening, and citation-backed research.",
+        "data": "Uploaded data is never used to train LLMs. Role-based access. SOC 2 processes.",
+        "pricing": "One annual base fee plus usage-based charges."
+      },
+      "traction": {
+        "monthlyInteractions": "25000+",
+        "customAgents": "500+",
+        "monthlyInteractionGrowth": "+30%",
+        "dailyEngagementGrowth": "+25%",
+        "source": "February 2026 expansion press release"
+      },
+      "models": ["GPT-5", "Gemini 2.5 / Gemini Pro", "Grok", "Claude Sonnet", "Veo3"],
+      "expansionPartners": ["Grok", "Parallel", "Walt AI"],
+      "testimonials": [
+        {
+          "speaker": "Brent Diggins",
+          "title": "Managing Director of Performance+Intelligence, Allison",
+          "photo": "agent-cloud/people/brent-diggins.jpg"
+        },
+        {
+          "speaker": "Michael Lamp",
+          "title": "Chief Digital & Social Officer, HUNTER",
+          "photo": "agent-cloud/people/michael-lamp.jpg"
+        },
+        {
+          "speaker": "Jim Stiefelmaier",
+          "title": "Innovation Strategy Director",
+          "photo": "agent-cloud/people/jim-stiefelmaier.png"
+        }
+      ],
+      "colors": {
+        "primary": "#0C49B9",
+        "accent": "#4285FF",
+        "markMono": "#1A1A1A",
+        "parentYellow": "#FFDC21",
+        "parentCyan": "#0DC2E9"
+      },
+      "logos": [
+        "agent-cloud/logos/agent-cloud-icon-light-backgrounds.svg",
+        "agent-cloud/logos/agent-cloud-icon.svg",
+        "agent-cloud/logos/agent-cloud-mark-ac.svg",
+        "agent-cloud/logos/agent-cloud-nav-icon-black.svg",
+        "agent-cloud/logos/agent-cloud-nav-icon-blue.svg"
+      ]
+    },
+    {
+      "id": "the-targeting-machine",
+      "name": "The Targeting Machine",
+      "officialName": "Stagwell Agentic Targeting System (SATS)",
+      "alsoKnownAs": ["SATS", "Stagwell Agentic Targeting System", "The Targeting Machine"],
+      "parent": "The Marketing Cloud (Stagwell), powered by Palantir Foundry",
+      "category": "Privacy-first audience intelligence",
+      "folder": "the-targeting-machine/",
+      "urls": {
+        "product": "https://www.themarketingcloud.com/marketplace/sats",
+        "palantirPress": "https://www.stagwellglobal.com/palantir-technologies-inc-pltr-and-stagwell-stgw-join-forces-to-design-product-for-the-future-of-marketing/",
+        "annualReport": "https://www.stagwellglobal.com/2025-palantir-partnership/",
+        "gstvPress": "https://www.gstv.com/press/gstv-unlocks-ai-powered-audience-precision-for-advertisers-through-new-partnership-with-stagwells-stgw-the-marketing-cloud"
+      },
+      "caseStudies": [
+        {
+          "name": "GSTV + Conagra Brands",
+          "date": "2026-06-11",
+          "summary": "GSTV is the first media network outside Stagwell to integrate SATS. 29,000+ locations, 115M unique US adults/month. Conagra (Slim Jim, FATTY, Duke's) is the first GSTV advertiser using SATS.",
+          "quotes": [
+            {
+              "speaker": "Peter Choi",
+              "title": "VP Marketing, Conagra",
+              "text": "GSTV's integration with the Stagwell Agentic Targeting System gives us a more dynamic view of the convenience retail audience allowing us to move beyond static demographic assumptions and toward real-time behavioral insights."
+            },
+            {
+              "speaker": "Lauren Lazarus",
+              "title": "SVP Insights & Analytics, GSTV",
+              "text": "The Stagwell Agentic Targeting System fundamentally changes how we build and target audiences for campaigns, enabling us to target the right people at the right locations, in real time, based on far richer signals than traditional demographic or survey-based data."
+            }
+          ]
+        }
+      ],
+      "taglines": [
+        "Enterprise-grade audience intelligence",
+        "Privacy-first audience platform",
+        "The holy grail of marketing"
+      ],
+      "shortDescription": "Privacy-first audience platform that fuses first-party data with the Stagwell ID Graph and proprietary consumer intelligence, then lets marketers query and activate audiences conversationally on Palantir Foundry.",
+      "description": "SATS is an enterprise-grade audience intelligence platform built natively on Palantir Foundry. It uses the Stagwell ID Graph (260 million US consumers / 123 million US households) to connect attitudinal and behavioral signals, generate predictive segments, and activate campaigns. A Differential Privacy Vault based on Harvard OpenDP protects individual identities.",
+      "idGraph": {
+        "usConsumers": 260000000,
+        "usHouseholds": 123000000
+      },
+      "dataNetworks": ["HarrisQuest (The Harris Poll)", "Unlock", "BERA.ai", "The People Platform"],
+      "colors": {
+        "primary": "#0C49B9",
+        "brightBlue": "#1D68F0",
+        "cyan": "#0DC2E9",
+        "navy": "#0A2A62",
+        "purple": "#8769FF",
+        "teal": "#00CF9C",
+        "orange": "#F15A2D"
+      },
+      "logos": [
+        "the-targeting-machine/logos/sats-hero-mark.svg",
+        "the-targeting-machine/logos/sats-nav-icon-black.svg",
+        "the-targeting-machine/logos/sats-nav-icon-blue.svg"
+      ]
+    },
+    {
+      "id": "newvoices",
+      "name": "NewVoices",
+      "officialName": "NewVoices.ai",
+      "alsoKnownAs": ["NewVoices AI"],
+      "parent": "Stagwell",
+      "founder": "Eran Nizri",
+      "category": "Enterprise AI voice/chat workforce (sales, support, retention)",
+      "folder": "newvoices/",
+      "urls": {
+        "website": "https://newvoices.ai/",
+        "annualReport": "https://www.stagwellglobal.com/2025-newvoices-ai/",
+        "press": "https://www.stagwellglobal.com/stagwell-stgw-launches-newvoices-ai-an-enterprise-sales-support-and-retention-platform-powered-by-adaptive-ai/",
+        "founder": "https://erannizri.com/newvoices/"
+      },
+      "taglines": [
+        "Turning Every Customer Conversation into a Revenue Opportunity",
+        "AI agents that speak, sell, and support alongside your team",
+        "AI Voice Agents That Speak, Sell & Support 24/7",
+        "NewVoices doesn’t sound like AI. It sounds like our best employee, working 24 hours a day."
+      ],
+      "shortDescription": "Enterprise AI workforce that deploys lifelike voice and chat agents for sales, support, retention, payments, and feedback — 24/7, any language — with no-code Agent Studio.",
+      "description": "NewVoices.ai is Stagwell’s AI Workforce platform and managed service. Agents adapt in real time using customer history, context, and intent, and integrate with CRM, billing, and comms (Salesforce, HubSpot, Stripe, Make). Compliance: SOC 2, GDPR, HIPAA.",
+      "integrations": ["Salesforce", "HubSpot", "Stripe", "Make"],
+      "compliance": ["SOC 2 Type II", "GDPR", "HIPAA"],
+      "typography": {
+        "display": "Hanken Grotesk",
+        "mono": "JetBrains Mono",
+        "source": "NewVoices Brand Book v1.0 (internal)"
+      },
+      "colors": {
+        "ink": "#16181A",
+        "white": "#FFFFFF",
+        "mint": "#57BF94",
+        "sky": "#159CBD",
+        "amber": "#F9B233",
+        "cloud": "#F4F6F6",
+        "mist": "#E6E9EA",
+        "steel": "#AEB4B9",
+        "slate": "#6B7280",
+        "siteTeal": "#0D9488",
+        "gradient": "linear-gradient(90deg, #159CBD, #57BF94)"
+      },
+      "logos": [
+        "newvoices/logos/newvoices-wordmark.png",
+        "newvoices/logos/newvoices-wordmark-2048.png",
+        "newvoices/logos/newvoices-wordmark-scaled.png",
+        "newvoices/logos/newvoices-footer-logo.svg",
+        "newvoices/logos/newvoices-site-icon.png",
+        "newvoices/logos/newvoices-favicon-192.png",
+        "newvoices/logos/newvoices-apple-touch-180.png",
+        "newvoices/brand/newvoices-logo-white.png",
+        "newvoices/brand/newvoices-logo-transparent.png",
+        "newvoices/brand/newvoices-logo-hires.png"
+      ]
+    }
+  ]
+}
