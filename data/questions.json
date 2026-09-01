@@ -22,7 +22,7 @@
       "slot": "company",
       "copy": "Got it. What's your company? A website works — I'll start pulling your snapshot together.",
       "input": "free_text",
-      "sideEffect": "starts background research (size, industry, competitors, AI-search presence) and the snapshot build",
+      "sideEffect": "starts background research (size, industry, competitors, AI-search presence) and the snapshot build — from a website, or from a bare company name",
       "skipWhen": "the visitor's first message included a website (the landing's single prompt box invites it)"
     },
     {
@@ -41,8 +41,9 @@
       "id": "q4",
       "slot": "size_tier",
       "confirmMode": {
-        "when": "research is confident about size and industry",
+        "when": "research recognised the company and knows its headcount — copyNoIndustry renders when the model gave no industry",
         "copy": "Looks like {company} is around {employees} people, in {industry} — did I get that right?",
+        "copyNoIndustry": "Looks like {company} is around {employees} people — did I get that right?",
         "chips": [
           { "label": "That's right", "value": "confirm" },
           { "label": "Not quite — we're smaller", "value": "smaller" },

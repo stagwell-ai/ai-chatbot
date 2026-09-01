@@ -323,7 +323,7 @@ function onResearchStarted(payload) {
   setModuleStatus('competitive', 'building');
   setModuleStatus('aisearch', 'building');
   setModuleStatus('brand', 'building');
-  narrate(`Starting the read on ${(payload && payload.domain) || 'your brand'}…`);
+  narrate(`Starting the read on ${(payload && (payload.domain || payload.company)) || 'your brand'}…`);
   updateCompanyTitle();
 }
 

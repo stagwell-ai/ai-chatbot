@@ -183,7 +183,7 @@ const FORMAT = {
 
   /* ── research ─────────────────────────────────────────────────────────── */
   research_started: p =>
-    'Research started · ' + (p.domain || 'unknown site'),
+    'Research started · ' + (p.domain || p.company || 'unknown company'),
 
   research_step: p =>
     'Research ' + str(p.index) + '/' + str(p.total) + ' · ' + clip(p.label, 60) +

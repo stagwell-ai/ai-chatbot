@@ -649,7 +649,7 @@ function onSaiEvent(e) {
   if (phase !== 'flow') return;
   const d = (e && e.detail) || {};
   const p = d.payload || {};
-  if (d.type === 'research_started') return narrate(`Starting the read on ${p.domain || 'your brand'}…`, false);
+  if (d.type === 'research_started') return narrate(`Starting the read on ${p.domain || p.company || 'your brand'}…`, false);
   if (d.type === 'research_step') return narrate(p.label || p.step, !!p.live);
   if (d.type === 'research_done') return narrate('Snapshot ready.', false);
 }

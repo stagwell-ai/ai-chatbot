@@ -156,6 +156,28 @@ const RESEARCH_SYSTEM = [
   '{"known":false,"name":null,"employees":null,"industry":null,"competitors":[]}',
 ].join('\n');
 
+/* Same contract, name-first: the visitor typed "Nike" instead of pasting a
+   website. Ambiguity is the extra failure mode a name has that a domain does
+   not, so it gets its own sentence — a name shared by several companies is
+   known:false unless one of them is overwhelmingly the one meant. */
+const RESEARCH_BY_NAME_SYSTEM = [
+  'You are given a company NAME a visitor typed. Report ONLY what you already',
+  'know about that company. This feeds a product that must never state a fact',
+  'about a real company that it invented.',
+  'If you do not recognise the name, are not confident which company it refers',
+  'to, or several unrelated companies share it with no single overwhelmingly',
+  'well-known one, set known to false and every other field to null or an',
+  'empty array. Never guess a name, a size, an industry, a domain or a',
+  'competitor. Guessing is worse than an empty answer.',
+  'domain: the company\'s main website domain (like "nike.com"), only if you',
+  'genuinely know it, else null.',
+  'competitors: up to 3 real, well-known competitor brand names, and only if you',
+  'genuinely know the company. Names only, no descriptions.',
+  'employees: your best-known approximate headcount as a plain number, else null.',
+  'Reply with ONE JSON object and nothing else — no prose, no code fences:',
+  '{"known":false,"name":null,"domain":null,"employees":null,"industry":null,"competitors":[]}',
+].join('\n');
+
 /* ═══════════════════════════════════════════════════════════════════════════
    mode:'product' — the agent answering a question ABOUT ONE PRODUCT, on that
    product's own /s/{id} page.
@@ -309,10 +331,11 @@ export function normalizeResearch(obj) {
     .map(c => str(c, 60)).filter(Boolean).slice(0, 3);
   /* known:false means the model told us it does not recognise the domain.
      Honour that completely — any fields it filled in anyway are guesses. */
-  if (!known) return { known: false, name: null, employees: null, industry: null, competitors: [] };
+  if (!known) return { known: false, name: null, domain: null, employees: null, industry: null, competitors: [] };
   return {
     known: true,
     name: str(o.name, 80),
+    domain: asDomain(o.domain),
     employees: asCount(o.employees),
     industry: str(o.industry, 60),
     competitors,
@@ -399,22 +422,32 @@ export default async function handler(req, res) {
     return;
   }
 
-  /* ── mode:'research' — a website domain → what the model actually knows ──
-     Body: { mode:'research', domain }. known:false is a first-class answer,
-     not a failure: the client draws its seeded fiction instead and labels the
+  /* ── mode:'research' — a website domain OR a typed company name → what the
+     model actually knows. Body: { mode:'research', domain } or
+     { mode:'research', company }. known:false is a first-class answer, not a
+     failure: the client draws its seeded fiction instead and labels the
      confidence low. Nothing here is ever allowed to invent a real company. */
   if (mode === 'research') {
     const domain = asDomain(body.domain);
-    if (!domain) { res.status(400).json({ ok: false, error: 'bad_domain' }); return; }
+    const company = domain ? null : clean(body.company).slice(0, 80);
+    if (!domain && !company) { res.status(400).json({ ok: false, error: 'bad_domain' }); return; }
     const started = Date.now();
 
-    const out = await complete(RESEARCH_SYSTEM, domain, 900, 12000);
+    const out = domain
+      ? await complete(RESEARCH_SYSTEM, domain, 900, 12000)
+      : await complete(RESEARCH_BY_NAME_SYSTEM, 'Company name: ' + company, 900, 12000);
     if (!out.ok) { res.status(200).json({ ok: false, error: out.error }); return; }
 
     const parsed = parseLooseJSON(out.content);
     if (!parsed) { res.status(200).json({ ok: false, error: 'unparseable' }); return; }
 
-    res.status(200).json(Object.assign({ ok: true, domain }, normalizeResearch(parsed), {
+    /* a domain the caller gave us outranks anything the model volunteered;
+       for a name query, the model's domain (already shape-checked) is the
+       only one there is */
+    const known = normalizeResearch(parsed);
+    if (domain) known.domain = domain;
+
+    res.status(200).json(Object.assign({ ok: true }, known, {
       model: out.model, ms: Date.now() - started,
     }));
     return;

@@ -28,9 +28,12 @@
    up, so an unrecognised domain never borrows a real competitor.
 
    window.SAIRESEARCH:
-     .run(domain)      → Promise<research>, idempotent per domain per session
-     .done(domain)     → the finished object, or null
-     .pending(domain)  → the in-flight promise, or null   (omit domain for any)
+     .run(input)       → Promise<research>, idempotent per company per session
+                         (input: a website domain, or a typed company name —
+                          "it seems silly to ask a company like Nike how big
+                          they are", so a bare name researches too)
+     .done(input)      → the finished object, or null
+     .pending(input)   → the in-flight promise, or null   (omit input for any)
      .reset()          → drop the cache (a new SAI.session does this by itself)
      ._timing          → the beats, in ms; tests shrink them
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -150,6 +153,18 @@ const normDomain = v => {
   return m ? m[1] : null;
 };
 
+/* A typed company NAME is the other way in ("it seems silly to ask a company
+   like Nike how big they are" — client, Sep 1). Anything short with a letter
+   in it qualifies; a whole sentence does not — that's an answer to some other
+   question, not a company. */
+const normName = v => {
+  const t = String(v == null ? '' : v).trim().replace(/\s+/g, ' ');
+  if (!t || t.length < 2 || t.length > 60) return null;
+  if (!/[a-z]/i.test(t)) return null;
+  if (t.split(' ').length > 6) return null;
+  return t;
+};
+
 let inflight = {};      /* domain → promise */
 let results = {};       /* domain → finished research object */
 let boundSession = null;
@@ -167,13 +182,14 @@ function syncSession() {
   }
 }
 
-async function execute(domain) {
+async function execute(key, target) {
   const SAI = engine();
   const started = Date.now();
-  const seed = seeded(domain);
+  const seed = seeded(key);
+  if (!target.domain) seed.name = target.name;   /* echo the typed name, never invent one */
   const steps = [];
 
-  emit('research_started', { domain });
+  emit('research_started', { domain: target.domain || null, company: target.name || null });
 
   const narrate = (step, label, live) => {
     const rec = { step, label, live: !!live, index: steps.length + 1, total: STEP_COUNT };
@@ -184,7 +200,7 @@ async function execute(domain) {
 
   /* (a) read — mock. The beat exists so the visitor sees the machine start
      before the slow step, not so anything is actually fetched. */
-  narrate('read', 'Reading ' + domain + '…', false);
+  narrate('read', target.domain ? 'Reading ' + target.domain + '…' : 'Looking up ' + target.name + '…', false);
   await wait(timing.read);
 
   /* (b) size — the one real call in the file. */
@@ -194,7 +210,10 @@ async function execute(domain) {
   let known = null;
   if (canAsk) {
     try {
-      const j = await SAI._ask({ mode: 'research', domain }, timing.ask);
+      const body = target.domain
+        ? { mode: 'research', domain: target.domain }
+        : { mode: 'research', company: target.name };
+      const j = await SAI._ask(body, timing.ask);
       if (j && j.ok === true && j.known === true) known = j;
     } catch (e) { /* no key, timeout, upstream down — the fiction takes over */ }
   }
@@ -212,65 +231,78 @@ async function execute(domain) {
   narrate('signals', 'Scoring brand signal (illustrative)…', false);
   await wait(timing.signals);
 
-  /* 'high' is what turns q4 into a one-tap confirm, and that copy reads
-     "{company} is around {employees} people, in {industry}" — so it takes a
-     model that recognised the company AND gave us all three. Recognised but
-     half-answered is still live (the name is real) and still 'low', because
-     the sentence we would have to write cannot be written from it. */
-  const whole = !!(known && known.name && known.employees != null && known.industry);
+  /* 'high' is what turns q4 into a one-tap confirm, and that copy is written
+     from the fields the model actually gave us — so it takes a model that
+     recognised the company AND knows its headcount. Industry is welcome but
+     optional: q4 has an industry-less confirm line, and industryLive says
+     which of the two is honest to use. The industry FIELD below can still be
+     seeded (the snapshot wants one either way) — industryLive is what keeps a
+     seeded industry out of a sentence about a real company. */
+  const confirmable = !!(known && known.name && known.employees != null);
 
   const research = {
-    domain,
+    domain: target.domain || (known && known.domain) || null,
     name: (known && known.name) || seed.name,
     employees: (known && known.employees != null) ? known.employees : seed.employees,
     industry: (known && known.industry) || seed.industry,
+    industryLive: !!(known && known.industry),
     competitors: realPeers.length ? realPeers : seed.competitors,
-    confidence: whole ? 'high' : 'low',
+    confidence: confirmable ? 'high' : 'low',
     live: !!known,
     steps,
     ms: Date.now() - started
   };
 
-  results[domain] = research;
+  results[key] = research;
   if (SAI && SAI.session) SAI.session.research = research;
   emit('research_done', { research });
   return research;
 }
 
-function run(input) {
+/* domain if the input parses as one, else a typed company name — a domain is
+   the stronger key, so it always wins when both readings are possible. */
+function targetOf(input) {
   const domain = normDomain(input);
-  if (!domain) return Promise.resolve(null);
+  if (domain) return { key: domain, domain, name: null };
+  const name = normName(input);
+  if (name) return { key: 'name:' + name.toLowerCase(), domain: null, name };
+  return null;
+}
+
+function run(input) {
+  const t = targetOf(input);
+  if (!t) return Promise.resolve(null);
 
   syncSession();
-  if (results[domain]) return Promise.resolve(results[domain]);
-  if (inflight[domain]) return inflight[domain];
+  if (results[t.key]) return Promise.resolve(results[t.key]);
+  if (inflight[t.key]) return inflight[t.key];
 
   /* the cache holds the promise, not the result, so two callers in the same
      tick share one run — the landing page and the flow both start research
      from the same first message. */
-  const p = execute(domain).catch(err => {
-    delete inflight[domain];
+  const p = execute(t.key, t).catch(err => {
+    delete inflight[t.key];
     throw err;
   });
-  inflight[domain] = p;
+  inflight[t.key] = p;
   return p;
 }
 
 window.SAIRESEARCH = {
   run,
-  done(domain) {
+  done(input) {
     syncSession();
-    const d = normDomain(domain);
-    return (d && results[d]) || null;
+    const t = targetOf(input);
+    return (t && results[t.key]) || null;
   },
-  pending(domain) {
+  pending(input) {
     syncSession();
-    if (domain == null) {
+    if (input == null) {
       const keys = Object.keys(inflight).filter(k => !results[k]);
       return keys.length ? inflight[keys[0]] : null;
     }
-    const d = normDomain(domain);
-    return (d && !results[d] && inflight[d]) || null;
+    const t = targetOf(input);
+    return (t && !results[t.key] && inflight[t.key]) || null;
   },
   reset() { inflight = {}; results = {}; boundSession = engine() ? engine().session : null; },
 

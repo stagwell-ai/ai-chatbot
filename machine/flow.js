@@ -283,15 +283,19 @@ function startResearch(domain) {
   return p;
 }
 
-/* Research is allowed to improve the name we guessed off the domain, and
-   nothing else. It never overwrites something the visitor typed — "visitor
-   corrections always win" runs in this direction too. */
+/* Research is allowed to improve the name we guessed off the domain, and —
+   when the visitor typed a name and the model knew the website — to fill a
+   domain we never had. It never overwrites something the visitor typed:
+   "visitor corrections always win" runs in this direction too. */
 function onResearchDone(r) {
   if (!r) return;
   const S = eng();
   const src = sources().company;
   if (r.name && (isEmpty(slots().company) || src === 'inferred')) {
     S.setSlot('company', r.name, 'research');
+  }
+  if (r.live && r.domain && isEmpty(slots().company_domain)) {
+    S.setSlot('company_domain', r.domain, 'research');
   }
   notify();
 }
@@ -354,7 +358,12 @@ function tpl(copy, vars) {
 function companyName() {
   const S = eng();
   const r = S.session.research;
-  return slots().company || (r && r.name) || slots().company_domain || 'your company';
+  const typed = slots().company;
+  /* same company, better casing: "nike" typed, "Nike" recognised. The slot
+     keeps the visitor's words; only the display upgrades. */
+  if (typed && r && r.live && r.name &&
+      String(r.name).toLowerCase() === String(typed).toLowerCase()) return r.name;
+  return typed || (r && r.name) || slots().company_domain || 'your company';
 }
 
 /* The visitor's stated goal as a phrase — the routing.json domain label with
@@ -584,10 +593,15 @@ function questionView() {
     mode = q4Mode();
     const r = eng().session.research || {};
     if (mode === 'confirm') {
-      copy = tpl((q.confirmMode || {}).copy, {
+      /* the industry only enters the sentence when the MODEL said it — a
+         seeded industry in a claim about a real company is exactly the
+         invented fact the house rules forbid */
+      const cm = q.confirmMode || {};
+      const withIndustry = !!(r.industryLive && r.industry);
+      copy = tpl((withIndustry ? cm.copy : cm.copyNoIndustry) || cm.copy, {
         company: companyName(), employees: fmt(r.employees), industry: r.industry
       });
-      chips = ((q.confirmMode || {}).chips || []).map(c => ({ label: c.label, value: c.value }));
+      chips = (cm.chips || []).map(c => ({ label: c.label, value: c.value }));
     } else {
       copy = (q.askMode || {}).copy || '';
       chips = ((q.askMode || {}).chips || []).map(c => ({ label: c.label, value: c.tier }));
@@ -661,9 +675,13 @@ function present(id) {
    spinner that outlasts their patience. */
 async function settleResearch() {
   const R = res();
-  const domain = slots().company_domain;
-  if (!R || !domain || R.done(domain)) return;
-  const p = R.pending(domain);
+  if (!R) return;
+  /* the run may be keyed by the domain OR by a typed company name — whichever
+     the visitor gave us. The no-argument pending() is the catch-all: any run
+     still in flight is the one q4 is waiting on. */
+  const key = slots().company_domain || slots().company;
+  if (!key || R.done(key)) return;
+  const p = R.pending(key) || R.pending();
   if (!p) return;
 
   st.current = null;
@@ -744,7 +762,13 @@ async function applyAnswer(id, chip, text) {
   if (id === 'q2') {
     const domain = S.extractDomain(text);
     if (domain) fillCompany(domain);
-    else S.setSlot('company', value, 'visitor');
+    else {
+      S.setSlot('company', value, 'visitor');
+      /* a bare name researches too — "it seems silly to ask a company like
+         Nike how big they are". research.js decides whether the text is
+         name-shaped; the model decides whether it recognises it. */
+      startResearch(value);
+    }
     if (worthClassifying(text)) applySide(await read(text), {});
     return;
   }
@@ -940,7 +964,7 @@ const api = {
   onChange,
   result,
   reset() { st = blank(); return state(); },
-  researchWaitMs: 4000,
+  researchWaitMs: 8000,
 
   /* exposed for tests and for anyone auditing the skip decisions */
   _skipReason: skipReason,
