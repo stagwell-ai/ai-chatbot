@@ -284,7 +284,10 @@ function goChip() {
 }
 
 /* The opener: two lines, both out of the entry solution.js rendered the page
-   from — the positioning's own first sentence and who it says it is for. */
+   from — the positioning's own first sentence and who it says it is for.
+   Value first, name second: the bubble opens with what the product does for
+   you, then pins the name to it. Never "You're reading X" — the visitor knows
+   what page they're on. */
 function firstSentence(text, max) {
   const t = String(text || '').trim();
   if (!t) return '';
@@ -294,16 +297,18 @@ function firstSentence(text, max) {
 }
 
 function intro(s) {
-  const lead = firstSentence(s.positioning) ||
-    `${s.name} is one of the ten AI products in the Stagwell Marketing Cloud.`;
   const who = has(s.whoFor)
-    ? ` It's built for ${String(s.whoFor).charAt(0).toLowerCase()}${String(s.whoFor).slice(1)}.`
+    ? `${String(s.whoFor).charAt(0).toLowerCase()}${String(s.whoFor).slice(1)}`
     : '';
-  return `You're reading ${s.name}. ${lead}${who}`;
+  const lead = firstSentence(s.positioning);
+  if (lead) {
+    return `${lead} That's ${s.name}${who ? ` — built for ${who}` : ''}.`;
+  }
+  return `${s.name} is one of the ten AI products in the Stagwell Marketing Cloud${who ? `, built for ${who}` : ''}.`;
 }
 
 function invite() {
-  return `Ask me anything about it — or tell me your website and I'll read your brand first, then say whether this is actually your answer.`;
+  return `Ask me anything — or drop your website and I'll start with your brand instead of the pitch.`;
 }
 
 /* ── the fallback answer ──
@@ -472,7 +477,7 @@ async function submit(raw) {
      that a rule, and the fallback copy honours it). These are the two replies
      to that question, one tap each. */
   if (answered >= QA_LIMIT) {
-    addAgentBubble(`Rather than keep talking about the product, let me ask you a few things — then I can tell you whether ${sol.name} is actually your answer, and show you the read.`);
+    addAgentBubble(`Let me flip this around — a few quick questions about you, and I can say whether ${sol.name} is actually the right call, and show you what it looks like on your problem.`);
     await enterFlow({ text: '' });
     return;
   }
