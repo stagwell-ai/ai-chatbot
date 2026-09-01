@@ -26,6 +26,10 @@
 <!-- solution.css owns the nav/footer/corner chrome for this page the same way
      campaign.css does for /p/{id}: b.css is NOT loaded here. -->
 <link rel="stylesheet" href="/machine/solution.css">
+<!-- the conversation on this page ends in the SAME report the rest of the site
+     produces, so it needs the same two stylesheets the landing loads for them -->
+<link rel="stylesheet" href="/machine/snapshot.css">
+<link rel="stylesheet" href="/machine/path.css">
 <!-- the shared lead-capture modal: same panel on "/", /p/{id}, /ads and /s/{id} -->
 <link rel="stylesheet" href="/machine/lead.css">
 <link rel="stylesheet" href="/machine/directory.css">
@@ -95,12 +99,26 @@
 <a class="democorner" href="/ads" aria-label="Demo control — choose the ad this run starts from">Demo control</a>
 <a class="vercorner" href="/versions" aria-label="Previous versions of this demo">Previous versions</a>
 
+<!-- The order mirrors machine/b.html's, for the same reasons: the engine owns
+     the session and the data promise, so it goes first; the flow and research
+     are pure logic with no DOM, so they only have to precede the shell that
+     drives them; the snapshot needs its data builder; path.js is what the
+     snapshot hands off to. product-chat.js is this page's conversation shell
+     (b.html's convo.js is the landing's — see the note at the top of that
+     file), and it is loaded BEFORE solution.js because solution.js mounts the
+     panel as soon as the JSON resolves. console.js observes and loads last. -->
 <script src="/machine/data-loader.js"></script>
 <script src="/machine/engine.js"></script>
 <!-- "arrived from {campaign} ad" — renders only for a campaign the JSON knows -->
 <script src="/machine/ribbon.js"></script>
+<script src="/machine/flow.js"></script>
+<script src="/machine/research.js"></script>
+<script src="/machine/snapshot-data.js"></script>
+<script src="/machine/snapshot.js"></script>
+<script src="/machine/path.js"></script>
 <!-- lead.js before solution.js: the [data-cta] handler checks for SAILEAD -->
 <script src="/machine/lead.js"></script>
+<script src="/machine/product-chat.js"></script>
 <script src="/machine/solution.js"></script>
 <script src="/machine/directory.js"></script>
 <!-- S6 · the demo aid: observer only, loads last, never emits -->

@@ -135,7 +135,10 @@ function buildTiles(actions, domain) {
     /* the workspace tile IS the live dashboard when we have a domain to point
        it at; with no domain it falls back to the same lead-capture modal the
        other two tiles use */
-    if (a.id === 'workspace' && domain) {
+    /* …and only where the dashboard actually exists to preview. The snapshot
+       also mounts on the solution pages, which carry no #dash section, so
+       promising a preview "below" there would point at nothing. */
+    if (a.id === 'workspace' && domain && document.getElementById('dash')) {
       return `<button type="button" class="${cls}" data-action="workspace-live">
         <b>${esc(a.title)}${ARROW_ICON}</b>
         <span>${esc(a.line)}</span>

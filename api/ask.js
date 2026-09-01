@@ -4,24 +4,36 @@
    answer actually names. The key stays here: putting it in the client would
    publish it to anyone who opens devtools.
 
-   Four modes, one endpoint:
+   Five modes, one endpoint:
      (default)          buyer-research answer + which of `brands` it named
      body.chat          the composer answering follow-ups on a finished brief
      mode:'classify'    visitor text → domain ids + company + size + human ask
      mode:'research'    a website domain → what the model actually knows
+     mode:'product'     a solutions.json id + a question → the agent answering
+                        about that product, from that entry and nothing else
 
    Every system prompt is assembled HERE, from typed fields, and never
    accepted from the client. That is the security boundary: a client-supplied
    system prompt would let anyone repurpose the endpoint with a devtools
    one-liner. The classify domain list is hardcoded below for the same reason —
    it is the vocabulary the router trusts, so the client does not get to
-   extend it.
+   extend it. mode:'product' takes the same line one step further: the client
+   sends an ID, never a fact. Every product word in the prompt is read from
+   data/solutions.json on this side of the wire, so a devtools caller cannot
+   put a capability, a statistic or a price into the agent's mouth.
 
    Config comes from Vercel environment variables:
      LLM_API_KEY    required
      LLM_BASE_URL   default https://api.kimi.com/coding/v1  (OpenAI-compatible)
      LLM_MODEL      default kimi-for-coding-highspeed — ~2.8s end to end
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* The product catalogue, imported rather than fetched: a static import is
+   traced by the build, so the JSON ships inside the function and there is no
+   runtime file read to go wrong in a serverless sandbox. It is the SAME file
+   machine/solution.js renders the page from, which is the point — the page
+   and the agent cannot drift apart. */
+import SOLUTIONS_FILE from '../data/solutions.json' with { type: 'json' };
 
 const BASE  = (process.env.LLM_BASE_URL || 'https://api.kimi.com/coding/v1').replace(/\/+$/, '');
 const MODEL = process.env.LLM_MODEL || 'kimi-for-coding-highspeed';
@@ -143,6 +155,92 @@ const RESEARCH_SYSTEM = [
   'Reply with ONE JSON object and nothing else — no prose, no code fences:',
   '{"known":false,"name":null,"employees":null,"industry":null,"competitors":[]}',
 ].join('\n');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   mode:'product' — the agent answering a question ABOUT ONE PRODUCT, on that
+   product's own /s/{id} page.
+
+   The client sends { productId, question, history? } and nothing else that
+   could reach the model as a fact. The id is resolved HERE against
+   data/solutions.json; an id the file does not carry is a 400, never a
+   free-text product the caller invented. Every sentence of the brief below
+   is quoted out of that one entry.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+export const SOLUTIONS = (() => {
+  const raw = SOLUTIONS_FILE && Array.isArray(SOLUTIONS_FILE.solutions)
+    ? SOLUTIONS_FILE.solutions : [];
+  return raw.filter(s => s && typeof s.id === 'string' && s.id);
+})();
+
+export const findSolution = id => {
+  const want = String(id == null ? '' : id).trim();
+  if (!want) return null;
+  return SOLUTIONS.find(s => s.id === want) || null;
+};
+
+/* The rules, in the order they matter. Two of them are the site's whole
+   character restated for a model that has never read the rest of it:
+   nothing outside the brief is a fact, and "I don't know" is a complete
+   answer that hands the visitor to a person. The last rule is the client's
+   ask — the conversation exists to bring them back into the flow, so every
+   answer has to end pointing somewhere. */
+export function productSystem(s) {
+  const props = (Array.isArray(s.valueProps) ? s.valueProps : [])
+    .map(p => clean(p)).filter(Boolean).slice(0, 8);
+  const byDomain = Object.values(s.positioningByDomain || {})
+    .map(p => clean(p)).filter(Boolean).slice(0, 3);
+
+  const facts = [
+    `Product name: ${f(s.name, 80)}.`,
+    s.positioning ? `Positioning: ${f(s.positioning, 600)}` : '',
+    s.whoFor ? `Who it is for: ${f(s.whoFor, 160)}.` : '',
+    props.length ? `What it does: ${props.join('; ')}.` : '',
+    byDomain.length ? `Also positioned as: ${byDomain.join(' ')}` : '',
+    s.signupUrl ? 'There is a self-serve free trial.'
+      : 'There is no self-serve trial — the next step is a conversation with our team.',
+  ].filter(Boolean);
+
+  return [
+    'You are Stagwell AI, the agent on Stagwell.AI, talking to a visitor who is',
+    `reading the page for one product: ${f(s.name, 80)}. This is the ONLY thing you know about it:`,
+    '',
+    facts.join('\n'),
+    '',
+    'RULES, all of them binding:',
+    '- Answer ONLY from the facts above. They are the complete brief.',
+    '- Never invent a statistic, a price, a customer name, an integration, a',
+    '  timeline or a capability. If it is not written above, you do not know it.',
+    '- If the question asks for something the brief does not answer, say so',
+    '  plainly in one sentence and offer to have a human from the team answer it.',
+    '- 2 to 4 short sentences. Plain text only: no markdown, no asterisks, no',
+    '  bullet points, no headings, no preamble.',
+    `- Talk about ${f(s.name, 80)} in the second person to the visitor. Be concrete and calm, never salesy.`,
+    '- ALWAYS end by moving the visitor forward: ask for their website so you can',
+    '  read their brand before recommending anything, or ask the next thing you',
+    '  need to know about their situation (what they are trying to solve, how big',
+    '  their team is, when they need it). One forward question, at the end.',
+    '- If they ask about a different product, or about something other than',
+    '  marketing, answer in one sentence and ask for their website so the',
+    '  conversation can find them the right fit.',
+  ].join('\n');
+}
+
+/* The visitor's own words, plus the exchange so far so a follow-up
+   ("what about the second one?") has a referent. The transcript is DATA: it
+   is fenced into the user message, never the system prompt, and it is capped
+   so a long paste cannot crowd the rules out of the context. */
+export function productUser(question, history) {
+  const turns = (Array.isArray(history) ? history : []).slice(-6).map(h => {
+    const who = (h && String(h.role || '').toLowerCase() === 'agent') ? 'Agent' : 'Visitor';
+    const text = f(h && h.text, 300);
+    return text ? `${who}: ${text}` : '';
+  }).filter(Boolean);
+
+  const q = f(question, 400);
+  if (!turns.length) return q;
+  return `Earlier in this conversation:\n${turns.join('\n')}\n\nTheir question now: ${q}`;
+}
 
 /* Reasoning models pad the front of an answer, wrap it in fences, apologise
    first, or emit a <think> block. Take the widest brace span left after the
@@ -319,6 +417,43 @@ export default async function handler(req, res) {
     res.status(200).json(Object.assign({ ok: true, domain }, normalizeResearch(parsed), {
       model: out.model, ms: Date.now() - started,
     }));
+    return;
+  }
+
+  /* ── mode:'product' — the agent answering about one solutions.json entry ──
+     Body: { mode:'product', productId, question, history? }. The client sends
+     an ID; the facts are read here. An unknown id is a 400 rather than a
+     silent generic answer — a page that cannot name its product should get
+     the scripted fallback, not an improvised one. Every other failure is the
+     same ok:false the other modes return, so the panel degrades instead of
+     dead-ending. */
+  if (mode === 'product') {
+    const solution = findSolution(body.productId);
+    if (!solution) { res.status(400).json({ ok: false, error: 'unknown_product' }); return; }
+
+    const question = clean(body.question).slice(0, 400);
+    if (!question) { res.status(400).json({ ok: false, error: 'no_question' }); return; }
+    const started = Date.now();
+
+    /* 1,100, matching the default answer path: a few short sentences, plus
+       the 200-400 tokens this gateway spends thinking before it writes. */
+    const out = await complete(
+      productSystem(solution),
+      productUser(question, body.history),
+      1100, 12000
+    );
+    if (!out.ok) { res.status(200).json({ ok: false, error: out.error }); return; }
+
+    const answer = clean(out.content);
+    if (!answer) { res.status(200).json({ ok: false, error: 'empty' }); return; }
+
+    res.status(200).json({
+      ok: true,
+      answer,
+      productId: solution.id,
+      model: out.model,
+      ms: Date.now() - started,
+    });
     return;
   }
 

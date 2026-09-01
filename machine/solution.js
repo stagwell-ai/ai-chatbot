@@ -17,14 +17,34 @@
      · lockup band (the product's own mark on the deck navy, path.css's
        .pathband idiom) — or the name set in type where there is no lockup
      · name, the full positioning, who it's for
+     · THE AGENT PANEL — the conversation, right here (see below)
      · PROBLEMS IT SOLVES — the routing.json domains that resolve to this
-       solution, each a link that opens the conversation pre-armed:
-       /?autostart=1&q={domain label}   (convo.js's autostart consumes it)
+       solution, each a button that opens the qualification in that panel,
+       seeded with the problem the visitor picked
      · what it does for you — valueProps as pills
      · "Teams solving this also ask about…" — companions, each linking to
        that companion's own /s/{id}
-     · CTA row: the agent (primary, internal), the real trial where one
-       exists, and the product's own site (secondary, attributed, external)
+     · CTA row: the real trial where one exists, and the product's own site
+       (secondary, attributed, external)
+
+   ── THE CONVERSATION HAPPENS HERE (client, Sept 1) ────────────────────────
+     "instead of asking the agent and it taking you to a different site, just
+      have the agent text here and have the user ask questions and explain
+      what is this product and try and collect the users info and get them to
+      answer the questions and make them a report, we want to bring them back
+      to the regular flow."
+
+   Until now every internal door on this page was a link to
+   /?autostart=1&q={label} — it left the page, and the visitor lost the
+   product they were reading. Nothing on this page navigates for that reason
+   any more. machine/product-chat.js mounts one panel that answers questions
+   about THIS product (api/ask.js mode 'product', which resolves the id
+   server-side so no product fact ever leaves this page), then hands the
+   visitor to window.SAIFLOW's ordinary six questions in the same panel, and
+   ends on window.SAISNAP — the same snapshot, the same capture band, the
+   same /path afterwards as every other surface. The only navigation left on
+   this page is outward: a companion's page, the product's own site, the real
+   trial. Those are all attributed and all deliberate.
 
    HONESTY — the same rule the rest of the kit keeps. These are real
    third-party products: a `url` of null gets the disabled
@@ -103,11 +123,13 @@
     return '';
   }
 
-  /* the conversation handoff every internal link on this page uses —
-     machine/convo.js's autostart consumes autostart=1 + q on "/" */
-  function askUrl(q) {
+  /* Every internal door on this page is now a button that talks to the panel
+     rather than a link that leaves. One attribute, read by one delegated
+     listener (wirePanelEntries) — data-solask carries the seed the flow
+     should open on, which is the problem label the visitor actually picked. */
+  function askAttr(q) {
     const text = String(q == null ? '' : q).trim();
-    return `/?autostart=1${text ? `&q=${encodeURIComponent(text)}` : ''}`;
+    return `data-solask="${esc(text)}"`;
   }
 
   /* the external product site keeps its own attribution, distinct from the
@@ -172,17 +194,17 @@
       return `<section class="solsec" aria-labelledby="probH">
           <h2 class="solsec__h" id="probH">Problems it solves</h2>
           <p class="solsec__note">${esc(s.name)} is a supporting layer rather than a starting problem — it sits under our research offerings. Ask the agent what you're trying to learn and it will say where ${esc(s.name)} comes in.</p>
-          <a class="sollink" href="${esc(askUrl(ASK_FALLBACK[s.id] || s.name))}">Start that conversation &rarr;</a>
+          <button class="sollink" type="button" ${askAttr(ASK_FALLBACK[s.id] || s.name)}>Start that conversation &rarr;</button>
         </section>`;
     }
     const items = domains.map(d => `
-      <li><a class="solproblem" href="${esc(askUrl(d.label))}" data-domain="${esc(d.id)}">
+      <li><button class="solproblem" type="button" ${askAttr(d.label)} data-domain="${esc(d.id)}">
         <span class="solproblem__t">${esc(d.label)}</span>
         <span class="solproblem__go" aria-hidden="true">&rarr;</span>
-      </a></li>`).join('');
+      </button></li>`).join('');
     return `<section class="solsec" aria-labelledby="probH">
         <h2 class="solsec__h" id="probH">Problems it solves</h2>
-        <p class="solsec__lede">Pick the one that sounds like yours — the agent opens on it and takes it from there.</p>
+        <p class="solsec__lede">Pick the one that sounds like yours — the agent opens on it in the conversation above and takes it from there.</p>
         <ul class="solproblems">${items}</ul>
       </section>`;
   }
@@ -217,17 +239,17 @@
       </section>`;
   }
 
-  /* the CTA row. Three doors, in the order the page means them:
-       1 the agent — internal, primary, always present
-       2 the real trial, where solutions.json carries a signupUrl
-       3 the product's own site — external, attributed, or the kit's
+  /* the CTA row. The agent used to be the first of three doors here and the
+     only internal one; it is not a door any more, it is the panel directly
+     underneath. What is left is the two OUTWARD doors, which are the two that
+     were always meant to leave:
+       1 the real trial, where solutions.json carries a signupUrl
+       2 the product's own site — external, attributed, or the kit's
          disabled placeholder where there is no site to send anyone to.
      The placeholder is deliberately NOT a button: the bug machine/path.js
      documents ("[PRODUCT SITE — PENDING]" set inside an enabled marigold
      button) cannot recur on this page either. */
-  function ctaHtml(s, domains) {
-    const seed = domains.length ? domains[0].label : (ASK_FALLBACK[s.id] || s.name);
-
+  function ctaHtml(s) {
     const trial = has(s.signupUrl)
       ? `<a class="btn btn--dark solcta__trial" href="${esc(withUtm(s.signupUrl))}"
            target="_blank" rel="noopener"
@@ -243,10 +265,7 @@
       ? `<p class="solcta__note">${esc(SIGNUP_NOTES[s.id])}</p>` : '';
 
     return `<div class="solcta">
-        <div class="solcta__row">
-          <a class="btn btn--gold solcta__ask" href="${esc(askUrl(seed))}">Ask the agent about this &rarr;</a>
-          ${trial}
-        </div>
+        ${trial ? `<div class="solcta__row">${trial}</div>` : ''}
         ${note}
         ${site}
       </div>`;
@@ -279,7 +298,8 @@
           <h1 class="sol__h1">${esc(s.name)}</h1>
           ${has(s.positioning) ? `<p class="sol__pos">${esc(s.positioning)}</p>` : ''}
           ${has(s.whoFor) ? `<p class="sol__who"><span class="sol__wholab">Who it's for</span>${esc(s.whoFor)}</p>` : ''}
-          ${ctaHtml(s, domains)}
+          ${ctaHtml(s)}
+          <div class="solconvo__host" id="solConvoHost"><!-- product-chat.js mounts the panel here --></div>
         </div>
       </section>
 
@@ -295,16 +315,45 @@
         <div class="band__in">
           <h2 class="band__h">One of ten AI products. <span class="accent">The agent finds your fit.</span></h2>
           <div class="band__acts">
-            <a class="btn btn--gold" href="${esc(askUrl(domains.length ? domains[0].label : (ASK_FALLBACK[s.id] || s.name)))}">Ask the agent</a>
+            <button class="btn btn--gold" type="button" ${askAttr(domains.length ? domains[0].label : (ASK_FALLBACK[s.id] || s.name))}>Ask the agent</button>
             <button class="btn btn--ghost-void" type="button" data-cta="expert">Talk to an AI expert</button>
           </div>
         </div>
       </section>
 
       <p class="solfoot">This is a working prototype of Stagwell.AI, not a live product page. ${
-        esc(s.name)} is a third-party product: its name, marks and positioning belong to their owners and are reproduced here from published material.</p>`;
+        esc(s.name)} is a third-party product: its name, marks and positioning belong to their owners and are reproduced here from published material. Everything the agent says about ${esc(s.name)} is drawn from that same material.</p>`;
 
     wireHandoffs();
+    mountPanel(s, domains);
+    wirePanelEntries();
+  }
+
+  /* ── the panel ────────────────────────────────────────────────────────────
+     product-chat.js owns the conversation; this file owns where it sits and
+     which of the page's own controls hand it a seed. If product-chat.js
+     failed to load, the page keeps every other section and the [data-solask]
+     controls fall back to the old handoff — the visitor still reaches the
+     agent, just on "/" as they did before. */
+  function mountPanel(s, domains) {
+    const host = document.getElementById('solConvoHost');
+    if (!host) return;
+    if (window.SAIPRODUCT && typeof window.SAIPRODUCT.mount === 'function') {
+      window.SAIPRODUCT.mount({ host, solution: s, domains });
+    }
+  }
+
+  function wirePanelEntries() {
+    root.addEventListener('click', e => {
+      const b = e.target.closest('[data-solask]');
+      if (!b) return;
+      e.preventDefault();
+      const seed = b.getAttribute('data-solask') || '';
+      const P = window.SAIPRODUCT;
+      if (P && typeof P.startFlow === 'function') { P.startFlow(seed); return; }
+      /* no panel — the pre-panel behaviour, so this never dead-ends */
+      window.location.href = `/?autostart=1${seed ? `&q=${encodeURIComponent(seed)}` : ''}`;
+    });
   }
 
   /* the directory's card used to be the handoff to a product site; that

@@ -132,13 +132,18 @@ body.nav-open .mnav{transform:none}
   font-size:var(--t-h2);line-height:1.2;color:var(--ink)}
 .solsec__lede{margin:0 0 18px;font-size:var(--t-sm);line-height:1.6;color:var(--ink-2);max-width:60ch}
 .solsec__note{margin:8px 0 12px;font-size:var(--t-sm);line-height:1.6;color:var(--ink-2);max-width:62ch}
-.sollink{font-size:var(--t-sm);font-weight:500;color:var(--teal);text-decoration:none}
+/* also a <button> now — it opens the panel rather than leaving the page */
+.sollink{font-size:var(--t-sm);font-weight:500;color:var(--teal);text-decoration:none;text-align:left}
 .sollink:hover{color:var(--ink);text-decoration:underline}
 
 /* ── problems it solves: the page's real job, so these are the biggest
-      targets on it — each one opens the conversation on that problem ── */
+      targets on it — each one opens the conversation on that problem, in the
+      panel above. They were links out to /?autostart=1&q=… and are buttons
+      now, which is why width/text-align are stated: styles.css's button reset
+      leaves a <button> shrink-wrapped and centred. ── */
 .solproblems{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .solproblem{
+  width:100%;text-align:left;
   display:flex;align-items:center;gap:16px;min-width:0;text-decoration:none;
   background:var(--surface);border:1px solid var(--line-2);border-left:3px solid var(--amber);
   border-radius:var(--r-lg);padding:16px 18px;
@@ -204,6 +209,117 @@ body.nav-open .mnav{transform:none}
 .solNF .btn{margin-top:6px}
 
 /* ═══════════════════════════════════════════════════════════
+   THE AGENT PANEL  (machine/product-chat.js)
+
+   The conversation itself is NOT styled here. Every turn inside .solconvo
+   is the site's existing conversation idiom straight out of machine/
+   styles.css — .turn / .turn--user / .bubble / .ai / .ai__mark / .ai__body /
+   .ai__who / .ai__text / .thinking / .opts / .opt / .opt__dot — exactly the
+   markup machine/convo.js appends on the landing. There is no second chat
+   style on this page and there must never be a third on this site.
+
+   What is below is only the FRAME the landing gets from b.css + convo.css
+   and this page does not load: the panel's card, its head, its composer, its
+   progress bar and its research strip. Each block names the rule it mirrors.
+   ═══════════════════════════════════════════════════════════ */
+.solconvo__host{width:100%}
+
+/* the card: machine/campaign.css's .panel, at conversation size */
+.solconvo{
+  margin-top:8px;width:100%;
+  background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-xl);
+  padding:20px;display:flex;flex-direction:column;gap:14px;
+  box-shadow:0 20px 48px -32px rgba(0,35,52,.28);
+}
+
+/* the head: campaign.css's .panel__head, with the mark instead of the avatar
+   because this panel is the agent talking, not a label above a form */
+.solconvo__head{display:flex;align-items:center;gap:9px;font-size:var(--t-sm);color:var(--ink-2);
+  flex-wrap:wrap;min-width:0}
+.solconvo__mark{width:22px;height:22px;flex:none}
+.solconvo__who{font-weight:600;color:var(--ink)}
+.solconvo__sep{color:var(--ink-4)}
+.solconvo__stage{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);min-width:0;overflow-wrap:anywhere}
+
+/* progress: convo.css's .convo__progress, rule for rule */
+.solconvo__prog{display:flex;align-items:center;gap:14px;width:100%;margin:0}
+.solconvo__prog[hidden]{display:none}
+.solconvo__proglab{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);white-space:nowrap;flex:none}
+.solconvo__progbar{flex:1;height:4px;border-radius:var(--r-full);
+  background:var(--line-2);overflow:hidden;max-width:260px}
+.solconvo__progbar i{display:block;height:100%;width:0%;border-radius:inherit;
+  background:linear-gradient(90deg,var(--teal),var(--amber));
+  transition:width 560ms var(--ease-io)}
+
+/* research narration: convo.css's .rail__narration / .rail__logline. The
+   landing puts these in the snapshot rail; this page has no rail, so they
+   run as a strip above the thread. Same events, same labels, same badge. */
+.solnarr{display:flex;flex-direction:column;gap:6px;max-height:120px;overflow-y:auto;
+  padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-lg);
+  background:var(--surface-2);scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.solnarr[hidden]{display:none}
+.solnarr__line{display:flex;align-items:flex-start;gap:8px;font-size:var(--t-xs);
+  color:var(--ink-2);line-height:1.45;animation:fadeUp 420ms var(--ease) both}
+.solnarr__dot{width:5px;height:5px;border-radius:50%;background:var(--teal);flex:none;margin-top:6px}
+.solnarr__text{flex:1;min-width:0;overflow-wrap:anywhere}
+.solnarr__live{font-family:var(--mono);font-size:9px;letter-spacing:.1em;font-weight:600;
+  color:var(--teal);border:1px solid var(--teal);border-radius:4px;padding:1px 5px;
+  flex:none;line-height:1.5}
+
+/* the thread: b.css's #thread scroller. Caps its own height so a long Q&A
+   scrolls inside the panel instead of pushing the page's own sections out
+   of reach — the panel is part of a page, not the whole of one. */
+.solconvo__thread{display:flex;flex-direction:column;gap:22px;min-width:0;
+  max-height:min(56vh,520px);overflow-y:auto;overflow-x:hidden;padding-right:4px;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.solconvo__thread:empty{display:none}
+.solconvo .ai__text{font-size:1rem}
+.solconvo .ai__text--muted{color:var(--ink-4);font-size:var(--t-sm);font-family:var(--sans)}
+.solconvo .bubble{max-width:86%}
+.solconvo .opt{max-width:100%;text-align:left}
+
+/* the answer's receipt: b.css's .chat__livemeta, plus the fallback face of
+   the same line — a scripted answer says so in the same place, in the
+   quieter colour, so the two can never be confused for one another */
+.solmeta{display:inline-flex;align-items:center;gap:8px;margin:0;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--teal);overflow-wrap:anywhere}
+.solmeta--script{color:var(--ink-4);text-transform:none;letter-spacing:.02em}
+
+/* the composer: campaign.css's .askform, laid out as one row where there is
+   room for one */
+.solconvo__form{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.solconvo__field{
+  flex:1 1 260px;min-width:0;display:flex;align-items:center;gap:10px;
+  height:52px;padding:0 16px;background:var(--surface);
+  border:1px solid var(--line-2);border-radius:var(--r-full);
+  transition:border-color var(--d-1) var(--ease-io),box-shadow var(--d-1) var(--ease-io);
+}
+.solconvo__field:hover{border-color:var(--ink-4)}
+.solconvo__field:focus-within{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,156,189,.12)}
+.solconvo__caret{width:7px;height:7px;border-radius:50%;background:var(--teal);flex:none;
+  transition:transform var(--d-1) var(--ease-io)}
+.solconvo__field:focus-within .solconvo__caret{transform:scale(1.45)}
+.solconvo__input{
+  flex:1;min-width:0;border:0;background:none;outline:none;
+  font-family:var(--sans);font-size:1rem;color:var(--ink);
+}
+.solconvo__input::placeholder{color:var(--ink-4)}
+.solconvo__input:disabled{color:var(--ink-4)}
+.solconvo__send{flex:none;height:52px;padding:0 24px}
+.solconvo.is-busy .solconvo__send{opacity:.5;pointer-events:none}
+
+/* the human door, available at every point in the conversation */
+.solconvo__aside{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.solconvo__expert{
+  font-size:var(--t-sm);color:var(--ink-2);background:none;border:0;padding:0;
+  text-align:left;transition:color var(--d-1) var(--ease-io);
+}
+.solconvo__expert:hover{color:var(--teal)}
+
+/* ═══════════════════════════════════════════════════════════
    CORNER LINK
    ═══════════════════════════════════════════════════════════ */
 .vercorner{
@@ -226,8 +342,18 @@ body.nav-open .mnav{transform:none}
   .solcta__row{width:100%}
   .solcta__row .btn{flex:1 1 100%;justify-content:center}
   .solcomps{grid-template-columns:minmax(0,1fr)}
+
+  /* the composer stacks rather than shrinking: a 16px field is what stops
+     iOS zooming the page on focus, and it has to keep that size */
+  .solconvo{padding:16px}
+  .solconvo__send{width:100%;justify-content:center}
+  .solconvo__thread{max-height:min(62vh,460px)}
+  .solconvo .bubble{max-width:92%}
+  .solconvo .opt{width:100%}
 }
 @media (prefers-reduced-motion:reduce){
   .solproblem,.solproblem__go,.solcomp{transition:none}
   .solproblem:hover{transform:none}
+  .solconvo__progbar i{transition:none}
+  .solnarr__line{animation:none}
 }
