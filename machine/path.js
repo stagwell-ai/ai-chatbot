@@ -181,6 +181,122 @@ function productLinkHTML(solution, session, route, label, cls, medium) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   THE HONEST CTA — "Why does this say website pending? It should know the URL
+   … and whether this website has a self-service sign up. If they have a
+   self-service sign up, definitely have a real button." (client, Aug 31)
+
+   solutions.json now answers both halves per product: `url` is the site, and
+   `signupUrl` is a real self-serve door or null. Three states, resolved here
+   once and rendered identically in the self-serve hero, the "Start on your
+   own" column and on the matched cards themselves:
+
+     signupUrl → a real marigold button, "Start your free trial →"
+     url only  → "Start on {name} →", and a caption that says signup is coming
+     neither   → the kit's disabled placeholder (machines_family alone today)
+
+   The screenshotted bug — "[PRODUCT SITE — PENDING]" set inside an enabled
+   marigold button on the SMB influencer route — cannot recur: that route's
+   solution now carries a signupUrl, and the placeholder state below is
+   deliberately NOT marigold, so the pending words can never again sit inside
+   a button that looks live.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Where a product's self-serve door sits on ANOTHER product's platform, the
+   button says so under itself rather than quietly redirecting. Keyed by
+   solution id — the note is a fact about that product, not a rule.
+   smb_platform: the ICP deck gives "Stagwell AI for SMBs" and IMAI the same
+   icon because the SMB offering IS the IMAI-based platform, so its free trial
+   is IMAI's free trial and the caption keeps that honest. */
+const SIGNUP_NOTES = { smb_platform: 'Runs on the IMAI platform' };
+const COMING_SOON_NOTE = 'Self-serve signup is coming — the product site takes it from here.';
+
+function hostOf(u) {
+  try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; }
+}
+
+/* → { kind, label, href, rawUrl, caption, captionScope }. href null means the
+   placeholder state. captionScope 'solution' is a fact about this product and
+   travels with the button everywhere; 'generic' is the coming-soon line, which
+   only the two decision surfaces show so it is not repeated on every card. */
+function ctaFor(solution, session, route, medium, pendingLabel) {
+  const s = solution || null;
+  if (s && s.signupUrl) {
+    /* a note only makes sense when the signup really is somewhere else */
+    const away = hostOf(s.signupUrl) !== hostOf(s.url);
+    const note = away ? (SIGNUP_NOTES[s.id] || null) : null;
+    return {
+      kind: 'trial', label: 'Start your free trial →',
+      href: attributedUrl(s.signupUrl, session, route, medium), rawUrl: s.signupUrl,
+      caption: note, captionScope: note ? 'solution' : null
+    };
+  }
+  if (s && s.url) {
+    return {
+      kind: 'coming', label: 'Start on ' + s.name + ' →',
+      href: attributedUrl(s.url, session, route, medium), rawUrl: s.url,
+      caption: COMING_SOON_NOTE, captionScope: 'generic'
+    };
+  }
+  return {
+    kind: 'pending', label: pendingLabel || 'Start on your own',
+    href: null, rawUrl: null, caption: null, captionScope: null
+  };
+}
+
+function ctaHTML(cta, solution, route, cls) {
+  if (cta.href) {
+    return `<a class="${cls}" href="${esc(cta.href)}" target="_blank" rel="noopener"
+      data-handoff data-solution="${esc(solution.id)}" data-url="${esc(cta.rawUrl)}" data-route="${esc(route)}">${esc(cta.label)}</a>`;
+  }
+  return `<span class="${cls} is-disabled" aria-disabled="true">${esc(cta.label)} <i>[PRODUCT SITE — pending]</i></span>`;
+}
+
+function captionHTML(cta, cls, scopes) {
+  if (!cta.caption) return '';
+  if (scopes && scopes.indexOf(cta.captionScope) === -1) return '';
+  return `<p class="${cls}">${esc(cta.caption)}</p>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE PRODUCT BAND AND ITS PILLS — "more beefy … the logo of the product and
+   something more visually impressive representing the different value
+   offerings, consistent among all ten products." (client, Aug 31)
+
+   One treatment, two sizes: a navy header band carrying the product's own
+   lockup, and the ICP deck's use-case chips as quiet outline pills. Both read
+   straight off solutions.json (`lockup`, `valueProps`), so a matched card and
+   a cross-discovery card present the same product the same way, and adding a
+   product is a data edit.
+
+   The band's navy is the lockup PNGs' own background, sampled from their
+   corner pixel (#0A1743) and set in path.css — the image has no visible
+   edge inside the band, it simply IS the band. That band is also where the
+   "powered by" credit now lives: the old text chip was removed rather than
+   duplicated under the product's own logo.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* size: 'lg' (matched cards) | 'sm' (cross-discovery). solutions.json has one
+   entry with no lockup in the deck at all (Unlock) — the band still carries
+   the credit, set as a wordmark, rather than collapsing for that one product
+   and breaking the consistency the complaint is about. */
+function bandHTML(solution, size) {
+  if (!solution || !solution.name) return '';
+  const cls = 'pathband pathband--' + size;
+  if (solution.lockup) {
+    return `<div class="${cls}"><img class="pathband__lockup" src="${esc(solution.lockup)}"
+      alt="${esc(solution.name)}" loading="lazy"></div>`;
+  }
+  return `<div class="${cls}"><span class="pathband__word">${esc(solution.name)}</span></div>`;
+}
+
+function pillsHTML(solution, max) {
+  const all = (solution && Array.isArray(solution.valueProps)) ? solution.valueProps : [];
+  const list = (max ? all.slice(0, max) : all).filter(Boolean);
+  if (!list.length) return '';
+  return `<ul class="pathpills">${list.map(p => `<li class="pathpill">${esc(p)}</li>`).join('')}</ul>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    SURFACE D — "Teams solving this usually also ask about…"
 
    solutions.json names four surfaces; D is this row, and its own definition
@@ -278,7 +394,11 @@ function buildViewModel(session, decision) {
       title: capabilityTitle(m),
       body,
       why: m.why || 'matches what you told us',
-      credit: solution ? solution.name : null
+      /* the credit is the band's lockup now (see bandHTML) — the solution
+         itself travels with the card so the band, the pills and the card's
+         own CTA all read the same entry. */
+      credit: solution ? solution.name : null,
+      solution
     };
   });
 
@@ -308,13 +428,27 @@ function buildViewModel(session, decision) {
 
 /* ─────────────────────────── RENDER PIECES ─────────────────────────── */
 
-function cardHTML(m) {
+/* The matched card, rich: the product's own lockup on the deck navy, then on
+   white the capability title, the positioning opener, the value pills, the
+   why-matched line and the card's own CTA. The credit chip that used to close
+   this card is gone — the band above says the same thing in the product's own
+   type, and saying it twice was the duplication the band replaces. */
+function cardHTML(m, session, route) {
+  const s = m.solution;
+  const cta = s ? ctaFor(s, session, route, 'routing', 'See ' + s.name + ' →') : null;
   return `
     <article class="pathcard">
-      <h3>${esc(m.title)}</h3>
-      <p class="pathcard__body">${esc(m.body)}</p>
-      <p class="pathcard__why">Why matched: ${esc(m.why)}</p>
-      ${m.credit ? `<span class="pathcard__credit">powered by ${esc(m.credit)}</span>` : ''}
+      ${bandHTML(s, 'lg')}
+      <div class="pathcard__in">
+        <h3>${esc(m.title)}</h3>
+        <p class="pathcard__body">${esc(m.body)}</p>
+        ${pillsHTML(s)}
+        <p class="pathcard__why">Why matched: ${esc(m.why)}</p>
+        ${cta ? `<div class="pathcard__foot">
+          ${ctaHTML(cta, s, route, 'pathcard__cta')}
+          ${captionHTML(cta, 'pathcard__note', ['solution'])}
+        </div>` : ''}
+      </div>
     </article>`;
 }
 
@@ -324,16 +458,22 @@ function cardHTML(m) {
    the same disabled placeholder discipline as everywhere else, via the same
    productLinkHTML — which also means these links carry [data-handoff] and
    ride the existing handoff_click wiring with no second code path. */
+const CROSS_PILLS = 3;
+
 function crossCardHTML(c, session, route) {
   const label = 'See ' + c.name + ' →';
   return `
     <article class="crosscard">
-      <h3>${esc(c.name)}</h3>
-      <p class="crosscard__body">${esc(c.body)}</p>
-      ${c.whoFor ? `<p class="crosscard__who">${esc(c.whoFor)}</p>` : ''}
-      <div class="crosscard__foot">
-        ${c.reason ? `<p class="crosscard__tag">${esc(c.reason)}</p>` : ''}
-        ${productLinkHTML(c.solution, session, route, label, 'crosscard__link', 'cross-discovery')}
+      ${bandHTML(c.solution, 'sm')}
+      <div class="crosscard__in">
+        <h3>${esc(c.name)}</h3>
+        <p class="crosscard__body">${esc(c.body)}</p>
+        ${c.whoFor ? `<p class="crosscard__who">${esc(c.whoFor)}</p>` : ''}
+        ${pillsHTML(c.solution, CROSS_PILLS)}
+        <div class="crosscard__foot">
+          ${c.reason ? `<p class="crosscard__tag">${esc(c.reason)}</p>` : ''}
+          ${productLinkHTML(c.solution, session, route, label, 'crosscard__link', 'cross-discovery')}
+        </div>
       </div>
     </article>`;
 }
@@ -360,7 +500,16 @@ function threeColumnsHTML(vm) {
     : 'One conversation about this — brought to the right team, already briefed with your snapshot.';
 
   const ctaCls = recommended => 'btn ' + (recommended ? 'btn--gold' : 'btn--ghost') + ' pathcol__cta';
-  const trialCta = productLinkHTML(primarySolution, session, route, 'Start a trial', ctaCls(false));
+
+  /* "Start on your own" now states which of the three doors this visitor's
+     product actually has (see ctaFor). A real self-serve signup earns the
+     marigold treatment even in a column that is not the recommended one —
+     the client's point: if the trial exists, it should look like a trial. */
+  const selfCta = ctaFor(primarySolution, session, route, 'routing', 'Start a trial');
+  const selfCls = 'btn ' + (selfCta.kind === 'trial' ? 'btn--gold' : 'btn--ghost') + ' pathcol__cta';
+  const selfBody = selfCta.kind === 'pending'
+    ? 'Where a capability has a self-serve product, go straight to signup or trial — your snapshot comes with you.'
+    : 'Go straight to the product — your snapshot comes with you.';
 
   return `<div class="pathcols">
     <div class="pathcol${talkRecommended ? ' is-recommended' : ''}">
@@ -379,8 +528,11 @@ function threeColumnsHTML(vm) {
     <div class="pathcol">
       <p class="pathcol__eyebrow">SELF-SERVICE</p>
       <h3>Start on your own</h3>
-      <p class="pathcol__body">Where a capability has a self-serve product, go straight to signup or trial — your snapshot comes with you.</p>
-      ${trialCta}
+      <p class="pathcol__body">${esc(selfBody)}</p>
+      <div class="pathcol__act">
+        ${ctaHTML(selfCta, primarySolution, route, selfCls)}
+        ${captionHTML(selfCta, 'pathcol__note')}
+      </div>
     </div>
   </div>`;
 }
@@ -390,15 +542,24 @@ function threeColumnsHTML(vm) {
    consultative collapse to quiet text links. */
 function heroHTML(vm) {
   const { primarySolution, session, route } = vm;
-  const trial = productLinkHTML(primarySolution, session, route, 'Start your free trial →', 'btn btn--gold pathhero__cta');
+  const cta = ctaFor(primarySolution, session, route, 'routing', 'Start your free trial →');
+  /* the placeholder state is the one thing in this hero that must NOT look
+     marigold — an amber button reading "[PRODUCT SITE — pending]" is the exact
+     screenshot the client sent back. On navy the honest disabled treatment is
+     the void ghost, not the gold. */
+  const cls = 'btn ' + (cta.kind === 'pending' ? 'btn--ghost-void' : 'btn--gold') + ' pathhero__cta';
+  const sub = cta.kind === 'coming'
+    ? 'Your snapshot comes with you. Pick up where the product site takes over — no meeting in between.'
+    : 'Your account starts with your snapshot already loaded. Free to try; upgrade when it earns it.';
   return `
     <div class="pathhero">
       <div class="pathhero__text">
         <h2 class="pathhero__title">You can start right now — <span class="accent">no meeting needed.</span></h2>
-        <p class="pathhero__sub">Your account starts with your snapshot already loaded. Free to try; upgrade when it earns it.</p>
+        <p class="pathhero__sub">${esc(sub)}</p>
       </div>
       <div class="pathhero__act">
-        ${trial}
+        ${ctaHTML(cta, primarySolution, route, cls)}
+        ${captionHTML(cta, 'pathhero__note')}
         <button type="button" class="pathhero__walk" data-cta="expert">Prefer a walkthrough? Book a demo</button>
       </div>
     </div>
@@ -449,7 +610,7 @@ function sectionHTML(vm) {
           <p class="path__label">MATCHED CAPABILITIES</p>
           ${vm.matched.length >= 2 ? '<span class="path__note">Two capabilities matched · they work better together</span>' : ''}
         </div>
-        <div class="pathcards">${vm.matched.map(cardHTML).join('')}</div>
+        <div class="pathcards">${vm.matched.map(m => cardHTML(m, vm.session, vm.route)).join('')}</div>
       </div>` : ''}
 
       ${crossSectionHTML(vm)}
