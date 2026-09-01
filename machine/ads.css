@@ -11,6 +11,9 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 body.vAds{background:var(--paper)}
+/* every CTA on this page is a real <a> (a hub is navigation, not a form), and
+   .btn was written for <button> — so the default underline has to come off */
+body.vAds a.btn{text-decoration:none}
 
 .adhub{padding:clamp(30px,5vh,56px) clamp(20px,4vw,48px) clamp(56px,9vh,104px)}
 .adhub__in{max-width:1180px;margin:0 auto}
