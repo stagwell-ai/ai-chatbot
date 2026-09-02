@@ -248,7 +248,8 @@ function detailHTML(o) {
     return `<div class="pick__detail-empty">
       ${emptyArtHTML()}
       <p class="pick__empty-h">${esc(COPY.emptyTitle || COPY.listLabel || '')}</p>
-      ${COPY.emptyLine ? `<p class="pick__empty-l">${esc(COPY.emptyLine)}</p>` : ''}
+      ${COPY.emptyLine && !has(COPY.emptyImage)
+        ? `<p class="pick__empty-l">${esc(COPY.emptyLine)}</p>` : ''}
     </div>`;
   }
   const tags = (o.goodFor || []).filter(Boolean);

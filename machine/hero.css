@@ -134,6 +134,10 @@
   align-items: center; text-align: center; gap: 4px; padding: 2px 0; width: 100%; }
 .pick__illo { width: 100%; max-width: 430px; height: auto; display: block;
   font-family: var(--sans); }
+/* the artwork carries its own small type, so give it every pixel the fold
+   can spare — but only where the fold can spare them */
+@media (min-height: 820px) { .pick__illo { max-width: 486px; } }
+@media (min-height: 1000px) { .pick__illo { max-width: 520px; } }
 .pick__illo--img { border-radius: var(--r); mix-blend-mode: multiply; }
 
 .pick__illo-g1 { stop-color: var(--teal); stop-opacity: .14; }

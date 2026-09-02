@@ -121,8 +121,9 @@
     "title": "What do you need help solving today?",
     "sub": "Pick what you're up against. The agent reads your brand first, then points you at the products that fit.",
     "listLabel": "Choose what you're solving",
-    "emptyImage": null,
-    "emptyImageNote": "drop a file at e.g. /assets/img/hero/agent.png and put its path here — machine/hero.js prefers it over the drawn illustration, no code change. Null renders the built-in SVG, which is composed from emptySays and emptySteps below.",
+    "emptyImage": "/assets/img/hero/agent.webp",
+    "emptyImageAlt": "How the agent works: it reads AI search and brand signals, understands your brand, sees where you stand, finds the right opportunities and recommends what to do next — producing performance and opportunity reads.",
+    "emptyImageNote": "the client's own artwork (source PNG beside it at agent.png, 1536x1024; the .webp is that file at 1100px and 30KB). machine/hero.js prefers this over its built-in drawing — set to null to go back to the SVG, which is composed from emptySays and emptySteps below.",
     "emptySays": "I analyze your brand and find the areas where AI can help most.",
     "emptySteps": [
       "Understand your brand",
