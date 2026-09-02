@@ -48,10 +48,11 @@
       "landing": "S2 product-branded pattern",
       "opener": "Every team has one job they'd hand to an AI tomorrow if they trusted it. What's yours?",
       "chips": [
-        "Drafting and sharpening copy",
-        "Pressure-testing our messaging",
-        "Social content at volume",
-        "Keeping AI use secure and governed",
+        "Drafting and sharpening our copy",
+        "Making images and video from a brief",
+        "Running research and competitive digests",
+        "Building assistants the whole team can use",
+        "Getting our AI use secure and sanctioned",
         "What else fits my problem?"
       ],
       "prefill": {
@@ -60,7 +61,7 @@
       },
       "routeBias": "[to confirm with TMC] — self-serve trial if Agent Cloud ships one, otherwise demo",
       "status": "chips_drafted",
-      "chipsNote": "Drawn from Agent Cloud's published marketing-toolkit teammates and the governance challenge its own page leads with (reference/companies/README.md)."
+      "chipsNote": "One chip per service Agent Cloud actually sells, in the visitor's words: the toolkit's copy and messaging teammates; the image and video models on the platform (Veo3, Gemini 2.5, GPT-5); the research and social-listening integrations; the custom assistants its own testimonial calls the differentiator (500+ built); and the governance pillar — data never trains the LLMs, role-based access, one contract in place of unsanctioned tools. Sources: data/products.json valueProps and reference/companies/README.md."
     },
     {
       "id": "targeting-machine",
