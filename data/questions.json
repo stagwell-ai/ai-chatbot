@@ -597,6 +597,7 @@
     "emailCopy": "Get the full report — and keep it updated.",
     "consentLine": "By sending, you agree someone from Stagwell can follow up about these results.",
     "consentModel": "one decision, not two — sending the report IS the consent, stated under the button; there is no separate checkbox to tick",
+    "emailPrefill": "the field arrives filled with the work_email the visitor already gave at the front door or in the conversation, and the line under the headline names where the report is going; it stays editable, and the submit reads the field, never the slot",
     "bandTitle": "One read. The whole suite behind it.",
     "bandAccent": "The next step is the people who run them.",
     "bandSub": "Brand tracking, competitive benchmarking, creator marketing, AI-search visibility, consumer research, voice agents — matched to your problem by strategists who work with them every day.",

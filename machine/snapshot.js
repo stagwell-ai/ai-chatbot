@@ -156,15 +156,37 @@ function buildTiles(actions, domain) {
   }).join('');
 }
 
-function captureFormHTML() {
+/* THE ADDRESS THEY ALREADY GAVE US.
+
+   Almost every visitor reaches the reveal having typed a work email at the
+   front door (machine/hero.js) or in the conversation (machine/convo.js) —
+   that is what put work_email in the session, and it is what the whole read
+   above was built from. Asking for it again reads as though the page wasn't
+   listening, so the field arrives filled and the line under the headline
+   says where the report is going. It stays an ordinary editable input: a
+   visitor who'd rather send it somewhere else just types over it, and the
+   submit handler reads the field, never the slot. machine/lead.js prefills
+   its own modal from the same slot for the same reason. */
+function knownEmail(session) {
+  try {
+    const s = (session && session.slots) ||
+      (window.SAI && window.SAI.session && window.SAI.session.slots);
+    const v = s && s.work_email ? String(s.work_email).trim() : '';
+    return isValidEmail(v) ? v : '';
+  } catch (e) { return ''; }
+}
+
+function captureFormHTML(session) {
+  const known = knownEmail(session);
   return `
     <div class="snapcap__text">
       <b>Get the full report — and keep it updated.</b>
-      <span>The complete snapshot as a PDF, plus what we'd do about it.</span>
+      <span>The complete snapshot as a PDF, plus what we'd do about it${
+        known ? ` — going to ${esc(known)} unless you change it` : ''}.</span>
     </div>
     <form class="snapcap__form" id="snapCaptureForm" novalidate>
       <div class="snapcap__field">
-        <input class="snapcap__email" id="snapEmail" type="email" placeholder="Work email" aria-label="Work email" autocomplete="email">
+        <input class="snapcap__email" id="snapEmail" type="email" placeholder="Work email" aria-label="Work email" autocomplete="email" value="${esc(known)}">
         <p class="snapcap__hint" id="snapEmailHint" hidden>That doesn't look like a work email yet.</p>
       </div>
       <!-- every email ask carries a phone ask; never required, so it can't
@@ -248,7 +270,7 @@ function sectionHTML(data, session) {
         </article>
       </div>
 
-      <div class="snapcap" id="snapCapture">${captureFormHTML()}</div>
+      <div class="snapcap" id="snapCapture">${captureFormHTML(session)}</div>
 
       <p class="snap__printfoot">Demo print view — designed PDF export ships with the workspace. Figures are illustrative.</p>
     </div>
