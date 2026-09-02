@@ -660,6 +660,33 @@ function visitorInteracted() {
   return false;
 }
 
+/* the same seeding machine/hero.js does at the front door, for the visitor
+   who came in through an ad landing instead: the company comes out of the
+   address's domain, so q2 confirms it rather than asking from scratch, and
+   the event carries the domain only — never the address. */
+const LEAD_KEY = 'sai-lead-email';
+
+function seedStoredEmail() {
+  let address = null;
+  try {
+    address = sessionStorage.getItem(LEAD_KEY);
+    sessionStorage.removeItem(LEAD_KEY);
+  } catch (e) { return; }
+  if (!address) return;
+
+  const m = String(address).trim().toLowerCase()
+    .match(/^[^\s@]+@([a-z0-9.-]+\.[a-z]{2,})$/);
+  const domain = m ? m[1] : null;
+  const S = window.SAI;
+  if (!domain || !S || typeof S.setSlot !== 'function') return;
+
+  try {
+    S.setSlot('work_email', String(address).trim(), 'visitor');
+    if (!S.session.slots.company_domain) S.setSlot('company_domain', domain, 'work_email');
+    S.events.emit('capture_email', { domain, kind: 'campaign' });
+  } catch (e) { /* a refused slot is not worth losing the conversation over */ }
+}
+
 async function autostart() {
   if (autostarted) return false;
   const req = autostartRequest();
@@ -675,6 +702,14 @@ async function autostart() {
 
   try { if (window.SAI && window.SAI.ready) await window.SAI.ready; } catch (e) { /* carry on */ }
   if (!window.SAIFLOW) return false;
+
+  /* THE AD LANDING'S EMAIL. /p/{id} asks for a business email before it hands
+     the visitor here (machine/campaign.js), and passes it through
+     sessionStorage rather than the URL — an address in a query string is
+     visible in the address bar, the history and any referrer. Consumed
+     exactly once: the key is cleared whether or not the seeding works, so a
+     later visit never inherits a stale one. */
+  seedStoredEmail();
 
   /* a bare autostart=1 only means anything when an ad actually briefed this
      session — otherwise there is nothing to open with */

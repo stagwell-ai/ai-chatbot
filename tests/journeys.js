@@ -204,6 +204,11 @@ async function j2(page, check, opts) {
     await page.locator('#agentPanel .chip:text-is("What else fits my problem?")').count() === 1);
   await H.shot(page, 'j2-product-landing');
 
+  /* the ad landing captures the business email at the start of the journey
+     (client, Sep 2), so it is filled before anything can hand off */
+  check.ok('the panel asks for a business email', await page.$('#askEmail') !== null);
+  await page.fill('#askEmail', 'dana@nike.com');
+
   /* a chip tap on the product page is a HANDOFF to the master page with the
      conversation pre-armed (?utm_campaign=…&autostart=1&q=…) */
   await Promise.all([
@@ -215,6 +220,11 @@ async function j2(page, check, opts) {
 
   await H.waitQuestion(page, 'q2', 30000);
   check.eq('autostarted into /chat', new URL(page.url()).pathname, '/chat');
+  check.eq('the email rode across, so q2 confirms the site rather than asking',
+    (await H.flowState(page)).mode, 'confirm');
+  check.eq('and the company came out of its domain',
+    await page.evaluate(() => window.SAI.session.slots.company_domain), 'nike.com');
+  await H.confirmSite(page);
 
   const thread = await page.$$eval('#thread .ai__text, #thread .bubble', e => e.map(x => x.textContent.trim()));
   check.ok('the opener exchange is REPLAYED, not re-asked',
@@ -225,7 +235,6 @@ async function j2(page, check, opts) {
   check.eq('attribution captured silently on entry', attrib.utm_campaign, 'targeting-machine');
   check.eq('product interest pre-filled from the ad', attrib.product_interest, 'targeting_machine');
 
-  await H.typeAnswer(page, 'nike.com');
   await H.waitQuestion(page, 'q3', 30000);
   await H.clickChip(page, 'Director / VP');
   const mode = await H.answerSize(page, { confirm: "That's right", ask: '2,500+' });

@@ -54,6 +54,93 @@
   };
 
   const arr = v => (Array.isArray(v) ? v : []);
+
+  /* ── THE EMAIL, AT THE START OF THE JOURNEY ───────────────────────────────
+     The landing chooser takes a business email before the conversation opens;
+     an ad landing is the same journey through a different door, so it asks
+     the same thing here (client, Sep 2: "rework the 4 landing pages from the
+     ads so they capture the email as part of the start of the journey").
+
+     COPY IS NOT DUPLICATED: the label, the refusals and the personal-domain
+     list all come from data/questions.json's hero block — one edit changes
+     both doors.
+
+     THE ADDRESS DOES NOT TRAVEL IN THE URL. This page hands off by navigating
+     to "/?utm_campaign=…", and a query string is visible in the address bar,
+     the history and any referrer. It goes through sessionStorage instead —
+     same origin, invisible, and machine/convo.js consumes it exactly once on
+     arrival (see AUTOSTART there). */
+  const LEAD_KEY = 'sai-lead-email';
+
+  let HERO = null;                    /* the hero block, once data lands */
+
+  const heroCopy = () => HERO || {};
+  const heroErr = key => {
+    const e = (heroCopy().errors) || {};
+    return e[key] || {
+      noEmail: 'We need your business email to get started.',
+      badEmail: "That doesn't look like an email address yet — check it over.",
+      personalEmail: 'That is a personal address — please use your work email.',
+      noText: "Tell the agent what you're solving and it will take it from there."
+    }[key] || '';
+  };
+
+  const PERSONAL_FALLBACK = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com',
+    'icloud.com', 'aol.com', 'live.com', 'proton.me', 'protonmail.com', 'gmx.com', 'mail.com'];
+
+  function emailDomain(value) {
+    const m = String(value == null ? '' : value).trim().toLowerCase()
+      .match(/^[^\s@]+@([a-z0-9.-]+\.[a-z]{2,})$/);
+    return m ? m[1] : null;
+  }
+
+  /* null when the address is usable, else the error key */
+  function emailProblem(value) {
+    const raw = String(value == null ? '' : value).trim();
+    if (!raw) return 'noEmail';
+    const domain = emailDomain(raw);
+    if (!domain) return 'badEmail';
+    const list = arr(heroCopy().personalDomains).length
+      ? heroCopy().personalDomains : PERSONAL_FALLBACK;
+    return list.indexOf(domain) !== -1 ? 'personalEmail' : null;
+  }
+
+  function showEmailError(key) {
+    const box = document.getElementById('askErr');
+    const wrap = document.getElementById('askEmailWrap');
+    if (box) { box.textContent = heroErr(key); box.hidden = false; }
+    if (wrap && key !== 'noText') {
+      wrap.classList.add('is-bad');
+      wrap.classList.remove('is-shake');
+      void wrap.offsetWidth;
+      wrap.classList.add('is-shake');
+      setTimeout(() => wrap.classList.remove('is-shake'), 460);
+    }
+    const el = document.getElementById(key === 'noText' ? 'askInput' : 'askEmail');
+    if (el) { try { el.focus(); } catch (e) { /* never fatal */ } }
+  }
+
+  function clearEmailError() {
+    const box = document.getElementById('askErr');
+    const wrap = document.getElementById('askEmailWrap');
+    if (box) { box.hidden = true; box.textContent = ''; }
+    if (wrap) wrap.classList.remove('is-bad');
+  }
+
+  /* the gate every start of the journey passes through: no valid business
+     email, no handoff. Returns the address, or null having said why. */
+  function takeEmail() {
+    const input = document.getElementById('askEmail');
+    const value = input ? input.value : '';
+    const problem = emailProblem(value);
+    if (problem) { showEmailError(problem); return null; }
+    clearEmailError();
+    const address = String(value).trim();
+    try { sessionStorage.setItem(LEAD_KEY, address); }
+    catch (e) { /* private mode: the conversation still opens, just without it */ }
+    return address;
+  }
+
   const has = v => !!(v && String(v).trim());
 
   function resolveCampaignId() {
@@ -445,6 +532,14 @@
                        placeholder="What are you trying to solve?"
                        aria-label="Tell the agent what you are trying to solve">
               </div>
+              <label class="askform__email" id="askEmailWrap">
+                <span class="vh">${esc(heroCopy().emailLabel || 'My business email')}</span>
+                <input class="askform__input askform__email-input" id="askEmail" type="email"
+                       inputmode="email" autocomplete="email"
+                       placeholder="${esc(heroCopy().emailLabel || 'My business email')}"
+                       aria-describedby="askErr">
+              </label>
+              <p class="askform__err" id="askErr" role="alert" hidden></p>
               <button class="btn btn--gold askform__send" type="submit">Ask the agent</button>
             </form>
 
@@ -493,8 +588,18 @@
       panel.addEventListener('click', e => {
         const btn = e.target.closest('.chip');
         if (!btn || btn.disabled) return;
+        /* a chip is a start of the journey too, so it asks for the email
+           first — same gate, same words as the free-text submit */
+        if (!takeEmail()) return;
         handoff(id, btn.dataset.label || btn.textContent);
       });
+
+      const emailEl = document.getElementById('askEmail');
+      if (emailEl) {
+        emailEl.addEventListener('input', () => {
+          if (!emailProblem(emailEl.value)) clearEmailError();
+        });
+      }
     }
 
     const form = document.getElementById('askForm');
@@ -503,7 +608,8 @@
         e.preventDefault();
         const input = document.getElementById('askInput');
         const text = input ? input.value.trim() : '';
-        if (!text) { input && input.focus(); return; }
+        if (!text) { showEmailError('noText'); return; }
+        if (!takeEmail()) return;
         handoff(id, text);
       });
     }
@@ -552,6 +658,8 @@
 
   /* ── boot ─────────────────────────────────────────────────────────────── */
   function boot(data, products) {
+    /* the landing chooser's own copy — label, refusals, personal domains */
+    HERO = (data && data.questions && data.questions.hero) || null;
     const campaignsList = (data && data.campaigns && Array.isArray(data.campaigns.campaigns))
       ? data.campaigns.campaigns : [];
     const solutionsList = (data && data.solutions && Array.isArray(data.solutions.solutions))
