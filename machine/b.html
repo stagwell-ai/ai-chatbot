@@ -127,6 +127,15 @@
     <div class="hero2__in">
       <p class="eyebrow" id="heroEyebrow"><i class="pulse"></i>Stagwell.AI · Agentic solutions grounded in real-world marketing expertise</p>
       <h1 class="display" id="hero2Title">What do you need help <span class="accent">solving today?</span></h1>
+
+      <!-- the explainer (client, Sep 2): a small thumbnail, a big play button,
+           between the headline and the sub-line. machine/video.js opens it in
+           the shadow box at the end of the page. -->
+      <button type="button" class="hero2__play" id="heroPlay" aria-haspopup="dialog" aria-controls="videoBox">
+        <span class="hero2__thumb"><img src="/assets/video/explainer-poster.jpg" alt="" width="640" height="360" decoding="async"><i class="hero2__playbtn" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></i></span>
+        <span class="hero2__playtext"><b id="heroPlayLabel">Watch: what is Stagwell.AI</b><small id="heroPlayMeta">1:53 · sound on</small></span>
+      </button>
+
       <p class="hero2__sub" id="hero2Sub">Tell the agent what you’re trying to do — or just paste your website — and it will point you to the right solution, with a live snapshot of your brand to show for it.</p>
 
       <!-- the chooser (machine/hero.js) renders here; the chat panel below is
@@ -260,8 +269,22 @@
 <script src="/machine/snapshot.js"></script>
 <script src="/machine/path.js"></script>
 <!-- the landing chooser: renders from data/questions.json, hands to convo.js -->
+<!-- ─────────────── THE FILM, in a shadow box ─────────────── -->
+<div class="vbox" id="videoBox" role="dialog" aria-modal="true" aria-label="What is Stagwell.AI — the explainer" hidden>
+  <div class="vbox__scrim" data-vbox-close></div>
+  <div class="vbox__in">
+    <button type="button" class="vbox__close" id="videoClose" aria-label="Close the video" data-vbox-close>
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <video id="videoEl" controls playsinline preload="none" poster="/assets/video/explainer-poster.jpg">
+      <source src="/assets/video/stagwell-ai-explainer.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+
 <script src="/machine/hero.js"></script>
 <script src="/machine/about.js"></script>
+<script src="/machine/video.js"></script>
 <script src="/machine/directory.js"></script>
 <script src="/machine/shared.js"></script>
 <!-- the shared lead-capture modal; b.js's openModal() delegates to it -->

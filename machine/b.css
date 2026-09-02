@@ -62,7 +62,11 @@ body.nav-open .mnav{transform:none}
 .mnav__foot .btn{justify-content:center;width:100%}
 
 /* ── Hero ─────────────────────────────────────────────────── */
-.hero2{position:relative;padding:clamp(40px,6vh,72px) clamp(20px,4vw,48px) clamp(48px,7vh,84px);
+/* the whole hero — eyebrow, headline, the film, the sub-line, the chooser with
+   its Ask AI — sits above the fold (client, Sep 2: "nothing should be below the
+   fold"). Vertical rhythm is therefore tight and viewport-aware; see the
+   short-viewport rule at the end of this block. */
+.hero2{position:relative;padding:clamp(18px,3vh,40px) clamp(20px,4vw,48px) clamp(20px,3vh,40px);
   background:var(--glow),var(--nodes) 0 0/320px 320px;
   overflow:hidden;scroll-margin-top:76px;
   min-height:calc(100dvh - 76px);display:flex;align-items:center}
@@ -77,9 +81,42 @@ body.nav-open .mnav{transform:none}
              radial-gradient(118% 100% at 50% 42%,#000 30%,transparent 88%);
   -webkit-mask-composite:source-in;mask-composite:intersect}
 .hero2__in{position:relative;z-index:1;width:100%;max-width:940px;margin:0 auto;text-align:center;
-  display:flex;flex-direction:column;align-items:center;gap:22px}
+  display:flex;flex-direction:column;align-items:center;gap:14px}
+/* the headline sits up against the eyebrow; the sub-line drops below the film */
+.hero2 .display{margin-top:-4px}
+.hero2__sub{margin-top:2px}
 /* once the conversation starts the copy steps back so the panel owns the screen */
-.hero2.is-chatting .eyebrow,.hero2.is-chatting .hero2__sub{display:none}
+.hero2.is-chatting .eyebrow,.hero2.is-chatting .hero2__sub,.hero2.is-chatting .hero2__play{display:none}
+
+/* ── the film: a small thumbnail, a big play button ── */
+.hero2__play{display:inline-flex;align-items:center;gap:16px;padding:6px 18px 6px 6px;
+  border-radius:999px;background:var(--surface);border:1px solid var(--line-2);color:var(--ink);
+  text-align:left;cursor:pointer;transition:border-color var(--d-1) var(--ease-io),background var(--d-1) var(--ease-io),transform var(--d-2) var(--ease)}
+.hero2__play:hover{border-color:var(--ink-3);background:var(--surface-2)}
+.hero2__play:hover .hero2__playbtn{transform:scale(1.06);background:#FF8140}
+.hero2__play:active{transform:translateY(1px)}
+.hero2__thumb{position:relative;flex:none;width:132px;height:74px;border-radius:999px 10px 10px 999px;overflow:hidden;
+  display:grid;place-items:center;background:var(--paper)}
+.hero2__thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;filter:saturate(1.1)}
+.hero2__playbtn{position:relative;width:60px;height:60px;border-radius:50%;background:var(--orange);color:var(--navy);
+  display:grid;place-items:center;box-shadow:0 8px 24px rgba(255,109,36,.35);transition:transform var(--d-2) var(--ease),background var(--d-1) var(--ease-io)}
+.hero2__playbtn svg{margin-left:3px}
+.hero2__playtext{display:flex;flex-direction:column;gap:2px;line-height:1.25}
+.hero2__playtext b{font-weight:600;font-size:var(--t-body)}
+.hero2__playtext small{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.hero2__play{animation:heroIn 800ms var(--ease) both;animation-delay:200ms}
+
+/* short viewports (a 1280×720 laptop): the thumbnail goes, the play button stays big */
+@media (max-height:820px) and (min-width:800px){
+  .hero2{padding-top:10px;padding-bottom:12px}
+  .hero2__in{gap:8px}
+  .hero2 .display{font-size:clamp(1.75rem,3.1vw,2.5rem)}
+  .hero2__thumb{width:60px;height:60px;border-radius:50%}
+  .hero2__thumb img{display:none}
+  .hero2__playbtn{width:60px;height:60px;box-shadow:none}
+  .hero2__play{padding:0 16px 0 0}
+  .hero2__sub{max-width:72ch}
+}
 .hero2.is-chatting .display{font-size:clamp(1.5rem,2.6vw,2.125rem);margin-bottom:2px}
 .hero2.is-chatting .chat{margin-top:0}
 .hero2 .eyebrow{justify-content:center;min-height:1.2em}
@@ -644,3 +681,22 @@ body.vB .about[hidden]{display:none}
 .about__cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:8px}
 .about__cta span{font-size:var(--t-sm);color:var(--ink-2)}
 @media (max-width:640px){ .tier__facts div{grid-template-columns:1fr;gap:2px} }
+
+
+/* ═══════════════════════════════════════════════════════════
+   THE FILM — shadow box (machine/video.js)
+   ═══════════════════════════════════════════════════════════ */
+.vbox{position:fixed;inset:0;z-index:85;display:grid;place-items:center;padding:clamp(12px,3vw,40px)}
+.vbox[hidden]{display:none}
+.vbox__scrim{position:absolute;inset:0;background:rgba(3,12,18,.86);backdrop-filter:blur(6px)}
+.vbox__in{position:relative;width:min(1120px,100%);aspect-ratio:16/9;background:#000;border-radius:var(--r-lg);
+  overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.6);border:1px solid var(--line-2);
+  animation:vboxIn 360ms var(--ease) both}
+.vbox__in video{width:100%;height:100%;display:block;background:#000}
+.vbox__close{position:absolute;top:10px;right:10px;z-index:2;width:40px;height:40px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(7,26,36,.78);color:var(--ink);border:1px solid var(--line-2);
+  transition:background var(--d-1) var(--ease-io)}
+.vbox__close:hover{background:var(--blue)}
+@keyframes vboxIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.vbox__in{animation:none}}
+body.vbox-open{overflow:hidden}

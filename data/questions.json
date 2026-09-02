@@ -585,7 +585,15 @@
     "moreLabel": "Or pick one of these:",
     "morePlaceholder": "Anything else the agent should know (optional)",
     "siteLabel": "Your website (optional)",
-    "siteHint": "A website starts the read before you answer another question; leave it blank and the agent simply asks."
+    "siteHint": "A website starts the read before you answer another question; leave it blank and the agent simply asks.",
+    "video": {
+      "src": "/assets/video/stagwell-ai-explainer.mp4",
+      "poster": "/assets/video/explainer-poster.jpg",
+      "label": "Watch: what is Stagwell.AI",
+      "duration": "1:53",
+      "title": "What is Stagwell.AI — the explainer",
+      "note": "Sits between the headline and the sub-line (client, Sep 2): a small thumbnail with a big play button; opens the film in a shadow box with the browser's own controls. StagwellAI_Explainer_v2 (720p preview, 1:53)."
+    }
   },
   "captureMoment": {
     "when": "right before the snapshot — the gate. Never at the door (client, Sep 2), and the band below the snapshot only asks if the gate was skipped.",
