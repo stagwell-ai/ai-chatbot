@@ -128,10 +128,55 @@ function rowHTML(o, i) {
     </button>`;
 }
 
+/* THE EMPTY PANE — what stands there before a row is chosen.
+
+   Meta puts an illustration in this space; ours was a line of grey text,
+   which reads as a hole in the card ("it shouldn't be blank and boring").
+   So the pane shows the thing the visitor is about to get: the snapshot,
+   abstracted — bars, a trend line through them, a momentum ring.
+
+   It is DRAWN, not loaded: inline SVG in the brand's own colours, so there
+   is no asset to fetch, nothing to go stale, and it scales with the card.
+   It is also deliberately abstract — no numbers, no axis labels, nothing a
+   reader could mistake for a claim about anybody's brand. */
+const EMPTY_ART = `
+<svg class="pick__illo" viewBox="0 0 320 200" role="img" aria-hidden="true" fill="none">
+  <defs>
+    <linearGradient id="pickGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" class="pick__illo-g1"/><stop offset="1" class="pick__illo-g2"/>
+    </linearGradient>
+  </defs>
+  <circle cx="252" cy="42" r="58" fill="url(#pickGlow)"/>
+  <circle cx="62" cy="168" r="40" fill="url(#pickGlow)"/>
+
+  <rect class="pick__illo-card" x="38" y="28" width="244" height="146" rx="16"/>
+
+  <g class="pick__illo-bars">
+    <rect class="pick__illo-bar" x="68"  y="112" width="26" height="40" rx="6" style="--d:0ms"/>
+    <rect class="pick__illo-bar" x="108" y="90"  width="26" height="62" rx="6" style="--d:70ms"/>
+    <rect class="pick__illo-bar" x="148" y="102" width="26" height="50" rx="6" style="--d:140ms"/>
+    <rect class="pick__illo-bar pick__illo-bar--you" x="188" y="66" width="26" height="86" rx="6" style="--d:210ms"/>
+  </g>
+  <line class="pick__illo-base" x1="58" y1="152.5" x2="262" y2="152.5"/>
+
+  <polyline class="pick__illo-line" points="81,122 121,100 161,110 201,76"/>
+  <circle class="pick__illo-dot" cx="81"  cy="122" r="3.4"/>
+  <circle class="pick__illo-dot" cx="121" cy="100" r="3.4"/>
+  <circle class="pick__illo-dot" cx="161" cy="110" r="3.4"/>
+  <circle class="pick__illo-dot pick__illo-dot--you" cx="201" cy="76" r="4.6"/>
+
+  <g transform="translate(238,52)">
+    <circle class="pick__illo-ring-bg" r="21"/>
+    <circle class="pick__illo-ring" r="21" transform="rotate(-90)"/>
+  </g>
+</svg>`;
+
 function detailHTML(o) {
   if (!o) {
     return `<div class="pick__detail-empty">
-      <p>${esc(COPY.listLabel || '')}</p>
+      ${EMPTY_ART}
+      <p class="pick__empty-h">${esc(COPY.emptyTitle || COPY.listLabel || '')}</p>
+      ${COPY.emptyLine ? `<p class="pick__empty-l">${esc(COPY.emptyLine)}</p>` : ''}
     </div>`;
   }
   const tags = (o.goodFor || []).filter(Boolean);

@@ -113,6 +113,8 @@
     "title": "What do you need help solving today?",
     "sub": "Pick what you're up against. The agent reads your brand first, then points you at the products that fit.",
     "listLabel": "Choose what you're solving",
+    "emptyTitle": "Pick one and I'll show you what it covers.",
+    "emptyLine": "Whichever you choose, the agent reads your brand first — where you stand, how AI assistants describe you, where your signal is moving — then names the products that fit.",
     "emailLabel": "My business email",
     "emailHint": "We read your company from its domain — that's how the analysis starts before you answer another question.",
     "submit": "Ask AI",

@@ -955,9 +955,14 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .bcta h2 span{color:var(--on-void-2)}
 .bcta__lede{color:rgba(234,242,245,.76);margin-top:22px;max-width:54ch;font-size:var(--t-lede);line-height:1.6}
 .bcta__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(206px,1fr));gap:14px;margin-top:52px}
+/* one of these is an <a> now ("See all ten products" goes to /products), so
+   the card resets link styling itself — inherited blue-and-underlined on a
+   navy band is unreadable */
 .ctacard{padding:28px;display:flex;flex-direction:column;gap:10px;text-align:left;
   background:rgba(234,242,245,.04);border:1px solid var(--line-void);border-radius:var(--r-lg);
+  color:var(--on-void);text-decoration:none;font-family:var(--sans);cursor:pointer;
   transition:background var(--d-2) var(--ease),border-color var(--d-2) var(--ease),transform var(--d-2) var(--ease)}
+.ctacard:hover,.ctacard:visited,.ctacard:focus{color:var(--on-void);text-decoration:none}
 .ctacard:hover{background:rgba(234,242,245,.08);border-color:rgba(234,242,245,.28);transform:translateY(-2px)}
 .ctacard b{font-size:1.0625rem;font-weight:500;letter-spacing:-.012em;display:flex;align-items:center;gap:9px}
 .ctacard b svg{opacity:0;transform:translateX(-5px);transition:all var(--d-2) var(--ease)}
