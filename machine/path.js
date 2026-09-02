@@ -597,9 +597,12 @@ function heroHTML(vm) {
     </div>`;
 }
 
-/* route === 'follow_up' — routing.json: "Snapshot by email + light
-   follow-up; no meeting push." A quiet card stands where the recommended
-   column would be; the other two paths collapse to text links. */
+/* route === 'follow_up' — RETIRED Sep 2. routing.json no longer routes anyone
+   here ("we want everyone to end on book a demo, start a free trial or talk
+   to Stagwell"); the renderer stays only so a follow_up cell written back into
+   routing.json by hand still gets its designed quiet card rather than a blank.
+   The old rule: a quiet card where the recommended column would be; the other
+   two paths collapse to text links. */
 /* did a report actually get an address? snapshot-data.js emits
    journey_converted {kind:'capture'} on Send my report, and capture_declined
    on "No thanks". The follow_up copy used to promise "the report's on its
@@ -776,7 +779,9 @@ function show(session) {
   const S = eng();
   let decision;
   try { decision = S ? S.route() : null; } catch (e) { decision = null; }
-  if (!decision) decision = { route: 'follow_up', primaryDomain: null, tier: null, matched: [], override: null, cellNote: null };
+  /* a broken engine still gets a screen: the demo is the one ask every product
+     can honestly make (follow_up, the old fallback, was retired Sep 2) */
+  if (!decision) decision = { route: 'demo', primaryDomain: null, tier: null, matched: [], override: null, cellNote: null };
 
   const vm = buildViewModel(session, decision);
   vm.decision = decision;

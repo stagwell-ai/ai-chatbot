@@ -159,6 +159,12 @@ body.vB .prompt__field{height:54px;padding:0 6px 0 18px;border-radius:var(--r-fu
 body.vB .prompt__field:focus-within{background:var(--surface);border-color:var(--line-2)}
 body.vB .prompt__send{width:42px;height:42px}
 body.vB .prompt__input{font-size:1rem}
+/* after the read the composer closes and its button becomes the door (convo.js
+   closeComposer): the field reads as settled, not broken, and the button keeps
+   its full label on a phone */
+body.vB .prompt.is-done .prompt__field{background:var(--surface);border-color:var(--line)}
+body.vB .prompt__input:disabled{opacity:1;color:var(--ink-3);cursor:default;-webkit-text-fill-color:var(--ink-3)}
+body.vB .prompt.is-done .prompt__input::placeholder{color:var(--ink-3)}
 
 /* the one prompt box's one action: a labeled marigold button, always live —
    per brand.json, marigold bg always pairs with navy text, never white */

@@ -178,8 +178,9 @@ function skipReason(id) {
      1. there is no primary domain, or questions.json has no byDomain copy for
         it — there is no question to ask;
      2. an override already owns the decision (routing.json overrides_in_order:
-        two or more domains, "just exploring", c-suite at mid-market or
-        enterprise, or a visitor who asked for a human). The matrix is not
+        two or more domains, c-suite at mid-market or enterprise, or a visitor
+        who asked for a human — "just exploring" was retired Sep 2 with the
+        follow_up route). The matrix is not
         being consulted at all, so no detail answer can move the route;
      3. the primary domain's three tier cells all route to the same place. Q6
         decides between cells; if every cell says the same word, the answer is
@@ -195,7 +196,6 @@ function q6SkipReason() {
   if (!primary || !q6Copy(primary)) return 'no_adaptive_question';
 
   if (domains.length >= 2) return 'override_multi_domain';
-  if (s.timing_intent === 'exploring') return 'override_exploring';
   const tier = S.resolveTier();
   if (s.role_seniority === 'c_suite' && (tier === 'mid_market' || tier === 'enterprise')) {
     return 'override_c_suite';
@@ -348,8 +348,13 @@ const ROLE_PATTERNS = [
   ['manager', /(manager|marketing lead|team lead|specialist|coordinator|analyst|associate)/]
 ];
 
+/* Exploring language ("just looking", "no timeline") used to be its own value
+   with its own route. Since Sep 2 there is no nurture route to send it to, so
+   it reads as the loosest timing that still has a destination: this_year.
+   The pattern stays first so "not sure yet" is not swallowed by the year
+   pattern's looser matches. */
 const TIMING_PATTERNS = [
-  ['exploring', /(just (looking|exploring|browsing|curious)|exploring|no timeline|not sure yet|kicking the tires|early days|window shopping|someday)/],
+  ['this_year', /(just (looking|exploring|browsing|curious)|exploring|no timeline|not sure yet|kicking the tires|early days|window shopping|someday)/],
   ['now', /(this quarter|\bq[1-4]\b|asap|right now|immediately|next month|urgent|yesterday|straight away|as soon as)/],
   ['this_year', /(this year|next year|year ?end|\bh[12]\b|next (6|six) months|second half|first half)/]
 ];
@@ -674,8 +679,8 @@ function questionView() {
 /* ── progress ──
    Total is computed dynamically: the questions already put to the visitor
    plus the ones still ahead that don't currently look skippable. It is a
-   forecast and it is allowed to move — answering "just exploring" retires q6
-   on the spot, and the bar should say so. */
+   forecast and it is allowed to move — a second problem named mid-flow retires
+   q6 on the spot, and the bar should say so. */
 function progress() {
   const askedCount = st.log.filter(e => e.status === 'asked').length;
   let ahead = 0;

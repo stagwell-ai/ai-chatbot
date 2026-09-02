@@ -14,7 +14,7 @@
 
      2. THE CHIP CONTRACT. Chips are <button> elements, and their labels are
         substrings of the question copy that precedes them ("This quarter"
-        lives inside "…this quarter, this year, or just exploring?"). A bare
+        lives inside "…this quarter, or later this year?"). A bare
         text= selector is case-insensitive AND substring-matching, so it hits
         the question paragraph instead of the button. Every helper here uses
         button + :text-is(), scoped to the chip group that is still live —

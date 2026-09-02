@@ -190,8 +190,8 @@
     {
       "id": "q5",
       "slot": "timing_intent",
-      "copy": "When do you want this working — this quarter, this year, or just exploring?",
-      "copyWithGoal": "So you want to {goal} — when do you want that working: this quarter, this year, or just exploring?",
+      "copy": "When do you want this working — this quarter, or later this year?",
+      "copyWithGoal": "So you want to {goal} — when do you want that working: this quarter, or later this year?",
       "input": "chips_or_free_text",
       "chips": [
         {
@@ -201,12 +201,9 @@
         {
           "label": "This year",
           "value": "this_year"
-        },
-        {
-          "label": "Just exploring",
-          "value": "exploring"
         }
-      ]
+      ],
+      "chipsNote": "'Just exploring' removed Sep 2 with the follow_up route: every visitor ends on a trial, a demo or a conversation. Typed exploring language ('just looking', 'no timeline') classifies to this_year — the loosest timing that still has a destination."
     },
     {
       "id": "q6",
@@ -616,5 +613,5 @@
   },
   "humanAck": "Got it — I'll make sure a person picks this up; the route at the end books that. A couple more quick answers so they arrive already briefed.",
   "humanAckAfterDone": "Of course. Open your snapshot and take the “Book a demo” or “Talk to an AI expert” button, or leave a number and Stagwell.AI will call you — either way a person, not a script.",
-  "humanAckNote": "Spoken the moment override 4 fires (a human ask at any question) and again if it arrives after the read is finished. QA (Sep 2): a visitor who asked three times was answered zero times, and after the reveal the ask was swallowed entirely."
+  "humanAckNote": "humanAck is spoken the moment the human-ask override fires (a human ask at any question). humanAckAfterDone is retired as of Sep 2: once the read is finished the composer closes and its button becomes 'Show my snapshot', so nothing can be typed after the reveal — the copy is kept for the record only."
 }

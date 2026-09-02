@@ -60,11 +60,13 @@ journey outright.
   `capture_email`) → path via the declined link → the **dominant self-serve
   hero**, one gold CTA, the trial link pointing at `harrisquest.com/suite/questdiy`
   with `sai_route=self_serve`, and every other path collapsed to a text link.
-- **J4 · just exploring → follow_up.** Asserts the nurture state and, most of
-  all, the **absence of a meeting push**: no gold button anywhere on the path
-  screen, no scheduler embed, and *"Book a working session"* present **only**
-  as a `.pathcollapse__link`, never as a primary. `route_decided` payload is
-  `follow_up` via override 2.
+- **J4 · small company, enterprise-shaped product → demo.** The visitor who
+  used to be nurtured (a small team asking about audiences, the old
+  `follow_up` cell) now lands on a **real ask**: q5 offers exactly two chips
+  and no *"Just exploring"*, `route_decided` is `demo` with **no override**,
+  the recommended column and its gold CTA are present, and nothing on the
+  path screen promises a report instead of a meeting. `follow_up` was retired
+  from `routing.json` on Sep 2.
 - **J5 · anonymous.** J1's visitor through the snapshot, then declines.
   Asserts the three modules are still visible **and unchanged**, the PDF is
   still locked, `capture_declined` fires exactly once, and **no**
@@ -205,7 +207,7 @@ untouched. That is what keeps `/api/ask` real.
 ### Chips are buttons — never `text=`
 
 Every chip label is a **substring of its own question's copy**: *"This
-quarter"* lives inside *"…this quarter, this year, or just exploring?"*. A bare
+quarter"* lives inside *"…this quarter, or later this year?"*. A bare
 `text=` selector is both case-insensitive and substring-matching, so it matches
 the question paragraph and clicks nothing. Every chip in this suite is selected
 as `button.opt:text-is("…")`, scoped to the chip group that is still live —

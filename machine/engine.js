@@ -883,12 +883,14 @@ function resolveTier() {
    predicates below are their implementation, keyed by the same order number
    so the route name and the why-line still come from the file.
    ═══════════════════════════════════════════════════════════════════════════ */
+/* Three overrides since Sep 2: the "just exploring → follow_up" rule that sat
+   at order 2 was retired with the follow_up route itself (client: every
+   visitor ends on a trial, a demo or a conversation), and the rest moved up. */
 const OVERRIDE_TESTS = {
   1: ctx => ctx.domains.length >= 2,
-  2: () => session.slots.timing_intent === 'exploring',
-  3: ctx => session.slots.role_seniority === 'c_suite' &&
+  2: ctx => session.slots.role_seniority === 'c_suite' &&
             (ctx.tier === 'mid_market' || ctx.tier === 'enterprise'),
-  4: () => session.humanAsk === true
+  3: () => session.humanAsk === true
 };
 
 /* "reach better audiences" + your role (VP of Marketing) + timing (This quarter) */
@@ -1020,7 +1022,7 @@ function route() {
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i];
     const test = OVERRIDE_TESTS[rule.order];
-    if (!test) continue;                    /* order 5 is "otherwise" */
+    if (!test) continue;                    /* the last order is "otherwise" */
     if (test(ctx)) {
       decided = rule.then;
       override = { order: rule.order, why: rule.why || null };
@@ -1028,9 +1030,11 @@ function route() {
     }
   }
 
-  /* no override: the matrix. With no tier there is no cell to read, so the
-     visitor gets the snapshot and a light follow-up rather than a guess. */
-  if (!decided) decided = (cell && cell.route) || 'follow_up';
+  /* no override: the matrix. With no tier there is no cell to read; the demo
+     is the floor every product in the suite can honestly offer, so an
+     unsized visitor books one rather than being guessed into a trial or a
+     portfolio conversation (follow_up, the old fallback, is retired). */
+  if (!decided) decided = (cell && cell.route) || 'demo';
 
   const matched = domains.map(id => {
     const d = domainById(id) || {};

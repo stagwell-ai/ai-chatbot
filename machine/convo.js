@@ -335,8 +335,6 @@ function humanCopy(key, fallback) {
 }
 const HUMAN_ACK = () => humanCopy('humanAck',
   "Got it — I'll make sure a person picks this up; the route at the end books that. A couple more quick answers so they arrive already briefed.");
-const HUMAN_ACK_DONE = () => humanCopy('humanAckAfterDone',
-  'Of course. Open your snapshot and take the “Book a demo” or “Talk to an AI expert” button, or leave a number and Stagwell.AI will call you — either way a person, not a script.');
 
 function onSaiEvent(e) {
   if (!active) return;
@@ -447,10 +445,69 @@ function mountLayout() {
   wireStick($('#thread'));
 }
 
+/* THE COMPOSER BECOMES THE DOOR. After the read there is nothing left to
+   answer, and a live "Ask the agent" beside a finished read invited people to
+   keep typing and get a canned line back (client, Sep 2: "the button should
+   change to Show my snapshot so they can't keep talking to the agent"). So the
+   input closes, and the gold button says exactly what it now does — the same
+   thing as the reveal button in the thread. The visitor still decides when to
+   leave; there are just two copies of the one way forward, not a side door. */
+const COMPOSER_DONE_PLACEHOLDER = 'Your snapshot is ready';
+const COMPOSER_DONE_LABEL = 'Show my snapshot →';
+
+function rememberIdleComposer() {
+  const { promptInput } = els();
+  const send = $('#promptSend');
+  if (promptInput && promptInput.dataset.idlePlaceholder == null) promptInput.dataset.idlePlaceholder = promptInput.placeholder;
+  if (send && send.dataset.idleLabel == null) send.dataset.idleLabel = send.textContent;
+}
+
+function closeComposer() {
+  const { promptInput, prompt } = els();
+  const send = $('#promptSend');
+  rememberIdleComposer();
+  if (promptInput) {
+    promptInput.value = '';
+    promptInput.placeholder = COMPOSER_DONE_PLACEHOLDER;
+    promptInput.disabled = true;
+  }
+  if (send) {
+    send.textContent = COMPOSER_DONE_LABEL;
+    send.setAttribute('aria-label', 'Show my snapshot');
+  }
+  if (prompt) { prompt.classList.remove('is-ready'); prompt.classList.add('is-done'); }
+}
+
+function reopenComposer() {
+  const { promptInput, prompt } = els();
+  const send = $('#promptSend');
+  if (promptInput) {
+    promptInput.disabled = false;
+    if (promptInput.dataset.idlePlaceholder != null) promptInput.placeholder = promptInput.dataset.idlePlaceholder;
+  }
+  if (send && send.dataset.idleLabel != null) { send.textContent = send.dataset.idleLabel; send.removeAttribute('aria-label'); }
+  if (prompt) prompt.classList.remove('is-done');
+}
+
+/* one exit, reached from the thread's reveal button or the composer's */
+let leaving = false;
+function openSnapshot() {
+  if (leaving || !finished) return;
+  leaving = true;
+  const go = $('#convoReveal');
+  if (go) go.disabled = true;
+  const session = (window.SAI && window.SAI.session) || null;
+  active = false;
+  teardown();
+  if (window.SAISNAP && typeof window.SAISNAP.show === 'function') window.SAISNAP.show(session);
+}
+
 function teardown() {
   const wrap = $('#convoWrap');
   const progress = $('#convoProgress');
   const { heroIn, chat, hero } = els();
+  reopenComposer();
+  leaving = false;
   const rail = $('#snapshotRail');
   if (rail) rail.remove();
   if (wrap && chat && heroIn) heroIn.insertBefore(chat, wrap);
@@ -493,39 +550,15 @@ function render() {
   }
 }
 
-/* Once the questions are done the flow stops accepting answers — so a line
-   typed after that used to land as a bubble and get nothing back, which
-   reads as a dead page (client, Sep 2: "i typed test, and nothing
-   happened"). It is answered here instead, and the way forward stays put. */
-const DONE_REPLY = "Your read is finished — open it and we'll pick this up there. "
-  + 'Anything you want to dig into, ask me on the other side of the button.';
-
+/* Once the questions are done the flow stops accepting answers. The composer
+   used to stay open and answer anything typed with a canned line, which
+   invited exactly that ("test", "ok" — client, Sep 2): after the read there
+   is nothing left to ask, so the composer itself becomes the door (see
+   closeComposer in finish()) and a submit from it opens the snapshot. */
 async function handleAnswer(value, label) {
   if (busy || !active) return;
 
-  if (finished) {
-    addUserBubble(label != null ? label : value);
-    const { promptInput, prompt } = els();
-    if (promptInput) promptInput.value = '';
-    if (prompt) prompt.classList.remove('is-ready');
-    /* after the read, a human ask still counts — override 4 still decides
-       the route, and the reply points at the buttons that reach a person */
-    let human = false;
-    try {
-      const S = window.SAI;
-      if (S && typeof S.detectHumanAsk === 'function' && S.detectHumanAsk(value)) {
-        human = true;
-        if (S.session.humanAsk !== true) { S.session.humanAsk = true; S.events.emit('human_requested', { text: String(value) }); }
-      }
-    } catch (e) { human = false; }
-    addAgentBubble(esc(human ? HUMAN_ACK_DONE() : DONE_REPLY));
-    const reveal = document.getElementById('convoReveal');
-    if (reveal) {
-      requestAnimationFrame(() => reveal.scrollIntoView({
-        block: 'end', behavior: REDUCED ? 'auto' : 'smooth' }));
-    }
-    return;
-  }
+  if (finished) { openSnapshot(); return; }
 
   busy = true;
   clearChips();
@@ -588,17 +621,11 @@ function finish() {
   go.className = 'btn btn--gold convo__reveal';
   go.id = 'convoReveal';
   go.textContent = 'Show me my snapshot →';
-  go.addEventListener('click', () => {
-    go.disabled = true;
-    active = false;
-    teardown();
-    if (window.SAISNAP && typeof window.SAISNAP.show === 'function') window.SAISNAP.show(session);
-  });
+  go.addEventListener('click', openSnapshot);
   wrap.appendChild(go);
   body.appendChild(wrap);
 
-  const { promptInput } = els();
-  if (promptInput) promptInput.placeholder = 'Your snapshot is ready — open it above';
+  closeComposer();
   requestAnimationFrame(() => {
     wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' });
     try { go.focus({ preventScroll: true }); } catch (e) { /* fine */ }
@@ -785,6 +812,7 @@ window.addEventListener('popstate', () => {
 
 window.SAICONVO = {
   begin(raw) {
+    rememberIdleComposer();   /* the front door's own placeholder and label, handed back on teardown */
     if (!window.SAIFLOW) return false;
     if (active) return true;
     active = true;
@@ -795,6 +823,9 @@ window.SAICONVO = {
   /* exposed for the campaign handoff's own tests; init calls it once */
   autostart,
   submit(raw) {
+    /* after the read the composer's button IS the reveal (closeComposer):
+       the input is closed and empty, so this submit opens the snapshot */
+    if (finished) { openSnapshot(); return; }
     const text = (raw || '').trim();
     if (!text) { shakePrompt(); return; }
     const { promptInput } = els();

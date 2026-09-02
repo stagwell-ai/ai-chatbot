@@ -73,9 +73,10 @@ const FAMILY = {
 
 const family = type => FAMILY[String(type)] || 'session';
 
-/* the routes that mean a real opportunity exists. follow_up is deliberately
-   not one of them: override 2 is "capture, deliver the snapshot, don't force
-   a meeting", which is a lead, not an opportunity. */
+/* the routes that mean a real opportunity exists — since Sep 2 that is every
+   route routing.json can produce. follow_up stays excluded by name so an old
+   event ring (or a hand-edited cell) still counts as a lead, not an
+   opportunity. */
 const QUALIFYING_ROUTES = ['consultative', 'demo', 'self_serve'];
 
 /* ═══════════════════════════════════════════════════════════════════════════

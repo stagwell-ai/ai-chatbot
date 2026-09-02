@@ -386,12 +386,13 @@ const TILES = {
 };
 
 /* consultative and demo are both sales-led → the working session leads.
-   self_serve and follow_up both end in the product → the workspace leads. */
+   self_serve ends in the product → the workspace leads. (follow_up, which
+   also led with the workspace, was retired from routing.json Sep 2; an
+   unknown route name falls to the session below.) */
 const PRIMARY_BY_ROUTE = {
   consultative: 'session',
   demo: 'demo',
-  self_serve: 'workspace',
-  follow_up: 'workspace'
+  self_serve: 'workspace'
 };
 
 function routeName(input) {

@@ -9,7 +9,7 @@
      J1  master ad     → website + two problems in one message → consultative
      J2  product ad    → /p/targeting-machine → pre-seeded opener → demo
      J3  SMB founder   → "I want to run a quick survey" → self-serve, dominant
-     J4  just exploring → follow_up, and no meeting push
+     J4  small company × enterprise-shaped product → demo, a real ask
      J5  decline email → snapshot survives, PDF stays locked, session anonymous
      J6  competitor analysis → chip → real rivals at q6 → QuestBrand (sprint 7)
 
@@ -387,57 +387,57 @@ async function j3(page, check) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   J4 · JUST EXPLORING — nurture, and nothing that pushes a meeting
+   J4 · SMALL COMPANY, ENTERPRISE-SHAPED PRODUCT — a real ask, not a nurture.
+   Until Sep 2 this visitor (Sales / audiences × SMB) hit a follow_up cell and
+   a "no meeting needed" card; the client retired that route — everyone ends
+   on a trial, a demo or a conversation — and "Just exploring" left q5 with it.
    ═══════════════════════════════════════════════════════════════════════════ */
 async function j4(page, check) {
   await H.open(page, '/');
-  await H.landingChip(page, 'Leads', 'someone@' + EXPLORER_DOMAIN);
+  await H.landingChip(page, 'Sales', 'someone@' + EXPLORER_DOMAIN);
 
   await H.waitQuestion(page, 'q3', 30000);
   check.eq('domain classified from the chip',
-    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['leads']);
+    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['audiences']);
   check.eq('and the company came from the email at the door',
     await page.evaluate(() => window.SAI.session.slots.company_domain), EXPLORER_DOMAIN);
-  await H.clickChip(page, 'Manager');
-  const mode = await H.answerSize(page, { ask: '250–2,500' });
+  await H.clickChip(page, 'Founder / owner');
+  const mode = await H.answerSize(page, { ask: 'Under 50 people' });
   check.eq('unknown domain → q4 asks', mode, 'ask');
 
   await H.waitQuestion(page, 'q5', 25000);
-  await H.clickChip(page, 'Just exploring');
+  const q5 = await H.flowState(page);
+  check.eq('q5 offers exactly two timings — "Just exploring" is gone', q5.chips, ['This quarter', 'This year']);
+  check.ok('q5 copy no longer mentions exploring', !/exploring/i.test(await page.textContent('#thread')));
+  await H.clickChip(page, 'This year');
 
   await H.waitSnapshot(page);
-  check.eq('snapshot still shown to an explorer', await page.$$eval('#snapView .snapmod', e => e.length), 3);
+  check.eq('snapshot shown', await page.$$eval('#snapView .snapmod', e => e.length), 3);
   await H.shot(page, 'j4-snapshot');
 
   const result = await page.evaluate(() => window.SAIFLOW.result());
-  check.eq('q6 retired by the exploring override',
-    (result.skipped.find(s => s.id === 'q6') || {}).reason, 'override_exploring');
+  check.eq('q6 retired because every audiences cell now routes the same way',
+    (result.skipped.find(s => s.id === 'q6') || {}).reason, 'single_route_domain');
 
   await H.captureEmail(page, 'demo@' + EXPLORER_DOMAIN, true);
   await H.goToPath(page, '#snapPathGo');
 
   const route = H.lastOf(await H.allEvents(page), 'route_decided');
-  check.eq('route_decided payload = follow_up', route && route.payload.route, 'follow_up');
-  check.eq('…via override 2 ("just exploring")', route && route.payload.override.order, 2);
-  check.includes('override reason quoted from routing.json',
-    route && route.payload.override.why, "don't force a meeting");
+  check.eq('route_decided payload = demo (the old follow_up cell)', route && route.payload.route, 'demo');
+  check.eq('…from the matrix, no override', route && route.payload.override, null);
+  check.eq('tier resolved as smb', route && route.payload.tier, 'smb');
 
-  /* ── NO MEETING PUSH ── */
-  check.eq('the three-column row is gone', await page.$$eval('#pathView .pathcol', e => e.length), 0);
-  check.eq('no recommended column', await page.$$eval('#pathView .pathcol.is-recommended', e => e.length), 0);
-  check.includes('quiet nurture card instead',
-    await page.textContent('#pathView .pathquiet h3'), 'No meeting needed');
-
-  check.eq('NO primary/gold CTA anywhere on the path screen',
-    await page.$$eval('#pathView .btn--gold', e => e.map(x => x.textContent.trim())), []);
-  const bws = await page.$$eval('#pathView *',
-    els => els.filter(e => e.children.length === 0 && /Book a working session/.test(e.textContent))
-      .map(e => ({ cls: e.className, tag: e.tagName })));
-  check.ok('"Book a working session" appears ONLY as a collapsed text link, never as a primary',
-    bws.length > 0 && bws.every(b => /pathcollapse__link/.test(b.cls)),
-    bws.map(b => `${b.tag}.${b.cls}`).join(' | ') || 'not present at all');
-  check.eq('no scheduler embed pushed at an explorer',
-    await page.$$eval('#pathView .pathcol__slot', e => e.length), 0);
+  /* ── A REAL ASK ── */
+  check.eq('the three-column row is back', await page.$$eval('#pathView .pathcol', e => e.length), 3);
+  check.eq('one recommended column', await page.$$eval('#pathView .pathcol.is-recommended', e => e.length), 1);
+  check.ok('…and it is the demo',
+    /demo/i.test(await page.textContent('#pathView .pathcol.is-recommended')));
+  check.ok('a primary CTA exists on the path screen',
+    (await page.$$eval('#pathView .btn--gold', e => e.length)) >= 1);
+  const txt = await page.textContent('#pathView');
+  check.ok('no nurture copy anywhere', !/No meeting needed|stays right here|on its way/.test(txt));
+  check.eq('no follow_up wording in any event',
+    (await H.allEvents(page)).filter(e => JSON.stringify(e).indexOf('follow_up') !== -1).length, 0);
 
   await H.shot(page, 'j4-path');
 }
@@ -647,7 +647,7 @@ const JOURNEYS = [
   { id: 'J2', name: 'product ad · /p/targeting-machine → pre-seeded opener → demo',
     run: (p, c) => j2(p, c, { onDone: r => { counts.J2 = r.standardAsked; } }) },
   { id: 'J3', name: 'SMB founder · types "a quick survey" → self-serve with a dominant, honest CTA', run: j3 },
-  { id: 'J4', name: 'just exploring → follow_up, no meeting push', run: j4 },
+  { id: 'J4', name: 'small company × enterprise-shaped product → demo, a real ask', run: j4 },
   { id: 'J5', name: 'declines the report → snapshot survives, PDF stays locked, nothing granted', run: j5 },
   { id: 'J6', name: 'competitor analysis · landing chip → real rivals named at q6, snapshot and path', run: j6 }
 ];

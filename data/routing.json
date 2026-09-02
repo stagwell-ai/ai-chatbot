@@ -7,8 +7,7 @@
   "routes": {
     "self_serve": "Trial CTA dominates the routing screen; attributed signup on the product's site; activation tracked",
     "demo": "Sales-led demo booked with the owning product team, pre-briefed with the snapshot",
-    "consultative": "One Stagwell conversation, multi-product capable, flagged first-class in CRM",
-    "follow_up": "Snapshot by email + light follow-up / nurture; no meeting push"
+    "consultative": "One Stagwell conversation, multi-product capable, flagged first-class in CRM"
   },
   "overrides_in_order": [
     {
@@ -19,29 +18,23 @@
     },
     {
       "order": 2,
-      "if": "timing_intent == 'exploring'",
-      "then": "follow_up",
-      "why": "capture, deliver the snapshot, don't force a meeting"
-    },
-    {
-      "order": 3,
       "if": "role == 'c_suite' && tier in ['mid_market','enterprise']",
       "then": "consultative",
       "why": "senior decision-makers get the portfolio conversation, not a single-product demo"
     },
     {
-      "order": 4,
+      "order": 3,
       "if": "visitor asked for a human",
       "then": "demo",
       "why": "a human ask always wins"
     },
     {
-      "order": 5,
+      "order": 4,
       "if": "otherwise",
       "then": "use domains[domain].cells[tier]"
     }
   ],
-  "notes": "Attribution is always captured; contact rides with the route wherever it was given — a visitor who declines email keeps the on-screen snapshot and is logged anonymously.",
+  "notes": "Attribution is always captured; contact rides with the route wherever it was given — a visitor who declines email keeps the on-screen snapshot and is logged anonymously. · follow_up retired Sep 2 at the client’s request (“we want everyone to end on book a demo, start a free trial or talk to Stagwell”): q5 lost its “Just exploring” chip with it, and the six SMB cells that nurtured now book a demo — the one ask every product can honestly make.",
   "domains": [
     {
       "id": "brand_health",
@@ -154,8 +147,8 @@
       ],
       "cells": {
         "smb": {
-          "route": "follow_up",
-          "note": "no self-serve"
+          "route": "demo",
+          "note": "no self-serve tier — the demo is the honest floor"
         },
         "mid_market": {
           "route": "demo"
@@ -182,8 +175,8 @@
       ],
       "cells": {
         "smb": {
-          "route": "follow_up",
-          "note": "usually below paid-media threshold"
+          "route": "demo",
+          "note": "usually below the paid-media threshold — the demo qualifies the spend"
         },
         "mid_market": {
           "route": "demo",
@@ -274,8 +267,8 @@
       ],
       "cells": {
         "smb": {
-          "route": "follow_up",
-          "note": "below ICP floor"
+          "route": "demo",
+          "note": "below the usual ICP floor — the demo qualifies"
         },
         "mid_market": {
           "route": "demo"
@@ -300,8 +293,8 @@
       ],
       "cells": {
         "smb": {
-          "route": "follow_up",
-          "note": "below ICP floor"
+          "route": "demo",
+          "note": "below the usual ICP floor — the demo qualifies"
         },
         "mid_market": {
           "route": "demo",
@@ -348,8 +341,8 @@
       ],
       "cells": {
         "smb": {
-          "route": "follow_up",
-          "note": "nurture unless multi-location"
+          "route": "demo",
+          "note": "the demo checks for multi-location need"
         },
         "mid_market": {
           "route": "demo"
@@ -375,8 +368,8 @@
       ],
       "cells": {
         "smb": {
-          "route": "follow_up",
-          "note": "route to nearest concrete need instead"
+          "route": "demo",
+          "note": "below the Machines’ ICP floor — the product team’s demo finds the nearest concrete need"
         },
         "mid_market": {
           "route": "consultative",
