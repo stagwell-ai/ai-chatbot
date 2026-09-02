@@ -80,8 +80,7 @@
     return e[key] || {
       noEmail: 'We need your business email to get started.',
       badEmail: "That doesn't look like an email address yet — check it over.",
-      personalEmail: 'That is a personal address — please use your work email.',
-      noText: "Tell the agent what you're solving and it will take it from there."
+      personalEmail: 'That is a personal address — please use your work email.'
     }[key] || '';
   };
 
@@ -109,14 +108,14 @@
     const box = document.getElementById('askErr');
     const wrap = document.getElementById('askEmailWrap');
     if (box) { box.textContent = heroErr(key); box.hidden = false; }
-    if (wrap && key !== 'noText') {
+    if (wrap) {
       wrap.classList.add('is-bad');
       wrap.classList.remove('is-shake');
       void wrap.offsetWidth;
       wrap.classList.add('is-shake');
       setTimeout(() => wrap.classList.remove('is-shake'), 460);
     }
-    const el = document.getElementById(key === 'noText' ? 'askInput' : 'askEmail');
+    const el = document.getElementById('askEmail');
     if (el) { try { el.focus(); } catch (e) { /* never fatal */ } }
   }
 
@@ -608,7 +607,11 @@
         e.preventDefault();
         const input = document.getElementById('askInput');
         const text = input ? input.value.trim() : '';
-        if (!text) { showEmailError('noText'); return; }
+        /* the address is the only thing this form insists on. With no words
+           in the box the handoff carries the campaign alone, and the opener
+           is the agent's first line on the other side — an email is never
+           worth refusing over a blank text field (client, Sep 2: "we don't
+           want to do anything to block them giving us their email"). */
         if (!takeEmail()) return;
         handoff(id, text);
       });

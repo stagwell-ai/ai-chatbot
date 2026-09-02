@@ -119,7 +119,8 @@
     "model": "the landing is a chooser, not a blank prompt — the visitor picks what they are solving, gives a business email, and lands in the conversation with that first answer already given (client, Sep 1, after Meta's ad-objective flow)",
     "eyebrow": "Stagwell.AI · Agentic solutions built by marketing experts for modern marketers",
     "title": "What do you need help solving today?",
-    "sub": "Pick what you're up against. The agent reads your brand first, then points you at the products that fit.",
+    "sub": "Pick what you're up against, or just leave your email — the agent reads your brand and finds your fit.",
+    "subNote": "Says out loud that the row is optional. Kept under ~105 characters: past that it wraps to a second line at 1280×720 and the card falls below the fold.",
     "listLabel": "Choose what you're solving",
     "emptyImage": "/assets/img/hero/agent.webp",
     "emptyImageAlt": "How the agent works: it reads AI search and brand signals, understands your brand, sees where you stand, finds the right opportunities and recommends what to do next — producing performance and opportunity reads.",
@@ -136,12 +137,11 @@
     "emailLabel": "My business email",
     "emailHint": "We read your company from its domain — that's how the analysis starts before you answer another question.",
     "submit": "Ask AI",
+    "errorsNote": "The address is the only thing either front door refuses over — a picked row (or a typed description) is an accelerator, and its absence is answered by the agent asking, never by a refusal.",
     "errors": {
-      "noOption": "Pick what you're solving first — that's where the agent starts.",
       "noEmail": "We need your business email to get started. The agent reads your company from its domain, and your report goes back to it.",
       "badEmail": "That doesn't look like an email address yet — check it over.",
-      "personalEmail": "That's a personal address. Use your work email — the agent reads your company from its domain, and there's nothing to analyse behind a personal one.",
-      "noText": "Tell the agent what you're solving and it will take it from there."
+      "personalEmail": "That's a personal address. Use your work email — the agent reads your company from its domain, and there's nothing to analyse behind a personal one."
     },
     "otherLabel": "Something else",
     "otherLine": "Describe the problem in your own words, or paste your website. The agent reads it, works out which products fit, and asks only what it can't infer.",

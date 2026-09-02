@@ -22,7 +22,12 @@
    text the machine has to interpret. Detail copy is hero.byDomain, keyed by
    the same domain ids. One data edit changes both surfaces.
 
-   THE EMAIL IS NOT A TOLL. It buys the visitor something immediately: the
+   THE ROW IS OPTIONAL, THE ADDRESS IS NOT. A visitor who types their work
+   email and presses Ask AI goes straight through, picked row or not — the
+   conversation then opens by asking q1 itself. Nothing on this card is
+   allowed to stand between someone and handing us their email.
+
+   THE EMAIL IS NOT A TOLL EITHER. It buys the visitor something immediately: the
    company comes out of its domain, research starts on it before they answer
    another question, and q2 is skipped because we no longer need to ask. A
    personal address can't do that, which is what the refusal copy says.
@@ -63,11 +68,9 @@ const FALLBACK = {
   otherGoodFor: [],
   personalDomains: ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com'],
   errors: {
-    noOption: "Pick what you're solving first — that's where the agent starts.",
     noEmail: 'We need your business email to get started.',
     badEmail: "That doesn't look like an email address yet — check it over.",
-    personalEmail: 'That’s a personal address — please use your work email.',
-    noText: "Tell the agent what you're solving and it will take it from there."
+    personalEmail: 'That’s a personal address — please use your work email.'
   },
   byDomain: {}
 };
@@ -310,32 +313,28 @@ function select(id, opts) {
     b.tabIndex = on ? 0 : -1;
   });
   paintDetail();
-  clearError('noOption');
   if (opts && opts.focus === false) return true;
   const free = $('#pickFree', root);
   if (free && id === OTHER) free.focus();
   return true;
 }
 
-/* ── errors: the box is highlighted AND told why (client's ask) ─────────── */
+/* ── errors: the box is highlighted AND told why (client's ask) ───────────
+   The address is now the only thing that can fail here, so every error this
+   shows is about the email field. */
 function showError(key, focusEl) {
   const box = $('#pickErr', root);
   const wrap = $('#pickEmailWrap', root);
-  const list = $('#pickList', root);
   lastError = key;
   const msg = (COPY.errors && COPY.errors[key]) || FALLBACK.errors[key] || '';
   if (box) { box.textContent = msg; box.hidden = false; }
 
-  const onEmail = key === 'noEmail' || key === 'badEmail' || key === 'personalEmail';
-  if (wrap) wrap.classList.toggle('is-bad', onEmail);
-  if (list) list.classList.toggle('is-bad', key === 'noOption');
-
-  const shakeTarget = onEmail ? wrap : (key === 'noOption' ? list : null);
-  if (shakeTarget) {
-    shakeTarget.classList.remove('is-shake');
-    void shakeTarget.offsetWidth;                     /* restart the animation */
-    shakeTarget.classList.add('is-shake');
-    setTimeout(() => shakeTarget.classList.remove('is-shake'), 460);
+  if (wrap) {
+    wrap.classList.add('is-bad');
+    wrap.classList.remove('is-shake');
+    void wrap.offsetWidth;                            /* restart the animation */
+    wrap.classList.add('is-shake');
+    setTimeout(() => wrap.classList.remove('is-shake'), 460);
   }
   if (focusEl) { try { focusEl.focus(); } catch (e) { /* never fatal */ } }
 }
@@ -347,8 +346,6 @@ function clearError(onlyKey) {
   if (box) { box.hidden = true; box.textContent = ''; }
   const wrap = $('#pickEmailWrap', root);
   if (wrap) wrap.classList.remove('is-bad');
-  const list = $('#pickList', root);
-  if (list) list.classList.remove('is-bad');
 }
 
 /* ── the handoff ─────────────────────────────────────────────────────────── */
@@ -369,19 +366,32 @@ function seedFromEmail(address) {
   return domain;
 }
 
-function go() {
-  if (!selected) { showError('noOption', root.querySelector('.pick__row')); return; }
+/* THE ONLY THING THIS DOOR ASKS FOR IS THE ADDRESS.
 
+   The picker used to refuse a click until a row was chosen — and refuse
+   again if "Something else" was chosen with an empty box. Both refusals sent
+   a visitor who had already handed over their work email back into the
+   furniture (client, Sep 2: "if the user simply puts in their email address
+   and presses Ask AI, just jump on to the next section and don't block them
+   … we don't want to do anything to block them giving us their email
+   address").
+
+   So the rows are an ACCELERATOR, not a toll: pick one and the conversation
+   opens with q1 already answered; pick nothing and it opens by asking q1 —
+   the same question the headline asks, now with the agent asking it, and
+   the email already doing its work behind the scenes (company out of the
+   domain, q2 down to a confirm). The address is still required, because
+   without it there is no company to read and nowhere to send the report. */
+function go() {
   const emailEl = $('#pickEmail', root);
   const problem = emailProblem(emailEl ? emailEl.value : '');
   if (problem) { showError(problem, emailEl); return; }
 
   const o = optionById(selected);
-  let text = o.label;
-  if (selected === OTHER) {
+  let text = o ? o.label : '';
+  if (o && selected === OTHER) {
     const free = $('#pickFree', root);
     text = free ? free.value.trim() : '';
-    if (!text) { showError('noText', free); return; }
   }
 
   clearError();
