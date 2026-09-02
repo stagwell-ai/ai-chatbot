@@ -252,16 +252,20 @@ function detailHTML(o) {
         ? `<p class="pick__empty-l">${esc(COPY.emptyLine)}</p>` : ''}
     </div>`;
   }
-  const tags = (o.goodFor || []).filter(Boolean);
+  const free = o.id === OTHER;
+  /* the free-text row carries a text box, so it drops the tag list — with
+     both, this pane is half again as tall as every other one and the card
+     falls below the fold on a laptop */
+  const tags = free ? [] : (o.goodFor || []).filter(Boolean);
   return `
     <div class="pick__art" aria-hidden="true">${icon(o.id)}</div>
     <h2 class="pick__dh">${esc(o.detailTitle || o.label)}</h2>
     <p class="pick__dl">${esc(o.line || '')}</p>
     ${tags.length ? `<p class="pick__dgood">Good for:</p>
       <ul class="pick__tags">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
-    ${o.id === OTHER ? `<label class="pick__free">
+    ${free ? `<label class="pick__free">
         <span class="vh">${esc(COPY.otherPlaceholder || '')}</span>
-        <textarea id="pickFree" rows="3" placeholder="${esc(COPY.otherPlaceholder || '')}"></textarea>
+        <textarea id="pickFree" rows="2" placeholder="${esc(COPY.otherPlaceholder || '')}"></textarea>
       </label>` : ''}`;
 }
 

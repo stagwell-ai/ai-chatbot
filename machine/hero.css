@@ -47,8 +47,15 @@
 .pick__label { min-width: 0; line-height: 1.35; }
 
 /* ── the detail pane ── */
+/* THE HEIGHT CONTRACT. Every option's pane is a different length — a couple
+   of tags here, a text box there — and the card was resizing under the
+   visitor and, on the free-text row, dropping below the fold. So the pane is
+   capped against the viewport instead: tall enough for the list beside it,
+   never taller than the fold can carry, and anything longer scrolls inside
+   rather than pushing the Ask AI button off the screen. */
 .pick__detail { padding: 20px 24px; display: flex; flex-direction: column; gap: 8px;
-  background: var(--paper); }
+  background: var(--paper); min-height: 296px;
+  max-height: clamp(260px, 42vh, 392px); overflow-y: auto; overscroll-behavior: contain; }
 .pick__detail-empty { margin: auto; text-align: center; color: var(--ink-3); font-size: var(--t-sm); }
 .pick__detail-empty p { margin: 0; }
 
@@ -133,7 +140,9 @@
 .pick__detail-empty { margin: auto; display: flex; flex-direction: column;
   align-items: center; text-align: center; gap: 4px; padding: 2px 0; width: 100%; }
 .pick__illo { width: 100%; max-width: 430px; height: auto; display: block;
-  font-family: var(--sans); }
+  font-family: var(--sans);
+  /* the art shrinks with the pane rather than forcing it open */
+  max-height: calc(100% - 30px); object-fit: contain; }
 /* the artwork carries its own small type, so give it every pixel the fold
    can spare — but only where the fold can spare them */
 @media (min-height: 820px) { .pick__illo { max-width: 486px; } }
