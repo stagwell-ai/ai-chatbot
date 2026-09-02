@@ -27,8 +27,8 @@
 .rbn{
   position:fixed;top:0;left:0;right:0;height:var(--rbn-h);z-index:44;
   display:flex;align-items:center;
-  background:#EAF6F9;                                   /* light blue at 8% over paper */
-  border-bottom:1px solid rgba(0,156,189,.28);
+  background:#0B2A3A;                                   /* light blue at ~12% over the dark room */
+  border-bottom:1px solid rgba(0,156,189,.34);
   color:var(--ink);
 }
 .rbn__in{
@@ -40,7 +40,7 @@
 /* the mono microlabel, same voice as .eyebrow / .vercorner elsewhere */
 .rbn__label{
   flex:none;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-  color:rgba(0,35,52,.58);padding-left:10px;
+  color:var(--ink-3);padding-left:10px;
 }
 .rbn__name{
   min-width:0;flex:1 1 auto;
@@ -60,11 +60,11 @@
   text-decoration:none;white-space:nowrap;
   transition:color var(--d-1) var(--ease-io);
 }
-.rbn__link:hover{color:var(--navy);text-decoration:underline}
+.rbn__link:hover{color:var(--ink);text-decoration:underline}
 
 .rbn__x{
   width:var(--rbn-h);height:var(--rbn-h);flex:none;
-  display:grid;place-items:center;color:rgba(0,35,52,.52);
+  display:grid;place-items:center;color:var(--ink-3);
   transition:color var(--d-1) var(--ease-io);
 }
 .rbn__x:hover{color:var(--ink)}

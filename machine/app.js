@@ -1486,7 +1486,7 @@ const CTA_COPY = {
 function openModal(kind) {
   const [t, p] = CTA_COPY[kind] || CTA_COPY.expert;
   modalBody.innerHTML = `
-    <div class="modal__brand"><svg><use href="#sw-logo"/></svg><span>AI</span></div>
+    <div class="modal__brand"><svg><use href="#sw-logo"/></svg></div>
     <h3>${t}</h3><p>${p}</p>
     <form class="modal__form" id="leadForm">
       <input type="text" placeholder="Full name" value="${esc(S.who || '')}" required>

@@ -23,7 +23,7 @@
 .snap__headtext{min-width:0;max-width:62ch}
 .snap__eyebrow{margin-bottom:14px}
 .snap__title{margin:0 0 10px;font-size:clamp(1.625rem,3vw,var(--t-h1));line-height:1.14}
-.snap__title .accent{font-style:italic;color:inherit}
+.snap__title .accent{font-style:normal;color:var(--orange)}
 .snap__sub{margin:0;color:var(--ink-2);font-size:var(--t-sm)}
 
 .snap__pdf{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
@@ -32,7 +32,7 @@
   letter-spacing:.01em;background:var(--surface);border:1px solid var(--line-2);
   color:var(--ink-3);cursor:not-allowed;
   transition:background var(--d-2) var(--ease),border-color var(--d-2) var(--ease),color var(--d-2) var(--ease)}
-.snap__pdfbtn:not(:disabled){cursor:pointer;color:var(--navy)}
+.snap__pdfbtn:not(:disabled){cursor:pointer;color:var(--ink)}
 .snap__pdfbtn:not(:disabled):hover{border-color:var(--ink);background:var(--surface-2)}
 .snap__pdficon{display:inline-flex}
 .snap__pdfhint{font-size:var(--t-xs);color:var(--ink-4);text-align:right;max-width:220px;line-height:1.4}
@@ -79,7 +79,7 @@
 .snapdial__fg{fill:none;stroke:var(--teal);stroke-width:9;stroke-linecap:round;
   transition:stroke-dashoffset 900ms var(--ease-io)}
 .snapdial__num{position:absolute;inset:0;display:grid;place-items:center;
-  font-family:var(--sans);font-weight:700;font-size:1.5rem;color:var(--navy);
+  font-family:var(--sans);font-weight:700;font-size:1.5rem;color:var(--ink);
   font-variant-numeric:tabular-nums}
 .snapdial__meta{display:flex;flex-direction:column;gap:3px;min-width:0}
 .snapdial__label{font-size:var(--t-xs);color:var(--ink-3)}
@@ -113,12 +113,12 @@
 .snapcap__quiet{margin:0;font-size:var(--t-sm);color:var(--ink-2)}
 
 /* ── bottom band ── */
-.snapband{background:var(--void);color:var(--on-void);
+.snapband{background:var(--band);color:var(--on-void);
   padding:clamp(56px,9vh,96px) clamp(20px,4vw,48px)}
 .snapband__in{max-width:1180px;margin:0 auto}
 .snapband h2{margin:0;font-family:var(--serif);font-weight:400;font-size:var(--t-h1);
   letter-spacing:-.024em;line-height:1.12}
-.snapband h2 .accent{font-style:italic;font-weight:600;color:var(--amber)}
+.snapband h2 .accent{font-style:normal;font-weight:600;color:var(--orange)}
 .snapband__sub{margin:16px 0 0;max-width:66ch;font-size:var(--t-sm);line-height:1.6;
   color:rgba(234,242,245,.72)}
 .snaptiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
@@ -132,7 +132,7 @@
 .snaptile:hover b svg{opacity:1;transform:none}
 .snaptile span{font-size:var(--t-sm);color:rgba(234,242,245,.74);line-height:1.55}
 .snaptile__note{font-style:normal;font-size:var(--t-xs);font-weight:600;color:var(--teal)}
-.snaptile.is-primary{background:var(--amber);border-color:var(--amber);color:var(--navy)}
+.snaptile.is-primary{background:var(--orange);border-color:var(--orange);color:var(--navy)}
 .snaptile.is-primary span{color:rgba(0,51,73,.72)}
 .snaptile.is-primary .snaptile__note{color:var(--navy)}
 .snaptile.is-primary:hover{background:#ffc247}

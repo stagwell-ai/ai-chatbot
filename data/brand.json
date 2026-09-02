@@ -1,27 +1,61 @@
 {
-  "source": "Stagwell Visual Brand Guidelines 2021 (reference/StagwellVisualBrandGuidelines2021.pdf)",
+  "source": "Stagwell AI — Concept Final V3.1 (reference: For Jonathan/Concept Final - V3.1.pdf + V3 logo SVGs, Sep 2026). Supersedes the 2021 Stagwell Visual Brand Guidelines treatment the site launched with.",
+  "concept": "Keeps the Stagwell wordmark and logomark for the corporate connection and adds AI as part of the identity. Dark mode — stands out from the TMC blue and the Stagwell site, leans modern tech, lets the solutions shine. Gradients and textures add dimension; nodes (structured grids and organic plots) depict data and the connection points within marketing.",
+  "tagline": "Agentic solutions grounded in real-world marketing expertise.",
   "colors": {
-    "marigold": "#FFB81C",
-    "lightBlue": "#009CBD",
     "navy": "#003349",
-    "brightWhite": "#F5F7F6",
-    "glacierGrey": "#C5C6C7",
-    "black": "#212322"
+    "blue": "#0E5F8E",
+    "lightBlue": "#009CBD",
+    "cyan": "#77E3F6",
+    "orange": "#FF6D24",
+    "marigold": "#FFB81C",
+    "room": {
+      "page": "#071A24",
+      "card": "#0C2331",
+      "raised": "#12303F",
+      "ink": "#F1FAFF"
+    }
   },
   "usage": {
-    "primaryCta": "marigold bg, navy text",
-    "headlinesAndBody": "navy on brightWhite/white",
-    "accentsAndLinks": "lightBlue",
-    "darkBands": "navy bg, brightWhite text, marigold highlights"
+    "primaryCta": "orange bg, navy text — never white on orange",
+    "headlineAccent": "the accent word in a headline is orange, Montserrat semi-bold, upright",
+    "headlinesAndBody": "ink #F1FAFF on the dark room",
+    "liveAndAgent": "lightBlue / cyan — live badges, the agent's marker, focus rings",
+    "bands": "gradient blue → navy → near-black with the node grid at low opacity",
+    "categories": "cyan = Purpose-Built Solutions · orange = Stagwell Machines · marigold = Self-Service Platform",
+    "marigold": "the mark, self-service/trial highlights, secondary emphasis — no longer the CTA colour"
   },
   "typography": {
-    "primary": { "family": "Montserrat", "headlines": "semi-bold (600), sentence case", "subheads": "light, all caps allowed", "body": "regular (400)" },
-    "accent": { "family": "Spectral", "use": "semi-bold italic, accent words in headlines ONLY — never full headlines, subheads, or body" },
-    "webFallbacks": "Montserrat, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif · Spectral, Georgia, serif"
+    "primary": {
+      "family": "Montserrat",
+      "headlines": "semi-bold (600), sentence case",
+      "subheads": "light (300), all caps allowed",
+      "body": "regular (400)"
+    },
+    "accent": {
+      "note": "V3.1 retires the Spectral italic accent; accent words are Montserrat 600 in orange"
+    },
+    "webFallbacks": "Montserrat, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
   },
   "logo": {
-    "rules": ["never rotate, recolor, distort, frame, or add drop shadow", "full-color logo never on busy or dark backgrounds (use white one-color version on navy/black)", "no tagline below 150px width", "clearance = half the symbol height on all sides", "place top-left or bottom-left; don't center unless unavoidable"],
-    "note": "Stagwell.AI wordmark treatment for the demo: STAGWELL in navy + .AI in light blue (per wireframes) until an official lockup is supplied"
+    "files": [
+      "StagwellAI - Logo - Dark Background.svg",
+      "StagwellAI - Logo - Light Background.svg"
+    ],
+    "viewBox": "0 0 1870 153",
+    "rules": [
+      "the AI is always orange #FF6D24",
+      "wordmark and the mark's bottom bar take the page ink: #F1FAFF on dark, #003349 on light",
+      "the mark's marigold and light-blue bars never change",
+      "never rotate, recolor beyond the two shipped variants, distort, frame, or add drop shadow",
+      "clearance = half the mark height on all sides",
+      "no separate 'AI' text next to the logo — the logo carries it"
+    ]
   },
-  "accessibility": "minimum 44px hit targets; body text ≥14px; check contrast on marigold (use navy text, never white)"
+  "texture": {
+    "grain": "2.6% fractal noise over surfaces",
+    "nodes": "dot lattice with joined points at ~7% over heroes and bands",
+    "glow": "teal top-left, orange bottom-right radial glows behind hero type"
+  },
+  "accessibility": "minimum 44px hit targets; body text ≥14px; navy text on orange (4.8:1) and on marigold; orange on the dark room 6.5:1; never white on orange or marigold"
 }

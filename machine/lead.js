@@ -178,7 +178,7 @@
      symbol — an empty <use> is worse than no mark */
   function brandHtml() {
     return document.getElementById('sw-logo')
-      ? `<div class="modal__brand"><svg aria-hidden="true"><use href="#sw-logo"/></svg><span>AI</span></div>`
+      ? `<div class="modal__brand"><svg aria-hidden="true"><use href="#sw-logo"/></svg></div>`
       : '';
   }
 

@@ -227,8 +227,7 @@
   function masterCreativeHtml() {
     const hasSymbol = !!document.getElementById('sw-logo');
     const lock = hasSymbol
-      ? '<svg class="adlock__sw" viewBox="0 0 185 28" role="img" aria-label="Stagwell"><use href="#sw-logo"/></svg>' +
-        '<span class="adlock__ai">AI</span>'
+      ? '<svg class="adlock__sw" viewBox="0 0 1870 153" role="img" aria-label="Stagwell AI"><use href="#sw-logo"/></svg>'
       : '<span class="adlock__word">Stagwell.AI</span>';
 
     return '<figure class="adcreative adcreative--master">' +

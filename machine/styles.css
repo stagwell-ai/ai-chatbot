@@ -3,32 +3,43 @@
    Tokens. One light room throughout — the brief is the only reveal.
    ═══════════════════════════════════════════════════════════ */
 :root{
-  --navy:#003349;   /* Pantone 2189 C — the guidelines' navy, replacing the old #002334 */
+  color-scheme:dark;
+  /* ── Brand V3.1 (Concept Final, Sep 2026) — the six colours, by name ──
+     Dark-mode identity: the room is near-black navy, the ink is the logo's own
+     light, and orange (from The Machine) is THE accent — the AI in the logo,
+     the accent word in a headline, the primary button. */
+  --navy:#003349;
+  --blue:#0E5F8E;
   --teal:#009CBD;
+  --cyan:#77E3F6;
+  --orange:#FF6D24;
   --amber:#FFB81C;
 
-  --paper:#F5F7F6;   /* Pantone Bright White, per the guidelines */
-  --surface:#FFFFFF;
-  --surface-2:#FAFBFB;
-  --void:#003349;   /* dark surfaces sit on the brand navy, not an off-palette near-black */
-  --void-2:#002334;
+  --paper:#071A24;     /* the page */
+  --surface:#0C2331;   /* a card */
+  --surface-2:#12303F; /* a raised / hovered card */
+  --void:#003349;      /* a band — flat fallback; --band is the gradient the board asks for */
+  --void-2:#0E5F8E;
+  --band:var(--nodes) 0 0/120px 120px,linear-gradient(160deg,#0E5F8E 0%,#003349 52%,#062230 100%);
 
-  --ink:#002334;
-  --ink-2:rgba(0,35,52,.66);
-  --ink-3:rgba(0,35,52,.44);
-  --ink-4:rgba(0,35,52,.26);
-  --on-void:#EAF2F5;
-  --on-void-2:rgba(234,242,245,.60);
-  --on-void-3:rgba(234,242,245,.34);
+  --ink:#F1FAFF;
+  --ink-2:rgba(241,250,255,.72);
+  --ink-3:rgba(241,250,255,.50);
+  --ink-4:rgba(241,250,255,.30);
+  --on-void:#F1FAFF;
+  --on-void-2:rgba(241,250,255,.66);
+  --on-void-3:rgba(241,250,255,.38);
 
-  --line:rgba(0,35,52,.10);
-  --line-2:rgba(0,35,52,.16);
-  --line-void:rgba(234,242,245,.12);
+  --line:rgba(241,250,255,.10);
+  --line-2:rgba(241,250,255,.18);
+  --line-void:rgba(241,250,255,.14);
 
-  --bubble:#002334;
-  --bubble-ink:#FFFFFF;
+  --bubble:#0E5F8E;
+  --bubble-ink:#F1FAFF;
 
-  --serif:"Spectral",Georgia,"Times New Roman",serif;
+  /* V3.1 is Montserrat only — the serif role (section titles, quotes, big numbers)
+     now resolves to Montserrat Regular, the board's own text weight */
+  --serif:"Montserrat","Segoe UI","Helvetica Neue",Arial,sans-serif;
   --sans:"Montserrat","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
 
@@ -51,6 +62,13 @@
   --ctx-w:272px;
   --col:min(724px,100%);
 
+  /* The board's "nodes in structured grids": a dot lattice with a few joined
+     points, tiled. Painted at ~7% over heroes and bands, never over text. */
+  --nodes:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%2377E3F6' stroke-width='1' opacity='.13'%3E%3Cpath d='M20 20h80M20 20v80M100 20 60 60M60 60v40'/%3E%3C/g%3E%3Cg fill='%2377E3F6' opacity='.30'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='100' cy='20' r='2'/%3E%3Ccircle cx='60' cy='60' r='2.6'/%3E%3Ccircle cx='20' cy='100' r='2'/%3E%3Ccircle cx='60' cy='100' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+  /* the two soft glows the board sets behind its type: teal top-left, orange bottom-right */
+  --glow:radial-gradient(60% 50% at 8% 0%,rgba(0,156,189,.22),transparent 60%),
+         radial-gradient(50% 45% at 96% 100%,rgba(255,109,36,.16),transparent 60%);
+
   /* Paper grain — 2.6% of a fractal-noise tile. Depth without decoration. */
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
@@ -69,18 +87,21 @@ ul,ol{padding:0;list-style:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 img{max-width:100%;display:block}
 input{font:inherit;color:inherit}
-::selection{background:var(--amber);color:var(--navy)}
-:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:3px}
+::selection{background:var(--orange);color:var(--navy)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:3px}
 
 .scroll{scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
 .scroll::-webkit-scrollbar{width:10px}
 .scroll::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:10px;border:3.5px solid transparent;background-clip:padding-box}
 .scroll::-webkit-scrollbar-track{background:transparent}
 
-/* Stagwell mark — ink bar takes the text colour, brand colours never move */
+/* Stagwell AI logo (V3.1) — the wordmark and the mark's bottom bar take the
+   ink (light on the dark room, navy on a light one, exactly the two files the
+   brand shipped); the AI is always orange; the mark's colours never move. */
 .m-ink{fill:var(--ink)}
 .m-amber{fill:#FFB81C}
 .m-teal{fill:#009CBD}
+.m-orange{fill:#FF6D24}
 
 /* ── Atoms ────────────────────────────────────────────────── */
 .eyebrow{
@@ -96,9 +117,10 @@ input{font:inherit;color:inherit}
 
 .display{font-family:var(--sans);font-size:var(--t-display);font-weight:600;
   letter-spacing:-.025em;line-height:1.08}
-/* per the guidelines, Spectral accents words inside a Montserrat headline —
-   set a touch larger to balance the x-height difference */
-.display .accent{font-family:var(--serif);font-weight:600;font-style:italic;font-size:1.04em;letter-spacing:-.01em}
+/* V3.1: the accent word in a headline is the orange — "Agentic solutions" on
+   the board — set in the same Montserrat, upright. (The 2021 Spectral italic
+   is retired with the light room.) */
+.display .accent,.accent{font-family:var(--sans);font-weight:600;font-style:normal;color:var(--orange)}
 
 .btn{
   display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 22px;
@@ -108,8 +130,9 @@ input{font:inherit;color:inherit}
              border-color var(--d-1) var(--ease-io),transform var(--d-1) var(--ease);
   position:relative;overflow:hidden;
 }
-.btn--dark{background:var(--navy);color:#fff}
-.btn--dark:hover{background:#004766}
+/* on the dark room the "solid" button is the light one; navy-on-navy vanished */
+.btn--dark{background:var(--ink);color:var(--navy)}
+.btn--dark:hover{background:#fff}
 .btn--light{background:var(--on-void);color:var(--navy)}
 .btn--light:hover{background:#fff}
 .btn--ghost{border:1px solid var(--line-2);color:var(--ink);background:var(--surface)}
@@ -130,9 +153,9 @@ input{font:inherit;color:inherit}
   display:grid;place-content:center;justify-items:center;gap:26px;
   transition:opacity 720ms var(--ease),visibility 720ms}
 body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
-.boot__mark{width:190px;height:29px;opacity:0;animation:fadeUp 700ms var(--ease) 120ms forwards}
+.boot__mark{width:300px;height:24px;opacity:0;animation:fadeUp 700ms var(--ease) 120ms forwards}
 .boot__line{width:190px;height:1px;background:var(--line);overflow:hidden}
-.boot__line i{display:block;height:100%;background:var(--ink);transform:scaleX(0);transform-origin:left;
+.boot__line i{display:block;height:100%;background:var(--orange);transform:scaleX(0);transform-origin:left;
   animation:bootline 1200ms var(--ease-io) 300ms forwards}
 @keyframes bootline{to{transform:scaleX(1)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
@@ -148,9 +171,8 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
   background:var(--paper);min-height:0;z-index:40;position:relative}
 .rail__head{display:flex;align-items:center;justify-content:space-between;padding:28px 24px 26px}
 .rail__brand{display:flex;align-items:flex-end;gap:9px;text-decoration:none}
-.rail__logo{width:150px;height:23px}
+.rail__logo{width:250px;height:20px}
 .rail__mark{display:none}
-.rail__ai{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--teal);padding-bottom:2px}
 .rail__close{display:none;color:var(--ink-3)}
 /* tap-outside-to-close, mobile only */
 .railscrim{display:none;position:fixed;inset:0;z-index:35;background:rgba(0,18,28,.34);
@@ -179,10 +201,10 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
 .rail__status{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:var(--t-label);
   letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 .rail__cta{display:flex;align-items:center;justify-content:center;gap:9px;height:42px;width:100%;
-  border-radius:var(--r);background:var(--navy);color:#fff;
+  border-radius:var(--r);background:var(--orange);color:var(--navy);
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;text-transform:uppercase;
   position:relative;overflow:hidden;transition:background var(--d-1) var(--ease-io),transform var(--d-1) var(--ease)}
-.rail__cta:hover{background:#00374f}
+.rail__cta:hover{background:#FF8140}
 .rail__cta:active{transform:translateY(1px)}
 .rail__cta::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:12px;border-radius:50%;
   background:#fff;opacity:0;transform:translate(-50%,-50%) scale(1);pointer-events:none}
@@ -199,8 +221,7 @@ body:not([data-state="boot"]) .boot{opacity:0;visibility:hidden}
 .topbar > *{pointer-events:auto}
 .topbar__menu{display:none;color:var(--ink-2)}
 .topbar__brand{display:none;align-items:flex-end;gap:7px;text-decoration:none}
-.topbar__brand svg{width:118px;height:18px}
-.topbar__brand span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--teal);padding-bottom:1px}
+.topbar__brand svg{width:200px;height:16px}
 .topbar__crumb{flex:1;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.12em;
   text-transform:uppercase;color:var(--ink-4);transition:opacity var(--d-2) var(--ease)}
 body[data-state="partners"] .topbar__crumb{opacity:0}
@@ -355,10 +376,10 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .opt--check.is-on .opt__box{background:var(--teal);border-color:var(--teal)}
 .opt--check.is-on .opt__box svg{opacity:1;transform:none}
 .opt--check:disabled{opacity:.36;pointer-events:none}
-.opt--go{gap:7px;padding:10px 15px;background:var(--ink);color:#fff;border-color:var(--ink);
+.opt--go{gap:7px;padding:10px 15px;background:var(--ink);color:var(--paper);border-color:var(--ink);
   margin-left:auto;font-weight:500}
 .opt--go:disabled{opacity:0;pointer-events:none;transform:translateY(4px)}
-.opt--go:not(:disabled):hover{background:var(--void);border-color:var(--void);color:#fff;transform:translateY(-1px)}
+.opt--go:not(:disabled):hover{background:var(--blue);border-color:var(--blue);color:var(--ink);transform:translateY(-1px)}
 @media(max-width:560px){.opt--go{margin-left:0;width:100%;justify-content:center}}
 
 /* The read-back — everything they steered, every line correctable */
@@ -657,7 +678,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .duel__badge{gap:8px}
 .duel__badge i{font-style:normal;color:var(--ink-4)}
 .duel__mono{display:grid;place-items:center;flex:none;width:var(--sz,34px);height:var(--sz,34px);
-  border-radius:var(--r-sm);background:var(--navy);color:#fff;
+  border-radius:var(--r-sm);background:var(--blue);color:var(--ink);
   font-family:var(--mono);font-size:calc(var(--sz,34px) * .42);line-height:1;letter-spacing:0}
 
 .duel__arena{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);overflow:hidden}
@@ -778,7 +799,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .qa__form input:focus{outline:none}
 .qa__form input::placeholder{color:var(--ink-4)}
 .qa__form button{width:38px;height:38px;flex:none;display:grid;place-items:center;
-  border-radius:50%;background:var(--navy);color:#fff;transition:transform var(--d-1) var(--ease)}
+  border-radius:50%;background:var(--blue);color:var(--ink);transition:transform var(--d-1) var(--ease)}
 .qa__form button:hover{transform:scale(1.06)}
 
 .tbl{width:100%;border-collapse:collapse;font-size:var(--t-sm)}
@@ -907,7 +928,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .horizon li{font-size:var(--t-sm);color:var(--ink-2);display:flex;gap:11px;line-height:1.55}
 .horizon li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--amber);flex:none;margin-top:7px}
 
-.bvideo{background:var(--void);color:var(--on-void);padding:clamp(60px,9vh,120px) var(--pad)}
+.bvideo{background:var(--band);color:var(--on-void);padding:clamp(60px,9vh,120px) var(--pad)}
 .bvideo__in{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center}
 .bvideo h2{font-family:var(--serif);font-size:var(--t-h1);font-weight:400;letter-spacing:-.026em;line-height:1.1;
   margin-top:20px;max-width:18ch}
@@ -949,7 +970,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .binsight footer span{font-size:var(--t-sm);color:var(--ink-3)}
 .binsight footer i{width:30px;height:1px;background:var(--line-2)}
 
-.bcta{background:var(--void);color:var(--on-void);padding:clamp(72px,11vh,140px) var(--pad) clamp(52px,7vh,84px)}
+.bcta{background:var(--band);color:var(--on-void);padding:clamp(72px,11vh,140px) var(--pad) clamp(52px,7vh,84px)}
 .bcta__in{max-width:1180px;margin:0 auto}
 .bcta h2{font-family:var(--serif);font-size:var(--t-h1);font-weight:400;letter-spacing:-.026em;line-height:1.08}
 .bcta h2 span{color:var(--on-void-2)}
@@ -1056,7 +1077,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   display:flex;align-items:center;gap:16px;flex-wrap:wrap;
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.11em;
   text-transform:uppercase;color:var(--ink-4)}
-.docfoot__logo{width:104px;height:16px;opacity:.75}
+.docfoot__logo{width:170px;height:14px;opacity:.75}
 .docfoot__sp{flex:1;min-width:12px}
 .doc__lede{font-family:var(--serif);font-size:clamp(1.125rem,1.7vw,1.4rem);line-height:1.5;letter-spacing:-.014em;
   color:var(--ink-2);max-width:60ch}
@@ -1120,7 +1141,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
    Tabs carry names now, so each one is a pill rather than the 34px
    circle a single letter sat in. */
 .ab{position:fixed;right:20px;bottom:20px;z-index:60;display:flex;gap:2px;padding:4px;
-  background:rgba(255,255,255,.9);backdrop-filter:blur(12px);
+  background:rgba(12,35,49,.9);backdrop-filter:blur(12px);
   border:1px solid var(--line-2);border-radius:var(--r-full);
   box-shadow:none;max-width:calc(100vw - 40px)}
 .ab__b{height:32px;padding:0 13px;display:grid;place-items:center;border-radius:var(--r-full);
@@ -1129,7 +1150,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   color:var(--ink-3);
   transition:background var(--d-1) var(--ease-io),color var(--d-1)}
 .ab__b:hover{background:rgba(0,35,52,.06);color:var(--ink)}
-.ab__b.is-on{background:var(--navy);color:#fff}
+.ab__b.is-on{background:var(--blue);color:var(--ink)}
 @media (max-width:460px){
   .ab{right:12px;bottom:12px;gap:1px;padding:3px}
   .ab__b{padding:0 9px;height:30px;letter-spacing:.05em}
@@ -1159,10 +1180,10 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
 .modal h3{font-family:var(--serif);font-size:1.75rem;font-weight:400;letter-spacing:-.024em;line-height:1.15}
 .modal p{color:var(--ink-2);margin-top:15px;font-size:var(--t-body);line-height:1.6}
 .modal__brand{display:flex;align-items:flex-end;gap:9px;margin-bottom:22px}
-.modal__brand svg{width:132px;height:20px}
-.modal__brand span{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--teal);padding-bottom:2px}
+.modal__brand svg{width:220px;height:18px}
 .modal__form{display:flex;flex-direction:column;gap:10px;margin-top:28px}
 .modal__form input{height:46px;border:1px solid var(--line-2);border-radius:var(--r);padding:0 16px;outline:none;
+  background:var(--surface-2);color:var(--ink);
   transition:border-color var(--d-2)}
 .modal__form input:focus{border-color:var(--ink)}
 .modal__form .btn{margin-top:8px;justify-content:center}
@@ -1227,7 +1248,7 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   .restart span{display:none}   /* icon only — the label wrapped to two lines */
   /* the burger becomes a real, obvious control */
   .topbar__menu{display:grid;place-items:center;width:38px;height:38px;order:2;
-    background:var(--navy);color:#fff;border-radius:var(--r)}
+    background:var(--blue);color:var(--ink);border-radius:var(--r)}
   .topbar__menu:active{transform:translateY(1px)}
   .rail{position:fixed;inset:0 0 0 auto;width:min(var(--rail-w),86vw);transform:translateX(100%);
     border-right:0;border-left:1px solid var(--line);
@@ -1235,14 +1256,13 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
   .app.rail-open .rail{transform:none}
   /* just the mark in the drawer — the wordmark is already on the page behind it */
   .rail__brand{width:38px;height:38px;align-items:center;justify-content:center}
-  .rail__logo,.rail__ai{display:none}
-  .rail__mark{display:block;width:28px;height:28px}
+  .rail__logo,  .rail__mark{display:block;width:28px;height:28px}
   /* mark and close land on the same line as the header they replace */
   .rail__head{align-items:center;padding:13px 74px 26px 18px}
 
   /* the close sits exactly where the burger was, and matches it */
   .rail__close{display:grid;place-items:center;position:absolute;top:13px;right:18px;
-    width:38px;height:38px;background:var(--navy);color:#fff;border-radius:var(--r);z-index:2}
+    width:38px;height:38px;background:var(--blue);color:var(--ink);border-radius:var(--r);z-index:2}
   .rail__close:active{transform:translateY(1px)}
   .railscrim{display:block}
   .app.rail-open .railscrim{opacity:1;visibility:visible}

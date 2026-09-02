@@ -41,7 +41,7 @@
 .pick__mark { flex: none; width: 30px; height: 30px; border-radius: var(--r);
   background: var(--surface-2); display: grid; place-items: center; color: var(--ink-2);
   border: 1px solid var(--line); }
-.pick__row.is-on .pick__mark { background: var(--navy); border-color: var(--navy); color: var(--on-void); }
+.pick__row.is-on .pick__mark { background: var(--blue); border-color: var(--blue); color: var(--on-void); }
 .pick__icon { width: 16px; height: 16px; display: block; }
 
 .pick__label { min-width: 0; line-height: 1.35; }
@@ -61,7 +61,7 @@
 
 .pick__art { width: 56px; height: 56px; border-radius: var(--r-lg); display: grid; place-items: center;
   background: linear-gradient(140deg, color-mix(in srgb, var(--teal) 16%, transparent),
-    color-mix(in srgb, var(--amber) 22%, transparent)); color: var(--navy); margin-bottom: 6px; }
+    color-mix(in srgb, var(--orange) 22%, transparent)); color: var(--ink); margin-bottom: 6px; }
 .pick__art .pick__icon { width: 26px; height: 26px; }
 
 .pick__dh { margin: 0; font-size: 1.125rem; font-weight: 600; letter-spacing: -.014em; color: var(--ink); }
@@ -87,7 +87,7 @@
   padding: 5px 10px; cursor: pointer; min-height: 28px;
   transition: border-color var(--d-2) var(--ease), background var(--d-2) var(--ease), color var(--d-2) var(--ease); }
 .pick__morechip:hover { border-color: var(--ink-3); }
-.pick__morechip.is-on { background: var(--navy); border-color: var(--navy); color: var(--on-void); }
+.pick__morechip.is-on { background: var(--blue); border-color: var(--blue); color: var(--on-void); }
 .pick__morechip:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .pick__free { display: block; margin-top: 4px; }
 .pick__free textarea { width: 100%; border: 1px solid var(--line-2); border-radius: var(--r);
@@ -177,7 +177,10 @@
    can spare — but only where the fold can spare them */
 @media (min-height: 820px) { .pick__illo { max-width: 486px; } }
 @media (min-height: 1000px) { .pick__illo { max-width: 520px; } }
-.pick__illo--img { border-radius: var(--r); mix-blend-mode: multiply; }
+/* the artwork was drawn on white. On the dark room: invert it (white → black),
+   swing the hue back so teal stays teal and marigold stays marigold, then
+   screen it so the black ground disappears into the pane. */
+.pick__illo--img { border-radius: var(--r); filter: invert(1) hue-rotate(180deg) saturate(1.15) brightness(1.05); mix-blend-mode: screen; }
 
 .pick__illo-g1 { stop-color: var(--teal); stop-opacity: .14; }
 .pick__illo-g2 { stop-color: var(--amber); stop-opacity: .16; }

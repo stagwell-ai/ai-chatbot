@@ -285,10 +285,7 @@ body.vAds a.btn{text-decoration:none}
   min-height:0;padding:0;background:none;
   display:flex;align-items:flex-end;justify-content:center;gap:10px;
 }
-.adlock__sw{width:min(58%,230px);height:auto;aspect-ratio:185/28;display:block}
-.adlock__ai{
-  font-family:var(--mono);font-size:12px;letter-spacing:.17em;color:var(--teal);padding-bottom:2px;
-}
+.adlock__sw{width:min(64%,300px);height:auto;aspect-ratio:1870/153;display:block}
 .adplate--brand .adlock__cat{
   position:absolute;left:50%;bottom:14px;transform:translateX(-50%);margin:0;
   color:var(--on-void-3);border-color:var(--line-void);

@@ -5,65 +5,47 @@
 <title>OG card source — screenshot at 1200×630</title>
 <link rel="stylesheet" href="../fonts/fonts.css">
 <style>
-  /* This file exists so the share image can be regenerated:
-     render at exactly 1200×630 and screenshot the body. */
+  /* Brand V3.1 (Concept Final): the dark room, the node lattice, the two glows,
+     the logo with its orange AI, the board's own tagline. Render at exactly
+     1200×630 and screenshot the body → og.png */
   *{margin:0;box-sizing:border-box}
   body{
     width:1200px;height:630px;overflow:hidden;position:relative;
-    background:#00121C;color:#EAF2F5;
-    font-family:'Geist',-apple-system,sans-serif;
-    display:flex;flex-direction:column;justify-content:space-between;
-    padding:64px 72px 56px;
+    background:
+      radial-gradient(60% 55% at 6% 0%,rgba(0,156,189,.30),transparent 62%),
+      radial-gradient(55% 50% at 100% 100%,rgba(255,109,36,.22),transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%2377E3F6' stroke-width='1' opacity='.13'%3E%3Cpath d='M20 20h80M20 20v80M100 20 60 60M60 60v40'/%3E%3C/g%3E%3Cg fill='%2377E3F6' opacity='.30'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='100' cy='20' r='2'/%3E%3Ccircle cx='60' cy='60' r='2.6'/%3E%3Ccircle cx='20' cy='100' r='2'/%3E%3Ccircle cx='60' cy='100' r='1.6'/%3E%3C/g%3E%3C/svg%3E") 0 0/120px 120px,
+      #071A24;
+    color:#F1FAFF;font-family:'Montserrat',-apple-system,sans-serif;
+    display:flex;flex-direction:column;justify-content:space-between;padding:64px 72px 56px;
   }
-  /* the same quiet grain the site itself sits on */
-  body::after{content:"";position:absolute;inset:0;opacity:.05;pointer-events:none;
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
-  .top{display:flex;align-items:center;gap:18px}
-  .top svg{height:40px;width:auto}
-  .top b{font-family:'Geist Mono',monospace;font-weight:400;font-size:20px;
-    letter-spacing:.34em;color:#009CBD;margin-top:2px}
-  h1{font-size:88px;font-weight:600;letter-spacing:-.035em;line-height:1.04;max-width:20ch}
-  h1 em{font-style:normal;color:#009CBD}
-  h1 .serif{font-family:'Newsreader',Georgia,serif;font-style:italic;font-weight:400;
-    letter-spacing:-.02em}
-  .foot{display:flex;align-items:center;justify-content:space-between;
-    font-family:'Geist Mono',monospace;font-size:19px;letter-spacing:.12em;
-    text-transform:uppercase;color:rgba(234,242,245,.55)}
+  .logo{width:520px;height:auto;display:block}
+  h1{font-size:70px;font-weight:600;letter-spacing:-.03em;line-height:1.06;max-width:15ch}
+  h1 em{font-style:normal;color:#FF6D24}
+  .foot{display:flex;align-items:center;justify-content:space-between;font-family:'Geist Mono',monospace;
+    font-size:19px;letter-spacing:.12em;text-transform:uppercase;color:rgba(241,250,255,.55)}
   .foot .live{display:flex;align-items:center;gap:12px}
-  .foot .live i{width:9px;height:9px;border-radius:50%;background:#009CBD;
-    box-shadow:0 0 0 5px rgba(0,156,189,.22)}
-  .bars{position:absolute;right:72px;top:200px;width:300px;display:flex;
-    flex-direction:column;gap:26px}
-  .bar{display:flex;flex-direction:column;gap:10px}
-  .bar b{font-family:'Geist Mono',monospace;font-weight:400;font-size:15px;
-    letter-spacing:.14em;text-transform:uppercase;color:rgba(234,242,245,.5)}
-  .bar span{height:8px;border-radius:3px;background:rgba(234,242,245,.12);
-    position:relative;overflow:hidden}
-  .bar span i{position:absolute;inset:0;right:auto;border-radius:3px;background:#009CBD}
-  .bar.amber span i{background:#FFB81C}
+  .foot .live i{width:9px;height:9px;border-radius:50%;background:#77E3F6;box-shadow:0 0 0 5px rgba(119,227,246,.22)}
 </style>
 </head>
 <body>
-  <div class="top">
-    <svg viewBox="0 0 28.44 28" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#EAF2F5" d="M16.74,19.93H0v7.59h12.33c2.71,0,4.41-1.69,4.41-4.41v-3.18Z"/>
-      <path fill="#FFB81C" d="M11.7,7.59h16.74V0h-12.34c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
-      <path fill="#009CBD" d="M0,17.55h24.04c2.71,0,4.41-1.69,4.41-4.41v-3.18H4.41c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
-    </svg>
-    <b>STAGWELL AI</b>
-  </div>
-
-  <h1>One link.<br>Your brand, <em>read, diagnosed</em> <span class="serif">and priced.</span></h1>
-
-  <div class="bars">
-    <div class="bar"><b>Brand equity · 67</b><span><i style="width:67%"></i></span></div>
-    <div class="bar amber"><b>AI visibility · 38</b><span><i style="width:38%"></i></span></div>
-    <div class="bar"><b>Share of voice · 16</b><span><i style="width:16%"></i></span></div>
-  </div>
-
-  <div class="foot">
-    <span class="live"><i></i>10 engines online</span>
-    <span>stagwell-ai-prototypes.vercel.app</span>
-  </div>
+  <svg class="logo" viewBox="0 0 1870 153" xmlns="http://www.w3.org/2000/svg">
+      <path d="M808.447 83.8816V88.3064H856.223V98.6917C856.223 113.231 846.773 122.827 832.269 122.827H797.188C782.646 122.827 773.236 113.168 773.236 98.6917V53.2035C773.236 38.6637 782.688 29.0467 797.188 29.0467H875.685V23.0024C875.761 19.9697 875.21 16.9546 874.08 14.1392C872.95 11.3238 871.259 8.76634 869.122 6.62137C866.975 4.47641 864.411 2.78827 861.599 1.65895C858.778 0.529625 855.767 -0.0175153 852.737 0.0505802H797.188C764.573 0.0505802 743.032 21.1953 743.032 53.2035V98.6917C743.032 130.679 764.573 151.823 797.188 151.823H832.212C864.829 151.823 886.342 130.679 886.342 98.6917V61.0549H831.404C828.384 60.9979 825.392 61.5506 822.59 62.6789C819.788 63.8072 817.252 65.4882 815.115 67.6213C812.987 69.7544 811.306 72.2949 810.176 75.0928C809.045 77.8907 808.494 80.8871 808.551 83.9025" fill="#F1FAFF"/>
+      <path d="M378.113 28.9962H433.474V151.772H463.656V28.9962H518.809V0H378.113V28.9962Z" fill="#F1FAFF"/>
+      <path d="M308.166 60.8018H261.261C251.788 60.8018 245.742 54.5706 245.742 44.8919C245.742 35.2123 251.788 29.0018 261.261 29.0018H344.997V22.9575C345.065 19.9247 344.517 16.9097 343.388 14.0942C342.258 11.2788 340.57 8.72141 338.425 6.57636C336.28 4.4314 333.722 2.74325 330.906 1.61393C328.091 0.484608 325.075 -0.0624364 322.042 0.00565917H261.261C233.674 0.00565917 215.56 17.7232 215.56 44.7048C215.56 71.6857 233.674 89.3829 261.261 89.3829H308.145C318.428 89.3829 324.867 95.8221 324.867 105.999C324.867 116.177 318.428 122.616 308.145 122.616H218.821V128.661C218.767 131.685 219.325 134.688 220.461 137.491C221.596 140.295 223.286 142.839 225.43 144.973C227.574 147.107 230.127 148.787 232.936 149.909C235.744 151.032 238.751 151.576 241.775 151.508H308.249C336.646 151.508 355.362 133.188 355.362 105.812C355.362 78.4363 336.438 60.532 308.249 60.532" fill="#F1FAFF"/>
+      <path d="M659.706 76.2919H581.807V53.1527C581.807 38.6131 591.258 29.2039 605.758 29.2039H635.734C650.275 29.2039 659.706 38.6546 659.706 53.1527V76.2919ZM635.734 0H605.758C573.144 0 551.603 21.1448 551.603 53.1527V151.772H581.807V104.872H659.706V151.772H689.89V53.1527C689.89 21.1448 668.347 0 635.734 0Z" fill="#F1FAFF"/>
+      <path d="M659.706 76.2919H581.807V53.1527C581.807 38.6131 591.258 29.2039 605.758 29.2039H635.734C650.275 29.2039 659.706 38.6546 659.706 53.1527V76.2919ZM635.734 0H605.758C573.144 0 551.603 21.1448 551.603 53.1527V151.772H581.807V104.872H659.706V151.772H689.89V53.1527C689.89 21.1448 668.347 0 635.734 0Z" fill="#F1FAFF"/>
+      <path d="M1371.67 104.889V1.63672H1341.46V105.283C1341.46 133.262 1360.8 151.789 1389.57 151.789H1429.64C1432.65 151.845 1435.66 151.294 1438.45 150.165C1441.25 149.037 1443.8 147.356 1445.92 145.223C1448.06 143.09 1449.74 140.548 1450.87 137.751C1451.99 134.953 1452.55 131.957 1452.5 128.941V122.897H1389.49C1378.62 122.897 1371.58 115.855 1371.58 104.992" fill="#F1FAFF"/>
+      <path d="M1088.87 100.859C1088.87 114.942 1079.81 123.997 1065.53 123.997C1051.23 123.997 1042.38 114.942 1042.38 100.859V1.63672H1012.2V100.859C1012.2 114.942 1003.14 123.997 988.848 123.997C974.563 123.997 965.691 114.942 965.691 100.859V1.63672H935.506V100.859C935.506 132.452 956.63 152.994 988.848 152.994C996.238 153.091 1003.54 151.49 1010.2 148.313C1016.87 145.137 1022.71 140.47 1027.28 134.674C1031.88 140.396 1037.7 145.014 1044.32 148.184C1050.94 151.355 1058.19 152.999 1065.53 152.994C1097.94 152.994 1119.08 132.223 1119.08 100.859V1.63672H1088.87V100.859Z" fill="#F1FAFF"/>
+      <path d="M1538.97 122.793C1528.1 122.793 1521.07 115.752 1521.07 104.889V1.63672H1490.95V105.283C1490.95 133.262 1510.27 151.789 1539.06 151.789H1579.1C1582.12 151.843 1585.11 151.288 1587.91 150.159C1590.71 149.029 1593.25 147.348 1595.38 145.216C1597.52 143.084 1599.2 140.544 1600.33 137.748C1601.45 134.952 1602.01 131.956 1601.95 128.942V122.897L1538.97 122.793Z" fill="#F1FAFF"/>
+      <path d="M1269.81 1.63672H1218.77C1189.97 1.63672 1170.66 20.5589 1170.66 48.7239V104.805C1170.66 132.971 1189.78 151.706 1218.77 151.706H1269.89C1272.9 151.763 1275.91 151.21 1278.71 150.082C1281.5 148.953 1284.05 147.272 1286.17 145.139C1288.31 143.007 1289.99 140.466 1291.12 137.668C1292.24 134.871 1292.8 131.874 1292.75 128.858V122.814H1218.77C1207.89 122.814 1200.84 115.773 1200.84 104.91V90.2242H1282.17V61.8311H1200.76V48.5577C1200.76 37.6741 1207.8 30.6328 1218.69 30.6328H1292.75V24.6092C1292.81 21.5846 1292.27 18.577 1291.15 15.7673C1290.03 12.9577 1288.35 10.4039 1286.21 8.25984C1284.08 6.11573 1281.53 4.4255 1278.73 3.29086C1275.92 2.15622 1272.91 1.60063 1269.89 1.65742" fill="#F1FAFF"/>
+      <path d="M1767.44 76.2919H1689.54V53.1527C1689.54 38.6131 1698.99 29.2039 1713.49 29.2039H1743.46C1758.01 29.2039 1767.44 38.6546 1767.44 53.1527V76.2919ZM1743.46 0H1713.49C1680.87 0 1659.33 21.1448 1659.33 53.1527V151.772H1689.54V104.872H1767.44V151.772H1797.62V53.1527C1797.62 21.1448 1776.08 0 1743.46 0Z" fill="#FF6D24"/>
+      <path d="M1840.53 1.30078H1855.59C1863.11 1.30078 1869.21 7.39451 1869.21 14.9115V151.209H1840.53V1.30078Z" fill="#FF6D24"/>
+      <path d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z" fill="white"/>
+      <path d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z" fill="#FFB81C"/>
+      <path d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z" fill="#009CBD"/>
+  </svg>
+  <h1><em>Agentic solutions</em> grounded in real-world marketing expertise.</h1>
+  <div class="foot"><span class="live"><i></i>stagwell.ai · your brand, read live</span><span>Prototype</span></div>
 </body>
 </html>
