@@ -46,6 +46,7 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
   { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const $ = (s, r = document) => r.querySelector(s);
+const has = v => v != null && String(v).trim() !== '';
 
 /* the copy floor: if data/questions.json fails to load, the picker still
    renders something honest rather than an empty box */
@@ -132,49 +133,120 @@ function rowHTML(o, i) {
 
    Meta puts an illustration in this space; ours was a line of grey text,
    which reads as a hole in the card ("it shouldn't be blank and boring").
-   So the pane shows the thing the visitor is about to get: the snapshot,
-   abstracted — bars, a trend line through them, a momentum ring.
+   So the pane shows what the agent is about to do, in the shape the client
+   supplied: inputs on the left, the agent and its checklist in the middle,
+   the outputs it produces on the right.
 
-   It is DRAWN, not loaded: inline SVG in the brand's own colours, so there
-   is no asset to fetch, nothing to go stale, and it scales with the card.
-   It is also deliberately abstract — no numbers, no axis labels, nothing a
-   reader could mistake for a claim about anybody's brand. */
-const EMPTY_ART = `
-<svg class="pick__illo" viewBox="0 0 320 200" role="img" aria-hidden="true" fill="none">
+   TWO WAYS TO FILL IT, in order:
+
+     hero.emptyImage   a file path — set it in data/questions.json and that
+                       image renders instead, no code change. This is the
+                       hook for the client's own artwork.
+     (otherwise)       the built-in, drawn below: inline SVG in the brand's
+                       colours, composed from hero.emptySays and
+                       hero.emptySteps so the words stay in the data.
+
+   The drawn version deliberately keeps only what is LEGIBLE at this size.
+   The reference artwork is 1536px wide; this pane is around 480. Labels on
+   the four peripheral cards would render at ~6px, so they are icons here —
+   the composition survives, the unreadable type does not. */
+
+const FLANK = {
+  left: [
+    { icon: 'ai_visibility', y: 74 },     /* AI search   */
+    { icon: 'brand_health', y: 150 }      /* brand signal */
+  ],
+  right: [
+    { icon: 'competitive', y: 74 },       /* performance  */
+    { icon: 'audiences', y: 150 }         /* opportunities */
+  ]
+};
+
+const STEP_ICONS = ['influencer', 'competitive', 'audiences', 'brand_health'];
+
+function flankHTML() {
+  const tile = (x, y, id) => `
+    <g class="pick__illo-flank" transform="translate(${x},${y})">
+      <rect class="pick__illo-tile" width="34" height="34" rx="10"/>
+      <g transform="translate(7,7) scale(0.98)" class="pick__illo-tico">${icon(id)}</g>
+    </g>`;
+  const wire = d => `<path class="pick__illo-wire" d="${d}"/>`;
+  return [
+    tile(4, FLANK.left[0].y, FLANK.left[0].icon),
+    tile(4, FLANK.left[1].y, FLANK.left[1].icon),
+    tile(362, FLANK.right[0].y, FLANK.right[0].icon),
+    tile(362, FLANK.right[1].y, FLANK.right[1].icon),
+    wire('M40 91 H56 Q62 91 62 97 V119'),
+    wire('M40 167 H56 Q62 167 62 161 V139'),
+    wire('M360 91 H344 Q338 91 338 97 V119'),
+    wire('M360 167 H344 Q338 167 338 161 V139')
+  ].join('');
+}
+
+function emptyArtHTML() {
+  if (has(COPY.emptyImage)) {
+    return `<img class="pick__illo pick__illo--img" src="${esc(COPY.emptyImage)}"
+      alt="${esc(COPY.emptyImageAlt || 'How the agent works: it reads your brand, sees where you stand, finds opportunities and recommends what to do next.')}"
+      decoding="async">`;
+  }
+
+  const says = String(COPY.emptySays || '');
+  /* two balanced lines, split on the space nearest the middle */
+  const mid = Math.floor(says.length / 2);
+  let cut = says.lastIndexOf(' ', mid);
+  if (cut < 12) cut = says.indexOf(' ', mid);
+  const l1 = cut > 0 ? says.slice(0, cut) : says;
+  const l2 = cut > 0 ? says.slice(cut + 1) : '';
+
+  const steps = (Array.isArray(COPY.emptySteps) ? COPY.emptySteps : []).slice(0, 4);
+  /* no placeholder rules under the labels: at this size they sit on the
+     baseline and read as strikethrough. The reference uses them because its
+     labels are 3x larger. */
+  const rows = steps.map((label, i) => {
+    const y = 127 + i * 29;
+    return `
+      <g class="pick__illo-step" style="--d:${340 + i * 90}ms">
+        <circle class="pick__illo-check" cx="88" cy="${y}" r="8.5"/>
+        <path class="pick__illo-tick" d="M84.3 ${y} l2.7 2.7 4.8-5.2"/>
+        <rect class="pick__illo-steptile" x="105" y="${y - 10.5}" width="21" height="21" rx="6"/>
+        <g transform="translate(107.2,${y - 8.3}) scale(0.83)" class="pick__illo-tico">${icon(STEP_ICONS[i])}</g>
+        <text class="pick__illo-label" x="136" y="${y + 3.8}">${esc(label)}</text>
+      </g>`;
+  }).join('');
+
+  return `
+<svg class="pick__illo" viewBox="0 0 400 250" role="img"
+     aria-label="${esc(says)}" fill="none">
   <defs>
     <linearGradient id="pickGlow" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" class="pick__illo-g1"/><stop offset="1" class="pick__illo-g2"/>
     </linearGradient>
   </defs>
-  <circle cx="252" cy="42" r="58" fill="url(#pickGlow)"/>
-  <circle cx="62" cy="168" r="40" fill="url(#pickGlow)"/>
+  <circle cx="330" cy="34" r="52" fill="url(#pickGlow)"/>
+  <circle cx="74" cy="214" r="44" fill="url(#pickGlow)"/>
 
-  <rect class="pick__illo-card" x="38" y="28" width="244" height="146" rx="16"/>
+  ${flankHTML()}
 
-  <g class="pick__illo-bars">
-    <rect class="pick__illo-bar" x="68"  y="112" width="26" height="40" rx="6" style="--d:0ms"/>
-    <rect class="pick__illo-bar" x="108" y="90"  width="26" height="62" rx="6" style="--d:70ms"/>
-    <rect class="pick__illo-bar" x="148" y="102" width="26" height="50" rx="6" style="--d:140ms"/>
-    <rect class="pick__illo-bar pick__illo-bar--you" x="188" y="66" width="26" height="86" rx="6" style="--d:210ms"/>
-  </g>
-  <line class="pick__illo-base" x1="58" y1="152.5" x2="262" y2="152.5"/>
+  <rect class="pick__illo-card" x="52" y="14" width="296" height="224" rx="18"/>
 
-  <polyline class="pick__illo-line" points="81,122 121,100 161,110 201,76"/>
-  <circle class="pick__illo-dot" cx="81"  cy="122" r="3.4"/>
-  <circle class="pick__illo-dot" cx="121" cy="100" r="3.4"/>
-  <circle class="pick__illo-dot" cx="161" cy="110" r="3.4"/>
-  <circle class="pick__illo-dot pick__illo-dot--you" cx="201" cy="76" r="4.6"/>
+  <!-- the agent, and what it says it does -->
+  <circle class="pick__illo-ring" cx="88" cy="56" r="26" transform="rotate(-90 88 56)"/>
+  <circle class="pick__illo-head" cx="88" cy="56" r="20"/>
+  <circle class="pick__illo-eye" cx="81" cy="54" r="3.6"/>
+  <circle class="pick__illo-eye" cx="95" cy="54" r="3.6"/>
+  <rect class="pick__illo-bubble" x="122" y="30" width="212" height="52" rx="12"/>
+  <text class="pick__illo-says" x="134" y="52">${esc(l1)}</text>
+  <text class="pick__illo-says" x="134" y="68">${esc(l2)}</text>
 
-  <g transform="translate(238,52)">
-    <circle class="pick__illo-ring-bg" r="21"/>
-    <circle class="pick__illo-ring" r="21" transform="rotate(-90)"/>
-  </g>
+  <rect class="pick__illo-list" x="68" y="100" width="264" height="128" rx="12"/>
+  ${rows}
 </svg>`;
+}
 
 function detailHTML(o) {
   if (!o) {
     return `<div class="pick__detail-empty">
-      ${EMPTY_ART}
+      ${emptyArtHTML()}
       <p class="pick__empty-h">${esc(COPY.emptyTitle || COPY.listLabel || '')}</p>
       ${COPY.emptyLine ? `<p class="pick__empty-l">${esc(COPY.emptyLine)}</p>` : ''}
     </div>`;

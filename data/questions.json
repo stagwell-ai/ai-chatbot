@@ -121,6 +121,15 @@
     "title": "What do you need help solving today?",
     "sub": "Pick what you're up against. The agent reads your brand first, then points you at the products that fit.",
     "listLabel": "Choose what you're solving",
+    "emptyImage": null,
+    "emptyImageNote": "drop a file at e.g. /assets/img/hero/agent.png and put its path here — machine/hero.js prefers it over the drawn illustration, no code change. Null renders the built-in SVG, which is composed from emptySays and emptySteps below.",
+    "emptySays": "I analyze your brand and find the areas where AI can help most.",
+    "emptySteps": [
+      "Understand your brand",
+      "See where you stand",
+      "Find the right opportunities",
+      "Recommend what to do next"
+    ],
     "emptyTitle": "Pick one and I'll show you what it covers.",
     "emptyLine": "Whichever you choose, the agent reads your brand first — where you stand, how AI assistants describe you, where your signal is moving — then names the products that fit.",
     "emailLabel": "My business email",
