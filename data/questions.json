@@ -52,7 +52,50 @@
       "notes": "Free text can carry multiple domains at once — that is how multi-product opportunities surface.",
       "skipWhen": "entry came from a product ad (product_interest pre-filled; opener names the product)",
       "copyUnclassified": "I didn't catch a marketing problem in that — which of these is closest? Or describe it another way.",
-      "copyUnclassifiedNote": "Shown when free text at q1 classifies to no domain. Asking the identical question again read as a loop (QA, Sep 2: emoji and gibberish got the same words back with no acknowledgement)."
+      "copyUnclassifiedNote": "Shown when free text at q1 classifies to no domain. Asking the identical question again read as a loop (QA, Sep 2: emoji and gibberish got the same words back with no acknowledgement).",
+      "moreChips": [
+        {
+          "label": "Consumer research",
+          "domain": "research"
+        },
+        {
+          "label": "Prove business impact",
+          "domain": "business_impact"
+        },
+        {
+          "label": "Influencer marketing",
+          "domain": "influencer"
+        },
+        {
+          "label": "Reputation risk",
+          "domain": "reputation"
+        },
+        {
+          "label": "Global media monitoring",
+          "domain": "media_monitoring"
+        },
+        {
+          "label": "AI visibility",
+          "domain": "ai_visibility"
+        },
+        {
+          "label": "Foot traffic & real-world behaviour",
+          "domain": "real_world_behavior"
+        },
+        {
+          "label": "Marketing ops in one system",
+          "domain": "marketing_ops"
+        },
+        {
+          "label": "Secure AI for the team",
+          "domain": "ai_workspace"
+        },
+        {
+          "label": "Research sample you can trust",
+          "domain": "sample_quality"
+        }
+      ],
+      "moreChipsNote": "Every routing domain that is not one of the four rows, offered as a chip under 'Something else' so every product has a visible door while the picker keeps its four-row Meta shape (client, Sep 2, option c). A tap is a deterministic q1 answer — flow.js domainFromLabel and convo.js matchingChip read this list too — and the label is what the visitor's bubble says."
     },
     {
       "id": "q2",
@@ -310,6 +353,24 @@
             }
           ],
           "decides": "whether the conversation is about consolidation, governance or a first rollout"
+        },
+        "sample_quality": {
+          "copy": "Is this sample for your own studies, or sample you buy on behalf of clients?",
+          "chips": [
+            {
+              "label": "Our own studies",
+              "value": "own"
+            },
+            {
+              "label": "For clients",
+              "value": "clients"
+            },
+            {
+              "label": "Both",
+              "value": "both"
+            }
+          ],
+          "decides": "agency volume vs. single-brand supply; who signs the contract"
         }
       }
     }
@@ -443,6 +504,86 @@
           "Custom audience building",
           "Cross-channel activation",
           "Measurement"
+        ]
+      },
+      "research": {
+        "title": "How do I run research myself, fast?",
+        "line": "Describe what you want to learn; AI drafts the questionnaire, fields it to respondents in 100+ countries and helps you read the results — in days, no agency required.",
+        "goodFor": [
+          "Concept and message testing",
+          "Quick polls",
+          "Creative testing",
+          "Same-day reads"
+        ]
+      },
+      "business_impact": {
+        "title": "How do I prove the brand is moving the business?",
+        "line": "Continuous scoring of the emotional and functional drivers of brand strength, tied to pricing power, revenue and market value — the numbers a CFO and a board will accept.",
+        "goodFor": [
+          "Brand ROI",
+          "Pricing power",
+          "Board and CFO conversations",
+          "Which investments pay"
+        ]
+      },
+      "reputation": {
+        "title": "How do I see a reputation risk before it becomes a story?",
+        "line": "Reads narrative alignment and emotional intensity across the conversation about you, and flags the risks that are about to become headlines.",
+        "goodFor": [
+          "Early warning",
+          "Crisis readiness",
+          "Narrative tracking",
+          "Issues management"
+        ]
+      },
+      "media_monitoring": {
+        "title": "How do I monitor everything said about us, globally?",
+        "line": "Human-plus-AI monitoring of news, social and broadcast worldwide, in every language, with analysis of the narratives your stakeholders are forming.",
+        "goodFor": [
+          "Multi-market coverage",
+          "Daily briefings",
+          "Narrative analysis",
+          "Broadcast and print"
+        ]
+      },
+      "real_world_behavior": {
+        "title": "How do I measure what people actually do?",
+        "line": "Real-world behaviour — who visited, how foot traffic moved, and whether your advertising changed where people went — instead of what they tell a survey.",
+        "goodFor": [
+          "Store visits",
+          "Foot traffic lift",
+          "Drive-to-store",
+          "The say/do gap"
+        ]
+      },
+      "marketing_ops": {
+        "title": "How do I get my marketing tools working as one system?",
+        "line": "Connect planning, creation, media and measurement into an agentic operating system that keeps learning, with specialised machines for media, knowledge and targeting.",
+        "goodFor": [
+          "Fragmented stacks",
+          "Workflow orchestration",
+          "Enterprise marketing ops",
+          "Continuous learning"
+        ]
+      },
+      "ai_workspace": {
+        "title": "How do I give the whole team AI, safely?",
+        "line": "One login, one contract and one security standard for the frontier models and purpose-built marketing assistants — with uploaded data never used to train the models.",
+        "goodFor": [
+          "Sanctioned AI access",
+          "Custom assistants",
+          "Governance and SOC 2",
+          "One contract, not a drawer of subscriptions"
+        ]
+      },
+      "sample_quality": {
+        "title": "How do I know the people behind my research are real?",
+        "line": "Verified consumer and B2B respondents from a global supply and identity backbone, so every study stands on sample you can trust.",
+        "goodFor": [
+          "Verified respondents",
+          "B2B sample",
+          "Fraud and bot screening",
+          "Panel quality"
         ]
       }
     }

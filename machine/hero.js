@@ -97,7 +97,9 @@ const icon = id => `<svg class="pick__icon" viewBox="0 0 20 20" aria-hidden="tru
 /* ── state ───────────────────────────────────────────────────────────────── */
 let COPY = FALLBACK;
 let OPTIONS = [];
+let MORE = [];            /* q1.moreChips: every door that is not a row */
 let selected = null;      /* option id (a routing domain, or __other__) */
+let more = null;          /* under "Something else": the suggestion chip chosen, if any */
 let lastError = null;
 
 const optionById = id => OPTIONS.find(o => o.id === id) || null;
@@ -261,20 +263,39 @@ function detailHTML(o) {
     </div>`;
   }
   const free = o.id === OTHER;
-  /* the free-text row carries a text box, so it drops the tag list — with
-     both, this pane is half again as tall as every other one and the card
-     falls below the fold on a laptop */
-  const tags = free ? [] : (o.goodFor || []).filter(Boolean);
+  /* THE OTHER DOORS. "Something else" carries a text box AND a chip for every
+     routing domain that is not one of the four rows (q1.moreChips), so every
+     product has a visible door while the picker keeps its four-row Meta
+     shape (client, Sep 2). A chosen chip repaints this pane with that
+     domain's own detail; the text box stays for anyone who would rather say
+     it in their own words. */
+  if (free) {
+    const chosen = more ? MORE.find(m => m.domain === more) : null;
+    const d = chosen ? (COPY.byDomain || {})[chosen.domain] || {} : null;
+    const head = chosen
+      ? `<div class="pick__art" aria-hidden="true">${icon(chosen.domain)}</div>
+         <h2 class="pick__dh">${esc(d.title || chosen.label)}</h2>
+         <p class="pick__dl">${esc(d.line || '')}</p>`
+      : `<div class="pick__art" aria-hidden="true">${icon(o.id)}</div>
+         <h2 class="pick__dh">${esc(o.detailTitle || o.label)}</h2>
+         <p class="pick__dl">${esc(o.line || '')}</p>`;
+    const chips = MORE.length ? `<p class="pick__dgood">${esc(COPY.moreLabel || 'Or pick one of these:')}</p>
+      <div class="pick__more" role="group" aria-label="${esc(COPY.moreLabel || 'Other problems')}">${
+        MORE.map(m => `<button type="button" class="pick__morechip${more === m.domain ? ' is-on' : ''}"
+          data-more="${esc(m.domain)}" aria-pressed="${more === m.domain ? 'true' : 'false'}">${esc(m.label)}</button>`).join('')}</div>` : '';
+    return `${head}${chips}
+      <label class="pick__free">
+        <span class="vh">${esc(COPY.otherPlaceholder || '')}</span>
+        <textarea id="pickFree" rows="2" placeholder="${esc(chosen ? (COPY.morePlaceholder || 'Add anything else you want the agent to know (optional)') : (COPY.otherPlaceholder || ''))}"></textarea>
+      </label>`;
+  }
+  const tags = (o.goodFor || []).filter(Boolean);
   return `
     <div class="pick__art" aria-hidden="true">${icon(o.id)}</div>
     <h2 class="pick__dh">${esc(o.detailTitle || o.label)}</h2>
     <p class="pick__dl">${esc(o.line || '')}</p>
     ${tags.length ? `<p class="pick__dgood">Good for:</p>
-      <ul class="pick__tags">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
-    ${free ? `<label class="pick__free">
-        <span class="vh">${esc(COPY.otherPlaceholder || '')}</span>
-        <textarea id="pickFree" rows="2" placeholder="${esc(COPY.otherPlaceholder || '')}"></textarea>
-      </label>` : ''}`;
+      <ul class="pick__tags">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}`;
 }
 
 function render() {
@@ -310,6 +331,7 @@ function paintDetail() {
 function select(id, opts) {
   const o = optionById(id);
   if (!o) return false;
+  if (id !== OTHER) more = null;
   selected = id;
   root.querySelectorAll('.pick__row').forEach(b => {
     const on = b.getAttribute('data-pick') === id;
@@ -396,7 +418,12 @@ function go() {
   let text = o ? o.label : '';
   if (o && selected === OTHER) {
     const free = $('#pickFree', root);
-    text = free ? free.value.trim() : '';
+    const typed = free ? free.value.trim() : '';
+    const chosen = more ? MORE.find(m => m.domain === more) : null;
+    /* a suggestion chip is a deterministic q1 answer (its label is in
+       q1.moreChips, which flow.js resolves to a domain); anything typed
+       beside it rides along as the visitor's own words */
+    text = chosen ? (typed ? `${chosen.label} — ${typed}` : chosen.label) : typed;
   }
 
   clearError();
@@ -422,6 +449,15 @@ function wire() {
   root.addEventListener('click', e => {
     const row = e.target.closest('[data-pick]');
     if (row) { select(row.getAttribute('data-pick')); return; }
+    const chip = e.target.closest('[data-more]');
+    if (chip) {
+      const id = chip.getAttribute('data-more');
+      more = more === id ? null : id;           /* tap again to un-choose */
+      paintDetail();
+      const again = root.querySelector(`[data-more="${id}"]`);
+      if (again) { try { again.focus({ preventScroll: true }); } catch (err) { /* fine */ } }
+      return;
+    }
     if (e.target.closest('#pickGo')) go();
   });
 
@@ -459,7 +495,9 @@ function build(data) {
       ? hero.personalDomains : FALLBACK.personalDomains
   });
 
-  const chips = (q && q.questions && (q.questions.find(x => x.id === 'q1') || {}).chips) || [];
+  const q1 = (q && q.questions && q.questions.find(x => x.id === 'q1')) || {};
+  const chips = q1.chips || [];
+  MORE = (Array.isArray(q1.moreChips) ? q1.moreChips : []).filter(c => c && c.domain && c.label);
   const by = hero.byDomain || {};
   OPTIONS = chips.filter(c => c && c.domain).map(c => Object.assign(
     { id: c.domain, label: c.label, detailTitle: (by[c.domain] || {}).title || c.label },
@@ -497,6 +535,7 @@ else build(DATA);
    any error are cleared, the typed email is kept — it is theirs. */
 function reset() {
   selected = null;
+  more = null;
   root.querySelectorAll('.pick__row').forEach((b, i) => {
     b.classList.remove('is-on'); b.setAttribute('aria-checked', 'false'); b.tabIndex = i === 0 ? 0 : -1;
   });
@@ -514,6 +553,7 @@ window.SAIHERO = {
   reset,
   state: () => ({
     option: selected,
+    more,
     email: ($('#pickEmail', root) || {}).value || '',
     error: lastError
   }),

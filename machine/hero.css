@@ -71,6 +71,14 @@
 .pick__tags li { font-size: var(--t-xs); color: var(--ink-2); background: var(--surface-2);
   border: 1px solid var(--line); border-radius: var(--r-sm); padding: 5px 10px; }
 
+.pick__more { display: flex; flex-wrap: wrap; gap: 6px; }
+.pick__morechip { font-family: var(--sans); font-size: var(--t-xs); line-height: 1.2; color: var(--ink-2);
+  background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-full);
+  padding: 6px 11px; cursor: pointer; min-height: 30px;
+  transition: border-color var(--d-2) var(--ease), background var(--d-2) var(--ease), color var(--d-2) var(--ease); }
+.pick__morechip:hover { border-color: var(--ink-3); }
+.pick__morechip.is-on { background: var(--navy); border-color: var(--navy); color: var(--on-void); }
+.pick__morechip:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .pick__free { display: block; margin-top: 4px; }
 .pick__free textarea { width: 100%; border: 1px solid var(--line-2); border-radius: var(--r);
   background: var(--surface); padding: 12px 14px; font-family: var(--sans); font-size: var(--t-sm);

@@ -67,7 +67,7 @@
         },
         "enterprise": {
           "route": "demo",
-          "note": "if 'prove impact' language also present → consultative with BERA.ai"
+          "note": "'prove impact', CFO or board language at enterprise tier adds business_impact as a second domain (engine soft trigger, Sep 2) → override 1 → consultative with BERA.ai"
         }
       }
     },
@@ -99,7 +99,7 @@
         },
         "enterprise": {
           "route": "demo",
-          "note": "if 'prove impact' or CFO language is also present → consultative with BERA.ai"
+          "note": "'prove impact', CFO or board language at enterprise tier adds business_impact as a second domain (engine soft trigger, Sep 2) → override 1 → consultative with BERA.ai"
         }
       }
     },
@@ -416,6 +416,36 @@
         "enterprise": {
           "route": "consultative",
           "note": "security review, SSO and org policies come first"
+        }
+      }
+    },
+    {
+      "id": "sample_quality",
+      "label": "Get research sample you can trust (verified respondents)",
+      "solution": "Unlock",
+      "solutionNote": "Unlock was 'a supporting role by design' — reachable only as QuestDIY's companion. The client asked for it to be a primary (Sep 2): this domain is the door, for research and agency buyers whose problem is the people behind the data, not the survey tool.",
+      "icpRoles": [
+        "Director of Research",
+        "Insights Manager",
+        "VP Consumer Insights",
+        "Agency Research Lead"
+      ],
+      "industryBoost": [
+        "Agencies",
+        "Market research firms",
+        "Consumer Products"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "supply is contracted, not self-served — the demo sizes the need"
+        },
+        "mid_market": {
+          "route": "demo"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "agency volume (q6) → consultative when it is for clients at scale"
         }
       }
     }

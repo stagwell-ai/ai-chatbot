@@ -617,7 +617,9 @@ function questionCopy(id) {
 function matchingChip(text) {
   const data = window.SAI && window.SAI.data;
   const q1 = data && data.questions && (data.questions.questions || []).find(q => q.id === 'q1');
-  const chips = (q1 && q1.chips) || [];
+  /* the four rows AND the suggestion chips under "Something else" — both are
+     deterministic q1 answers, no classifier round-trip */
+  const chips = ((q1 && q1.chips) || []).concat((q1 && q1.moreChips) || []);
   const norm = s => String(s || '').trim().toLowerCase();
   return chips.find(c => norm(c.label) === norm(text)) || null;
 }

@@ -925,7 +925,8 @@ function domainFromLabel(label) {
   const t = norm(label);
   if (!t) return null;
 
-  const chips = (qById('q1') || {}).chips || [];
+  const q1 = qById('q1') || {};
+  const chips = (q1.chips || []).concat(q1.moreChips || []);
   const chip = chips.find(c => norm(c.label) === t);
   if (chip && chip.domain) return chip.domain;
 

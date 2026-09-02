@@ -43,14 +43,15 @@
         "questbrand"
       ],
       "url": "https://www.harrisquest.com/suite/questdiy",
-      "signupUrl": null,
+      "signupUrl": "https://www.harrisquest.com/suite/questdiy",
       "valueProps": [
         "AI-drafted surveys",
         "Respondents in 100+ countries",
         "Concept & message testing",
         "Same-day reads"
       ],
-      "lockup": "/assets/img/lockups/questdiy.png"
+      "lockup": "/assets/img/lockups/questdiy.png",
+      "signupNote": "Client, Sep 2: QuestDIY has a free trial. The kit carries no separate signup URL, so the trial button points at the product page — swap in the exact trial link when Harris Quest supplies it."
     },
     {
       "id": "bera",
@@ -78,8 +79,8 @@
       "name": "Unlock",
       "positioning": "Real, verified people behind every answer. A global respondent supply and identity backbone — validated consumer and B2B respondents, so your research stands on sample you can trust.",
       "whoFor": "The quality layer under our research offerings",
-      "shownWhen": "Supporting role by design: trust layer on research pages; standalone B only for agency/research buyers asking about sample quality",
-      "nextStep": "Talk to the team",
+      "shownWhen": "B: domain=sample_quality — a primary for research and agency buyers asking about the people behind the data (Sep 2) · still the trust layer under QuestDIY and QuestBrand as a companion",
+      "nextStep": "Demo",
       "companions": [
         "questdiy",
         "questbrand"

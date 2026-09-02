@@ -125,6 +125,7 @@ export const CLASSIFY_DOMAINS = [
   ['real_world_behavior', 'measure real-world behaviour — store visits, foot traffic, the say/do gap'],
   ['marketing_ops', 'connect marketing operations into one system — workflows, media, knowledge'],
   ['ai_workspace', 'give the team secure access to AI itself — enterprise LLMs under one login and contract, custom AI assistants, governance of unsanctioned or shadow AI use, data that never trains the models'],
+  ['sample_quality', 'the quality of the PEOPLE behind research — verified respondents, panel quality, survey fraud or bots, B2B sample supply; NOT running a survey (that is research)'],
 ];
 
 export const CLASSIFY_IDS = CLASSIFY_DOMAINS.map(d => d[0]);

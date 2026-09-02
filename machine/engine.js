@@ -137,8 +137,8 @@ const KEYWORDS = {
     'survey', 'poll', 'polling', 'questionnaire', 'concept test', 'concept testing',
     'message testing', 'messaging test', 'creative testing', 'test creative',
     'test messaging', 'focus group', 'consumer research', 'market research', 'research',
-    'research study', 'run a study', 'run research', 'field a study', 'respondent',
-    'sample quality', 'insights study', 'ad hoc research', 'qual', 'quant'
+    'research study', 'run a study', 'run research', 'field a study',
+    'insights study', 'ad hoc research', 'qual', 'quant'
   ],
   business_impact: [
     'prove', 'prove impact', 'business impact', 'moved the business', 'move the business',
@@ -221,6 +221,14 @@ const KEYWORDS = {
     'ai assistants', 'build assistants', 'internal assistant', 'gen ai', 'generative ai', 'genai',
     'one login', 'single login', 'ai subscriptions', 'too many ai tools', 'data never trains',
     'secure ai', 'ai securely', 'ai safely', 'prompt library', 'ai for the whole team'
+  ],
+  /* sample_quality: the PEOPLE behind the research, not the survey tool.
+     'respondent' and 'sample quality' moved here from research (Sep 2). */
+  sample_quality: [
+    'respondent', 'respondents', 'sample quality', 'sample supply', 'research sample', 'verified respondents',
+    'verified sample', 'panel', 'panel quality', 'panel provider', 'survey fraud', 'fraudulent respondents',
+    'bots in our survey', 'bot respondents', 'data quality of our panel', 'b2b respondents', 'b2b sample',
+    'consumer sample', 'real people behind', 'respondent fraud', 'sample vendor', 'sample partner'
   ]
 };
 
@@ -322,7 +330,8 @@ function blankSession() {
     slots,
     slotSources: {},
     research: null,
-    humanAsk: false
+    humanAsk: false,
+    impactLanguage: false
   };
 }
 
@@ -534,6 +543,28 @@ function detectHumanAsk(text) {
   return HUMAN_PATTERNS.some(re => re.test(t));
 }
 
+/* THE IMPACT-LANGUAGE SOFT TRIGGER (client, Sep 2). routing.json's enterprise
+   cells for brand_health and competitive carried a note — "if 'prove impact'
+   or CFO language is also present → consultative with the business-impact
+   product" — that the matrix never read. Now it does: the phrases below, seen
+   anywhere in the visitor's own words, set session.impactLanguage, and
+   route() adds business_impact as a SECOND domain for an enterprise visitor
+   whose primary is brand health or competitive, so override 1 fires and the
+   business-impact product rides along. \bboard\b keeps "onboarding" and
+   "billboard" out. */
+const IMPACT_PATTERNS = [
+  /prove (the |our |its )?(impact|roi|value|worth)/, /\bcfo\b/, /\bboard\b/, /pricing power/,
+  /business impact/, /justify (the |our )?(spend|budget|investment)/, /market value/, /\broi\b/,
+  /return on (marketing|brand|investment)/, /shareholder/
+];
+function detectImpactLanguage(text) {
+  const t = norm(text);
+  return IMPACT_PATTERNS.some(re => re.test(t));
+}
+function noteImpactLanguage(text) {
+  if (detectImpactLanguage(text)) session.impactLanguage = true;
+}
+
 /* one normalised phrase inside another, on whole-word boundaries:
    "benchmarking" is in "brand benchmarking", but "pr" is not in
    "pricing power". Both sides are already norm()-ed. */
@@ -602,6 +633,7 @@ function withTimeout(promise, ms) {
 }
 
 function classify(text) {
+  noteImpactLanguage(text);
   if (detectHumanAsk(text)) {
     session.humanAsk = true;
     events.emit('human_requested', { text: String(text || '') });
@@ -692,6 +724,7 @@ function employeesFromClaim(text) {
    it otherwise. */
 function classifyFull(text) {
   const raw = String(text || '');
+  noteImpactLanguage(raw);
   const human = detectHumanAsk(raw);
   if (human) {
     session.humanAsk = true;
@@ -958,10 +991,20 @@ function route() {
     .filter(id => known.indexOf(id) !== -1)
     .filter((id, i, a) => a.indexOf(id) === i);
 
+  const tier = resolveTier();
+
+  /* the soft trigger (see detectImpactLanguage): enterprise + brand or
+     competitive primary + impact language → business_impact joins as a second domain */
+  let softTrigger = null;
+  if (tier === 'enterprise' && session.impactLanguage === true &&
+      stated.some(id => id === 'brand_health' || id === 'competitive') &&
+      stated.indexOf('business_impact') === -1 && known.indexOf('business_impact') !== -1) {
+    stated.push('business_impact');
+    softTrigger = 'impact_language';
+  }
+
   /* the one thing boosts do: which of the visitor's problems leads. */
   const domains = rankByBoost(stated);
-
-  const tier = resolveTier();
   const primaryDomain = domains.length ? domains[0] : null;
   const primary = primaryDomain ? domainById(primaryDomain) : null;
   const cell = (primary && primary.cells && tier && primary.cells[tier]) || null;
@@ -992,6 +1035,7 @@ function route() {
   const matched = domains.map(id => {
     const d = domainById(id) || {};
     return {
+    softTrigger,
       domain: id,
       label: d.label || id,
       solution: d.solution || null,
@@ -1000,11 +1044,11 @@ function route() {
     };
   });
 
-  const decision = { route: decided, primaryDomain, tier, matched, override, cellNote };
+  const decision = { route: decided, primaryDomain, tier, matched, override, cellNote, softTrigger };
 
   /* one route_decided per distinct decision — the console shows the story,
      not every recalculation the UI happens to ask for. */
-  const key = JSON.stringify([decided, primaryDomain, tier, domains, override && override.order]);
+  const key = JSON.stringify([decided, primaryDomain, tier, domains, override && override.order, softTrigger]);
   if (key !== lastDecisionKey) {
     lastDecisionKey = key;
     events.emit('route_decided', decision);

@@ -359,12 +359,15 @@ async function j3(page, check) {
      honest hero sends the visitor to the product site and says why underneath.
      The offer only reads "Start your free trial →" where a signupUrl exists
      (today: IMAI and the SMB platform). */
-  check.includes('CTA copy names the product site, not an invented trial',
-    trial[0] && trial[0].text, 'Start on QuestDIY');
+  /* QuestDIY has a free trial (client, Sep 2): solutions.json carries a
+     signupUrl, so the hero renders the real trial door — and no
+     "signup is coming" caption, because signup is not coming, it is here. */
+  check.includes('CTA copy is the real trial door',
+    trial[0] && trial[0].text, 'Start your free trial');
   check.ok('and it is a real, enabled marigold button',
     trial[0] && trial[0].gold === true && trial[0].disabled === false);
-  check.includes('the honest caption under it',
-    await page.textContent('#pathView .pathhero__note'), 'Self-serve signup is coming');
+  check.eq('no "signup is coming" caption under a real trial',
+    await page.$$eval('#pathView .pathhero__note', e => e.filter(x => /signup is coming/i.test(x.textContent)).length), 0);
   check.includes('trial link points at harrisquest questdiy', trial[0] && trial[0].href,
     'harrisquest.com/suite/questdiy');
   check.includes('trial link carries sai_route=self_serve', trial[0] && trial[0].href, 'sai_route=self_serve');
