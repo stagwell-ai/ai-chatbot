@@ -117,6 +117,7 @@ export const CLASSIFY_DOMAINS = [
   ['research', 'run their own research — surveys, polls, concept and message testing'],
   ['business_impact', "prove the brand's business impact — pricing power, revenue, market value, ROI"],
   ['audiences', 'reach better audiences — build and activate segments from first-party data'],
+  ['leads', 'answer, qualify and book inbound leads — missed calls, slow follow-up, after-hours demand, voice or chat agents doing the qualifying'],
   ['influencer', 'influencer and creator marketing'],
   ['reputation', 'protect reputation — see risks before they become stories'],
   ['media_monitoring', 'monitor what is said about them globally, across markets and languages'],

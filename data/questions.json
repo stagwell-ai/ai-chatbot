@@ -8,12 +8,11 @@
       "copy": "What do you need help solving today?",
       "copyAfterOpener": "Got it — \u201c{said}\u201d. So I point that at the right product, which of these is closest?",
       "input": "chips_or_free_text",
-      "chipsNote": "Meta's own ad-objective words, verbatim, wherever one maps (client, Sep 2: \"copy directly the exact wording that Meta uses\"): Awareness → brand health, Traffic → AI-search visibility, Engagement → creator programs, Sales → audience activation. Meta has no objective for competitive intelligence (its six are Awareness, Traffic, Engagement, Leads, App promotion, Sales), so that row keeps its own name. Each row is a routing domain; what the word means HERE lives in hero.byDomain[domain] — the detail pane is what stops 'Traffic' reading as paid media.",
+      "chipsNote": "The client's own list, Sep 2: competitive analysis, Awareness, Leads, Sales, then free text — three of the four in Meta's ad-objective words verbatim (Awareness, Leads, Sales), with competitive analysis first because Meta has no objective for it and it is the demo's strongest opening. Meta's Traffic and Engagement rows are deliberately not offered: AI-search visibility and creator programs are still reachable through 'Something else', the chat and /products, they are simply not one of the four doors. Each row is a routing domain; what the word means HERE lives in hero.byDomain[domain] — the detail pane is what keeps 'Leads' and 'Sales' from reading as paid media.",
       "chips": [
+        { "label": "Competitive analysis", "domain": "competitive", "meta": null },
         { "label": "Awareness", "domain": "brand_health", "meta": "Awareness" },
-        { "label": "Competitive intelligence", "domain": "competitive", "meta": null },
-        { "label": "Traffic", "domain": "ai_visibility", "meta": "Traffic" },
-        { "label": "Engagement", "domain": "influencer", "meta": "Engagement" },
+        { "label": "Leads", "domain": "leads", "meta": "Leads" },
         { "label": "Sales", "domain": "audiences", "meta": "Sales" }
       ],
       "freeTextDomains": ["research", "business_impact", "audiences", "reputation", "media_monitoring", "real_world_behavior", "marketing_ops"],
@@ -105,6 +104,7 @@
           "peersNote": "the {competitors} form is only ever asked when research came back with the visitor's REAL comparison set — never with the seeded fallback names (machine/flow.js q6View)",
           "decides": "named-rival tracking vs category-wide benchmarking"
         },
+        "leads": { "copy": "Where do most of your inbound leads land today — a form, a phone line, or a shared inbox?", "chips": [{ "label": "A form on the site", "value": "form" }, { "label": "A phone line", "value": "phone" }, { "label": "A shared inbox", "value": "inbox" }], "decides": "which channel the agents answer first; telephony vs. CRM integration leads the scoping" },
         "research": { "copy": "Is this a one-off study, or something you'll run regularly?", "chips": [{ "label": "A one-off study", "value": "one-off study" }, { "label": "Something we'll run regularly", "value": "run regularly" }, { "label": "Not sure yet", "value": "not sure yet" }], "decides": "self-service platform vs. serviced research; trial-readiness" },
         "business_impact": { "copy": "Who needs convincing — the board, the CFO, or your own team?", "decides": "seniority of the sale; executive audience biases consultative" },
         "audiences": { "copy": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?", "decides": "data readiness; demo now vs. consultative scoping" },
@@ -168,6 +168,16 @@
         "title": "How do I run creator programs that pay back?",
         "line": "Run creator programs end to end — discovery and vetting, then outreach, contracts, approvals and tracking through to ROI.",
         "goodFor": ["Creator discovery", "Fraud and audience checks", "Campaign management", "Proving ROI"]
+      },
+      "leads": {
+        "title": "How many hand-raises are we losing?",
+        "line": "Answer, qualify and book every inbound lead the moment it arrives — voice and chat agents working any hour and any language, handing anything they can't finish to a person with the context already gathered.",
+        "goodFor": [
+          "Instant lead response",
+          "Qualifying and booking",
+          "After-hours and overflow",
+          "Any language"
+        ]
       },
       "audiences": {
         "title": "How do I reach better audiences?",

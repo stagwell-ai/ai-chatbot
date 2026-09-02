@@ -156,6 +156,19 @@ const KEYWORDS = {
     'custom audience', 'programmatic', 'media planning', 'addressable',
     'identity resolution', 'audience building'
   ],
+  /* Deliberately no bare 'lead'/'leads': it is a substring of "leadership",
+     "leading" and "market leader", all of which belong elsewhere. And nothing
+     of the "book a call" shape either — that is override 4 (the visitor
+     asking for a person), not a domain. */
+  leads: [
+    'inbound lead', 'inbound leads', 'lead gen', 'lead generation', 'lead qualification',
+    'qualify leads', 'qualifying leads', 'speed to lead', 'hand-raise', 'hand raiser',
+    'missed call', 'missed calls', 'unanswered call', 'unanswered calls',
+    'answer the phone', 'inbound calls', 'inbound enquiries', 'inbound inquiries',
+    'voice agent', 'voice ai', 'call centre', 'call center', 'contact centre',
+    'contact center', 'after-hours', 'after hours', 'appointment booking',
+    'book appointments', 'follow up on leads', 'leads go cold', 'response time'
+  ],
   influencer: [
     'influencer', 'influencer marketing', 'creator', 'creator marketing', 'creator program',
     'ugc', 'user-generated', 'user generated', 'brand ambassador', 'talent',

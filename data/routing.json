@@ -60,6 +60,15 @@
       "cells": { "smb": { "route": "follow_up", "note": "usually below paid-media threshold" }, "mid_market": { "route": "demo", "note": "data in CDP/warehouse (Q6) → demo now" }, "enterprise": { "route": "demo", "note": "data scattered in platforms (Q6) → consultative scoping" } }
     },
     {
+      "id": "leads",
+      "label": "Answer and qualify every inbound lead",
+      "solution": "NewVoices",
+      "solutionNote": "NewVoices is the one product in the suite that acts on a hand-raise rather than measuring one. Its own published value props lead with 'Qualify and book leads the moment they raise a hand'; this domain exists so Meta's Leads objective has an honest destination rather than a near-miss.",
+      "icpRoles": ["VP Sales", "Head of Revenue Operations", "VP Customer Experience", "Head of Contact Centre", "CMO"],
+      "industryBoost": ["Financial Services", "Automotive", "Retail & Ecommerce", "Healthcare", "Travel & Hospitality"],
+      "cells": { "smb": { "route": "demo", "note": "[packaging to confirm with NewVoices — no self-serve tier is published, so the demo is the honest floor]" }, "mid_market": { "route": "demo", "note": "volume and languages (Q6) size the pilot" }, "enterprise": { "route": "consultative", "note": "CRM/telephony integration and compliance scoping come first" } }
+    },
+    {
       "id": "influencer",
       "label": "Run influencer and creator programs",
       "solution": "Stagwell AI for SMBs (small teams) / IMAI Enterprise (100+ creators)",

@@ -52,7 +52,7 @@
    prototype footnote stays at the foot of every solution.
 
    ── THE CAMPAIGN MAPPING (the one place it is documented) ────────────────
-   Two solutions.json ids already have a RICHER landing page of their own,
+   Three solutions.json ids already have a RICHER landing page of their own,
    built by machine/campaign.js from data/products.json — proof figures,
    screenshots, quotes, partners. Building a second, thinner page for them
    would be a duplicate that reads worse than the one we have, so /s/{id}
@@ -64,6 +64,7 @@
      ─────────────────────────────────────────
      targeting_machine   →   /p/targeting-machine
      machines_family     →   /p/the-machine
+     newvoices           →   /p/newvoices
 
    machine/directory.js mirrors this table; it is deliberately short, and
    this comment is the source of truth for what belongs in it.
@@ -76,7 +77,8 @@
 
   const CAMPAIGN_PAGES = {
     targeting_machine: '/p/targeting-machine',
-    machines_family: '/p/the-machine'
+    machines_family: '/p/the-machine',
+    newvoices: '/p/newvoices'
   };
 
   /* GEOPulse carries companions:["all"] — "D: universal companion" in its own

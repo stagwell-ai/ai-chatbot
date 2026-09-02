@@ -78,7 +78,7 @@ async function j1(page, check, opts) {
   /* THE LANDING IS A CHOOSER NOW (machine/hero.js, after Meta's ad-objective
      dialog): a radio list of problems, a business email, Ask AI. */
   check.eq('landed on the master landing — the picker is up',
-    await page.$$eval('#heroPick .pick__row', e => e.length), 6);
+    await page.$$eval('#heroPick .pick__row', e => e.length), 5);
   check.eq('the email field asks for a BUSINESS address',
     await page.getAttribute('#pickEmail', 'placeholder'), 'My business email');
 
@@ -388,11 +388,11 @@ async function j3(page, check) {
    ═══════════════════════════════════════════════════════════════════════════ */
 async function j4(page, check) {
   await H.open(page, '/');
-  await H.landingChip(page, 'Traffic', 'someone@' + EXPLORER_DOMAIN);
+  await H.landingChip(page, 'Leads', 'someone@' + EXPLORER_DOMAIN);
 
   await H.waitQuestion(page, 'q3', 30000);
   check.eq('domain classified from the chip',
-    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['ai_visibility']);
+    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['leads']);
   check.eq('and the company came from the email at the door',
     await page.evaluate(() => window.SAI.session.slots.company_domain), EXPLORER_DOMAIN);
   await H.clickChip(page, 'Manager');
@@ -523,7 +523,7 @@ async function j5(page, check) {
    asserts the generic form and RECORDS which mode it got. Both are correct
    behaviour, and the route assertions are identical either way.
    ═══════════════════════════════════════════════════════════════════════════ */
-const COMPETITIVE_CHIP = 'Competitive intelligence';
+const COMPETITIVE_CHIP = 'Competitive analysis';
 
 /* routing.json is the contract; the assertion reads the file rather than
    restating it, so a cell edit moves the test with it. */
@@ -537,7 +537,7 @@ async function j6(page, check) {
   await H.open(page, '/');
 
   const landing = await page.$$eval('#heroPick .pick__label', e => e.map(x => x.textContent.trim()));
-  check.eq('the picker offers five problems plus "something else"', landing.length, 6);
+  check.eq('the picker offers four problems plus "something else"', landing.length, 5);
   check.ok('competitor analysis is one of them', landing.includes(COMPETITIVE_CHIP), landing.join(' | '));
   check.ok('and the survey chip it replaced is gone',
     !landing.includes('I want to run a quick survey'), landing.join(' | '));

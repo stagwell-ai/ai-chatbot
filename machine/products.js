@@ -87,7 +87,8 @@
      source of truth for what belongs here and why. */
   const CAMPAIGN_PAGES = {
     targeting_machine: '/p/targeting-machine',
-    machines_family: '/p/the-machine'
+    machines_family: '/p/the-machine',
+    newvoices: '/p/newvoices'
   };
   const internalHref = id => CAMPAIGN_PAGES[id] || '/s/' + encodeURIComponent(id);
 

@@ -85,6 +85,8 @@ const ICONS = {
   ai_visibility: '<circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2 17 17"/>',
   influencer: '<circle cx="7.4" cy="6.6" r="2.8"/><path d="M2.8 15.4c0-2.6 2.1-4.2 4.6-4.2s4.6 1.6 4.6 4.2"/><path d="M13.4 5.2a2.6 2.6 0 0 1 0 5"/><path d="M14.4 11.6c1.7.5 2.9 1.8 2.9 3.8"/>',
   audiences: '<path d="M10 2.6 17 6.4 10 10.2 3 6.4z"/><path d="M3 10.4 10 14.2l7-3.8"/>',
+  /* leads: a funnel — the hand-raise narrowing to a booked conversation */
+  leads: '<path d="M3.2 3.6h13.6l-5.2 6.2v6l-3.2 1.7v-7.7z"/>',
   research: '<path d="M4.4 3.4h11v13h-11z"/><path d="M7 7h5.4M7 10h5.4M7 13h3"/>',
   __other__: '<circle cx="10" cy="10" r="7.2"/><path d="M7.8 8a2.3 2.3 0 1 1 2.6 2.3v1.2"/><path d="M10.4 14.1h.01"/>'
 };
