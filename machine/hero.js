@@ -167,7 +167,6 @@ function render() {
           </label>
           <button type="button" class="btn btn--gold pick__go" id="pickGo">${esc(COPY.submit || 'Ask AI')}</button>
         </div>
-        ${COPY.emailHint ? `<p class="pick__hint">${esc(COPY.emailHint)}</p>` : ''}
       </div>
     </div>`;
   wire();

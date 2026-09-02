@@ -379,7 +379,7 @@ async function j3(page, check) {
    ═══════════════════════════════════════════════════════════════════════════ */
 async function j4(page, check) {
   await H.open(page, '/');
-  await H.landingChip(page, 'How do AI models describe my brand?', 'someone@' + EXPLORER_DOMAIN);
+  await H.landingChip(page, 'AI visibility', 'someone@' + EXPLORER_DOMAIN);
 
   await H.waitQuestion(page, 'q3', 30000);
   check.eq('domain classified from the chip',
@@ -514,7 +514,7 @@ async function j5(page, check) {
    asserts the generic form and RECORDS which mode it got. Both are correct
    behaviour, and the route assertions are identical either way.
    ═══════════════════════════════════════════════════════════════════════════ */
-const COMPETITIVE_CHIP = 'How do I stack up against my competitors?';
+const COMPETITIVE_CHIP = 'Competitive intelligence';
 
 /* routing.json is the contract; the assertion reads the file rather than
    restating it, so a cell edit moves the test with it. */
