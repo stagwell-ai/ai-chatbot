@@ -117,6 +117,13 @@ body.nav-open .mnav{transform:none}
 /* a name-set band stacks its two lines, so the pill goes back to the corner */
 .camplock:has(.camplock__word) .camplock__cat{position:absolute;right:22px;top:50%;
   transform:translateY(-50%);margin:0}
+/* a band already carrying two lines of identity (the product's name over its
+   official one, e.g. Targeting Machine / "Stagwell Agentic Targeting System
+   (SATS)") has no room left for the category: centred on the whole band, the
+   pill lands on top of the name itself. machine/ads.css's .adlock hit this
+   same collision and hides the pill rather than let it overlap — matched
+   here so a name-set band with a sub-line never shows the pill on top of it. */
+.camplock:has(.camplock__sub) .camplock__cat{display:none}
 
 .camp__kicker{margin-top:-2px}
 .camp__kicker .pulse{background:var(--accent)}
