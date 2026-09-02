@@ -8,13 +8,13 @@
       "copy": "What do you need help solving today?",
       "copyAfterOpener": "Got it — \u201c{said}\u201d. So I point that at the right product, which of these is closest?",
       "input": "chips_or_free_text",
-      "chipsNote": "Meta-shaped: one marketing job per row, noun-led, short — the way Meta's ad objectives read (Awareness, Traffic, Engagement, Sales). Each row is a routing domain; the fuller question lives in hero.byDomain[domain].title.",
+      "chipsNote": "Meta's own ad-objective words, verbatim, wherever one maps (client, Sep 2: \"copy directly the exact wording that Meta uses\"): Awareness → brand health, Traffic → AI-search visibility, Engagement → creator programs, Sales → audience activation. Meta has no objective for competitive intelligence (its six are Awareness, Traffic, Engagement, Leads, App promotion, Sales), so that row keeps its own name. Each row is a routing domain; what the word means HERE lives in hero.byDomain[domain] — the detail pane is what stops 'Traffic' reading as paid media.",
       "chips": [
-        { "label": "Brand health", "domain": "brand_health" },
-        { "label": "Competitive intelligence", "domain": "competitive" },
-        { "label": "AI visibility", "domain": "ai_visibility" },
-        { "label": "Influencer marketing", "domain": "influencer" },
-        { "label": "Audience targeting", "domain": "audiences" }
+        { "label": "Awareness", "domain": "brand_health", "meta": "Awareness" },
+        { "label": "Competitive intelligence", "domain": "competitive", "meta": null },
+        { "label": "Traffic", "domain": "ai_visibility", "meta": "Traffic" },
+        { "label": "Engagement", "domain": "influencer", "meta": "Engagement" },
+        { "label": "Sales", "domain": "audiences", "meta": "Sales" }
       ],
       "freeTextDomains": ["research", "business_impact", "audiences", "reputation", "media_monitoring", "real_world_behavior", "marketing_ops"],
       "notes": "Free text can carry multiple domains at once — that is how multi-product opportunities surface.",

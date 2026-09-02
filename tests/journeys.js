@@ -388,7 +388,7 @@ async function j3(page, check) {
    ═══════════════════════════════════════════════════════════════════════════ */
 async function j4(page, check) {
   await H.open(page, '/');
-  await H.landingChip(page, 'AI visibility', 'someone@' + EXPLORER_DOMAIN);
+  await H.landingChip(page, 'Traffic', 'someone@' + EXPLORER_DOMAIN);
 
   await H.waitQuestion(page, 'q3', 30000);
   check.eq('domain classified from the chip',

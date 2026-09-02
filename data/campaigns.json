@@ -7,12 +7,13 @@
       "landing": "S1 master pattern — no product branding",
       "opener": "What do you need help solving today?",
       "chips": [
-        "Brand health",
+        "Awareness",
         "Competitive intelligence",
-        "AI visibility",
-        "Influencer marketing",
-        "Audience targeting"
+        "Traffic",
+        "Engagement",
+        "Sales"
       ],
+      "chipsNote": "Mirrors questions.json q1.chips — Meta's objective words. Keep the two lists identical: flow.js resolves a chip to its domain by matching the q1 label, so a label that drifts here falls back to the classifier.",
       "prefill": {
         "attribution": true
       },
