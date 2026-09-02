@@ -40,7 +40,7 @@
 (() => {
 'use strict';
 
-const STEP_COUNT = 4;
+const STEP_COUNT = 5;
 
 /* Two of these are pure theatre and say so. `ask` is the real budget: the
    server aborts at 12s, so waiting longer here would only hide a dead call. */
@@ -205,7 +205,10 @@ async function execute(key, target) {
 
   /* (b) size — the one real call in the file. */
   const canAsk = !!(SAI && typeof SAI._ask === 'function' && typeof fetch === 'function');
-  narrate('size', 'Sizing the company and category…', canAsk);
+  /* no LIVE badge yet: the badge is for what a model call PRODUCED, and this
+     line is only the attempt. It used to flag `canAsk`, so an unrecognised
+     company got a LIVE badge over seeded fiction (QA, Sep 2). */
+  narrate('size', 'Sizing the company and category…', false);
 
   let known = null;
   if (canAsk) {
@@ -217,6 +220,12 @@ async function execute(key, target) {
       if (j && j.ok === true && j.known === true) known = j;
     } catch (e) { /* no key, timeout, upstream down — the fiction takes over */ }
   }
+
+  /* the outcome of the one real call, said out loud: recognised → LIVE; not
+     recognised → the visitor is told the figures from here are illustrative */
+  narrate('sized', known
+    ? 'Company recognised — headcount and category read live'
+    : 'Not recognised — illustrative figures from here', !!known);
 
   /* (c) peers — the model's real competitive set if it gave us one, invented
      names otherwise. Never a real brand name attached to a company we could

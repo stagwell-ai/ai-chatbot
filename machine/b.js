@@ -1143,19 +1143,33 @@ function resetB() {
   chatBusy = false;
   $('#chatBar').hidden = true;
   if ($('#chatHint')) $('#chatHint').hidden = false;
-  $('#solveChips').hidden = false;
+  /* THE FRONT DOOR IS THE PICKER (machine/hero.js). Restoring the older
+     chip strip and its standfirst here left Back-from-/chat on a headline
+     floating over 400px of nothing, with #heroPick still hidden (QA, Sep 2).
+     When the picker exists it comes back and owns the title and standfirst;
+     the legacy strip only returns on a page that never had a picker. */
+  const pick = $('#heroPick');
+  if (pick) {
+    pick.hidden = false;
+    $('#solveChips').hidden = true;
+    if (window.SAIHERO && typeof window.SAIHERO.reset === 'function') window.SAIHERO.reset();
+  } else {
+    $('#solveChips').hidden = false;
+  }
   $('#dash').hidden = true; $('#dash').innerHTML = '';
   $('#navNew').hidden = true;
   $('.mnav__new').hidden = true;
-  hero.classList.remove('is-chatting');
-  $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell.AI · Agentic solutions built by marketing experts for modern marketers';
-  $('#hero2Title').innerHTML = 'What do you need help <span class="accent">solving today?</span>';
-  blurWords($('#hero2Title'));
-  $('#hero2Sub').textContent = 'Tell the agent what you\u2019re trying to do \u2014 or just paste your website \u2014 and it will point you to the right solution, with a live snapshot of your brand to show for it.';
+  hero.classList.remove('is-chatting', 'is-convo');
+  if (!pick) {
+    $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell.AI · Agentic solutions built by marketing experts for modern marketers';
+    $('#hero2Title').innerHTML = 'What do you need help <span class="accent">solving today?</span>';
+    blurWords($('#hero2Title'));
+    $('#hero2Sub').textContent = 'Tell the agent what you\u2019re trying to do \u2014 or just paste your website \u2014 and it will point you to the right solution, with a live snapshot of your brand to show for it.';
+  }
   promptInput.value = ''; promptInput.placeholder = SCRIPT[0].placeholder;
   prompt.classList.remove('is-ready');
   scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
-  setTimeout(focusPrompt, 420);
+  if (!pick) setTimeout(focusPrompt, 420);
 }
 $('#navNew').addEventListener('click', resetB);
 document.addEventListener('click', e => { if (e.target.closest('[data-new]')) resetB(); });
@@ -1240,9 +1254,13 @@ const CTA_COPY = {
    below is unchanged); everything under the SAILEAD branch is the inline
    original, kept only as the fallback for lead.js failing to load. The
    prefill hands over exactly what this file used to fill in by itself. */
-function openModal(kind) {
+function openModal(kind, fromForm) {
   if (window.SAILEAD && typeof window.SAILEAD.open === 'function') {
-    window.SAILEAD.open(kind, { name: S.who || '', brand: S.brand || '' });
+    /* a number typed into the inline "let Stagwell.AI call you" field rides
+       into the modal instead of being asked for twice (QA, Sep 2) */
+    const tel = fromForm && fromForm.querySelector ? fromForm.querySelector('input[type="tel"], input[name="phone"]') : null;
+    const phone = tel && tel.value ? String(tel.value).trim() : '';
+    window.SAILEAD.open(kind, { name: S.who || '', brand: S.brand || '', phone });
     return;
   }
   const [t, p] = CTA_COPY[kind] || CTA_COPY.expert;
@@ -1277,7 +1295,7 @@ document.addEventListener('click', e => {
   if (t && t.tagName !== 'FORM') { e.preventDefault(); openModal(t.dataset.cta); }
 });
 document.addEventListener('submit', e => {
-  if (e.target.matches('form[data-cta]')) { e.preventDefault(); openModal(e.target.dataset.cta); }
+  if (e.target.matches('form[data-cta]')) { e.preventDefault(); openModal(e.target.dataset.cta, e.target); }
 });
 
 /* ─────────────────────────── STATIC ─────────────────────────── */

@@ -30,7 +30,7 @@
         "Content creation",
         "Media",
         "Measurement",
-        "Something else entirely"
+        "What else fits my problem?"
       ],
       "prefill": {
         "attribution": true,
@@ -40,7 +40,8 @@
         ]
       },
       "routeBias": "consultative — core ICP is CMO/CCO/CDO at $1B+ enterprises; mid-market gets consultative scoping; SMB gets redirected to the concrete need the answers surface",
-      "status": "confirmed"
+      "status": "confirmed",
+      "chipsNote": "The last chip is the site-wide cross-discovery chip, verbatim: it drops the product bias and asks q1 for real. Its predecessor 'Something else entirely' looked like an escape hatch but was stored as an answer and kept marketing_ops (QA, Sep 2)."
     },
     {
       "id": "agent-cloud",
@@ -57,11 +58,15 @@
       ],
       "prefill": {
         "attribution": true,
-        "product_interest": "agent_cloud"
+        "product_interest": "agent_cloud",
+        "problem_domains": [
+          "ai_workspace"
+        ]
       },
       "routeBias": "[to confirm with TMC] — self-serve trial if Agent Cloud ships one, otherwise demo",
       "status": "chips_drafted",
-      "chipsNote": "One chip per service Agent Cloud actually sells, in the visitor's words: the toolkit's copy and messaging teammates; the image and video models on the platform (Veo3, Gemini 2.5, GPT-5); the research and social-listening integrations; the custom assistants its own testimonial calls the differentiator (500+ built); and the governance pillar — data never trains the LLMs, role-based access, one contract in place of unsanctioned tools. Sources: data/products.json valueProps and reference/companies/README.md."
+      "chipsNote": "One chip per service Agent Cloud actually sells, in the visitor's words: the toolkit's copy and messaging teammates; the image and video models on the platform (Veo3, Gemini 2.5, GPT-5); the research and social-listening integrations; the custom assistants its own testimonial calls the differentiator (500+ built); and the governance pillar — data never trains the LLMs, role-based access, one contract in place of unsanctioned tools. Sources: data/products.json valueProps and reference/companies/README.md.",
+      "prefillNote": "The ad names the product, so the routing domain it owns is pre-filled and q1 is skipped (product_ad_prefill) — the same treatment the-machine and targeting-machine get. Before this, Agent Cloud had no domain at all and a visitor from its own ad could never be routed to it (QA, Sep 2)."
     },
     {
       "id": "targeting-machine",
@@ -99,11 +104,15 @@
       ],
       "prefill": {
         "attribution": true,
-        "product_interest": "newvoices"
+        "product_interest": "newvoices",
+        "problem_domains": [
+          "leads"
+        ]
       },
       "routeBias": "[to confirm — NewVoices to supply positioning, chips, self-serve vs. demo packaging]; the 'Let the machine call you' callback CTA is a natural fit",
       "status": "chips_drafted",
-      "chipsNote": "The four use cases NewVoices publishes — sales, service, retention, feedback — the same four its landing page value cards carry."
+      "chipsNote": "The four use cases NewVoices publishes — sales, service, retention, feedback — the same four its landing page value cards carry.",
+      "prefillNote": "Pre-filled so every one of NewVoices' four chips lands on its own domain. Before this only the leads chip classified; support, retention and feedback fell to follow_up with no product named (QA, Sep 2)."
     }
   ]
 }

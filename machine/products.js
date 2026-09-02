@@ -88,7 +88,8 @@
   const CAMPAIGN_PAGES = {
     targeting_machine: '/p/targeting-machine',
     machines_family: '/p/the-machine',
-    newvoices: '/p/newvoices'
+    newvoices: '/p/newvoices',
+    agent_cloud: '/p/agent-cloud'
   };
   const internalHref = id => CAMPAIGN_PAGES[id] || '/s/' + encodeURIComponent(id);
 
@@ -226,7 +227,11 @@
             <a class="btn btn--light" href="/">Start with the agent</a>
           </div>
         </div>
-      </section>`;
+      </section>
+
+      <p class="prodfoot">This is a working prototype of Stagwell.AI, not a live product page. Every product named
+        here is a third-party product: its name, marks and positioning belong to its owners and are reproduced
+        from published material. Nothing on this page is a Stagwell.AI measurement.</p>`;
   }
 
   /* ── handoffs ──

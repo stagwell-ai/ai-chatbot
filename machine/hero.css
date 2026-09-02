@@ -120,6 +120,12 @@
 #hero2.is-chatting #heroPick { display: none; }
 
 @media (max-width: 860px) {
+  /* the empty-state illustration stays a desktop object: on a phone it
+     pushed the email field and Ask AI 113px below the fold before a row was
+     even picked (QA, Sep 2). The pane shrinks to its one line until a row
+     is chosen; the chosen row's detail still renders in full. */
+  .pick__detail:has(.pick__detail-empty) { display: none; }
+
   .pick__panes { grid-template-columns: minmax(0,1fr); }
   .pick__list { border-right: 0; border-bottom: 1px solid var(--line); }
   .pick__detail { min-height: 0; padding: 22px; }

@@ -258,3 +258,8 @@
    mark, this says which of the ten it is */
 .pathcard__prod{margin:-4px 0 10px;font-size:var(--t-sm);color:var(--ink-2)}
 .pathcard__prod b{color:var(--ink);font-weight:600}
+
+/* a routing.json "[to confirm]" note, shown under the button it qualifies */
+.pathnote--pending{font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.04em;color:var(--ink-3);margin-top:6px}
+/* text links that are tap targets on a phone (QA, Sep 2: 19px tall) */
+.pathcollapse__link,.pathquiet__link,.pathfoot__link{display:inline-flex;align-items:center;min-height:40px}

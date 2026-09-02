@@ -50,7 +50,7 @@
     emailHint: 'That does not look like a work email — check the address.',
     success: {
       title: 'Stagwell.AI has your brief.',
-      line: 'Your {brand} analysis has been enriched by SATS and scored. Someone who already understands the account will be in touch — not an SDR reading a script.',
+      line: 'In the live product your {brand} snapshot would travel with it, and someone who already understands the account would be in touch — not an SDR reading a script. This is a prototype: nothing was sent.',
       close: 'Back to the page'
     },
     human: ['session', 'expert', 'callback', 'demo'],
@@ -232,6 +232,7 @@
         <h3 id="saiLeadTitle">${esc(c.success.title)}</h3>
         <p>${esc(line)}</p>
         <button class="btn btn--dark" type="button" data-lead-close>${esc(c.success.close)}</button>
+        <p class="modal__fine">${esc(c.fine)}</p>
       </div>`;
   }
 

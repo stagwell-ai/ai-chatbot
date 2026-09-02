@@ -558,6 +558,7 @@ function threeColumnsHTML(vm) {
       <div class="pathcol__act">
         ${ctaHTML(selfCta, primarySolution, route, selfCls)}
         ${captionHTML(selfCta, 'pathcol__note')}
+        ${pendingNoteHTML(vm, 'pathcol__note')}
       </div>
     </div>
   </div>`;
@@ -586,6 +587,7 @@ function heroHTML(vm) {
       <div class="pathhero__act">
         ${ctaHTML(cta, primarySolution, route, cls)}
         ${captionHTML(cta, 'pathhero__note')}
+        ${pendingNoteHTML(vm, 'pathhero__note')}
         <p class="pathhero__walkline">Would rather be walked through it?</p>
         <button type="button" class="btn btn--light pathhero__walk" data-cta="demo">Book a demo →</button>
       </div>
@@ -598,24 +600,52 @@ function heroHTML(vm) {
 /* route === 'follow_up' — routing.json: "Snapshot by email + light
    follow-up; no meeting push." A quiet card stands where the recommended
    column would be; the other two paths collapse to text links. */
+/* did a report actually get an address? snapshot-data.js emits
+   journey_converted {kind:'capture'} on Send my report, and capture_declined
+   on "No thanks". The follow_up copy used to promise "the report's on its
+   way" to a visitor who had just declined to give an email (QA, Sep 2). */
+function reportCaptured() {
+  try {
+    const list = (window.SAI && window.SAI.events && window.SAI.events.list()) || [];
+    return list.some(e => e && e.type === 'journey_converted' && e.payload && e.payload.kind === 'capture');
+  } catch (e) { return false; }
+}
+
 function followUpHTML() {
+  const captured = reportCaptured();
+  const title = captured
+    ? "No meeting needed — the report's on its way"
+    : 'No meeting needed — your snapshot stays right here';
+  const line = captured
+    ? "Your snapshot goes out by email, and we'll follow up if it makes sense. No calendar invite required."
+    : "You kept your details, so nothing goes anywhere. If you want the snapshot as a PDF, add an email on the snapshot page; otherwise we won't follow up unless you ask.";
   return `
     <div class="pathquiet">
-      <p class="pathquiet__eyebrow">WE'LL TAKE IT FROM HERE</p>
-      <h3>No meeting needed — the report's on its way</h3>
-      <p>Your snapshot goes out by email, and we'll follow up if it makes sense. No calendar invite required.</p>
+      <p class="pathquiet__eyebrow">${captured ? "WE'LL TAKE IT FROM HERE" : 'NOTHING TO DO'}</p>
+      <h3>${esc(title)}</h3>
+      <p>${esc(line)}</p>
       <a class="pathquiet__link" href="/">Ask something else</a>
     </div>
     <!-- The ONE state where the demo is deliberately not a loud ask. This
          visitor said they are just exploring, and routing.json's follow_up
          cell is explicit: "Snapshot by email + light follow-up; no meeting
-         push." A marigold "Book a demo" here would contradict the route we
-         just told them we were taking — so the demo stays offered, quietly,
-         and gets its big treatment in every state that IS an ask. -->
+         push." So there is no gold button and no scheduler here — one quiet
+         line offers a conversation for whoever wants one, and nothing else.
+         (Two booking links under a "no meeting needed" headline read as a
+         contradiction — QA, Sep 2.) -->
     <div class="pathcollapse">
-      <button type="button" class="pathcollapse__link" data-cta="demo">Want a demo when you're ready? Book one</button>
       <button type="button" class="pathcollapse__link" data-cta="session">Prefer to talk it through? Book a working session</button>
     </div>`;
+}
+
+/* routing.json's own "[to confirm]" notes never reached a screen: nextStep is
+   read by no surface and cellNote only rendered when a solution failed to
+   resolve (QA, Sep 2). A bracketed note is the kit's placeholder discipline —
+   it belongs in view, under the button it qualifies. */
+function pendingNoteHTML(vm, cls) {
+  const note = vm && vm.decision && vm.decision.cellNote;
+  if (!note || !/\[/.test(String(note))) return '';
+  return `<p class="${cls} pathnote--pending">${esc(String(note))}</p>`;
 }
 
 function continueSectionHTML(vm) {
@@ -749,6 +779,7 @@ function show(session) {
   if (!decision) decision = { route: 'follow_up', primaryDomain: null, tier: null, matched: [], override: null, cellNote: null };
 
   const vm = buildViewModel(session, decision);
+  vm.decision = decision;
   hideRestOfPage();
   const el = ensureSection();
   el.innerHTML = sectionHTML(vm);

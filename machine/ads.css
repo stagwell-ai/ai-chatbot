@@ -334,3 +334,7 @@ body.vAds a.btn{text-decoration:none}
 @media (max-width:420px){
   .adfact{grid-template-columns:minmax(0,1fr);gap:2px}
 }
+
+/* the prototype / third-party footnote (QA, Sep 2: this page had none) */
+.adfoot{max-width:1180px;margin:28px auto 0;padding:18px clamp(20px,4vw,48px) 40px;
+  font-family:var(--mono);font-size:var(--t-xs);line-height:1.6;color:var(--ink-3)}

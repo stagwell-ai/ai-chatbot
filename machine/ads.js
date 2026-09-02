@@ -441,7 +441,9 @@
       '<div class="adgrid">' +
         items.map((c, i) => productCard(c, i, byId[c.id])).join('') +
       '</div>' +
-      (master ? masterCard(master) : '');
+      (master ? masterCard(master) : '') +
+      '<p class="adfoot">This is a working prototype of Stagwell.AI. The brands, marks and key visuals on this page ' +
+      'belong to their owners and stand in for campaign creative that does not exist yet; nothing here has run as an ad.</p>';
 
     fitPlates(root);
     wire();

@@ -116,14 +116,15 @@ export const CLASSIFY_DOMAINS = [
   ['competitive', 'comparing the brand against named rivals — benchmarking, share, competitive blind spots'],
   ['research', 'run their own research — surveys, polls, concept and message testing'],
   ['business_impact', "prove the brand's business impact — pricing power, revenue, market value, ROI"],
-  ['audiences', 'reach better audiences — build and activate segments from first-party data'],
-  ['leads', 'answer, qualify and book inbound leads — missed calls, slow follow-up, after-hours demand, voice or chat agents doing the qualifying'],
+  ['audiences', 'reach better audiences — build and activate segments from first-party data, CDP or warehouse data, media targeting; NOT a generic wish for more customers'],
+  ['leads', 'put AI voice or chat agents on customer conversations — answering and qualifying inbound leads, missed calls, tier-1 support tickets, winning back lapsing customers, collecting feedback after a call'],
   ['influencer', 'influencer and creator marketing'],
   ['reputation', 'protect reputation — see risks before they become stories'],
   ['media_monitoring', 'monitor what is said about them globally, across markets and languages'],
   ['ai_visibility', 'show up in AI answers — ChatGPT, Gemini, Perplexity'],
   ['real_world_behavior', 'measure real-world behaviour — store visits, foot traffic, the say/do gap'],
   ['marketing_ops', 'connect marketing operations into one system — workflows, media, knowledge'],
+  ['ai_workspace', 'give the team secure access to AI itself — enterprise LLMs under one login and contract, custom AI assistants, governance of unsanctioned or shadow AI use, data that never trains the models'],
 ];
 
 export const CLASSIFY_IDS = CLASSIFY_DOMAINS.map(d => d[0]);

@@ -108,11 +108,15 @@ body.nav-open .mnav{transform:none}
 .camplock:has(.camplock__word){flex-direction:column;align-items:flex-start;justify-content:center;gap:6px}
 /* the value pill: /path's .pathpill, in the product's own ink. In flow, not
    overlaid, so it can never land on top of a wordmark. */
-.camplock__cat{flex:none;margin-left:auto;margin-right:22px;
+.camplock__cat{flex:0 1 auto;min-width:0;margin-left:auto;margin-right:22px;
   font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;text-transform:uppercase;
   color:currentColor;opacity:.82;border-radius:var(--r-full);
   border:1px solid color-mix(in srgb,currentColor 45%,transparent);
-  padding:4px 12px;white-space:nowrap;max-width:52%;overflow:hidden;text-overflow:ellipsis}
+  padding:4px 12px;max-width:44%;text-align:center;line-height:1.35}
+/* the pill may SHRINK and WRAP (flex 0 1 auto, min-width 0, no nowrap): NewVoices'
+   "Enterprise AI voice and chat workforce" is the longest category in the deck and,
+   as a nowrap flex:none item beside a wide logo, it ran past the band and was clipped
+   to "…WORKF" (QA, Sep 2). Two lines is honest; a cut word is not. */
 .camplock:not(.camplock--bleed) .camplock__cat{margin-right:0}
 /* a name-set band stacks its two lines, so the pill goes back to the corner */
 .camplock:has(.camplock__word) .camplock__cat{position:absolute;right:22px;top:50%;

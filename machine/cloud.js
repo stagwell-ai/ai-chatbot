@@ -86,7 +86,20 @@ const ICONS = {
 
 const P = id => PRODUCTS.find(p => p.id === id);
 
-const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(p.url)}" target="_blank" rel="noopener">
+/* the same attribution every other surface sends (path.js attributedUrl,
+   solution.js/campaign.js withUtm) — these forty links were the only external
+   doors on the site that left without it (QA, Sep 2) */
+function withUtm(url) {
+  try {
+    const u = new URL(url);
+    u.searchParams.set('utm_source', 'stagwell-ai');
+    u.searchParams.set('utm_medium', 'home-carousel');
+    u.searchParams.set('utm_campaign', 'master');
+    return u.toString();
+  } catch (e) { return url; }
+}
+
+const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(withUtm(p.url))}" target="_blank" rel="noopener">
     <span class="fcard__art"><video class="fcard__video" src="/assets/img/cloud/${p.id}.mp4"
       poster="/assets/img/cloud/${p.id}.jpg" autoplay muted loop playsinline></video></span>
     <span class="fcard__k">${esc(p.name)}</span>
@@ -95,7 +108,7 @@ const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(p.ur
   </a>`;
 
 /* the small card leads with the company itself: icon, name, description */
-const smCard = p => `<a class="scard" href="${esc(p.url)}" target="_blank" rel="noopener">
+const smCard = p => `<a class="scard" href="${esc(withUtm(p.url))}" target="_blank" rel="noopener">
     <span class="scard__ico">${ICONS[p.id] || ''}</span>
     <span class="scard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i></span>
     <em class="btn btn--xs">Visit site ↗</em>

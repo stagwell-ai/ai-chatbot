@@ -164,8 +164,22 @@ function renderChips(body, chips) {
     wrap.appendChild(b);
   });
   body.appendChild(wrap);
-  requestAnimationFrame(() =>
-    wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' }));
+  requestAnimationFrame(() => {
+    wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' });
+    /* focus follows the question. The chip a visitor pressed is faded and
+       removed, which dropped focus on <body>; the next Tab then wandered
+       into the carousel below the chat (QA, Sep 2). :focus-visible keeps
+       this invisible for mouse users. */
+    const first = wrap.querySelector('.opt:not(:disabled)');
+    if (first) { try { first.focus({ preventScroll: true }); } catch (e) { /* fine */ } }
+  });
+}
+
+function focusComposer() {
+  const { promptInput } = els();
+  if (promptInput && !promptInput.disabled) {
+    try { promptInput.focus({ preventScroll: true }); } catch (e) { /* fine */ }
+  }
 }
 
 /* ─────────────────────────── COMPOSER ─────────────────────────── */
@@ -313,10 +327,24 @@ function updateCompanyTitle(research) {
 
 /* ─────────────────────────── RESEARCH NARRATION ─────────────────────────── */
 
+/* copy for the two acknowledgements lives in data/questions.json */
+function humanCopy(key, fallback) {
+  const data = window.SAI && window.SAI.data;
+  const q = data && data.questions;
+  return (q && q[key]) || fallback;
+}
+const HUMAN_ACK = () => humanCopy('humanAck',
+  "Got it — I'll make sure a person picks this up; the route at the end books that. A couple more quick answers so they arrive already briefed.");
+const HUMAN_ACK_DONE = () => humanCopy('humanAckAfterDone',
+  'Of course. Open your snapshot and take the “Book a demo” or “Talk to an AI expert” button, or leave a number and Stagwell.AI will call you — either way a person, not a script.');
+
 function onSaiEvent(e) {
   if (!active) return;
   const detail = e.detail || {};
   const { type, payload } = detail;
+  /* override 4 fired: say so. A visitor who asked three times was answered
+     zero times before this (QA, Sep 2). */
+  if (type === 'human_requested' && !finished) { addAgentBubble(esc(HUMAN_ACK())); return; }
   if (type === 'research_started') return onResearchStarted(payload);
   if (type === 'research_step') return onResearchStep(payload);
   if (type === 'research_done') return onResearchDone(payload);
@@ -372,7 +400,14 @@ function mountLayout() {
   const { hero, heroIn, chat, solveChips, thread, promptInput, prompt } = els();
   hero.classList.add('is-chatting', 'is-convo');
   if (solveChips) solveChips.hidden = true;
-  if (thread) thread.hidden = false;
+  if (thread) {
+    thread.hidden = false;
+    /* a screen reader hears new turns as they land — the same treatment the
+       research rail already has (aria-live) */
+    thread.setAttribute('role', 'log');
+    thread.setAttribute('aria-live', 'polite');
+    thread.setAttribute('aria-relevant', 'additions');
+  }
   /* whatever the visitor typed to get here (their opening message, or a
      chip's pre-filled label) becomes the flow's initialText/chipLabel — it
      doesn't belong sitting in the box once the conversation owns it */
@@ -443,8 +478,12 @@ function render() {
     if (st.question.id !== lastQuestionId) {
       lastQuestionId = st.question.id;
       removeWaitingBubble();
-      const body = addAgentBubble(st.question.copy);
+      /* escaped: question copy carries the visitor's own words ({said}) and
+         model output ({company}, {competitors}); rendered raw, a pasted
+         <img onerror> from an ad-landing handoff executed (QA, Sep 2) */
+      const body = addAgentBubble(esc(st.question.copy));
       if (Array.isArray(st.question.chips) && st.question.chips.length) renderChips(body, st.question.chips);
+      else focusComposer();
       updateComposerForQuestion(st.question);
     }
   } else if (st.phase === 'waiting-research') {
@@ -469,7 +508,17 @@ async function handleAnswer(value, label) {
     const { promptInput, prompt } = els();
     if (promptInput) promptInput.value = '';
     if (prompt) prompt.classList.remove('is-ready');
-    addAgentBubble(esc(DONE_REPLY));
+    /* after the read, a human ask still counts — override 4 still decides
+       the route, and the reply points at the buttons that reach a person */
+    let human = false;
+    try {
+      const S = window.SAI;
+      if (S && typeof S.detectHumanAsk === 'function' && S.detectHumanAsk(value)) {
+        human = true;
+        if (S.session.humanAsk !== true) { S.session.humanAsk = true; S.events.emit('human_requested', { text: String(value) }); }
+      }
+    } catch (e) { human = false; }
+    addAgentBubble(esc(human ? HUMAN_ACK_DONE() : DONE_REPLY));
     const reveal = document.getElementById('convoReveal');
     if (reveal) {
       requestAnimationFrame(() => reveal.scrollIntoView({
@@ -550,8 +599,10 @@ function finish() {
 
   const { promptInput } = els();
   if (promptInput) promptInput.placeholder = 'Your snapshot is ready — open it above';
-  requestAnimationFrame(() =>
-    wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' }));
+  requestAnimationFrame(() => {
+    wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' });
+    try { go.focus({ preventScroll: true }); } catch (e) { /* fine */ }
+  });
 }
 
 /* ─────────────────────────── ENTRY ─────────────────────────── */
@@ -751,9 +802,23 @@ window.SAICONVO = {
   },
 };
 
+/* /chat, /snapshot and /path are pushState routes with no state behind them
+   on a cold load — the page that renders is the front door. Say so in the
+   address bar rather than leave a URL that promises a snapshot over a
+   homepage (QA, Sep 2). The autostart handoff runs first and owns its own
+   URL cleanup. */
+function truthfulUrl() {
+  try {
+    if (/^\/(chat|snapshot|path)$/.test(location.pathname) && !autostartRequest() && !active) {
+      history.replaceState(history.state || {}, '', '/' + (location.hash || ''));
+    }
+  } catch (e) { /* no history API */ }
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => { autostart(); }, { once: true });
+  document.addEventListener('DOMContentLoaded', () => { truthfulUrl(); autostart(); }, { once: true });
 } else {
+  truthfulUrl();
   autostart();
 }
 

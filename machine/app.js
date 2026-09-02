@@ -1273,7 +1273,7 @@ function buildBrief() {
 
   <footer class="bfoot">
     <svg><use href="#sw-logo"/></svg>
-    <span>Prototype · scripted demonstration · figures illustrative · nothing leaves this page</span>
+    <span>Prototype · live model calls · figures illustrative · typed answers are read by a language model · no CRM is connected</span>
   </footer>`;
 
   /* Sections stamp their own numbers in source order, so inserting the duel

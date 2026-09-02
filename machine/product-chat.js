@@ -398,9 +398,24 @@ async function answerProductQuestion(text) {
 const eng = () => (typeof window !== 'undefined' && window.SAI) || null;
 
 function websiteIn(text) {
-  const S = eng();
+  const S = window.SAI;
   if (!S || typeof S.extractDomain !== 'function') return null;
-  try { return S.extractDomain(text); } catch (e) { return null; }
+  let d = null;
+  try { d = S.extractDomain(text); } catch (e) { return null; }
+  if (!d) return null;
+  /* "What does BERA.ai measure?" names the product, not the visitor's
+     company — and turned the product into "your brand" for the rest of the
+     journey (QA, Sep 2). The product's own hosts and its name, when the
+     name is itself a domain, are never read as a website here. */
+  const own = [];
+  const host = u => { try { return new URL(u).hostname.replace(/^www\./, '').toLowerCase(); } catch (e) { return null; } };
+  if (sol) {
+    if (sol.url) own.push(host(sol.url));
+    if (sol.signupUrl) own.push(host(sol.signupUrl));
+    const n = String(sol.name || '').toLowerCase();
+    if (/^[a-z0-9-]+\.[a-z]{2,}$/.test(n)) own.push(n);
+  }
+  return own.indexOf(d) !== -1 ? null : d;
 }
 
 const GETSTARTED = /\b(get started|getting started|let'?s go|sign me up|i'?m in|start now|book a|talk to (someone|sales|a human|a person)|demo please|show me|find my fit|what fits|which product)\b/i;

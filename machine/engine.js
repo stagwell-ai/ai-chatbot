@@ -167,7 +167,14 @@ const KEYWORDS = {
     'answer the phone', 'inbound calls', 'inbound enquiries', 'inbound inquiries',
     'voice agent', 'voice ai', 'call centre', 'call center', 'contact centre',
     'contact center', 'after-hours', 'after hours', 'appointment booking',
-    'book appointments', 'follow up on leads', 'leads go cold', 'response time'
+    'book appointments', 'follow up on leads', 'leads go cold', 'response time',
+    /* the rest of what a voice-and-chat workforce answers: service, retention,
+       feedback — NewVoices' own four use cases, not just the first */
+    'support ticket', 'support tickets', 'tier-1 support', 'tier 1 support', 'first-line support',
+    'front-line support', 'frontline support', 'customer support', 'help desk', 'helpdesk',
+    'lapsing customers', 'lapsed customers', 'win back', 'winning back', 'win-back', 'churn',
+    'retention calls', 'collect feedback', 'post-call feedback', 'feedback after the call',
+    'customer feedback', 'nps', 'payment recovery', 'recover payments', 'failed payments'
   ],
   influencer: [
     'influencer', 'influencer marketing', 'creator', 'creator marketing', 'creator program',
@@ -202,6 +209,18 @@ const KEYWORDS = {
     'single system', 'marketing ops', 'marketing operations', 'martech', 'tech stack',
     'silo', 'siloed', 'disconnected', 'agentic', 'automation', 'automate',
     'operating system', 'too many tools', 'integrate our tools', 'end-to-end workflow'
+  ],
+  /* Agent Cloud: the team's access to AI itself, not a marketing outcome.
+     Deliberately no bare 'chatgpt' or 'gemini' — those belong to ai_visibility
+     (being recommended BY the assistants); here the tell is governance and
+     access language. */
+  ai_workspace: [
+    'agent cloud', 'ai workspace', 'ai tools for the team', 'ai tooling', 'llm access', 'model access',
+    'enterprise chatgpt', 'chatgpt enterprise', 'claude for the team', 'sanctioned ai', 'unsanctioned ai',
+    'shadow ai', 'ai governance', 'ai policy', 'ai adoption', 'custom assistant', 'custom assistants',
+    'ai assistants', 'build assistants', 'internal assistant', 'gen ai', 'generative ai', 'genai',
+    'one login', 'single login', 'ai subscriptions', 'too many ai tools', 'data never trains',
+    'secure ai', 'ai securely', 'ai safely', 'prompt library', 'ai for the whole team'
   ]
 };
 
@@ -312,16 +331,27 @@ let session = blankSession();
 /* ═══════════════════════════════════════════════════════════════════════════
    THE EVENT BUS — everything the demo claims it "sends to HubSpot". Three
    destinations at once: an in-memory list (the console reads it live), a
-   200-entry localStorage ring (survives the refresh), and a document
-   CustomEvent (so any panel can subscribe without polling). Storage is
-   wrapped end to end: a locked-down browser must cost us the ring, not the
-   demo.
+   200-entry sessionStorage ring (survives a refresh, dies with the tab), and
+   a document CustomEvent (so any panel can subscribe without polling).
+   Storage is wrapped end to end: a locked-down browser must cost us the
+   ring, not the demo.
+
+   NOTHING PERSONAL IN THE TRAIL. Every payload passes through redact()
+   before it is kept, stored or dispatched: an email address becomes its
+   domain ("@nike.com"), a phone number becomes "[phone]", and the two slots
+   that hold contact details are reduced the same way. QA (Sep 2) found the
+   raw address in slot_filled, answer_given and human_requested — and in
+   localStorage after the tab was closed — two rows below a capture_email
+   that had carefully kept only the domain. One scrub at the bus fixes every
+   emitter at once, present and future. The ring moved from localStorage to
+   sessionStorage for the same reason: the demo's own event trail should not
+   outlive the visit.
    ═══════════════════════════════════════════════════════════════════════════ */
 const memory = [];
 
 function readRing() {
   try {
-    const raw = window.localStorage.getItem(RING_KEY);
+    const raw = window.sessionStorage.getItem(RING_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed : [];
   } catch (e) { return []; }
@@ -329,15 +359,58 @@ function readRing() {
 
 function writeRing(list) {
   try {
-    window.localStorage.setItem(RING_KEY, JSON.stringify(list.slice(-RING_CAP)));
+    window.sessionStorage.setItem(RING_KEY, JSON.stringify(list.slice(-RING_CAP)));
   } catch (e) { /* private mode, quota, no storage — the demo carries on */ }
+}
+
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
+/* seven or more digits, allowing the separators people actually type */
+const PHONE_RE = /(?:\+?\d[\s().-]*){7,}\d/g;
+const CONTACT_SLOTS = { work_email: 'email', phone: 'phone' };
+
+function redactText(str) {
+  return String(str).replace(EMAIL_RE, (m, dom) => '@' + dom.toLowerCase()).replace(PHONE_RE, '[phone]');
+}
+
+function redact(value, depth) {
+  const d = depth || 0;
+  if (value == null || d > 6) return value;
+  if (typeof value === 'string') return redactText(value);
+  if (Array.isArray(value)) return value.map(v => redact(v, d + 1));
+  if (typeof value === 'object') {
+    const out = {};
+    for (const k of Object.keys(value)) out[k] = redact(value[k], d + 1);
+    return out;
+  }
+  return value;
+}
+
+/* slot_filled / slot_corrected carry a slot NAME and a value; the two contact
+   slots are reduced to what capture_email already keeps: the domain, or the
+   fact that a number was given. */
+function redactPayload(type, payload) {
+  if (payload == null || typeof payload !== 'object') return redact(payload);
+  const p = Object.assign({}, payload);
+  const kind = CONTACT_SLOTS[p.name];
+  if ((type === 'slot_filled' || type === 'slot_corrected') && kind) {
+    const shrink = v => {
+      if (v == null || v === '') return v;
+      if (kind === 'email') { const m = String(v).match(/@([^\s@]+)$/); return m ? '@' + m[1].toLowerCase() : '[email]'; }
+      return '[phone]';
+    };
+    if ('value' in p) p.value = shrink(p.value);
+    if ('from' in p) p.from = shrink(p.from);
+    if ('to' in p) p.to = shrink(p.to);
+    return p;
+  }
+  return redact(p);
 }
 
 const events = {
   types: EVENT_TYPES.slice(),
 
   emit(type, payload) {
-    const rec = { t: Date.now(), type: String(type), payload: payload === undefined ? null : payload };
+    const rec = { t: Date.now(), type: String(type), payload: payload === undefined ? null : redactPayload(String(type), payload) };
     memory.push(rec);
     const ring = readRing();
     ring.push(rec);
@@ -356,7 +429,7 @@ const events = {
 
   clear() {
     memory.length = 0;
-    try { window.localStorage.removeItem(RING_KEY); } catch (e) { /* fine */ }
+    try { window.sessionStorage.removeItem(RING_KEY); } catch (e) { /* fine */ }
     return memory;
   }
 };
@@ -674,8 +747,33 @@ function tierFromEmployees(n) {
 /* pull the first employee count out of free text: "under 50 people",
    "50–250", "2,500+", "about 900", "10k". A range answers on its lower
    bound, which is what the q4 chips mean ("50–250" is still SMB). */
+/* "we are about seven thousand people" is a headcount too. Number words are
+   folded into digits before any of the numeric patterns run, so a typed
+   correction at q4 is heard (QA, Sep 2: it was stored verbatim and the
+   researched figure silently won). */
+const SMALL_WORDS = { zero:0, one:1, two:2, three:3, four:4, five:5, six:6, seven:7, eight:8, nine:9, ten:10,
+  eleven:11, twelve:12, thirteen:13, fourteen:14, fifteen:15, sixteen:16, seventeen:17, eighteen:18, nineteen:19,
+  twenty:20, thirty:30, forty:40, fifty:50, sixty:60, seventy:70, eighty:80, ninety:90, a:1, an:1, couple:2, few:3, dozen:12 };
+function expandNumberWords(t) {
+  const re = /\b((?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|a|an|couple(?: of)?|few|dozen|hundred|thousand|million|and|-)\s*)+)\b/g;
+  return String(t).replace(re, m => {
+    const words = m.toLowerCase().replace(/-/g, ' ').replace(/\bof\b/g, '').split(/\s+/).filter(Boolean);
+    if (!words.some(w => w in SMALL_WORDS || /^(hundred|thousand|million)$/.test(w))) return m;
+    if (words.every(w => w === 'a' || w === 'an' || w === 'and')) return m;
+    let total = 0, cur = 0, seen = false;
+    for (const w of words) {
+      if (w === 'and') continue;
+      if (w in SMALL_WORDS) { cur += SMALL_WORDS[w]; seen = true; }
+      else if (w === 'hundred') { cur = (cur || 1) * 100; seen = true; }
+      else if (w === 'thousand') { total += (cur || 1) * 1000; cur = 0; seen = true; }
+      else if (w === 'million') { total += (cur || 1) * 1000000; cur = 0; seen = true; }
+    }
+    return seen ? String(total + cur) : m;
+  });
+}
+
 function employeesFromText(text) {
-  const t = norm(text).replace(/(\d),(\d)/g, '$1$2');
+  const t = expandNumberWords(norm(text)).replace(/(\d),(\d)/g, '$1$2');
   const num = m => {
     let v = parseFloat(m);
     if (/k$/.test(m)) v *= 1000;
@@ -702,7 +800,7 @@ function employeesFromText(text) {
 }
 
 function tierFromText(text) {
-  const t = norm(text);
+  const t = expandNumberWords(norm(text));
   if (!t) return null;
   if (TIERS.indexOf(t) !== -1) return t;
 

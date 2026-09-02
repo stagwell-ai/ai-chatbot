@@ -616,6 +616,9 @@ function questionView() {
       const said = String(slots().domain_detail || '').trim();
       if (said) copy = tpl(q.copyAfterOpener, { said });
     }
+    /* the view is recomputed on every state() call, so the flag is read here
+       and cleared only when q1 is answered (applyAnswer) */
+    if (st.unclassified && q.copyUnclassified) copy = q.copyUnclassified;
   } else if (id === 'q3' || id === 'q5') {
     chips = (q.chips || []).map(c => ({ label: c.label, value: c.value }));
     /* the timing question earns its context: reiterate what the visitor said
@@ -796,8 +799,16 @@ async function applyAnswer(id, chip, text) {
   }
 
   if (id === 'q1') {
+    st.unclassified = false;
     if (chip) S.setSlot('problem_domains', [chip.value], 'visitor');
-    else applySide(await read(text), { domains: true });
+    else {
+      applySide(await read(text), { domains: true });
+      /* nothing classified: the question comes back, but in words that own
+         the miss — the identical sentence read as a loop (QA, Sep 2) */
+      if (isEmpty(slots().problem_domains) && !st.reaskedQ1) {
+        st.reask = 'q1'; st.unclassified = true; st.reaskedQ1 = true;   /* once — never a loop */
+      }
+    }
     return;
   }
 
@@ -979,6 +990,9 @@ async function start(opts) {
        replacing it — that is how one message becomes two domains, which is
        how a multi-product opportunity surfaces (routing override 1). */
     if (chipLabel) mergeDomains(full.domains, false);
+    /* a message that named no problem: q1 is still asked, but in words that
+       own the miss rather than the identical headline (QA, Sep 2) */
+    if (!chipLabel && isEmpty(slots().problem_domains) && !openerCampaign()) { st.unclassified = true; st.reaskedQ1 = true; }
   }
 
   await advance();

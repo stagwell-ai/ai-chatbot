@@ -99,6 +99,7 @@
     if (!raw) return 'noEmail';
     const domain = emailDomain(raw);
     if (!domain) return 'badEmail';
+    if (raw.length > 254 || raw.indexOf('@') > 64) return 'badEmail';
     const list = arr(heroCopy().personalDomains).length
       ? heroCopy().personalDomains : PERSONAL_FALLBACK;
     return list.indexOf(domain) !== -1 ? 'personalEmail' : null;
@@ -144,18 +145,23 @@
 
   function resolveCampaignId() {
     let m;
-    try { m = /^\/p\/([a-z0-9-]+)/.exec(window.location.pathname || ''); }
+    const path = String(window.location.pathname || '');
+    /* case-insensitive, lower-cased: /p/MASTER used to miss the match and
+       fall through to the dev fallback, rendering The Targeting Machine
+       under a URL that named something else (QA, Sep 2) */
+    try { m = /^\/p\/([a-z0-9-]+)/i.exec(path); }
     catch (e) { m = null; }
-    if (m) return m[1];
+    if (m) return m[1].toLowerCase();
 
     try {
       const params = new URLSearchParams(window.location.search || '');
       const utm = params.get('utm_campaign');
-      if (utm) return utm;
+      if (utm) return String(utm).toLowerCase();
     } catch (e) { /* fine — falls through */ }
 
-    /* dev fallback: hitting machine/campaign.html directly with no params */
-    return 'targeting-machine';
+    /* dev fallback ONLY when the file itself is opened; any other unmatched
+       URL is a real not-found */
+    return /campaign\.html$/i.test(path) ? 'targeting-machine' : null;
   }
 
   function norm(s) { return String(s == null ? '' : s).trim().toLowerCase(); }
@@ -519,7 +525,7 @@
             </div>
             <div class="bubble">${esc(campaign.opener)}</div>
 
-            <form class="askform" id="askForm" autocomplete="off">
+            <form class="askform" id="askForm" autocomplete="off" novalidate>
               <div class="askform__field">
                 <i class="askform__caret" aria-hidden="true"></i>
                 <!-- the placeholder has to fit, not ellipse: at 390 the field
@@ -671,6 +677,11 @@
 
     const id = resolveCampaignId();
     const campaign = campaignsList.find(c => c.id === id);
+
+    /* the brand campaign's landing IS the front door: /p/master goes there
+       rather than to a not-found page whose own ribbon says it knows the
+       campaign (QA, Sep 2) */
+    if (campaign && campaign.id === 'master') { window.location.replace('/'); return; }
 
     if (!campaign || PRODUCT_IDS.indexOf(campaign.id) === -1) {
       renderNotFound(id);

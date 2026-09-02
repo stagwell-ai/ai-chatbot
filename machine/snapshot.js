@@ -218,7 +218,7 @@ function sectionHTML(data, session) {
       <div class="snap__head">
         <div class="snap__headtext">
           <p class="eyebrow snap__eyebrow"><i class="pulse"></i>YOUR STAGWELL.AI SNAPSHOT</p>
-          <h1 class="display snap__title">${esc(data.company)} vs. your market, <span class="accent">right now</span></h1>
+          <h1 class="display snap__title" tabindex="-1">${esc(data.company)} vs. your market, <span class="accent">right now</span></h1>
           ${whyThisHTML(data.company)}
           <p class="snap__sub">${esc(data.builtLine)}</p>
         </div>
@@ -427,6 +427,8 @@ function show(session) {
   const el = ensureSection();
   el.innerHTML = sectionHTML(data, session);
   el.hidden = false;
+  /* keyboard and screen-reader users land on the headline, not on <body> (QA, Sep 2) */
+  requestAnimationFrame(() => { const h = document.querySelector('#snapView .snap__title'); if (h) { try { h.focus({ preventScroll: true }); } catch (e) { /* fine */ } } });
   mounted = true;
 
   wireCapture(el, session);

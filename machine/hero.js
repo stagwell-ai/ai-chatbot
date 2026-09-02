@@ -120,6 +120,9 @@ function emailProblem(value) {
   if (!raw) return 'noEmail';
   const domain = emailDomain(raw);
   if (!domain) return 'badEmail';
+  /* RFC 5321: 64 for the local part, 254 overall — a 300-character address
+     went straight through and into the session (QA, Sep 2) */
+  if (raw.length > 254 || raw.indexOf('@') > 64) return 'badEmail';
   if (isPersonal(domain)) return 'personalEmail';
   return null;
 }
@@ -426,12 +429,14 @@ function wire() {
   root.addEventListener('keydown', e => {
     const row = e.target.closest('[data-pick]');
     if (!row) return;
-    const keys = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+    const keys = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1, Home: 0, End: 0 };
     if (!(e.key in keys)) return;
     e.preventDefault();
     const rows = [...root.querySelectorAll('.pick__row')];
     const i = rows.indexOf(row);
-    const next = rows[(i + keys[e.key] + rows.length) % rows.length];
+    /* Home/End jump to the ends, per the ARIA radiogroup pattern */
+    const next = e.key === 'Home' ? rows[0] : e.key === 'End' ? rows[rows.length - 1]
+      : rows[(i + keys[e.key] + rows.length) % rows.length];
     if (next) { next.focus(); select(next.getAttribute('data-pick'), { focus: false }); }
   });
 
@@ -488,10 +493,25 @@ const DATA = (typeof window !== 'undefined' && window.STAGDATA) || null;
 if (DATA && typeof DATA.then === 'function') DATA.then(build, () => build(null));
 else build(DATA);
 
+/* Back from /chat (b.js resetB) brings the picker back; the selection and
+   any error are cleared, the typed email is kept — it is theirs. */
+function reset() {
+  selected = null;
+  root.querySelectorAll('.pick__row').forEach((b, i) => {
+    b.classList.remove('is-on'); b.setAttribute('aria-checked', 'false'); b.tabIndex = i === 0 ? 0 : -1;
+  });
+  paintDetail();
+  clearError();
+  root.hidden = false;
+  const hero = document.getElementById('hero2');
+  if (hero) hero.classList.remove('is-chatting');
+}
+
 window.SAIHERO = {
   mounted: () => !!root.querySelector('.pick'),
   select: id => select(id),
   submit: () => go(),
+  reset,
   state: () => ({
     option: selected,
     email: ($('#pickEmail', root) || {}).value || '',

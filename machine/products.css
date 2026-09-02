@@ -103,3 +103,9 @@
 /* the honest note under the contents rail: ten products, twelve cards */
 .prodtoc__note { max-width: 1180px; margin: 12px auto 0; padding: 0 clamp(20px,4vw,48px);
   font-size: var(--t-xs); line-height: 1.5; color: var(--ink-3); }
+
+/* the same footnote every /p/ and /s/ page carries (QA, Sep 2: this page had none) */
+.prodfoot { max-width: 1180px; margin: 28px auto 0; padding: 18px clamp(20px,4vw,48px) 40px;
+  font-family: var(--mono); font-size: var(--t-xs); line-height: 1.6; color: var(--ink-3); }
+/* contents-rail pills are tap targets on a phone */
+.prodtoc a { min-height: 40px; display: inline-flex; align-items: center; }

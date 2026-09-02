@@ -1,23 +1,58 @@
 {
   "model": "fixed data contract, flexible conversation — ask only what can't be inferred; confirm inferences, never assume; visitor corrections always win",
-  "slots": ["problem_domains", "company", "role_seniority", "size_tier", "timing_intent", "product_interest", "work_email", "contact_consent"],
+  "slots": [
+    "problem_domains",
+    "company",
+    "role_seniority",
+    "size_tier",
+    "timing_intent",
+    "product_interest",
+    "work_email",
+    "contact_consent"
+  ],
   "questions": [
     {
       "id": "q1",
       "slot": "problem_domains",
       "copy": "What do you need help solving today?",
-      "copyAfterOpener": "Got it — \u201c{said}\u201d. So I point that at the right product, which of these is closest?",
+      "copyAfterOpener": "Got it — “{said}”. So I point that at the right product, which of these is closest?",
       "input": "chips_or_free_text",
       "chipsNote": "The client's own list, Sep 2: competitive analysis, Awareness, Leads, Sales, then free text — three of the four in Meta's ad-objective words verbatim (Awareness, Leads, Sales), with competitive analysis first because Meta has no objective for it and it is the demo's strongest opening. Meta's Traffic and Engagement rows are deliberately not offered: AI-search visibility and creator programs are still reachable through 'Something else', the chat and /products, they are simply not one of the four doors. Each row is a routing domain; what the word means HERE lives in hero.byDomain[domain] — the detail pane is what keeps 'Leads' and 'Sales' from reading as paid media.",
       "chips": [
-        { "label": "Competitive analysis", "domain": "competitive", "meta": null },
-        { "label": "Awareness", "domain": "brand_health", "meta": "Awareness" },
-        { "label": "Leads", "domain": "leads", "meta": "Leads" },
-        { "label": "Sales", "domain": "audiences", "meta": "Sales" }
+        {
+          "label": "Competitive analysis",
+          "domain": "competitive",
+          "meta": null
+        },
+        {
+          "label": "Awareness",
+          "domain": "brand_health",
+          "meta": "Awareness"
+        },
+        {
+          "label": "Leads",
+          "domain": "leads",
+          "meta": "Leads"
+        },
+        {
+          "label": "Sales",
+          "domain": "audiences",
+          "meta": "Sales"
+        }
       ],
-      "freeTextDomains": ["research", "business_impact", "audiences", "reputation", "media_monitoring", "real_world_behavior", "marketing_ops"],
+      "freeTextDomains": [
+        "research",
+        "business_impact",
+        "audiences",
+        "reputation",
+        "media_monitoring",
+        "real_world_behavior",
+        "marketing_ops"
+      ],
       "notes": "Free text can carry multiple domains at once — that is how multi-product opportunities surface.",
-      "skipWhen": "entry came from a product ad (product_interest pre-filled; opener names the product)"
+      "skipWhen": "entry came from a product ad (product_interest pre-filled; opener names the product)",
+      "copyUnclassified": "I didn't catch a marketing problem in that — which of these is closest? Or describe it another way.",
+      "copyUnclassifiedNote": "Shown when free text at q1 classifies to no domain. Asking the identical question again read as a loop (QA, Sep 2: emoji and gibberish got the same words back with no acknowledgement)."
     },
     {
       "id": "q2",
@@ -27,8 +62,14 @@
         "when": "the landing chooser read a domain out of the visitor's business email and they never typed a site themselves — questions.json's own model line: confirm inferences, never assume",
         "copy": "Your email puts you at {domain} — is that the site I should read?",
         "chips": [
-          { "label": "Yes, that's us", "value": "confirm" },
-          { "label": "No — different site", "value": "different" }
+          {
+            "label": "Yes, that's us",
+            "value": "confirm"
+          },
+          {
+            "label": "No — different site",
+            "value": "different"
+          }
         ]
       },
       "input": "free_text",
@@ -41,10 +82,22 @@
       "copy": "And what's your role there?",
       "input": "chips_or_free_text",
       "chips": [
-        { "label": "Founder / owner", "value": "founder" },
-        { "label": "Manager", "value": "manager" },
-        { "label": "Director / VP", "value": "director_vp" },
-        { "label": "C-suite", "value": "c_suite" }
+        {
+          "label": "Founder / owner",
+          "value": "founder"
+        },
+        {
+          "label": "Manager",
+          "value": "manager"
+        },
+        {
+          "label": "Director / VP",
+          "value": "director_vp"
+        },
+        {
+          "label": "C-suite",
+          "value": "c_suite"
+        }
       ]
     },
     {
@@ -55,18 +108,39 @@
         "copy": "Looks like {company} is around {employees} people, in {industry} — did I get that right?",
         "copyNoIndustry": "Looks like {company} is around {employees} people — did I get that right?",
         "chips": [
-          { "label": "That's right", "value": "confirm" },
-          { "label": "Not quite — we're smaller", "value": "smaller" },
-          { "label": "Not quite — we're bigger", "value": "bigger" }
+          {
+            "label": "That's right",
+            "value": "confirm"
+          },
+          {
+            "label": "Not quite — we're smaller",
+            "value": "smaller"
+          },
+          {
+            "label": "Not quite — we're bigger",
+            "value": "bigger"
+          }
         ]
       },
       "askMode": {
         "copy": "Roughly how big is the company?",
         "chips": [
-          { "label": "Under 50 people", "tier": "smb" },
-          { "label": "50–250", "tier": "smb" },
-          { "label": "250–2,500", "tier": "mid_market" },
-          { "label": "2,500+", "tier": "enterprise" }
+          {
+            "label": "Under 50 people",
+            "tier": "smb"
+          },
+          {
+            "label": "50–250",
+            "tier": "smb"
+          },
+          {
+            "label": "250–2,500",
+            "tier": "mid_market"
+          },
+          {
+            "label": "2,500+",
+            "tier": "enterprise"
+          }
         ]
       }
     },
@@ -77,9 +151,18 @@
       "copyWithGoal": "So you want to {goal} — when do you want that working: this quarter, this year, or just exploring?",
       "input": "chips_or_free_text",
       "chips": [
-        { "label": "This quarter", "value": "now" },
-        { "label": "This year", "value": "this_year" },
-        { "label": "Just exploring", "value": "exploring" }
+        {
+          "label": "This quarter",
+          "value": "now"
+        },
+        {
+          "label": "This year",
+          "value": "this_year"
+        },
+        {
+          "label": "Just exploring",
+          "value": "exploring"
+        }
       ]
     },
     {
@@ -88,30 +171,146 @@
       "adaptive": true,
       "skipWhen": "the solution match is already obvious from prior answers",
       "byDomain": {
-        "brand_health": { "copy": "How do you track your brand today — an agency, in-house dashboards, or not really yet?", "decides": "always-on tracking subscription vs. deeper analytics; upgrade path" },
+        "brand_health": {
+          "copy": "How do you track your brand today — an agency, in-house dashboards, or not really yet?",
+          "decides": "always-on tracking subscription vs. deeper analytics; upgrade path"
+        },
         "competitive": {
           "copy": "Who are you measuring against — competitors you name, or the whole category?",
           "chips": [
-            { "label": "Competitors I name", "value": "named" },
-            { "label": "The whole category", "value": "category" }
+            {
+              "label": "Competitors I name",
+              "value": "named"
+            },
+            {
+              "label": "The whole category",
+              "value": "category"
+            }
           ],
           "copyWithPeers": "I'm seeing {competitors} as your closest comparison set — is that who you're measuring against?",
           "chipsWithPeers": [
-            { "label": "That's the set", "value": "named" },
-            { "label": "There are others", "value": "add" },
-            { "label": "Widen to the category", "value": "category" }
+            {
+              "label": "That's the set",
+              "value": "named"
+            },
+            {
+              "label": "There are others",
+              "value": "add"
+            },
+            {
+              "label": "Widen to the category",
+              "value": "category"
+            }
           ],
           "peersNote": "the {competitors} form is only ever asked when research came back with the visitor's REAL comparison set — never with the seeded fallback names (machine/flow.js q6View)",
           "decides": "named-rival tracking vs category-wide benchmarking"
         },
-        "leads": { "copy": "Where do most of your inbound leads land today — a form, a phone line, or a shared inbox?", "chips": [{ "label": "A form on the site", "value": "form" }, { "label": "A phone line", "value": "phone" }, { "label": "A shared inbox", "value": "inbox" }], "decides": "which channel the agents answer first; telephony vs. CRM integration leads the scoping" },
-        "research": { "copy": "Is this a one-off study, or something you'll run regularly?", "chips": [{ "label": "A one-off study", "value": "one-off study" }, { "label": "Something we'll run regularly", "value": "run regularly" }, { "label": "Not sure yet", "value": "not sure yet" }], "decides": "self-service platform vs. serviced research; trial-readiness" },
-        "business_impact": { "copy": "Who needs convincing — the board, the CFO, or your own team?", "decides": "seniority of the sale; executive audience biases consultative" },
-        "audiences": { "copy": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?", "decides": "data readiness; demo now vs. consultative scoping" },
-        "influencer": { "copy": "Roughly how many creators do you work with in a year?", "chips": [{ "label": "Under 25", "value": "under 25 creators a year" }, { "label": "25–100", "value": "25 to 100 creators a year" }, { "label": "100+", "value": "100+ creators a year" }], "decides": "SMB platform vs. enterprise program (~100+ creators)" },
-        "reputation": { "copy": "Are you watching one market, or monitoring globally in multiple languages?", "chips": [{ "label": "One market", "value": "one market" }, { "label": "A few markets", "value": "a few markets" }, { "label": "Global, multiple languages", "value": "global, multiple languages" }], "decides": "early-warning narrative intelligence vs. global media monitoring" },
-        "ai_visibility": { "copy": "Which platforms matter most to you — ChatGPT, Gemini, Perplexity?", "decides": "scope of the visibility program" },
-        "marketing_ops": { "copy": "Which part of the workflow feels most fragmented — planning, creation, media, or measurement?", "decides": "which agentic-workflow conversation to open" }
+        "leads": {
+          "copy": "Where do most of your inbound leads land today — a form, a phone line, or a shared inbox?",
+          "chips": [
+            {
+              "label": "A form on the site",
+              "value": "form"
+            },
+            {
+              "label": "A phone line",
+              "value": "phone"
+            },
+            {
+              "label": "A shared inbox",
+              "value": "inbox"
+            }
+          ],
+          "decides": "which channel the agents answer first; telephony vs. CRM integration leads the scoping"
+        },
+        "research": {
+          "copy": "Is this a one-off study, or something you'll run regularly?",
+          "chips": [
+            {
+              "label": "A one-off study",
+              "value": "one-off study"
+            },
+            {
+              "label": "Something we'll run regularly",
+              "value": "run regularly"
+            },
+            {
+              "label": "Not sure yet",
+              "value": "not sure yet"
+            }
+          ],
+          "decides": "self-service platform vs. serviced research; trial-readiness"
+        },
+        "business_impact": {
+          "copy": "Who needs convincing — the board, the CFO, or your own team?",
+          "decides": "seniority of the sale; executive audience biases consultative"
+        },
+        "audiences": {
+          "copy": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?",
+          "decides": "data readiness; demo now vs. consultative scoping"
+        },
+        "influencer": {
+          "copy": "Roughly how many creators do you work with in a year?",
+          "chips": [
+            {
+              "label": "Under 25",
+              "value": "under 25 creators a year"
+            },
+            {
+              "label": "25–100",
+              "value": "25 to 100 creators a year"
+            },
+            {
+              "label": "100+",
+              "value": "100+ creators a year"
+            }
+          ],
+          "decides": "SMB platform vs. enterprise program (~100+ creators)"
+        },
+        "reputation": {
+          "copy": "Are you watching one market, or monitoring globally in multiple languages?",
+          "chips": [
+            {
+              "label": "One market",
+              "value": "one market"
+            },
+            {
+              "label": "A few markets",
+              "value": "a few markets"
+            },
+            {
+              "label": "Global, multiple languages",
+              "value": "global, multiple languages"
+            }
+          ],
+          "decides": "early-warning narrative intelligence vs. global media monitoring"
+        },
+        "ai_visibility": {
+          "copy": "Which platforms matter most to you — ChatGPT, Gemini, Perplexity?",
+          "decides": "scope of the visibility program"
+        },
+        "marketing_ops": {
+          "copy": "Which part of the workflow feels most fragmented — planning, creation, media, or measurement?",
+          "decides": "which agentic-workflow conversation to open"
+        },
+        "ai_workspace": {
+          "copy": "Where is AI use in the team today — a few personal licences, everyone on their own tools, or nothing sanctioned yet?",
+          "chips": [
+            {
+              "label": "A few personal licences",
+              "value": "licences"
+            },
+            {
+              "label": "Everyone on their own tools",
+              "value": "own tools"
+            },
+            {
+              "label": "Nothing sanctioned yet",
+              "value": "none"
+            }
+          ],
+          "decides": "whether the conversation is about consolidation, governance or a first rollout"
+        }
       }
     }
   ],
@@ -146,28 +345,85 @@
     "otherLabel": "Something else",
     "otherLine": "Describe the problem in your own words, or paste your website. The agent reads it, works out which products fit, and asks only what it can't infer.",
     "otherPlaceholder": "Describe your problem — or paste your website, like nike.com",
-    "otherGoodFor": ["Anything not on this list", "More than one problem at once", "Reading your site first"],
-    "personalDomains": ["gmail.com", "googlemail.com", "yahoo.com", "yahoo.co.uk", "ymail.com", "hotmail.com", "hotmail.co.uk", "outlook.com", "live.com", "msn.com", "aol.com", "icloud.com", "me.com", "mac.com", "proton.me", "protonmail.com", "pm.me", "gmx.com", "gmx.de", "mail.com", "mail.ru", "yandex.com", "yandex.ru", "qq.com", "163.com", "126.com", "naver.com", "hey.com", "fastmail.com", "tutanota.com", "duck.com", "zoho.com"],
+    "otherGoodFor": [
+      "Anything not on this list",
+      "More than one problem at once",
+      "Reading your site first"
+    ],
+    "personalDomains": [
+      "gmail.com",
+      "googlemail.com",
+      "yahoo.com",
+      "yahoo.co.uk",
+      "ymail.com",
+      "hotmail.com",
+      "hotmail.co.uk",
+      "outlook.com",
+      "live.com",
+      "msn.com",
+      "aol.com",
+      "icloud.com",
+      "me.com",
+      "mac.com",
+      "proton.me",
+      "protonmail.com",
+      "pm.me",
+      "gmx.com",
+      "gmx.de",
+      "mail.com",
+      "mail.ru",
+      "yandex.com",
+      "yandex.ru",
+      "qq.com",
+      "163.com",
+      "126.com",
+      "naver.com",
+      "hey.com",
+      "fastmail.com",
+      "tutanota.com",
+      "duck.com",
+      "zoho.com"
+    ],
     "byDomain": {
       "brand_health": {
         "title": "How is my brand really doing?",
         "line": "Track awareness, consideration and momentum every day — and watch a campaign actually move them, instead of waiting for the next quarterly read.",
-        "goodFor": ["Always-on brand tracking", "Campaign impact", "Competitive benchmarks", "Emotional drivers"]
+        "goodFor": [
+          "Always-on brand tracking",
+          "Campaign impact",
+          "Competitive benchmarks",
+          "Emotional drivers"
+        ]
       },
       "competitive": {
         "title": "How do I stack up against my competitors?",
         "line": "See where you gain and lose ground against the rivals you name — share, perception and momentum, measured against them rather than in isolation.",
-        "goodFor": ["Named-rival benchmarking", "Category share of voice", "Win/loss narratives", "Quarterly board reads"]
+        "goodFor": [
+          "Named-rival benchmarking",
+          "Category share of voice",
+          "Win/loss narratives",
+          "Quarterly board reads"
+        ]
       },
       "ai_visibility": {
         "title": "How do AI models describe my brand?",
         "line": "Find out how ChatGPT, Gemini and Perplexity describe and recommend you versus your rivals — and what to change so you show up more.",
-        "goodFor": ["AI answer coverage", "Prompt-level diagnostics", "Rival comparisons", "What to fix first"]
+        "goodFor": [
+          "AI answer coverage",
+          "Prompt-level diagnostics",
+          "Rival comparisons",
+          "What to fix first"
+        ]
       },
       "influencer": {
         "title": "How do I run creator programs that pay back?",
         "line": "Run creator programs end to end — discovery and vetting, then outreach, contracts, approvals and tracking through to ROI.",
-        "goodFor": ["Creator discovery", "Fraud and audience checks", "Campaign management", "Proving ROI"]
+        "goodFor": [
+          "Creator discovery",
+          "Fraud and audience checks",
+          "Campaign management",
+          "Proving ROI"
+        ]
       },
       "leads": {
         "title": "How many hand-raises are we losing?",
@@ -182,7 +438,12 @@
       "audiences": {
         "title": "How do I reach better audiences?",
         "line": "Turn your first-party data into audiences you can actually buy — built, enriched and activated straight into your channels.",
-        "goodFor": ["First-party onboarding", "Custom audience building", "Cross-channel activation", "Measurement"]
+        "goodFor": [
+          "First-party onboarding",
+          "Custom audience building",
+          "Cross-channel activation",
+          "Measurement"
+        ]
       }
     }
   },
@@ -195,7 +456,19 @@
     "bandAccent": "The next step is the people who run them.",
     "bandSub": "Brand tracking, competitive benchmarking, creator marketing, AI-search visibility, consumer research, voice agents — matched to your problem by strategists who work with them every day.",
     "bandNote": "kept deliberately distinct from the landing CTA band lower on the same page",
-    "onCapture": ["unlock PDF download", "email the report", "record consent granted to CRM", "show routing card"],
-    "onDecline": ["keep on-screen snapshot", "log session as anonymous", "no nagging"]
-  }
+    "onCapture": [
+      "unlock PDF download",
+      "email the report",
+      "record consent granted to CRM",
+      "show routing card"
+    ],
+    "onDecline": [
+      "keep on-screen snapshot",
+      "log session as anonymous",
+      "no nagging"
+    ]
+  },
+  "humanAck": "Got it — I'll make sure a person picks this up; the route at the end books that. A couple more quick answers so they arrive already briefed.",
+  "humanAckAfterDone": "Of course. Open your snapshot and take the “Book a demo” or “Talk to an AI expert” button, or leave a number and Stagwell.AI will call you — either way a person, not a script.",
+  "humanAckNote": "Spoken the moment override 4 fires (a human ask at any question) and again if it arrives after the read is finished. QA (Sep 2): a visitor who asked three times was answered zero times, and after the reveal the ask was swallowed entirely."
 }

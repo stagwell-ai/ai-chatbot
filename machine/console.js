@@ -417,7 +417,7 @@ function build() {
   head.appendChild(top);
 
   head.appendChild(el('p', 'sc__honesty',
-    'Demo console — events are logged locally, nothing leaves this page.'));
+    'Demo console — the event trail is kept in this browser tab only; this console sends nothing.'));
 
   const roll = el('div', 'sc__rollup');
   const hero = el('div', 'sc__hero');
