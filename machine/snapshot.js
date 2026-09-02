@@ -255,7 +255,7 @@ function sectionHTML(data, session) {
 
     <div class="snapband">
       <div class="snapband__in">
-        <h2>One read. Ten AI products behind it. <span class="accent">The next step is the people who run them.</span></h2>
+        <h2>One read. The whole suite behind it. <span class="accent">The next step is the people who run them.</span></h2>
         <p class="snapband__sub">Brand tracking, competitive benchmarking, creator marketing, AI-search visibility, consumer research, voice agents — matched to your problem by strategists who work with them every day.</p>
         <div class="snaptiles">${buildTiles(data.actions, domain)}</div>
       </div>

@@ -1227,9 +1227,9 @@ $$('[data-close]', modal).forEach(e => e.addEventListener('click', closeModal));
 
 const CTA_COPY = {
   session:   ['Book a strategy session','Sixty minutes with the strategists behind Stagwell.AI. We arrive with your dashboard already open.'],
-  expert:    ['Talk to an AI expert','A working conversation about the problem you’re facing — and which of the ten products solve it.'],
-  workspace: ['Request your full AI workspace','All ten products, pointed at your brand and running continuously. We provision in five working days.'],
-  possible:  ['See all ten products','Every solution in the Marketing Cloud, grouped by the problem it solves.'],
+  expert:    ['Talk to an AI expert','A working conversation about the problem you’re facing — and which products in the Stagwell AI suite solve it.'],
+  workspace: ['Request your full AI workspace','The whole Stagwell AI suite, pointed at your brand and running continuously. We provision in five working days.'],
+  possible:  ['See every product','Every solution in the Marketing Cloud, grouped by the problem it solves.'],
   pdf:       ['Export this dashboard','We will send the full analysis as a designed PDF, plus the raw engine outputs.'],
   callback:  ['Stagwell.AI will call you','A NewVoices agent will call within two minutes, already briefed on what you told the agent.'],
 };
@@ -1282,7 +1282,7 @@ document.addEventListener('submit', e => {
 
 /* ─────────────────────────── STATIC ─────────────────────────── */
 
-/* 'See all ten products' goes to /products — the client, pointing at this
+/* 'See every product' goes to /products — the client, pointing at this
    card: "instead of a sidebar with the companies, i want to see a dedicated
    page that showcases all the companies." The card is a real link now; this
    handler only remains for any older [data-dir] markup still in the wild. */

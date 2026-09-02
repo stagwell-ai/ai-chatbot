@@ -304,7 +304,7 @@ function intro(s) {
   if (lead) {
     return `${lead} That's ${s.name}${who ? ` — built for ${who}` : ''}.`;
   }
-  return `${s.name} is one of the ten AI products in the Stagwell Marketing Cloud${who ? `, built for ${who}` : ''}.`;
+  return `${s.name} is part of the Stagwell Marketing Cloud${who ? `, built for ${who}` : ''}.`;
 }
 
 function invite() {
@@ -346,7 +346,7 @@ function fallbackAnswer(s, question) {
   if (props.length && hit(/\b(what|do|does|capabilit|feature|work|how)\b/)) {
     return `${firstSentence(s.positioning)} Concretely: ${props.join(', ').toLowerCase()}.${forward}`;
   }
-  return `${firstSentence(s.positioning) || `${s.name} is one of the ten AI products in the Stagwell Marketing Cloud.`}${
+  return `${firstSentence(s.positioning) || `${s.name} is part of the Stagwell Marketing Cloud.`}${
     has(s.whoFor) ? ` It's for ${s.whoFor.charAt(0).toLowerCase()}${s.whoFor.slice(1)}.` : ''
   } If you want detail this page doesn't carry, I'd rather have a person answer it than guess.${forward}`;
 }

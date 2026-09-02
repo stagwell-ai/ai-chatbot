@@ -144,7 +144,7 @@
       "noText": "Tell the agent what you're solving and it will take it from there."
     },
     "otherLabel": "Something else",
-    "otherLine": "Describe the problem in your own words, or paste your website. The agent reads it, works out which of the ten products fit, and asks only what it can't infer.",
+    "otherLine": "Describe the problem in your own words, or paste your website. The agent reads it, works out which products fit, and asks only what it can't infer.",
     "otherPlaceholder": "Describe your problem — or paste your website, like nike.com",
     "otherGoodFor": ["Anything not on this list", "More than one problem at once", "Reading your site first"],
     "personalDomains": ["gmail.com", "googlemail.com", "yahoo.com", "yahoo.co.uk", "ymail.com", "hotmail.com", "hotmail.co.uk", "outlook.com", "live.com", "msn.com", "aol.com", "icloud.com", "me.com", "mac.com", "proton.me", "protonmail.com", "pm.me", "gmx.com", "gmx.de", "mail.com", "mail.ru", "yandex.com", "yandex.ru", "qq.com", "163.com", "126.com", "naver.com", "hey.com", "fastmail.com", "tutanota.com", "duck.com", "zoho.com"],
@@ -181,10 +181,10 @@
     "emailCopy": "Get the full report — and keep it updated.",
     "consentLine": "By sending, you agree someone from Stagwell can follow up about these results.",
     "consentModel": "one decision, not two — sending the report IS the consent, stated under the button; there is no separate checkbox to tick",
-    "bandTitle": "One read. Ten AI products behind it.",
+    "bandTitle": "One read. The whole suite behind it.",
     "bandAccent": "The next step is the people who run them.",
     "bandSub": "Brand tracking, competitive benchmarking, creator marketing, AI-search visibility, consumer research, voice agents — matched to your problem by strategists who work with them every day.",
-    "bandNote": "kept deliberately distinct from the landing CTA band lower on the same page ('Ten AI products. / Pointed at your hardest problem.')",
+    "bandNote": "kept deliberately distinct from the landing CTA band lower on the same page",
     "onCapture": ["unlock PDF download", "email the report", "record consent granted to CRM", "show routing card"],
     "onDecline": ["keep on-screen snapshot", "log session as anonymous", "no nagging"]
   }

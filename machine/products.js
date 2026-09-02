@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    /products — every product in the Marketing Cloud, on a page of its own.
 
-   The client, pointing at the "See all ten products" card: "instead of a
+   The client, pointing at the "See every product" card: "instead of a
    sidebar with the companies, i want to see a dedicated page that showcases
    all the companies." So the slide-over is retired as a destination (see
    machine/directory.js, now a redirect) and this is where every "Find your
@@ -22,7 +22,7 @@
 
    WHAT THE PAGE ADDS, having room the panel did not:
 
-     · a hero that says what the ten are and what to do next,
+     · a hero that says what the suite covers and what to do next,
      · each product's value props as pills,
      · a contents rail of the problems, so a long page is navigable,
      · and a closing band with the two asks — book a demo, talk to an expert.
@@ -181,7 +181,7 @@
        foot: the same product twice running reads as a mistake, however
        differently the two cards are written */
     const ordered = built.filter(g => !g.allRepeats).concat(built.filter(g => g.allRepeats));
-    return { ordered, shown: seen, count: Object.keys(seen).length };
+    return { ordered };
   }
 
 
@@ -191,34 +191,15 @@
     </nav>`;
   }
 
-  /* THE COUNT, AND WHY IT IS NOT JUST cards.length.
-
-     The site's promise is ten products; data/solutions.json carries twelve
-     entries, because two of them are not additional products — one is the
-     SMB packaging of IMAI, and one is the family frame around the Machines.
-     Writing "Twelve AI products" here to match a card count would inflate the
-     portfolio; writing "Ten" and showing twelve cards without explanation
-     would look like a miscount. So the headline keeps the promise and a line
-     under the contents says exactly what the extra two entries are. */
-  const PACKAGING_IDS = ['smb_platform', 'machines_family'];
-
-  function countNote(model) {
-    if (!model) return '';
-    const extras = PACKAGING_IDS.filter(id => model.shown[id]).length;
-    if (!extras) return '';
-    return `<p class="prodtoc__note">Twelve cards, ten products: the list also carries the SMB packaging
-      of one platform and the family frame around the Machines, each under the problem it answers.</p>`;
-  }
-
   function pageHTML(model) {
     return `
       <section class="prodhero">
         <div class="prodhero__in">
           <p class="eyebrow prodhero__eyebrow"><i class="pulse"></i>THE STAGWELL MARKETING CLOUD</p>
-          <h1 class="display prodhero__title">Ten AI products, <span class="accent">grouped by the problem they solve.</span></h1>
+          <h1 class="display prodhero__title">Every product in the suite, <span class="accent">grouped by the problem it solves.</span></h1>
           <p class="prodhero__sub">Brand tracking, competitive benchmarking, consumer research, creator programs,
-            AI-search visibility, reputation monitoring, audience activation and voice agents — each one built by a
-            team that does this and nothing else. Start with the problem; the product follows.</p>
+            AI-search visibility, reputation monitoring, audience activation and voice agents — each built by a team
+            that does this and nothing else. Start with the problem; the product follows.</p>
           <div class="prodhero__acts">
             <a class="btn btn--gold prodhero__cta" href="/">Find my fit in a conversation →</a>
             <button class="btn btn--ghost prodhero__alt" type="button" data-cta="demo">Book a demo</button>
@@ -226,7 +207,7 @@
         </div>
       </section>
 
-      ${model ? contentsHTML(model.ordered) + countNote(model) : ''}
+      ${model ? contentsHTML(model.ordered) : ''}
 
       <div class="prodbody">
         ${model

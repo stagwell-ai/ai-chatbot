@@ -56,9 +56,9 @@
     human: ['session', 'expert', 'callback', 'demo'],
     kinds: {
       session:   { title: 'Book a strategy session', line: 'Sixty minutes with the strategists behind Stagwell.AI. We arrive with your dashboard already open.', submit: 'Continue' },
-      expert:    { title: 'Talk to an AI expert', line: 'A working conversation about the problem you’re facing — and which of the ten products solve it.', submit: 'Continue' },
-      workspace: { title: 'Request your full AI workspace', line: 'All ten products, pointed at your brand and running continuously. We provision in five working days.', submit: 'Continue' },
-      possible:  { title: 'See all ten products', line: 'Every solution in the Marketing Cloud, grouped by the problem it solves.', submit: 'Continue' },
+      expert:    { title: 'Talk to an AI expert', line: 'A working conversation about the problem you’re facing — and which products in the Stagwell AI suite solve it.', submit: 'Continue' },
+      workspace: { title: 'Request your full AI workspace', line: 'The whole Stagwell AI suite, pointed at your brand and running continuously. We provision in five working days.', submit: 'Continue' },
+      possible:  { title: 'See every product', line: 'Every solution in the Marketing Cloud, grouped by the problem it solves.', submit: 'Continue' },
       pdf:       { title: 'Export this dashboard', line: 'We will send the full analysis as a designed PDF, plus the raw engine outputs.', submit: 'Continue' },
       demo:      { title: 'Book a demo', line: 'Thirty minutes with the team who runs the product, walking through it against your brand — not a generic reel.', submit: 'Book my demo' },
       callback:  { title: 'Stagwell.AI will call you', line: 'A NewVoices agent will call within two minutes, already briefed on what you told the agent.', submit: 'Call me now' }

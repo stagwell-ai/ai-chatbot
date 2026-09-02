@@ -137,8 +137,12 @@ function removeWaitingBubble() {
   waitingBubble = null;
 }
 
+/* .opts--sticky survives: the snapshot reveal is not a spent question, it is
+   the way out of the conversation, and it has to still be there after the
+   visitor types something else (client, Sep 2: "the snapshot button should
+   not disappear"). */
 function clearChips() {
-  $$('#thread .opts').forEach(o => {
+  $$('#thread .opts:not(.opts--sticky)').forEach(o => {
     o.classList.add('is-gone');
     setTimeout(() => o.remove(), 460);
   });
@@ -450,8 +454,30 @@ function render() {
   }
 }
 
+/* Once the questions are done the flow stops accepting answers — so a line
+   typed after that used to land as a bubble and get nothing back, which
+   reads as a dead page (client, Sep 2: "i typed test, and nothing
+   happened"). It is answered here instead, and the way forward stays put. */
+const DONE_REPLY = "Your read is finished — open it and we'll pick this up there. "
+  + 'Anything you want to dig into, ask me on the other side of the button.';
+
 async function handleAnswer(value, label) {
   if (busy || !active) return;
+
+  if (finished) {
+    addUserBubble(label != null ? label : value);
+    const { promptInput, prompt } = els();
+    if (promptInput) promptInput.value = '';
+    if (prompt) prompt.classList.remove('is-ready');
+    addAgentBubble(esc(DONE_REPLY));
+    const reveal = document.getElementById('convoReveal');
+    if (reveal) {
+      requestAnimationFrame(() => reveal.scrollIntoView({
+        block: 'end', behavior: REDUCED ? 'auto' : 'smooth' }));
+    }
+    return;
+  }
+
   busy = true;
   clearChips();
   addUserBubble(label != null ? label : value);
@@ -503,11 +529,11 @@ function finish() {
     ? `You came here wanting to ${goal}, so that's what I read ${brand} against: where you stand today, how AI assistants describe you, and where your brand signal is moving.`
     : `Your analysis of ${brand} is ready — where you stand, how AI assistants describe you, and where your brand signal is moving.`;
   const follow = rec && rec.solutionName
-    ? ` And I know which of the ten products I'd point at it: <b>${esc(rec.solutionName)}</b> — the analysis shows you why.`
+    ? ` And I know which product in the suite I'd point at it: <b>${esc(rec.solutionName)}</b> — the analysis shows you why.`
     : '';
   const body = addAgentBubble(esc(lead) + follow);
   const wrap = document.createElement('div');
-  wrap.className = 'opts';
+  wrap.className = 'opts opts--sticky';
   const go = document.createElement('button');
   go.type = 'button';
   go.className = 'btn btn--gold convo__reveal';
@@ -521,6 +547,9 @@ function finish() {
   });
   wrap.appendChild(go);
   body.appendChild(wrap);
+
+  const { promptInput } = els();
+  if (promptInput) promptInput.placeholder = 'Your snapshot is ready — open it above';
   requestAnimationFrame(() =>
     wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' }));
 }

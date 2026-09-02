@@ -29,16 +29,16 @@
     },
     "expert": {
       "title": "Talk to an AI expert",
-      "line": "A working conversation about the problem you’re facing — and which of the ten products solve it.",
+      "line": "A working conversation about the problem you’re facing — and which products in the Stagwell AI suite solve it.",
       "submit": "Continue"
     },
     "workspace": {
       "title": "Request your full AI workspace",
-      "line": "All ten products, pointed at your brand and running continuously. We provision in five working days.",
+      "line": "The whole Stagwell AI suite, pointed at your brand and running continuously. We provision in five working days.",
       "submit": "Continue"
     },
     "possible": {
-      "title": "See all ten products",
+      "title": "See every product",
       "line": "Every solution in the Marketing Cloud, grouped by the problem it solves.",
       "submit": "Continue"
     },

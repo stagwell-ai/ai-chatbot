@@ -315,7 +315,7 @@
 
       <section class="band">
         <div class="band__in">
-          <h2 class="band__h">One of ten AI products. <span class="accent">The agent finds your fit.</span></h2>
+          <h2 class="band__h">One product in the suite. <span class="accent">The agent finds your fit.</span></h2>
           <div class="band__acts">
             <button class="btn btn--gold" type="button" ${askAttr(domains.length ? domains[0].label : (ASK_FALLBACK[s.id] || s.name))}>Ask the agent</button>
             <button class="btn btn--ghost-void" type="button" data-cta="expert">Talk to an AI expert</button>
