@@ -12,7 +12,8 @@
         { "label": "How can I track my brand's health?", "domain": "brand_health" },
         { "label": "I need influencer marketing", "domain": "influencer" },
         { "label": "How do AI models describe my brand?", "domain": "ai_visibility" },
-        { "label": "How do I stack up against my competitors?", "domain": "competitive" }
+        { "label": "How do I stack up against my competitors?", "domain": "competitive" },
+        { "label": "How do I reach better audiences?", "domain": "audiences" }
       ],
       "freeTextDomains": ["research", "business_impact", "audiences", "reputation", "media_monitoring", "real_world_behavior", "marketing_ops"],
       "notes": "Free text can carry multiple domains at once — that is how multi-product opportunities surface.",
@@ -105,6 +106,50 @@
       }
     }
   ],
+  "hero": {
+    "model": "the landing is a chooser, not a blank prompt — the visitor picks what they are solving, gives a business email, and lands in the conversation with that first answer already given (client, Sep 1, after Meta's ad-objective flow)",
+    "eyebrow": "Stagwell.AI · Agentic solutions built by marketing experts for modern marketers",
+    "title": "What do you need help solving today?",
+    "sub": "Pick what you're up against. The agent reads your brand first, then points you at the products that fit — and shows its work.",
+    "listLabel": "Choose what you're solving",
+    "emailLabel": "My business email",
+    "emailHint": "We read your company from its domain — that's how the analysis starts before you answer another question.",
+    "submit": "Ask AI",
+    "errors": {
+      "noOption": "Pick what you're solving first — that's where the agent starts.",
+      "noEmail": "We need your business email to get started. The agent reads your company from its domain, and your report goes back to it.",
+      "badEmail": "That doesn't look like an email address yet — check it over.",
+      "personalEmail": "That's a personal address. Use your work email — the agent reads your company from its domain, and there's nothing to analyse behind a personal one.",
+      "noText": "Tell the agent what you're solving and it will take it from there."
+    },
+    "otherLabel": "Something else — I'll describe it",
+    "otherLine": "Describe the problem in your own words, or paste your website. The agent reads it, works out which of the ten products fit, and asks only what it can't infer.",
+    "otherPlaceholder": "Describe your problem — or paste your website, like nike.com",
+    "otherGoodFor": ["Anything not on this list", "More than one problem at once", "Reading your site first"],
+    "personalDomains": ["gmail.com", "googlemail.com", "yahoo.com", "yahoo.co.uk", "ymail.com", "hotmail.com", "hotmail.co.uk", "outlook.com", "live.com", "msn.com", "aol.com", "icloud.com", "me.com", "mac.com", "proton.me", "protonmail.com", "pm.me", "gmx.com", "gmx.de", "mail.com", "mail.ru", "yandex.com", "yandex.ru", "qq.com", "163.com", "126.com", "naver.com", "hey.com", "fastmail.com", "tutanota.com", "duck.com", "zoho.com"],
+    "byDomain": {
+      "brand_health": {
+        "line": "Track awareness, consideration and momentum every day — and watch a campaign actually move them, instead of waiting for the next quarterly read.",
+        "goodFor": ["Always-on brand tracking", "Campaign impact", "Competitive benchmarks", "Emotional drivers"]
+      },
+      "competitive": {
+        "line": "See where you gain and lose ground against the rivals you name — share, perception and momentum, measured against them rather than in isolation.",
+        "goodFor": ["Named-rival benchmarking", "Category share of voice", "Win/loss narratives", "Quarterly board reads"]
+      },
+      "ai_visibility": {
+        "line": "Find out how ChatGPT, Gemini and Perplexity describe and recommend you versus your rivals — and what to change so you show up more.",
+        "goodFor": ["AI answer coverage", "Prompt-level diagnostics", "Rival comparisons", "What to fix first"]
+      },
+      "influencer": {
+        "line": "Run creator programs end to end — discovery and vetting, then outreach, contracts, approvals and tracking through to ROI.",
+        "goodFor": ["Creator discovery", "Fraud and audience checks", "Campaign management", "Proving ROI"]
+      },
+      "audiences": {
+        "line": "Turn your first-party data into audiences you can actually buy — built, enriched and activated straight into your channels.",
+        "goodFor": ["First-party onboarding", "Custom audience building", "Cross-channel activation", "Measurement"]
+      }
+    }
+  },
   "captureMoment": {
     "when": "at the snapshot reveal — never before",
     "emailCopy": "Get the full report — and keep it updated.",

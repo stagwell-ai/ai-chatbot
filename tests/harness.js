@@ -231,11 +231,29 @@ async function typeAnswer(page, text) {
   await page.click('#promptSend');
 }
 
-/* The landing's four suggestion chips pre-fill the one prompt box (W1); the
-   send button is the second half of the gesture. */
-async function landingChip(page, label) {
-  await page.locator(`#solveChips button:text-is(${JSON.stringify(label)})`).first().click({ timeout: 10000 });
-  await page.click('#promptSend');
+/* THE LANDING IS A CHOOSER NOW (machine/hero.js, after Meta's ad-objective
+   dialog): pick what you're solving, give a business email, press Ask AI.
+   Both drivers below end where the old ones did — inside the conversation,
+   with q1 already answered — so the journeys read the same.
+
+   The email is not decoration: the company comes out of its domain, so a
+   journey that used to type a website can hand one over here instead. */
+const WORK_EMAIL = 'demo@nike.com';
+
+async function landingChip(page, label, email) {
+  await page.locator(`#heroPick .pick__row:has-text(${JSON.stringify(label)})`).first()
+    .click({ timeout: 10000 });
+  await page.fill('#pickEmail', email || WORK_EMAIL);
+  await page.click('#pickGo');
+}
+
+/* the "Something else — I'll describe it" row, for the journeys whose whole
+   point is one message carrying several things at once */
+async function landingFreeText(page, text, email) {
+  await page.locator('#heroPick .pick__row').last().click({ timeout: 10000 });
+  await page.fill('#pickFree', text);
+  await page.fill('#pickEmail', email || WORK_EMAIL);
+  await page.click('#pickGo');
 }
 
 /* q4 is the one question with two faces. Which one the visitor sees depends
@@ -351,7 +369,8 @@ async function runSuite(title, journeys) {
 module.exports = {
   REPO, ARTIFACTS, BRIDGE_URL, RETRIES,
   Check, launch, newPage, open, shot, applyRewrites, interceptJson, html,
-  waitQuestion, flowState, liveChips, clickChip, typeAnswer, landingChip, answerSize,
+  waitQuestion, flowState, liveChips, clickChip, typeAnswer, landingChip, landingFreeText,
+  WORK_EMAIL, answerSize,
   waitSnapshot, captureEmail, declineEmail, goToPath,
   allEvents, typesOf, ofType, lastOf, countOf,
   runSuite, LIVE_OPTS

@@ -148,7 +148,13 @@ function skipReason(id) {
     return q6SkipReason();
   }
 
-  if (id === 'q2' && !isEmpty(s.company_domain)) return 'website_in_first_message';
+  /* the landing chooser takes a business email and reads the company out of
+     its domain (machine/hero.js), so there is nothing left to ask here — the
+     reason names that source, because the console shows it */
+  if (id === 'q2' && !isEmpty(s.company_domain)) {
+    return sources().company_domain === 'work_email'
+      ? 'company_from_work_email' : 'website_in_first_message';
+  }
 
   const slot = slotOf(id);
   if (!slot) return null;
@@ -871,6 +877,12 @@ async function start(opts) {
 
   st = blank();
   st.started = true;
+
+  /* A domain the session already holds — the landing chooser reads one out of
+     the visitor's business email (machine/hero.js) — is a research trigger the
+     same as a pasted website. Starting it here rather than waiting for q2
+     means the read is under way before the first question is even answered. */
+  if (!isEmpty(slots().company_domain)) startResearch(slots().company_domain);
 
   const chipLabel = o.chipLabel == null ? null : String(o.chipLabel);
   const initialText = o.initialText == null ? null : String(o.initialText);

@@ -113,7 +113,7 @@ function scanModules(check, modules, label) {
    point of the pass. ─────────────────────────────────────────────────────── */
 async function liveResearchModules(page, check) {
   await H.open(page, '/');
-  await H.typeAnswer(page, J.NIKE_MSG);
+  await H.landingFreeText(page, J.NIKE_MSG, 'dana@nike.com');
   await H.waitQuestion(page, 'q3', 30000);
   await H.clickChip(page, 'Director / VP');
   const mode = await H.answerSize(page, { confirm: "That's right", ask: '2,500+' });
@@ -146,9 +146,8 @@ async function seededModules(page, check) {
      analysis). Typing the same sentence keeps this pass on exactly the same
      journey — an unknown domain, so research must fall back to seeded fiction,
      which is the whole point of pass B. */
-  await H.typeAnswer(page, 'I want to run a quick survey');
-  await H.waitQuestion(page, 'q2', 30000);
-  await H.typeAnswer(page, J.SMB_DOMAIN);
+  await H.landingFreeText(page, 'I want to run a quick survey', 'founder@' + J.SMB_DOMAIN);
+  /* q2 never comes: the business email at the door already named the company */
   await H.waitQuestion(page, 'q3', 30000);
   await H.clickChip(page, 'Founder / owner');
   await H.answerSize(page, { ask: 'Under 50 people' });
@@ -168,7 +167,7 @@ async function seededModules(page, check) {
    research as it happens, and the SPEC's rule does not stop at the reveal. */
 async function railCopy(page, check) {
   await H.open(page, '/');
-  await H.typeAnswer(page, J.NIKE_MSG);
+  await H.landingFreeText(page, J.NIKE_MSG, 'dana@nike.com');
   await H.waitQuestion(page, 'q3', 30000);
   await page.waitForSelector('#snapshotRail');
   await page.waitForFunction(() => {

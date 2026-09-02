@@ -38,6 +38,7 @@
 <link rel="stylesheet" href="/machine/b.css">
 <link rel="stylesheet" href="/machine/lead.css">
 <link rel="stylesheet" href="/machine/convo.css">
+<link rel="stylesheet" href="/machine/hero.css">
 <link rel="stylesheet" href="/machine/snapshot.css">
 <link rel="stylesheet" href="/machine/path.css">
 <link rel="stylesheet" href="/machine/directory.css">
@@ -124,6 +125,10 @@
       <h1 class="display" id="hero2Title">What do you need help <span class="accent">solving today?</span></h1>
       <p class="hero2__sub" id="hero2Sub">Tell the agent what you’re trying to do — or just paste your website — and it will point you to the right solution, with a live snapshot of your brand to show for it.</p>
 
+      <!-- the chooser (machine/hero.js) renders here; the chat panel below is
+           the same one machine/convo.js takes over, revealed on Ask AI -->
+      <div id="heroPick"></div>
+
       <div class="chat" id="chat">
         <div class="chat__panel" id="chatPanel">
           <div class="chat__bar" id="chatBar" hidden>
@@ -141,12 +146,7 @@
             </div>
           </form>
         </div>
-        <div class="chat__solves" id="solveChips" role="group" aria-label="Common questions">
-          <button type="button" data-solve="brand-health">How can I track my brand’s health?</button>
-          <button type="button" data-solve="influencer">I need influencer marketing</button>
-          <button type="button" data-solve="ai-visibility">How do AI models describe my brand?</button>
-          <button type="button" data-solve="competitive">How do I stack up against my competitors?</button>
-        </div>
+        <div class="chat__solves" id="solveChips" role="group" aria-label="Common questions" hidden></div>
       </div>
     </div>
   </section>
@@ -248,6 +248,8 @@
 <script src="/machine/snapshot-data.js"></script>
 <script src="/machine/snapshot.js"></script>
 <script src="/machine/path.js"></script>
+<!-- the landing chooser: renders from data/questions.json, hands to convo.js -->
+<script src="/machine/hero.js"></script>
 <script src="/machine/directory.js"></script>
 <script src="/machine/shared.js"></script>
 <!-- the shared lead-capture modal; b.js's openModal() delegates to it -->

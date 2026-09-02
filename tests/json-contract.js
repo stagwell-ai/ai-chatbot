@@ -67,9 +67,8 @@ async function driveToQ3(page) {
      its slot went to competitor analysis). The sentence still classifies to
      research, so the three contract tests keep the visitor they were written
      around; only the gesture that starts them changed. */
-  await H.typeAnswer(page, 'I want to run a quick survey');
-  await H.waitQuestion(page, 'q2', 30000);
-  await H.typeAnswer(page, J.SMB_DOMAIN);
+  await H.landingFreeText(page, 'I want to run a quick survey', 'founder@' + J.SMB_DOMAIN);
+  /* q2 never comes: the business email at the door already named the company */
   await H.waitQuestion(page, 'q3', 30000);
 }
 

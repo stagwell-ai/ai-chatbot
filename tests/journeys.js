@@ -75,14 +75,17 @@ async function clickFirstHandoff(page) {
 async function j1(page, check, opts) {
   const o = opts || {};
   await H.open(page, '/');
-  check.eq('landed on the master landing (S1)', await page.$$eval('#promptInput', e => e.length), 1);
-  check.eq('one prompt box, four suggestion chips (W1)',
-    await page.$$eval('#solveChips button', e => e.length), 4);
+  /* THE LANDING IS A CHOOSER NOW (machine/hero.js, after Meta's ad-objective
+     dialog): a radio list of problems, a business email, Ask AI. */
+  check.eq('landed on the master landing — the picker is up',
+    await page.$$eval('#heroPick .pick__row', e => e.length), 6);
+  check.eq('the email field asks for a BUSINESS address',
+    await page.getAttribute('#pickEmail', 'placeholder'), 'My business email');
 
   /* the whole of script 1's opening move in one message: two problems and a
      website. SPEC non-negotiable #1 — the website answers the company
      question and starts research. */
-  await H.typeAnswer(page, NIKE_MSG);
+  await H.landingFreeText(page, NIKE_MSG, 'dana@nike.com');
 
   await H.waitQuestion(page, 'q3', 30000);
   const afterStart = await H.flowState(page);
@@ -90,8 +93,11 @@ async function j1(page, check, opts) {
   const reason = id => (afterStart.skipped.find(s => s.id === id) || {}).reason;
 
   check.ok('q1 skipped — the message carried the problems', skippedIds.includes('q1'), reason('q1'));
-  check.ok('q2 SKIPPED — website in the first message', skippedIds.includes('q2'), reason('q2'));
-  check.eq('q2 skip reason', reason('q2'), 'website_in_first_message');
+  check.ok('q2 SKIPPED — the company is already known', skippedIds.includes('q2'), reason('q2'));
+  check.eq('q2 skip reason — the business email named the company',
+    reason('q2'), 'company_from_work_email');
+  check.eq('and it is the right company',
+    await page.evaluate(() => window.SAI.session.slots.company_domain), 'nike.com');
   check.eq('two problem domains found (multi-product)',
     await page.evaluate(() => (window.SAI.session.slots.problem_domains || []).slice().sort()),
     ['audiences', 'business_impact']);
@@ -282,16 +288,13 @@ async function j3(page, check) {
      this journey types the sentence the chip used to carry, which is a
      STRONGER test than the chip was — the chip resolved through a label
      lookup in the data, this goes through the classifier for real. */
-  await H.typeAnswer(page, 'I want to run a quick survey');
+  await H.landingFreeText(page, 'I want to run a quick survey', 'founder@' + SMB_DOMAIN);
 
-  await H.waitQuestion(page, 'q2', 30000);
-  check.eq('the typed sentence answered q1; q2 is the first question asked',
-    (await H.flowState(page)).id, 'q2');
+  await H.waitQuestion(page, 'q3', 30000);
   check.eq('the classifier still resolves the survey sentence to research',
     await page.evaluate(() => window.SAI.session.slots.problem_domains), ['research']);
-
-  await H.typeAnswer(page, SMB_DOMAIN);
-  await H.waitQuestion(page, 'q3', 30000);
+  check.eq('the company came from the business email, so q2 was never asked',
+    await page.evaluate(() => window.SAI.session.slots.company_domain), SMB_DOMAIN);
   await H.clickChip(page, 'Founder / owner');
 
   /* an unknown domain cannot be confirmed — research must fall back to seeded
@@ -320,7 +323,9 @@ async function j3(page, check) {
   check.ok('PDF stays locked', await page.getAttribute('#snapPdfBtn', 'disabled') !== null);
   const declEvents = await H.allEvents(page);
   check.ok('capture_declined logged', H.countOf(declEvents, 'capture_declined') === 1);
-  check.eq('no capture_email', H.countOf(declEvents, 'capture_email'), 0);
+  /* the door capture stands; declining the report adds nothing to it */
+  check.eq('no SECOND capture_email from the decline',
+    H.countOf(declEvents, 'capture_email'), 1);
   check.eq('no journey_converted', H.countOf(declEvents, 'journey_converted'), 0);
 
   /* ── PATH, reached via the declined link ── */
@@ -374,14 +379,13 @@ async function j3(page, check) {
    ═══════════════════════════════════════════════════════════════════════════ */
 async function j4(page, check) {
   await H.open(page, '/');
-  await H.landingChip(page, 'How do AI models describe my brand?');
-
-  await H.waitQuestion(page, 'q2', 30000);
-  check.eq('domain classified from the chip',
-    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['ai_visibility']);
-  await H.typeAnswer(page, EXPLORER_DOMAIN);
+  await H.landingChip(page, 'How do AI models describe my brand?', 'someone@' + EXPLORER_DOMAIN);
 
   await H.waitQuestion(page, 'q3', 30000);
+  check.eq('domain classified from the chip',
+    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['ai_visibility']);
+  check.eq('and the company came from the email at the door',
+    await page.evaluate(() => window.SAI.session.slots.company_domain), EXPLORER_DOMAIN);
   await H.clickChip(page, 'Manager');
   const mode = await H.answerSize(page, { ask: '250–2,500' });
   check.eq('unknown domain → q4 asks', mode, 'ask');
@@ -431,7 +435,7 @@ async function j4(page, check) {
    ═══════════════════════════════════════════════════════════════════════════ */
 async function j5(page, check) {
   await H.open(page, '/');
-  await H.typeAnswer(page, NIKE_MSG);
+  await H.landingFreeText(page, NIKE_MSG, 'dana@nike.com');
 
   await H.waitQuestion(page, 'q3', 30000);
   await H.clickChip(page, 'Director / VP');
@@ -457,13 +461,21 @@ async function j5(page, check) {
 
   const events = await H.allEvents(page);
   check.eq('capture_declined logged exactly once', H.countOf(events, 'capture_declined'), 1);
-  check.eq('NO capture_email event', H.countOf(events, 'capture_email'), 0);
-  check.eq('NO capture_consent event', H.countOf(events, 'capture_consent'), 0);
+  /* CHANGED with the landing chooser: the front door takes a business email,
+     so there is no longer an anonymous visitor to test. What this journey
+     still proves is the DECLINE — the report is refused, and refusing it
+     grants nothing: no consent, no conversion, no unlocked PDF. */
+  check.eq('the door capture is the ONLY capture_email — declining adds none',
+    H.countOf(events, 'capture_email'), 1);
+  check.eq('and it carried the domain only, never the address',
+    (H.lastOf(events, 'capture_email') || {}).payload, { domain: 'nike.com', kind: 'hero' });
+  check.eq('NO capture_consent event — declining grants nothing',
+    H.countOf(events, 'capture_consent'), 0);
   check.eq('NO journey_converted event', H.countOf(events, 'journey_converted'), 0);
-  check.ok('the session is still logged (anonymous, not silent)',
+  check.ok('the session is logged end to end',
     H.countOf(events, 'session_started') === 1 && H.countOf(events, 'route_decided') >= 1);
-  check.eq('work_email slot never filled',
-    await page.evaluate(() => window.SAI.session.slots.work_email), null);
+  check.eq('the work email is the one given at the door, and nothing more',
+    await page.evaluate(() => window.SAI.session.slots.work_email), 'dana@nike.com');
 
   await H.shot(page, 'j5-declined-snapshot');
 
@@ -515,23 +527,21 @@ function routingCell(tier) {
 async function j6(page, check) {
   await H.open(page, '/');
 
-  const landing = await page.$$eval('#solveChips button', e => e.map(x => x.textContent.trim()));
-  check.eq('the landing still offers exactly four suggestion chips (W1)', landing.length, 4);
+  const landing = await page.$$eval('#heroPick .pick__label', e => e.map(x => x.textContent.trim()));
+  check.eq('the picker offers five problems plus "something else"', landing.length, 6);
   check.ok('competitor analysis is one of them', landing.includes(COMPETITIVE_CHIP), landing.join(' | '));
   check.ok('and the survey chip it replaced is gone',
     !landing.includes('I want to run a quick survey'), landing.join(' | '));
 
-  await H.landingChip(page, COMPETITIVE_CHIP);
+  /* a company the model actually knows, so the competitive set is real — and
+     it arrives with the email now, not as a separate answer */
+  await H.landingChip(page, COMPETITIVE_CHIP, 'dana@nike.com');
 
-  await H.waitQuestion(page, 'q2', 30000);
-  check.eq('the chip answered q1; q2 is the first question asked',
-    (await H.flowState(page)).id, 'q2');
-  check.eq('one problem domain, and it is the new one',
-    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['competitive']);
-
-  /* a company the model actually knows, so the competitive set is real */
-  await H.typeAnswer(page, 'nike.com');
   await H.waitQuestion(page, 'q3', 30000);
+  check.eq('the chip answered q1', 
+    await page.evaluate(() => window.SAI.session.slots.problem_domains), ['competitive']);
+  check.eq('and the email answered q2 before it was asked',
+    await page.evaluate(() => window.SAI.session.slots.company_domain), 'nike.com');
   await H.clickChip(page, 'Director / VP');
 
   const sizeMode = await H.answerSize(page, { confirm: "That's right", ask: '2,500+' });
@@ -626,7 +636,7 @@ const JOURNEYS = [
     run: (p, c) => j2(p, c, { onDone: r => { counts.J2 = r.standardAsked; } }) },
   { id: 'J3', name: 'SMB founder · types "a quick survey" → self-serve with a dominant, honest CTA', run: j3 },
   { id: 'J4', name: 'just exploring → follow_up, no meeting push', run: j4 },
-  { id: 'J5', name: 'anonymous · decline email → snapshot survives, PDF stays locked', run: j5 },
+  { id: 'J5', name: 'declines the report → snapshot survives, PDF stays locked, nothing granted', run: j5 },
   { id: 'J6', name: 'competitor analysis · landing chip → real rivals named at q6, snapshot and path', run: j6 }
 ];
 

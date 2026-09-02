@@ -527,6 +527,13 @@ function finish() {
 
 /* ─────────────────────────── ENTRY ─────────────────────────── */
 
+/* a question's shipped copy, straight out of the data contract */
+function questionCopy(id) {
+  const data = window.SAI && window.SAI.data;
+  const q = data && data.questions && (data.questions.questions || []).find(x => x.id === id);
+  return (q && q.copy) || null;
+}
+
 function matchingChip(text) {
   const data = window.SAI && window.SAI.data;
   const q1 = data && data.questions && (data.questions.questions || []).find(q => q.id === 'q1');
@@ -554,6 +561,22 @@ async function bootstrap(raw) {
   if (opener) {
     addAgentBubble(esc(opener.opener));
     addUserBubble(raw);
+  }
+
+  /* THE LANDING CHOOSER'S EXCHANGE. The visitor answered q1 on the picker
+     (machine/hero.js), so the flow starts with it already answered — but the
+     conversation has to SHOW that, or the chat opens on question two with no
+     sign of what they chose. The client's words: "we go to the ai chat
+     window with the first conversation put in already of which option they
+     selected." So q1 and their answer are replayed here, in the same two
+     bubbles they would have produced by hand. */
+  if (!opener) {
+    const q1 = questionCopy('q1');
+    const said = chip ? chip.label : String(raw || '').trim();
+    if (said) {
+      if (q1) addAgentBubble(esc(q1));
+      addUserBubble(said);
+    }
   }
 
   if (typeof window.SAIFLOW.onChange === 'function') window.SAIFLOW.onChange(render);
