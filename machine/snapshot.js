@@ -176,6 +176,22 @@ function knownEmail(session) {
   } catch (e) { return ''; }
 }
 
+/* did the visitor already give an address at the gate (machine/convo.js)?
+   snapshot-data.emailCaptured emits journey_converted {kind:'capture'} there
+   exactly as it does on this band, so one question answers both. */
+function reportAlreadyCaptured() {
+  try {
+    const list = (window.SAI && window.SAI.events && window.SAI.events.list()) || [];
+    return list.some(e => e && e.type === 'journey_converted' && e.payload && e.payload.kind === 'capture');
+  } catch (e) { return false; }
+}
+
+function sentBandHTML(session) {
+  const email = knownEmail(session);
+  return `<p class="snapcap__quiet">Sent. Your report is on its way${email ? ` to <b>${esc(email)}</b>` : ''}.</p>
+      <button type="button" class="btn btn--gold snapcap__pathbtn" id="snapPathGo">See your recommended path →</button>`;
+}
+
 function captureFormHTML(session) {
   const known = knownEmail(session);
   return `
@@ -270,7 +286,7 @@ function sectionHTML(data, session) {
         </article>
       </div>
 
-      <div class="snapcap" id="snapCapture">${captureFormHTML(session)}</div>
+      <div class="snapcap${reportAlreadyCaptured() ? ' is-done' : ''}" id="snapCapture">${reportAlreadyCaptured() ? sentBandHTML(session) : captureFormHTML(session)}</div>
 
       <p class="snap__printfoot">Demo print view — designed PDF export ships with the workspace. Figures are illustrative.</p>
     </div>
@@ -344,6 +360,14 @@ function wireCapture(root, session) {
   const form = $('#snapCaptureForm', cap);
   const decline = $('#snapDecline', cap);
 
+  /* captured at the gate: the band is already in its sent state */
+  if (!form) {
+    const goBtn = $('#snapPathGo', cap);
+    if (goBtn) goBtn.addEventListener('click', () => goToPath(session));
+    unlockPdf(root);
+    return;
+  }
+
   if (form) form.addEventListener('submit', e => {
     e.preventDefault();
     const emailInput = $('#snapEmail', cap);
@@ -404,7 +428,7 @@ function wireBottom(root, session) {
 
 /* ─────────────────────────── MOUNT / TEARDOWN ─────────────────────────── */
 
-const HIDE_SELECTORS = '#hero2, #dash, #cloud, #cta';
+const HIDE_SELECTORS = '#hero2, #about, #dash, #cloud, #cta';
 let mounted = false;
 let savedHidden = null;
 

@@ -4,12 +4,12 @@
    /data/*.json so copy and logic change without touching code.
 
    window.STAGDATA resolves to { questions, routing, solutions, campaigns,
-   brand }. Consumers must await it (or .then) before reading. A fetch
+   brand, messaging }. Consumers must await it (or .then) before reading. A fetch
    failure resolves the slot to null rather than rejecting, so one bad
    file degrades the surface that needed it instead of the whole page.
    ═══════════════════════════════════════════════════════════════════════════ */
 window.STAGDATA = (() => {
-  const FILES = ['questions', 'routing', 'solutions', 'campaigns', 'brand'];
+  const FILES = ['questions', 'routing', 'solutions', 'campaigns', 'brand', 'messaging'];
   const grab = name => fetch(`/data/${name}.json`)
     .then(r => (r.ok ? r.json() : null))
     .catch(() => null);

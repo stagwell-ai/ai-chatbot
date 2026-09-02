@@ -453,9 +453,10 @@ body.nav-open .mnav{transform:none}
   .askform__input{font-size:1rem}
 }
 
-/* ── the business email, at the start of the journey ──
-   Same gate as the landing chooser (machine/hero.js), in this panel's idiom:
-   the field sits under the free-text box, above the gold button. */
+/* ── the optional website, at the start of the journey ──
+   Same rule as the landing chooser (machine/hero.js), in this panel's idiom:
+   the field sits under the free-text box, above the gold button. (It used to
+   be the business email; that moved to the gate in front of the snapshot.) */
 .askform__email{display:block}
 .askform__email-input{width:100%;height:52px;border-radius:var(--r);
   border:1px solid var(--line-2);background:var(--surface);padding:0 18px;

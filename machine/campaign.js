@@ -70,7 +70,7 @@
      the history and any referrer. It goes through sessionStorage instead —
      same origin, invisible, and machine/convo.js consumes it exactly once on
      arrival (see AUTOSTART there). */
-  const LEAD_KEY = 'sai-lead-email';
+  const LEAD_KEY = 'sai-lead-site';
 
   let HERO = null;                    /* the hero block, once data lands */
 
@@ -78,31 +78,24 @@
   const heroErr = key => {
     const e = (heroCopy().errors) || {};
     return e[key] || {
-      noEmail: 'We need your business email to get started.',
-      badEmail: "That doesn't look like an email address yet — check it over.",
-      personalEmail: 'That is a personal address — please use your work email.'
+      badSite: "That doesn't look like a website — try something like nike.com, or leave it blank."
     }[key] || '';
   };
 
   const PERSONAL_FALLBACK = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com',
     'icloud.com', 'aol.com', 'live.com', 'proton.me', 'protonmail.com', 'gmx.com', 'mail.com'];
 
-  function emailDomain(value) {
-    const m = String(value == null ? '' : value).trim().toLowerCase()
-      .match(/^[^\s@]+@([a-z0-9.-]+\.[a-z]{2,})$/);
-    return m ? m[1] : null;
+  function siteDomain(value) {
+    let raw = String(value == null ? '' : value).trim().toLowerCase();
+    if (!raw) return null;
+    if (raw.indexOf('@') !== -1) raw = raw.slice(raw.lastIndexOf('@') + 1);
+    raw = raw.replace(/^[a-z]+:\/\//, '').replace(/^www\./, '').split(/[\/?#\s]/)[0];
+    return /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(raw) && raw.length <= 253 ? raw : null;
   }
-
-  /* null when the address is usable, else the error key */
-  function emailProblem(value) {
+  /* blank is fine; only a non-website in the box is refused */
+  function siteProblem(value) {
     const raw = String(value == null ? '' : value).trim();
-    if (!raw) return 'noEmail';
-    const domain = emailDomain(raw);
-    if (!domain) return 'badEmail';
-    if (raw.length > 254 || raw.indexOf('@') > 64) return 'badEmail';
-    const list = arr(heroCopy().personalDomains).length
-      ? heroCopy().personalDomains : PERSONAL_FALLBACK;
-    return list.indexOf(domain) !== -1 ? 'personalEmail' : null;
+    return !raw || siteDomain(raw) ? null : 'badSite';
   }
 
   function showEmailError(key) {
@@ -127,18 +120,20 @@
     if (wrap) wrap.classList.remove('is-bad');
   }
 
-  /* the gate every start of the journey passes through: no valid business
-     email, no handoff. Returns the address, or null having said why. */
-  function takeEmail() {
-    const input = document.getElementById('askEmail');
+  /* the optional website at the start of the journey. Blank → the agent asks
+     for the company on the other side; a non-website → say why, no handoff.
+     The email is no longer asked here — it moved to the gate in front of the
+     snapshot (client, Sep 2). Returns true when the handoff may proceed. */
+  function takeSite() {
+    const input = document.getElementById('askSite');
     const value = input ? input.value : '';
-    const problem = emailProblem(value);
-    if (problem) { showEmailError(problem); return null; }
+    const problem = siteProblem(value);
+    if (problem) { showEmailError(problem); return false; }
     clearEmailError();
-    const address = String(value).trim();
-    try { sessionStorage.setItem(LEAD_KEY, address); }
+    const domain = siteDomain(value);
+    try { if (domain) sessionStorage.setItem(LEAD_KEY, domain); else sessionStorage.removeItem(LEAD_KEY); }
     catch (e) { /* private mode: the conversation still opens, just without it */ }
-    return address;
+    return true;
   }
 
   const has = v => !!(v && String(v).trim());
@@ -538,10 +533,10 @@
                        aria-label="Tell the agent what you are trying to solve">
               </div>
               <label class="askform__email" id="askEmailWrap">
-                <span class="vh">${esc(heroCopy().emailLabel || 'My business email')}</span>
-                <input class="askform__input askform__email-input" id="askEmail" type="email"
-                       inputmode="email" autocomplete="email"
-                       placeholder="${esc(heroCopy().emailLabel || 'My business email')}"
+                <span class="vh">${esc(heroCopy().siteLabel || 'Your website (optional)')}</span>
+                <input class="askform__input askform__email-input" id="askSite" type="text"
+                       inputmode="url" autocomplete="url" spellcheck="false"
+                       placeholder="${esc(heroCopy().siteLabel || 'Your website (optional)')}"
                        aria-describedby="askErr">
               </label>
               <p class="askform__err" id="askErr" role="alert" hidden></p>
@@ -593,16 +588,16 @@
       panel.addEventListener('click', e => {
         const btn = e.target.closest('.chip');
         if (!btn || btn.disabled) return;
-        /* a chip is a start of the journey too, so it asks for the email
-           first — same gate, same words as the free-text submit */
-        if (!takeEmail()) return;
+        /* a chip is a start of the journey too — the optional website rides
+           along with it, same rule as the free-text submit */
+        if (!takeSite()) return;
         handoff(id, btn.dataset.label || btn.textContent);
       });
 
-      const emailEl = document.getElementById('askEmail');
-      if (emailEl) {
-        emailEl.addEventListener('input', () => {
-          if (!emailProblem(emailEl.value)) clearEmailError();
+      const siteEl = document.getElementById('askSite');
+      if (siteEl) {
+        siteEl.addEventListener('input', () => {
+          if (!siteProblem(siteEl.value)) clearEmailError();
         });
       }
     }
@@ -613,12 +608,10 @@
         e.preventDefault();
         const input = document.getElementById('askInput');
         const text = input ? input.value.trim() : '';
-        /* the address is the only thing this form insists on. With no words
-           in the box the handoff carries the campaign alone, and the opener
-           is the agent's first line on the other side — an email is never
-           worth refusing over a blank text field (client, Sep 2: "we don't
-           want to do anything to block them giving us their email"). */
-        if (!takeEmail()) return;
+        /* nothing here is required: with no words in the box the handoff
+           carries the campaign alone, and the opener is the agent's first
+           line on the other side. The email is asked at the snapshot gate. */
+        if (!takeSite()) return;
         handoff(id, text);
       });
     }

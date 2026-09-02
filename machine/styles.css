@@ -20,15 +20,16 @@
   --surface-2:#12303F; /* a raised / hovered card */
   --void:#003349;      /* a band — flat fallback; --band is the gradient the board asks for */
   --void-2:#0E5F8E;
-  --band:var(--nodes) 0 0/120px 120px,linear-gradient(160deg,#0E5F8E 0%,#003349 52%,#062230 100%);
+  --band:var(--nodes) 0 0/320px 320px,linear-gradient(160deg,#0E5F8E 0%,#003349 52%,#062230 100%);
 
   --ink:#F1FAFF;
-  --ink-2:rgba(241,250,255,.72);
-  --ink-3:rgba(241,250,255,.50);
-  --ink-4:rgba(241,250,255,.30);
+  /* muted tiers lifted Sep 2 (Robert/Amy: contrast) — secondary copy reads as near-white */
+  --ink-2:rgba(241,250,255,.86);
+  --ink-3:rgba(241,250,255,.68);
+  --ink-4:rgba(241,250,255,.40);
   --on-void:#F1FAFF;
-  --on-void-2:rgba(241,250,255,.66);
-  --on-void-3:rgba(241,250,255,.38);
+  --on-void-2:rgba(241,250,255,.84);
+  --on-void-3:rgba(241,250,255,.58);
 
   --line:rgba(241,250,255,.10);
   --line-2:rgba(241,250,255,.18);
@@ -64,7 +65,7 @@
 
   /* The board's "nodes in structured grids": a dot lattice with a few joined
      points, tiled. Painted at ~7% over heroes and bands, never over text. */
-  --nodes:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%2377E3F6' stroke-width='1' opacity='.13'%3E%3Cpath d='M20 20h80M20 20v80M100 20 60 60M60 60v40'/%3E%3C/g%3E%3Cg fill='%2377E3F6' opacity='.30'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='100' cy='20' r='2'/%3E%3Ccircle cx='60' cy='60' r='2.6'/%3E%3Ccircle cx='20' cy='100' r='2'/%3E%3Ccircle cx='60' cy='100' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+  --nodes:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cg fill='none' stroke='%2377E3F6' stroke-width='1' opacity='.07'%3E%3Cpath d='M48 48h176M48 48v176M224 48 136 136'/%3E%3C/g%3E%3Cg fill='%2377E3F6' opacity='.18'%3E%3Ccircle cx='48' cy='48' r='2.5'/%3E%3Ccircle cx='224' cy='48' r='2.5'/%3E%3Ccircle cx='136' cy='136' r='3'/%3E%3Ccircle cx='48' cy='224' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
   /* the two soft glows the board sets behind its type: teal top-left, orange bottom-right */
   --glow:radial-gradient(60% 50% at 8% 0%,rgba(0,156,189,.22),transparent 60%),
          radial-gradient(50% 45% at 96% 100%,rgba(255,109,36,.16),transparent 60%);
@@ -107,7 +108,7 @@ input{font:inherit;color:inherit}
 .eyebrow{
   /* the guidelines' subhead voice: Montserrat Light, all caps */
   font-family:var(--sans);font-weight:300;font-size:var(--t-label);letter-spacing:.14em;
-  text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:8px;
+  text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:8px;
 }
 .muted{color:var(--ink-3)}
 .pulse{width:5px;height:5px;border-radius:50%;background:var(--teal);flex:none;position:relative}

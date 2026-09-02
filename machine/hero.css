@@ -102,15 +102,16 @@
   display: flex; flex-direction: column; gap: 8px; background: var(--surface); }
 .pick__act { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
 
-.pick__email { flex: 1 1 260px; max-width: 380px; display: block; }
-.pick__email input { width: 100%; height: 46px; border-radius: var(--r);
+/* the optional website (the email moved to the gate in front of the snapshot, Sep 2) */
+.pick__site { flex: 1 1 260px; max-width: 380px; display: block; }
+.pick__site input { width: 100%; height: 46px; border-radius: var(--r);
   border: 1px solid var(--line-2); background: var(--paper); padding: 0 16px;
   font-family: var(--sans); font-size: var(--t-sm); color: var(--ink); outline: none;
   transition: border-color var(--d-2) var(--ease), box-shadow var(--d-2) var(--ease); }
-.pick__email input::placeholder { color: var(--ink-4); }
-.pick__email input:focus { border-color: color-mix(in srgb, var(--ink) 42%, transparent); }
+.pick__site input::placeholder { color: var(--ink-4); }
+.pick__site input:focus { border-color: color-mix(in srgb, var(--ink) 42%, transparent); }
 /* the highlight the client asked for: the box itself says it is the problem */
-.pick__email.is-bad input { border-color: var(--amber); box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 26%, transparent); }
+.pick__site.is-bad input { border-color: var(--amber); box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 26%, transparent); }
 
 .pick__go { height: 46px; padding: 0 28px; font-size: .9375rem; letter-spacing: .05em; flex: none; }
 
@@ -150,12 +151,12 @@
      inside a card that was already scrolling (client, Sep 2) */
   .pick__detail { min-height: 0; padding: 22px; max-height: none; overflow: visible; }
   .pick__act { justify-content: stretch; }
-  .pick__email { flex: 1 1 100%; max-width: none; }
+  .pick__site { flex: 1 1 100%; max-width: none; }
   .pick__go { width: 100%; justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pick__row, .pick__email input, .pick__list { transition: none; }
+  .pick__row, .pick__site input, .pick__list { transition: none; }
   .is-shake { animation: none; }
 }
 

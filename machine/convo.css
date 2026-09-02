@@ -126,3 +126,31 @@
 /* the snapshot reveal: the conversation ends on a button, not on a jump —
    the visitor decides when to leave the questions behind */
 .convo__reveal{margin-top:2px;padding:0 22px;height:46px}
+
+
+/* ─────────────────────────── THE GATE (Sep 2) ───────────────────────────
+   The email, asked once, right before the snapshot — inside the agent's last
+   bubble. Email beside phone (never required), the orange button, the consent
+   line, and a plain-text skip that is a real door. */
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.gate{margin-top:14px;display:flex;flex-direction:column;gap:10px;max-width:640px}
+.gate__line{margin:0;font-size:var(--t-body);line-height:1.55;color:var(--ink)}
+.gate__form{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:8px;align-items:center}
+.gate__field{display:block;min-width:0}
+.gate__field input{width:100%;height:46px;border-radius:var(--r);border:1px solid var(--line-2);
+  background:var(--paper);padding:0 14px;font-family:var(--sans);font-size:var(--t-sm);color:var(--ink);outline:none;
+  transition:border-color var(--d-2) var(--ease),box-shadow var(--d-2) var(--ease)}
+.gate__field input::placeholder{color:var(--ink-4)}
+.gate__field input:focus{border-color:color-mix(in srgb,var(--ink) 42%,transparent)}
+.gate.is-bad #gateEmail{border-color:var(--orange);box-shadow:0 0 0 3px color-mix(in srgb,var(--orange) 26%,transparent)}
+.gate.is-shake .gate__form{animation:shake 420ms var(--ease-io)}
+.gate .convo__reveal{margin:0;white-space:nowrap}
+.gate__err{margin:0;font-size:var(--t-sm);line-height:1.5;color:var(--orange)}
+.gate__consent{margin:0;font-size:var(--t-xs);line-height:1.5;color:var(--ink-3);max-width:60ch}
+.gate__skip{align-self:flex-start;padding:6px 0;font-family:var(--sans);font-size:var(--t-sm);
+  color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;background:none;border:0;cursor:pointer}
+.gate__skip:hover{color:var(--ink)}
+@media (max-width:640px){
+  .gate__form{grid-template-columns:1fr}
+  .gate .convo__reveal{width:100%;justify-content:center}
+}

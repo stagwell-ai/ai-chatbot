@@ -79,8 +79,8 @@ async function j1(page, check, opts) {
      dialog): a radio list of problems, a business email, Ask AI. */
   check.eq('landed on the master landing — the picker is up',
     await page.$$eval('#heroPick .pick__row', e => e.length), 5);
-  check.eq('the email field asks for a BUSINESS address',
-    await page.getAttribute('#pickEmail', 'placeholder'), 'My business email');
+  check.eq('the front door offers an optional website, not an email (Sep 2)',
+    await page.getAttribute('#pickSite', 'placeholder'), 'Your website (optional)');
 
   /* the whole of script 1's opening move in one message: two problems and a
      website. SPEC non-negotiable #1 — the website answers the company
@@ -129,20 +129,28 @@ async function j1(page, check, opts) {
   await H.waitQuestion(page, 'q5', 25000);
   await H.clickChip(page, 'This quarter');
 
-  /* ── SNAPSHOT ── */
-  await H.waitSnapshot(page);
+  /* ── THE GATE (Sep 2: the email is asked right before the snapshot) ── */
+  await page.waitForSelector('#convoGate', { timeout: 30000 });
+  check.ok('the gate stands in front of the snapshot', await page.$('#gateEmail') !== null);
+  check.ok('…with a phone field beside it, never required', await page.$('#gatePhone') !== null);
+  check.ok('…and a skip that is a real door', await page.$('#convoSkip') !== null);
+  check.eq('no email was taken at the front door',
+    await page.evaluate(() => window.SAI.session.slots.work_email || null), null);
+  await page.click('#convoReveal');
+  check.ok('an empty gate refuses, and says why', await page.isVisible('#gateErr'));
+  check.eq('…and nothing opened', await page.$('#snapView:not([hidden])'), null);
+  await H.gateEmail(page, 'demo@nike.com');
   check.eq('snapshot pushed /snapshot', new URL(page.url()).pathname, '/snapshot');
   check.includes('snapshot headline is "[Company] vs. your market"',
     await page.textContent('#snapView .snap__title'), 'vs. your market');
   check.eq('three modules rendered', await page.$$eval('#snapView .snapmod', e => e.length), 3);
-  check.ok('PDF button is visibly LOCKED before capture',
-    await page.getAttribute('#snapPdfBtn', 'disabled') !== null);
-  check.includes('lock hint', await page.textContent('#snapPdfHint'), 'Unlocks when we send your report');
   await H.shot(page, 'j1-snapshot');
 
-  /* ── CAPTURE ── */
-  await H.captureEmail(page, 'demo@nike.com', true);
-  check.ok('PDF unlocked after capture', await page.getAttribute('#snapPdfBtn', 'disabled') === null);
+  /* ── CAPTURED AT THE GATE: the band does not ask twice ── */
+  check.ok('the band is already in its sent state', await page.$('#snapCapture.is-done') !== null);
+  check.eq('no second email field', await page.$('#snapEmail'), null);
+  check.includes('and it names where the report went', await page.textContent('#snapCapture'), 'demo@nike.com');
+  check.ok('PDF unlocked by the gate capture', await page.getAttribute('#snapPdfBtn', 'disabled') === null);
 
   const capEvents = await H.allEvents(page);
   const cap = H.lastOf(capEvents, 'capture_email');
@@ -204,10 +212,10 @@ async function j2(page, check, opts) {
     await page.locator('#agentPanel .chip:text-is("What else fits my problem?")').count() === 1);
   await H.shot(page, 'j2-product-landing');
 
-  /* the ad landing captures the business email at the start of the journey
-     (client, Sep 2), so it is filled before anything can hand off */
-  check.ok('the panel asks for a business email', await page.$('#askEmail') !== null);
-  await page.fill('#askEmail', 'dana@nike.com');
+  /* the ad landing takes an optional website at the start of the journey —
+     the email moved to the gate in front of the snapshot (client, Sep 2) */
+  check.ok('the panel offers a website field, not an email', await page.$('#askSite') !== null && await page.$('#askEmail') === null);
+  await page.fill('#askSite', 'nike.com');
 
   /* a chip tap on the product page is a HANDOFF to the master page with the
      conversation pre-armed (?utm_campaign=…&autostart=1&q=…) */
@@ -218,13 +226,12 @@ async function j2(page, check, opts) {
   await page.waitForFunction(() => !!(window.SAI && window.SAI.ready));
   await page.evaluate(() => window.SAI.ready);
 
-  await H.waitQuestion(page, 'q2', 30000);
+  await H.waitQuestion(page, 'q3', 30000);
   check.eq('autostarted into /chat', new URL(page.url()).pathname, '/chat');
-  check.eq('the email rode across, so q2 confirms the site rather than asking',
-    (await H.flowState(page)).mode, 'confirm');
-  check.eq('and the company came out of its domain',
+  check.eq('the website rode across, so q2 is skipped — they typed it themselves',
+    ((await H.flowState(page)).skipped.find(s => s.id === 'q2') || {}).reason, 'website_in_first_message');
+  check.eq('and the company is that site',
     await page.evaluate(() => window.SAI.session.slots.company_domain), 'nike.com');
-  await H.confirmSite(page);
 
   const thread = await page.$$eval('#thread .ai__text, #thread .bubble', e => e.map(x => x.textContent.trim()));
   check.ok('the opener exchange is REPLAYED, not re-asked',
@@ -255,7 +262,8 @@ async function j2(page, check, opts) {
   const events = await H.allEvents(page);
   const askedIds = H.ofType(events, 'question_asked').map(e => e.payload.id);
   const standardAsked = askedIds.filter(id => /^q[1-6]$/.test(id));
-  check.eq('question_asked trail', askedIds, ['campaign-opener', 'q2', 'q3', 'q4', 'q5']);
+  /* q2 is gone from the trail since Sep 2: the site typed on the ad landing answered it */
+  check.eq('question_asked trail', askedIds, ['campaign-opener', 'q3', 'q4', 'q5']);
   check.ok('fewer standard questions than the full master ladder (q1–q6)',
     standardAsked.length < 6, `${standardAsked.length} of 6 asked: ${standardAsked.join(',')}`);
   check.ok('the campaign entry retired two of them',
@@ -332,9 +340,9 @@ async function j3(page, check) {
   check.ok('PDF stays locked', await page.getAttribute('#snapPdfBtn', 'disabled') !== null);
   const declEvents = await H.allEvents(page);
   check.ok('capture_declined logged', H.countOf(declEvents, 'capture_declined') === 1);
-  /* the door capture stands; declining the report adds nothing to it */
-  check.eq('no SECOND capture_email from the decline',
-    H.countOf(declEvents, 'capture_email'), 1);
+  /* nothing was captured at the door (Sep 2) and the gate was skipped: declining adds no capture */
+  check.eq('no capture_email anywhere — the door takes none, the gate was skipped, the decline adds none',
+    H.countOf(declEvents, 'capture_email'), 0);
   check.eq('no journey_converted', H.countOf(declEvents, 'journey_converted'), 0);
 
   /* ── PATH, reached via the declined link ── */
@@ -399,7 +407,7 @@ async function j4(page, check) {
   await H.waitQuestion(page, 'q3', 30000);
   check.eq('domain classified from the chip',
     await page.evaluate(() => window.SAI.session.slots.problem_domains), ['audiences']);
-  check.eq('and the company came from the email at the door',
+  check.eq('and the company came from the website at the door',
     await page.evaluate(() => window.SAI.session.slots.company_domain), EXPLORER_DOMAIN);
   await H.clickChip(page, 'Founder / owner');
   const mode = await H.answerSize(page, { ask: 'Under 50 people' });
@@ -473,21 +481,19 @@ async function j5(page, check) {
 
   const events = await H.allEvents(page);
   check.eq('capture_declined logged exactly once', H.countOf(events, 'capture_declined'), 1);
-  /* CHANGED with the landing chooser: the front door takes a business email,
-     so there is no longer an anonymous visitor to test. What this journey
-     still proves is the DECLINE — the report is refused, and refusing it
-     grants nothing: no consent, no conversion, no unlocked PDF. */
-  check.eq('the door capture is the ONLY capture_email — declining adds none',
-    H.countOf(events, 'capture_email'), 1);
-  check.eq('and it carried the domain only, never the address',
-    (H.lastOf(events, 'capture_email') || {}).payload, { domain: 'nike.com', kind: 'hero' });
+  /* Sep 2: the door takes no email and this visitor skipped the gate, so
+     this IS the anonymous visitor again. What the journey proves is the
+     DECLINE — the report is refused, and refusing it grants nothing: no
+     capture, no consent, no conversion, no unlocked PDF. */
+  check.eq('no capture_email at all — the door takes none, the gate was skipped, the decline adds none',
+    H.countOf(events, 'capture_email'), 0);
   check.eq('NO capture_consent event — declining grants nothing',
     H.countOf(events, 'capture_consent'), 0);
   check.eq('NO journey_converted event', H.countOf(events, 'journey_converted'), 0);
   check.ok('the session is logged end to end',
     H.countOf(events, 'session_started') === 1 && H.countOf(events, 'route_decided') >= 1);
-  check.eq('the work email is the one given at the door, and nothing more',
-    await page.evaluate(() => window.SAI.session.slots.work_email), 'dana@nike.com');
+  check.eq('no work email on the session — none was given anywhere',
+    await page.evaluate(() => window.SAI.session.slots.work_email || null), null);
 
   await H.shot(page, 'j5-declined-snapshot');
 
@@ -552,7 +558,7 @@ async function j6(page, check) {
   await H.waitQuestion(page, 'q3', 30000);
   check.eq('the chip answered q1', 
     await page.evaluate(() => window.SAI.session.slots.problem_domains), ['competitive']);
-  check.eq('and the email answered q2 before it was asked',
+  check.eq('and the website answered q2 before it was asked',
     await page.evaluate(() => window.SAI.session.slots.company_domain), 'nike.com');
   await H.clickChip(page, 'Director / VP');
 

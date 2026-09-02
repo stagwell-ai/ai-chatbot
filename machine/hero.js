@@ -4,7 +4,9 @@
    The client, pointing at Meta's ad-objective dialog: "we want to continue
    using the phrase 'What do you need help solving today?' but we want to
    have the user select from a few options. on the lower right there would be
-   a button 'Ask AI' and to the left of it a text input 'My business email'…
+   a button 'Ask AI' and to the left of it a text input — the website now
+   (optional, client Sep 2: "move the email collection to right before they
+   get the snapshot"); it used to be the business email…
    after they click the button, then we go to the ai chat window with the
    first conversation put in already of which option they selected."
 
@@ -13,7 +15,7 @@
      · a radio list of what the visitor might be solving, LEFT;
      · a detail pane for whichever row is focused, RIGHT — what that choice
        means and what it is good for, the shape Meta's panel uses;
-     · a footer bar, the business email beside the Ask AI button.
+     · a footer bar, an optional website beside the Ask AI button.
 
    WHERE THE OPTIONS COME FROM. data/questions.json q1.chips — the same list
    the conversation's first question uses. That is the point: the picker IS
@@ -39,7 +41,7 @@
    window.SAIHERO:
      .mounted()   → true once the picker is on the page
      .select(id)  → choose an option programmatically (tests, deep links)
-     .state()     → { option, email, error } for the suites
+     .state()     → { option, site, error } for the suites
    ═══════════════════════════════════════════════════════════════════════════ */
 (() => {
 'use strict';
@@ -59,8 +61,8 @@ const FALLBACK = {
   title: 'What do you need help solving today?',
   sub: '',
   listLabel: "Choose what you're solving",
-  emailLabel: 'My business email',
-  emailHint: '',
+  siteLabel: 'Your website (optional)',
+  siteHint: '',
   submit: 'Ask AI',
   otherLabel: "Something else — I'll describe it",
   otherLine: 'Describe the problem in your own words, or paste your website.',
@@ -68,9 +70,7 @@ const FALLBACK = {
   otherGoodFor: [],
   personalDomains: ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com'],
   errors: {
-    noEmail: 'We need your business email to get started.',
-    badEmail: "That doesn't look like an email address yet — check it over.",
-    personalEmail: 'That’s a personal address — please use your work email.'
+    badSite: "That doesn't look like a website — try something like nike.com, or leave it blank."
   },
   byDomain: {}
 };
@@ -104,29 +104,24 @@ let lastError = null;
 
 const optionById = id => OPTIONS.find(o => o.id === id) || null;
 
-/* ── the email rule ──────────────────────────────────────────────────────── */
-function emailDomain(value) {
-  const m = String(value == null ? '' : value).trim().toLowerCase()
-    .match(/^[^\s@]+@([a-z0-9.-]+\.[a-z]{2,})$/);
-  return m ? m[1] : null;
+/* ── the website rule ─────────────────────────────────────────────────────
+   Optional, and forgiving: "nike.com", "www.nike.com", "https://nike.com/uk"
+   all read as nike.com. An email pasted here by habit gives up its domain
+   too — but the address itself is NOT kept: the email is asked once, right
+   before the snapshot (machine/convo.js gate), and nowhere earlier. */
+function siteDomain(value) {
+  let raw = String(value == null ? '' : value).trim().toLowerCase();
+  if (!raw) return null;
+  if (raw.indexOf('@') !== -1) raw = raw.slice(raw.lastIndexOf('@') + 1);
+  raw = raw.replace(/^[a-z]+:\/\//, '').replace(/^www\./, '').split(/[\/?#\s]/)[0];
+  return /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(raw) && raw.length <= 253 ? raw : null;
 }
 
-function isPersonal(domain) {
-  const list = Array.isArray(COPY.personalDomains) ? COPY.personalDomains : [];
-  return list.indexOf(String(domain || '').toLowerCase()) !== -1;
-}
-
-/* returns null when the address is usable, else the error key to show */
-function emailProblem(value) {
+/* returns null when the field is usable (blank counts), else the error key */
+function siteProblem(value) {
   const raw = String(value == null ? '' : value).trim();
-  if (!raw) return 'noEmail';
-  const domain = emailDomain(raw);
-  if (!domain) return 'badEmail';
-  /* RFC 5321: 64 for the local part, 254 overall — a 300-character address
-     went straight through and into the session (QA, Sep 2) */
-  if (raw.length > 254 || raw.indexOf('@') > 64) return 'badEmail';
-  if (isPersonal(domain)) return 'personalEmail';
-  return null;
+  if (!raw) return null;
+  return siteDomain(raw) ? null : 'badSite';
 }
 
 /* ── render ──────────────────────────────────────────────────────────────── */
@@ -312,10 +307,10 @@ function render() {
       <div class="pick__foot">
         <p class="pick__err" id="pickErr" role="alert" hidden></p>
         <div class="pick__act">
-          <label class="pick__email" id="pickEmailWrap">
-            <span class="vh">${esc(COPY.emailLabel || 'Work email')}</span>
-            <input id="pickEmail" type="email" inputmode="email" autocomplete="email"
-              placeholder="${esc(COPY.emailLabel || 'Work email')}"
+          <label class="pick__site" id="pickSiteWrap">
+            <span class="vh">${esc(COPY.siteLabel || 'Your website (optional)')}</span>
+            <input id="pickSite" type="text" inputmode="url" autocomplete="url" spellcheck="false"
+              placeholder="${esc(COPY.siteLabel || 'Your website (optional)')}"
               aria-describedby="pickErr">
           </label>
           <button type="button" class="btn btn--gold pick__go" id="pickGo">${esc(COPY.submit || 'Ask AI')}</button>
@@ -349,11 +344,11 @@ function select(id, opts) {
 }
 
 /* ── errors: the box is highlighted AND told why (client's ask) ───────────
-   The address is now the only thing that can fail here, so every error this
-   shows is about the email field. */
+   The website is now the only thing that can fail here (and only when it is
+   not blank), so every error this shows is about that field. */
 function showError(key, focusEl) {
   const box = $('#pickErr', root);
-  const wrap = $('#pickEmailWrap', root);
+  const wrap = $('#pickSiteWrap', root);
   lastError = key;
   const msg = (COPY.errors && COPY.errors[key]) || FALLBACK.errors[key] || '';
   if (box) { box.textContent = msg; box.hidden = false; }
@@ -373,29 +368,28 @@ function clearError(onlyKey) {
   lastError = null;
   const box = $('#pickErr', root);
   if (box) { box.hidden = true; box.textContent = ''; }
-  const wrap = $('#pickEmailWrap', root);
+  const wrap = $('#pickSiteWrap', root);
   if (wrap) wrap.classList.remove('is-bad');
 }
 
 /* ── the handoff ─────────────────────────────────────────────────────────── */
 function engine() { return (typeof window !== 'undefined' && window.SAI) || null; }
 
-/* The email pays for itself here: the company comes out of its domain, the
-   session records where it came from, and research starts immediately —
-   which is also why flow.js can skip q2 (see skipReason 'company_from_work_email'). */
-function seedFromEmail(address) {
+/* A website typed at the door is the visitor's own answer to q2: the
+   company is known, research starts immediately, and flow.js skips the
+   question (skipReason 'website_in_first_message'). Nothing else is taken
+   here — the email waits for the gate in front of the snapshot. */
+function seedFromSite(value) {
   const S = engine();
-  const domain = emailDomain(address);
+  const domain = siteDomain(value);
   if (!S || !domain) return null;
   try {
-    S.setSlot('work_email', String(address).trim(), 'visitor');
-    if (!S.session.slots.company_domain) S.setSlot('company_domain', domain, 'work_email');
-    S.events.emit('capture_email', { domain, kind: 'hero' });
+    if (!S.session.slots.company_domain) S.setSlot('company_domain', domain, 'visitor');
   } catch (e) { /* a slot the engine refuses is not worth losing the click over */ }
   return domain;
 }
 
-/* THE ONLY THING THIS DOOR ASKS FOR IS THE ADDRESS.
+/* THIS DOOR ASKS FOR NOTHING IT CAN REFUSE OVER.
 
    The picker used to refuse a click until a row was chosen — and refuse
    again if "Something else" was chosen with an empty box. Both refusals sent
@@ -408,13 +402,14 @@ function seedFromEmail(address) {
    So the rows are an ACCELERATOR, not a toll: pick one and the conversation
    opens with q1 already answered; pick nothing and it opens by asking q1 —
    the same question the headline asks, now with the agent asking it, and
-   the email already doing its work behind the scenes (company out of the
-   domain, q2 down to a confirm). The address is still required, because
-   without it there is no company to read and nowhere to send the report. */
+   a typed website already doing its work behind the scenes (company known,
+   research running, q2 skipped). Nothing is required: the client moved the
+   email to the gate in front of the snapshot (Sep 2) so the way in is one
+   click — a blank website simply means the agent asks for the company. */
 function go() {
-  const emailEl = $('#pickEmail', root);
-  const problem = emailProblem(emailEl ? emailEl.value : '');
-  if (problem) { showError(problem, emailEl); return; }
+  const siteEl = $('#pickSite', root);
+  const problem = siteProblem(siteEl ? siteEl.value : '');
+  if (problem) { showError(problem, siteEl); return; }
 
   const o = optionById(selected);
   let text = o ? o.label : '';
@@ -429,7 +424,7 @@ function go() {
   }
 
   clearError();
-  seedFromEmail(emailEl ? emailEl.value : '');
+  seedFromSite(siteEl ? siteEl.value : '');
 
   /* hand the whole hero over to the conversation, with this as its first
      answer already given — the visitor never sees q1 asked again */
@@ -478,12 +473,12 @@ function wire() {
     if (next) { next.focus(); select(next.getAttribute('data-pick'), { focus: false }); }
   });
 
-  const email = $('#pickEmail', root);
-  if (email) {
-    /* the error clears itself the moment the address becomes usable — no
+  const site = $('#pickSite', root);
+  if (site) {
+    /* the error clears itself the moment the field becomes usable — no
        second click needed to find out you fixed it */
-    email.addEventListener('input', () => { if (lastError && !emailProblem(email.value)) clearError(); });
-    email.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+    site.addEventListener('input', () => { if (lastError && !siteProblem(site.value)) clearError(); });
+    site.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
   }
 }
 
@@ -556,9 +551,10 @@ window.SAIHERO = {
   state: () => ({
     option: selected,
     more,
-    email: ($('#pickEmail', root) || {}).value || '',
+    site: ($('#pickSite', root) || {}).value || '',
     error: lastError
   }),
-  _emailProblem: emailProblem
+  _siteProblem: siteProblem,
+  _siteDomain: siteDomain
 };
 })();

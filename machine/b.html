@@ -125,7 +125,7 @@
   <!-- ─────────────── HERO + CHAT ─────────────── -->
   <section class="hero2" id="hero2">
     <div class="hero2__in">
-      <p class="eyebrow" id="heroEyebrow"><i class="pulse"></i>Stagwell.AI · Agentic solutions built by marketing experts for modern marketers</p>
+      <p class="eyebrow" id="heroEyebrow"><i class="pulse"></i>Stagwell.AI · Agentic solutions grounded in real-world marketing expertise</p>
       <h1 class="display" id="hero2Title">What do you need help <span class="accent">solving today?</span></h1>
       <p class="hero2__sub" id="hero2Sub">Tell the agent what you’re trying to do — or just paste your website — and it will point you to the right solution, with a live snapshot of your brand to show for it.</p>
 
@@ -154,6 +154,13 @@
       </div>
     </div>
   </section>
+
+  <!-- ─────────────── WHAT IS STAGWELL.AI ───────────────
+       The answer Amy asked for (client, Sep 2): the positioning, the three
+       tiers of the portfolio and the promises, from data/messaging.json.
+       machine/about.js renders it; it hides with the hero once a snapshot
+       or path is on screen. -->
+  <section class="about" id="about" aria-label="What is Stagwell.AI"></section>
 
   <!-- ─────────────── DASHBOARD ─────────────── -->
   <section class="dash" id="dash" hidden></section>
@@ -254,6 +261,7 @@
 <script src="/machine/path.js"></script>
 <!-- the landing chooser: renders from data/questions.json, hands to convo.js -->
 <script src="/machine/hero.js"></script>
+<script src="/machine/about.js"></script>
 <script src="/machine/directory.js"></script>
 <script src="/machine/shared.js"></script>
 <!-- the shared lead-capture modal; b.js's openModal() delegates to it -->

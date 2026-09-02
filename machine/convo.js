@@ -558,7 +558,7 @@ function render() {
 async function handleAnswer(value, label) {
   if (busy || !active) return;
 
-  if (finished) { openSnapshot(); return; }
+  if (finished) { submitGate(); return; }
 
   busy = true;
   clearChips();
@@ -614,22 +614,116 @@ function finish() {
     ? ` And I know which product in the suite I'd point at it: <b>${esc(rec.solutionName)}</b> — the analysis shows you why.`
     : '';
   const body = addAgentBubble(esc(lead) + follow);
+
+  /* THE GATE. The email is asked here and only here — right before the
+     snapshot (client, Sep 2: "move the email collection to right before they
+     get the snapshot"). The read above has earned the ask: the visitor has
+     seen what is being built and is one field away from it. Every email ask
+     carries a phone ask, never required (cta.json phoneRule); the consent
+     line under the button is the consent (one decision, not two); and the
+     skip is a real door, not a trick — the band under the snapshot asks
+     again, quietly, and the PDF stays locked until an address is given. */
+  const G = gateCopy();
   const wrap = document.createElement('div');
-  wrap.className = 'opts opts--sticky';
-  const go = document.createElement('button');
-  go.type = 'button';
-  go.className = 'btn btn--gold convo__reveal';
-  go.id = 'convoReveal';
-  go.textContent = 'Show me my snapshot →';
-  go.addEventListener('click', openSnapshot);
-  wrap.appendChild(go);
+  wrap.className = 'gate';
+  wrap.innerHTML = `
+    <p class="gate__line">${esc(G.line)}</p>
+    <form class="gate__form" id="convoGate" novalidate>
+      <label class="gate__field"><span class="vh">${esc(G.emailLabel)}</span>
+        <input id="gateEmail" type="email" inputmode="email" autocomplete="email" placeholder="${esc(G.emailLabel)}" aria-describedby="gateErr"></label>
+      <label class="gate__field gate__field--phone"><span class="vh">${esc(G.phoneLabel)}</span>
+        <input id="gatePhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="${esc(G.phoneLabel)}"></label>
+      <button type="submit" class="btn btn--gold convo__reveal" id="convoReveal">${esc(G.button)}</button>
+    </form>
+    <p class="gate__err" id="gateErr" role="alert" hidden></p>
+    <p class="gate__consent">${esc(G.consent)}</p>
+    <button type="button" class="gate__skip" id="convoSkip">${esc(G.skip)}</button>`;
   body.appendChild(wrap);
+  const form = $('#convoGate', wrap);
+  if (form) form.addEventListener('submit', e => { e.preventDefault(); submitGate(); });
+  const emailEl = $('#gateEmail', wrap);
+  if (emailEl) emailEl.addEventListener('input', () => {
+    if (!emailProblem(emailEl.value)) { const err = $('#gateErr', wrap); if (err) err.hidden = true; wrap.classList.remove('is-bad'); }
+  });
+  const skip = $('#convoSkip', wrap);
+  if (skip) skip.addEventListener('click', () => openSnapshot());
 
   closeComposer();
   requestAnimationFrame(() => {
     wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' });
-    try { go.focus({ preventScroll: true }); } catch (e) { /* fine */ }
+    try { if (emailEl) emailEl.focus({ preventScroll: true }); } catch (e) { /* fine */ }
   });
+}
+
+/* ─────────────────────────── THE GATE ─────────────────────────── */
+
+/* copy lives in data/questions.json (captureMoment.gate); this is the floor */
+const GATE_FALLBACK = {
+  line: "Your read is ready. Where should the report go? Drop your work email and I'll open your snapshot — the PDF goes to the same address.",
+  emailLabel: 'Work email',
+  phoneLabel: 'Phone (optional)',
+  button: 'Show my snapshot →',
+  consent: 'By continuing, you agree someone from Stagwell can follow up about these results.',
+  skip: 'Skip for now — just show me the snapshot',
+  errors: {
+    noEmail: 'Add your work email to open the snapshot — or skip for now below.',
+    badEmail: "That doesn't look like an email address yet — check it over.",
+    personalEmail: "That's a personal address — the report goes to your work email."
+  }
+};
+function gateCopy() {
+  const data = window.SAI && window.SAI.data;
+  const g = (data && data.questions && data.questions.captureMoment && data.questions.captureMoment.gate) || {};
+  return Object.assign({}, GATE_FALLBACK, g, { errors: Object.assign({}, GATE_FALLBACK.errors, g.errors || {}) });
+}
+
+/* the same rule the front door used to apply, now applied once, here */
+function emailProblem(value) {
+  const raw = String(value == null ? '' : value).trim();
+  if (!raw) return 'noEmail';
+  const m = raw.toLowerCase().match(/^[^\s@]+@([a-z0-9.-]+\.[a-z]{2,})$/);
+  if (!m) return 'badEmail';
+  if (raw.length > 254 || raw.indexOf('@') > 64) return 'badEmail';
+  const data = window.SAI && window.SAI.data;
+  const personal = (data && data.questions && data.questions.hero && data.questions.hero.personalDomains) ||
+    ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com'];
+  if (personal.indexOf(m[1]) !== -1) return 'personalEmail';
+  return null;
+}
+
+function submitGate() {
+  const wrap = $('#thread .gate');
+  const emailEl = $('#gateEmail');
+  const err = $('#gateErr');
+  if (!wrap || !emailEl) { openSnapshot(); return; }
+  const G = gateCopy();
+  const problem = emailProblem(emailEl.value);
+  if (problem) {
+    if (err) { err.textContent = G.errors[problem] || ''; err.hidden = false; }
+    wrap.classList.add('is-bad');
+    wrap.classList.remove('is-shake'); void wrap.offsetWidth; wrap.classList.add('is-shake');
+    setTimeout(() => wrap.classList.remove('is-shake'), 460);
+    wrap.scrollIntoView({ block: 'end', behavior: REDUCED ? 'auto' : 'smooth' });
+    try { emailEl.focus({ preventScroll: true }); } catch (e) { /* fine */ }
+    return;
+  }
+  const phoneEl = $('#gatePhone');
+  captureAtGate(emailEl.value.trim(), phoneEl ? phoneEl.value.trim() : '');
+  openSnapshot();
+}
+
+/* the slot keeps the address for the forms downstream (the modal, the band's
+   sent line); the event bus sees the domain only — engine.js redacts it.
+   snapshot-data.emailCaptured is the one contract for a capture, so the
+   console and the path screen read this exactly like a capture on the band. */
+function captureAtGate(address, phone) {
+  const S = window.SAI;
+  try { if (S && typeof S.setSlot === 'function') S.setSlot('work_email', address, 'visitor'); } catch (e) { /* fine */ }
+  try {
+    if (window.SAISNAPDATA && typeof window.SAISNAPDATA.emailCaptured === 'function') {
+      window.SAISNAPDATA.emailCaptured(address, true, phone);
+    }
+  } catch (e) { /* a broken bus is not the visitor's problem */ }
 }
 
 /* ─────────────────────────── ENTRY ─────────────────────────── */
@@ -741,29 +835,22 @@ function visitorInteracted() {
 }
 
 /* the same seeding machine/hero.js does at the front door, for the visitor
-   who came in through an ad landing instead: the company comes out of the
-   address's domain, so q2 confirms it rather than asking from scratch, and
-   the event carries the domain only — never the address. */
-const LEAD_KEY = 'sai-lead-email';
+   who came in through an ad landing instead: the website they typed there is
+   their own answer to q2, so the company is known and the question skipped.
+   (Until Sep 2 this carried the business email; the email now waits for the
+   gate in front of the snapshot.) */
+const LEAD_KEY = 'sai-lead-site';
 
 function seedStoredEmail() {
-  let address = null;
+  let domain = null;
   try {
-    address = sessionStorage.getItem(LEAD_KEY);
+    domain = sessionStorage.getItem(LEAD_KEY);
     sessionStorage.removeItem(LEAD_KEY);
   } catch (e) { return; }
-  if (!address) return;
-
-  const m = String(address).trim().toLowerCase()
-    .match(/^[^\s@]+@([a-z0-9.-]+\.[a-z]{2,})$/);
-  const domain = m ? m[1] : null;
   const S = window.SAI;
   if (!domain || !S || typeof S.setSlot !== 'function') return;
-
   try {
-    S.setSlot('work_email', String(address).trim(), 'visitor');
-    if (!S.session.slots.company_domain) S.setSlot('company_domain', domain, 'work_email');
-    S.events.emit('capture_email', { domain, kind: 'campaign' });
+    if (!S.session.slots.company_domain) S.setSlot('company_domain', String(domain).trim().toLowerCase(), 'visitor');
   } catch (e) { /* a refused slot is not worth losing the conversation over */ }
 }
 
@@ -825,7 +912,7 @@ window.SAICONVO = {
   submit(raw) {
     /* after the read the composer's button IS the reveal (closeComposer):
        the input is closed and empty, so this submit opens the snapshot */
-    if (finished) { openSnapshot(); return; }
+    if (finished) { submitGate(); return; }
     const text = (raw || '').trim();
     if (!text) { shakePrompt(); return; }
     const { promptInput } = els();

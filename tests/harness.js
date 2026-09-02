@@ -240,12 +240,19 @@ async function typeAnswer(page, text) {
    journey that used to type a website can hand one over here instead. */
 const WORK_EMAIL = 'demo@nike.com';
 
+/* Since Sep 2 the door takes an optional WEBSITE, not an email (the email is
+   asked at the gate in front of the snapshot — see waitSnapshot). Journeys
+   still pass the address they used to, and the harness hands the door the
+   domain out of it, so "the company is known at the door" keeps meaning what
+   it always meant. A typed site is the visitor's own answer, so q2 is skipped
+   outright — there is no confirm step to answer any more. */
+const siteOf = email => String(email || WORK_EMAIL).split('@').pop();
+
 async function landingChip(page, label, email) {
   await page.locator(`#heroPick .pick__row:has-text(${JSON.stringify(label)})`).first()
     .click({ timeout: 10000 });
-  await page.fill('#pickEmail', email || WORK_EMAIL);
+  await page.fill('#pickSite', siteOf(email));
   await page.click('#pickGo');
-  await confirmSite(page);
 }
 
 /* THE SITE CONFIRM. A domain read out of the business email is an inference,
@@ -270,9 +277,8 @@ async function confirmSite(page, opts) {
 async function landingFreeText(page, text, email) {
   await page.locator('#heroPick .pick__row').last().click({ timeout: 10000 });
   await page.fill('#pickFree', text);
-  await page.fill('#pickEmail', email || WORK_EMAIL);
+  await page.fill('#pickSite', siteOf(email));
   await page.click('#pickGo');
-  await confirmSite(page);
 }
 
 /* q4 is the one question with two faces. Which one the visitor sees depends
@@ -294,13 +300,25 @@ async function answerSize(page, opts) {
 /* The conversation no longer jumps to the snapshot by itself — it offers a
    button and waits, so the visitor sees what they are being taken to. Every
    journey therefore ends the questions by pressing it. */
-async function waitSnapshot(page) {
-  const reveal = await page.waitForSelector('#convoReveal', { timeout: 30000 }).catch(() => null);
-  if (reveal) await reveal.click();
+/* THE GATE (Sep 2). The conversation ends on an email gate: give a work
+   email and the snapshot opens with the report already sent, or skip and the
+   band under the snapshot asks again. `opts.email` takes the gate; the
+   default skips, so every journey that captures on the band still can. */
+async function waitSnapshot(page, opts) {
+  const o = opts || {};
+  await page.waitForSelector('#convoGate', { timeout: 30000 });
+  if (o.email) {
+    await page.fill('#gateEmail', o.email);
+    if (o.phone) await page.fill('#gatePhone', o.phone);
+    await page.click('#convoReveal');
+  } else {
+    await page.click('#convoSkip');
+  }
   await page.waitForSelector('#snapView:not([hidden])', { timeout: 30000 });
   await page.waitForSelector('#snapView .snapmod', { timeout: 10000 });
   await page.waitForTimeout(150);
 }
+const gateEmail = (page, email, phone) => waitSnapshot(page, { email: email || WORK_EMAIL, phone });
 
 /* Consent is not a second decision any more: the line under the button says
    that sending the report is the permission to follow up, so submitting the
@@ -391,7 +409,7 @@ module.exports = {
   waitQuestion, flowState, liveChips, clickChip, typeAnswer, landingChip, landingFreeText,
   confirmSite,
   WORK_EMAIL, answerSize,
-  waitSnapshot, captureEmail, declineEmail, goToPath,
+  waitSnapshot, gateEmail, captureEmail, declineEmail, goToPath, siteOf,
   allEvents, typesOf, ofType, lastOf, countOf,
   runSuite, LIVE_OPTS
 };
