@@ -245,6 +245,24 @@ async function landingChip(page, label, email) {
     .click({ timeout: 10000 });
   await page.fill('#pickEmail', email || WORK_EMAIL);
   await page.click('#pickGo');
+  await confirmSite(page);
+}
+
+/* THE SITE CONFIRM. A domain read out of the business email is an inference,
+   so the conversation puts it to the visitor before reading anything ("we
+   want to confirm that this is actually their website. And then we'll search"
+   — client, Sep 1). Every journey that enters through the chooser therefore
+   answers it, exactly as a visitor would; a journey that typed its own site
+   never sees it, and this returns false. */
+async function confirmSite(page, opts) {
+  const o = opts || {};
+  const appeared = await page.waitForFunction(() => {
+    const s = window.SAIFLOW && window.SAIFLOW.state();
+    return !!(s && s.question && s.question.id === 'q2' && s.question.mode === 'confirm');
+  }, null, { timeout: o.timeout || 12000 }).then(() => true).catch(() => false);
+  if (!appeared) return false;
+  await clickChip(page, o.label || "Yes, that's us");
+  return true;
 }
 
 /* the "Something else — I'll describe it" row, for the journeys whose whole
@@ -254,6 +272,7 @@ async function landingFreeText(page, text, email) {
   await page.fill('#pickFree', text);
   await page.fill('#pickEmail', email || WORK_EMAIL);
   await page.click('#pickGo');
+  await confirmSite(page);
 }
 
 /* q4 is the one question with two faces. Which one the visitor sees depends
@@ -370,6 +389,7 @@ module.exports = {
   REPO, ARTIFACTS, BRIDGE_URL, RETRIES,
   Check, launch, newPage, open, shot, applyRewrites, interceptJson, html,
   waitQuestion, flowState, liveChips, clickChip, typeAnswer, landingChip, landingFreeText,
+  confirmSite,
   WORK_EMAIL, answerSize,
   waitSnapshot, captureEmail, declineEmail, goToPath,
   allEvents, typesOf, ofType, lastOf, countOf,

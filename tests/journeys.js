@@ -94,8 +94,8 @@ async function j1(page, check, opts) {
 
   check.ok('q1 skipped — the message carried the problems', skippedIds.includes('q1'), reason('q1'));
   check.ok('q2 SKIPPED — the company is already known', skippedIds.includes('q2'), reason('q2'));
-  check.eq('q2 skip reason — the business email named the company',
-    reason('q2'), 'company_from_work_email');
+  check.eq('q2 skip reason — they typed the site themselves, so nothing to confirm',
+    reason('q2'), 'website_in_first_message');
   check.eq('and it is the right company',
     await page.evaluate(() => window.SAI.session.slots.company_domain), 'nike.com');
   check.eq('two problem domains found (multi-product)',

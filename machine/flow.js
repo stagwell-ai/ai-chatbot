@@ -104,6 +104,7 @@ function blank() {
     current: null,       /* the question on screen, or null */
     phase: 'asking',     /* 'asking' | 'waiting-research' | 'done' */
     log: [],             /* [{ id, status:'asked'|'skipped', reason }] */
+    reask: null,         /* a question to put again rather than advance past */
     route: null
   };
 }
@@ -148,12 +149,14 @@ function skipReason(id) {
     return q6SkipReason();
   }
 
-  /* the landing chooser takes a business email and reads the company out of
-     its domain (machine/hero.js), so there is nothing left to ask here — the
-     reason names that source, because the console shows it */
-  if (id === 'q2' && !isEmpty(s.company_domain)) {
-    return sources().company_domain === 'work_email'
-      ? 'company_from_work_email' : 'website_in_first_message';
+  /* A website the VISITOR typed needs no confirming — it is already their
+     word. A domain we INFERRED from their business email does: questions.json's
+     own model line is "confirm inferences, never assume", and the client's:
+     "we want to confirm that this is actually their website. And then we'll
+     search and find stuff about it." So that case is not a skip — q2 is asked,
+     in confirm mode (see questionView), and research waits for the answer. */
+  if (id === 'q2' && !isEmpty(s.company_domain) && sources().company_domain !== 'work_email') {
+    return 'website_in_first_message';
   }
 
   const slot = slotOf(id);
@@ -272,7 +275,14 @@ function mergeDomains(list, replace) {
 function fillCompany(domain) {
   const S = eng();
   if (!domain) return;
-  if (slots().company_domain === domain) { startResearch(domain); return; }
+  /* the visitor typed the very domain we had inferred from their email —
+     that IS the confirmation, so the slot's source is upgraded to their own
+     word and q2 has nothing left to ask */
+  if (slots().company_domain === domain) {
+    if (sources().company_domain !== 'visitor') S.setSlot('company_domain', domain, 'visitor');
+    startResearch(domain);
+    return;
+  }
   S.setSlot('company_domain', domain, 'visitor');
   if (isEmpty(slots().company)) {
     const R = res();
@@ -400,6 +410,15 @@ function goalPhrase() {
      impact"). Joining two, each phrase is trimmed to its own head so the
      sentence has exactly one conjunction. */
   return phrases.map(t => t.split(/\s+and\s+/)[0]).join(' and ');
+}
+
+/* q2 has two faces as well. Confirm: the landing chooser inferred a domain
+   from the business email and nobody has agreed to it yet. Ask: everything
+   else — no domain at all, or one the visitor rejected. */
+function q2Mode() {
+  const s = slots();
+  return (!isEmpty(s.company_domain) && sources().company_domain === 'work_email')
+    ? 'confirm' : 'ask';
 }
 
 /* Confirm mode is the moment the demo is built around: research came back
@@ -606,6 +625,12 @@ function questionView() {
       const goal = goalPhrase();
       if (goal) copy = tpl(q.copyWithGoal, { goal });
     }
+  } else if (id === 'q2' && q2Mode() === 'confirm') {
+    /* the inferred site, put to the visitor before anything is read */
+    mode = 'confirm';
+    const cm = q.confirmMode || {};
+    copy = tpl(cm.copy, { domain: slots().company_domain });
+    chips = (cm.chips || []).map(c => ({ label: c.label, value: c.value }));
   } else if (id === 'q4') {
     mode = q4Mode();
     const r = eng().session.research || {};
@@ -777,6 +802,27 @@ async function applyAnswer(id, chip, text) {
   }
 
   if (id === 'q2') {
+    /* the confirm's two chips, before anything is parsed as a company name */
+    if (chip && chip.value === 'confirm') {
+      const domain = slots().company_domain;
+      /* their word now, not our inference — and the read starts here, which
+         is the beat the client asked for: confirm, THEN search */
+      S.setSlot('company_domain', domain, 'visitor');
+      if (isEmpty(slots().company)) {
+        const R = res();
+        S.setSlot('company', (R && R._nameFromDomain(domain)) || domain, 'inferred');
+      }
+      startResearch(domain);
+      return;
+    }
+    if (chip && chip.value === 'different') {
+      /* drop the inference and ask plainly; nothing was read, so nothing is
+         stale — the next answer starts the research instead */
+      S.setSlot('company_domain', null, 'visitor');
+      S.setSlot('company', null, 'visitor');
+      st.reask = 'q2';
+      return;
+    }
     const domain = S.extractDomain(text);
     if (domain) fillCompany(domain);
     else {
@@ -838,6 +884,16 @@ async function answer(input) {
 
   await applyAnswer(id, chip, text);
 
+  /* "No — different site" leaves the slot empty on purpose: the same question
+     comes back, in its plain ask form, instead of the flow moving on with a
+     company nobody has named. */
+  if (st.reask === id) {
+    st.reask = null;
+    present(id);
+    notify();
+    return state();
+  }
+
   st.current = null;
   await advance();
   notify();
@@ -878,11 +934,12 @@ async function start(opts) {
   st = blank();
   st.started = true;
 
-  /* A domain the session already holds — the landing chooser reads one out of
-     the visitor's business email (machine/hero.js) — is a research trigger the
-     same as a pasted website. Starting it here rather than waiting for q2
-     means the read is under way before the first question is even answered. */
-  if (!isEmpty(slots().company_domain)) startResearch(slots().company_domain);
+  /* A domain the visitor typed is a research trigger straight away. One we
+     read out of their email is not: it waits for the confirm at q2, so the
+     first thing the rail narrates is never a site nobody agreed to. */
+  if (!isEmpty(slots().company_domain) && sources().company_domain !== 'work_email') {
+    startResearch(slots().company_domain);
+  }
 
   const chipLabel = o.chipLabel == null ? null : String(o.chipLabel);
   const initialText = o.initialText == null ? null : String(o.initialText);

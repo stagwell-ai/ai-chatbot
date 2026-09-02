@@ -24,9 +24,17 @@
       "id": "q2",
       "slot": "company",
       "copy": "Got it. What's your company? A website works — I'll start pulling your snapshot together.",
+      "confirmMode": {
+        "when": "the landing chooser read a domain out of the visitor's business email and they never typed a site themselves — questions.json's own model line: confirm inferences, never assume",
+        "copy": "Your email puts you at {domain} — is that the site I should read?",
+        "chips": [
+          { "label": "Yes, that's us", "value": "confirm" },
+          { "label": "No — different site", "value": "different" }
+        ]
+      },
       "input": "free_text",
-      "sideEffect": "starts background research (size, industry, competitors, AI-search presence) and the snapshot build — from a website, or from a bare company name",
-      "skipWhen": "the visitor's first message included a website (the landing's single prompt box invites it)"
+      "sideEffect": "starts background research (size, industry, competitors, AI-search presence) and the snapshot build — from a website, or from a bare company name. An email-derived domain starts nothing until the visitor confirms it.",
+      "skipWhen": "the visitor's first message included a website — they typed it, so there is nothing to confirm"
     },
     {
       "id": "q3",
