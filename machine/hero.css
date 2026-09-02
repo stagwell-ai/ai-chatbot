@@ -71,10 +71,20 @@
 .pick__tags li { font-size: var(--t-xs); color: var(--ink-2); background: var(--surface-2);
   border: 1px solid var(--line); border-radius: var(--r-sm); padding: 5px 10px; }
 
-.pick__more { display: flex; flex-wrap: wrap; gap: 6px; }
-.pick__morechip { font-family: var(--sans); font-size: var(--t-xs); line-height: 1.2; color: var(--ink-2);
+/* THE FREE-TEXT PANE fits without scrolling: it is the only pane with ten
+   chips and a text box in it, so it runs tighter than the others — no icon
+   tile, one-line copy, compact chips, a two-row box. */
+.pick__pane--free { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.pick__pane--free .pick__dh { font-size: 1.0625rem; }
+.pick__pane--free .pick__dl { font-size: var(--t-xs); line-height: 1.45; }
+.pick__pane--free .pick__dgood { margin-top: 0; }
+.pick__pane--free .pick__free { margin-top: 0; }
+.pick__pane--free .pick__free textarea { padding: 9px 12px; }
+
+.pick__more { display: flex; flex-wrap: wrap; gap: 5px; }
+.pick__morechip { font-family: var(--sans); font-size: var(--t-xs); line-height: 1.15; color: var(--ink-2);
   background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-full);
-  padding: 6px 11px; cursor: pointer; min-height: 30px;
+  padding: 5px 10px; cursor: pointer; min-height: 28px;
   transition: border-color var(--d-2) var(--ease), background var(--d-2) var(--ease), color var(--d-2) var(--ease); }
 .pick__morechip:hover { border-color: var(--ink-3); }
 .pick__morechip.is-on { background: var(--navy); border-color: var(--navy); color: var(--on-void); }
@@ -136,7 +146,9 @@
 
   .pick__panes { grid-template-columns: minmax(0,1fr); }
   .pick__list { border-right: 0; border-bottom: 1px solid var(--line); }
-  .pick__detail { min-height: 0; padding: 22px; }
+  /* stacked: the page scrolls, so capping the pane only made it scroll
+     inside a card that was already scrolling (client, Sep 2) */
+  .pick__detail { min-height: 0; padding: 22px; max-height: none; overflow: visible; }
   .pick__act { justify-content: stretch; }
   .pick__email { flex: 1 1 100%; max-width: none; }
   .pick__go { width: 100%; justify-content: center; }
@@ -151,12 +163,16 @@
    Drawn in the brand's own colours (inline SVG, nothing to load) unless
    data/questions.json sets hero.emptyImage, in which case that file renders
    instead and these SVG rules simply go unused. */
-.pick__detail-empty { margin: auto; display: flex; flex-direction: column;
-  align-items: center; text-align: center; gap: 4px; padding: 2px 0; width: 100%; }
-.pick__illo { width: 100%; max-width: 430px; height: auto; display: block;
+.pick__detail-empty { margin: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; gap: 4px;
+  padding: 2px 0; width: 100%;
+  /* flex 1 1 auto + min-height 0 is what actually lets the art shrink: the
+     old max-height:calc(100% - 30px) resolved against an auto-height parent,
+     so it bound nothing and the pane scrolled (client, Sep 2) */
+  flex: 1 1 auto; min-height: 0; }
+.pick__illo { width: auto; max-width: 430px; height: auto; display: block;
   font-family: var(--sans);
-  /* the art shrinks with the pane rather than forcing it open */
-  max-height: calc(100% - 30px); object-fit: contain; }
+  flex: 1 1 auto; min-height: 0; max-height: 100%; object-fit: contain; }
 /* the artwork carries its own small type, so give it every pixel the fold
    can spare — but only where the fold can spare them */
 @media (min-height: 820px) { .pick__illo { max-width: 486px; } }

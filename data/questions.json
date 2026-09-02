@@ -59,7 +59,7 @@
           "domain": "research"
         },
         {
-          "label": "Prove business impact",
+          "label": "Business impact",
           "domain": "business_impact"
         },
         {
@@ -71,7 +71,7 @@
           "domain": "reputation"
         },
         {
-          "label": "Global media monitoring",
+          "label": "Media monitoring",
           "domain": "media_monitoring"
         },
         {
@@ -79,23 +79,23 @@
           "domain": "ai_visibility"
         },
         {
-          "label": "Foot traffic & real-world behaviour",
+          "label": "Foot traffic",
           "domain": "real_world_behavior"
         },
         {
-          "label": "Marketing ops in one system",
+          "label": "Marketing ops",
           "domain": "marketing_ops"
         },
         {
-          "label": "Secure AI for the team",
+          "label": "Secure AI access",
           "domain": "ai_workspace"
         },
         {
-          "label": "Research sample you can trust",
+          "label": "Research sample",
           "domain": "sample_quality"
         }
       ],
-      "moreChipsNote": "Every routing domain that is not one of the four rows, offered as a chip under 'Something else' so every product has a visible door while the picker keeps its four-row Meta shape (client, Sep 2, option c). A tap is a deterministic q1 answer — flow.js domainFromLabel and convo.js matchingChip read this list too — and the label is what the visitor's bubble says."
+      "moreChipsNote": "Every routing domain that is not one of the four rows, offered as a chip under 'Something else' so every product has a visible door while the picker keeps its four-row Meta shape (client, Sep 2, option c). A tap is a deterministic q1 answer — flow.js domainFromLabel and convo.js matchingChip read this list too — and the label is what the visitor's bubble says. Labels are kept SHORT so the ten fit three rows inside the detail pane without it scrolling (client, Sep 2: \"fix it so that there's no scrolling involved\")."
     },
     {
       "id": "q2",
@@ -404,7 +404,7 @@
       "personalEmail": "That's a personal address. Use your work email — the agent reads your company from its domain, and there's nothing to analyse behind a personal one."
     },
     "otherLabel": "Something else",
-    "otherLine": "Describe the problem in your own words, or paste your website. The agent reads it, works out which products fit, and asks only what it can't infer.",
+    "otherLine": "Describe it in your own words, or pick the closest below.",
     "otherPlaceholder": "Describe your problem — or paste your website, like nike.com",
     "otherGoodFor": [
       "Anything not on this list",
@@ -497,14 +497,15 @@
         ]
       },
       "audiences": {
-        "title": "How do I reach better audiences?",
-        "line": "Turn your first-party data into audiences you can actually buy — built, enriched and activated straight into your channels.",
+        "title": "How do I reach the people who actually buy?",
+        "line": "Build high-intent audiences from your first-party data and Stagwell's own consumer datasets, activate them straight into your channels, and measure what converts.",
         "goodFor": [
-          "First-party onboarding",
-          "Custom audience building",
+          "High-intent audiences",
+          "Lookalikes from your best customers",
           "Cross-channel activation",
-          "Measurement"
-        ]
+          "What the spend returned"
+        ],
+        "note": "The Sales row, so the pane leads with the outcome Meta's Sales objective promises — reaching likely buyers — not with the plumbing that gets there (client, Sep 2: 'this copy doesn't really reflect sales'). Every claim is The Targeting Machine's own: proprietary consumer datasets, seed-to-lookalike, cross-channel activation, campaign measurement (data/products.json valueProps)."
       },
       "research": {
         "title": "How do I run research myself, fast?",
@@ -586,7 +587,10 @@
           "Panel quality"
         ]
       }
-    }
+    },
+    "otherLineNote": "One line: the free-text pane also carries ten chips and a text box, and the pane must fit without scrolling.",
+    "moreLabel": "Or pick one of these:",
+    "morePlaceholder": "Anything else the agent should know (optional)"
   },
   "captureMoment": {
     "when": "at the snapshot reveal — never before",

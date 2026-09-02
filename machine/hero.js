@@ -270,24 +270,26 @@ function detailHTML(o) {
      domain's own detail; the text box stays for anyone who would rather say
      it in their own words. */
   if (free) {
+    /* THE HEIGHT BUDGET. This pane carries the most of any: a heading, ten
+       chips and a text box. It also has to fit the pane WITHOUT SCROLLING
+       (client, Sep 2) at 42vh on a 720px laptop — so it drops the 56px icon
+       tile every other pane shows, and the explanatory line goes once a chip
+       is chosen, because the chip and the heading already say it. */
     const chosen = more ? MORE.find(m => m.domain === more) : null;
     const d = chosen ? (COPY.byDomain || {})[chosen.domain] || {} : null;
     const head = chosen
-      ? `<div class="pick__art" aria-hidden="true">${icon(chosen.domain)}</div>
-         <h2 class="pick__dh">${esc(d.title || chosen.label)}</h2>
-         <p class="pick__dl">${esc(d.line || '')}</p>`
-      : `<div class="pick__art" aria-hidden="true">${icon(o.id)}</div>
-         <h2 class="pick__dh">${esc(o.detailTitle || o.label)}</h2>
+      ? `<h2 class="pick__dh">${esc(d.title || chosen.label)}</h2>`
+      : `<h2 class="pick__dh">${esc(o.detailTitle || o.label)}</h2>
          <p class="pick__dl">${esc(o.line || '')}</p>`;
     const chips = MORE.length ? `<p class="pick__dgood">${esc(COPY.moreLabel || 'Or pick one of these:')}</p>
       <div class="pick__more" role="group" aria-label="${esc(COPY.moreLabel || 'Other problems')}">${
         MORE.map(m => `<button type="button" class="pick__morechip${more === m.domain ? ' is-on' : ''}"
           data-more="${esc(m.domain)}" aria-pressed="${more === m.domain ? 'true' : 'false'}">${esc(m.label)}</button>`).join('')}</div>` : '';
-    return `${head}${chips}
+    return `<div class="pick__pane pick__pane--free">${head}${chips}
       <label class="pick__free">
         <span class="vh">${esc(COPY.otherPlaceholder || '')}</span>
-        <textarea id="pickFree" rows="2" placeholder="${esc(chosen ? (COPY.morePlaceholder || 'Add anything else you want the agent to know (optional)') : (COPY.otherPlaceholder || ''))}"></textarea>
-      </label>`;
+        <textarea id="pickFree" rows="2" placeholder="${esc(chosen ? (COPY.morePlaceholder || 'Anything else the agent should know (optional)') : (COPY.otherPlaceholder || ''))}"></textarea>
+      </label></div>`;
   }
   const tags = (o.goodFor || []).filter(Boolean);
   return `
