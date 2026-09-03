@@ -215,14 +215,34 @@ if (typeof window !== 'undefined') {
     if (!steps.length) return;
     const word = host.querySelector('.say__word');
     let i = 0;
-    const put = () => { word.textContent = steps[i]; word.classList.remove('is-out'); };
-    put();
+    word.textContent = steps[0];
+    word.classList.remove('is-out');
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    clearInterval(window.__scSteps);
-    window.__scSteps = setInterval(() => {
-      word.classList.add('is-out');
-      setTimeout(() => { i = (i + 1) % steps.length; put(); }, 260);
-    }, 2200);
+
+    /* It used to swap the whole line in one frame, which reads as text
+       being replaced rather than as something composing a thought. It
+       types instead: in a character at a time, a beat to read it, then
+       back out and on to the next. */
+    clearTimeout(window.__scSteps);
+    host.classList.add('is-typing');
+    const TYPE = 46, ERASE = 22, HOLD = 1500;
+    let n = steps[0].length, erasing = false;
+
+    const tick = () => {
+      const full = steps[i];
+      if (!erasing) {
+        n++;
+        word.textContent = full.slice(0, n);
+        if (n >= full.length) { erasing = true; return schedule(HOLD); }
+        return schedule(TYPE);
+      }
+      n--;
+      word.textContent = full.slice(0, n);
+      if (n <= 0) { erasing = false; i = (i + 1) % steps.length; return schedule(360); }
+      schedule(ERASE);
+    };
+    const schedule = ms => { window.__scSteps = setTimeout(tick, ms); };
+    schedule(HOLD);
   };
   setTimeout(runSteps, 400);
   setTimeout(runSteps, 1200);

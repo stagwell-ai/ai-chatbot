@@ -2835,3 +2835,147 @@ body{
   }
   .pick__col,.pick__detail{grid-column:1/-1!important;width:auto!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   81 · THE CHOOSER, RECOMPOSED FOR A PHONE.
+   The desktop shape is two panes side by side: options left, the
+   agent right. Stacked naively that put the agent BELOW the options,
+   so the phone read list-then-voice — backwards from the desktop
+   reading and from "the text first, then the tabs you choose".
+   .pick__col becomes display:contents so its two children join the
+   grid as siblings of the detail pane and can be ordered freely:
+   the voice speaks, then the options answer it.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:860px){
+  .pick{background:#FFFFFF!important;border-radius:14px!important;overflow:hidden!important}
+  .pick__panes{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:auto auto auto!important;
+  }
+  /* the column's box dissolves so hint and list become grid items */
+  .pick__col{display:contents!important}
+
+  /* the title asks you to pick, so the options answer it immediately;
+     the agent's line follows what you chose. */
+  .pick__hint  {order:1!important}
+  .pick__list  {order:2!important}
+  .pick__detail{order:3!important}
+
+  /* a · the opening line: mark left, copy beside it, flush left */
+  .pick__hint{
+    padding:20px 18px 16px!important;
+    border-bottom:0!important;
+    gap:12px!important;align-items:center!important;
+  }
+  .pick__hint .pick__icon,.pick__hint svg{flex:none!important}
+
+  /* b · the agent speaks — centred, on its own quiet ground */
+  .pick__detail:has(.pick__detail-empty){
+    order:3!important;
+    min-height:118px!important;max-height:150px!important;
+    margin:0 18px 18px!important;padding:18px 16px!important;
+    background:#F7F7F6!important;
+    border:1px solid rgba(11,23,30,.07)!important;
+    border-top:1px solid rgba(11,23,30,.07)!important;
+    border-radius:12px!important;
+  }
+  .pick__detail-empty{text-align:center!important;gap:10px!important}
+  .say{transform:none!important}
+  .say__line{font-size:13px!important;line-height:1.45!important}
+  .say__now{font-size:13px!important}
+
+  /* c · the options: full-width rows, touch-sized, left aligned */
+  .pick__list{
+    padding:0 10px 8px!important;border-bottom:0!important;border-right:0!important;
+  }
+  .pick__list .pick__row,.pick__list li,.pick__list label{
+    min-height:52px!important;
+    border-radius:10px!important;
+  }
+
+  /* d · the footer stacks: the field is full width, the button under it.
+     It was a 159px field wedged beside a 114px button. */
+  .pick__foot{
+    padding:16px 18px 18px!important;
+    border-top:1px solid rgba(11,23,30,.08)!important;
+  }
+  .pick__act{
+    display:flex!important;flex-wrap:wrap!important;
+    gap:10px!important;width:100%!important;
+  }
+  .pick__site{flex:1 1 100%!important;max-width:none!important;width:100%!important}
+  .pick__site input{width:100%!important;height:48px!important;font-size:16px!important}
+  .pick__go{flex:1 1 100%!important;width:100%!important;height:48px!important;
+    justify-content:center!important}
+}
+
+/* §81 e · a caret, so the typing reads as typing */
+.say__now.is-typing .say__word::after{
+  content:"";display:inline-block;width:1px;height:1em;
+  margin-left:2px;vertical-align:-.14em;
+  background:var(--teal);
+  animation:sayCaret 1s steps(1) infinite;
+}
+@keyframes sayCaret{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .say__now.is-typing .say__word::after{display:none}
+}
+
+/* §81 f · Ask AI spans the row on a phone.
+   ribbon.css:1125 pins width:auto via the ID #pickGo with !important
+   and no media guard; an ID out-specifies any class rule, so the
+   override has to carry the ID too. */
+@media (max-width:860px){
+  #pickGo,.pick__act > .pick__go,.pick__foot .btn{
+    flex:1 0 100%!important;width:100%!important;max-width:none!important;
+    justify-content:center!important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   82 · THE OPTIONS BECOME CHIPS ON A PHONE.
+   Five full-width rows cost 276px — nearly a third of the screen —
+   to show five short phrases. A native <select> would be the most
+   compact, but it reads as a form control, and this panel is a
+   conversation: the agent asks, you answer. Chips are the quick-reply
+   pattern that conversation already implies, keep all five options
+   visible instead of hiding them behind a tap, keep the icons, and
+   cost about 100px. Pure restyle — the buttons keep role="radio"
+   and aria-checked, so selection and the keyboard still work.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:860px){
+  .pick__list{
+    display:flex!important;
+    /* the base rule is flex-direction:column — wrapping a column just
+       makes more columns, which is why every chip took its own row */
+    flex-direction:row!important;flex-wrap:wrap!important;
+    gap:8px!important;
+    padding:2px 18px 18px!important;
+    align-content:flex-start!important;
+  }
+  .pick__list .pick__row{
+    display:inline-flex!important;align-items:center!important;
+    width:auto!important;min-height:0!important;flex:0 0 auto!important;
+    gap:7px!important;
+    padding:9px 14px!important;
+    border:1px solid rgba(11,23,30,.14)!important;
+    border-radius:999px!important;
+    background:#FFFFFF!important;
+    text-align:left!important;
+  }
+  /* the radio dot is what the chip's own selected state replaces */
+  .pick__list .pick__radio{display:none!important}
+  .pick__list .pick__mark{flex:none!important;display:inline-flex!important}
+  .pick__list .pick__icon{width:15px!important;height:15px!important;opacity:.72}
+  .pick__list .pick__label{
+    font-size:13.5px!important;line-height:1.2!important;font-weight:500!important;
+    color:var(--ink)!important;white-space:nowrap!important;
+  }
+  .pick__list .pick__row[aria-checked="true"]{
+    background:var(--ink)!important;border-color:var(--ink)!important;
+  }
+  .pick__list .pick__row[aria-checked="true"] .pick__label{color:#FFFFFF!important}
+  .pick__list .pick__row[aria-checked="true"] .pick__icon{color:#FFFFFF!important;opacity:1}
+  .pick__list .pick__row:active{transform:scale(.97)}
+}
