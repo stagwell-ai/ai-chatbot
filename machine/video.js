@@ -48,6 +48,16 @@ function closeBox() {
 }
 
 play.addEventListener('click', openBox);
+/* "Watch the film" in the nav and the footer; and a /#film link from another page */
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-film]');
+  if (!a) return;
+  e.preventDefault();
+  openBox();
+});
+if (location.hash === '#film') {
+  window.addEventListener('load', () => { history.replaceState(history.state || {}, '', location.pathname); openBox(); }, { once: true });
+}
 box.addEventListener('click', e => { if (e.target.closest('[data-vbox-close]')) closeBox(); });
 document.addEventListener('keydown', e => { if (open && e.key === 'Escape') { e.preventDefault(); closeBox(); } });
 

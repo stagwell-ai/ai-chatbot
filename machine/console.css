@@ -28,6 +28,8 @@
 }
 
 /* ── the toggle: bottom-left mirror of .vercorner ───────────────────────── */
+/* the console is a presenter tool that mimics a CRM log: it keeps a real monospace */
+.sc-pill,.sc{--mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace}
 .sc-pill{
   position:fixed;left:14px;bottom:14px;z-index:var(--sc-z-pill);
   display:inline-flex;align-items:center;gap:8px;

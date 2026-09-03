@@ -13,6 +13,11 @@
 (() => {
 'use strict';
 
+/* the clips run on a desktop; on a phone the strips moving under a thumb read as
+   the page running away (designer, Sep 2) — the poster stands, tap to play */
+const AUTOPLAY = (typeof matchMedia === 'function' && matchMedia('(min-width: 861px)').matches) ? 'autoplay' : '';
+
+
 const $ = (s, r = document) => r.querySelector(s);
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const esc = s => String(s).replace(/[&<>"']/g,
@@ -101,7 +106,7 @@ function withUtm(url) {
 
 const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(withUtm(p.url))}" target="_blank" rel="noopener">
     <span class="fcard__art"><video class="fcard__video" src="/assets/img/cloud/${p.id}.mp4"
-      poster="/assets/img/cloud/${p.id}.jpg" autoplay muted loop playsinline></video></span>
+      poster="/assets/img/cloud/${p.id}.jpg" ${AUTOPLAY} muted loop playsinline></video></span>
     <span class="fcard__k">${esc(p.name)}</span>
     <span class="fcard__t"><b>${esc(p.title)}</b><i>${esc(p.line)}</i>
       <em class="btn btn--sm">Visit site ↗</em></span>

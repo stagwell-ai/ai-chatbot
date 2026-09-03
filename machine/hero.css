@@ -6,8 +6,21 @@
    bottom — email beside the button, exactly where the client asked for it.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.pick { background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-lg);
-  overflow: hidden; box-shadow: 0 18px 48px rgba(10,23,67,.07);
+/* THE LIGHT CARD (client, Sep 2, after the designer's review: the chooser was
+   navy on navy and got lost). The card carries its own light room — every
+   token below is scoped to it, so the rules that follow are untouched and the
+   same card would still work on a light page. Navy ink, white pane, the
+   orange button; the brand ships the logo in exactly this light variant. */
+.pick, .chat {
+  --paper: #FFFFFF; --surface: #F5F7F6; --surface-2: #E8EEF1;
+  --ink: #003349; --ink-2: rgba(0,51,73,.76); --ink-3: rgba(0,51,73,.56); --ink-4: rgba(0,51,73,.36);
+  --line: rgba(0,51,73,.12); --line-2: rgba(0,51,73,.22); --on-void: #F1FAFF;
+  --bubble: #0E5F8E; --bubble-ink: #F1FAFF;
+  color: var(--ink);
+}
+.pick :focus-visible, .chat :focus-visible { outline-color: var(--teal); }
+.pick { background: var(--surface); border: 1px solid rgba(255,255,255,.14); border-radius: var(--r-lg);
+  overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.45), 0 2px 0 rgba(255,255,255,.06) inset;
   max-width: 880px; margin: 0 auto;
   /* the hero centres its own text; the dialog inside it is left-aligned,
      the way a form has to be */
@@ -181,7 +194,7 @@
 /* the artwork was drawn on white. On the dark room: invert it (white → black),
    swing the hue back so teal stays teal and marigold stays marigold, then
    screen it so the black ground disappears into the pane. */
-.pick__illo--img { border-radius: var(--r); filter: invert(1) hue-rotate(180deg) saturate(1.15) brightness(1.05); mix-blend-mode: screen; }
+.pick__illo--img { border-radius: var(--r); mix-blend-mode: multiply; }  /* drawn on white; the pane is white again */
 
 .pick__illo-g1 { stop-color: var(--teal); stop-opacity: .14; }
 .pick__illo-g2 { stop-color: var(--amber); stop-opacity: .16; }

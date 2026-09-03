@@ -20,7 +20,7 @@
   --surface-2:#12303F; /* a raised / hovered card */
   --void:#003349;      /* a band — flat fallback; --band is the gradient the board asks for */
   --void-2:#0E5F8E;
-  --band:var(--nodes) 0 0/320px 320px,linear-gradient(160deg,#0E5F8E 0%,#003349 52%,#062230 100%);
+  --band:linear-gradient(160deg,#0E5F8E 0%,#003349 52%,#062230 100%);  /* the lattice is added only where a page wants it */
 
   --ink:#F1FAFF;
   /* muted tiers lifted Sep 2 (Robert/Amy: contrast) — secondary copy reads as near-white */
@@ -42,7 +42,10 @@
      now resolves to Montserrat Regular, the board's own text weight */
   --serif:"Montserrat","Segoe UI","Helvetica Neue",Arial,sans-serif;
   --sans:"Montserrat","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  /* V3.1 is one family. The "mono" role (eyebrows, labels, chips) resolves to
+     Montserrat — the designer counted the typefaces (Sep 2); only the demo
+     console keeps a real monospace, scoped in console.css. */
+  --mono:"Montserrat","Segoe UI","Helvetica Neue",Arial,sans-serif;
 
   --t-display:clamp(2.5rem,4.2vw,3.375rem);
   --t-h1:clamp(2rem,3.4vw,2.875rem);

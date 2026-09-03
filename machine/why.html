@@ -9,17 +9,24 @@
      that no longer exists — it drops the visitor into the middle of a page they
      have not seen build. Set before first paint; a real #hash still wins. -->
 <script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
-<title id="pageTitle">Stagwell.AI — Solution</title>
-<meta name="description" id="pageDesc" content="One solution in the Stagwell Marketing Cloud — what it does, the problems it answers, and the conversation that finds your fit.">
+<title>Why Stagwell.AI — Agentic solutions grounded in real-world marketing expertise</title>
+<meta name="description" content="AI products from the Stagwell family, aimed at the problem you’re actually facing. Tell the agent what you’re solving and it finds the ones that fit.">
 
 <!-- Share kit — crawlers need absolute URLs, so the production host is hardcoded -->
 <link rel="canonical" href="https://stagwell-ai-prototypes.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Stagwell AI">
+<meta property="og:title" content="Stagwell.AI — Agentic solutions for modern marketers">
+<meta property="og:description" content="AI products from the Stagwell family, aimed at the problem you’re actually facing. Tell the agent what you’re solving and it finds the ones that fit.">
+<meta property="og:url" content="https://stagwell-ai-prototypes.vercel.app/">
 <meta property="og:image" content="https://stagwell-ai-prototypes.vercel.app/machine/assets/share/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stagwell AI — the Stagwell AI suite, pointed at your hardest marketing problem.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Stagwell.AI — Agentic solutions for modern marketers">
+<meta name="twitter:description" content="AI products from the Stagwell family, aimed at the problem you’re actually facing. Tell the agent what you’re solving and it finds the ones that fit.">
+<meta name="twitter:image" content="https://stagwell-ai-prototypes.vercel.app/machine/assets/share/og.png">
 <meta name="theme-color" content="#071A24">
 
 <link rel="icon" href="/machine/assets/brand/favicon.svg" type="image/svg+xml">
@@ -28,21 +35,18 @@
 <link rel="apple-touch-icon" href="/machine/assets/share/apple-touch-icon.png">
 <link rel="stylesheet" href="/machine/assets/fonts/fonts.css">
 <link rel="stylesheet" href="/machine/styles.css">
-<link rel="stylesheet" href="/machine/console.css">
-<!-- solution.css owns the nav/footer/corner chrome for this page the same way
-     campaign.css does for /p/{id}: b.css is NOT loaded here. -->
-<link rel="stylesheet" href="/machine/solution.css">
-<!-- the conversation on this page ends in the SAME report the rest of the site
-     produces, so it needs the same two stylesheets the landing loads for them -->
+<link rel="stylesheet" href="/machine/b.css">
+<link rel="stylesheet" href="/machine/lead.css">
+<link rel="stylesheet" href="/machine/convo.css">
+<link rel="stylesheet" href="/machine/hero.css">
 <link rel="stylesheet" href="/machine/snapshot.css">
 <link rel="stylesheet" href="/machine/path.css">
-<!-- the shared lead-capture modal: same panel on "/", /p/{id}, /ads and /s/{id} -->
-<link rel="stylesheet" href="/machine/lead.css">
 <link rel="stylesheet" href="/machine/directory.css">
+<link rel="stylesheet" href="/machine/console.css">
+<link rel="stylesheet" href="/machine/cloud.css">
 <link rel="stylesheet" href="/machine/ribbon.css">
 </head>
-<body class="vSolution">
-
+<body class="vB" data-state="ready">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="sw-mark" viewBox="0 0 158.2 153">
     <path class="m-ink" d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z"/>
@@ -67,11 +71,9 @@
     <path class="m-orange" d="M1840.53 1.30078H1855.59C1863.11 1.30078 1869.21 7.39451 1869.21 14.9115V151.209H1840.53V1.30078Z"/>
   </symbol>
 </svg>
-
-<!-- ─────────────── HEADER ─────────────── -->
 <header class="nav" id="nav">
   <div class="nav__in">
-    <a class="nav__brand" href="/" aria-label="Stagwell AI">
+    <a class="nav__brand" href="#top" aria-label="Stagwell AI">
       <svg><use href="#sw-logo"/></svg>
     </a>
     <nav class="nav__links">
@@ -80,6 +82,10 @@
       <a href="/#film" data-film>Watch the film</a>
     </nav>
     <div class="nav__acts">
+      <button class="nav__new" id="navNew" hidden>
+        <svg viewBox="0 0 16 16" width="13" height="13"><path d="M2.8 8h10.4M8 2.8v10.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>New analysis</span>
+      </button>
       <button class="btn btn--dark nav__cta" data-cta="expert">Talk to an AI expert</button>
       <button class="nav__menu" id="navMenu" aria-label="Open menu">
         <svg viewBox="0 0 16 16" width="18" height="18"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
@@ -88,7 +94,6 @@
   </div>
 </header>
 <div class="navscrim" id="navScrim" aria-hidden="true"></div>
-
 <aside class="mnav" id="mnav" aria-label="Menu">
   <div class="mnav__head">
     <svg class="mnav__mark" viewBox="0 0 158.2 153"><use href="#sw-mark"/></svg>
@@ -103,40 +108,43 @@
     <a href="/ads">Ad demo control</a>
   </nav>
   <div class="mnav__foot">
+    <button class="btn btn--ghost mnav__new" data-new hidden>New analysis</button>
     <button class="btn btn--dark" data-cta="expert">Talk to an AI expert</button>
   </div>
 </aside>
-
 <main id="top">
-  <div id="solutionRoot"><!-- solution.js renders the whole page here --></div>
+  <!-- the full messaging framework: promises, reasons to believe, the three
+       tiers and the audience lines — data/messaging.json via machine/about.js
+       in its full mode (the landing carries the short version) -->
+  <section class="about about--full" id="about" data-mode="full" aria-label="Why Stagwell.AI"></section>
+<footer class="bfoot">
+    <div class="bfoot__top">
+      <svg><use href="#sw-logo"/></svg>
+      <nav class="bfoot__links" aria-label="Site">
+        <a href="/#about">What is Stagwell.AI</a>
+        <a href="/why">Why Stagwell.AI</a>
+        <a href="/products">Products</a>
+        <a href="/#film" data-film>Watch the film</a>
+        <a href="/ads">Ad demo control</a>
+        <a href="/versions">Previous versions</a>
+      </nav>
+    </div>
+    <span class="bfoot__note">Prototype · live model calls · figures illustrative · typed answers are read by a language model · no CRM is connected</span>
+  </footer>
 </main>
-
-<a class="democorner" href="/ads" aria-label="Demo control — choose the ad this run starts from">Demo control</a>
-<a class="vercorner" href="/versions" aria-label="Previous versions of this demo">Previous versions</a>
-
-<!-- The order mirrors machine/b.html's, for the same reasons: the engine owns
-     the session and the data promise, so it goes first; the flow and research
-     are pure logic with no DOM, so they only have to precede the shell that
-     drives them; the snapshot needs its data builder; path.js is what the
-     snapshot hands off to. product-chat.js is this page's conversation shell
-     (b.html's convo.js is the landing's — see the note at the top of that
-     file), and it is loaded BEFORE solution.js because solution.js mounts the
-     panel as soon as the JSON resolves. console.js observes and loads last. -->
 <script src="/machine/data-loader.js"></script>
 <script src="/machine/engine.js"></script>
-<!-- "arrived from {campaign} ad" — renders only for a campaign the JSON knows -->
-<script src="/machine/ribbon.js"></script>
-<script src="/machine/flow.js"></script>
-<script src="/machine/research.js"></script>
-<script src="/machine/snapshot-data.js"></script>
-<script src="/machine/snapshot.js"></script>
-<script src="/machine/path.js"></script>
-<!-- lead.js before solution.js: the [data-cta] handler checks for SAILEAD -->
+<script src="/machine/about.js"></script>
 <script src="/machine/lead.js"></script>
-<script src="/machine/product-chat.js"></script>
-<script src="/machine/solution.js"></script>
-<script src="/machine/directory.js"></script>
-<!-- S6 · the demo aid: observer only, loads last, never emits -->
-<script src="/machine/console.js"></script>
+<script>
+  /* the mobile drawer, without the landing's b.js */
+  (() => {
+    const open = () => document.body.classList.add('nav-open');
+    const close = () => document.body.classList.remove('nav-open');
+    const m = document.getElementById('navMenu'); if (m) m.addEventListener('click', open);
+    document.querySelectorAll('.mnav__close, .navscrim').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  })();
+</script>
 </body>
 </html>

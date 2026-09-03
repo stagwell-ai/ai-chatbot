@@ -30,11 +30,19 @@ function taglineHTML(m) {
   return `<span class="accent">${esc(a)}</span>${esc(t.slice(a.length))}`;
 }
 
+/* Two versions of the same data. The landing carries the SHORT one — the
+   headline, one paragraph, the three tiers, the four numbers — because the
+   full framework read as a wall of text next to the chooser (designer, Sep 2).
+   The full version — promises, reasons to believe, audience lines — lives on
+   /why (machine/why.html), where it has the room. */
+const FULL = root.dataset.mode === 'full';
+
 function render(m) {
   const tiers = Array.isArray(m.tiers) ? m.tiers : [];
-  const promises = Array.isArray(m.promises) ? m.promises : [];
+  const promises = FULL && Array.isArray(m.promises) ? m.promises : [];
   const proofs = Array.isArray(m.proofPoints) ? m.proofPoints : [];
-  const reasons = Array.isArray(m.reasons) ? m.reasons : [];
+  const reasons = FULL && Array.isArray(m.reasons) ? m.reasons : [];
+  const aud = FULL && m.audience ? m.audience : null;
   const cta = m.cta || {};
 
   root.innerHTML = `
@@ -80,9 +88,19 @@ function render(m) {
         <p class="about__proofnote">${esc(m.proofNote || '')}</p>
       </div>` : ''}
 
+      ${aud ? `<div class="about__aud">
+        <h3 class="about__h3">Built for every marketing model</h3>
+        <div class="about__audgrid">
+          <article class="aud"><p class="tier__cat" style="--tier:var(--orange)">Enterprise</p><p>${esc(aud.enterprise || '')}</p></article>
+          <article class="aud"><p class="tier__cat" style="--tier:var(--cyan)">Mid-market</p><p>${esc(aud.midMarket || '')}</p></article>
+          <article class="aud"><p class="tier__cat" style="--tier:var(--amber)">Small business</p><p>${esc(aud.smallBusiness || '')}</p></article>
+        </div>
+      </div>` : ''}
+
       <div class="about__cta">
         <button type="button" class="btn btn--gold" id="aboutAsk">${esc(cta.label || 'Ask the agent')}</button>
         <span>${esc(cta.line || '')}</span>
+        ${FULL ? '' : `<a class="about__more" href="/why">Read why Stagwell.AI →</a>`}
       </div>
     </div>`;
 
@@ -91,7 +109,8 @@ function render(m) {
     /* back to the chooser at the top — it is the front door, and the first
        row is where the answer starts */
     const pick = document.getElementById('heroPick') || document.getElementById('hero2');
-    if (pick) pick.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!pick) { location.href = '/'; return; }   /* on /why the chooser is a page away */
+    pick.scrollIntoView({ behavior: 'smooth', block: 'start' });
     const row = document.querySelector('#heroPick .pick__row');
     if (row) { try { row.focus({ preventScroll: true }); } catch (e) { /* fine */ } }
   });

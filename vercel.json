@@ -56,6 +56,10 @@
       "destination": "/machine/products.html"
     },
     {
+      "source": "/why",
+      "destination": "/machine/why.html"
+    },
+    {
       "source": "/versions",
       "destination": "/versions.html"
     },

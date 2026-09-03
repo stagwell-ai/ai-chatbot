@@ -34,7 +34,7 @@ a.btn{text-decoration:none}
 .nav__brand{display:flex;align-items:flex-end;gap:8px;text-decoration:none;flex:none}
 .nav__brand svg{width:250px;height:20px}
 .nav__links{display:flex;align-items:center;gap:clamp(14px,2vw,32px);flex:1}
-.nav__links a{font-size:var(--t-sm);color:var(--ink-2);text-decoration:none;transition:color var(--d-1) var(--ease-io)}
+.nav__links a{font-size:var(--t-sm);font-weight:500;color:var(--ink);text-decoration:none;transition:color var(--d-1) var(--ease-io)}
 .nav__links a:hover{color:var(--ink)}
 .nav__acts{display:flex;align-items:center;gap:12px;flex:none}
 .nav__cta{height:44px;padding:0 18px}
