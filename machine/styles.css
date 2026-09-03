@@ -3,58 +3,62 @@
    Tokens. One light room throughout — the brief is the only reveal.
    ═══════════════════════════════════════════════════════════ */
 :root{
-  color-scheme:dark;
-  /* ── Brand V3.1 (Concept Final, Sep 2026) — the six colours, by name ──
-     Dark-mode identity: the room is near-black navy, the ink is the logo's own
-     light, and orange (from The Machine) is THE accent — the AI in the logo,
-     the accent word in a headline, the primary button. */
+  color-scheme:light;
+  /* ── Brand V3.1 palette, re-read for a LIGHT room (Julian, Sep 3) ──
+     Same six colours. The room inverts: warm off-white page, white cards,
+     near-black ink. Orange stays THE accent. The dark navy survives as the
+     one inverted band, so the page still has a low note in its rhythm. */
   --navy:#003349;
   --blue:#0E5F8E;
   --teal:#009CBD;
-  --cyan:#77E3F6;
+  --cyan:#0A7E9B;      /* darkened: the old cyan was drawn for a dark ground */
   --orange:#FF6D24;
   --amber:#FFB81C;
 
-  --paper:#071A24;     /* the page */
-  --surface:#0C2331;   /* a card */
-  --surface-2:#12303F; /* a raised / hovered card */
-  --void:#003349;      /* a band — flat fallback; --band is the gradient the board asks for */
+  --paper:#F6F5F3;     /* the page — warm off-white, never pure #fff */
+  --surface:#FFFFFF;   /* a card */
+  --surface-2:#F0EFEB; /* a raised / hovered card */
+  --void:#08202C;      /* the inverted band */
   --void-2:#0E5F8E;
-  --band:linear-gradient(160deg,#0E5F8E 0%,#003349 52%,#062230 100%);  /* the lattice is added only where a page wants it */
+  --band:linear-gradient(160deg,#0B2836 0%,#08202C 54%,#061A24 100%);
 
-  --ink:#F1FAFF;
-  /* muted tiers lifted Sep 2 (Robert/Amy: contrast) — secondary copy reads as near-white */
-  --ink-2:rgba(241,250,255,.86);
-  --ink-3:rgba(241,250,255,.68);
-  --ink-4:rgba(241,250,255,.40);
-  --on-void:#F1FAFF;
-  --on-void-2:rgba(241,250,255,.84);
-  --on-void-3:rgba(241,250,255,.58);
+  --ink:#0B171E;
+  --ink-2:rgba(11,23,30,.72);
+  --ink-3:rgba(11,23,30,.54);
+  --ink-4:rgba(11,23,30,.34);
+  --on-void:#F5FAFC;
+  --on-void-2:rgba(245,250,252,.80);
+  --on-void-3:rgba(245,250,252,.56);
 
-  --line:rgba(241,250,255,.10);
-  --line-2:rgba(241,250,255,.18);
-  --line-void:rgba(241,250,255,.14);
+  --line:rgba(11,23,30,.10);
+  --line-2:rgba(11,23,30,.17);
+  --line-void:rgba(245,250,252,.14);
 
   --bubble:#0E5F8E;
-  --bubble-ink:#F1FAFF;
+  --bubble-ink:#F5FAFC;
 
-  /* V3.1 is Montserrat only — the serif role (section titles, quotes, big numbers)
-     now resolves to Montserrat Regular, the board's own text weight */
-  --serif:"Montserrat","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  /* ── Type: two families ──
+     Display = Helvetica Neue from the system, with self-hosted Inter Tight as
+     the near-identical fallback for machines that do not have it.
+     Body = Montserrat. The label role stays Montserrat. */
+  --display:"Helvetica Neue","Inter Tight",Helvetica,Arial,sans-serif;
+  --serif:var(--display);
   --sans:"Montserrat","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  /* V3.1 is one family. The "mono" role (eyebrows, labels, chips) resolves to
-     Montserrat — the designer counted the typefaces (Sep 2); only the demo
-     console keeps a real monospace, scoped in console.css. */
-  --mono:"Montserrat","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --mono:"Montserrat","Segoe UI",Helvetica,Arial,sans-serif;
 
-  --t-display:clamp(2.5rem,4.2vw,3.375rem);
-  --t-h1:clamp(2rem,3.4vw,2.875rem);
-  --t-h2:clamp(1.5rem,2.3vw,2rem);
-  --t-lede:clamp(1rem,1.2vw,1.1875rem);
+  /* Set big and tight, the way the references do it. */
+  --t-display:clamp(2.5rem,5.6vw,4.5rem);
+  --t-h1:clamp(2rem,3.9vw,3.25rem);
+  --t-h2:clamp(1.5rem,2.5vw,2.125rem);
+  --t-lede:clamp(1.0625rem,1.3vw,1.25rem);
   --t-body:.9375rem;
   --t-sm:.8125rem;
   --t-xs:.75rem;
   --t-label:.6875rem;
+
+  --track-display:-.035em;   /* the tight tracking the setting depends on */
+  --track-h:-.028em;
+  --lh-display:1.0;
 
   --r-sm:6px; --r:10px; --r-lg:14px; --r-xl:22px; --r-full:999px;
 
@@ -66,16 +70,15 @@
   --ctx-w:272px;
   --col:min(724px,100%);
 
-  /* The board's "nodes in structured grids": a dot lattice with a few joined
-     points, tiled. Painted at ~7% over heroes and bands, never over text. */
-  --nodes:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cg fill='none' stroke='%2377E3F6' stroke-width='1' opacity='.07'%3E%3Cpath d='M48 48h176M48 48v176M224 48 136 136'/%3E%3C/g%3E%3Cg fill='%2377E3F6' opacity='.18'%3E%3Ccircle cx='48' cy='48' r='2.5'/%3E%3Ccircle cx='224' cy='48' r='2.5'/%3E%3Ccircle cx='136' cy='136' r='3'/%3E%3Ccircle cx='48' cy='224' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
-  /* the two soft glows the board sets behind its type: teal top-left, orange bottom-right */
-  --glow:radial-gradient(60% 50% at 8% 0%,rgba(0,156,189,.22),transparent 60%),
-         radial-gradient(50% 45% at 96% 100%,rgba(255,109,36,.16),transparent 60%);
+  /* lattice, redrawn in ink for a light ground */
+  --nodes:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cg fill='none' stroke='%230B171E' stroke-width='1' opacity='.06'%3E%3Cpath d='M48 48h176M48 48v176M224 48 136 136'/%3E%3C/g%3E%3Cg fill='%230B171E' opacity='.13'%3E%3Ccircle cx='48' cy='48' r='2.5'/%3E%3Ccircle cx='224' cy='48' r='2.5'/%3E%3Ccircle cx='136' cy='136' r='3'/%3E%3Ccircle cx='48' cy='224' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
+  /* the two glows, dialled right down for a light ground */
+  --glow:radial-gradient(58% 48% at 8% 0%,rgba(0,156,189,.10),transparent 62%),
+         radial-gradient(48% 44% at 96% 100%,rgba(255,109,36,.09),transparent 62%);
 
-  /* Paper grain — 2.6% of a fractal-noise tile. Depth without decoration. */
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
 
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -1340,3 +1343,22 @@ body[data-state="partners"] .topbar__crumb{opacity:0}
     transition-duration:.001ms!important}
   .reveal{opacity:1;transform:none}
 }
+
+
+/* ── Display type ────────────────────────────────────────────
+   Helvetica Neue (system) with Inter Tight behind it, set large,
+   tight-tracked and tight-leaded — the Linear/Clay treatment.
+   Weight 600: the impact is scale and tightness, not weight. */
+h1,h2,h3,.display,.hero__h,.sec__h,.b-h,.bcta__h,.about__h{
+  font-family:var(--display);
+  font-weight:600;
+  letter-spacing:var(--track-h);
+  line-height:1.05;
+}
+h1,.display,.hero__h{
+  letter-spacing:var(--track-display);
+  line-height:var(--lh-display);
+}
+/* body copy stays Montserrat */
+body,p,li,input,textarea,button,select{font-family:var(--sans)}
+svg{flex-shrink:0}

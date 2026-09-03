@@ -189,72 +189,108 @@ function flankHTML() {
 }
 
 function emptyArtHTML() {
-  if (has(COPY.emptyImage)) {
-    return `<img class="pick__illo pick__illo--img" src="${esc(COPY.emptyImage)}"
-      alt="${esc(COPY.emptyImageAlt || 'How the agent works: it reads your brand, sees where you stand, finds opportunities and recommends what to do next.')}"
-      decoding="async">`;
-  }
-
-  const says = String(COPY.emptySays || '');
-  /* two balanced lines, split on the space nearest the middle */
-  const mid = Math.floor(says.length / 2);
-  let cut = says.lastIndexOf(' ', mid);
-  if (cut < 12) cut = says.indexOf(' ', mid);
-  const l1 = cut > 0 ? says.slice(0, cut) : says;
-  const l2 = cut > 0 ? says.slice(cut + 1) : '';
-
+  /* Centred, both ways: the agent's line, then three dots in the logo's own
+     colours, then one thought at a time from COPY.emptySteps. No logo mark,
+     no list, no checkmarks. Same words as always. */
+  const says  = String(COPY.emptySays || '');
   const steps = (Array.isArray(COPY.emptySteps) ? COPY.emptySteps : []).slice(0, 4);
-  /* no placeholder rules under the labels: at this size they sit on the
-     baseline and read as strikethrough. The reference uses them because its
-     labels are 3x larger. */
-  const rows = steps.map((label, i) => {
-    const y = 127 + i * 29;
-    return `
-      <g class="pick__illo-step" style="--d:${340 + i * 90}ms">
-        <circle class="pick__illo-check" cx="88" cy="${y}" r="8.5"/>
-        <path class="pick__illo-tick" d="M84.3 ${y} l2.7 2.7 4.8-5.2"/>
-        <rect class="pick__illo-steptile" x="105" y="${y - 10.5}" width="21" height="21" rx="6"/>
-        <g transform="translate(107.2,${y - 8.3}) scale(0.83)" class="pick__illo-tico">${icon(STEP_ICONS[i])}</g>
-        <text class="pick__illo-label" x="136" y="${y + 3.8}">${esc(label)}</text>
-      </g>`;
-  }).join('');
 
   return `
-<svg class="pick__illo" viewBox="0 0 400 250" role="img"
-     aria-label="${esc(says)}" fill="none">
-  <defs>
-    <linearGradient id="pickGlow" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" class="pick__illo-g1"/><stop offset="1" class="pick__illo-g2"/>
-    </linearGradient>
-  </defs>
-  <circle cx="330" cy="34" r="52" fill="url(#pickGlow)"/>
-  <circle cx="74" cy="214" r="44" fill="url(#pickGlow)"/>
+<div class="say" role="img" aria-label="${esc(says)}">
+  <p class="say__line">${esc(says)}</p>
+  <span class="say__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+  <p class="say__now" id="sayNow" data-steps="${esc(JSON.stringify(steps))}">
+    <span class="say__word"></span>
+  </p>
+</div>`;
+}
 
-  ${flankHTML()}
+/* Walk the scene's steps so the panel is always mid-thought. */
+if (typeof window !== 'undefined') {
+  const runSteps = () => {
+    const host = document.getElementById('sayNow');
+    if (!host) return;
+    let steps = [];
+    try { steps = JSON.parse(host.dataset.steps || '[]'); } catch (e) { return; }
+    if (!steps.length) return;
+    const word = host.querySelector('.say__word');
+    let i = 0;
+    const put = () => { word.textContent = steps[i]; word.classList.remove('is-out'); };
+    put();
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    clearInterval(window.__scSteps);
+    window.__scSteps = setInterval(() => {
+      word.classList.add('is-out');
+      setTimeout(() => { i = (i + 1) % steps.length; put(); }, 260);
+    }, 2200);
+  };
+  setTimeout(runSteps, 400);
+  setTimeout(runSteps, 1200);
+}
 
-  <rect class="pick__illo-card" x="52" y="14" width="296" height="224" rx="18"/>
+/* The mark drifts against the scroll — a light parallax, nothing more.
+   rAF-throttled, and off entirely for reduced motion. */
+if (typeof window !== 'undefined' &&
+    !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  let markRaf = null;
+  const driftMark = () => {
+    markRaf = null;
+    const face = document.querySelector('.markfx__face');
+    if (!face) return;
+    const box = face.closest('.about__mark') || face;
+    const r = box.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    /* -1 at the bottom of the viewport, +1 at the top */
+    const p = 1 - ((r.top + r.height / 2) / innerHeight) * 2;
+    face.style.transform = `translate3d(0, ${(p * 26).toFixed(1)}px, 0)`;
+  };
+  addEventListener('scroll', () => {
+    if (!markRaf) markRaf = requestAnimationFrame(driftMark);
+  }, { passive: true });
+  setTimeout(driftMark, 0);
+  setTimeout(driftMark, 300);
+}
 
-  <!-- the agent, and what it says it does -->
-  <circle class="pick__illo-ring" cx="88" cy="56" r="26" transform="rotate(-90 88 56)"/>
-  <circle class="pick__illo-head" cx="88" cy="56" r="20"/>
-  <circle class="pick__illo-eye" cx="81" cy="54" r="3.6"/>
-  <circle class="pick__illo-eye" cx="95" cy="54" r="3.6"/>
-  <rect class="pick__illo-bubble" x="122" y="30" width="212" height="52" rx="12"/>
-  <text class="pick__illo-says" x="134" y="52">${esc(l1)}</text>
-  <text class="pick__illo-says" x="134" y="68">${esc(l2)}</text>
+/* Keep the fixed canvas fitted to its box. A scene canvas CLIPS, so this has
+   to re-measure on resize, not just on first paint. */
+function fitScenes(root) {
+  (root || document).querySelectorAll('.scene').forEach(box => {
+    const canvas = box.querySelector('.scene__canvas');
+    if (!canvas) return;
+    const w = box.clientWidth;
+    if (!w) return;                       /* a 0-wide box would scale to nothing */
+    /* fit BOTH ways: a canvas taller than its slot gets cropped, which is how
+       the scene went missing the first time. */
+    const room = box.parentElement ? box.parentElement.clientHeight : 0;
+    let scale = w / 1100;
+    if (room > 80 && 620 * scale > room) scale = room / 620;
+    canvas.style.transform = `scale(${scale})`;
+    canvas.style.left = ((w - 1100 * scale) / 2) + 'px';
+    box.style.height = (620 * scale) + 'px';
+  });
+}
+if (typeof window !== 'undefined') {
+  let rafFit = null;
+  const queueFit = () => { if (!rafFit) rafFit = requestAnimationFrame(() => { rafFit = null; fitScenes(); }); };
+  addEventListener('resize', queueFit, { passive: true });
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(queueFit);
+    const watch = () => document.querySelectorAll('.scene').forEach(el => ro.observe(el));
+    setTimeout(watch, 0);
+  }
+  setTimeout(queueFit, 0);
+  setTimeout(queueFit, 240);
+}
 
-  <rect class="pick__illo-list" x="68" y="100" width="264" height="128" rx="12"/>
-  ${rows}
-</svg>`;
+function toggleHint(on) {
+  const h = document.getElementById('pickHint');
+  if (h) h.hidden = !on;
 }
 
 function detailHTML(o) {
   if (!o) {
     return `<div class="pick__detail-empty">
       ${emptyArtHTML()}
-      <p class="pick__empty-h">${esc(COPY.emptyTitle || COPY.listLabel || '')}</p>
-      ${COPY.emptyLine && !has(COPY.emptyImage)
-        ? `<p class="pick__empty-l">${esc(COPY.emptyLine)}</p>` : ''}
     </div>`;
   }
   const free = o.id === OTHER;
@@ -299,8 +335,16 @@ function render() {
   root.innerHTML = `
     <div class="pick">
       <div class="pick__panes">
-        <div class="pick__list" role="radiogroup" aria-label="${esc(COPY.listLabel || '')}" id="pickList">
-          ${OPTIONS.map(rowHTML).join('')}
+        <div class="pick__col">
+          <p class="pick__hint" id="pickHint">
+            <span class="pick__hinti" aria-hidden="true">
+              <svg viewBox="0 0 28.44 28"><use href="#sw-mark"/></svg>
+            </span>
+            <span>${esc(COPY.emptyTitle || COPY.listLabel || '')}</span>
+          </p>
+          <div class="pick__list" role="radiogroup" aria-label="${esc(COPY.listLabel || '')}" id="pickList">
+            ${OPTIONS.map(rowHTML).join('')}
+          </div>
         </div>
         <div class="pick__detail" id="pickDetail">${detailHTML(null)}</div>
       </div>
@@ -323,6 +367,7 @@ function render() {
 function paintDetail() {
   const detail = $('#pickDetail', root);
   if (detail) detail.innerHTML = detailHTML(optionById(selected));
+  toggleHint(!optionById(selected));
 }
 
 function select(id, opts) {

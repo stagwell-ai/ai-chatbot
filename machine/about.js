@@ -47,10 +47,20 @@ function render(m) {
 
   root.innerHTML = `
     <div class="about__in">
+      <div class="about__mark" aria-hidden="true">
+        <span class="markfx">
+          <span class="markfx__face">
+            <svg viewBox="0 0 28.44 28"><use href="#sw-mark"/></svg>
+          </span>
+        </span>
+      </div>
       <header class="about__head">
         <p class="eyebrow"><i class="pulse"></i>${esc(m.eyebrow || 'What is Stagwell.AI')}</p>
         <h2 class="about__title display">${taglineHTML(m)}</h2>
         <p class="about__lede">${esc(m.whoWeAre || m.positioning || '')}</p>
+        ${(m.cta && m.cta.label) ? `<p class="about__act">
+          <button type="button" class="btn btn--gold" data-scrollto="#hero2">${esc(m.cta.label)}</button>
+        </p>` : ''}
       </header>
 
       ${promises.length ? `<ul class="about__promises" aria-label="Customer promises">
@@ -82,10 +92,20 @@ function render(m) {
       </div>` : ''}
 
       ${proofs.length ? `<div class="about__proof">
+        <div class="proof__say">
+          <h3 class="proof__h">${esc(m.portfolioTitle ? 'Built on Stagwell\u2019s own scale' : '')}</h3>
+          <p class="about__proofnote">${esc(m.proofNote || '')}</p>
+          <div class="about__cta">
+            <button type="button" class="btn btn--gold" id="aboutAsk">${esc(cta.label || 'Ask the agent')}</button>
+            <span>${esc(cta.line || '')}</span>
+            ${FULL ? '' : `<a class="about__more" href="/why">Read why Stagwell.AI →</a>`}
+          </div>
+        </div>
         <dl class="about__stats">
-          ${proofs.map(p => `<div><dt>${esc(p.value)}</dt><dd>${esc(p.label)}</dd></div>`).join('')}
+          ${proofs.map((p, i) => `<div class="stat${i === 0 ? ' stat--wide' : ''}${
+            /[0-9]/.test(String(p.value)) ? '' : ' stat--words'}">
+            <dt>${esc(p.value)}</dt><dd>${esc(p.label)}</dd></div>`).join('')}
         </dl>
-        <p class="about__proofnote">${esc(m.proofNote || '')}</p>
       </div>` : ''}
 
       ${aud ? `<div class="about__aud">
@@ -97,11 +117,6 @@ function render(m) {
         </div>
       </div>` : ''}
 
-      <div class="about__cta">
-        <button type="button" class="btn btn--gold" id="aboutAsk">${esc(cta.label || 'Ask the agent')}</button>
-        <span>${esc(cta.line || '')}</span>
-        ${FULL ? '' : `<a class="about__more" href="/why">Read why Stagwell.AI →</a>`}
-      </div>
     </div>`;
 
   const ask = document.getElementById('aboutAsk');
@@ -124,3 +139,17 @@ function boot() {
 }
 boot();
 })();
+
+/* scrollto-wire: the section CTA takes you back to the chooser */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-scrollto]');
+  if (!b) return;
+  const t = document.querySelector(b.dataset.scrollto);
+  if (!t) return;
+  e.preventDefault();
+  window.scrollTo({
+    top: t.getBoundingClientRect().top + window.scrollY - 60,
+    behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+  });
+  setTimeout(() => document.getElementById('pickSite')?.focus({ preventScroll: true }), 600);
+});

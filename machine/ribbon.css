@@ -126,3 +126,2548 @@ body.has-ribbon .nav{top:var(--rbn-h)}
   body.has-ribbon{padding-top:0}
   body.has-ribbon .nav{top:0}
 }
+
+/* ── corner stack (redesign, Sep 3) ──
+   The film card now owns the bottom-right corner, so the two presenter
+   pills stack above it. This file loads last, which is why the override
+   lives here rather than in b.css. */
+.vercorner{bottom:118px}
+.democorner{bottom:158px}
+@media (max-width:640px){
+  .vercorner{bottom:92px}
+  .democorner{bottom:130px}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDESIGN OVERRIDES (Julian, Sep 3) — loaded last on every page.
+   Light room · Helvetica Neue titles · Montserrat body · no shadows.
+   Nothing here changes markup, copy, ids or behaviour.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1 · every title takes the display face; only body copy is Montserrat ── */
+h1,h2,h3,h4,h5,h6,
+.display,.loader__title,.pick__h,.sec__h,.card__h,.tier__h,
+.bcta__h,.about__h,.crail__h,.sol__h,.cmp__h,.dir__h{
+  font-family:var(--display)!important;
+  font-weight:600;
+  letter-spacing:var(--track-h);
+  line-height:1.06;
+}
+h1,.display{letter-spacing:var(--track-display);line-height:var(--lh-display)}
+p,li,dd,dt,blockquote,figcaption,label,input,textarea,select,
+.eyebrow,.btn,.chip,.pick__row,.sub,.lede{font-family:var(--sans)}
+
+/* the hero headline: hero.css caps it with an id selector, so beat it here */
+#hero2:not(.is-chatting) .display,
+#hero2 .display{
+  font-size:clamp(2.5rem,6.2vw,4.75rem);
+  max-width:24ch;
+  text-wrap:balance;
+}
+
+/* ── 2 · the navigation joins the light room ── */
+.nav,.bnav,header.nav{
+  background:rgba(246,245,243,.82)!important;
+  backdrop-filter:saturate(1.7) blur(18px);
+  -webkit-backdrop-filter:saturate(1.7) blur(18px);
+  border-bottom:1px solid var(--line);
+  color:var(--ink);
+}
+.nav a,.bnav a,.nav__links a{color:var(--ink-2)}
+.nav a:hover,.bnav a:hover,.nav__links a:hover{color:var(--ink)}
+
+/* ── 3 · the last dark surfaces come up into the light ── */
+.callback,.sc__rollup{
+  background:var(--surface)!important;
+  border:1px solid var(--line);
+  color:var(--ink);
+}
+.callback *,.sc__rollup *{color:inherit}
+.callback .muted,.sc__rollup .muted{color:var(--ink-3)}
+
+/* the solid secondary button was ink-on-ink; make it a quiet outline */
+.btn--dark{
+  background:transparent!important;
+  color:var(--ink)!important;
+  border:1px solid var(--line-2);
+}
+.btn--dark:hover{background:var(--surface-2)!important;border-color:var(--ink-3)}
+
+/* ── 4 · no drop shadows anywhere. Depth comes from the hairline. ── */
+*,*::before,*::after{box-shadow:none!important}
+.hero2__play,.pick,.chat,.card,.tier,.sol,.cmp{
+  border:1px solid var(--line);
+}
+
+/* ── 5 · a title is ONE typeface, all the way through ──
+   styles.css:130 pins .accent to Montserrat, which split every headline
+   into two fonts: Helvetica Neue for the plain words, Montserrat for the
+   orange one (round tittle on the i, round dot on the ?). Anything inside
+   a title now inherits the title's own family. Colour is untouched. */
+h1 *,h2 *,h3 *,h4 *,h5 *,h6 *,
+.display *,.loader__title *,.pick__h *,.sec__h *,.sec__title *,
+.card__h *,.tier__h *,.bcta__h *,.about__h *,.crail__h *,
+.band__h *,.snap__title *,.pathhero__title *,.prodhero__title *,
+.sol__h *,.cmp__h *,.dir__h *{
+  font-family:inherit!important;
+  font-style:normal;
+}
+
+/* ── 6 · the closing band joins the light room ──
+   .bcta carried the dark --band gradient, so the whole last screen stayed
+   dark. It becomes paper with a hairline top rule, like every other section. */
+body.vB .bcta,.bcta{
+  background:var(--paper)!important;
+  border-top:1px solid var(--line);
+  padding:clamp(88px,12vh,150px) clamp(20px,4vw,48px) clamp(80px,10vh,120px)!important;
+}
+.bcta__lede{color:var(--ink-2)!important}
+.bcta__acts{border-top-color:var(--line)!important}
+
+/* ── 7 · the four cards ──
+   They were flat translucent panels with 17px titles and no order to them.
+   Now: white card, hairline, real title scale in the display face, the
+   description stepped back, and a rule that anchors each one. */
+.bcta__grid{
+  grid-template-columns:repeat(auto-fit,minmax(248px,1fr))!important;
+  gap:18px!important;
+  margin-top:clamp(44px,6vh,68px)!important;
+}
+.ctacard{
+  position:relative;
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  border-radius:16px!important;
+  color:var(--ink)!important;
+  padding:26px 24px 24px!important;
+  gap:9px!important;
+  min-height:172px;
+  overflow:hidden;
+  transition:border-color var(--d-2) var(--ease),transform var(--d-2) var(--ease);
+}
+/* the accent rule that gives the row its rhythm */
+.ctacard::before{
+  content:"";position:absolute;left:24px;top:0;width:26px;height:2px;
+  background:var(--orange);
+  transition:width var(--d-2) var(--ease);
+}
+.ctacard:hover{
+  background:var(--surface)!important;
+  border-color:var(--line-2)!important;
+  transform:translateY(-3px);
+}
+.ctacard:hover::before{width:58px}
+.ctacard:hover,.ctacard:visited,.ctacard:focus{color:var(--ink)!important}
+.ctacard b{
+  font-family:var(--display)!important;
+  font-size:1.3125rem!important;font-weight:600!important;
+  letter-spacing:-.022em!important;line-height:1.15;
+  margin-top:8px;
+}
+.ctacard b svg{color:var(--orange)}
+.ctacard span{
+  color:var(--ink-3)!important;font-size:var(--t-body)!important;line-height:1.6!important;
+}
+/* the last card sends you onward: give it the orange face */
+.ctacard:last-child{background:#FFF4EE!important;border-color:rgba(255,109,36,.26)!important}
+.ctacard:last-child::before{width:58px}
+.ctacard:last-child:hover{border-color:var(--orange)!important}
+
+/* ── 8 · the call-back strip ── */
+.callback{
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  border-radius:16px!important;
+  padding:30px 32px!important;
+  margin-top:18px!important;
+}
+.callback__t b{font-family:var(--display);font-size:1.1875rem;font-weight:600;letter-spacing:-.018em}
+.callback__t span{color:var(--ink-3)!important;font-size:var(--t-body)!important}
+.callback input{
+  background:var(--paper)!important;
+  border:1px solid var(--line-2)!important;
+  color:var(--ink)!important;
+  border-radius:10px!important;
+}
+.callback input::placeholder{color:var(--ink-4)!important}
+.callback input:focus{border-color:var(--orange)!important}
+
+/* the one remaining dark carousel card */
+.fcard--dark{background:var(--surface)!important;color:var(--ink)!important;
+  border:1px solid var(--line)}
+.fcard--dark *{color:inherit}
+
+/* ═══════════════════════════════════════════════════════════════
+   9 · SPACING RHYTHM — one scale, used everywhere.
+   The old page picked values per section (14 / 22 / 52 / 60 / 92).
+   Everything below sits on a single 8px-derived scale so the page
+   reads as one system instead of five.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --s-1:6px; --s-2:10px; --s-3:16px; --s-4:24px;
+  --s-5:36px; --s-6:52px; --s-7:76px; --s-8:112px;
+  --sec-pad:clamp(84px,11vh,148px);
+  --measure:66ch;
+}
+
+/* every section breathes the same */
+section{padding-block:var(--sec-pad)}
+.hero2{padding-block:clamp(48px,8vh,104px) clamp(40px,7vh,88px)}
+.about,.bcta,.crail{padding-block:var(--sec-pad)!important}
+.bfoot{padding-block:var(--s-7)!important}
+
+/* ── section headers: a bold title, then air, then the copy ── */
+.about__h,.bcta__h,.sec__h,.sec__title,.crail__h,.b-h{
+  font-size:clamp(2rem,3.6vw,3.125rem)!important;
+  line-height:1.04!important;
+  letter-spacing:var(--track-h)!important;
+  margin:0 0 var(--s-4)!important;
+  max-width:20ch;
+  text-wrap:balance;
+}
+.about__lede,.bcta__lede,.sec__lede,.sec__p{
+  margin:0 0 var(--s-6)!important;
+  max-width:58ch!important;
+  color:var(--ink-2)!important;
+}
+/* the eyebrow above a section title */
+section .eyebrow{
+  margin:0 0 var(--s-3)!important;
+  font-weight:500;letter-spacing:.15em;color:var(--ink-3);
+}
+
+/* ── space INSIDE cards, on the same scale ── */
+.ctacard,.card,.tier,.fcard,.scard,.sol,.cmp{
+  padding:var(--s-4)!important;
+  gap:var(--s-2)!important;
+}
+.ctacard{padding:26px 24px 24px!important}
+.callback{padding:var(--s-5) var(--s-5)!important;gap:var(--s-4)!important}
+
+/* the actions row under a section */
+.bcta__acts{margin-top:var(--s-6)!important;padding-top:var(--s-5)!important;gap:var(--s-3)!important}
+
+/* buttons get room to be buttons */
+.btn{height:46px;padding:0 26px;letter-spacing:.02em}
+.btn--gold{font-weight:600}
+
+/* ═══════════════════════════════════════════════════════════════
+   10 · THE AGENT PANEL — replaces the stock illustration.
+   Product-true, in the Linear/Vercel register: one flat surface,
+   a hairline, no shadow, restrained motion. Same copy as before.
+   ═══════════════════════════════════════════════════════════════ */
+.agentui{
+  width:100%;max-width:420px;margin:0 auto;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:hidden;
+  text-align:left;
+}
+.agentui__bar{
+  display:flex;align-items:center;gap:6px;
+  height:34px;padding:0 14px;
+  border-bottom:1px solid var(--line);
+  background:var(--paper);
+}
+.agentui__dot{width:8px;height:8px;border-radius:50%;background:var(--line-2)}
+.agentui__dot:first-child{background:var(--orange);opacity:.55}
+.agentui__body{padding:22px 22px 20px}
+.agentui__says{
+  margin:0 0 20px;
+  font-family:var(--sans);
+  font-size:var(--t-body);line-height:1.55;color:var(--ink);
+  letter-spacing:-.006em;max-width:34ch;
+}
+.agentui__steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px}
+.agentui__step{
+  display:flex;align-items:center;gap:11px;
+  opacity:0;transform:translateY(5px);
+  animation:agentStep 620ms var(--ease) forwards;
+  animation-delay:var(--d);
+}
+@keyframes agentStep{to{opacity:1;transform:none}}
+.agentui__tick{
+  width:19px;height:19px;flex:none;border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(255,109,36,.12);color:var(--orange);
+}
+.agentui__label{
+  font-family:var(--sans);font-size:var(--t-sm);color:var(--ink-2);
+  letter-spacing:-.004em;
+}
+.agentui__meter{
+  height:2px;border-radius:2px;background:var(--line);
+  margin-top:22px;overflow:hidden;
+}
+.agentui__meter i{
+  display:block;height:100%;width:0;background:var(--orange);border-radius:2px;
+  animation:agentMeter 2.6s var(--ease) 320ms forwards;
+}
+@keyframes agentMeter{to{width:100%}}
+@media (prefers-reduced-motion:reduce){
+  .agentui__step{opacity:1;transform:none;animation:none}
+  .agentui__meter i{width:100%;animation:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   11 · ONE GROUND, NO DECORATION  (Julian, Sep 3)
+   The page was pure white while the nav was warm paper, so the nav
+   read grey. And the hero carried a dot lattice plus two coloured
+   glows — the "floating dots" that make it look generated.
+   One flat ground, nothing painted on it.
+   ═══════════════════════════════════════════════════════════════ */
+html,body{background:var(--paper)!important}
+
+.nav,.bnav,header.nav{
+  background:var(--paper)!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  border-bottom:1px solid var(--line)!important;
+}
+
+/* every decorative texture off: lattice, dot grid, glows, grain */
+.hero2,.bcta,.about,.crail,section,body{
+  background-image:none!important;
+}
+.hero2::before,.hero2::after,
+.bcta::before,.bcta::after,
+.about::before,.about::after{content:none!important;display:none!important}
+:root{--nodes:none;--glow:none;--grain:none}
+
+/* sections are told apart by a hairline and by space, not by fills */
+.about{background:var(--surface)!important;border-block:1px solid var(--line)}
+.bcta,.crail,.hero2{background:var(--paper)!important}
+.bfoot{background:var(--paper)!important;border-top:1px solid var(--line)}
+
+/* ── 12 · measure and vertical spacing ──
+   Lines were running past 90 characters and titles sat on top of
+   their paragraphs. Both fixed on the scale. */
+.about__lede,.bcta__lede,.sec__lede,.sec__p{
+  max-width:54ch!important;
+  margin-top:var(--s-4)!important;
+}
+.about p,.bcta p{max-width:54ch!important}
+.about__h,.bcta__h,.sec__h,.sec__title,.crail__h,.b-h{
+  margin-bottom:var(--s-4)!important;
+  max-width:17ch!important;
+}
+p{max-width:var(--measure)}
+.ctacard span,.agentui__says{max-width:36ch!important}
+
+/* ── 13 · the tier cards ("Enterprise Solutions" etc.) ──
+   They were generic boxes: same weight everywhere, no order.
+   Give them a clear head, a rule, and quieter supporting rows. */
+.tier,.fcard,.scard{
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  border-radius:16px!important;
+  padding:var(--s-5) var(--s-4) var(--s-4)!important;
+}
+.tier h3,.fcard h3,.scard h3,.tier__h{
+  font-family:var(--display)!important;
+  font-size:1.5rem!important;font-weight:600!important;
+  letter-spacing:-.024em!important;line-height:1.12!important;
+  margin:0 0 var(--s-2)!important;max-width:none!important;
+}
+.tier p,.fcard p,.scard p{
+  font-size:var(--t-body)!important;line-height:1.6!important;
+  color:var(--ink-2)!important;max-width:42ch!important;margin:0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   14 · THE CHOOSER — rebuilt as one component.
+   It was a rounded box of grey pill rows with boxed icon tiles and
+   a heavy orange bar. Now: a flat card, a real list with a single
+   quiet selected state, a proper field, one confident button.
+   Every class and id kept — .pick__row, #pickGo, #pickSite, #pickFree
+   are all addressed by hero.js and the test suite.
+   ═══════════════════════════════════════════════════════════════ */
+.pick{
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  border-radius:18px!important;
+  overflow:hidden;
+  max-width:940px;margin-inline:auto;
+}
+.pick__panes{grid-template-columns:minmax(0,320px) minmax(0,1fr)!important}
+.pick__list{
+  padding:14px!important;
+  border-right:1px solid var(--line)!important;
+  gap:2px!important;
+  background:var(--paper);
+}
+
+/* ── the rows: a list, not a stack of pills ── */
+.pick__row{
+  position:relative;
+  padding:13px 14px!important;
+  border-radius:10px!important;
+  font-size:var(--t-body)!important;
+  color:var(--ink-2)!important;
+  gap:13px!important;
+  transition:background var(--d-1) var(--ease),color var(--d-1)!important;
+}
+.pick__row:hover{background:rgba(11,23,30,.045)!important;color:var(--ink)!important}
+.pick__row.is-on{background:var(--surface)!important;color:var(--ink)!important;
+  box-shadow:inset 0 0 0 1px var(--line)!important}
+/* the selected row is marked by the orange, not by a fill */
+.pick__row.is-on::before{
+  content:"";position:absolute;left:0;top:11px;bottom:11px;width:2px;
+  border-radius:2px;background:var(--orange);
+}
+.pick__row:focus-visible{outline:2px solid var(--orange)!important;outline-offset:-2px!important}
+
+/* the radio: small, quiet, orange when chosen */
+.pick__radio{width:15px!important;height:15px!important;border:1.5px solid var(--line-2)!important}
+.pick__row.is-on .pick__radio{border-color:var(--orange)!important;border-width:4.5px!important}
+
+/* the icon loses its boxed tile and becomes just an icon */
+.pick__mark{
+  width:20px!important;height:20px!important;
+  background:none!important;border:0!important;
+  color:var(--ink-3)!important;border-radius:0!important;
+}
+.pick__row.is-on .pick__mark{background:none!important;color:var(--orange)!important}
+.pick__icon{width:17px!important;height:17px!important}
+.pick__label{font-weight:500}
+
+/* ── the right pane ── */
+.pick__pane{padding:var(--s-5) var(--s-5)!important}
+.pick__dh{font-family:var(--display)!important;font-size:1.375rem!important;
+  font-weight:600!important;letter-spacing:-.022em!important;margin-bottom:var(--s-2)!important}
+.pick__dl{font-size:var(--t-body)!important;line-height:1.6!important;color:var(--ink-2)!important;
+  max-width:44ch!important}
+
+/* ── the foot: field + button, given room ── */
+.pick__foot{
+  border-top:1px solid var(--line)!important;
+  padding:var(--s-3) var(--s-4)!important;
+  gap:var(--s-2)!important;
+  background:var(--surface)!important;
+}
+.pick__site input{
+  height:48px!important;
+  border-radius:10px!important;
+  border:1px solid var(--line-2)!important;
+  background:var(--paper)!important;
+  font-size:var(--t-body)!important;
+  padding:0 15px!important;
+  transition:border-color var(--d-1),background var(--d-1)!important;
+}
+.pick__site input:focus{border-color:var(--orange)!important;background:var(--surface)!important}
+.pick__site input::placeholder{color:var(--ink-4)!important}
+
+/* the button: solid, sized, tracked — not a slab */
+#pickGo,.pick__go{
+  height:48px!important;
+  padding:0 30px!important;
+  border-radius:10px!important;
+  font-family:var(--sans)!important;
+  font-size:var(--t-body)!important;font-weight:600!important;
+  letter-spacing:.03em!important;
+  background:var(--orange)!important;color:#fff!important;
+  border:0!important;
+  transition:background var(--d-1) var(--ease-io),transform var(--d-1) var(--ease)!important;
+}
+#pickGo:hover,.pick__go:hover{background:#F45E12!important}
+#pickGo:active,.pick__go:active{transform:translateY(1px)}
+
+/* the agent panel sits flush inside the pane */
+.agentui{max-width:none!important;border-radius:12px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   15 · EYEBROWS — no dot, one line, sitting up near the top.
+   ═══════════════════════════════════════════════════════════════ */
+.eyebrow .pulse,.eyebrow i.pulse{display:none!important}
+.eyebrow{
+  gap:0!important;
+  white-space:nowrap;
+  font-size:var(--t-label)!important;
+  letter-spacing:.15em!important;
+  color:var(--ink-3)!important;
+}
+.hero2 .eyebrow{margin:0 0 var(--s-5)!important}
+@media (max-width:900px){.eyebrow{white-space:normal}}
+
+/* the hero starts nearer the top rather than centring in the viewport */
+.hero2{align-items:flex-start!important;min-height:0!important;
+  padding-block:clamp(52px,8vh,96px) clamp(64px,9vh,120px)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   16 · ROOM. Everything was crowded — open it up.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --s-5:44px; --s-6:64px; --s-7:92px; --s-8:136px;
+  --sec-pad:clamp(104px,13vh,180px);
+}
+.about__tiers{gap:24px!important;margin-top:var(--s-6)!important}
+.about__proof{margin-top:var(--s-7)!important}
+.about__stats{gap:var(--s-5) var(--s-6)!important}
+.about__cta{padding-top:var(--s-5)!important;gap:var(--s-4) var(--s-5)!important}
+.bcta__grid{gap:24px!important}
+.pick__panes>*{min-height:0}
+
+/* ═══════════════════════════════════════════════════════════════
+   17 · THE TIER CARDS — "One portfolio. Multiple ways…"
+   These were untouched: a flat box, a 20px name, five stacked
+   paragraphs at the same weight and no order between them.
+   ═══════════════════════════════════════════════════════════════ */
+.tier{
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  border-radius:18px!important;
+  padding:var(--s-5) var(--s-4) var(--s-4)!important;
+  gap:0!important;
+}
+/* the category rule becomes a full-width hairline at the very top */
+.tier::before{left:0!important;top:0!important;width:100%!important;height:3px!important;
+  border-radius:0!important}
+.tier__cat{
+  margin:0 0 var(--s-3)!important;
+  font-family:var(--sans)!important;font-weight:600!important;
+  font-size:var(--t-label)!important;letter-spacing:.14em!important;
+}
+.tier__name{
+  font-family:var(--display)!important;
+  font-size:1.75rem!important;font-weight:600!important;
+  letter-spacing:-.026em!important;line-height:1.08!important;
+  margin:0 0 var(--s-2)!important;
+}
+.tier__head{
+  font-size:1.0625rem!important;font-weight:500!important;line-height:1.45!important;
+  color:var(--ink)!important;margin:0 0 var(--s-3)!important;max-width:30ch!important;
+}
+.tier p:not(.tier__head):not(.tier__cat){
+  font-size:var(--t-body)!important;line-height:1.62!important;
+  color:var(--ink-2)!important;margin:0 0 var(--s-3)!important;max-width:38ch!important;
+}
+/* the "Best for" / "Core value" rows read as a spec list, not more prose */
+.tier dl,.tier__spec{margin:var(--s-3) 0 0!important;padding-top:var(--s-3)!important;
+  border-top:1px solid var(--line)!important}
+.tier dt{font-family:var(--sans)!important;font-weight:600!important;
+  font-size:var(--t-label)!important;letter-spacing:.13em!important;text-transform:uppercase!important;
+  color:var(--ink-4)!important;margin-bottom:5px!important}
+.tier dd{margin:0 0 var(--s-3)!important;font-size:var(--t-sm)!important;
+  line-height:1.55!important;color:var(--ink-2)!important}
+.tier dd:last-child{margin-bottom:0!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   18 · THE PROOF NUMBERS — make them the size of a claim.
+   ═══════════════════════════════════════════════════════════════ */
+.about__stats dt{
+  font-family:var(--display)!important;
+  font-size:clamp(3rem,5.4vw,4.5rem)!important;
+  font-weight:600!important;
+  letter-spacing:-.04em!important;line-height:.94!important;
+  color:var(--ink)!important;
+}
+.about__stats div{gap:var(--s-2)!important}
+.about__stats dd{
+  font-size:var(--t-body)!important;line-height:1.5!important;
+  color:var(--ink-3)!important;max-width:24ch!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   19 · SMALL PRODUCT CARDS — a fragment of the product inside,
+   the way the white build did it. Copy, links and ids untouched.
+   ═══════════════════════════════════════════════════════════════ */
+.scard{
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  background:var(--surface)!important;border:1px solid var(--line)!important;
+  border-radius:16px!important;padding:var(--s-4)!important;gap:0!important;
+  min-height:270px;text-decoration:none;
+  transition:border-color var(--d-2),transform var(--d-2) var(--ease)!important;
+}
+.scard:hover{border-color:var(--line-2)!important;transform:translateY(-3px)}
+.scard__ico{width:24px;height:24px;color:var(--ink-3);margin-bottom:var(--s-3)}
+.scard__ico svg{width:100%;height:100%}
+.scard__t{display:flex;flex-direction:column;gap:5px}
+.scard__t b{font-family:var(--display)!important;font-size:1.25rem!important;
+  font-weight:600!important;letter-spacing:-.022em!important;color:var(--ink)}
+.scard__t i{font-style:normal;font-size:var(--t-sm);line-height:1.55;color:var(--ink-2);
+  max-width:34ch}
+
+/* the stage: the fragment sits centred on a soft ground, never floating */
+.scard__stage{
+  flex:1;width:100%;display:flex;align-items:center;justify-content:center;
+  margin:var(--s-3) 0;padding:16px;
+  background:#F5F6F7;border-radius:10px;color:var(--ink-3);
+}
+.frag{display:inline-flex;align-items:center;gap:7px;width:100%;
+  border:1px solid var(--line);border-radius:10px;background:var(--surface);
+  padding:11px 13px}
+.frag--bars{align-items:flex-end;height:56px;gap:5px}
+.frag--bars i{flex:1;border-radius:3px 3px 0 0;height:var(--h);background:var(--orange);opacity:.30}
+.frag--bars i:last-child{opacity:.9}
+.frag--rows{flex-direction:column;align-items:stretch;gap:7px}
+.frag--rows i{height:8px;border-radius:99px;background:rgba(11,23,30,.10);width:var(--w)}
+.frag--rows i:first-child{background:var(--orange);opacity:.75}
+.frag--wave{align-items:center;height:52px;gap:3px}
+.frag--wave i{flex:1;border-radius:99px;background:var(--orange);opacity:.5;height:var(--h)}
+.frag--spark{flex-direction:column;color:var(--orange)}
+.frag--spark svg{width:100%;height:26px}
+.frag--rank{align-items:baseline;gap:9px}
+.frag--rank b{font-family:var(--display);font-size:1.5rem;font-weight:600;
+  letter-spacing:-.03em;color:var(--orange)}
+.frag--rank span{font-size:var(--t-xs);color:var(--ink-3)}
+.frag--feed{flex-direction:column;align-items:stretch;gap:7px}
+.frag--feed span{height:8px;border-radius:99px;background:rgba(11,23,30,.10)}
+.frag--feed span:first-child{background:var(--orange);opacity:.7;width:70%}
+.frag--feed span:nth-child(2){width:88%}
+.frag--feed span:last-child{width:54%}
+.frag--chips{gap:6px}
+.frag--chips i{flex:1;height:22px;border-radius:99px;border:1px solid var(--line)}
+.frag--chips i:first-child{background:var(--orange);opacity:.16;border-color:transparent}
+.frag--saydo{flex-direction:column;align-items:stretch;gap:9px}
+.frag--saydo>span{height:7px;border-radius:99px;background:rgba(11,23,30,.10);overflow:hidden}
+.frag--saydo i{display:block;height:100%;width:var(--w);border-radius:99px;background:var(--orange)}
+.scard .btn--xs{margin-top:auto;background:var(--ink)!important;color:#fff!important;
+  height:32px;padding:0 15px;border-radius:99px;font-size:var(--t-xs)}
+
+/* ═══════════════════════════════════════════════════════════════
+   20 · THE FOUR CTA CARDS — a real ground each, not four grey boxes.
+   ═══════════════════════════════════════════════════════════════ */
+.bcta__grid{grid-template-columns:repeat(4,1fr)!important}
+@media (max-width:1080px){.bcta__grid{grid-template-columns:repeat(2,1fr)!important}}
+@media (max-width:600px){.bcta__grid{grid-template-columns:1fr!important}}
+.ctacard{
+  min-height:300px!important;
+  justify-content:flex-end!important;
+  padding:var(--s-4)!important;
+  overflow:hidden;
+  background-size:cover!important;background-position:center!important;
+}
+.ctacard::before{display:none}
+/* each card gets its own ground */
+.ctacard:nth-child(1){background:linear-gradient(180deg,#0B171E 0%,#12303F 100%)!important;color:#fff!important}
+.ctacard:nth-child(2){background:linear-gradient(180deg,#FF6D24 0%,#F04E00 100%)!important;color:#fff!important}
+.ctacard:nth-child(3){background:linear-gradient(180deg,#E9EFF2 0%,#F6F5F3 100%)!important}
+.ctacard:nth-child(4){background:linear-gradient(180deg,#003349 0%,#0E5F8E 100%)!important;color:#fff!important}
+.ctacard:nth-child(1) span,.ctacard:nth-child(2) span,
+.ctacard:nth-child(4) span{color:rgba(255,255,255,.82)!important}
+.ctacard:nth-child(1) b,.ctacard:nth-child(2) b,
+.ctacard:nth-child(4) b{color:#fff!important}
+.ctacard:nth-child(2) b svg,.ctacard:nth-child(1) b svg,.ctacard:nth-child(4) b svg{color:#fff}
+.ctacard b{font-size:1.4375rem!important;margin:0 0 var(--s-2)!important}
+.ctacard span{font-size:var(--t-body)!important;line-height:1.55!important}
+.ctacard:hover{transform:translateY(-4px)}
+
+/* ═══════════════════════════════════════════════════════════════
+   21 · RESTRAINT — orange earns its place, it does not fill the page.
+   It survives in exactly three roles: the accent word in a headline,
+   the primary button, and the one selected state in the chooser.
+   Everything else that had drifted orange goes back to ink.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* the data fragments: ink, not orange */
+.frag--bars i{background:var(--ink)!important;opacity:.16!important}
+.frag--bars i:last-child{opacity:.5!important}
+.frag--rows i:first-child{background:var(--ink)!important;opacity:.42!important}
+.frag--wave i{background:var(--ink)!important;opacity:.28!important}
+.frag--spark{color:var(--ink-3)!important}
+.frag--rank b{color:var(--ink)!important}
+.frag--feed span:first-child{background:var(--ink)!important;opacity:.36!important}
+.frag--chips i:first-child{background:rgba(11,23,30,.07)!important}
+.frag--saydo i{background:var(--ink)!important;opacity:.42!important}
+
+/* the agent panel: one quiet accent on the meter, ticks in ink */
+.agentui__tick{background:rgba(11,23,30,.06)!important;color:var(--ink-3)!important}
+.agentui__meter i{background:var(--ink)!important;opacity:.28}
+.agentui__dot:first-child{background:var(--line-2)!important;opacity:1}
+
+/* the film card's play button stays orange — it is the one call to
+   action in the corner — but loses its coloured halo */
+.hero2__playbtn{box-shadow:none!important}
+
+/* the four CTA cards: paper and ink, with one orange card only */
+.ctacard:nth-child(1){background:var(--surface)!important;color:var(--ink)!important;
+  border:1px solid var(--line)!important}
+.ctacard:nth-child(2){background:linear-gradient(180deg,#0B171E,#12303F)!important;color:#fff!important;
+  border:0!important}
+.ctacard:nth-child(3){background:var(--surface)!important;color:var(--ink)!important;
+  border:1px solid var(--line)!important}
+.ctacard:nth-child(4){background:linear-gradient(180deg,#FF6D24,#F04E00)!important;color:#fff!important;
+  border:0!important}
+.ctacard:nth-child(1) b,.ctacard:nth-child(3) b{color:var(--ink)!important}
+.ctacard:nth-child(1) span,.ctacard:nth-child(3) span{color:var(--ink-3)!important}
+.ctacard:nth-child(1) b svg,.ctacard:nth-child(3) b svg{color:var(--ink-3)}
+
+/* the tier rules: one ink hairline, not three colours */
+.tier::before{background:var(--line-2)!important}
+.tier--orange::before{background:var(--orange)!important}
+.tier__cat{color:var(--ink-4)!important}
+.tier--orange .tier__cat{color:var(--ink-3)!important}
+
+/* the chooser keeps its orange, but only on the chosen row */
+.pick__row.is-on .pick__mark{color:var(--ink)!important}
+.about__stats dt{color:var(--ink)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   22 · PRODUCT SCENE — a real screen on a fixed canvas.
+   1100×620, scaled by hero.js to whatever room the pane has.
+   Everything inside is drawn at true size, so it stays crisp.
+   ═══════════════════════════════════════════════════════════════ */
+.scene{position:relative;width:100%;overflow:hidden;border-radius:12px}
+.scene__canvas{position:absolute;top:0;left:0;width:1100px;height:620px;
+  transform-origin:top left}
+
+.sc{display:flex;width:1100px;height:620px;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  font-family:var(--sans);color:var(--ink)}
+
+/* left rail */
+.sc-rail{width:64px;flex:none;background:var(--paper);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 0}
+.sc-rail__m{width:22px;height:22px;border-radius:6px;background:var(--ink);margin-bottom:12px}
+.sc-rail [class^="sc-rail__i"]{width:34px;height:34px;border-radius:9px;display:grid;
+  place-items:center;color:var(--ink-4)}
+.sc-rail .is-on{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+
+.sc-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.sc-head{height:58px;flex:none;display:flex;align-items:center;gap:14px;
+  padding:0 22px;border-bottom:1px solid var(--line)}
+.sc-url{display:inline-flex;align-items:center;gap:9px;height:34px;padding:0 15px;
+  border:1px solid var(--line);border-radius:8px;background:var(--paper);
+  font-size:13px;color:var(--ink-2);min-width:280px}
+.sc-url i{width:6px;height:6px;border-radius:50%;background:var(--ink-4)}
+.sc-head__sp{flex:1}
+.sc-live{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3)}
+.sc-live i{width:6px;height:6px;border-radius:50%;background:var(--orange);
+  animation:scPulse 1.8s ease-in-out infinite}
+@keyframes scPulse{0%,100%{opacity:.35}50%{opacity:1}}
+
+.sc-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 336px;gap:18px;padding:22px}
+.sc-pane{background:var(--paper);border:1px solid var(--line);border-radius:12px;
+  padding:20px;display:flex;flex-direction:column;min-height:0}
+.sc-lbl{margin:0 0 16px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-4);font-weight:600}
+
+/* the chart */
+.sc-chart{display:flex;align-items:flex-end;gap:8px;height:150px;margin-bottom:22px}
+.sc-chart i{flex:1;height:var(--h);border-radius:4px 4px 0 0;background:var(--ink);opacity:.13;
+  transform-origin:bottom;transform:scaleY(0);
+  animation:scGrow 700ms var(--ease) forwards;animation-delay:calc(var(--i) * 70ms + 200ms)}
+.sc-chart i:last-child{opacity:.34}
+@keyframes scGrow{to{transform:scaleY(1)}}
+
+/* the signal rows */
+.sc-rows{display:flex;flex-direction:column;gap:13px}
+.sc-row{display:flex;align-items:center;gap:14px;opacity:0;
+  animation:scIn 560ms var(--ease) forwards;animation-delay:calc(var(--i) * 260ms + 900ms)}
+.sc-row__k{width:118px;flex:none;font-size:13px;color:var(--ink-2)}
+.sc-row__bar{flex:1;height:6px;border-radius:99px;background:rgba(11,23,30,.08);overflow:hidden}
+.sc-row__bar i{display:block;height:100%;width:var(--w);border-radius:99px;background:var(--ink);
+  opacity:.28;transform-origin:left;transform:scaleX(0);
+  animation:scBar 800ms var(--ease) forwards;animation-delay:calc(var(--i) * 260ms + 1050ms)}
+.sc-row__v{width:64px;flex:none;text-align:right;font-size:13px;font-weight:600;
+  letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+@keyframes scIn{to{opacity:1}}
+@keyframes scBar{to{transform:scaleX(1)}}
+
+/* the agent column */
+.sc-says{margin:0 0 20px;font-size:14px;line-height:1.55;color:var(--ink);max-width:30ch}
+.sc-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.sc-step{display:flex;align-items:center;gap:11px;opacity:.3;
+  animation:scStep 600ms var(--ease) forwards;animation-delay:calc(var(--i) * 620ms + 1200ms)}
+@keyframes scStep{to{opacity:1}}
+.sc-step__tick{width:20px;height:20px;flex:none;border-radius:50%;display:grid;place-items:center;
+  background:rgba(11,23,30,.07);color:var(--ink-3)}
+.sc-step__t{font-size:13px;color:var(--ink-2)}
+.sc-meter{margin-top:auto;height:3px;border-radius:99px;background:rgba(11,23,30,.08);overflow:hidden}
+.sc-meter i{display:block;height:100%;width:0;background:var(--orange);border-radius:99px;
+  animation:scMeter 3.6s var(--ease) 900ms forwards}
+@keyframes scMeter{to{width:100%}}
+
+@media (prefers-reduced-motion:reduce){
+  .sc-chart i,.sc-row,.sc-row__bar i,.sc-step,.sc-meter i,.sc-live i{animation:none!important}
+  .sc-chart i{transform:scaleY(1)}.sc-row{opacity:1}.sc-row__bar i{transform:scaleX(1)}
+  .sc-step{opacity:1}.sc-meter i{width:100%}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   23 · THE HERO, to the wireframe.
+   Tagline → big title → paragraph (spaced) → chat with the film
+   card beside it. The film scrolls with the page and never touches
+   the chat. #heroPlay keeps its id, aria and video.js wiring.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* the play icon on the nav's film link */
+.nav__film{display:inline-flex;align-items:center;gap:8px}
+.nav__playdot{
+  width:20px;height:20px;flex:none;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--ink);color:#fff;
+  transition:background var(--d-1) var(--ease-io),transform var(--d-1) var(--ease);
+}
+.nav__playdot svg{margin-left:1px}
+.nav__film:hover .nav__playdot{background:var(--orange);transform:scale(1.08)}
+
+/* the hero column, then a two-up row for chat + film */
+.hero2__in{max-width:1220px!important;gap:0!important}
+.hero2 .eyebrow{margin:0 0 var(--s-4)!important}
+.hero2 .display{margin:0 0 var(--s-4)!important;max-width:22ch!important}
+.hero2__sub{margin:0 0 var(--s-7)!important;max-width:60ch!important}
+
+/* chat left, film right — a real row, not a floating card */
+.hero2__stage{display:grid;grid-template-columns:minmax(0,1fr) 300px;
+  gap:var(--s-5);align-items:start;width:100%;text-align:left}
+#heroPick,.pick{width:100%}
+
+/* the film leaves its fixed corner and joins the row */
+.hero2__play{
+  position:static!important;
+  width:100%!important;max-width:none!important;
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  gap:var(--s-3)!important;
+  padding:var(--s-4)!important;
+  border-radius:16px!important;
+  background:var(--surface)!important;
+  border:1px solid var(--line)!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  animation:none!important;
+  text-align:left!important;
+}
+.hero2__play:hover{transform:translateY(-3px);border-color:var(--line-2)!important}
+.hero2__thumb{
+  width:100%!important;height:150px!important;
+  border-radius:10px!important;
+  place-items:center;
+}
+.hero2__thumb img{opacity:1!important;object-fit:cover}
+.hero2__playbtn{
+  position:absolute!important;
+  width:46px!important;height:46px!important;
+  background:rgba(255,255,255,.92)!important;color:var(--ink)!important;
+}
+.hero2__playbtn svg{width:18px!important;height:18px!important}
+.hero2__play:hover .hero2__playbtn{background:#fff!important;transform:scale(1.06)}
+.hero2__playtext{gap:4px!important}
+.hero2__playtext b{font-size:var(--t-body)!important;font-weight:600}
+
+/* the presenter pills go back to the corner now the film has left it */
+.vercorner{bottom:14px!important}
+.democorner{bottom:52px!important}
+
+@media (max-width:1000px){
+  .hero2__stage{grid-template-columns:1fr}
+  .hero2__thumb{height:180px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   24 · NAV at half size. It was 77px tall with a 250px logo.
+   ═══════════════════════════════════════════════════════════════ */
+.nav__in{height:44px!important;padding:0 22px!important;gap:20px!important}
+.nav__brand svg{width:125px!important;height:auto!important}
+.nav__links{gap:18px!important}
+.nav__links a{font-size:12px!important}
+.nav__playdot{width:16px;height:16px}
+.nav__playdot svg{width:7px;height:7px}
+.nav__acts .btn,.nav__cta{
+  height:32px!important;padding:0 15px!important;font-size:12px!important;
+  letter-spacing:.02em!important;
+}
+.hero2{scroll-margin-top:44px}
+
+/* ═══════════════════════════════════════════════════════════════
+   25 · HERO LAYOUT — copy centred, then chat + film as one row.
+   The DOM order is eyebrow / title / film / sub / chat, so the grid
+   places them explicitly rather than relying on source order.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:1001px){
+  .hero2__in{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 296px;
+    column-gap:var(--s-5);
+    align-items:start;
+  }
+  .hero2 .eyebrow  {grid-column:1/-1;grid-row:1;justify-self:center}
+  .hero2 .display  {grid-column:1/-1;grid-row:2;justify-self:center;text-align:center}
+  .hero2__sub      {grid-column:1/-1;grid-row:3;justify-self:center;text-align:center}
+  #heroPick        {grid-column:1;   grid-row:4}
+  .hero2 .hero2__play{grid-column:2; grid-row:4;align-self:start}
+  .hero2 .chat     {grid-column:1/-1;grid-row:5}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   26 · THE MARK — the Stagwell logo as a lit object.
+   The three bars are used as a mask over a slowly drifting nebula,
+   on the light ground, with a shallow 3D tilt that breathes.
+   Reference: the shaders.com logo study, read for a light room.
+   ═══════════════════════════════════════════════════════════════ */
+.about__mark{
+  display:grid;place-items:center;
+  padding:var(--s-4);
+  perspective:1100px;
+}
+.markfx{
+  position:relative;
+  width:min(420px,100%);aspect-ratio:1.06/1;
+  transform-style:preserve-3d;
+  animation:markTilt 14s var(--ease-io) infinite;
+}
+@keyframes markTilt{
+  0%,100%{transform:rotateX(16deg) rotateY(-17deg)}
+  50%    {transform:rotateX(9deg)  rotateY(13deg)}
+}
+/* the soft light the object throws onto the paper */
+.markfx::after{
+  content:"";position:absolute;left:6%;right:6%;bottom:-9%;height:26%;
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(11,23,30,.16),transparent 70%);
+  filter:blur(20px);transform:translateZ(-60px);
+}
+.markfx__face{
+  position:absolute;inset:0;
+  /* the drifting nebula, in Stagwell's own colours */
+  background:
+    radial-gradient(38% 46% at 22% 26%,#FFB16B 0%,transparent 62%),
+    radial-gradient(44% 52% at 76% 22%,#66D2E8 0%,transparent 64%),
+    radial-gradient(52% 58% at 68% 78%,#4A7FB5 0%,transparent 66%),
+    radial-gradient(46% 50% at 26% 80%,#FF6D24 0%,transparent 60%),
+    linear-gradient(140deg,#0E5F8E 0%,#003349 46%,#08202C 100%);
+  background-size:220% 220%,240% 240%,260% 260%,230% 230%,100% 100%;
+  animation:markDrift 22s ease-in-out infinite;
+  /* the three bars cut the shape out of it */
+  -webkit-mask-image:var(--mark-mask);mask-image:var(--mark-mask);
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+}
+@keyframes markDrift{
+  0%,100%{background-position:0% 30%,100% 0%,20% 100%,80% 70%,0 0}
+  33%    {background-position:60% 0%, 30% 60%,80% 20%,10% 30%,0 0}
+  66%    {background-position:20% 80%,70% 90%,40% 40%,60% 100%,0 0}
+}
+/* a second, brighter pass that slides across like a highlight */
+.markfx__face::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.55) 48%,transparent 62%);
+  background-size:260% 100%;
+  animation:markSheen 9s var(--ease-io) infinite;
+  mix-blend-mode:screen;
+}
+@keyframes markSheen{0%,100%{background-position:170% 0}55%{background-position:-70% 0}}
+/* the inline svg is only there to carry the shape; the mask does the drawing */
+.about__mark svg{display:none}
+
+:root{
+  --mark-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28.44 28'%3E%3Cpath d='M16.74,19.93H0v7.59h12.33c2.71,0,4.41-1.69,4.41-4.41v-3.18Z'/%3E%3Cpath d='M11.7,7.59h16.74V0h-12.34c-2.71,0-4.41,1.69-4.41,4.41v3.18Z'/%3E%3Cpath d='M0,17.55h24.04c2.71,0,4.41-1.69,4.41-4.41v-3.18H4.41c-2.71,0-4.41,1.69-4.41,4.41v3.18Z'/%3E%3C/svg%3E");
+}
+
+/* the About section becomes a two-up: copy left, the object right */
+@media (min-width:1001px){
+  .about__in{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,440px);
+    column-gap:var(--s-7);align-items:center;
+  }
+  .about__mark{grid-column:2;grid-row:1}
+  .about__head{grid-column:1;grid-row:1;max-width:none!important}
+  .about__in>*:not(.about__mark):not(.about__head){grid-column:1/-1}
+}
+@media (prefers-reduced-motion:reduce){
+  .markfx,.markfx__face,.markfx__face::before{animation:none!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   27 · CORRECTIONS (Julian)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* a · the film card sits further off the chat, and stays small */
+@media (min-width:1001px){
+  .hero2__in{grid-template-columns:minmax(0,1fr) 236px!important;column-gap:var(--s-7)!important}
+  .hero2 .hero2__play{max-width:236px!important}
+  .hero2__thumb{height:124px!important}
+}
+
+/* b · the website field fills its row instead of stopping short */
+.pick__site{flex:1 1 auto!important;max-width:none!important;width:100%}
+.pick__foot{flex-wrap:nowrap!important}
+@media (max-width:640px){.pick__foot{flex-wrap:wrap!important}}
+
+/* c · the Agentic solutions title, bigger */
+.about__title,.about__head .about__title{
+  font-size:clamp(2.5rem,4.6vw,4rem)!important;
+  line-height:1.02!important;
+  letter-spacing:var(--track-display)!important;
+  margin:0 0 var(--s-4)!important;
+  max-width:15ch!important;
+}
+
+/* d · the mark: the real logo, real colours, no 3D, no nebula.
+   It drifts gently against the scroll and nothing else. */
+.markfx{
+  width:min(380px,100%)!important;aspect-ratio:1.06/1!important;
+  animation:none!important;transform:none!important;
+  display:grid;place-items:center;
+}
+.markfx::after{display:none!important}
+.markfx__face{
+  position:relative!important;inset:auto!important;
+  width:100%;height:100%;
+  background:none!important;animation:none!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+  display:grid;place-items:center;
+  will-change:transform;
+}
+.markfx__face::before{display:none!important}
+.about__mark{perspective:none!important}
+.about__mark svg{
+  display:block!important;
+  width:100%;height:auto;
+}
+/* the logo's own three colours, unchanged */
+.about__mark .m-ink{fill:var(--ink)}
+.about__mark .m-amber{fill:var(--amber)}
+.about__mark .m-teal{fill:var(--teal)}
+/* the field grows, the button never does */
+#pickGo,.pick__go,.pick__foot .btn{flex:0 0 auto!important;width:auto!important}
+.pick__site{flex:1 1 0!important;min-width:0!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   28 · THE FILM CARD — floating bottom-right of the hero, the way
+   the reference floats its stat card. The chat goes back to being
+   centred and full width; the two never share a row.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:1001px){
+  /* the hero column is a plain centred stack again */
+  .hero2__in{display:flex!important;flex-direction:column!important;align-items:center!important}
+  .hero2 .eyebrow,.hero2 .display,.hero2__sub{justify-self:auto}
+  #heroPick,.pick{width:100%!important;max-width:1000px!important;margin-inline:auto!important}
+
+  .hero2{position:relative}
+  .hero2 .hero2__play{
+    position:absolute!important;
+    right:clamp(20px,3vw,40px)!important;
+    bottom:clamp(20px,3vw,36px)!important;
+    z-index:6;
+    width:auto!important;max-width:none!important;
+    flex-direction:row!important;align-items:center!important;
+    gap:14px!important;
+    padding:12px 20px 12px 12px!important;
+    border-radius:14px!important;
+  }
+  /* a small square with the play mark, then the text */
+  .hero2 .hero2__thumb{
+    width:60px!important;height:60px!important;
+    border-radius:10px!important;flex:none!important;
+  }
+  .hero2 .hero2__playtext{align-items:flex-start!important;gap:3px!important}
+  .hero2 .hero2__playtext b{font-size:var(--t-sm)!important;white-space:nowrap}
+  .hero2 .hero2__playbtn{width:30px!important;height:30px!important}
+  .hero2 .hero2__playbtn svg{width:13px!important;height:13px!important}
+}
+@media (min-width:1001px){
+  /* room under the chat so the floating card never crosses it */
+  .hero2{padding-bottom:clamp(150px,18vh,210px)!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   29 · THE FILM CARD sits after the chat, centred.
+   The DOM order is eyebrow / title / film / sub / chat, so flex
+   order puts the film back where it belongs on screen.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:1001px){
+  .hero2{padding-bottom:clamp(64px,9vh,120px)!important}
+  .hero2 .eyebrow{order:1}
+  .hero2 .display{order:2}
+  .hero2__sub    {order:3}
+  #heroPick      {order:4}
+  .hero2 .hero2__play{order:5}
+  .hero2 .chat   {order:6}
+
+  .hero2 .hero2__play{
+    position:static!important;
+    margin-top:var(--s-5)!important;
+    align-self:center!important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   30 · GROUND, NAV, EYEBROW  (Julian)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* a · the two grounds sit much closer together now */
+:root{
+  --paper:#FAFAF9;
+  --surface-2:#F3F3F1;
+  --line:rgba(11,23,30,.09);
+  --line-2:rgba(11,23,30,.15);
+}
+
+/* b · the nav is white and a little taller */
+.nav,.bnav,header.nav{background:#FFFFFF!important}
+.nav__in{height:60px!important}
+.hero2{scroll-margin-top:60px}
+.mnav{inset:60px 0 auto}
+
+/* c · Talk to an AI expert is a solid button, not an outline */
+.nav__acts .btn,.nav__acts .btn--dark,.nav__cta{
+  background:var(--ink)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:none!important;
+  height:36px!important;padding:0 18px!important;
+  font-size:12px!important;font-weight:600!important;
+  letter-spacing:.03em!important;
+}
+.nav__acts .btn:hover,.nav__acts .btn--dark:hover,.nav__cta:hover{
+  background:#1D3A49!important;color:#fff!important;
+}
+
+/* d · the hero eyebrow breaks onto two lines, centred */
+.hero2 .eyebrow{
+  white-space:normal!important;
+  max-width:min(560px,88vw);
+  text-align:center;
+  line-height:var(--lh-label)!important;
+  margin:0 0 var(--s-4)!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   31 · Scroll, spacing, eyebrow break
+   ═══════════════════════════════════════════════════════════════ */
+
+/* a · the wheel passes through the chooser to the page.
+   .pick__detail set overscroll-behavior:contain, which traps the
+   scroll even when the panel has nothing to scroll. */
+.pick__detail,.chat__thread{overscroll-behavior:auto!important}
+.pick__detail{overflow-y:visible!important}
+.pick__detail.is-scrolling{overflow-y:auto!important}
+
+/* b · the chat comes up closer to the paragraph */
+.hero2__sub{margin-bottom:var(--s-5)!important}
+
+/* c · the eyebrow balances instead of dropping one word alone */
+.hero2 .eyebrow{
+  text-wrap:balance;
+  max-width:min(620px,88vw)!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   32 · ONE TYPE SCALE FOR RUNNING TEXT
+   The page had fifteen different size/leading pairs (13/20.15,
+   15/22.5, 15/23.25, 15/24.3, 14/21.7, 12/17.4 …). Four steps now,
+   each with a single leading. Nothing else sets a body size.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --t-lede:17px;   --lh-lede:1.62;
+  --t-body:15px;   --lh-body:1.62;
+  --t-sm:13px;     --lh-sm:1.55;
+  --t-label:11px;  --lh-label:1.6;
+}
+
+/* 1 · LEDE — the line under a section title, and the hero sub */
+.about__lede,.bcta__lede,.sec__lede,.sec__p,.hero2__sub,.tier__head,.pick__dl{
+  font-size:var(--t-lede)!important;
+  line-height:var(--lh-lede)!important;
+}
+
+/* 2 · BODY — every ordinary paragraph and card description */
+p,li,.about__line,.tier__line,.ctacard span,.scard__t i,.fcard__t i,
+.callback__t span,.sc-says,.pick__empty-h,.agentui__says,.tier p{
+  font-size:var(--t-body)!important;
+  line-height:var(--lh-body)!important;
+}
+
+/* 3 · SMALL — meta, spec rows, captions, the scene's own labels */
+dd,.about__stats dd,.tier dd,.sc-step__t,.sc-row__k,.sc__honesty,
+.hero2__playtext b,.pick__row,.rows li,.mini-feed span{
+  font-size:var(--t-sm)!important;
+  line-height:var(--lh-sm)!important;
+}
+
+/* 4 · LABEL — all-caps eyebrows and category lines only */
+.eyebrow,.tier__cat,.sc-lbl,.about__proofnote,dt,.sc-live,
+.hero2__playtext small,.crail__k,.fcard__k{
+  font-size:var(--t-label)!important;
+  line-height:var(--lh-label)!important;
+}
+
+/* the two that legitimately sit outside running text keep their own scale */
+.about__stats dt{font-size:clamp(3rem,5.4vw,4.5rem)!important;line-height:.94!important}
+.tier__name,.scard__t b,.fcard__t b,.ctacard b,.sc-row__v{line-height:1.12!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   33 · THE EYEBROW — black, one line, sitting up close to the nav,
+   with real air between it and the title.
+   ═══════════════════════════════════════════════════════════════ */
+.hero2{padding-top:var(--s-5)!important}
+.hero2 .eyebrow{
+  color:var(--ink)!important;
+  white-space:nowrap!important;
+  max-width:none!important;
+  text-wrap:nowrap;
+  margin:0 0 var(--s-7)!important;
+  letter-spacing:.14em!important;
+}
+@media (max-width:900px){
+  .hero2 .eyebrow{white-space:normal!important;text-wrap:balance;max-width:46ch!important}
+}
+/* the eyebrow sits right up under the nav */
+.hero2{padding-top:var(--s-3)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   34 · Title up, and the scene reads as mid-thought
+   ═══════════════════════════════════════════════════════════════ */
+.hero2 .eyebrow{margin-bottom:calc(var(--s-7) - 20px)!important}
+
+/* the pane gives the scene room instead of cropping it */
+.pick__detail-empty{display:flex;flex-direction:column;gap:var(--s-3);min-height:0}
+.pick__detail-empty .scene{flex:1;min-height:0}
+
+/* the current step lifts; the others sit back */
+.sc-step{transition:opacity var(--d-2) var(--ease)}
+.sc-step.is-now{opacity:1!important}
+.sc-step.is-now .sc-step__tick{background:rgba(255,109,36,.14);color:var(--orange)}
+.sc-step:not(.is-now){opacity:.42}
+.sc-step.is-now .sc-step__t{color:var(--ink)}
+
+/* ═══════════════════════════════════════════════════════════════
+   35 · THE AGENT SPEAKING — centred in the chooser's right pane.
+   Legible at real size: its line, then the four things it does,
+   one lit at a time. Replaces the shrunken product screen.
+   ═══════════════════════════════════════════════════════════════ */
+.say{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;
+  gap:var(--s-3);height:100%;padding:var(--s-4) var(--s-3);
+}
+.say__mark{width:34px;height:34px;display:grid;place-items:center;flex:none}
+.say__mark svg{width:100%;height:100%}
+.say__line{
+  margin:0!important;
+  font-family:var(--sans);
+  font-size:17px!important;line-height:1.5!important;
+  color:var(--ink);max-width:26ch;letter-spacing:-.008em;
+}
+.say__steps{
+  list-style:none;margin:var(--s-2) 0 0;padding:0;
+  display:flex;flex-direction:column;gap:12px;
+  text-align:left;
+}
+.say__step{
+  display:flex;align-items:center;gap:11px;
+  opacity:.4;transition:opacity var(--d-2) var(--ease);
+}
+.say__step.is-now{opacity:1}
+.say__tick{
+  width:21px;height:21px;flex:none;border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(11,23,30,.07);color:var(--ink-3);
+  transition:background var(--d-2) var(--ease),color var(--d-2) var(--ease);
+}
+.say__step.is-now .say__tick{background:var(--orange);color:#fff}
+.say__label{font-size:15px;line-height:1.5;color:var(--ink-2)}
+.say__step.is-now .say__label{color:var(--ink)}
+
+/* the pane just holds it now — no canvas to fit */
+.pick__detail-empty{align-items:center;justify-content:center}
+.pick__detail-empty .pick__empty-h{margin-top:var(--s-3)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   36 · "Pick one and I'll show you what it covers" moves under the
+   list on the left, where the choosing happens.
+   ═══════════════════════════════════════════════════════════════ */
+.pick__col{
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--line);
+  background:var(--paper);
+  min-width:0;
+}
+.pick__col .pick__list{border-right:0!important;background:none!important;flex:1}
+.pick__hint{
+  margin:0!important;
+  padding:0 var(--s-3) var(--s-4) calc(var(--s-3) + 14px);
+  font-size:var(--t-sm)!important;line-height:var(--lh-sm)!important;
+  color:var(--ink-3)!important;max-width:30ch;
+}
+/* the right pane is the agent alone now */
+.pick__detail-empty .pick__empty-h,.pick__detail-empty .pick__empty-l{display:none}
+@media (max-width:1000px){
+  .pick__col{border-right:0;border-bottom:1px solid var(--line)}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   37 · The hint reads first, then the rows. The agent thinks one
+   line at a time instead of listing four with ticks.
+   ═══════════════════════════════════════════════════════════════ */
+.pick__hint{
+  order:-1;
+  padding:var(--s-4) var(--s-3) var(--s-3) calc(var(--s-3) + 14px)!important;
+  font-size:15px!important;line-height:1.55!important;
+  color:var(--ink)!important;max-width:32ch;
+}
+
+/* one thinking line, swapping */
+.say__now{
+  margin:var(--s-2) 0 0!important;
+  display:flex;align-items:center;gap:10px;
+  min-height:26px;
+}
+.say__dots{display:inline-flex;gap:4px;flex:none}
+.say__dots i{
+  width:5px;height:5px;border-radius:50%;background:var(--orange);
+  animation:sayBob 1.15s var(--ease-io) infinite;
+}
+.say__dots i:nth-child(2){animation-delay:.14s}
+.say__dots i:nth-child(3){animation-delay:.28s}
+@keyframes sayBob{0%,72%,100%{opacity:.3;transform:none}36%{opacity:1;transform:translateY(-3px)}}
+.say__word{
+  font-size:15px;line-height:1.5;color:var(--ink-2);
+  transition:opacity 240ms var(--ease),transform 240ms var(--ease);
+}
+.say__word.is-out{opacity:0;transform:translateY(-4px)}
+@media (prefers-reduced-motion:reduce){
+  .say__dots i{animation:none;opacity:.7}
+  .say__word{transition:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   38 · The agent: line, dots, thought — centred both ways.
+   The dots carry the logo's three colours. The logo mark is gone.
+   ═══════════════════════════════════════════════════════════════ */
+.say{justify-content:center!important;align-items:center!important;gap:var(--s-3)!important}
+.say__mark{display:none!important}
+
+.say__dots{display:inline-flex;gap:7px;flex:none;margin:0}
+.say__dots i{
+  width:8px;height:8px;border-radius:50%;
+  animation:sayBob 1.25s var(--ease-io) infinite;
+}
+.say__dots i:nth-child(1){background:var(--amber)}
+.say__dots i:nth-child(2){background:var(--teal)}
+.say__dots i:nth-child(3){background:var(--blue);animation-delay:.3s}
+.say__dots i:nth-child(2){animation-delay:.15s}
+@keyframes sayBob{0%,72%,100%{opacity:.35;transform:none}36%{opacity:1;transform:translateY(-4px)}}
+
+.say__now{
+  margin:0!important;display:flex;justify-content:center;
+  min-height:24px;text-align:center;
+}
+.say__word{font-size:15px;line-height:1.5;color:var(--ink-2)}
+
+/* ── the hint: icon on the left, text beside it ── */
+.pick__hint{
+  display:flex!important;align-items:flex-start;gap:11px;
+  padding:var(--s-4) var(--s-3) var(--s-3)!important;
+  max-width:none!important;
+}
+.pick__hinti{
+  width:26px;height:26px;flex:none;border-radius:8px;
+  display:grid;place-items:center;
+  background:rgba(11,23,30,.05);color:var(--ink-3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   39 · Smaller dots, the favicon on the hint, and real space
+   between the line, the loader and the changing thought.
+   ═══════════════════════════════════════════════════════════════ */
+.say{gap:0!important}
+.say__line{margin:0 0 var(--s-5)!important}
+.say__dots{gap:5px!important;margin:0 0 var(--s-4)!important}
+.say__dots i{width:5px!important;height:5px!important}
+.say__now{margin:0!important}
+
+/* the hint carries the favicon, not a menu glyph */
+.pick__hinti{
+  background:none!important;
+  width:20px!important;height:20px!important;
+  border-radius:0!important;margin-top:1px;
+}
+.pick__hinti svg{width:100%;height:100%}
+
+/* ═══════════════════════════════════════════════════════════════
+   40 · The hint balances across its lines, and the mark sits on the
+   text's own line at the text's own size.
+   ═══════════════════════════════════════════════════════════════ */
+.pick__hint > span:last-child{
+  text-wrap:balance;
+  max-width:30ch;
+}
+.pick__hinti{
+  width:15px!important;height:15px!important;
+  /* drop it onto the centre of the first line (15px text on a 1.55 leading) */
+  margin-top:4px!important;
+}
+/* the nav logo, 20% up from 125px */
+.nav__brand svg{width:150px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   41 · The mark beside the hint stands as tall as the two lines
+   of text it sits next to, and centres against them.
+   ═══════════════════════════════════════════════════════════════ */
+.pick__hint{align-items:center!important;gap:13px!important}
+.pick__hinti{
+  width:44px!important;height:44px!important;
+  margin-top:0!important;
+}
+/* the mark sits between the two extremes: taller than one line, not the block */
+.pick__hinti{width:26px!important;height:26px!important}
+.pick__hint{gap:11px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   42 · The chooser's left column takes its own grey, a step deeper
+   than the page and clearly apart from the white right pane and
+   from the field in the foot.
+   ═══════════════════════════════════════════════════════════════ */
+.pick__col{background:#F1F1EE!important;border-right:1px solid var(--line)!important}
+.pick__detail{background:var(--surface)!important}
+/* the field sits on white so it never reads as the same panel */
+.pick__site input{background:#FFFFFF!important;border-color:var(--line-2)!important}
+.pick__foot{background:var(--surface)!important;border-top:1px solid var(--line)!important}
+/* rows lift off that grey rather than into it */
+.pick__row:hover{background:rgba(11,23,30,.055)!important}
+.pick__row.is-on{background:#FFFFFF!important;box-shadow:inset 0 0 0 1px var(--line)!important}
+
+/* the hint's lines sit closer together */
+.pick__hint > span:last-child{line-height:1.35!important}
+.pick__hint{line-height:1.35!important}
+/* hero.css scopes its own --surface inside .pick, so name the whites */
+.pick,.pick__detail,.pick__foot{background:#FFFFFF!important}
+.pick__col{background:#F0F0ED!important}
+/* the left column lightens; the mark grows 5% and gets more room beside the text */
+.pick__col{background:#F7F7F5!important}
+.pick__hinti{width:27px!important;height:27px!important}
+.pick__hint{gap:15px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   43 · "What is Stagwell.AI" — a touch smaller, with a CTA under
+   the paragraph. The portfolio block below it centres.
+   ═══════════════════════════════════════════════════════════════ */
+.about__title{font-size:clamp(2.125rem,3.8vw,3.25rem)!important;max-width:17ch!important}
+.about__act{margin:var(--s-5) 0 0!important}
+.about__act .btn{height:46px;padding:0 26px}
+
+/* ── the portfolio block, centred ── */
+.about__portfolio{text-align:center}
+.about__portfolio .about__h3{
+  font-size:clamp(1.875rem,3.2vw,2.75rem)!important;
+  line-height:1.06!important;letter-spacing:var(--track-h)!important;
+  max-width:22ch!important;margin:0 auto var(--s-4)!important;
+  text-wrap:balance;
+}
+.about__portfolio .about__line{
+  font-size:var(--t-lede)!important;line-height:var(--lh-lede)!important;
+  color:var(--ink-2)!important;
+  max-width:60ch!important;margin:0 auto var(--s-6)!important;
+}
+/* the cards themselves stay left-read */
+.about__portfolio .tier{text-align:left}
+/* beat rule 27c's .about__head .about__title */
+.about__head .about__title,.about .about__title{
+  font-size:clamp(2.125rem,3.8vw,3.25rem)!important;
+  max-width:17ch!important;
+}
+/* the portfolio title matches "Agentic solutions…" exactly, over two lines */
+.about__portfolio .about__h3{
+  font-size:clamp(2.125rem,3.8vw,3.25rem)!important;
+  max-width:20ch!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   44 · The portfolio title breaks over two lines, and every orange
+   button carries white type (the board's navy-on-orange is out).
+   ═══════════════════════════════════════════════════════════════ */
+.about__portfolio .about__h3{max-width:32ch!important}
+
+.btn--gold,#pickGo,.pick__go,.prompt__send,
+.ctacard:nth-child(4),button.btn--gold,a.btn--gold{
+  color:#FFFFFF!important;
+}
+.btn--gold *,#pickGo *,.pick__go *{color:#FFFFFF!important}
+.btn--gold svg,#pickGo svg,.pick__go svg,.prompt__send svg{
+  color:#FFFFFF!important;fill:currentColor;stroke:currentColor;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   45 · Room between "What is Stagwell.AI" and the portfolio block.
+   The CTA was landing almost on top of the next title.
+   ═══════════════════════════════════════════════════════════════ */
+.about__in{gap:clamp(96px,13vh,180px)!important}
+.about__portfolio{padding-top:clamp(24px,4vh,56px)}
+.about__act{margin-bottom:var(--s-4)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   46 · THE TIER CARDS, in the reference's pattern.
+   Tinted ground, content at the top, generous air in the middle,
+   then the facts as label-left / value-right rows between hairlines.
+   ═══════════════════════════════════════════════════════════════ */
+.about__tiers{gap:20px!important;align-items:stretch}
+.tier{
+  background:#F2F0EC!important;
+  border:0!important;
+  border-radius:18px!important;
+  padding:34px 32px 32px!important;
+  display:flex!important;flex-direction:column!important;
+  gap:0!important;min-height:420px;
+}
+/* the coloured rule at the top goes: the ground carries the card now */
+.tier::before{display:none!important}
+
+.tier__cat{
+  margin:0 0 18px!important;
+  font-family:var(--sans)!important;font-weight:600!important;
+  font-size:11px!important;letter-spacing:.14em!important;
+  text-transform:uppercase!important;color:var(--ink-4)!important;
+}
+.tier__name{
+  font-family:var(--display)!important;
+  font-size:28px!important;font-weight:600!important;
+  letter-spacing:-.026em!important;line-height:1.1!important;
+  margin:0 0 12px!important;color:var(--ink)!important;
+}
+.tier__head{
+  font-size:17px!important;line-height:1.5!important;
+  color:var(--ink)!important;font-weight:400!important;
+  margin:0 0 12px!important;max-width:32ch!important;
+}
+.tier__line{
+  font-size:15px!important;line-height:1.6!important;
+  color:var(--ink-2)!important;margin:0!important;max-width:36ch!important;
+}
+
+/* the air that pushes the facts to the foot */
+.tier__facts{
+  margin:auto 0 0!important;padding:0!important;
+  display:flex;flex-direction:column;
+}
+.tier__facts > div{
+  display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+  padding:14px 0;
+  border-top:1px solid rgba(11,23,30,.13);
+}
+.tier__facts > div:first-child{margin-top:34px}
+.tier__facts dt{
+  margin:0!important;flex:none;
+  font-family:var(--mono)!important;font-weight:500!important;
+  font-size:11px!important;letter-spacing:.13em!important;
+  text-transform:uppercase!important;color:var(--ink-3)!important;
+}
+.tier__facts dd{
+  /* left, not right: these stack under their label now, so a right
+     rag put the ragged edge on the reading edge */
+  margin:0!important;text-align:left!important;
+  font-size:14px!important;line-height:1.45!important;
+  color:var(--ink)!important;max-width:22ch;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   47 · The tier cards: a lighter, neutral grey (the last one read
+   brown), and eyebrows small enough to hold one line.
+   ═══════════════════════════════════════════════════════════════ */
+.tier{background:#F7F7F6!important}
+.tier__facts > div{border-top-color:rgba(11,23,30,.11)!important}
+
+.tier__cat{
+  font-size:10px!important;
+  letter-spacing:.1em!important;
+}
+@media (min-width:1001px){
+  .tier__cat{white-space:nowrap!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   48 · THE PROOF SECTION, in the reference's pattern: copy on the
+   left, figures as cards on the right — one wide, then a pair.
+   ═══════════════════════════════════════════════════════════════ */
+.about__proof{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);
+  gap:clamp(40px,6vw,88px);align-items:start;
+}
+.proof__say{display:flex;flex-direction:column;gap:var(--s-3)}
+.proof__h{
+  font-family:var(--display)!important;
+  font-size:clamp(1.75rem,3vw,2.5rem)!important;font-weight:600!important;
+  letter-spacing:var(--track-h)!important;line-height:1.08!important;
+  margin:0!important;max-width:14ch;
+}
+.about__proofnote{
+  margin:0!important;max-width:36ch;
+  font-size:13px!important;line-height:1.55!important;
+  color:var(--ink-3)!important;text-transform:none!important;
+  letter-spacing:0!important;font-family:var(--sans)!important;
+}
+
+/* the figures become cards */
+.about__stats{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:16px!important;margin:0!important;
+}
+.stat{
+  background:#F5F5F4;border-radius:16px;
+  padding:22px 24px 24px;
+  display:flex!important;flex-direction:column;justify-content:space-between;
+  min-height:190px;gap:0!important;
+}
+.stat--wide{grid-column:1/-1;min-height:170px}
+.stat dt{
+  font-family:var(--display)!important;
+  font-size:clamp(2.5rem,4.4vw,3.5rem)!important;font-weight:600!important;
+  letter-spacing:-.04em!important;line-height:1!important;
+  color:var(--ink)!important;margin:auto 0 10px!important;
+}
+/* the one that is names, not a number, reads as names */
+.stat--words dt{
+  font-size:clamp(1.25rem,1.9vw,1.625rem)!important;
+  letter-spacing:-.02em!important;line-height:1.25!important;
+}
+.stat dd{
+  margin:0!important;font-size:14px!important;line-height:1.5!important;
+  color:var(--ink-3)!important;max-width:30ch;
+}
+@media (max-width:1000px){
+  .about__proof{grid-template-columns:1fr!important}
+}
+@media (max-width:560px){
+  .about__stats{grid-template-columns:1fr!important}
+  .stat--wide{grid-column:auto}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   49 · THE TIER CARDS ALIGN ACROSS THE ROW.
+   Every card shares one row track, so the name, the description,
+   the divider and both fact rows sit on the same lines in all
+   three — whatever length the copy is. The flexible track is the
+   description, so the facts always land at the same height.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:1001px){
+  .about__tiers{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:auto auto auto 1fr auto auto;
+  }
+  .tier{
+    display:grid!important;
+    grid-row:span 6;
+    grid-template-rows:subgrid;
+    row-gap:0;
+  }
+  .tier__facts{
+    display:grid!important;
+    grid-row:span 2;
+    grid-template-rows:subgrid;
+    margin:0!important;
+  }
+  .tier__facts > div{margin:0!important;align-items:start}
+  .tier__facts > div:first-child{margin-top:0!important}
+  /* the description is the track that stretches */
+  .tier__line{align-self:start;padding-bottom:28px}
+}
+
+/* the eyebrow may wrap again — the shared row keeps them level */
+.tier__cat{white-space:normal!important;text-wrap:balance}
+
+/* ═══════════════════════════════════════════════════════════════
+   50 · The proof heading matches the other section titles, and the
+   CTA lives with the copy on the left instead of on its own row.
+   ═══════════════════════════════════════════════════════════════ */
+.proof__h{
+  font-size:clamp(2.125rem,3.8vw,3.25rem)!important;
+  max-width:16ch!important;
+}
+.proof__say{gap:var(--s-4)!important}
+.about__cta{
+  flex-direction:column!important;align-items:flex-start!important;
+  gap:var(--s-3)!important;padding-top:var(--s-2)!important;margin:0!important;
+}
+.about__cta span{font-size:15px!important;line-height:1.55!important;color:var(--ink-2)!important;max-width:34ch}
+.about__more{font-size:15px!important;color:var(--ink)!important;font-weight:500}
+.about__more:hover{color:var(--orange)!important}
+/* one divider, not two: rule 17 put a border on the list as well as on its first row */
+.tier dl,.tier__facts,.tier__spec{border-top:0!important;padding-top:0!important}
+/* the proof note breaks on a comfortable measure and balances */
+.about__proofnote{max-width:30ch!important;text-wrap:balance}
+
+/* ═══════════════════════════════════════════════════════════════
+   51 · Real air around the proof CTA — above the button and
+   between it and the line underneath.
+   ═══════════════════════════════════════════════════════════════ */
+.about__cta{
+  padding-top:var(--s-6)!important;
+  gap:var(--s-5)!important;
+}
+.about__cta .btn{margin:0!important}
+.about__cta span{margin:0!important}
+.about__more{margin-top:calc(var(--s-5) * -0.4)}
+/* the button tucks under the paragraph; the lines below it get the air */
+.about__cta{padding-top:var(--s-4)!important;gap:0!important}
+.about__cta span{margin-top:var(--s-6)!important}
+.about__more{margin-top:var(--s-3)!important}
+/* two groups: [title · paragraph · button] then, well apart, [line · link] */
+.about__cta{padding-top:var(--s-3)!important}
+.about__cta span{margin-top:var(--s-7)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   52 · THE HERO WASH — a soft light rising from the floor of the
+   section to about half its height, so the chat lifts off it.
+   Three brand colours layered and masked, not a default gradient.
+   ═══════════════════════════════════════════════════════════════ */
+.hero2{position:relative;isolation:isolate}
+
+/* the chat sits on the wash, not in it */
+.pick{position:relative;z-index:1}
+.hero2 .hero2__play{position:relative;z-index:1}
+@media (max-width:1000px){}
+
+/* ═══════════════════════════════════════════════════════════════
+   53 · The wash meets the seam instead of being cut by it.
+   Its strongest point sits at the hero's floor, and the same light
+   continues a little way into "What is Stagwell.AI" before it
+   resolves to white — so scrolling reads as one surface.
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* the continuation, carrying the same four lights downward */
+.about{position:relative;isolation:isolate;overflow:hidden}
+.about::before{
+  content:""!important;display:block!important;
+  position:absolute;left:0;right:0;top:0;height:260px;
+  z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(120% 150% at 18% -46%, rgba(255,184,28,.26), transparent 60%),
+    radial-gradient(105% 140% at 82% -42%, rgba(0,156,189,.22), transparent 58%),
+    radial-gradient(150% 180% at 50% -60%, rgba(14,95,142,.13), transparent 66%),
+    radial-gradient( 90% 120% at 50% -30%, rgba(255,109,36,.08), transparent 62%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.6) 42%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.6) 42%,transparent 100%);
+  filter:blur(6px) saturate(1.05);
+}
+/* the About lede runs 20% narrower */
+.about__head .about__lede,.about .about__lede{max-width:39ch!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   54 · ONE GROUND, ONE GLOW.
+   The two-part wash was the mistake: two elements, two masks, and
+   a colour step between #FAFAF9 and #FFFFFF drawing a line across
+   the seam. Now the sections share one ground and the hero carries
+   a single soft glow that fades out on every side.
+   ═══════════════════════════════════════════════════════════════ */
+.about::before{content:none!important;display:none!important}
+.about{background:var(--paper)!important;overflow:visible!important;border-block:0!important}
+
+
+
+/* the cards keep their white so they still lift off the ground */
+.tier{background:#FFFFFF!important}
+.stat{background:#FFFFFF!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   55 · The wash runs the full hero, bottom to top.
+   It bleeds a little past the section's floor so there is no cut
+   at the seam — the ground below is the same paper now.
+   ═══════════════════════════════════════════════════════════════ */
+.hero2{overflow:visible!important}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   56 · White ground so the wash reads, and the wash reaches higher.
+   Both sections stay the same colour, so the seam stays invisible.
+   ═══════════════════════════════════════════════════════════════ */
+:root{--paper:#FFFFFF}
+html,body,.hero2,.about,.bcta,.crail,.bfoot{background:#FFFFFF!important}
+
+/* the wash climbs most of the hero now */
+
+
+/* with a white ground the cards take the grey so they still read */
+.tier,.stat{background:#F7F7F6!important}
+.pick__col{background:#F7F7F6!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   57 · THE SUITE SECTION — centred head, square cards ready to
+   take background images under a deep blue overlay, and the call
+   to action always visible rather than appearing on hover.
+   ═══════════════════════════════════════════════════════════════ */
+.bcta__in{text-align:center}
+.bcta__h{
+  margin:0 auto var(--s-4)!important;
+  max-width:20ch!important;text-wrap:balance;
+}
+.bcta__lede{
+  margin:0 auto var(--s-7)!important;
+  max-width:58ch!important;text-align:center;
+}
+.bcta__acts{justify-content:center!important}
+
+/* ── the cards: one to one ── */
+.bcta__grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:20px!important}
+.ctacard{
+  position:relative;overflow:hidden;
+  aspect-ratio:1/1!important;min-height:0!important;
+  display:flex!important;flex-direction:column;justify-content:flex-end;
+  padding:26px!important;text-align:left;
+  border:0!important;border-radius:18px!important;
+  /* an image drops in here: style="background-image:url(...)" on the card */
+  background-color:#0B2A3A!important;
+  background-size:cover!important;background-position:center!important;
+  background-repeat:no-repeat!important;
+  color:#fff!important;
+  isolation:isolate;
+}
+/* the deep blue overlay that keeps the type readable over any photo */
+.ctacard::after{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(0,51,73,.42) 0%,rgba(0,32,46,.78) 100%);
+}
+.ctacard::before{display:none!important}
+.ctacard b,.ctacard span,.ctacard:nth-child(n) b,.ctacard:nth-child(n) span{color:#fff!important}
+.ctacard span{color:rgba(255,255,255,.82)!important;max-width:26ch!important}
+.ctacard b{
+  font-size:1.375rem!important;margin:0 0 var(--s-2)!important;
+  display:flex;align-items:center;gap:9px;
+}
+/* the arrow no longer waits for a hover */
+.ctacard b svg{opacity:1!important;transform:none!important;color:#fff!important}
+.ctacard:hover{transform:translateY(-4px)}
+.ctacard:hover::after{background:linear-gradient(180deg,rgba(0,51,73,.34) 0%,rgba(0,32,46,.72) 100%)}
+/* the fourth card keeps the orange as the primary route */
+.ctacard:nth-child(4){background-color:#C24A12!important}
+.ctacard:nth-child(4)::after{background:linear-gradient(180deg,rgba(255,109,36,.30) 0%,rgba(178,60,8,.80) 100%)}
+
+@media (max-width:1080px){.bcta__grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media (max-width:560px){.bcta__grid{grid-template-columns:1fr!important}}
+
+/* ═══════════════════════════════════════════════════════════════
+   58 · The suite head reads on white, and each card ends in a
+   real button rather than a bare arrow.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* a · the title kept --on-void from when this band was dark */
+.bcta__h,.bcta .bcta__h{color:var(--ink)!important}
+.bcta__h .accent{color:var(--orange)!important}
+.bcta__lede{color:var(--ink-2)!important;margin-top:var(--s-5)!important}
+.bcta__h{margin-bottom:0!important}
+
+/* b · the card's arrow becomes a button, pinned to the foot */
+.ctacard{padding:26px 26px 84px!important}
+.ctacard b{display:block!important;padding-right:0!important}
+.ctacard b svg{
+  position:absolute;left:26px;bottom:26px;
+  width:auto!important;height:auto!important;
+  opacity:0!important;                     /* the pill below carries the arrow */
+}
+.ctacard::before{
+  content:"Learn more"!important;display:inline-flex!important;
+  position:absolute;left:26px;bottom:24px;z-index:2;
+  align-items:center;gap:8px;
+  height:38px;padding:0 18px;border-radius:999px;
+  background:#FFFFFF;color:var(--navy);
+  font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.02em;
+  transition:background var(--d-1) var(--ease-io),transform var(--d-1) var(--ease);
+}
+.ctacard:hover::before{background:#E7EFF3;transform:translateY(-1px)}
+.ctacard:nth-child(4)::before{background:#FFFFFF;color:#B23C08}
+
+/* ═══════════════════════════════════════════════════════════════
+   59 · THE SUITE CARDS, to the reference.
+   Near-black ground, the photograph living in the top half and
+   dissolving into it, a line icon at the top left, and the copy
+   sitting at the foot. No pill — the whole card is the target.
+   ═══════════════════════════════════════════════════════════════ */
+.ctacard{
+  background-color:#0A1520!important;
+  padding:0!important;
+  justify-content:flex-end!important;
+  border-radius:14px!important;
+}
+/* the photo lives on ::after so it can fade into the ground */
+.ctacard::after{
+  content:""!important;position:absolute;inset:0;z-index:0;
+  background-image:inherit;background-size:cover;background-position:center;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.55) 46%,transparent 72%);
+  mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.55) 46%,transparent 72%);
+  opacity:.62;
+}
+/* the copy block */
+.ctacard b,.ctacard span{position:relative;z-index:2;padding-inline:26px}
+.ctacard b{
+  font-size:1.5rem!important;line-height:1.16!important;
+  margin:0 0 12px!important;letter-spacing:-.022em!important;
+}
+.ctacard span{
+  font-size:15px!important;line-height:1.55!important;
+  color:rgba(255,255,255,.72)!important;
+  padding-bottom:30px;max-width:24ch!important;
+}
+.ctacard b svg{display:none!important}
+
+/* the line icon, top left */
+.ctacard::before{
+  content:""!important;
+  position:absolute;left:26px;top:26px;bottom:auto;z-index:2;
+  width:30px;height:30px;padding:0!important;border-radius:0!important;
+  background:none!important;
+  border:0;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-size:contain;mask-size:contain;
+  background-color:rgba(255,255,255,.92)!important;
+}
+.ctacard:nth-child(1)::before{
+  -webkit-mask-image:var(--i-cal);mask-image:var(--i-cal)}
+.ctacard:nth-child(2)::before{
+  -webkit-mask-image:var(--i-chat);mask-image:var(--i-chat)}
+.ctacard:nth-child(3)::before{
+  -webkit-mask-image:var(--i-folder);mask-image:var(--i-folder)}
+.ctacard:nth-child(4)::before{
+  -webkit-mask-image:var(--i-grid);mask-image:var(--i-grid)}
+.ctacard:hover::before{transform:none}
+
+:root{
+  --i-cal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2.5'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E");
+  --i-chat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 15a3 3 0 0 1-3 3H9l-5 3V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3z'/%3E%3C/svg%3E");
+  --i-folder:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7.5A2.5 2.5 0 0 1 5.5 5h3.6l2 2.5h7.4A2.5 2.5 0 0 1 21 10v7.5A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z'/%3E%3C/svg%3E");
+  --i-grid:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='3.5' width='7' height='7' rx='1.6'/%3E%3Crect x='13.5' y='3.5' width='7' height='7' rx='1.6'/%3E%3Crect x='3.5' y='13.5' width='7' height='7' rx='1.6'/%3E%3Crect x='13.5' y='13.5' width='7' height='7' rx='1.6'/%3E%3C/svg%3E");
+}
+
+/* every card reads the same: the orange one falls in line */
+.ctacard:nth-child(4){background-color:#0A1520!important}
+.ctacard:nth-child(4)::before{background-color:rgba(255,255,255,.92)!important}
+.ctacard:hover{transform:translateY(-4px)}
+
+/* ═══════════════════════════════════════════════════════════════
+   60 · Corrections: rule 21 pinned cards 1 and 3 to white with
+   :nth-child specificity, and the suite title is a bare <h2>, so
+   the .bcta__h rules never matched it.
+   ═══════════════════════════════════════════════════════════════ */
+.bcta__grid .ctacard,
+.ctacard:nth-child(1),.ctacard:nth-child(2),
+.ctacard:nth-child(3),.ctacard:nth-child(4){
+  background-color:#0A1520!important;
+  background-image:none;
+  border:0!important;
+}
+.bcta__grid .ctacard b,.bcta__grid .ctacard span{color:#fff!important}
+.bcta__grid .ctacard span{color:rgba(255,255,255,.72)!important}
+
+/* the section head */
+.bcta h2,.bcta__in h2{
+  color:var(--ink)!important;
+  font-family:var(--display)!important;font-weight:600!important;
+  font-size:clamp(2.125rem,3.8vw,3.25rem)!important;
+  line-height:1.06!important;letter-spacing:var(--track-h)!important;
+  margin:0 auto!important;max-width:20ch!important;text-wrap:balance;
+}
+.bcta h2 .accent{color:var(--orange)!important}
+.bcta .bcta__lede{margin:var(--s-5) auto var(--s-7)!important;text-align:center}
+/* rule 57 left an orange overlay on the fourth card's ::after */
+.bcta__grid .ctacard::after,
+.ctacard:nth-child(1)::after,.ctacard:nth-child(2)::after,
+.ctacard:nth-child(3)::after,.ctacard:nth-child(4)::after{
+  background-image:inherit!important;
+  background-color:transparent!important;
+  background-size:cover;background-position:center;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.55) 46%,transparent 72%)!important;
+  mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.55) 46%,transparent 72%)!important;
+  opacity:.62;
+}
+.bcta__grid .ctacard:hover::after{opacity:.72}
+
+/* ═══════════════════════════════════════════════════════════════
+   61 · Rule 21 used the `background` shorthand, so an orange
+   GRADIENT IMAGE survived every background-color override.
+   The photo now comes from --photo, which keeps the override
+   possible without blocking the image later:
+       <article class="ctacard" style="--photo:url(/assets/…jpg)">
+   ═══════════════════════════════════════════════════════════════ */
+.bcta__grid .ctacard:nth-child(n){
+  background-image:none!important;
+  background-color:#0A1520!important;
+}
+.bcta__grid .ctacard:nth-child(n)::after{
+  background-image:var(--photo,none)!important;
+  background-size:cover!important;background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   62 · Card titles hold two lines and never touch the edge.
+   A fixed two-line box means all four sit on the same baseline
+   whatever the title length.
+   ═══════════════════════════════════════════════════════════════ */
+.bcta__grid .ctacard b{
+  display:-webkit-box!important;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;
+  min-height:calc(1.16em * 2);
+  padding-right:26px!important;
+  text-wrap:balance;
+  font-size:1.375rem!important;
+}
+.bcta__grid .ctacard span{padding-right:26px!important;max-width:none!important}
+/* descriptions hold two lines too, so all four titles sit on one baseline */
+.bcta__grid .ctacard span{
+  display:-webkit-box!important;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  min-height:calc(1.55em * 2);
+}
+/* every card title breaks to two lines, balanced */
+.bcta__grid .ctacard b{max-width:15ch!important;text-wrap:balance}
+/* never truncate a title: no clamp, just a measure that wraps to two lines */
+.bcta__grid .ctacard b{
+  display:block!important;
+  -webkit-line-clamp:none!important;
+  overflow:visible!important;
+  max-width:16.5ch!important;
+  text-wrap:balance;
+}
+/* measured: at 19px a 152px measure puts all four titles on two lines
+   without truncating any of them */
+.bcta__grid .ctacard b{font-size:19px!important;max-width:152px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   63 · The card's own padding, stated once so top and bottom match.
+   ═══════════════════════════════════════════════════════════════ */
+.bcta__grid .ctacard{
+  padding:0!important;
+  border-radius:16px!important;
+}
+.bcta__grid .ctacard::before{left:26px!important;top:26px!important}
+.bcta__grid .ctacard b{
+  padding:0 26px!important;
+  margin:0 0 10px!important;
+  line-height:1.2!important;
+  min-height:0!important;
+}
+.bcta__grid .ctacard span{
+  padding:0 26px 26px!important;
+  margin:0!important;
+  min-height:0!important;
+  line-height:1.5!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   64 · The title measure, corrected for border-box.
+   max-width includes the 52px of side padding, so the content box
+   was collapsing to 100px and pushing titles onto three lines.
+   152px of text + 52px of padding = 204px.
+   ═══════════════════════════════════════════════════════════════ */
+.bcta__grid .ctacard b{
+  max-width:204px!important;
+  box-sizing:border-box;
+  font-size:19px!important;
+  text-wrap:balance;
+}
+/* the tier eyebrows sit back: smaller and quieter than the name */
+.about__portfolio .tier__cat,.tier .tier__cat{
+  font-size:10px!important;
+  letter-spacing:.11em!important;
+  color:var(--ink-4)!important;
+  margin-bottom:14px!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   65 · Tighter seam between the proof and the carousel — it was
+   114 + 114 + the rail's own head, 317px of nothing.
+   ═══════════════════════════════════════════════════════════════ */
+.about{padding-bottom:clamp(52px,7vh,84px)!important}
+.crail{padding-top:clamp(52px,7vh,84px)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   66 · THE CALL-BACK — designed to be taken up, not endured.
+   Dark panel, real hierarchy, a proper field and one warm button.
+   No pulsing dot.
+   ═══════════════════════════════════════════════════════════════ */
+.callback{
+  background:#0A1520!important;
+  border:0!important;border-radius:18px!important;
+  padding:clamp(30px,4vw,44px) clamp(28px,4vw,48px)!important;
+  margin-top:24px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;gap:clamp(26px,4vw,56px)!important;
+  text-align:left;
+}
+.callback .pulse,.callback i.pulse{display:none!important}
+.callback__t{display:flex;flex-direction:column;gap:10px}
+.callback__t b{
+  font-family:var(--display)!important;
+  font-size:clamp(1.375rem,2.2vw,1.75rem)!important;font-weight:600!important;
+  letter-spacing:-.022em!important;line-height:1.15!important;
+  color:#fff!important;display:block!important;
+}
+.callback__t span{
+  font-size:15px!important;line-height:1.55!important;
+  color:rgba(255,255,255,.70)!important;max-width:44ch!important;
+}
+.callback form{display:flex;gap:10px;flex-wrap:nowrap;align-items:center}
+.callback input{
+  height:52px!important;min-width:230px!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.07)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  color:#fff!important;padding:0 18px!important;
+  font-size:15px!important;
+  transition:border-color var(--d-1),background var(--d-1);
+}
+.callback input::placeholder{color:rgba(255,255,255,.44)!important}
+.callback input:focus{
+  border-color:var(--orange)!important;
+  background:rgba(255,255,255,.11)!important;outline:none;
+}
+.callback .btn{
+  height:52px!important;padding:0 26px!important;
+  border-radius:12px!important;
+  background:var(--orange)!important;color:#fff!important;
+  font-weight:600!important;font-size:15px!important;letter-spacing:.01em!important;
+  white-space:nowrap;
+}
+.callback .btn:hover{background:#F45E12!important}
+@media (max-width:820px){
+  .callback{grid-template-columns:1fr;text-align:left}
+  .callback form{flex-wrap:wrap}
+  .callback input{min-width:0!important;flex:1 1 200px}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   67 · POLISH PASS
+   Texture, a living gradient, better figures, better card charts,
+   and the small typographic corrections across the page.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── a · the ground gets a whisper of texture ── */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(rgba(11,23,30,.055) .5px,transparent .5px);
+  background-size:22px 22px;
+}
+body > *{position:relative;z-index:1}
+
+/* ── b · the hero wash gains saturation and drifts ── */
+
+@media (prefers-reduced-motion:reduce){}
+
+/* ── c · the figures ── */
+.stat{
+  padding:26px 26px 26px!important;
+  border:1px solid var(--line);
+  position:relative;overflow:hidden;
+}
+.stat::before{
+  content:"";position:absolute;left:26px;top:0;width:28px;height:2px;
+  background:var(--orange);opacity:.85;
+  transition:width var(--d-2) var(--ease);
+}
+.stat:hover::before{width:56px}
+.stat dt{
+  font-variant-numeric:tabular-nums;
+  margin:auto 0 8px!important;
+  letter-spacing:-.045em!important;
+}
+.stat dd{
+  font-size:13px!important;line-height:1.5!important;
+  color:var(--ink-3)!important;letter-spacing:.005em;
+}
+.stat--words dt{letter-spacing:-.022em!important;line-height:1.2!important}
+
+/* ── d · the carousel's small cards ── */
+.scard{
+  border-radius:16px!important;
+  padding:24px!important;
+  transition:border-color var(--d-2),transform var(--d-2) var(--ease)!important;
+}
+.scard__stage{
+  background:#F7F7F6!important;
+  border-radius:12px!important;
+  padding:18px!important;
+  margin:18px 0!important;
+}
+.frag{
+  border-color:rgba(11,23,30,.09)!important;
+  border-radius:9px!important;
+  padding:12px 14px!important;
+}
+/* the bars read as a chart, not a texture */
+.frag--bars{height:60px!important;gap:6px!important;align-items:flex-end!important}
+.frag--bars i{border-radius:3px 3px 0 0!important;background:var(--ink)!important;opacity:.14!important}
+.frag--bars i:nth-last-child(2){opacity:.30!important}
+.frag--bars i:last-child{opacity:.62!important}
+.frag--rows i{height:7px!important}
+.frag--wave i{opacity:.24!important}
+.frag--wave i:nth-child(3n){opacity:.44!important}
+
+/* ── e · the big carousel cards ── */
+.fcard{border-radius:16px!important}
+.fcard__t b{letter-spacing:-.026em!important}
+.fcard__k{letter-spacing:.14em!important;font-size:10px!important}
+
+/* ── f · lettering, evened out ── */
+.eyebrow,.tier__cat,.sc-lbl,.fcard__k,.crail__k{font-weight:600!important}
+.btn,.nav__cta{font-weight:600!important}
+h1,h2,h3,.display{font-feature-settings:"kern" 1,"liga" 1}
+.about__stats dt,.crop__k b,.mkpi b{font-feature-settings:"tnum" 1}
+
+/* ── g · consistent radii ── */
+.pick{border-radius:18px!important}
+.tier,.stat,.ctacard,.callback,.fcard,.scard{border-radius:16px!important}
+.ctacard{border-radius:16px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   68 · THE CATALOGUE'S ANIMATED FRAGMENTS, ported verbatim.
+   One per product, each looping its own micro-interaction:
+   a question typing itself, a rank nudging, a line drawing in,
+   a live feed, agents taking their turn, say-versus-do measuring.
+   ═══════════════════════════════════════════════════════════════ */
+.cmini{
+  display:inline-flex;align-items:center;gap:8px;max-width:100%;
+  border:1px solid rgba(11,23,30,.09);border-radius:9px;padding:10px 13px;
+  background:#FFFFFF;color:var(--ink-3);
+}
+.cmini b{font-family:var(--mono);font-weight:400;font-size:9px;letter-spacing:.04em;
+  color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmini em{font-style:normal;font-family:var(--mono);font-size:9px;flex:none}
+.cmini u{text-decoration:none;color:var(--orange)}
+.cmini .pulse{width:5px;height:5px;border-radius:50%;background:var(--orange);flex:none}
+.pulse--amber{background:var(--amber)!important}
+
+/* the question types itself */
+.mini-ask{border-radius:999px}
+.mini-ask b{max-width:0;animation:miniType 7s steps(44) infinite;text-overflow:clip}
+@keyframes miniType{8%{max-width:0}56%,80%{max-width:210px}98%{max-width:0}}
+.mini-caret{width:1px;height:10px;background:var(--orange);flex:none;
+  animation:blinkCaret 1s steps(1) infinite}
+@keyframes blinkCaret{50%{opacity:0}}
+
+/* the rank nudges */
+.mini-row .up{color:#0E8F5E;animation:nudgeUp 3.4s var(--ease-io) infinite}
+@keyframes nudgeUp{0%,74%,100%{transform:none;opacity:1}82%{transform:translateY(-2px);opacity:.75}90%{transform:none}}
+
+/* the line draws, holds, redraws */
+.mini-col{flex-direction:column;gap:6px;align-items:stretch}
+.mini-col svg{width:100%;height:26px;color:var(--ink-3)}
+.mini-line{stroke-dasharray:130;stroke-dashoffset:130;
+  animation:miniDraw 6.5s var(--ease) 400ms infinite}
+@keyframes miniDraw{
+  0%{stroke-dashoffset:130;opacity:1}
+  38%,80%{stroke-dashoffset:0;opacity:1}
+  90%{stroke-dashoffset:0;opacity:0}
+  96%,100%{stroke-dashoffset:130;opacity:0}
+}
+
+/* the live feed */
+.mini-feed{flex-direction:column;align-items:stretch;gap:7px}
+.mini-feed > span{display:flex;align-items:center;gap:7px;min-width:0}
+.mini-feed em{margin-left:auto;color:var(--ink-4)}
+
+/* the agents take their turn */
+.mini-agents{gap:5px;flex-wrap:wrap}
+.agchip{font-family:var(--mono);font-weight:400;font-size:9px;letter-spacing:.03em;
+  color:var(--ink-2);border:1px solid rgba(11,23,30,.10);border-radius:999px;
+  padding:3px 9px;white-space:nowrap;
+  animation:chipTurn 5.4s var(--ease-io) infinite}
+.agchip:nth-child(2){animation-delay:1.8s}
+.agchip:nth-child(3){animation-delay:3.6s}
+@keyframes chipTurn{
+  0%,26%,100%{border-color:rgba(11,23,30,.10);color:var(--ink-2)}
+  7%,18%{border-color:var(--orange);color:var(--ink)}
+}
+.agchip--more{background:var(--ink);border-color:var(--ink);color:#fff;animation:none}
+
+/* say versus do, re-measuring */
+.mini-saydo{flex-direction:column;align-items:stretch;gap:7px;width:100%}
+.mini-saydo > span{display:flex;align-items:center;gap:8px}
+.mini-saydo b{width:20px;flex:none}
+.mini-bar{flex:1;min-width:0;height:5px;border-radius:999px;background:rgba(11,23,30,.10)}
+.mini-bar i{display:block;height:100%;width:var(--w);border-radius:999px;
+  background:var(--ink);opacity:.5;transform-origin:left;
+  animation:miniGrow 7s var(--ease) 300ms infinite}
+.mini-saydo > span:last-child .mini-bar i{animation-delay:700ms}
+@keyframes miniGrow{0%{transform:scaleX(0)}16%,86%{transform:scaleX(1)}96%,100%{transform:scaleX(0)}}
+
+/* bars, wave, film */
+.mini-bars{align-items:flex-end;height:56px;gap:5px;width:100%}
+.mini-bars i{flex:1;border-radius:3px 3px 0 0;height:var(--h);background:var(--ink);opacity:.14;
+  transform-origin:bottom;animation:miniRise 7s var(--ease) infinite}
+.mini-bars i:nth-last-child(2){opacity:.30}
+.mini-bars i:last-child{opacity:.62}
+@keyframes miniRise{0%{transform:scaleY(.2)}18%,86%{transform:scaleY(1)}98%,100%{transform:scaleY(.2)}}
+.mini-wave{align-items:center;height:46px;gap:3px;width:100%}
+.mini-wave i{flex:1;border-radius:999px;background:var(--ink);opacity:.22;height:var(--h);
+  animation:miniPulse 2.6s var(--ease-io) infinite}
+.mini-wave i:nth-child(3n){opacity:.46;animation-delay:.3s}
+.mini-wave i:nth-child(4n){animation-delay:.6s}
+@keyframes miniPulse{0%,100%{transform:scaleY(.62)}50%{transform:scaleY(1)}}
+.mini-film{gap:6px;width:100%}
+.mini-film i{flex:1;height:44px;border-radius:6px;opacity:var(--o);
+  background:linear-gradient(150deg,rgba(0,156,189,.42),rgba(255,184,28,.42))}
+
+@media (prefers-reduced-motion:reduce){
+  .mini-ask b{animation:none;max-width:210px}
+  .mini-line{animation:none;stroke-dashoffset:0}
+  .mini-bar i,.mini-bars i,.mini-wave i,.agchip,.mini-row .up,.mini-caret{animation:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   69 · THE LIVING WASH.
+   background-position under a 54px blur moves nothing you can see.
+   Two layers that actually travel — transform on the compositor —
+   at different speeds and directions, so the light never repeats.
+   ═══════════════════════════════════════════════════════════════ */
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   70 · Two things were cancelling the polish:
+   · every section painted opaque white OVER the fixed dot texture
+   · .hero2::after still carried opacity:.5 from rule 23
+   ═══════════════════════════════════════════════════════════════ */
+
+/* the ground is on html/body; sections let it through */
+html,body{background:#FFFFFF!important}
+.hero2,.about,.bcta,.crail,.bfoot,section,footer{background:transparent!important}
+
+/* the texture sits above that ground and below every bit of content */
+body::before{
+  content:""!important;position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(rgba(11,23,30,.07) .6px,transparent .6px);
+  background-size:20px 20px;
+}
+body > *{position:relative;z-index:1}
+
+/* the wash at full strength */
+
+
+
+/* cards keep an opaque face so the texture stops at their edge */
+.tier,.stat,.ctacard,.callback,.fcard,.scard,.pick,.pick__detail,.pick__foot,
+.cmini,.scard__stage,.nav{background-color:#FFFFFF}
+.pick__col{background:#F7F7F6!important}
+.scard__stage{background:#F7F7F6!important}
+.tier,.stat{background:#F7F7F6!important}
+.ctacard{background-color:#0A1520!important}
+.callback{background:#0A1520!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   71 · The wash, dialled back to a whisper.
+   Full strength turned it into a solid block with a hard edge at
+   the section seam. Low opacity, wider blur, and a mask that fades
+   on every side so it never meets an edge.
+   ═══════════════════════════════════════════════════════════════ */
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   72 · The wash rises behind the chat, with more saturation, so
+   the white card has something to sit on.
+   ═══════════════════════════════════════════════════════════════ */
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   73 · Nothing can drag the page sideways.
+   The carousel rows live at negative offsets inside a clipped
+   track; focusing anything in there made the browser scroll to
+   reveal it. overflow-x:clip stops that without creating a scroll
+   container, so position:sticky keeps working.
+   ═══════════════════════════════════════════════════════════════ */
+/* see §78 — overflow-x on BODY makes body the scroller */
+.hero2,.about,.bcta,.crail,main,section{overflow-x:clip}
+.flow{overflow:hidden;overscroll-behavior-x:contain}
+/* an off-screen card must never pull focus */
+.flow__row .fcard,.flow__row .scard{scroll-margin:0}
+
+/* ── the texture, tighter ── */
+body::before{
+  background-size:14px 14px!important;
+  background-image:radial-gradient(rgba(11,23,30,.075) .6px,transparent .6px)!important;
+}
+/* something in the base sheet sets body overflow; state it plainly */
+/* see §78 */
+
+/* ═══════════════════════════════════════════════════════════════
+   74 · THE PRODUCT FRAGMENTS, ported from Option C.
+   Mine stretched the fragment to fill a bordered box, which read as
+   a thin grey strip. Option C's proportions are the right ones: a
+   tall, full-width grey stage with a small pill floating centred in
+   it. Only the genuine faults carry over — the clipped question, the
+   truncated rank line, the bars too short to read as a chart.
+   ═══════════════════════════════════════════════════════════════ */
+.scard__stage{
+  flex:1!important;width:100%!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  padding:14px!important;margin:16px 0!important;
+  min-height:112px!important;
+  background:#F5F6F7!important;border-radius:10px!important;
+}
+.cmini{
+  display:inline-flex!important;align-items:center!important;
+  width:auto!important;height:auto!important;max-width:100%!important;
+  gap:8px!important;padding:10px 13px!important;
+  border:1px solid rgba(11,23,30,.10)!important;border-radius:10px!important;
+  background:#FFFFFF!important;
+}
+.cmini b{font-size:9.5px!important;letter-spacing:.04em!important;line-height:1.4!important}
+.cmini em{font-size:9.5px!important}
+
+/* the question is allowed to wrap instead of clipping mid-word */
+.mini-ask{border-radius:var(--r-full,999px)!important;align-items:center!important}
+.mini-ask b{max-width:none!important;white-space:nowrap!important;
+  animation:askType 7s steps(40) infinite!important}
+@keyframes askType{0%{max-width:0}55%,88%{max-width:150px}100%{max-width:150px}}
+
+/* the rank reads as a figure, not a truncated sentence */
+.mini-row{flex-direction:column!important;align-items:flex-start!important;gap:3px!important}
+.mini-row b{font-family:var(--display)!important;font-size:22px!important;font-weight:600!important;
+  letter-spacing:-.03em!important;color:var(--ink)!important;white-space:nowrap!important;
+  overflow:visible!important;text-overflow:clip!important}
+.mini-row .rankline{display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;color:var(--ink-3);white-space:nowrap}
+
+/* bars tall enough to read as a chart */
+.mini-bars{align-items:flex-end!important;gap:5px!important}
+.mini-bars i{min-height:10px}
+
+/* ── colour back in the data, from Option C ──
+   Stripping the orange left every fragment at var(--ink) 14–50%, so
+   they read as dead grey. The data takes teal, the category colour;
+   the orange stays out of here. */
+.cmini .pulse{background:var(--teal)!important}
+.cmini .pulse::after{border-color:var(--teal)!important}
+.cmini u{color:var(--teal)!important}
+.mini-caret{background:var(--teal)!important}
+.mini-col svg{color:var(--teal)!important}
+.mini-bar i{background:var(--teal)!important;opacity:1!important}
+.mini-bars i{background:var(--teal)!important;opacity:.55!important}
+.mini-bars i:nth-child(4){opacity:1!important}
+.mini-wave i{background:var(--teal)!important;opacity:.42!important}
+.mini-wave i:nth-child(3n){opacity:.9!important}
+@keyframes chipTurn{
+  0%,26%,100%{border-color:rgba(11,23,30,.10);color:var(--ink-2)}
+  7%,18%{border-color:var(--teal);color:var(--navy)}
+}
+/* the chart fragments need a width of their own — as flex children of an
+   auto-width pill they collapsed to 63px and read as a few specks */
+.mini-bars,.mini-wave{width:124px!important;height:40px!important}
+.mini-col svg{width:112px!important}
+.mini-saydo{min-width:132px!important}
+.mini-feed{min-width:140px!important}
+/* every stage is the same box, whatever the title above it does.
+   flex:1 alone only happens to match while all titles wrap alike. */
+.scard__stage{flex:none!important;height:136px!important;min-height:136px!important}
+.scard{justify-content:flex-start!important}
+.scard .btn{margin-top:auto!important}
+
+/* the product icon sits in a squared tile, not loose and not a circle.
+   cloud.css already drew this; my §? override had stripped it back to a
+   bare 24px glyph. */
+.scard__ico{
+  display:inline-grid!important;place-items:center!important;
+  width:40px!important;height:40px!important;
+  border-radius:10px!important;
+  background:rgba(0,156,189,.08)!important;
+  border:1px solid rgba(0,156,189,.16)!important;
+  color:var(--teal)!important;
+  margin-bottom:14px!important;
+}
+.scard__ico svg{width:20px!important;height:20px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   76 · THE WATCH CARD: thumbnail back, and one crop at every width.
+   b.css hides .hero2__thumb img under (max-height:820px), written
+   for the old 60px circle — on a normal laptop that killed the
+   thumbnail entirely. And a fixed 180px height against a fluid
+   width re-crops the frame at every size; an aspect-ratio holds it.
+   ═══════════════════════════════════════════════════════════════ */
+.hero2__thumb{
+  /* no max-height: a clamp re-crops the frame the moment the card is
+     wider than the cap, which is the inconsistency being reported */
+  aspect-ratio:2.6/1!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  width:100%!important;
+  overflow:hidden!important;
+  background:#0A1520!important;
+}
+.hero2__thumb img{
+  display:block!important;
+  position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;
+  object-fit:cover!important;object-position:50% 42%!important;
+  opacity:1!important;
+}
+@media (max-width:640px){
+  .hero2__thumb{aspect-ratio:16/9!important;max-height:190px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   77 · THE HERO WASH — one definition, replacing seven.
+   Sections 51, 53, 55, 56, 57, 69 and 71 each redefined
+   .hero2::after on top of the last. The survivor was two small
+   46%-wide blobs at heavy blur, and fading a small blob in and out
+   is exactly the "shadow floating up and down" being reported.
+   The rule now: both layers cover the WHOLE hero and differ only in
+   where the colour sits. A cross-fade between two full-coverage
+   fields reads as the light changing, because no edge ever moves.
+   ═══════════════════════════════════════════════════════════════ */
+.hero2{position:relative;isolation:isolate}
+
+.hero2::after,.hero2::before{
+  content:""!important;display:block!important;
+  position:absolute!important;left:-10%!important;right:-10%!important;
+  bottom:-90px!important;top:auto!important;
+  height:calc(100% + 90px)!important;
+  z-index:-1!important;pointer-events:none!important;
+  background-size:auto!important;background-repeat:no-repeat!important;
+  transform:none!important;
+  filter:blur(72px) saturate(1.02)!important;
+  /* transparent at BOTH ends: a mask that is solid at the bottom ends
+     in a straight line exactly where the hero stops, which is the seam */
+  -webkit-mask-image:linear-gradient(to top,transparent 0%,rgba(0,0,0,.55) 14%,#000 40%,rgba(0,0,0,.55) 74%,transparent 100%)!important;
+          mask-image:linear-gradient(to top,transparent 0%,rgba(0,0,0,.55) 14%,#000 40%,rgba(0,0,0,.55) 74%,transparent 100%)!important;
+}
+
+/* field A — amber low left, teal low right, blue holding the centre */
+.hero2::after{
+  background-image:
+    radial-gradient(78% 62% at 20%  96%, rgba(255,184,28,.26), transparent 72%),
+    radial-gradient(74% 58% at 80%  92%, rgba(0,156,189,.22), transparent 70%),
+    radial-gradient(96% 70% at 50% 112%, rgba(14,95,142,.13), transparent 76%)!important;
+  opacity:1!important;
+  animation:none!important;
+}
+/* field B — the same footprint, the colours swapped across it */
+.hero2::before{
+  background-image:
+    radial-gradient(80% 64% at 74%  98%, rgba(255,184,28,.23), transparent 72%),
+    radial-gradient(76% 60% at 26%  94%, rgba(0,156,189,.24), transparent 70%),
+    radial-gradient(94% 68% at 50% 108%, rgba(14,95,142,.12), transparent 76%)!important;
+  opacity:0!important;
+  animation:none!important;
+}
+@keyframes washBreathe{0%,100%{opacity:1}50%{opacity:0}}
+
+@media (prefers-reduced-motion:reduce){
+  .hero2::after{animation:none!important;opacity:1!important}
+  .hero2::before{animation:none!important;opacity:0!important}
+}
+
+/* ── the dot pattern, more present ──
+   was .075 alpha on a 14px tile, which disappears against white */
+body::before{
+  background-image:radial-gradient(rgba(11,23,30,.048) .85px,transparent .85px)!important;
+  background-size:12px 12px!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   78 · THE PAGE SCROLLS ON THE WINDOW AGAIN.
+   styles.css:85 sets html,body{height:100%}. Adding overflow-x to
+   BODY on top of that resolves body's overflow-y to auto, so body
+   became the scroll container: window.scrollY stayed 0 forever and
+   every window scroll listener stopped firing — the mark parallax
+   among them. Horizontal clipping belongs on html alone, which
+   propagates to the viewport without creating a scroller.
+   ═══════════════════════════════════════════════════════════════ */
+html{overflow-x:clip!important;height:auto!important;max-width:100%!important}
+body{
+  overflow-x:visible!important;overflow-y:visible!important;
+  height:auto!important;min-height:100%!important;max-width:100%!important;
+}
+
+/* ── the About section opens with more air ──
+   117px above the eyebrow read as cramped because the wash's hard
+   edge landed at the join and the eye took THAT as the section top.
+   The wash is fixed; the section still wants a little more room, and
+   the eyebrow wants more separation from the headline than 16px. */
+.about{padding-top:152px!important}
+.about__head > .eyebrow{margin-bottom:26px!important}
