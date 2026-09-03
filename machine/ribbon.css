@@ -2910,17 +2910,7 @@ body{
     justify-content:center!important}
 }
 
-/* §81 e · a caret, so the typing reads as typing */
-.say__now.is-typing .say__word::after{
-  content:"";display:inline-block;width:1px;height:1em;
-  margin-left:2px;vertical-align:-.14em;
-  background:var(--teal);
-  animation:sayCaret 1s steps(1) infinite;
-}
-@keyframes sayCaret{50%{opacity:0}}
-@media (prefers-reduced-motion:reduce){
-  .say__now.is-typing .say__word::after{display:none}
-}
+/* §81 e · (the typewriter caret was removed — the fade swap stays) */
 
 /* §81 f · Ask AI spans the row on a phone.
    ribbon.css:1125 pins width:auto via the ID #pickGo with !important
@@ -2978,4 +2968,17 @@ body{
   .pick__list .pick__row[aria-checked="true"] .pick__label{color:#FFFFFF!important}
   .pick__list .pick__row[aria-checked="true"] .pick__icon{color:#FFFFFF!important;opacity:1}
   .pick__list .pick__row:active{transform:scale(.97)}
+}
+
+/* §83 · the agent panel breathes, top and bottom, at both sizes */
+.pick__detail:has(.pick__detail-empty){
+  padding-top:34px!important;padding-bottom:34px!important;
+}
+.pick__detail-empty{gap:16px!important}
+@media (max-width:860px){
+  .pick__detail:has(.pick__detail-empty){
+    padding:26px 16px!important;
+    min-height:0!important;max-height:none!important;
+  }
+  .pick__detail-empty{gap:14px!important}
 }
