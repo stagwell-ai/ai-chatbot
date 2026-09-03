@@ -1200,7 +1200,17 @@ p{max-width:var(--measure)}
 .nav,.bnav,header.nav{background:#FFFFFF!important}
 .nav__in{height:60px!important}
 .hero2{scroll-margin-top:60px}
-.mnav{inset:60px 0 auto}
+.mnav{
+  /* four values: `inset:60px 0 auto` is only three, which sets LEFT:0 too
+     and un-anchors the drawer from the right edge. translateX(100%) then
+     parks a 75px sliver on screen instead of hiding it. */
+  inset:60px 0 auto auto!important;
+}
+/* a closed drawer is inert, not merely translated. Keyed off the SAME
+   flag the JS toggles (body.nav-open) — a class the script never sets
+   would hide the menu with nothing able to bring it back. */
+body:not(.nav-open) .mnav{visibility:hidden!important;pointer-events:none!important}
+body.nav-open .mnav{visibility:visible!important;pointer-events:auto!important;transform:none!important}
 
 /* c · Talk to an AI expert is a solid button, not an outline */
 .nav__acts .btn,.nav__acts .btn--dark,.nav__cta{
@@ -2671,3 +2681,157 @@ body{
    the eyebrow wants more separation from the headline than 16px. */
 .about{padding-top:152px!important}
 .about__head > .eyebrow{margin-bottom:26px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   79 · THE FOOTER.
+   It was one 33px strip: logo, six links in a row, a legal line —
+   no structure, and the presenter tools (Ad demo control, Previous
+   versions) sat in the same row as real site navigation, which read
+   as though they were part of the product.
+   Same strings, same hrefs. What changes is the arrangement: brand
+   left, site links right, a rule, then the fine print with the demo
+   tools kept apart from it.
+   ═══════════════════════════════════════════════════════════════ */
+.bfoot{
+  display:block!important;
+  padding:0!important;
+  border-top:1px solid rgba(11,23,30,.10)!important;
+  background:transparent!important;
+}
+.bfoot > *{max-width:1240px;margin-inline:auto;padding-inline:48px}
+
+/* ── upper band: the brand, and the site links opposite ── */
+.bfoot__top{
+  display:flex!important;align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:64px!important;
+  padding-top:76px!important;padding-bottom:56px!important;
+}
+.bfoot__top > svg{
+  /* an inline svg with no width/height attribute expands to its box —
+     height:auto gave this one 150px. Both axes are stated. */
+  width:208px!important;height:17px!important;flex:none!important;
+  color:var(--ink)!important;opacity:1!important;margin-top:3px}
+
+.bfoot__links{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,auto))!important;
+  gap:14px 72px!important;
+  justify-content:end!important;
+}
+.bfoot__links a{
+  padding:0!important;
+  font-size:14px!important;line-height:1.5!important;font-weight:500!important;
+  color:var(--ink)!important;text-decoration:none!important;
+  transition:color 180ms var(--ease)!important;
+}
+.bfoot__links a:hover{color:var(--teal)!important}
+
+/* ── lower band: the fine print, and the presenter tools apart ── */
+.bfoot__note{
+  display:block!important;
+  font-size:12px!important;line-height:1.6!important;
+  color:rgba(11,23,30,.50)!important;
+  max-width:62ch!important;
+}
+.bfoot__demo{
+  display:flex!important;gap:26px!important;flex:none!important;
+}
+.bfoot__demo a{
+  font-family:var(--mono)!important;
+  font-size:10.5px!important;letter-spacing:.11em!important;text-transform:uppercase!important;
+  color:rgba(11,23,30,.38)!important;text-decoration:none!important;white-space:nowrap;
+  transition:color 180ms var(--ease)!important;
+}
+.bfoot__demo a:hover{color:rgba(11,23,30,.70)!important}
+
+/* the rule, and the two lower items on one line */
+.bfoot__note,.bfoot__demo{padding-inline:48px}
+.bfoot{position:relative}
+.bfoot__foot{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:48px;
+  max-width:1240px;margin-inline:auto;
+  padding:26px 48px 40px;
+  border-top:1px solid rgba(11,23,30,.08);
+}
+.bfoot__foot .bfoot__note,.bfoot__foot .bfoot__demo{padding-inline:0!important;max-width:none}
+.bfoot__foot .bfoot__note{max-width:62ch!important}
+
+@media (max-width:900px){
+  .bfoot > *,.bfoot__foot{padding-inline:24px}
+  .bfoot__top{flex-direction:column!important;gap:36px!important;
+    padding-top:56px!important;padding-bottom:40px!important}
+  .bfoot__links{justify-content:start!important;gap:12px 48px!important}
+  .bfoot__foot{flex-direction:column;gap:20px;padding:22px 24px 36px}
+}
+@media (max-width:520px){
+  /* 208px of logo in a 375px viewport is over half the width */
+  .bfoot__top > svg{width:168px!important;height:14px!important}
+  .bfoot__links{grid-template-columns:1fr!important;gap:12px!important}
+  .bfoot__demo{flex-wrap:wrap!important;gap:8px 20px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   80 · MOBILE: reading order, the thinking panel, and the mark.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* a · the watch card belongs after the chat, as it does on desktop.
+   In DOM order it sits third, so on a phone it landed between the
+   headline and the paragraph and split them apart. */
+@media (max-width:860px){
+  .hero2__in{display:flex!important;flex-direction:column!important}
+  .hero2__in > .eyebrow     {order:1!important}
+  .hero2__in > .display     {order:2!important}
+  .hero2__in > .hero2__sub  {order:3!important}
+  .hero2__in > div:has(.pick),
+  .hero2__in > .pick        {order:4!important}
+  .hero2__in > .hero2__play {order:5!important;margin-top:28px!important}
+}
+
+/* b · the thinking panel is visible on a phone again.
+   hero.css:159 hides .pick__detail:has(.pick__detail-empty) under
+   860px — a Sep 2 fix aimed at the OLD empty-state illustration,
+   which pushed the fold. That slot now holds the agent panel (the
+   dots and the cycling line), so the rule was hiding the one thing
+   worth seeing. It comes back, capped so it cannot push the fold. */
+@media (max-width:860px){
+  .pick__detail:has(.pick__detail-empty){
+    display:flex!important;
+    min-height:132px!important;max-height:168px!important;
+    padding:18px 20px!important;
+    border-top:1px solid rgba(11,23,30,.09)!important;
+    align-items:center!important;justify-content:center!important;
+    overflow:hidden!important;
+  }
+  .pick__detail-empty{width:100%!important;margin:0!important}
+  .say{transform:scale(.92);transform-origin:center}
+}
+
+/* c · the mark was 440px on desktop and 335px on a 375px phone —
+   89% of the screen. An object that size cannot show a 26px drift,
+   which is why the parallax read as broken rather than subtle. */
+.about__mark{width:min(300px,26vw)!important;margin-left:auto!important}
+.markfx__face{width:100%!important;height:auto!important}
+
+@media (max-width:860px){
+  /* on a phone it stops being a block of its own and sits small,
+     tucked to the right beside the section opening */
+  .about__mark{
+    width:104px!important;
+    position:absolute!important;top:52px;right:20px;
+    margin:0!important;z-index:0;pointer-events:none;
+  }
+  .about{position:relative}
+  .about__head{position:relative;z-index:1;padding-right:112px}
+}
+/* §80 d · the panes stack on a phone.
+   ribbon.css:492 sets two columns with !important and no media guard,
+   so it beat hero.css's single-column mobile rule and left the detail
+   pane 13px wide. Restated here, scoped, since ribbon loads last. */
+@media (max-width:860px){
+  .pick__panes{
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:auto auto!important;
+  }
+  .pick__col,.pick__detail{grid-column:1/-1!important;width:auto!important}
+}

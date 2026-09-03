@@ -242,7 +242,11 @@ if (typeof window !== 'undefined' &&
     if (r.bottom < 0 || r.top > innerHeight) return;
     /* -1 at the bottom of the viewport, +1 at the top */
     const p = 1 - ((r.top + r.height / 2) / innerHeight) * 2;
-    face.style.transform = `translate3d(0, ${(p * 26).toFixed(1)}px, 0)`;
+    /* proportional, not a flat 26px: on the 104px phone mark that was a
+       quarter of the object and read as a jolt, while on the desktop one
+       it was barely there. 9% of its own height drifts the same either way. */
+    const amp = Math.max(8, Math.min(26, r.height * 0.09));
+    face.style.transform = `translate3d(0, ${(p * amp).toFixed(1)}px, 0)`;
   };
   addEventListener('scroll', () => {
     if (!markRaf) markRaf = requestAnimationFrame(driftMark);
