@@ -413,7 +413,9 @@
       ? data.routing.domains : [];
 
     const id = resolveSolutionId();
-    const s = list.find(x => x && x.id === id);
+    /* exact first, then loosely: the carousel and any hand-typed URL may use
+       hyphens where solutions.json uses underscores (/s/knowledge-machine) */
+    const s = list.find(x => x && x.id === id) || list.find(x => x && norm(x.id) === norm(id));
     if (!s) { renderNotFound(id); return; }
 
     renderSolution(s, domainsFor(s.id, domains, list), list);
@@ -423,7 +425,7 @@
 
   /* The redirect runs BEFORE any data is fetched: a visitor whose card points
      at a campaign landing should never see this page paint first. */
-  const early = resolveSolutionId();
+  const early = resolveSolutionId().replace(/-/g, '_');
   if (CAMPAIGN_PAGES[early]) {
     window.location.replace(CAMPAIGN_PAGES[early]);
     return;

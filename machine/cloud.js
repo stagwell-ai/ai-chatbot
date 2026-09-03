@@ -3,12 +3,14 @@
    main page. Self-contained: its own data, builders and drift loop, so
    b.js knows nothing about it. Ten products, client-supplied (Aug 25):
    solution-oriented copy leads each card — the product name is the kicker,
-   the solution title is the headline — and every card is a real link out
-   to that product's own site, not a modal trigger.
+   the solution title is the headline.
 
-   Cards are plain <a target="_blank" rel="noopener"> elements pointing at
-   the client-supplied destination URLs — real outbound links, not modal
-   triggers, and no dependency on b.js's "See what's possible" handler.
+   Every card now opens OUR OWN page about that product (client, Sep 2:
+   "instead of Visit site it should say Learn more and go to our page which
+   talks about this product") — /s/{id}, or the product's campaign landing
+   where it has one. The product's own site is still one click away, from
+   the "Visit the … site →" link on that page. Plain same-tab <a>
+   elements; no dependency on b.js's "See what's possible" handler.
    ═══════════════════════════════════════════════════════════════════════════ */
 (() => {
 'use strict';
@@ -31,34 +33,34 @@ if (!flowBig || !flowSm) return;
    name = product name (the kicker); title = the solution headline;
    line = the solution description; url = the real destination. */
 const PRODUCTS = [
-  { id: 'questbrand',        name: 'QuestBrand',           title: 'Brand Performance Tracking',
+  { id: 'questbrand', sol: 'questbrand',        name: 'QuestBrand',           title: 'Brand Performance Tracking',
     line: 'Measure brand health, campaign impact, and competitive position daily',
     url: 'https://www.harrisquest.com/suite/questbrand' },
-  { id: 'questdiy',          name: 'QuestDIY',             title: 'AI Survey Creation',
+  { id: 'questdiy', sol: 'questdiy',          name: 'QuestDIY',             title: 'AI Survey Creation',
     line: 'Build, launch, and analyze consumer research faster with AI assistance',
     url: 'https://www.harrisquest.com/suite/questdiy' },
-  { id: 'bera',              name: 'BERA.ai',              title: 'Brand Growth Drivers',
+  { id: 'bera', sol: 'bera',              name: 'BERA.ai',              title: 'Brand Growth Drivers',
     line: 'Uncover what drives brand performance, ROI, and market value',
     url: 'https://bera.ai' },
-  { id: 'unlock',            name: 'Unlock',               title: 'Audience Sampling',
+  { id: 'unlock', sol: 'unlock',            name: 'Unlock',               title: 'Audience Sampling',
     line: 'Access verified consumer and B2B respondents for research at scale',
     url: 'https://www.themarketingcloud.com/marketplace/unlock' },
-  { id: 'knowledge-machine', name: 'The Knowledge Machine', title: 'Reputation Intelligence',
+  { id: 'knowledge-machine', sol: 'knowledge_machine', name: 'The Knowledge Machine', title: 'Reputation Intelligence',
     line: 'Detect emerging risks and understand the emotions driving them',
     url: 'https://www.themarketingcloud.com/marketplace/pulse' },
-  { id: 'unicepta',          name: 'UNICEPTA',             title: 'Global Media Monitoring',
+  { id: 'unicepta', sol: 'unicepta',          name: 'UNICEPTA',             title: 'Global Media Monitoring',
     line: 'Monitor media coverage, reputation risks, and stakeholder narratives worldwide',
     url: 'https://www.themarketingcloud.com/marketplace/unicepta' },
-  { id: 'imai',              name: 'IMAI',                 title: 'Influencer Campaign Management',
+  { id: 'imai', sol: 'imai',              name: 'IMAI',                 title: 'Influencer Campaign Management',
     line: 'Discover creators, manage partnerships, and prove influencer ROI',
     url: 'https://www.themarketingcloud.com/marketplace/imai' },
-  { id: 'geopulse',          name: 'GEOPulse',             title: 'AI Search Visibility',
+  { id: 'geopulse', sol: 'geopulse',          name: 'GEOPulse',             title: 'AI Search Visibility',
     line: 'See how AI platforms cite, recommend, and describe your brand',
     url: 'https://www.themarketingcloud.com/marketplace/geopulse' },
-  { id: 'targeting-machine', name: 'The Targeting Machine', title: 'Audience Activation',
+  { id: 'targeting-machine', sol: 'targeting_machine', name: 'The Targeting Machine', title: 'Audience Activation',
     line: 'Discover, build, and activate audiences using the Stagwell ID Graph',
     url: 'https://www.themarketingcloud.com/marketplace/sats' },
-  { id: 'numetrix',          name: 'Numetrix',             title: 'Location Intelligence',
+  { id: 'numetrix', sol: 'numetrix',          name: 'Numetrix',             title: 'Location Intelligence',
     line: 'Measure audiences, visitation, and advertising impact from movement data',
     url: 'https://www.themarketingcloud.com/marketplace/numetrix' },
 ];
@@ -91,32 +93,35 @@ const ICONS = {
 
 const P = id => PRODUCTS.find(p => p.id === id);
 
-/* the same attribution every other surface sends (path.js attributedUrl,
-   solution.js/campaign.js withUtm) — these forty links were the only external
-   doors on the site that left without it (QA, Sep 2) */
-function withUtm(url) {
-  try {
-    const u = new URL(url);
-    u.searchParams.set('utm_source', 'stagwell-ai');
-    u.searchParams.set('utm_medium', 'home-carousel');
-    u.searchParams.set('utm_campaign', 'master');
-    return u.toString();
-  } catch (e) { return url; }
+/* OUR page for a product. Four products have a campaign landing that already
+   IS the page about them (machine/solution.js keeps the same map and would
+   redirect); pointing straight at it saves the visitor a redirect flash.
+   Everything else is the solution page, /s/{id}. The product's `url` stays on
+   the record — the solution page carries it as "Visit the … site →". */
+const CAMPAIGN_PAGES = {
+  targeting_machine: '/p/targeting-machine',
+  machines_family: '/p/the-machine',
+  newvoices: '/p/newvoices',
+  agent_cloud: '/p/agent-cloud'
+};
+function ourPage(p) {
+  const id = p.sol || p.id;
+  return CAMPAIGN_PAGES[id] || ('/s/' + encodeURIComponent(id));
 }
 
-const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(withUtm(p.url))}" target="_blank" rel="noopener">
+const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(ourPage(p))}">
     <span class="fcard__art"><video class="fcard__video" src="/assets/img/cloud/${p.id}.mp4"
       poster="/assets/img/cloud/${p.id}.jpg" ${AUTOPLAY} muted loop playsinline></video></span>
     <span class="fcard__k">${esc(p.name)}</span>
     <span class="fcard__t"><b>${esc(p.title)}</b><i>${esc(p.line)}</i>
-      <em class="btn btn--sm">Visit site ↗</em></span>
+      <em class="btn btn--sm">Learn more →</em></span>
   </a>`;
 
 /* the small card leads with the company itself: icon, name, description */
-const smCard = p => `<a class="scard" href="${esc(withUtm(p.url))}" target="_blank" rel="noopener">
+const smCard = p => `<a class="scard" href="${esc(ourPage(p))}">
     <span class="scard__ico">${ICONS[p.id] || ''}</span>
     <span class="scard__t"><b>${esc(p.name)}</b><i>${esc(p.line)}</i></span>
-    <em class="btn btn--xs">Visit site ↗</em>
+    <em class="btn btn--xs">Learn more →</em>
   </a>`;
 
 /* each row is its content twice, so translateX(-50%) loops seamlessly */
