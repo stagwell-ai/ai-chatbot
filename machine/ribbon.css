@@ -6210,3 +6210,25 @@ html[data-theme="light"] body.vB .tier--gold .tier__cat,body.vB .tier--gold .tie
   body.vB .bfoot__top{padding:48px 0 32px!important;gap:28px!important}
   body.vB .bfoot__foot{padding:20px 0 32px!important;gap:16px!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   142 · THE CHOOSER READS THE SAME IN BOTH THEMES (client, Sep 6).
+   In light the card is white and the detail pane #F1F5F9 — about
+   four percent apart, so the split is a hint. In dark the pane
+   carried rgba(0,26,43,.34) over a lighter card, which is a far
+   bigger step, and the left column read as a separate lit panel
+   rather than the same surface. Matched to the light relationship.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="dark"] body.vB .pick__detail,
+html[data-theme="dark"] body.vB #pickDetail{
+  background:rgba(0,20,34,.17)!important;
+}
+
+/* the row icon, ten percent smaller in both themes */
+body.vB .pick__mark,html[data-theme="dark"] body.vB .pick__mark{
+  width:34px!important;height:34px!important;
+  min-width:34px!important;flex:0 0 34px!important;
+}
+body.vB .pick__mark svg,html[data-theme="dark"] body.vB .pick__mark svg{
+  width:15.3px!important;height:15.3px!important;
+}
