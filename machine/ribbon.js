@@ -164,9 +164,29 @@
   const flip = () => {
     const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
-    try { localStorage.setItem('sw-theme', next); } catch (e) {}
+    /* stored against the system value it was chosen under, so the choice
+       survives reloads but yields the next time the system itself changes */
+    try {
+      const sys = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      localStorage.setItem('sw-theme', JSON.stringify({ choice: next, sys }));
+    } catch (e) {}
     label();
   };
+  /* and follow the system if it changes while the page is open */
+  try {
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      const sys = e.matches ? 'dark' : 'light';
+      let choice = null;
+      try {
+        const raw = localStorage.getItem('sw-theme');
+        const o = raw ? JSON.parse(raw) : null;
+        if (o && o.sys === sys) choice = o.choice;
+      } catch (err) {}
+      root.setAttribute('data-theme', choice || sys);
+      label();
+    });
+  } catch (e) {}
+
   const wire = () => {
     document.querySelectorAll('#themeToggle,[data-theme-toggle]').forEach(b => {
       if (b.__themed) return; b.__themed = true;

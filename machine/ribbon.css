@@ -6196,7 +6196,17 @@ html[data-theme="light"] body.vB .tier--gold .tier__cat,body.vB .tier--gold .tie
     font-size:12px!important;width:100%!important;
   }
 
-  /* d · the footer's own rhythm, in step with the sections */
+  /* d · the chooser's lead is centred on a phone too. The title was, the
+     paragraph was not — it kept a text-align:left from a narrower rule. */
+  html[data-theme="light"] body.vB .pick__lead .pick__hinttext,
+  html[data-theme="dark"]  body.vB .pick__lead .pick__hinttext,
+  html[data-theme="light"] body.vB .pick__lead .pick__hinth,
+  html[data-theme="dark"]  body.vB .pick__lead .pick__hinth,
+  body.vB .pick__lead,body.vB .pick__lead .pick__hinttext,body.vB .pick__lead .pick__hinth{
+    text-align:center!important;
+  }
+
+  /* e · the footer's own rhythm, in step with the sections */
   body.vB .bfoot__top{padding:48px 0 32px!important;gap:28px!important}
   body.vB .bfoot__foot{padding:20px 0 32px!important;gap:16px!important}
 }
