@@ -6018,3 +6018,13 @@ html[data-theme="dark"].over-hero .nav,html[data-theme="dark"].over-hero .nav.is
 }
 /* and it stays: nothing may translate it off the top */
 .nav.is-up,html .nav.is-up{transform:none!important}
+
+/* §137 b · half the space back out again (client, Sep 6).
+   The doubled gap was 213px and reads as a hole on a wide screen. Halving it
+   means taking ~106px off the band's foot; the copy is centred between the two
+   paddings, so the headline drops by half of that and the lead and card, which
+   hang off the bottom of a viewport-tall band, stay put. */
+.hero2--band .hero2__band{padding-bottom:clamp(180px,20vh,260px)!important}
+@media (max-width:860px){
+  .hero2--band .hero2__band{padding-bottom:clamp(130px,15vh,175px)!important}
+}
