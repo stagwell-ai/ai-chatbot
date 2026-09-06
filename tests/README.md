@@ -125,7 +125,7 @@ The suite needs one HTTP server that:
 1. **serves the repo root statically** — `/machine/*.js`, `/machine/*.css`,
    `/data/*.json`, `/machine/assets/*` are all requested by absolute path; and
 2. **answers `POST /api/ask`.** Proxy it to the deployed function
-   (`https://stagwell-ai-prototypes.vercel.app/api/ask`) and research runs
+   (`https://stagwell.vercel.app/api/ask`) and research runs
    **live**; leave it failing and research falls back to seeded fiction. **The
    suite passes either way** — see *Live research* below.
 

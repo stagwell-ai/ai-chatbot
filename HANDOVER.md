@@ -2,7 +2,7 @@
 
 Everything a designer needs to change how this site looks, push it, and see it live.
 
-**Repo** `github.com/julianLDRS/stagwell-ai` · **Live** https://stagwell-ai-prototypes.vercel.app
+**Repo** `github.com/julianLDRS/stagwell-ai` · **Live** https://stagwell.vercel.app
 **Branch that ships** `main`
 
 ---
@@ -31,7 +31,7 @@ vercel git connect https://github.com/julianLDRS/stagwell-ai
 
 After that:
 
-- push to **`main`** → production rebuilds at stagwell-ai-prototypes.vercel.app, ~20 seconds
+- push to **`main`** → production rebuilds at stagwell.vercel.app, ~20 seconds
 - push to **any other branch** → Vercel posts a private **preview URL** on the commit
 
 Preview URLs are the safer way to work: branch, push, share the preview, merge to `main`
