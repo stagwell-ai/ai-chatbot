@@ -6746,3 +6746,20 @@ body.vB .pick > .pick__hint .pick__hinttext{align-self:start!important}
 }
 body.vB .pick > .pick__hint .pick__hinti{transform:translateY(7px)!important}
 body.vB .film{margin-top:clamp(78px,15.4vh,178px)!important}
+
+/* §150 d · the list's own padding, and a composer whose parts agree.
+   The list ran 4px of padding on top against 12.6px at the foot, so the first
+   row started hard against the divider. And the field was 56px tall inside a
+   48px wrapper: the pill you see is the input, the button is centred on the
+   wrapper, so the two were centred on different boxes and sat 4px apart. */
+@media (min-width:861px){
+  html[data-theme="light"] body.vB .pick__list,html[data-theme="dark"] body.vB .pick__list,
+  body.vB .pick__list{padding:clamp(10px,1.5vh,18px) 14px!important}
+
+  html[data-theme="light"] body.vB .pick__site,html[data-theme="dark"] body.vB .pick__site,
+  body.vB .pick__site,body.vB #pickSiteWrap,
+  html[data-theme="light"] body.vB .pick__site input,html[data-theme="dark"] body.vB .pick__site input,
+  body.vB .pick__site input,body.vB #pickSite{
+    height:50px!important;min-height:50px!important;max-height:50px!important;
+  }
+}
