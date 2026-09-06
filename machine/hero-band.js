@@ -330,6 +330,69 @@
     }
   })();
 
+  /* ── 6b · the partner names take turns (client, Sep 6) ───────────────── */
+  /* "Palantir · Adobe · Google" sat as one static list. Same three words, same
+     order, same string — only one is on screen at a time now, so the figure
+     reads as a single value like the numbers beside it instead of a list that
+     has to compete with them for width. */
+  (function () {
+   /* the stats are rendered after this file runs, so the first look usually
+      finds nothing — wait for them the way the chat header does */
+   const build = () => {
+    const dt = [...document.querySelectorAll('.about__stats dt')]
+      .find(el => /·/.test(el.textContent) && /Palantir/i.test(el.textContent));
+    if (!dt || dt.dataset.cycling) return false;
+
+    const words = dt.textContent.split('·').map(w => w.trim()).filter(Boolean);
+    if (words.length < 2) return false;
+    dt.dataset.cycling = '1';
+
+    /* reduced motion gets the list it always had, unrotated */
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+
+    /* the widest word sets the box, so nothing beside it shifts on each turn */
+    dt.textContent = '';
+    const slot = document.createElement('span');
+    slot.className = 'cyc';
+    const sizer = document.createElement('span');
+    sizer.className = 'cyc__size';
+    sizer.setAttribute('aria-hidden', 'true');
+    sizer.textContent = words.reduce((a, b) => (b.length > a.length ? b : a));
+    const live = document.createElement('span');
+    live.className = 'cyc__now';
+    live.textContent = words[0];
+    slot.append(sizer, live);
+    dt.appendChild(slot);
+    /* the full list stays in the accessibility tree */
+    const all = document.createElement('span');
+    all.className = 'u-sr';
+    all.textContent = words.join(' · ');
+    dt.appendChild(all);
+
+    let i = 0, timer = null;
+    const turn = () => {
+      live.classList.add('is-out');
+      setTimeout(() => {
+        i = (i + 1) % words.length;
+        live.textContent = words[i];
+        live.classList.remove('is-out');
+      }, 260);
+    };
+    /* only while it is on screen — an off-screen timer is wasted work */
+    const io = new IntersectionObserver(es => {
+      const on = es[0].isIntersecting;
+      if (on && !timer) timer = setInterval(turn, 2200);
+      else if (!on && timer) { clearInterval(timer); timer = null; }
+    }, { threshold: 0.2 });
+    io.observe(dt);
+    return true;
+   };
+   if (!build()) {
+     const mo = new MutationObserver(() => { if (build()) mo.disconnect(); });
+     mo.observe(document.body, { childList: true, subtree: true });
+   }
+  })();
+
   /* ── 7 · the tier facts as dropdowns (client, Sep 3) ─────────────────── */
   /* "Best for" / "Core value" open on click, FAQ-style. Markup untouched:
      the <dt> is the toggle, the <dd> the panel. */

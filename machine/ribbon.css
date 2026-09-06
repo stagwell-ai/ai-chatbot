@@ -6232,3 +6232,100 @@ body.vB .pick__mark,html[data-theme="dark"] body.vB .pick__mark{
 body.vB .pick__mark svg,html[data-theme="dark"] body.vB .pick__mark svg{
   width:15.3px!important;height:15.3px!important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   143 · THE SCALE STATS BREATHE (client, Sep 6).
+   The grid ran column-gap:0, so each divider had 18px of padding on
+   its own side and nothing at all on the other — the previous
+   column's text ended hard against it. And the block finished flush
+   with the panel's content edge, which is where the artwork comes
+   in, so the right-hand figure read as cropped. A real column gap,
+   and the block stops short of the edge.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .about__stats,
+html[data-theme="dark"]  body.vB .about__stats,
+body.vB .about__stats{
+  column-gap:36px!important;row-gap:28px!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+html[data-theme="light"] body.vB .about__proof,
+html[data-theme="dark"]  body.vB .about__proof,
+body.vB .about__proof{
+  /* more of the row for the figures, and a margin before the artwork */
+  grid-template-columns:minmax(0,0.86fr) minmax(0,1.14fr)!important;
+  column-gap:48px!important;
+}
+body.vB .about__stats > *{padding-left:20px!important;padding-right:8px!important}
+
+@media (max-width:1000px){
+  body.vB .about__proof{grid-template-columns:minmax(0,1fr)!important}
+  body.vB .about__stats{column-gap:26px!important}
+}
+
+/* §143 b · the partner name that takes turns.
+   Both spans share one grid cell, so the hidden sizer holds the width of the
+   longest word and the visible one sits in normal flow on top of it. An
+   absolutely positioned version lost its line box inside the dt and rendered
+   nowhere. */
+body.vB .about__stats .cyc{display:inline-grid;vertical-align:baseline}
+body.vB .about__stats .cyc__size,
+body.vB .about__stats .cyc__now{grid-area:1/1}
+body.vB .about__stats .cyc__size{visibility:hidden}
+body.vB .about__stats .cyc__now{
+  white-space:nowrap;justify-self:start;
+  transition:opacity .26s ease,transform .26s ease;
+}
+body.vB .about__stats .cyc__now.is-out{opacity:0;transform:translateY(-.22em)}
+body.vB .u-sr{
+  position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;
+}
+@media (prefers-reduced-motion:reduce){
+  body.vB .about__stats .cyc__now{transition:none}
+}
+
+/* §143 c · the figures stay readable over the artwork.
+   "5,000" was not being cut off — the bright edge of the glass plate runs
+   straight behind that column and the scrim was down to 42% there, so the
+   figure washed out. The scrim holds more of its weight across the right,
+   and the block keeps a margin before the plate. */
+html[data-theme="dark"] body.vB .about__head{
+  background:
+    linear-gradient(90deg,rgba(0,26,43,.96) 0%,rgba(0,26,43,.90) 34%,rgba(0,26,43,.78) 62%,rgba(0,26,43,.70) 100%),
+    url("/assets/img/about-bg.jpg") right center/cover no-repeat,
+    #001A2B!important;
+}
+html[data-theme="light"] body.vB .about__proof,
+html[data-theme="dark"]  body.vB .about__proof,
+body.vB .about__proof{
+  grid-template-columns:minmax(0,0.74fr) minmax(0,1.26fr)!important;
+}
+html[data-theme="light"] body.vB .about__stats,
+html[data-theme="dark"]  body.vB .about__stats,
+body.vB .about__stats{margin-right:clamp(0px,3vw,44px)!important}
+@media (max-width:1000px){
+  body.vB .about__stats{margin-right:0!important}
+}
+
+/* §143 d · the cycling figure matches its siblings.
+   Its spans were picking up a generic small-span rule — 11px, and a near-black
+   at 54% that is invisible on the navy panel — and the dt itself had been sized
+   down to 18px to fit three names on one line. It holds one word now, so it
+   takes the same weight as the numbers beside it. */
+html[data-theme="light"] body.vB .about__stats dt[data-cycling],
+html[data-theme="dark"]  body.vB .about__stats dt[data-cycling],
+body.vB .about__stats dt[data-cycling]{
+  font-size:clamp(26px,2.6vw,40px)!important;line-height:1.02!important;
+}
+html[data-theme="light"] body.vB .about__stats .cyc,
+html[data-theme="dark"]  body.vB .about__stats .cyc,
+html[data-theme="light"] body.vB .about__stats .cyc__size,
+html[data-theme="dark"]  body.vB .about__stats .cyc__size,
+html[data-theme="light"] body.vB .about__stats .cyc__now,
+html[data-theme="dark"]  body.vB .about__stats .cyc__now,
+body.vB .about__stats .cyc,
+body.vB .about__stats .cyc__size,
+body.vB .about__stats .cyc__now{
+  font:inherit!important;color:inherit!important;
+  letter-spacing:inherit!important;text-transform:none!important;opacity:1!important;
+}
