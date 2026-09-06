@@ -6154,3 +6154,49 @@ html[data-theme="light"] body.vB .tier--amber .tier__cat,body.vB .tier--amber .t
 html[data-theme="light"] body.vB .tier--gold .tier__cat,body.vB .tier--gold .tier__cat{
   background:none!important;color:#FFB81C!important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   141 · THE MOBILE PASS (client, Sep 6).
+   Kept last in the file on purpose: a media block placed above the
+   rules it overrides loses on equal specificity.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:860px){
+
+  /* a · one rhythm. The sections were running 40, 57, 65, 73 and 106px of
+     padding with an 81px margin thrown in on one of them, which is what
+     "the space between the sections is not consistent" was. */
+  body.vB #hero2,body.vB #about,body.vB #cloud,body.vB #cta,
+  body.vB .about,body.vB .crail,body.vB .bcta{
+    padding-top:56px!important;padding-bottom:56px!important;
+    margin-top:0!important;margin-bottom:0!important;
+  }
+  body.vB #hero2{padding-top:0!important}
+  body.vB .film{margin-top:56px!important}
+  /* an empty section still charging 121px of padding for nothing */
+  body.vB #dash{padding:0!important;margin:0!important}
+  body.vB .about__in{gap:56px!important}
+
+  /* b · Agentic solutions. 210px of bottom padding was reserving room for
+     artwork under the copy; it reads as the card simply stopping late. */
+  html[data-theme="light"] body.vB .about__head,
+  html[data-theme="dark"]  body.vB .about__head,
+  body.vB .about__head{padding:28px 20px 150px!important}
+
+  /* c · the callback. The phone field was 200px tall — it inherited a height
+     meant for a block, not an input — which is most of why that card felt
+     oversized. Everything here is a control, so everything is control-sized. */
+  body.vB .callback{padding:24px 20px!important;gap:16px!important}
+  body.vB .callback input,body.vB .callback input[type="tel"]{
+    height:50px!important;min-height:50px!important;max-height:50px!important;
+    padding:0 16px!important;font-size:16px!important;   /* 16px: iOS won't zoom */
+    line-height:50px!important;
+  }
+  body.vB .callback .btn,body.vB .callback button{
+    height:48px!important;min-height:48px!important;padding:0 20px!important;
+    font-size:12px!important;width:100%!important;
+  }
+
+  /* d · the footer's own rhythm, in step with the sections */
+  body.vB .bfoot__top{padding:48px 0 32px!important;gap:28px!important}
+  body.vB .bfoot__foot{padding:20px 0 32px!important;gap:16px!important}
+}
