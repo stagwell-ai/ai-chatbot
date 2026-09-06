@@ -6028,3 +6028,79 @@ html[data-theme="dark"].over-hero .nav,html[data-theme="dark"].over-hero .nav.is
 @media (max-width:860px){
   .hero2--band .hero2__band{padding-bottom:clamp(130px,15vh,175px)!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   138 · THE HERO'S SPACING STOPS FIGHTING ITSELF (client, Sep 6).
+
+   Until now the artwork's height and the copy's position were the
+   same thing: the band was a viewport tall, the copy was centred
+   inside it, and the chooser hung off its bottom edge. So the space
+   above the headline and the space below it were one knob turned
+   from both ends — close the gap under the headline and the gap
+   above it opened; close that one and the first came back. Worse,
+   both moved at different rates with window height, so a value
+   tuned on one screen was wrong on the next.
+
+   The artwork moves to a pseudo-element that is a viewport tall on
+   its own. The copy goes back to normal flow, anchored to the top
+   with plain padding. Now every space is a number that means what
+   it says and holds at any window height:
+     nav → tagline   90px
+     headline → lead 118px
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .hero2--band{position:relative!important;min-height:0!important}
+/* every line carries !important because the older .hero2::before does too —
+   it is a blurred glow layer that would otherwise keep its 72px blur, its
+   -10% bleed and its calc(100% + 90px) height and swallow the artwork */
+body.vB .hero2--band::before{
+  content:""!important;display:block!important;
+  position:absolute!important;
+  top:0!important;bottom:auto!important;left:0!important;right:0!important;
+  height:100vh!important;height:100svh!important;
+  z-index:-1!important;pointer-events:none!important;
+  filter:none!important;transform:none!important;
+  /* .hero2::before is the hidden half of a crossfade pair — held at opacity 0
+     and masked transparent at both ends. Both must be undone or the artwork
+     is computed, sized, and painted nowhere. */
+  opacity:1!important;animation:none!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+  background-repeat:no-repeat!important;
+  background-image:
+    linear-gradient(180deg,rgba(198,221,247,.62) 0%,rgba(205,226,248,.30) 18%,rgba(210,229,249,0) 40%),
+    linear-gradient(0deg,rgba(191,216,245,.58) 0%,rgba(203,225,248,.26) 16%,rgba(210,229,249,0) 34%),
+    linear-gradient(180deg,rgba(247,248,250,0) 97%,rgba(247,248,250,.55) 100%),
+    url("/assets/img/hero-bg.jpg")!important;
+  background-size:100% 100%,100% 100%,100% 100%,cover!important;
+  background-position:50% 0,50% 100%,50% 0,center center!important;
+  background-color:#FFFFFF!important;
+}
+body.vB .hero2--band::after{display:none!important}
+@media (max-width:860px){
+  body.vB .hero2--band::before{background-position:50% 0,50% 100%,50% 0,72% center!important}
+}
+/* the navy gradient owns the dark theme; no photograph there */
+html[data-theme="dark"] body.vB .hero2--band::before{display:none!important}
+
+/* the copy: in flow, at the top, its own background gone */
+html[data-theme="light"] body.vB .hero2--band .hero2__band,
+html[data-theme="dark"] body.vB .hero2--band .hero2__band,
+body.vB .hero2--band .hero2__band{
+  background:none!important;
+  position:relative!important;z-index:1!important;
+  min-height:0!important;
+  justify-content:flex-start!important;
+  padding-top:calc(61px + 90px)!important;   /* bar, then the tagline */
+  padding-bottom:168px!important;            /* headline, then the lead */
+}
+@media (max-width:860px){
+  body.vB .hero2--band .hero2__band{
+    padding-top:calc(61px + 54px)!important;padding-bottom:104px!important;
+  }
+}
+/* the chooser follows the copy now, not the bottom of the window. Both pulls
+   have to go: the one on .page, and the -150px on .page .hero2__in that was
+   dragging the lead up onto the headline. */
+body.vB .page{margin-top:0!important}
+html[data-theme="light"] body.vB .page .hero2__in,
+html[data-theme="dark"] body.vB .page .hero2__in,
+body.vB .page .hero2__in{margin-top:0!important}
