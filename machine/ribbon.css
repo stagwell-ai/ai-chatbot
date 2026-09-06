@@ -6892,3 +6892,50 @@ body.vB #dash{padding:0!important;margin:0!important;border:0!important;min-heig
 /* the stated break in the tagline: desktop only */
 .eb-break{display:none}
 @media (min-width:1100px){.eb-break{display:inline}}
+
+/* ═══════════════════════════════════════════════════════════════
+   154 · A WIDER CHAT THAT DOES NOT JUMP (client, Sep 6).
+   The rows are identical — 57px each, same padding. What reads as
+   inconsistent is the card itself: every tab's detail is a
+   different length, so choosing one resized the card from 662 to
+   800 and moved the whole page under the pointer. Wider first, so
+   the detail needs less height, then a fixed height so the card
+   never changes size at all.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:1100px){
+  html[data-theme="light"] body.vB .hero2--band .hero2__band,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+  body.vB .hero2--band .hero2__band{
+    max-width:min(1560px,calc(100vw - clamp(24px,2.4vw,56px)))!important;
+    grid-template-columns:minmax(0,0.78fr) minmax(0,1.22fr)!important;
+    column-gap:clamp(28px,3vw,56px)!important;
+  }
+}
+
+/* §154 b · the card keeps one height, whichever tab is open.
+   The panes take a fixed height rather than the taller of their two children,
+   so choosing a tab never resizes the card and never moves the page. The list
+   fits inside it; only the longest detail scrolls, and it scrolls within its
+   own pane rather than dragging the whole page with it. */
+@media (min-width:861px){
+  html[data-theme="light"] body.vB .pick__panes,
+  html[data-theme="dark"]  body.vB .pick__panes,
+  body.vB .pick__panes{
+    height:clamp(380px,54vh,540px)!important;
+    min-height:0!important;overflow:hidden!important;
+  }
+  html[data-theme="light"] body.vB .pick__list,html[data-theme="dark"] body.vB .pick__list,
+  html[data-theme="light"] body.vB .pick__detail,html[data-theme="dark"] body.vB .pick__detail,
+  body.vB .pick__list,body.vB .pick__detail,body.vB #pickDetail{
+    min-height:0!important;max-height:none!important;height:100%!important;
+    overflow-y:auto!important;overscroll-behavior:contain!important;
+  }
+}
+/* and the headline gets its third line back */
+@media (min-width:1100px){
+  html[data-theme="light"] body.vB .hero2--band .hero2__band,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+  body.vB .hero2--band .hero2__band{
+    grid-template-columns:minmax(0,0.86fr) minmax(0,1.14fr)!important;
+  }
+}
