@@ -393,6 +393,68 @@
    }
   })();
 
+  /* ── 6c · the portfolio gets a mark, and arrives softly (client, Sep 6) ── */
+  /* Three columns of plain text with a hairline over each read as a table of
+     contents rather than a section. A mark in the tier's own colour gives each
+     column something to lead with, and the three arrive in sequence on scroll.
+     No hover: that was removed on request and stays removed. */
+  (function () {
+    const ART = {
+      /* stacked plates — capability layered on capability */
+      orange: '<path d="M12 3 21 7.6 12 12.2 3 7.6z"/><path d="M3 12.2 12 16.8l9-4.6"/><path d="M3 16.6 12 21.2l9-4.6"/>',
+      /* a target — built for one specific thing */
+      cyan:   '<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.6"/><circle cx="12" cy="12" r=".9" fill="currentColor" stroke="none"/>',
+      /* a spark — pick it up and go */
+      amber:  '<path d="M12 2.6c0 5 1.6 7.6 8 9.4-6.4 1.8-8 4.4-8 9.4 0-5-1.6-7.6-8-9.4 6.4-1.8 8-4.4 8-9.4z"/>',
+    };
+
+    const build = () => {
+      const tiers = [...document.querySelectorAll('.tier')];
+      if (!tiers.length) return false;
+      let touched = false;
+
+      tiers.forEach((t, i) => {
+        if (!t.dataset.marked) {
+          const key = ['orange', 'cyan', 'amber'].find(k => t.classList.contains('tier--' + k));
+          const d = ART[key];
+          if (d) {
+            const wrap = document.createElement('span');
+            wrap.className = 'tier__mark';
+            wrap.setAttribute('aria-hidden', 'true');
+            wrap.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+              'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+            t.insertBefore(wrap, t.firstChild);
+            t.dataset.marked = '1';
+            touched = true;
+          }
+        }
+        if (!t.dataset.revealed) {
+          t.dataset.revealed = '1';
+          t.style.setProperty('--i', i);
+          if (!REDUCED) t.classList.add('will-reveal');
+          touched = true;
+        }
+      });
+
+      if (!touched) return false;
+      if (REDUCED || !('IntersectionObserver' in window)) {
+        tiers.forEach(t => t.classList.add('is-in'));
+        return true;
+      }
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) { io.unobserve(e.target); e.target.classList.add('is-in'); }
+      }), { threshold: 0.16 });
+      tiers.forEach(t => io.observe(t));
+      return true;
+    };
+
+    if (!build()) {
+      const mo = new MutationObserver(() => { if (build()) mo.disconnect(); });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+
   /* ── 7 · the tier facts as dropdowns (client, Sep 3) ─────────────────── */
   /* "Best for" / "Core value" open on click, FAQ-style. Markup untouched:
      the <dt> is the toggle, the <dd> the panel. */
