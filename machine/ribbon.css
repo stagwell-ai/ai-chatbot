@@ -6443,3 +6443,59 @@ body.vB .hero2--band::before{
 @media (prefers-reduced-motion:reduce){
   body.vB .hero2--band::before{animation:none!important;scale:1!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   147 · THE SCALE PANEL: FOUR ACROSS (client, Sep 6).
+
+   Four rows made the panel tall, and a tall panel with a
+   cover-sized photograph crops hard into the width — which is the
+   artwork "getting cropped weirdly". Four figures side by side in
+   one row instead: the panel comes back down, each figure gets a
+   quarter of the full width rather than an eighth, and the copy
+   sits above them across the top.
+
+   The captions were also sitting on the brightest part of the
+   plate. The wash only ran left-to-right, down to 12% at the right
+   edge, so white-at-72% over city lights was not readable. A second
+   wash from the foot covers the figures, and the captions go up to
+   88%.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .about__proof,
+html[data-theme="dark"]  body.vB .about__proof,
+body.vB .about__proof{
+  grid-template-columns:minmax(0,1fr)!important;
+  row-gap:clamp(34px,4vw,52px)!important;
+  align-items:start!important;
+}
+html[data-theme="light"] body.vB .about__stats,
+html[data-theme="dark"]  body.vB .about__stats,
+body.vB .about__stats{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  column-gap:clamp(20px,2.4vw,34px)!important;row-gap:0!important;
+  margin-right:0!important;
+}
+@media (max-width:1000px){
+  body.vB .about__stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;row-gap:28px!important}
+}
+@media (max-width:560px){
+  body.vB .about__stats{grid-template-columns:minmax(0,1fr)!important;row-gap:22px!important}
+}
+
+/* the figures sit at the foot now, so the wash has to reach them */
+body.vB .about__proof::before{
+  background:
+    linear-gradient(90deg,rgba(2,18,31,.92) 0%,rgba(2,18,31,.74) 44%,rgba(2,18,31,.46) 74%,rgba(2,18,31,.34) 100%),
+    linear-gradient(0deg,rgba(2,18,31,.72) 0%,rgba(2,18,31,.30) 34%,rgba(2,18,31,0) 62%)!important;
+}
+html[data-theme="light"] body.vB .about__stats dd,
+html[data-theme="dark"]  body.vB .about__stats dd,
+body.vB .about__stats dd{color:rgba(241,250,255,.88)!important}
+
+/* §147 b · quarter-width columns are narrow enough that automatic hyphenation
+   starts breaking ordinary words — "contribut-ing", "re-search", "me-dia".
+   Let them wrap on spaces instead. */
+html[data-theme="light"] body.vB .about__stats dd,
+html[data-theme="dark"]  body.vB .about__stats dd,
+body.vB .about__stats dd,body.vB .about__stats dt{
+  hyphens:none!important;-webkit-hyphens:none!important;text-wrap:pretty;
+}
