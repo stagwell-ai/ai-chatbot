@@ -487,9 +487,13 @@
       left.className = 'hero2__copy';
       left.append(eyebrow, title);
 
+      /* Move #heroPick, not .pick. Every click in the chooser is delegated
+         from #heroPick — selecting a tab, opening a detail, the composer —
+         so lifting the card out of it leaves a chooser that renders perfectly
+         and does nothing at all. */
       const right = document.createElement('div');
       right.className = 'hero2__chat';
-      right.appendChild(card);
+      right.appendChild(document.getElementById('heroPick') || card);
 
       band.append(left, right);
       band.dataset.split = '1';

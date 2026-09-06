@@ -6763,3 +6763,20 @@ body.vB .film{margin-top:clamp(78px,15.4vh,178px)!important}
     height:50px!important;min-height:50px!important;max-height:50px!important;
   }
 }
+
+/* §150 e · the chooser's own wrapper carries the column now */
+body.vB .hero2__chat > #heroPick{width:100%!important;max-width:none!important;margin:0!important}
+
+/* §150 f · a chosen detail is taller than the list beside it, and the card
+   clips. Let the row take the taller of the two so the card grows into the
+   space the hero was leaving empty anyway; only if that would run past the
+   screen does the detail scroll on its own. */
+html[data-theme="light"] body.vB .pick__panes,
+html[data-theme="dark"]  body.vB .pick__panes,
+body.vB .pick__panes{align-items:stretch!important;grid-auto-rows:auto!important}
+html[data-theme="light"] body.vB .pick__detail,html[data-theme="dark"] body.vB .pick__detail,
+body.vB .pick__detail,body.vB #pickDetail{
+  height:auto!important;min-height:0!important;
+  max-height:calc(100svh - 260px)!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+}
