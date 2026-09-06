@@ -507,25 +507,38 @@
   })();
 
   /* ── 6e · the tagline breaks after "grounded" (client, Sep 6) ────────── */
-  /* A wide column let it break wherever the width happened to run out. The
-     break is stated instead, and only above the desktop breakpoint — on a
-     phone the line is narrow enough that a forced break would leave a stub. */
+  /* A wide column let it break wherever the width happened to run out, so the
+     two lines came out a different shape at every window size. The break is
+     stated instead — and it has to be re-stated: the eyebrow is re-rendered
+     from data after this file runs, which silently threw the first <br> away
+     and left the natural wrap looking like a fix that had not worked. */
   (function () {
     const eb = document.querySelector('#heroEyebrow, .hero2__band .eyebrow');
-    if (!eb || eb.dataset.broken) return;
-    const walk = document.createTreeWalker(eb, NodeFilter.SHOW_TEXT);
-    let node;
-    while ((node = walk.nextNode())) {
-      const i = node.nodeValue.indexOf('grounded ');
-      if (i < 0) continue;
-      const tail = node.splitText(i + 'grounded'.length);
-      tail.nodeValue = tail.nodeValue.replace(/^\s+/, ' ');
-      const br = document.createElement('br');
-      br.className = 'eb-break';
-      tail.parentNode.insertBefore(br, tail);
-      eb.dataset.broken = '1';
-      break;
-    }
+    if (!eb) return;
+
+    let applying = false;
+    const apply = () => {
+      if (applying || eb.querySelector('.eb-break')) return;
+      applying = true;
+      const walk = document.createTreeWalker(eb, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walk.nextNode())) {
+        const i = node.nodeValue.indexOf('grounded ');
+        if (i < 0) continue;
+        const tail = node.splitText(i + 'grounded'.length);
+        tail.nodeValue = tail.nodeValue.replace(/^\s+/, ' ');
+        const br = document.createElement('br');
+        br.className = 'eb-break';
+        tail.parentNode.insertBefore(br, tail);
+        break;
+      }
+      applying = false;
+    };
+
+    apply();
+    /* and again any time the line is rewritten */
+    new MutationObserver(apply)
+      .observe(eb, { childList: true, subtree: true, characterData: true });
   })();
 
   /* ── 7 · the tier facts as dropdowns (client, Sep 3) ─────────────────── */

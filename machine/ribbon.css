@@ -6939,3 +6939,22 @@ body.vB #dash{padding:0!important;margin:0!important;border:0!important;min-heig
     grid-template-columns:minmax(0,0.86fr) minmax(0,1.14fr)!important;
   }
 }
+
+/* §154 c · "Something else" renders a .pick__pane--free that carries its own
+   44px of padding, inside a detail pane that already supplies 32 — so that one
+   tab sat 76px in while every other sat 32. The pane inherits the detail's
+   inset rather than adding a second one. */
+html[data-theme="light"] body.vB #pickDetail .pick__pane,
+html[data-theme="dark"]  body.vB #pickDetail .pick__pane,
+body.vB #pickDetail .pick__pane,body.vB #pickDetail .pick__pane--free{
+  padding:0!important;margin:0!important;
+}
+
+/* §154 d · the last divider in the portfolio.
+   .about__portfolio carries a full-width 1px border-top, which is the line
+   sitting between the "What is Stagwell.AI" banner and the portfolio heading.
+   The columns have their own rules; this one is doing nothing but separating
+   two things that already read as separate. */
+html[data-theme="light"] body.vB .about__portfolio,
+html[data-theme="dark"]  body.vB .about__portfolio,
+body.vB .about__portfolio{border-top:0!important;border-bottom:0!important}
