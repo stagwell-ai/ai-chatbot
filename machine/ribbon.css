@@ -6104,3 +6104,53 @@ body.vB .page{margin-top:0!important}
 html[data-theme="light"] body.vB .page .hero2__in,
 html[data-theme="dark"] body.vB .page .hero2__in,
 body.vB .page .hero2__in{margin-top:0!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   139 · NO HOVER ON THE PORTFOLIO CARDS (client, Sep 6).
+   An earlier reset was written unprefixed and lost to the
+   html[data-theme=…] rules above it, so the fill was still there.
+   Both themes, both open and closed states, and the transition too
+   — otherwise the card still eases on the way in and out of a
+   change that no longer happens.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .tier:hover,
+html[data-theme="dark"]  body.vB .tier:hover,
+html[data-theme="light"] body.vB .tier:not(.is-open):hover,
+html[data-theme="dark"]  body.vB .tier:not(.is-open):hover,
+html[data-theme="light"] body.vB .tier.is-open:hover,
+html[data-theme="dark"]  body.vB .tier.is-open:hover,
+body.vB .tier:hover{
+  background:none!important;filter:none!important;
+  transform:none!important;box-shadow:none!important;
+  border-color:rgba(0,51,73,.16)!important;
+}
+html[data-theme="dark"] body.vB .tier:hover{border-color:rgba(234,243,248,.18)!important}
+html[data-theme="light"] body.vB .tier,html[data-theme="dark"] body.vB .tier,body.vB .tier{
+  transition:padding .32s cubic-bezier(.16,1,.3,1)!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   140 · THE PORTFOLIO EYEBROWS TAKE THE BRAND COLOURS (client,
+   Sep 6). They had been darkened for contrast on white — #FF6D24
+   to #C24E0E, #009CBD to #0A7E9B, and #FFB81C all the way to
+   #8A5A00, which is brown. The brand values go back in, on the
+   variable that drives both the eyebrow and the card's side stroke.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .tier--orange,html[data-theme="dark"] body.vB .tier--orange,
+body.vB .tier--orange{--tier-stroke:#FF6D24}
+html[data-theme="light"] body.vB .tier--cyan,html[data-theme="dark"] body.vB .tier--cyan,
+body.vB .tier--cyan{--tier-stroke:#009CBD}
+html[data-theme="light"] body.vB .tier--amber,html[data-theme="dark"] body.vB .tier--amber,
+html[data-theme="light"] body.vB .tier--gold,html[data-theme="dark"] body.vB .tier--gold,
+body.vB .tier--amber,body.vB .tier--gold{--tier-stroke:#FFB81C}
+
+html[data-theme="light"] body.vB .tier--orange .tier__cat,body.vB .tier--orange .tier__cat{
+  background:none!important;color:#FF6D24!important;
+}
+html[data-theme="light"] body.vB .tier--cyan .tier__cat,body.vB .tier--cyan .tier__cat{
+  background:none!important;color:#009CBD!important;
+}
+html[data-theme="light"] body.vB .tier--amber .tier__cat,body.vB .tier--amber .tier__cat,
+html[data-theme="light"] body.vB .tier--gold .tier__cat,body.vB .tier--gold .tier__cat{
+  background:none!important;color:#FFB81C!important;
+}
