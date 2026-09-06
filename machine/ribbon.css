@@ -5933,9 +5933,9 @@ html[data-theme="dark"] body.vB .about__head{
   }
 }
 
-/* c · a smaller lockup in the bar */
-.nav .nav__logo{height:18px!important}
-@media (max-width:860px){.nav .nav__logo{height:16px!important}}
+/* c · a smaller lockup in the bar — 18px, then 20% off that (client, Sep 6) */
+.nav .nav__logo{height:14.4px!important}
+@media (max-width:860px){.nav .nav__logo{height:13px!important}}
 
 /* d · twice the air between the headline and the chooser's lead. The copy is
    centred between the band's two paddings, so deepening the foot lifts the
@@ -5965,3 +5965,56 @@ html[data-theme="dark"] body.vB .pick__row.is-on{
 body.vB .pick__hinti,html[data-theme="dark"] body.vB .pick__hinti{
   background:none!important;border:0!important;border-radius:0!important;padding:0!important;
 }
+
+/* §136 f · the chooser's divider runs the whole height.
+   It was a border on .pick__list, which begins below the mark, so the line
+   started level with the first row and left the logo's corner unbounded. The
+   obvious owner, .pick__col, cannot draw it: that element is display:contents,
+   so it has no box and its border paints nothing at all. The detail pane is
+   the one element that spans the full row, so the line belongs on its leading
+   edge. */
+/* the id and both theme prefixes, because older rules carry them and a bare
+   class loses; two adjacent 1px borders read as one heavy 2px line */
+html[data-theme="light"] body.vB #pickList.pick__list,
+html[data-theme="dark"] body.vB #pickList.pick__list,
+body.vB #pickList.pick__list,body.vB .pick__list{border-right:0!important}
+body.vB .pick__detail,body.vB #pickDetail{
+  border-left:1px solid rgba(0,51,73,.14)!important;
+}
+html[data-theme="dark"] body.vB .pick__detail,html[data-theme="dark"] body.vB #pickDetail{
+  border-left-color:rgba(234,243,248,.16)!important;
+}
+@media (max-width:860px){
+  body.vB .pick__detail,body.vB #pickDetail{border-left:0!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   137 · THE BAR, SETTLED (client, Sep 6).
+   Transparent at the top of the page. Solid the moment you scroll —
+   solid, not frosted: the blurred translucent state was the thing
+   that read as "the background appears, then goes, then comes back",
+   because its tint changed again at the end of the hero. One
+   transition, one destination. Fixed in place throughout; it never
+   hides. This supersedes the nav half of §133.
+   ═══════════════════════════════════════════════════════════════ */
+html.over-art .nav,html.over-art .nav.is-stuck,
+html .nav,html .nav.is-stuck{
+  background:#FFFFFF!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  border-bottom:1px solid rgba(0,51,73,.10)!important;
+}
+html[data-theme="dark"].over-art .nav,html[data-theme="dark"].over-art .nav.is-stuck,
+html[data-theme="dark"] .nav,html[data-theme="dark"] .nav.is-stuck{
+  background:#001A2B!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  border-bottom:1px solid rgba(234,243,248,.12)!important;
+}
+/* at rest, on the artwork, it carries nothing at all */
+html.over-hero .nav,html.over-hero .nav.is-stuck,
+html[data-theme="dark"].over-hero .nav,html[data-theme="dark"].over-hero .nav.is-stuck{
+  background:transparent!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  border-bottom-color:transparent!important;
+}
+/* and it stays: nothing may translate it off the top */
+.nav.is-up,html .nav.is-up{transform:none!important}
