@@ -6780,3 +6780,46 @@ body.vB .pick__detail,body.vB #pickDetail{
   max-height:calc(100svh - 260px)!important;
   overflow-y:auto!important;overscroll-behavior:contain!important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   151 · THE TABS LOSE THEIR PARAGRAPHS (client, Sep 6).
+   Each row carried the same line that the detail pane shows once
+   you pick it, so the list was saying everything twice and taking
+   two-thirds of the card to do it. Icon and label only: the rows
+   halve in height, the list needs far less width, and the right
+   pane gets it. The headline takes the room that frees up.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .pick__row .pick__sub,
+html[data-theme="dark"]  body.vB .pick__row .pick__sub,
+body.vB .pick__row .pick__sub{display:none!important}
+
+html[data-theme="light"] body.vB .pick__panes,
+html[data-theme="dark"]  body.vB .pick__panes,
+body.vB .pick__panes{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)!important}
+@media (max-width:860px){
+  body.vB .pick__panes{grid-template-columns:minmax(0,1fr)!important}
+}
+/* a one-line row wants its height back in padding, not in leading */
+@media (min-width:861px){
+  html[data-theme="light"] body.vB .pick__row,html[data-theme="dark"] body.vB .pick__row,
+  body.vB .pick__row{padding:clamp(9px,1.3vh,15px) 14px!important}
+}
+
+@media (min-width:1100px){
+  html[data-theme="light"] body.vB .hero2--band .display:not(#tw_),
+  html[data-theme="dark"]  body.vB .hero2--band .display:not(#tw_),
+  body.vB .hero2--band .display:not(#tw_),
+  body.vB .hero2--band #hero2Title:not(#tw_){
+    font-size:clamp(48px,min(5.6vw,9.4vh),108px)!important;
+  }
+}
+
+/* §151 b · with the list slimmed down the chat needs less of the row, so the
+   headline gets a column it can hold in three lines rather than four. */
+@media (min-width:1100px){
+  html[data-theme="light"] body.vB .hero2--band .hero2__band,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+  body.vB .hero2--band .hero2__band{
+    grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr)!important;
+  }
+}
