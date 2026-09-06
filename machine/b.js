@@ -1222,6 +1222,13 @@ window.resetLanding = resetB;
     if (d < 0) return show();       // heading up, for any distance at all
     if (d === 0) return;            // a no-op event must not disturb the count
 
+    /* Never hide while there is still hero artwork behind the bar. Sliding
+       the header away over a full-screen hero is the most conspicuous motion
+       on the page and it reads as a glitch — the bar is the only thing
+       moving, against a background that is not. Below the hero it hides as
+       before, where the content scrolling past explains the movement. */
+    if (document.documentElement.classList.contains('over-art')) { acc = 0; return; }
+
     acc += d;
     if (acc > HIDE_AFTER) { nav.classList.add('is-up'); acc = 0; }
   };

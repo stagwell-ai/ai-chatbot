@@ -253,11 +253,11 @@
       root.classList.toggle('over-hero', scrollY < 24 && bottom > navH);
       root.classList.toggle('over-art', bottom > navH);
 
-      /* The band is pulled up under the bar by exactly the bar's height. A
-         hard-coded number is wrong the moment the bar wraps or a font renders
-         a pixel taller, and the error shows as a strip of page ground above
-         the header. Measure it instead. */
-      band.style.marginTop = '-' + Math.round(navH) + 'px';
+      /* The bar is out of flow on this page, so nothing needs pulling up.
+         Publish its height anyway — the drawer and the scroll-spy offsets
+         both want it, and reading it here means one measurement per frame
+         instead of one per consumer. */
+      root.style.setProperty('--navH', Math.round(navH) + 'px');
     };
     addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
     addEventListener('resize', check, { passive: true });

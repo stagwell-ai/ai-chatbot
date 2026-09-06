@@ -5808,3 +5808,47 @@ body.vB .pick__detail,body.vB #pickDetail{
 html[data-theme="dark"] body.vB .pick__detail,html[data-theme="dark"] body.vB #pickDetail{
   background:rgba(0,26,43,.34)!important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   134 · THE BAR LEAVES THE FLOW, SO THE HERO CAN ACTUALLY BE ONE
+   SCREEN TALL (client, Sep 6).
+
+   The bar was sticky, i.e. still in flow, and the hero was pulled
+   up under it by a negative margin equal to the bar's height. That
+   is where two complaints came from at once: the band was
+   min-height:100svh but started 61px above the viewport, so it
+   ENDED 61px short of the fold and left a strip of ground under
+   the artwork; and any disagreement between the real bar height
+   and the number in the margin showed as the header sitting low,
+   then snapping up once script ran.
+
+   Out of flow, both problems stop existing: the hero starts at 0,
+   100svh is exactly the fold, and no number has to be kept in
+   sync. Scoped with :has() to the page that actually has a hero
+   band, so the inner pages keep their in-flow bar.
+   ═══════════════════════════════════════════════════════════════ */
+body:has(.hero2--band) .nav{
+  position:fixed!important;top:0!important;left:0!important;right:0!important;
+  z-index:50!important;
+}
+body:has(.hero2--band) .hero2--band{margin-top:0!important}
+.hero2--band .hero2__band{min-height:100vh!important;min-height:100svh!important}
+
+/* the chat rides up into the foot of the hero, so the lead sits closer to the
+   headline and more of the card is in the first screen */
+body.vB .page{margin-top:clamp(-260px,-22vh,-150px)!important}
+
+/* ── the card is narrower than the page shell (client, Sep 6) ── */
+body.vB .pick,body.vB .pick__lead{max-width:980px!important}
+@media (max-width:1040px){
+  body.vB .pick,body.vB .pick__lead{max-width:100%!important}
+}
+
+/* §134 b · the headline sits closer to the lead beneath it. The band keeps a
+   deep foot for the artwork, but not so deep that the copy is stranded at the
+   top of a screen-tall hero with the chooser a long way under it. */
+.hero2--band .hero2__band{padding-bottom:clamp(150px,17vh,210px)!important}
+@media (max-width:860px){
+  .hero2--band .hero2__band{padding-bottom:clamp(110px,13vh,150px)!important}
+}
+body.vB .page{margin-top:clamp(-190px,-15vh,-110px)!important}
