@@ -6565,3 +6565,125 @@ body.vB .about__stats{grid-template-rows:auto auto!important;align-items:stretch
   body.vB .pick__act{min-height:0!important}
   body.vB .pick__site,body.vB #pickSiteWrap{height:48px!important;min-height:48px!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   149 · THE HERO IN TWO COLUMNS (client mock-up, Sep 6).
+   Stacked, the headline and the chat could only share a screen by
+   shrinking the headline until it stopped being one. Side by side
+   they both fit at full size: tagline and headline hold the left,
+   ranged left, and the chat holds the right.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:1100px){
+  html[data-theme="light"] body.vB .hero2--band .hero2__band,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+  body.vB .hero2--band .hero2__band{
+    display:grid!important;
+    grid-template-columns:minmax(0,0.84fr) minmax(0,1.16fr)!important;
+    column-gap:clamp(44px,5.4vw,92px)!important;
+    align-items:start!important;
+    width:100%!important;max-width:var(--shell,1140px)!important;
+    margin-inline:auto!important;
+    padding-top:calc(61px + clamp(38px,6.4vh,104px))!important;
+    padding-bottom:clamp(38px,6.4vh,104px)!important;
+    text-align:left!important;
+  }
+  body.vB .hero2__copy{text-align:left!important;padding-top:clamp(2px,1vh,14px)!important}
+  html[data-theme="light"] body.vB .hero2__copy .eyebrow,
+  html[data-theme="dark"]  body.vB .hero2__copy .eyebrow,
+  body.vB .hero2__copy .eyebrow,body.vB .hero2__copy #heroEyebrow{
+    margin:0 0 clamp(26px,4.4vh,64px)!important;
+    justify-content:flex-start!important;text-align:left!important;
+    max-width:46ch!important;
+  }
+  html[data-theme="light"] body.vB .hero2--band .display:not(#tw_),
+  html[data-theme="dark"]  body.vB .hero2--band .display:not(#tw_),
+  body.vB .hero2--band .display:not(#tw_),
+  body.vB .hero2--band #hero2Title:not(#tw_){
+    font-size:clamp(44px,min(4.8vw,8.6vh),88px)!important;
+    line-height:1.06!important;text-align:left!important;margin:0!important;
+  }
+  body.vB .hero2__chat{width:100%!important;min-width:0!important}
+  body.vB .hero2__chat .pick{width:100%!important;max-width:none!important;margin:0!important}
+}
+
+/* the chooser's header: the mark, then its title and line, across the whole
+   card rather than inside the left pane */
+body.vB .pick > .pick__hint{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  grid-template-areas:"mark title" "mark text"!important;
+  column-gap:12px!important;row-gap:1px!important;
+  align-items:center!important;justify-items:start!important;
+  padding:13px 18px!important;margin:0!important;
+  border-bottom:1px solid rgba(0,51,73,.12)!important;
+  background:none!important;
+}
+html[data-theme="dark"] body.vB .pick > .pick__hint{border-bottom-color:rgba(234,243,248,.16)!important}
+body.vB .pick > .pick__hint .pick__hinti{grid-area:mark!important;width:30px!important;height:30px!important}
+body.vB .pick > .pick__hint .pick__hinth{
+  grid-area:title!important;justify-self:start!important;
+  font-size:14.5px!important;line-height:1.3!important;font-weight:600!important;
+  color:#003349!important;margin:0!important;
+}
+body.vB .pick > .pick__hint .pick__hinttext{
+  grid-area:text!important;justify-self:start!important;
+  font-size:13px!important;line-height:1.36!important;font-weight:400!important;
+  color:rgba(0,51,73,.62)!important;max-width:none!important;margin:0!important;
+}
+html[data-theme="dark"] body.vB .pick > .pick__hint .pick__hinth{color:#EAF6FF!important}
+html[data-theme="dark"] body.vB .pick > .pick__hint .pick__hinttext{color:rgba(234,246,255,.66)!important}
+
+/* §149 b · three things the split exposed.
+   The tagline was a single non-wrapping line that ran under the card. The
+   card's panes were still 400px + 578px from the full-width layout, so in a
+   533px card the right pane collapsed to one word per line. And the headline
+   was taking four lines in a column sized for three. */
+@media (min-width:1100px){
+  html[data-theme="light"] body.vB .hero2__copy .eyebrow,
+  html[data-theme="dark"]  body.vB .hero2__copy .eyebrow,
+  body.vB .hero2__copy .eyebrow,body.vB .hero2__copy #heroEyebrow{
+    white-space:normal!important;max-width:34ch!important;
+    display:block!important;line-height:1.5!important;
+  }
+  html[data-theme="light"] body.vB .hero2--band .hero2__band,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+  body.vB .hero2--band .hero2__band{
+    grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr)!important;
+  }
+  html[data-theme="light"] body.vB .hero2--band .display:not(#tw_),
+  html[data-theme="dark"]  body.vB .hero2--band .display:not(#tw_),
+  body.vB .hero2--band .display:not(#tw_),
+  body.vB .hero2--band #hero2Title:not(#tw_){
+    font-size:clamp(44px,min(4.4vw,7.8vh),82px)!important;
+  }
+}
+/* the panes share the card instead of holding widths from the wide layout */
+html[data-theme="light"] body.vB .pick__panes,
+html[data-theme="dark"]  body.vB .pick__panes,
+body.vB .pick__panes{
+  grid-template-columns:minmax(0,1.06fr) minmax(0,1fr)!important;
+}
+@media (max-width:860px){
+  body.vB .pick__panes{grid-template-columns:minmax(0,1fr)!important}
+}
+
+/* §149 c · the split needs more width than the page shell gives it.
+   At 1140 the card came out 496px wide and the row labels wrapped —
+   "Competitive analysis" over two lines. The hero alone runs wider than the
+   rest of the page, and the row favours the chat, which has two panes to fit
+   where the copy has one column. */
+@media (min-width:1100px){
+  html[data-theme="light"] body.vB .hero2--band .hero2__band,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+  body.vB .hero2--band .hero2__band{
+    max-width:min(1320px,calc(100vw - clamp(40px,6vw,96px)))!important;
+    grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr)!important;
+  }
+  html[data-theme="light"] body.vB .hero2__copy .eyebrow,
+  html[data-theme="dark"]  body.vB .hero2__copy .eyebrow,
+  body.vB .hero2__copy .eyebrow,body.vB .hero2__copy #heroEyebrow{
+    max-width:none!important;
+  }
+  /* the labels get their line back */
+  body.vB .pick__label{white-space:normal!important}
+}

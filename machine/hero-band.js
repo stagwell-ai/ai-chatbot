@@ -455,6 +455,53 @@
     }
   })();
 
+  /* ── 6d · the hero splits in two (client, Sep 6) ─────────────────────── */
+  /* Stacked, the headline and the chat could only share one screen by
+     shrinking the headline until it stopped being a headline. Side by side
+     they both fit at full size: the tagline and the headline hold the left,
+     ranged left rather than centred, and the chat holds the right. The
+     chooser's own title and paragraph go back inside the card, next to the
+     mark, as a header across its full width. */
+  (function () {
+    const place = () => {
+      const band = document.querySelector('#heroBand .hero2__band');
+      const card = document.querySelector('.pick');
+      if (!band || !card) return false;
+      if (band.dataset.split) return true;
+
+      const eyebrow = band.querySelector('.eyebrow, #heroEyebrow');
+      const title = band.querySelector('#hero2Title, .display');
+      if (!eyebrow || !title) return false;
+
+      /* the lead goes home: into the card's header, beside the mark, and the
+         header moves out of the two-pane grid so it spans the whole card */
+      const hint = card.querySelector('.pick__hint');
+      const lead = document.querySelector('.pick__lead');
+      if (hint && lead) {
+        while (lead.firstChild) hint.appendChild(lead.firstChild);
+        lead.remove();
+        if (hint.parentElement !== card) card.insertBefore(hint, card.firstChild);
+      }
+
+      const left = document.createElement('div');
+      left.className = 'hero2__copy';
+      left.append(eyebrow, title);
+
+      const right = document.createElement('div');
+      right.className = 'hero2__chat';
+      right.appendChild(card);
+
+      band.append(left, right);
+      band.dataset.split = '1';
+      return true;
+    };
+
+    if (!place()) {
+      const mo = new MutationObserver(() => { if (place()) mo.disconnect(); });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+
   /* ── 7 · the tier facts as dropdowns (client, Sep 3) ─────────────────── */
   /* "Best for" / "Core value" open on click, FAQ-style. Markup untouched:
      the <dt> is the toggle, the <dd> the panel. */
