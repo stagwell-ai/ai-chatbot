@@ -506,6 +506,28 @@
     }
   })();
 
+  /* ── 6e · the tagline breaks after "grounded" (client, Sep 6) ────────── */
+  /* A wide column let it break wherever the width happened to run out. The
+     break is stated instead, and only above the desktop breakpoint — on a
+     phone the line is narrow enough that a forced break would leave a stub. */
+  (function () {
+    const eb = document.querySelector('#heroEyebrow, .hero2__band .eyebrow');
+    if (!eb || eb.dataset.broken) return;
+    const walk = document.createTreeWalker(eb, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walk.nextNode())) {
+      const i = node.nodeValue.indexOf('grounded ');
+      if (i < 0) continue;
+      const tail = node.splitText(i + 'grounded'.length);
+      tail.nodeValue = tail.nodeValue.replace(/^\s+/, ' ');
+      const br = document.createElement('br');
+      br.className = 'eb-break';
+      tail.parentNode.insertBefore(br, tail);
+      eb.dataset.broken = '1';
+      break;
+    }
+  })();
+
   /* ── 7 · the tier facts as dropdowns (client, Sep 3) ─────────────────── */
   /* "Best for" / "Core value" open on click, FAQ-style. Markup untouched:
      the <dt> is the toggle, the <dd> the panel. */
