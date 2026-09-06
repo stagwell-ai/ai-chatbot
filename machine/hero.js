@@ -130,7 +130,10 @@ function rowHTML(o, i) {
       id="pickRow-${esc(o.id)}" data-pick="${esc(o.id)}" tabindex="${i === 0 ? '0' : '-1'}">
       <span class="pick__radio" aria-hidden="true"></span>
       <span class="pick__mark" aria-hidden="true">${icon(o.id)}</span>
-      <span class="pick__label">${esc(o.label)}</span>
+      <span class="pick__txt">
+        <span class="pick__label">${esc(o.label)}</span>
+        ${o.line ? `<span class="pick__sub">${esc(o.line)}</span>` : ''}
+      </span>
     </button>`;
 }
 

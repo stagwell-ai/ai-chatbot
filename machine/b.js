@@ -669,7 +669,7 @@ async function runMachine() {
   thread.innerHTML = ''; thread.hidden = true;
   hero.classList.remove('is-chatting');
   $('#hero2Title').innerHTML = `Here is <span class="accent">${esc(S.brand)}.</span>`;
-  blurWords($('#hero2Title'));
+  (window.revealLines||blurWords)($('#hero2Title'));
   $('#hero2Sub').textContent = `Built from one link, ${S.firstName || 'for you'} — ask me anything else below, or read the dashboard.`;
   $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Analysis complete';
   promptInput.placeholder = 'Ask a follow-up, or type another website';
@@ -1163,7 +1163,7 @@ function resetB() {
   if (!pick) {
     $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell.AI · Agentic solutions grounded in real-world marketing expertise';
     $('#hero2Title').innerHTML = 'What do you need help <span class="accent">solving today?</span>';
-    blurWords($('#hero2Title'));
+    (window.revealLines||blurWords)($('#hero2Title'));
     $('#hero2Sub').textContent = 'Tell the agent what you\u2019re trying to do \u2014 or just paste your website \u2014 and it will point you to the right solution, with a live snapshot of your brand to show for it.';
   }
   promptInput.value = ''; promptInput.placeholder = SCRIPT[0].placeholder;
@@ -1193,14 +1193,21 @@ window.resetLanding = resetB;
 /* ─────────────────────────── NAV / MODAL ─────────────────────────── */
 
 /* The header rides with you: away on the way down, back the moment you head up.
-   The distance is accumulated per direction — comparing against the last frame
-   alone means a slow trackpad scroll never clears the threshold and the bar
-   only ever returns at the top of the page. */
+
+   Hiding is rate-limited, coming back is not. An earlier version accumulated
+   distance in BOTH directions and it could leave the bar stranded off-screen:
+   the browser coalesces scroll events, so a gesture arrives as a few large
+   deltas with sub-pixel jitter between them, and every sign flip reset the
+   upward accumulator before it ever reached its threshold. A nav that refuses
+   to return is a far worse failure than one that hides a little too eagerly,
+   so the show side now has no threshold at all — any upward movement restores
+   it, on the same frame. */
 (() => {
   const nav = $('#nav');
   const HIDE_AFTER = 64;   // px of continuous downward travel
-  const SHOW_AFTER = 18;   // px of upward travel — deliberately eager
   let lastY = scrollY, acc = 0, ticking = false;
+
+  const show = () => { nav.classList.remove('is-up'); acc = 0; };
 
   const onScroll = () => {
     ticking = false;
@@ -1210,19 +1217,34 @@ window.resetLanding = resetB;
     nav.classList.toggle('is-stuck', y > 8);
 
     if (document.body.classList.contains('nav-open')) return;
-    if (y < 90) { nav.classList.remove('is-up'); acc = 0; return; }
+    if (y < 90) return show();
 
-    if ((d > 0) !== (acc > 0)) acc = 0;   // direction changed — start counting again
+    if (d < 0) return show();       // heading up, for any distance at all
+    if (d === 0) return;            // a no-op event must not disturb the count
+
     acc += d;
-
-    if (acc > HIDE_AFTER)  { nav.classList.add('is-up');    acc = 0; }
-    if (acc < -SHOW_AFTER) { nav.classList.remove('is-up'); acc = 0; }
+    if (acc > HIDE_AFTER) { nav.classList.add('is-up'); acc = 0; }
   };
 
   addEventListener('scroll', () => {
     if (ticking) return;
     ticking = true; requestAnimationFrame(onScroll);
   }, { passive: true });
+
+  /* Two safety nets, so the bar is never unreachable. A wheel or a touch that
+     pulls upward shows it even before the scroll position has moved (rubber
+     banding at the bottom of the page emits no scroll event at all), and
+     reaching for the top edge of the window brings it back the way it does in
+     a full-screen app. */
+  addEventListener('wheel', e => { if (e.deltaY < 0) show(); }, { passive: true });
+  let touchY = 0;
+  addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchmove',  e => {
+    const ty = e.touches[0].clientY;
+    if (ty > touchY + 4) show();
+    touchY = ty;
+  }, { passive: true });
+  addEventListener('pointermove', e => { if (e.clientY < 70) show(); }, { passive: true });
 })();
 
 const closeNav = () => document.body.classList.remove('nav-open');
@@ -1391,14 +1413,14 @@ countAllIn(document);
     S.step = SCRIPT.length; S.done = true;
     buildDashboard();
     $('#hero2Title').innerHTML = `Here is <span class="accent">${esc(S.brand)}.</span>`;
-    blurWords($('#hero2Title'), 120);
+    (window.revealLines||blurWords)($('#hero2Title'), 120);
     if ($('#chatHint')) $('#chatHint').hidden = true;
     $('#solveChips').hidden = true;
     $('#navNew').hidden = false;
     $('.mnav__new').hidden = false;
     return;
   }
-  blurWords($('#hero2Title'), 120);
+  (window.revealLines||blurWords)($('#hero2Title'), 120);
   focusPrompt();
 })();
 

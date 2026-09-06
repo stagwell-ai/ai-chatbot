@@ -588,7 +588,7 @@
     "siteHint": "A website starts the read before you answer another question; leave it blank and the agent simply asks.",
     "video": {
       "src": "/assets/video/stagwell-ai-explainer.mp4",
-      "poster": "/assets/video/explainer-poster.jpg",
+      "poster": "/assets/img/film-poster.jpg",
       "label": "Watch: what is Stagwell.AI",
       "duration": "1:53",
       "title": "What is Stagwell.AI — the explainer",

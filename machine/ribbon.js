@@ -147,3 +147,33 @@
   if (document.body) boot();
   else document.addEventListener('DOMContentLoaded', boot, { once: true });
 })();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEME TOGGLE. The <head> script has already stamped data-theme before first
+   paint (stored choice, else dark); this only flips it and remembers.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  const root = document.documentElement;
+  const label = () => {
+    const dark = root.getAttribute('data-theme') === 'dark';
+    document.querySelectorAll('#themeToggle,[data-theme-toggle]').forEach(b => {
+      b.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      const t = b.querySelector('span'); if (t) t.textContent = dark ? 'Light mode' : 'Dark mode';
+    });
+  };
+  const flip = () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('sw-theme', next); } catch (e) {}
+    label();
+  };
+  const wire = () => {
+    document.querySelectorAll('#themeToggle,[data-theme-toggle]').forEach(b => {
+      if (b.__themed) return; b.__themed = true;
+      b.addEventListener('click', flip);
+    });
+    label();
+  };
+  if (document.body) wire();
+  else document.addEventListener('DOMContentLoaded', wire, { once: true });
+})();

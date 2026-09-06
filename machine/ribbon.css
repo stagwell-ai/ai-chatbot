@@ -2982,3 +2982,2727 @@ body{
   }
   .pick__detail-empty{gap:14px!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   84 · DARK MODE — a black-blue room, toggled from the nav.
+   Tokens first, so the ~100 rules that read var(--ink) / var(--surface)
+   flip for free. Then the literals: the light-mode work hardcoded
+   #FFFFFF, #F7F7F6 and rgba(11,23,30,…) in ~90 rules with !important,
+   so each is restated under html[data-theme="dark"], which out-
+   specifies them. Pure white text on orange / on the dark photo cards
+   is left alone — it is already on a dark ground.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#070D14;
+  --surface:#0C1520;
+  --surface-2:#121D2A;
+  --ink:#E9EEF3;
+  --ink-2:rgba(233,238,243,.76);
+  --ink-3:rgba(233,238,243,.56);
+  --ink-4:rgba(233,238,243,.36);
+  --line:rgba(233,238,243,.10);
+  --line-2:rgba(233,238,243,.17);
+  --cyan:#77E3F6;
+  --dk-ground:#070D14;
+  --dk-card:#0C1520;
+  --dk-well:#0A121C;
+  --dk-raised:#121D2A;
+  --dk-line:rgba(233,238,243,.10);
+  --dk-line-2:rgba(233,238,243,.16);
+}
+
+/* ── the room ── */
+html[data-theme="dark"],html[data-theme="dark"] body{background:var(--dk-ground)!important}
+/* sections stay TRANSPARENT, as §70 made them in light: an opaque
+   .about painted over the wash's 90px overhang and cut it off in a
+   hard line at the seam */
+html[data-theme="dark"] .hero2,html[data-theme="dark"] .about,
+html[data-theme="dark"] .bcta,html[data-theme="dark"] .crail,
+html[data-theme="dark"] .bfoot,html[data-theme="dark"] section{background:transparent!important}
+html[data-theme="dark"] body::before{
+  background-image:radial-gradient(rgba(233,238,243,.07) .85px,transparent .85px)!important;
+}
+html[data-theme="dark"] .nav,html[data-theme="dark"] .bnav,html[data-theme="dark"] header.nav{
+  background:var(--dk-ground)!important;
+  border-bottom:1px solid var(--dk-line)!important;
+}
+html[data-theme="dark"] .mnav{background:var(--dk-card)!important;border-left-color:var(--dk-line)!important}
+
+/* ── the wash sits a little brighter on black ── */
+/* on black the same alphas read as a grey haze, not as light. Lower and
+   more saturated so it reads as coloured glow; the mask stays. */
+html[data-theme="dark"] .hero2::after{
+  background-image:
+    radial-gradient(78% 62% at 20%  96%, rgba(255,184,28,.17), transparent 72%),
+    radial-gradient(74% 58% at 80%  92%, rgba(0,156,189,.16), transparent 70%),
+    radial-gradient(96% 70% at 50% 112%, rgba(14,95,142,.14), transparent 76%)!important;
+  filter:blur(80px) saturate(1.4)!important;
+}
+html[data-theme="dark"] .hero2::before{opacity:0!important}
+
+/* ── the chooser ── */
+html[data-theme="dark"] .pick,html[data-theme="dark"] .pick__detail,
+html[data-theme="dark"] .pick__foot{background:var(--dk-card)!important;border-color:var(--dk-line)!important}
+html[data-theme="dark"] .pick{border:1px solid var(--dk-line-2)!important}
+html[data-theme="dark"] .pick__col{background:var(--dk-well)!important}
+html[data-theme="dark"] .pick__site input{
+  background:var(--dk-well)!important;color:var(--ink)!important;border-color:var(--dk-line-2)!important;
+}
+html[data-theme="dark"] .pick__site input::placeholder{color:var(--ink-4)!important}
+html[data-theme="dark"] .pick__row:hover{background:rgba(233,238,243,.05)!important}
+html[data-theme="dark"] .pick__row.is-on{background:var(--dk-raised)!important}
+html[data-theme="dark"] .pick__hinti{background:rgba(233,238,243,.07)!important}
+html[data-theme="dark"] .pick__detail:has(.pick__detail-empty){
+  background:var(--dk-well)!important;border-color:var(--dk-line)!important;
+}
+html[data-theme="dark"] .pick__foot{border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] .say__tick,html[data-theme="dark"] .agentui__tick{background:rgba(233,238,243,.08)!important}
+/* chips (phone) */
+html[data-theme="dark"] .pick__list .pick__row{
+  background:var(--dk-card)!important;border-color:var(--dk-line-2)!important;
+}
+html[data-theme="dark"] .pick__list .pick__row[aria-checked="true"]{
+  background:var(--ink)!important;border-color:var(--ink)!important;
+}
+html[data-theme="dark"] .pick__list .pick__row[aria-checked="true"] .pick__label,
+html[data-theme="dark"] .pick__list .pick__row[aria-checked="true"] .pick__icon{color:var(--dk-ground)!important}
+
+/* ── the watch card ── */
+html[data-theme="dark"] .hero2__play{background:var(--dk-card)!important;border-color:var(--dk-line-2)!important}
+
+/* ── cards ── */
+html[data-theme="dark"] .tier,html[data-theme="dark"] .stat{
+  background:var(--dk-card)!important;border-color:var(--dk-line)!important;
+}
+html[data-theme="dark"] .tier__facts > div{border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] .scard{border-color:var(--dk-line)!important}
+html[data-theme="dark"] .scard__stage{background:var(--dk-well)!important}
+html[data-theme="dark"] .cmini{background:var(--dk-card)!important;border-color:var(--dk-line-2)!important}
+html[data-theme="dark"] .mini-bar,
+html[data-theme="dark"] .frag--rows i,html[data-theme="dark"] .frag--feed span,
+html[data-theme="dark"] .frag--saydo>span,html[data-theme="dark"] .frag--chips i:first-child,
+html[data-theme="dark"] .sc-row__bar,html[data-theme="dark"] .sc-step__tick,
+html[data-theme="dark"] .sc-meter{background:rgba(233,238,243,.12)!important}
+html[data-theme="dark"] .frag{border-color:var(--dk-line)!important}
+html[data-theme="dark"] .agchip{border-color:var(--dk-line-2)!important}
+html[data-theme="dark"] .markfx::after{
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.55),transparent 70%)!important;
+}
+/* the photo cards and the callback were near-black on white; on
+   black they need an edge to exist */
+html[data-theme="dark"] .ctacard,html[data-theme="dark"] .callback{
+  border:1px solid var(--dk-line-2)!important;
+}
+
+/* ── ink-filled controls: --ink is now light, so their white text
+     would vanish. They keep the light fill and take dark text. ── */
+html[data-theme="dark"] .nav__acts .btn,html[data-theme="dark"] .nav__acts .btn--dark,
+html[data-theme="dark"] .nav__cta,
+html[data-theme="dark"] .scard .btn--xs,html[data-theme="dark"] .agchip--more,
+html[data-theme="dark"] .nav__playdot{
+  color:var(--dk-ground)!important;
+}
+html[data-theme="dark"] .nav__acts .btn:hover,html[data-theme="dark"] .nav__cta:hover{
+  background:#FFFFFF!important;color:var(--dk-ground)!important;
+}
+
+/* ── footer ── */
+html[data-theme="dark"] .bfoot{border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] .bfoot__foot{border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] .bfoot__note{color:var(--ink-3)!important}
+html[data-theme="dark"] .bfoot__demo a{color:var(--ink-4)!important}
+html[data-theme="dark"] .bfoot__demo a:hover{color:var(--ink-2)!important}
+
+/* ── the toggle itself, both themes ── */
+.theme-toggle{
+  display:inline-grid;place-items:center;
+  width:36px;height:36px;flex:none;
+  border:1px solid var(--line-2);border-radius:999px;
+  background:transparent;color:var(--ink-2);
+  cursor:pointer;padding:0;margin-right:10px;
+  transition:color var(--d-1) var(--ease),border-color var(--d-1) var(--ease),background var(--d-1) var(--ease);
+}
+.theme-toggle:hover{color:var(--ink);border-color:var(--ink-3);background:var(--surface-2)}
+.theme-toggle svg{grid-area:1/1;transition:opacity var(--d-2) var(--ease),transform var(--d-2) var(--ease)}
+.theme-toggle__sun {opacity:0;transform:rotate(-40deg) scale(.7)}
+.theme-toggle__moon{opacity:1;transform:none}
+html[data-theme="dark"] .theme-toggle__sun {opacity:1;transform:none}
+html[data-theme="dark"] .theme-toggle__moon{opacity:0;transform:rotate(40deg) scale(.7)}
+/* the drawer's row variant */
+.theme-toggle--row{
+  width:100%;height:44px;display:inline-flex;align-items:center;gap:10px;
+  justify-content:center;margin:0 0 4px;
+  font-family:var(--body,var(--sans));font-size:14px;font-weight:500;
+}
+.theme-toggle--row svg{grid-area:auto}
+@media (max-width:860px){ .nav__acts .theme-toggle{margin-right:6px} }
+
+/* §84 b · the chooser carries its OWN light room (hero.css:14 scopes
+   --ink:#003349 etc. onto .pick and .chat), so the html-level tokens
+   never reached inside it and its text stayed navy on the dark card.
+   The scope is restated for dark. */
+html[data-theme="dark"] .pick,html[data-theme="dark"] .chat{
+  --paper:#0C1520;--surface:#0C1520;--surface-2:#121D2A;
+  --ink:#E9EEF3;--ink-2:rgba(233,238,243,.76);--ink-3:rgba(233,238,243,.56);--ink-4:rgba(233,238,243,.36);
+  --line:rgba(233,238,243,.11);--line-2:rgba(233,238,243,.18);
+  --on-void:#F1FAFF;--bubble:#0E5F8E;--bubble-ink:#F1FAFF;
+  color:var(--ink)!important;
+}
+/* carousel paddles were white discs; on black they take the card tone */
+html[data-theme="dark"] .paddle{background:rgba(18,29,42,.94)!important;color:var(--ink)!important;
+  border:1px solid var(--dk-line-2)!important}
+html[data-theme="dark"] .paddle:active{background:#1A2736!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   85 · THE LIGHT HOMEPAGE, to the Sept 4 brand board (client, Sep 3).
+   · a pure white page, no texture, no wash
+   · the eyebrow, headline and paragraph sit on a near-full-width band
+     in the brand's navy→teal gradient, with drifting particles
+   · the chat sits below the band
+   · every button is a pill with an arrow inside; primaries take the
+     brand yellow with navy type, secondaries the navy instead of black
+   · the headline reveals line by line from below, inside a clip
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── a · white page: texture and wash off in light ── */
+html[data-theme="light"] body::before{display:none!important}
+html[data-theme="light"] .hero2::after,
+html[data-theme="light"] .hero2::before{display:none!important}
+
+/* ── b · the band ── */
+.hero2{
+  --hero-g:20px;
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  padding:14px var(--hero-g) clamp(40px,7vh,88px)!important;
+  min-height:0!important;
+}
+.hero2__band{
+  position:relative;isolation:isolate;overflow:hidden;
+  width:100%;margin:0 auto;
+  border-radius:28px;
+  padding:clamp(76px,12vh,136px) clamp(24px,5vw,80px) clamp(68px,11vh,120px);
+  text-align:center;color:#F1FAFF;
+  background:
+    radial-gradient(58% 64% at 86% 8%,  rgba(119,227,246,.30), transparent 62%),
+    radial-gradient(48% 56% at 10% 96%, rgba(0,156,189,.38),  transparent 60%),
+    linear-gradient(158deg,#00253A 0%,#003349 30%,#0B5586 66%,#0A8AB0 100%);
+}
+.hero2__band > *{position:relative;z-index:1}
+.hero2__dots{position:absolute;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;display:block}
+
+.hero2__band .eyebrow,#heroEyebrow{
+  color:rgba(241,250,255,.74)!important;
+  margin:0 auto clamp(26px,4vh,40px)!important;
+}
+.hero2__band .eyebrow .pulse{background:var(--amber)!important}
+.hero2__band .eyebrow .pulse::after{border-color:var(--amber)!important}
+.hero2__band .display,#hero2 .hero2__band .display{
+  color:#F1FAFF!important;margin:0 auto var(--s-4)!important;
+}
+.hero2__band .display .accent{color:var(--orange)!important}
+.hero2__band .hero2__sub{
+  color:rgba(241,250,255,.84)!important;
+  margin:0 auto!important;
+}
+/* the chat, below the band */
+.hero2__in{margin-top:clamp(28px,4.5vh,48px)!important}
+/* once the conversation starts, the band gives back its height */
+.hero2.is-chatting .hero2__band{padding:44px clamp(24px,5vw,80px) 40px}
+
+/* ── c · the line reveal ── */
+.ln{display:inline-block;overflow:hidden;vertical-align:bottom;
+  padding:.04em .02em .12em;margin:-.04em -.02em -.12em}
+.ln__in{display:inline-block;transform:translateY(112%);
+  animation:lnUp 900ms cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0ms)}
+@keyframes lnUp{to{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.ln__in{animation:none;transform:none}}
+
+/* ── d · pills with an arrow, in brand colour ── */
+body.vB .btn,body.vB .pick__go,body.vB #pickGo,body.vB .nav__cta,
+body.vB .prompt__send,body.vB .scard .btn--xs,body.vB .fcard .btn,
+body.vB .callback .btn,body.vB .ctacard::before{
+  border-radius:999px!important;
+}
+/* display without !important: b.css:568 hides .nav__cta on phones with a
+   plain rule, and an !important here out-ranked it and pushed the
+   hamburger off the screen */
+body.vB .btn--arrow{display:inline-flex;align-items:center!important;gap:9px!important}
+body.vB .btn--arrow::after{
+  /* styles.css:150 makes every .btn::after an absolutely-positioned
+     invisible ripple dot; the arrow has to undo that placement or it
+     sits at 50%/50% at opacity 0 */
+  position:static!important;left:auto!important;top:auto!important;
+  opacity:1!important;transform:none!important;border-radius:0!important;
+  content:"";width:14px;height:14px;flex:none;
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 8h9M8.5 4.5L12 8l-3.5 3.5' stroke='%23000' stroke-width='1.7' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 8h9M8.5 4.5L12 8l-3.5 3.5' stroke='%23000' stroke-width='1.7' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
+  transition:transform var(--d-2) var(--ease);
+}
+body.vB .btn--arrow:hover::after{transform:translateX(3px)}
+body.vB .ctacard::before{content:"Learn more →"!important}
+
+/* primaries: the brand yellow, navy type */
+body.vB .btn--gold,body.vB #pickGo,body.vB .pick__go,body.vB .prompt__send,
+body.vB button.btn--gold,body.vB a.btn--gold{
+  background:#FFB81C!important;color:#003349!important;border:0!important;
+}
+body.vB .btn--gold *,body.vB #pickGo *,body.vB .pick__go *,body.vB .prompt__send *,
+body.vB .btn--gold svg,body.vB #pickGo svg{color:#003349!important}
+body.vB .btn--gold:hover,body.vB #pickGo:hover,body.vB .pick__go:hover,body.vB .prompt__send:hover{
+  background:#FFC53D!important;
+}
+/* secondaries: the navy, not black */
+body.vB .btn--dark,body.vB .nav__acts .btn,body.vB .nav__cta,
+body.vB .scard .btn--xs,body.vB .fcard .btn,body.vB .callback .btn,
+body.vB .agchip--more{
+  background:#003349!important;color:#F1FAFF!important;border:0!important;
+}
+body.vB .btn--dark:hover,body.vB .nav__cta:hover,body.vB .scard .btn--xs:hover,
+body.vB .fcard .btn:hover,body.vB .callback .btn:hover{background:#0E5F8E!important;color:#F1FAFF!important}
+body.vB .ctacard::before{background:#FFB81C!important;color:#003349!important}
+body.vB .ctacard:hover::before{background:#FFC53D!important}
+/* ghost stays ghost; the drawer CTA is one */
+body.vB .mnav__foot .btn--dark{background:transparent!important;color:var(--ink)!important;border:1px solid var(--line-2)!important}
+/* dark theme: the navy secondaries need an edge against the black-blue */
+html[data-theme="dark"] body.vB .btn--dark,html[data-theme="dark"] body.vB .nav__cta,
+html[data-theme="dark"] body.vB .scard .btn--xs{background:#0E5F8E!important}
+
+/* ── e · phones ── */
+/* the CTA leaves the bar exactly when the drawer (which carries it)
+   arrives — b.css:563 switches to the hamburger at 820px, not 860 */
+@media (max-width:820px){ body.vB .nav__cta{display:none!important} }
+@media (max-width:860px){
+  .hero2{--hero-g:12px;padding-top:10px!important}
+  .hero2__band{border-radius:20px;padding:56px 22px 48px}
+  .hero2__band .eyebrow,#heroEyebrow{margin-bottom:22px!important}
+  .hero2__in{margin-top:22px!important}
+}
+
+/* §85 f · the accent word is the board's amber→orange gradient, not flat orange */
+.hero2__band .display .accent{
+  background:linear-gradient(90deg,#FFB81C 0%,#FF8A2E 55%,#FF6D24 100%);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent!important;-webkit-text-fill-color:transparent;
+}
+/* while the line reveal runs, the words are transformed inline-blocks and a
+   text-clipped background on the ancestor can't follow them; each word
+   carries its own slice of the gradient instead, sized to the whole accent */
+#hero2Title.is-revealing .accent{background:none;-webkit-text-fill-color:inherit;color:#F1FAFF!important}
+#hero2Title.is-revealing .accent .ln__in{
+  background:linear-gradient(90deg,#FFB81C 0%,#FF8A2E 55%,#FF6D24 100%);
+  background-size:var(--acc-w,100%) 100%;background-position:calc(var(--acc-x,0px) * -1) 0;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   86 · THE REFERENCE LAYOUT (client, Sep 3 — the kaiko.ai shape).
+   · the hero is full-bleed, edge to edge, and runs up under the nav
+   · the nav is transparent while it sits over the hero; once you scroll
+     past, the regular bar returns (html.over-hero, set by hero-band.js)
+   · everything after the hero lives in ONE container, nearly full width
+     with small gutters, rounded top corners, overlapping the hero's foot
+   · the page ground behind that container is the brand navy
+   The band section moved out of #hero2 for this, so the headline size
+   that hero.css keyed on #hero2 is restated on the band.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── a · the ground ── */
+html[data-theme="light"],html[data-theme="light"] body{background:#00253A!important}
+html[data-theme="light"] .nav,html[data-theme="light"] .bnav{background:#FFFFFF!important}
+
+/* ── b · the hero, full-bleed, under the nav ── */
+.hero2--band{
+  padding:0!important;margin:-60px 0 0!important;       /* up under the 60px sticky bar */
+  min-height:0!important;
+}
+.hero2--band .hero2__band{
+  border-radius:0!important;width:100%!important;margin:0!important;
+  min-height:clamp(560px,82vh,820px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:calc(60px + clamp(64px,10vh,120px)) clamp(24px,5vw,80px) clamp(120px,18vh,190px)!important;
+}
+.hero2--band .display{
+  font-size:clamp(2.5rem,6.2vw,4.75rem)!important;max-width:24ch!important;
+  text-wrap:balance;line-height:var(--lh-display)!important;
+}
+/* the conversation state: #hero2 carries .is-chatting; the band mirrors it */
+body:has(#hero2.is-chatting) .hero2--band .eyebrow,
+body:has(#hero2.is-chatting) .hero2--band .hero2__sub{display:none!important}
+body:has(#hero2.is-chatting) .hero2--band .hero2__band{min-height:0;padding-top:calc(60px + 56px)!important;padding-bottom:132px!important}
+
+/* ── c · the container ── */
+.page{
+  position:relative;z-index:2;
+  margin:-88px 20px 0;                                   /* overlaps the hero's foot */
+  background:#FFFFFF;
+  border-radius:28px 28px 0 0;
+  overflow:clip;
+  padding-top:8px;
+}
+html[data-theme="dark"] .page{background:#0A121C}
+html[data-theme="dark"],html[data-theme="dark"] body{background:#03080D!important}
+.page > .hero2{padding-top:36px!important;padding-bottom:clamp(32px,5vh,64px)!important}
+.page .hero2__in{margin-top:0!important}
+.page > section,.page > footer{background:transparent!important}
+.page .about{padding-top:clamp(96px,12vh,140px)!important}
+
+/* ── d · the nav over the hero ── */
+.nav,.bnav{transition:background var(--d-2) var(--ease),border-color var(--d-2) var(--ease)}
+html.over-hero .nav,html.over-hero .bnav,html.over-hero header.nav{
+  background:transparent!important;border-bottom-color:transparent!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html.over-hero .nav__brand,html.over-hero .nav__links a,html.over-hero .nav a{color:#F1FAFF!important}
+html.over-hero .nav__links a:hover{color:#FFFFFF!important}
+html.over-hero .nav__playdot{background:#F1FAFF!important;color:#003349!important}
+html.over-hero .theme-toggle{border-color:rgba(241,250,255,.35)!important;color:#F1FAFF!important;background:transparent!important}
+html.over-hero .nav__menu{background:rgba(241,250,255,.14)!important;color:#F1FAFF!important;border-color:rgba(241,250,255,.25)!important}
+html.over-hero .nav__cta{background:#FFFFFF!important;color:#003349!important}
+html.over-hero .nav__cta:hover{background:#FFB81C!important;color:#003349!important}
+
+/* ── e · phones ── */
+@media (max-width:860px){
+  .hero2--band .hero2__band{min-height:0;padding:calc(60px + 56px) 22px 112px!important}
+  .page{margin:-72px 10px 0;border-radius:22px 22px 0 0}
+  .page > .hero2{padding-top:26px!important}
+}
+/* §86 f · the wordmark over the hero. The logo's paths carry class
+   m-ink, filled from var(--ink) — navy on the navy hero. Over the hero
+   it takes the brand's dark-background wordmark colour. */
+html.over-hero .nav__brand .m-ink{fill:#F1FAFF!important}
+
+/* §86 g · corrections from the reference (client, Sep 3)
+   · the container's corners were far too round; the reference sits at
+     about 12px
+   · the standfirst belongs to the chat, not the hero: it opens the
+     container as a small title above the chooser */
+.page{border-radius:12px 12px 0 0!important}
+@media (max-width:860px){.page{border-radius:10px 10px 0 0!important}}
+.hero2--band .hero2__band{padding-bottom:clamp(132px,19vh,200px)!important}
+
+#hero2 .hero2__sub,.page .hero2__sub{
+  display:block;
+  font-family:var(--display)!important;font-weight:600!important;
+  font-size:clamp(1.125rem,1.2vw + .6rem,1.375rem)!important;line-height:1.35!important;
+  letter-spacing:-.015em!important;
+  color:var(--heading,var(--ink))!important;text-align:center;   /* navy in light, ink in dark */
+  max-width:44ch!important;margin:0 auto clamp(18px,2.6vh,26px)!important;
+}
+.hero2.is-chatting .hero2__sub{display:none!important}
+@media (max-width:860px){
+  #hero2 .hero2__sub,.page .hero2__sub{font-size:1.0625rem!important;max-width:30ch!important;margin-bottom:16px!important}
+}
+/* §86 h · over the hero (and in the dark theme) the nav shows the brand's
+   own dark-background logo file, not a recoloured light one */
+.nav__brand .nav__logo--dark{display:none}
+html.over-hero .nav__brand .nav__logo--light,
+html[data-theme="dark"] .nav__brand .nav__logo--light{display:none}
+html.over-hero .nav__brand .nav__logo--dark,
+html[data-theme="dark"] .nav__brand .nav__logo--dark{display:block}
+
+/* ═══════════════════════════════════════════════════════════════
+   87 · TITLES IN THE BRAND NAVY (client, Sep 3).
+   Every heading on a light surface was the near-black ink (#0B171E).
+   They take the board's navy (#003349) instead — h1–h4, the card
+   titles, the chat's title line, the stat figures. Titles on a dark
+   ground (the hero band, the photo cards, the callback) stay white.
+   Light theme only: the dark theme keeps its light ink.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"]{--heading:#003349}
+html[data-theme="light"] h1,html[data-theme="light"] h2,html[data-theme="light"] h3,html[data-theme="light"] h4,
+html[data-theme="light"] .display,html[data-theme="light"] .about__title,
+html[data-theme="light"] .tier h3,html[data-theme="light"] .tier__h,
+html[data-theme="light"] .scard__t b,html[data-theme="light"] .scard h3,
+html[data-theme="light"] .hero2__sub,html[data-theme="light"] .pick__hint,
+html[data-theme="light"] .pick__hint b,html[data-theme="light"] .say__line,
+html[data-theme="light"] .stat b,html[data-theme="light"] .stat__v,
+html[data-theme="light"] .hero2__playtext b,html[data-theme="light"] .bcta__h,
+html[data-theme="light"] .crail__h,html[data-theme="light"] .proof__say b,
+html[data-theme="light"] .bfoot__links a{
+  color:var(--heading)!important;
+}
+/* …except where the ground is dark */
+html[data-theme="light"] .hero2--band .display,html[data-theme="light"] .hero2--band h1,
+html[data-theme="light"] .ctacard b,html[data-theme="light"] .fcard--dark .fcard__t b,
+html[data-theme="light"] .fcard--teal .fcard__t b,html[data-theme="light"] .scard--img .scard__t b,
+html[data-theme="light"] .callback b,html[data-theme="light"] .callback__t b{
+  color:#F1FAFF!important;
+}
+/* the accent word keeps its gradient */
+html[data-theme="light"] .hero2--band .display .accent{color:transparent!important}
+
+/* §88 · the nav links sit RIGHT, beside the buttons, not beside the logo
+   (client, Sep 3). DOM order is brand · links · actions; the links take
+   the free space on their left. */
+.nav__in{justify-content:space-between!important}
+.nav__links{margin-left:auto!important;padding-left:0!important;justify-content:flex-end!important;gap:26px!important}
+.nav__acts{margin-left:28px!important;flex:none}
+@media (max-width:820px){.nav__acts{margin-left:auto!important}}
+/* §86 i · the chat's title line breaks in two, not three */
+#hero2 .hero2__sub,.page .hero2__sub{max-width:60ch!important}
+
+/* §89 · the coloured word follows its heading (client, Sep 3).
+   styles.css:130 pins .accent to font-weight:600, so when a title's
+   weight is tweaked the orange word kept its own. Every property the
+   tweaker touches now inherits from the heading the span sits in. */
+h1 .accent,h2 .accent,h3 .accent,.display .accent,.about__title .accent,.bcta__h .accent,
+h1 .ln,h1 .ln__in,h2 .ln,h2 .ln__in{
+  font-weight:inherit!important;font-size:inherit!important;
+  letter-spacing:inherit!important;line-height:inherit!important;
+  font-family:inherit!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   90 · TYPE, FROM THE TWEAKS PANEL (Julian, Sep 3). Pasted as copied;
+   with !important — the site's own rules carry it, so a plain paste
+   loses. The H1 size is held to ≥861px and scaled for phones by the same
+   ratio (83 / 74.7), since a fixed 83px overflows a 375px screen.
+   ═══════════════════════════════════════════════════════════════ */
+.hero2--band .display:not(#tw_), #hero2Title:not(#tw_) {
+  font-weight: 400 !important;
+  letter-spacing: -0.004em !important;
+}
+/* 100px (Julian, Sep 3 — second pass, replacing 83px). Held from 1100px
+   up; scaled through tablet widths and phones by the same ratio. */
+@media (min-width:1100px){
+  .hero2--band .display:not(#tw_), #hero2Title:not(#tw_) { font-size: 100px !important; }
+}
+@media (min-width:861px) and (max-width:1099px){
+  .hero2--band .display:not(#tw_), #hero2Title:not(#tw_) { font-size: clamp(72px, 9vw, 100px) !important; }
+}
+@media (max-width:860px){
+  .hero2--band .display:not(#tw_), #hero2Title:not(#tw_) { font-size: clamp(44px, 13vw, 68px) !important; }
+}
+
+h2:not(#tw_), .about__title:not(#tw_), .about__h3:not(#tw_), .proof__h:not(#tw_), .bcta__h:not(#tw_), .crail__h:not(#tw_) {
+  font-weight: 400 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   91 · THE CONTAINER IS A SOFT GREY, SO THE CHAT POPS (client, Sep 3).
+   Light theme only. The cards that used to sit grey-on-white flip to
+   white-on-grey, or they would vanish into the ground.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] .page{background:#F2F4F6!important}
+html[data-theme="light"] .pick,
+html[data-theme="light"] .pick__detail,html[data-theme="light"] .pick__foot{background:#FFFFFF!important}
+html[data-theme="light"] .pick{border:1px solid rgba(0,51,73,.10)!important}
+html[data-theme="light"] .pick__col{background:#F7F8FA!important}
+html[data-theme="light"] .pick__detail:has(.pick__detail-empty){background:#F7F8FA!important}
+html[data-theme="light"] .hero2__play{background:#FFFFFF!important;border-color:rgba(0,51,73,.10)!important}
+html[data-theme="light"] .tier,html[data-theme="light"] .stat,
+html[data-theme="light"] .scard{background:#FFFFFF!important;border-color:rgba(0,51,73,.09)!important}
+html[data-theme="light"] .scard__stage{background:#EEF1F4!important}
+html[data-theme="light"] .cmini{background:#FFFFFF!important}
+html[data-theme="light"] .pick__list .pick__row{background:#FFFFFF!important}
+/* §91 b · less grey */
+html[data-theme="light"] .page{background:#F7F8FA!important}
+html[data-theme="light"] .pick__col,html[data-theme="light"] .pick__detail:has(.pick__detail-empty){background:#FAFBFC!important}
+html[data-theme="light"] .scard__stage{background:#F1F3F5!important}
+
+/* §92 · title → chooser → watch card, at EVERY width.
+   The mobile block (§80) fixed this under 860px and a desktop rule
+   fixed it high up; between them, DOM order showed the video card
+   before the chat. .hero2__in is a column flexbox at all widths. */
+.hero2__in > .hero2__sub{order:1!important}
+.hero2__in > div:has(.pick),.hero2__in > .pick{order:2!important}
+.hero2__in > .chat{order:3!important}
+.hero2__in > .hero2__play{order:4!important}
+
+/* §93 · a shorter hero, so the chat enters the first screen (client, Sep 3) */
+.hero2--band .hero2__band{
+  min-height:clamp(420px,60vh,600px)!important;
+  padding-top:calc(60px + clamp(44px,6vh,72px))!important;
+  padding-bottom:clamp(112px,15vh,150px)!important;
+}
+@media (max-width:860px){
+  .hero2--band .hero2__band{min-height:0!important;padding:calc(60px + 40px) 22px 100px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   94 · ASK AI (client, Sep 3)
+   · a yellow pill under the headline that takes you to the chat
+   · the chat's own submit is a round arrow, no label — the label
+     stays in the DOM for screen readers, hidden visually
+   ═══════════════════════════════════════════════════════════════ */
+.hero2--band .hero2__cta{
+  margin-top:clamp(22px,3.4vh,34px)!important;
+  height:50px!important;padding:0 28px!important;
+  font-size:14px!important;letter-spacing:.04em!important;
+  text-decoration:none!important;
+}
+body:has(#hero2.is-chatting) .hero2--band .hero2__cta{display:none!important}
+
+#pickGo,.pick__go{
+  width:50px!important;height:50px!important;min-width:0!important;max-width:none!important;
+  padding:0!important;border-radius:50%!important;flex:0 0 50px!important;
+  font-size:0!important;line-height:0!important;letter-spacing:0!important;
+  display:inline-grid!important;place-items:center!important;gap:0!important;
+}
+#pickGo::after,.pick__go::after{
+  content:""!important;width:18px!important;height:18px!important;margin:0!important;
+  position:static!important;opacity:1!important;transform:none!important;border-radius:0!important;
+  background:currentColor!important;color:#003349;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 8h9M8.5 4.5L12 8l-3.5 3.5' stroke='%23000' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat!important;
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 8h9M8.5 4.5L12 8l-3.5 3.5' stroke='%23000' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat!important;
+}
+#pickGo:hover::after{transform:translateX(2px)!important}
+/* the field and the round button share one row at every width */
+@media (max-width:860px){
+  .pick__act{flex-wrap:nowrap!important;gap:10px!important;align-items:center!important}
+  .pick__site{flex:1 1 auto!important;width:auto!important;min-width:0!important}
+  #pickGo,.pick__act > .pick__go,.pick__foot .btn{flex:0 0 50px!important;width:50px!important}
+}
+
+/* §95 · the hero reads headline → tagline → Ask AI (client, Sep 3).
+   The band is a column flexbox, so the eyebrow moves below the H1 by
+   order alone; b.js still finds #heroEyebrow where it always was. */
+.hero2--band .hero2__band{display:flex!important;flex-direction:column!important;align-items:center!important}
+.hero2--band .hero2__band > .hero2__dots{order:0}
+.hero2--band .hero2__band > .display,.hero2--band .hero2__band > #hero2Title{order:1!important;margin-bottom:0!important}
+.hero2--band .hero2__band > .eyebrow,.hero2--band .hero2__band > #heroEyebrow{
+  order:2!important;margin:clamp(20px,3vh,30px) auto 0!important;
+}
+.hero2--band .hero2__band > .hero2__cta{order:3!important;margin-top:clamp(22px,3.4vh,34px)!important}
+
+/* §94 b · the round send: navy, and the arrow dead centre.
+   Centring failed because the hidden "Ask AI" text is still a grid item
+   beside the arrow; the arrow is absolutely centred instead, so the
+   label can stay for screen readers without pushing it sideways. */
+#pickGo,.pick__go{
+  position:relative!important;
+  background:#003349!important;color:#F1FAFF!important;
+}
+#pickGo:hover,.pick__go:hover{background:#0E5F8E!important}
+#pickGo::after,.pick__go::after{
+  position:absolute!important;left:50%!important;top:50%!important;
+  transform:translate(-50%,-50%)!important;margin:0!important;
+  background:#F1FAFF!important;
+}
+#pickGo:hover::after,.pick__go:hover::after{transform:translate(calc(-50% + 2px),-50%)!important}
+html[data-theme="dark"] #pickGo,html[data-theme="dark"] .pick__go{background:#0E5F8E!important}
+html[data-theme="dark"] #pickGo:hover{background:#1A76AE!important}
+/* §94 c · the yellow came from `body.vB #pickGo` (§85), which outranks a
+   bare #pickGo; the navy is stated at the same specificity, later. */
+body.vB #pickGo,body.vB .pick__go,body.vB .pick__act > .pick__go{background:#003349!important;color:#F1FAFF!important}
+body.vB #pickGo:hover,body.vB .pick__go:hover{background:#0E5F8E!important}
+body.vB #pickGo *,body.vB .pick__go *{color:#F1FAFF!important}
+html[data-theme="dark"] body.vB #pickGo{background:#0E5F8E!important}
+html[data-theme="dark"] body.vB #pickGo:hover{background:#1A76AE!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   96 · THE CHAT AS A PRODUCT SURFACE (client refs, Sep 3).
+   What the six references agree on, applied to the chooser with
+   every string untouched:
+   · a framed card with its own header line (Voxle)
+   · option rows with an icon tile and a clear selected state — tint,
+     left accent bar, the tile turns navy (Polymet, Stacker)
+   · the agent's panel as a branded preview surface, not a grey box:
+     a soft navy→teal wash with a faint grid (Fizens)
+   · the input as a composer with the round send inside it (Voxle)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── a · the card ── */
+html[data-theme="light"] .pick{
+  background:#FFFFFF!important;
+  border:1px solid rgba(0,51,73,.14)!important;
+  outline:6px solid rgba(0,51,73,.045);outline-offset:0;
+  border-radius:20px!important;overflow:hidden!important;
+}
+
+/* ── b · header across both panes: the column dissolves so the hint
+       can span the grid while the list keeps the left pane ── */
+@media (min-width:861px){
+  .pick__panes{
+    display:grid!important;
+    grid-template-columns:minmax(0,340px) minmax(0,1fr)!important;
+    grid-template-rows:auto minmax(0,1fr)!important;
+  }
+  .pick__col{display:contents!important}
+  .pick__hint{grid-column:1/-1!important;grid-row:1!important}
+  .pick__list{grid-column:1!important;grid-row:2!important}
+  .pick__detail{grid-column:2!important;grid-row:2!important}
+}
+.pick__hint{
+  display:flex!important;align-items:center!important;gap:12px!important;
+  padding:16px 22px!important;
+  border-bottom:1px solid rgba(0,51,73,.10)!important;
+  background:#FAFBFC!important;
+  font-size:15px!important;color:#003349!important;
+}
+.pick__hint br{display:none}                            /* one line in the bar */
+.pick__hinti{width:34px!important;height:34px!important;border-radius:9px!important;
+  background:rgba(0,156,189,.12)!important;display:grid;place-items:center}
+
+/* ── c · the rows ── */
+.pick__list{
+  padding:14px!important;gap:6px!important;
+  border-right:1px solid rgba(0,51,73,.10)!important;
+  background:#FFFFFF!important;
+}
+@media (min-width:861px){
+  .pick__list .pick__row{
+    display:flex!important;align-items:center!important;gap:12px!important;
+    width:100%!important;min-height:0!important;
+    padding:11px 14px 11px 12px!important;
+    border:1px solid transparent!important;border-left:3px solid transparent!important;
+    border-radius:12px!important;background:transparent!important;
+    text-align:left!important;
+    transition:background var(--d-1) var(--ease),border-color var(--d-1) var(--ease)!important;
+  }
+  .pick__list .pick__radio{display:none!important}
+  .pick__list .pick__mark{
+    flex:none!important;width:36px!important;height:36px!important;
+    display:grid!important;place-items:center!important;
+    border-radius:10px!important;background:rgba(0,156,189,.10)!important;color:#0A7E9B!important;
+    transition:background var(--d-1) var(--ease),color var(--d-1) var(--ease)!important;
+  }
+  .pick__list .pick__icon{width:17px!important;height:17px!important;opacity:1!important}
+  .pick__list .pick__label{font-size:15px!important;font-weight:500!important;color:#003349!important;line-height:1.3!important}
+  .pick__list .pick__row:hover{background:#F3F6F9!important}
+  .pick__list .pick__row.is-on,.pick__list .pick__row[aria-checked="true"]{
+    background:#EEF4F8!important;border-color:rgba(0,51,73,.08)!important;border-left-color:#FFB81C!important;
+  }
+  .pick__list .pick__row.is-on .pick__mark,.pick__list .pick__row[aria-checked="true"] .pick__mark{
+    background:#003349!important;color:#FFFFFF!important;
+  }
+  .pick__list .pick__row.is-on .pick__label,.pick__list .pick__row[aria-checked="true"] .pick__label{color:#003349!important;font-weight:600!important}
+}
+
+/* ── d · the agent's panel: a branded surface ── */
+html[data-theme="light"] .pick__detail{
+  background:
+    repeating-linear-gradient(0deg,rgba(0,51,73,.045) 0 1px,transparent 1px 28px),
+    repeating-linear-gradient(90deg,rgba(0,51,73,.045) 0 1px,transparent 1px 28px),
+    radial-gradient(70% 60% at 85% 10%,rgba(119,227,246,.28),transparent 60%),
+    linear-gradient(160deg,#F3F8FB 0%,#E9F2F7 100%)!important;
+  padding:32px!important;
+}
+html[data-theme="light"] .pick__detail:has(.pick__detail-empty){
+  background:
+    repeating-linear-gradient(0deg,rgba(0,51,73,.045) 0 1px,transparent 1px 28px),
+    repeating-linear-gradient(90deg,rgba(0,51,73,.045) 0 1px,transparent 1px 28px),
+    radial-gradient(70% 60% at 85% 10%,rgba(119,227,246,.28),transparent 60%),
+    linear-gradient(160deg,#F3F8FB 0%,#E9F2F7 100%)!important;
+  border:0!important;
+}
+.pick__detail .say__line{color:#003349!important;font-weight:500!important}
+.pick__detail .say__now{color:rgba(0,51,73,.62)!important}
+/* the chosen option's pane */
+.pick__art{
+  width:56px!important;height:56px!important;border-radius:14px!important;
+  background:linear-gradient(150deg,#003349,#0E5F8E 60%,#009CBD)!important;color:#FFFFFF!important;
+  display:grid!important;place-items:center!important;margin:0 0 16px!important;
+}
+.pick__art svg{width:24px!important;height:24px!important}
+.pick__dh{font-family:var(--display)!important;font-size:24px!important;font-weight:600!important;
+  letter-spacing:-.02em!important;color:#003349!important;margin:0 0 8px!important}
+.pick__dl{color:rgba(0,51,73,.72)!important;font-size:15px!important;line-height:1.55!important;max-width:44ch}
+.pick__dgood{color:rgba(0,51,73,.55)!important;font-size:11px!important;letter-spacing:.1em!important;text-transform:uppercase!important;margin:18px 0 8px!important}
+.pick__tags span,.pick__morechip{
+  background:#FFFFFF!important;border:1px solid rgba(0,51,73,.14)!important;border-radius:999px!important;
+  color:#003349!important;padding:7px 12px!important;font-size:13px!important;
+}
+.pick__morechip.is-on,.pick__morechip[aria-pressed="true"]{background:#003349!important;color:#FFFFFF!important;border-color:#003349!important}
+.pick__free textarea{background:#FFFFFF!important;border:1px solid rgba(0,51,73,.14)!important;border-radius:12px!important;padding:12px 14px!important;color:#003349!important}
+
+/* ── e · the composer ── */
+.pick__foot{padding:16px 18px 18px!important;background:#FFFFFF!important;border-top:1px solid rgba(0,51,73,.10)!important}
+.pick__act{position:relative!important;display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:0!important;width:100%!important}
+.pick__site{flex:1 1 auto!important;width:auto!important;max-width:none!important;min-width:0!important}
+.pick__site input{
+  width:100%!important;height:56px!important;
+  padding:0 66px 0 22px!important;
+  border:1px solid rgba(0,51,73,.16)!important;border-radius:999px!important;
+  background:#FAFBFC!important;color:#003349!important;font-size:15px!important;
+  transition:border-color var(--d-1) var(--ease),background var(--d-1) var(--ease)!important;
+}
+.pick__site input:focus{outline:none!important;border-color:#003349!important;background:#FFFFFF!important}
+body.vB #pickGo,body.vB .pick__go,body.vB .pick__act > .pick__go{
+  position:absolute!important;right:5px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:46px!important;height:46px!important;flex:none!important;margin:0!important;
+}
+body.vB #pickGo:hover{transform:translateY(-50%)!important}
+@media (max-width:860px){
+  .pick__site input{height:52px!important;padding:0 60px 0 18px!important}
+  body.vB #pickGo,.pick__act > .pick__go,.pick__foot .btn{width:42px!important;height:42px!important;flex:none!important}
+  .pick__list{border-right:0!important}
+}
+
+/* ── f · dark theme keeps its room ── */
+html[data-theme="dark"] .pick__hint{background:#0A121C!important;border-bottom-color:rgba(233,238,243,.10)!important;color:#E9EEF3!important}
+html[data-theme="dark"] .pick__list{background:#0C1520!important;border-right-color:rgba(233,238,243,.10)!important}
+html[data-theme="dark"] .pick__list .pick__label{color:#E9EEF3!important}
+html[data-theme="dark"] .pick__list .pick__row:hover{background:rgba(233,238,243,.05)!important}
+html[data-theme="dark"] .pick__list .pick__row.is-on,html[data-theme="dark"] .pick__list .pick__row[aria-checked="true"]{background:rgba(233,238,243,.07)!important}
+html[data-theme="dark"] .pick__detail{background:linear-gradient(160deg,#0E1B28,#0A1520)!important}
+html[data-theme="dark"] .pick__detail .say__line,html[data-theme="dark"] .pick__dh{color:#E9EEF3!important}
+html[data-theme="dark"] .pick__foot{background:#0C1520!important;border-top-color:rgba(233,238,243,.10)!important}
+html[data-theme="dark"] .pick__site input{background:#0A121C!important;color:#E9EEF3!important;border-color:rgba(233,238,243,.16)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   97 · THE CHAT STRADDLES THE SEAM (client, Sep 3).
+   The card's top half sits on the gradient, its bottom half on the
+   container. The container lets it overflow upward; the band keeps
+   enough foot for the overlap; the chat title turns white on the
+   gradient. The hero's Ask AI pill steps aside — the card IS the call
+   to action when it is already in view (one line to bring it back).
+   ═══════════════════════════════════════════════════════════════ */
+.page{overflow:visible!important;padding-top:0!important}
+.page > .hero2{padding-top:0!important;overflow:visible!important}
+.page .hero2__in{margin-top:-236px!important;position:relative;z-index:3}
+.hero2--band .hero2__band{padding-bottom:clamp(292px,33vh,352px)!important;min-height:0!important}
+#hero2 .hero2__sub,.page .hero2__sub{color:#F1FAFF!important;margin-bottom:22px!important}
+.hero2--band .hero2__band > .hero2__cta{display:none!important}
+.hero2--band .hero2__band > .eyebrow{margin-bottom:0!important}
+/* the selected row's tint: §91's theme-scoped white outranked it */
+html[data-theme="light"] .pick__list .pick__row.is-on,
+html[data-theme="light"] .pick__list .pick__row[aria-checked="true"]{background:#EEF4F8!important}
+@media (max-width:860px){
+  .page .hero2__in{margin-top:-150px!important}
+  .hero2--band .hero2__band{padding-bottom:210px!important}
+}
+/* §97 b · air between the tagline and the chat title, which read as one block */
+.hero2--band .hero2__band{padding-bottom:clamp(316px,35vh,376px)!important}
+#hero2 .hero2__sub,.page .hero2__sub{margin-top:0!important;padding-top:6px!important}
+@media (max-width:860px){.hero2--band .hero2__band{padding-bottom:232px!important}}
+/* §97 c · tagline back on top; more air headline → chat title → card */
+.hero2--band .hero2__band > .eyebrow,.hero2--band .hero2__band > #heroEyebrow{
+  order:0!important;margin:0 auto clamp(22px,3vh,30px)!important;
+}
+.hero2--band .hero2__band > .display,.hero2--band .hero2__band > #hero2Title{order:1!important}
+#hero2 .hero2__sub,.page .hero2__sub{padding-top:clamp(28px,4vh,44px)!important;margin-bottom:clamp(30px,4vh,40px)!important}
+.hero2--band .hero2__band{padding-bottom:clamp(352px,39vh,420px)!important}
+@media (max-width:860px){
+  #hero2 .hero2__sub,.page .hero2__sub{padding-top:24px!important;margin-bottom:26px!important}
+  .hero2--band .hero2__band{padding-bottom:260px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   98 · THE SECTIONS, TO THE REFERENCES (client, Sep 3).
+   What the six layouts do that ours did not:
+   · headers are editorial: an eyebrow pill, a big title breaking left
+     over a hairline, the paragraph beside or under it — never a
+     centred stack (Stacker, awards)
+   · proof lives on a BANNER: a full-width rounded gradient with the
+     figures set inside it, divided by hairlines (awards)
+   · the four calls to action are a bento — two rows, one tile solid
+     brand (Fizens)
+   · cards are numbered and quiet; the slider stays as it is
+   Home page only. Every string untouched.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── a · editorial headers ── */
+body.vB .about__head{
+  display:grid!important;grid-template-columns:minmax(0,7fr) minmax(0,5fr)!important;
+  gap:32px 64px!important;align-items:end!important;
+  padding-bottom:36px!important;margin-bottom:56px!important;
+  border-bottom:1px solid rgba(0,51,73,.12)!important;
+  text-align:left!important;
+}
+body.vB .about__head .eyebrow{
+  grid-column:1/-1!important;justify-self:start!important;
+  display:inline-flex!important;align-items:center!important;gap:8px!important;
+  padding:6px 12px!important;border:1px solid rgba(0,51,73,.16)!important;border-radius:999px!important;
+  font-size:10.5px!important;letter-spacing:.12em!important;color:#003349!important;
+  margin:0 0 6px!important;background:#FFFFFF!important;
+}
+body.vB .about__title{grid-column:1!important;margin:0!important;max-width:14ch!important;text-align:left!important}
+body.vB .about__lede{grid-column:2!important;margin:0!important;max-width:38ch!important;font-size:17px!important;line-height:1.6!important;color:rgba(0,51,73,.78)!important}
+body.vB .about__head .btn{grid-column:2!important;justify-self:start!important;margin:4px 0 0!important}
+body.vB .about__mark{display:none!important}         /* the banner carries the brand now */
+
+body.vB .about__h3{
+  text-align:left!important;max-width:18ch!important;margin:0 0 20px!important;
+  padding-top:40px!important;border-top:1px solid rgba(0,51,73,.12)!important;
+  font-size:clamp(30px,3.4vw,46px)!important;line-height:1.05!important;letter-spacing:-.025em!important;
+}
+body.vB .about__h3 + p{text-align:left!important;margin:0 0 44px!important;max-width:52ch!important;color:rgba(0,51,73,.72)!important;font-size:17px!important;line-height:1.6!important}
+body.vB .about > .about__in > *{text-align:left}
+
+/* ── b · numbered tier cards ── */
+body.vB .about__tiers{counter-reset:tier;gap:20px!important}
+body.vB .tier{
+  position:relative;counter-increment:tier;
+  padding:30px 28px 28px!important;border-radius:18px!important;
+  border:1px solid rgba(0,51,73,.10)!important;background:#FFFFFF!important;
+}
+body.vB .tier::before{
+  content:"0" counter(tier);position:absolute;top:26px;right:26px;
+  width:34px;height:34px;border-radius:50%;border:1px solid rgba(0,51,73,.18);
+  display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:#003349;
+}
+body.vB .tier__cat{
+  display:inline-flex!important;padding:5px 10px!important;border-radius:999px!important;
+  background:rgba(0,156,189,.10)!important;color:#0A7E9B!important;
+  font-size:10px!important;letter-spacing:.12em!important;margin:0 0 18px!important;
+}
+body.vB .tier__name{font-size:26px!important;line-height:1.1!important;margin:0 0 12px!important}
+body.vB .tier__facts > div{border-top-color:rgba(0,51,73,.10)!important}
+
+/* ── c · the proof banner ── */
+body.vB .about__proof{
+  display:grid!important;grid-template-columns:minmax(0,5fr) minmax(0,7fr)!important;
+  gap:40px 56px!important;align-items:end!important;
+  margin:64px 0 0!important;padding:clamp(40px,5vw,64px)!important;
+  border-radius:22px!important;overflow:hidden;position:relative;isolation:isolate;
+  color:#F1FAFF!important;
+  background:
+    radial-gradient(60% 70% at 88% 6%, rgba(119,227,246,.30), transparent 60%),
+    radial-gradient(46% 60% at 8% 100%, rgba(0,156,189,.34), transparent 60%),
+    linear-gradient(158deg,#00253A 0%,#003349 34%,#0B5586 72%,#0A8AB0 100%)!important;
+}
+body.vB .about__proof::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,rgba(241,250,255,.05) 0 1px,transparent 1px 32px),
+    repeating-linear-gradient(90deg,rgba(241,250,255,.05) 0 1px,transparent 1px 32px);
+  -webkit-mask-image:radial-gradient(80% 80% at 70% 40%,#000 30%,transparent 100%);
+          mask-image:radial-gradient(80% 80% at 70% 40%,#000 30%,transparent 100%);
+}
+body.vB .proof__say{align-self:start!important;background:transparent!important;border:0!important;padding:0!important}
+body.vB .proof__h{color:#F1FAFF!important;font-size:clamp(30px,3.2vw,42px)!important;line-height:1.05!important;letter-spacing:-.025em!important;max-width:14ch!important;margin:0 0 18px!important;border:0!important;padding:0!important}
+body.vB .about__proofnote{color:rgba(241,250,255,.78)!important;font-size:15px!important;line-height:1.6!important;max-width:36ch!important;margin:0 0 26px!important}
+body.vB .proof__say .btn{margin:0!important}
+body.vB .about__stats{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;
+  align-self:end!important;
+}
+body.vB .stat{
+  background:transparent!important;border:0!important;border-left:1px solid rgba(241,250,255,.22)!important;
+  border-radius:0!important;padding:8px 0 0 22px!important;margin:0!important;
+  display:flex!important;flex-direction:column!important;justify-content:flex-end!important;gap:10px!important;
+  min-height:150px!important;
+}
+body.vB .stat dt{
+  font-family:var(--display)!important;font-weight:400!important;
+  font-size:clamp(40px,4.6vw,64px)!important;line-height:1!important;letter-spacing:-.03em!important;
+  color:#F1FAFF!important;margin:0!important;
+}
+body.vB .stat--words dt{font-size:clamp(20px,1.9vw,26px)!important;line-height:1.2!important;letter-spacing:-.01em!important}
+body.vB .stat dd{color:rgba(241,250,255,.72)!important;font-size:13px!important;line-height:1.45!important;margin:0!important;max-width:22ch}
+body.vB .stat--wide{grid-column:auto!important}
+
+/* ── d · audiences as three quiet columns ── */
+body.vB .aud{border-top:1px solid rgba(0,51,73,.12)!important;padding-top:20px!important;background:transparent!important;border-radius:0!important}
+body.vB .aud .tier__cat{margin-bottom:12px!important}
+
+/* ── e · the suite: header left, the four as a bento ── */
+body.vB .bcta__in > h2{text-align:left!important;max-width:14ch!important;margin:0 0 20px!important;
+  padding-top:40px!important;border-top:1px solid rgba(0,51,73,.12)!important}
+body.vB .bcta__lede{text-align:left!important;margin:0 0 40px!important;max-width:52ch!important}
+body.vB .bcta__grid{
+  display:grid!important;grid-template-columns:minmax(0,7fr) minmax(0,5fr)!important;
+  grid-auto-rows:minmax(300px,auto)!important;gap:18px!important;
+}
+body.vB .bcta__grid .ctacard{border-radius:18px!important;border:0!important;min-height:300px!important;padding:28px!important}
+body.vB .bcta__grid .ctacard:nth-child(2){grid-column:2!important}
+body.vB .bcta__grid .ctacard:nth-child(3){grid-column:1!important}
+body.vB .bcta__grid .ctacard:nth-child(4){
+  grid-column:2!important;
+  background-image:
+    radial-gradient(70% 60% at 90% 0%, rgba(119,227,246,.35), transparent 60%),
+    linear-gradient(158deg,#003349 0%,#0B5586 60%,#0A8AB0 100%)!important;
+  background-color:#003349!important;
+}
+body.vB .bcta__grid .ctacard:nth-child(4)::after{display:none!important}   /* no photo: the brand tile */
+body.vB .bcta__grid .ctacard b{font-size:clamp(22px,2.2vw,30px)!important;line-height:1.08!important;max-width:12ch!important}
+body.vB .callback{border-radius:18px!important;margin-top:18px!important}
+
+/* ── f · phones ── */
+@media (max-width:860px){
+  body.vB .about__head{grid-template-columns:1fr!important;gap:18px!important}
+  body.vB .about__title,body.vB .about__lede,body.vB .about__head .btn{grid-column:1!important}
+  body.vB .about__proof{grid-template-columns:1fr!important;padding:32px 22px!important;gap:28px!important}
+  body.vB .about__stats{grid-template-columns:1fr!important;gap:18px!important}
+  body.vB .stat{border-left:0!important;border-top:1px solid rgba(241,250,255,.22)!important;padding:16px 0 0!important;min-height:0!important}
+  body.vB .bcta__grid{grid-template-columns:1fr!important;grid-auto-rows:minmax(240px,auto)!important}
+  body.vB .bcta__grid .ctacard:nth-child(n){grid-column:1!important}
+}
+
+/* ── g · the film as a banner (client, Sep 3): the whole width, the
+       poster behind a dark wash, the title on it, a big play in the
+       middle — not a small "watch" card ── */
+body.vB .page .hero2__play{
+  position:relative!important;display:block!important;
+  width:100%!important;max-width:none!important;
+  aspect-ratio:21/9!important;min-height:340px!important;
+  margin:clamp(40px,6vh,64px) 0 0!important;padding:0!important;
+  border:0!important;border-radius:20px!important;overflow:hidden!important;
+  background:#0A1520!important;text-align:left!important;
+  animation:none!important;transform:none!important;
+}
+body.vB .page .hero2__play:hover{transform:none!important;border-color:transparent!important}
+body.vB .page .hero2__thumb{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  aspect-ratio:auto!important;max-height:none!important;border-radius:0!important;margin:0!important;
+}
+body.vB .page .hero2__thumb img{opacity:1!important;object-position:50% 40%!important;
+  transition:transform 900ms var(--ease)!important}
+body.vB .page .hero2__play:hover .hero2__thumb img{transform:scale(1.03)}
+body.vB .page .hero2__thumb::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,20,32,.10) 0%,rgba(0,20,32,.22) 55%,rgba(0,20,32,.72) 100%);
+}
+body.vB .page .hero2__playbtn{
+  position:absolute!important;left:50%!important;top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  width:84px!important;height:84px!important;border-radius:50%!important;
+  background:rgba(255,255,255,.92)!important;color:#003349!important;
+  display:grid!important;place-items:center!important;margin:0!important;
+  transition:transform var(--d-2) var(--ease),background var(--d-2) var(--ease)!important;
+}
+body.vB .page .hero2__playbtn svg{width:28px!important;height:28px!important;margin-left:4px!important}
+body.vB .page .hero2__play:hover .hero2__playbtn{transform:translate(-50%,-50%) scale(1.06)!important;background:#FFFFFF!important}
+body.vB .page .hero2__playtext{
+  position:absolute!important;left:32px!important;right:32px!important;bottom:28px!important;
+  display:flex!important;flex-direction:column!important;gap:6px!important;align-items:flex-start!important;
+  margin:0!important;
+}
+body.vB .page .hero2__playtext b{
+  color:#F1FAFF!important;font-family:var(--display)!important;font-weight:500!important;
+  font-size:clamp(22px,2.4vw,32px)!important;letter-spacing:-.02em!important;line-height:1.1!important;white-space:normal!important;
+}
+body.vB .page .hero2__playtext small{color:rgba(241,250,255,.72)!important;font-size:11px!important;letter-spacing:.12em!important}
+@media (max-width:860px){
+  body.vB .page .hero2__play{aspect-ratio:16/10!important;min-height:220px!important;border-radius:16px!important}
+  body.vB .page .hero2__playbtn{width:64px!important;height:64px!important}
+  body.vB .page .hero2__playtext{left:20px!important;right:20px!important;bottom:18px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   99 · CLEAN, HIGH END (client, Sep 3): no rings that read as
+   shadows, no grid patterns, no panel sitting inside a blue box.
+   Darker hairlines carry the structure instead.
+   ═══════════════════════════════════════════════════════════════ */
+/* the chat card: a firm hairline, nothing around it */
+html[data-theme="light"] .pick{outline:0!important;border:1px solid rgba(0,51,73,.22)!important}
+.pick__hint{background:#FFFFFF!important;border-bottom-color:rgba(0,51,73,.16)!important}
+.pick__list{border-right-color:rgba(0,51,73,.16)!important}
+.pick__foot{border-top-color:rgba(0,51,73,.16)!important}
+/* the agent's panel: quiet, no wash, no grid */
+html[data-theme="light"] .pick__detail,
+html[data-theme="light"] .pick__detail:has(.pick__detail-empty){background:#FAFBFC!important;border:0!important}
+.pick__list .pick__row{border-color:transparent!important}
+html[data-theme="light"] .pick__list .pick__row.is-on,
+html[data-theme="light"] .pick__list .pick__row[aria-checked="true"]{border-color:rgba(0,51,73,.10)!important;border-left-color:#FFB81C!important}
+/* the proof banner: no grid, no stray accent bars, every line light */
+body.vB .about__proof::before{display:none!important}
+body.vB .stat::before,body.vB .stat::after{display:none!important;content:none!important}
+body.vB .proof__say *:not(.btn):not(.btn *){color:#F1FAFF!important}
+body.vB .proof__say span,body.vB .proof__say p{color:rgba(241,250,255,.78)!important}
+body.vB .proof__say .about__more{color:#F1FAFF!important}
+@media (min-width:861px){ body.vB .about__stats{grid-template-columns:repeat(4,minmax(0,1fr))!important} }
+body.vB .stat{padding-left:18px!important}
+/* the About header: full width, one rule not two, the lede at a readable measure */
+body.vB .about__head{max-width:none!important;width:100%!important;border-bottom:0!important;padding-bottom:0!important;margin-bottom:40px!important}
+body.vB .about__lede{max-width:46ch!important}
+body.vB .about__h3{padding-top:36px!important}
+body.vB .about__portfolio,body.vB .about__why{padding-top:0!important}
+/* the tier cards: no numbers */
+body.vB .tier::before{content:none!important;display:none!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   100 · tagline → headline → chat → film (client, Sep 3)
+   ═══════════════════════════════════════════════════════════════ */
+/* the long line is the chat's header now; the standalone title is gone */
+#hero2 .hero2__sub[hidden],.page .hero2__sub[hidden]{display:none!important}
+.pick__hint{padding:18px 22px!important;align-items:flex-start!important}
+.pick__hint .pick__hinti{flex:none!important;margin-top:1px}
+.pick__hinttext{
+  font-family:var(--display)!important;font-weight:500!important;
+  font-size:16px!important;line-height:1.4!important;letter-spacing:-.01em!important;
+  color:#003349!important;max-width:64ch;
+}
+html[data-theme="dark"] .pick__hinttext{color:#E9EEF3!important}
+@media (max-width:860px){.pick__hinttext{font-size:15px!important}}
+/* the card keeps its straddle now that the title above it is gone */
+.page .hero2__in{margin-top:-150px!important}
+.hero2--band .hero2__band{padding-bottom:clamp(250px,28vh,300px)!important}
+@media (max-width:860px){
+  .page .hero2__in{margin-top:-96px!important}
+  .hero2--band .hero2__band{padding-bottom:180px!important}
+}
+/* the poster carries a caption in its lower third; keep it out of frame */
+body.vB .page .hero2__thumb img{object-position:50% 22%!important}
+/* four figures in the banner: they scale to fit */
+@media (min-width:861px){ body.vB .stat dt{font-size:clamp(30px,3.6vw,52px)!important} }
+/* the About block is one column now that the mark is gone: the header was
+   sitting in the left cell of a two-column grid at half width */
+body.vB .about__in{grid-template-columns:minmax(0,1fr)!important;display:grid!important}
+body.vB .about__in > *{grid-column:1/-1!important}
+/* §100 b · two regressions from the last pass
+   · the partners figure (words, not a number) took the 52px numeral size
+     and clipped; it is a words-size again, and may wrap
+   · the phone chips lost their outlines: the "no row border" rule was
+     meant for the desktop rows only */
+body.vB .stat--words dt{font-size:clamp(18px,1.6vw,22px)!important;line-height:1.25!important;letter-spacing:-.01em!important;white-space:normal!important}
+@media (max-width:860px){
+  .pick__list .pick__row{border-color:rgba(0,51,73,.18)!important}
+  html[data-theme="dark"] .pick__list .pick__row{border-color:rgba(233,238,243,.16)!important}
+}
+/* §100 c · the chat header line breaks in two, not four: the old 22ch cap
+   for the short line was still applying to the long one */
+.pick__hint .pick__hinttext,.pick__hinttext{flex:1 1 auto!important;max-width:60ch!important;width:auto!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   101 · blocks that sit (client, Sep 3)
+   · the film banner was pushed 37px left by an old offset and ran
+     past the container; it takes the chat's width, centred
+   · the suite section is a padded block with a centred header at a
+     two-line measure
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .page .hero2__play{
+  left:auto!important;right:auto!important;
+  width:100%!important;max-width:1000px!important;
+  margin-left:auto!important;margin-right:auto!important;
+}
+body.vB .bcta{padding:clamp(72px,9vh,112px) 0 clamp(56px,7vh,88px)!important}
+body.vB .bcta__in{max-width:1040px!important}
+body.vB .bcta__in > h2{
+  text-align:center!important;max-width:22ch!important;margin:0 auto 18px!important;
+  padding-top:0!important;border-top:0!important;
+}
+body.vB .bcta__lede{text-align:center!important;margin:0 auto 44px!important;max-width:56ch!important}
+body.vB .bcta__grid{gap:20px!important}
+body.vB .bcta__grid .ctacard{min-height:320px!important}
+/* §101 b · the suite title in two lines (the second line is 32 characters);
+   the four tiles the same height */
+body.vB .bcta__in > h2{max-width:34ch!important}
+body.vB .bcta__grid{grid-auto-rows:320px!important;align-items:stretch!important}
+body.vB .bcta__grid .ctacard{height:auto!important;min-height:0!important;align-self:stretch!important}
+@media (max-width:860px){body.vB .bcta__grid{grid-auto-rows:260px!important}}
+/* §101 c · the suite section sits on the container's own ground, not a white block of its own */
+html[data-theme="light"] body.vB .bcta,html[data-theme="light"] body.vB .bcta__in{background:transparent!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   102 · THE SUITE AS ONE BLOCK (client, Sep 3): a navy banner like the
+   scale one, the title and lede centred on it, the four cards as a
+   2×2 inside it — larger, evenly padded — and the callback row at
+   its foot. The fourth card is the brand yellow so it reads against
+   the navy.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .bcta{padding:clamp(56px,7vh,88px) 0!important}
+body.vB .bcta__in{
+  max-width:1068px!important;
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:clamp(44px,5vw,64px)!important;
+  border-radius:22px!important;
+  color:#F1FAFF!important;
+  background:
+    radial-gradient(60% 70% at 88% 6%, rgba(119,227,246,.30), transparent 60%),
+    radial-gradient(46% 60% at 8% 100%, rgba(0,156,189,.34), transparent 60%),
+    linear-gradient(158deg,#00253A 0%,#003349 34%,#0B5586 72%,#0A8AB0 100%)!important;
+}
+html[data-theme="light"] body.vB .bcta__in{background:
+    radial-gradient(60% 70% at 88% 6%, rgba(119,227,246,.30), transparent 60%),
+    radial-gradient(46% 60% at 8% 100%, rgba(0,156,189,.34), transparent 60%),
+    linear-gradient(158deg,#00253A 0%,#003349 34%,#0B5586 72%,#0A8AB0 100%)!important}
+body.vB .bcta__in > h2,body.vB .bcta__in > h2 span,html[data-theme="light"] body.vB .bcta__h{
+  color:#F1FAFF!important;text-align:center!important;max-width:30ch!important;margin:0 auto 16px!important;
+  font-size:clamp(30px,3.4vw,46px)!important;line-height:1.05!important;
+}
+body.vB .bcta__in > h2 .accent,body.vB .bcta h2 .accent{color:#FFB81C!important}
+body.vB .bcta__lede{color:rgba(241,250,255,.80)!important;text-align:center!important;max-width:54ch!important;margin:0 auto 40px!important;font-size:16px!important;line-height:1.6!important}
+
+body.vB .bcta__grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:360px!important;gap:18px!important;
+}
+body.vB .bcta__grid .ctacard{
+  grid-column:auto!important;
+  border-radius:18px!important;padding:30px!important;min-height:0!important;height:auto!important;
+  border:1px solid rgba(241,250,255,.10)!important;
+}
+body.vB .bcta__grid .ctacard b{font-size:clamp(24px,2.3vw,30px)!important;line-height:1.08!important;max-width:14ch!important;margin-bottom:10px!important}
+body.vB .bcta__grid .ctacard span{font-size:15px!important;line-height:1.5!important;max-width:34ch!important}
+body.vB .bcta__grid .ctacard::before{left:30px!important;bottom:28px!important}
+/* the fourth: brand yellow, navy type */
+body.vB .bcta__grid .ctacard:nth-child(4){
+  background:#FFB81C!important;background-image:none!important;background-color:#FFB81C!important;border-color:#FFB81C!important;
+}
+body.vB .bcta__grid .ctacard:nth-child(4)::after{display:none!important}
+body.vB .bcta__grid .ctacard:nth-child(4) b,body.vB .bcta__grid .ctacard:nth-child(4) span,
+body.vB .bcta__grid .ctacard:nth-child(4) b svg,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(4) b{color:#003349!important}
+body.vB .bcta__grid .ctacard:nth-child(4)::before{background:#003349!important;color:#F1FAFF!important}
+body.vB .bcta__grid .ctacard:nth-child(4) > svg,body.vB .bcta__grid .ctacard:nth-child(4) .ctacard__ico{color:#003349!important}
+
+/* the callback row at the banner's foot: a translucent row, not a second dark card */
+body.vB .callback{
+  margin:18px 0 0!important;border-radius:18px!important;
+  background:rgba(241,250,255,.06)!important;border:1px solid rgba(241,250,255,.14)!important;
+}
+@media (max-width:860px){
+  body.vB .bcta__in{padding:32px 20px!important;border-radius:18px!important}
+  body.vB .bcta__grid{grid-template-columns:1fr!important;grid-auto-rows:280px!important}
+}
+/* §102 b · the card descriptions were still under an old two-line clamp,
+   which the wider cards turned into a mid-sentence ellipsis */
+body.vB .bcta__grid .ctacard span{
+  display:block!important;-webkit-line-clamp:unset!important;-webkit-box-orient:unset!important;
+  overflow:visible!important;text-overflow:clip!important;white-space:normal!important;max-height:none!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   103 · (client, Sep 3)
+   · the film sits INSIDE a navy banner, smaller and narrower
+   · the tier cards are white with a left stroke in their category
+     colour — the portfolio slide's vertical bars
+   · "Best for" / "Core value" are dropdowns
+   ═══════════════════════════════════════════════════════════════ */
+/* ── a · the film banner ── */
+body.vB .film{
+  width:100%;max-width:1068px;margin:clamp(40px,6vh,64px) auto 0;
+  padding:clamp(28px,3.4vw,44px);border-radius:22px;
+  background:
+    radial-gradient(60% 70% at 88% 6%, rgba(119,227,246,.26), transparent 60%),
+    linear-gradient(158deg,#00253A 0%,#003349 40%,#0B5586 100%);
+}
+body.vB .page .hero2__play,body.vB .film .hero2__play{
+  max-width:820px!important;margin:0 auto!important;
+  aspect-ratio:16/9!important;min-height:0!important;border-radius:16px!important;
+}
+@media (max-width:860px){
+  body.vB .film{padding:14px;border-radius:16px;margin-top:28px}
+  body.vB .film .hero2__play{border-radius:12px!important}
+}
+
+/* ── b · white tier cards with the category stroke ── */
+body.vB .tier{
+  background:#FFFFFF!important;border:1px solid rgba(0,51,73,.12)!important;
+  border-left:5px solid var(--tier-stroke,#009CBD)!important;
+  border-radius:16px!important;
+}
+body.vB .tier--orange{--tier-stroke:#FF6D24}
+body.vB .tier--cyan,body.vB .tier--teal{--tier-stroke:#009CBD}
+body.vB .tier--amber,body.vB .tier--gold{--tier-stroke:#FFB81C}
+body.vB .tier--blue{--tier-stroke:#0E5F8E}
+body.vB .tier--orange .tier__cat{background:rgba(255,109,36,.10)!important;color:#C24E0E!important}
+body.vB .tier--amber .tier__cat,body.vB .tier--gold .tier__cat{background:rgba(255,184,28,.16)!important;color:#8A5A00!important}
+
+/* ── c · the facts as dropdowns ── */
+body.vB .tier__facts{display:block!important;margin-top:auto!important;padding-top:6px!important}
+body.vB .tier__facts > div{
+  display:block!important;grid-column:auto!important;
+  border-top:1px solid rgba(0,51,73,.12)!important;padding:0!important;margin:0!important;
+}
+body.vB .tier__facts dt{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;
+  padding:14px 0!important;margin:0!important;cursor:pointer;user-select:none;
+  font-family:var(--body,Montserrat)!important;font-size:13px!important;font-weight:600!important;
+  letter-spacing:.02em!important;text-transform:none!important;color:#003349!important;
+}
+body.vB .tier__facts dt::after{
+  content:"";width:9px;height:9px;flex:none;
+  border-right:1.5px solid #003349;border-bottom:1.5px solid #003349;
+  transform:rotate(45deg) translateY(-2px);transition:transform var(--d-2) var(--ease);
+}
+body.vB .tier__facts > div.is-open dt::after{transform:rotate(225deg) translateY(-1px)}
+body.vB .tier__facts dt:hover{color:#0E5F8E!important}
+body.vB .tier__facts dd{
+  display:none!important;margin:0!important;padding:0 0 16px!important;
+  text-align:left!important;max-width:none!important;
+  font-size:14px!important;line-height:1.55!important;color:rgba(0,51,73,.78)!important;
+}
+body.vB .tier__facts > div.is-open dd{display:block!important}
+
+/* §104 · more air between the headline and the chat; in the chat's
+   header the mark sits on the right and the line is centred */
+.hero2--band .hero2__band{padding-bottom:clamp(292px,32vh,344px)!important}
+@media (max-width:860px){.hero2--band .hero2__band{padding-bottom:212px!important}}
+.pick__hint{flex-direction:row-reverse!important;justify-content:space-between!important;align-items:center!important;padding:18px 22px!important}
+.pick__hint .pick__hinttext,.pick__hinttext{
+  flex:1 1 auto!important;text-align:center!important;max-width:none!important;
+  padding-left:46px!important;                       /* balances the 34px mark + gap on the right */
+}
+@media (max-width:860px){.pick__hinttext{padding-left:0!important;text-align:left!important}.pick__hint{flex-direction:row!important}}
+/* §104 b · the mark in the chat header sits bare, no tinted tile */
+.pick__hinti{background:transparent!important;border-radius:0!important;width:34px!important;height:auto!important}
+/* §103 d · the film wrapper takes the watch card's place in the column:
+   title/chat first, the film after — at every width */
+.hero2__in > .film{order:4!important}
+/* §104 c · centred AND two lines: the measure is capped again; the block is
+   centred inside the bar so the cap does not pull it left */
+.pick__hint .pick__hinttext,.pick__hinttext{max-width:58ch!important;margin:0 auto!important;padding-left:0!important}
+.pick__hint .pick__hinti{margin-left:12px!important}
+.pick__hint::before{content:"";width:34px;flex:none;order:1}      /* mirrors the mark so the text is truly centred */
+.pick__hint .pick__hinti{order:0}
+.pick__hint .pick__hinttext{order:1}
+@media (max-width:860px){.pick__hint::before{display:none}.pick__hinttext{margin:0!important;max-width:none!important}}
+/* §104 d · true centring: a 3-column grid, text in the middle, mark right */
+@media (min-width:861px){
+  .pick__hint{display:grid!important;grid-template-columns:34px minmax(0,1fr) 34px!important;align-items:center!important;gap:12px!important}
+  .pick__hint::before{content:"";display:block;grid-column:1}
+  .pick__hint .pick__hinttext{grid-column:2!important;justify-self:center!important;margin:0!important}
+  .pick__hint .pick__hinti{grid-column:3!important;justify-self:end!important;margin:0!important}
+}
+/* §104 e · back to: mark on the left, the line in one row (it wraps only
+   where the card is too narrow to hold it) */
+@media (min-width:861px){
+  .pick__hint{display:flex!important;flex-direction:row!important;justify-content:flex-start!important;align-items:center!important;gap:14px!important;padding:16px 22px!important}
+  .pick__hint::before{display:none!important;content:none!important}
+  .pick__hint .pick__hinti{order:0!important;margin:0!important}
+  .pick__hint .pick__hinttext{order:1!important;flex:1 1 auto!important;max-width:none!important;margin:0!important;padding:0!important;text-align:left!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   105 · the banner belongs to "What is Stagwell.AI", not the film
+   (client, Sep 3). The film stands on its own; the About header sits
+   inside a navy banner like the scale one.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .film{background:none!important;padding:0!important;border-radius:0!important}
+body.vB .about__head{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:clamp(44px,5vw,64px)!important;margin:0 0 56px!important;
+  border-radius:22px!important;color:#F1FAFF!important;
+  background:
+    radial-gradient(60% 70% at 88% 6%, rgba(119,227,246,.30), transparent 60%),
+    radial-gradient(46% 60% at 8% 100%, rgba(0,156,189,.34), transparent 60%),
+    linear-gradient(158deg,#00253A 0%,#003349 34%,#0B5586 72%,#0A8AB0 100%)!important;
+  align-items:center!important;
+}
+body.vB .about__head .eyebrow{
+  background:rgba(241,250,255,.08)!important;border-color:rgba(241,250,255,.28)!important;color:#F1FAFF!important;
+}
+body.vB .about__head .about__title,html[data-theme="light"] body.vB .about__head .about__title{color:#F1FAFF!important}
+body.vB .about__head .about__title .accent{
+  background:linear-gradient(90deg,#FFB81C 0%,#FF8A2E 55%,#FF6D24 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;
+}
+body.vB .about__lede{color:rgba(241,250,255,.82)!important}
+@media (max-width:860px){body.vB .about__head{padding:32px 22px!important;border-radius:18px!important}}
+
+/* ═══════════════════════════════════════════════════════════════
+   106 · rhythm and blocks (client, Sep 3)
+   · chat → film: more room; film → About banner: less
+   · the film's title sits ABOVE the picture, on the left, outside it
+   · the portfolio cards are square-cornered; its header centred
+   · the suite banner: real room between the cards, a padded panel
+   ═══════════════════════════════════════════════════════════════ */
+/* ── a · rhythm ── */
+body.vB .film{margin-top:clamp(72px,9vh,104px)!important}
+body.vB .page > .hero2{padding-bottom:clamp(40px,5vh,56px)!important}
+body.vB .page .about{padding-top:clamp(40px,5vh,56px)!important}
+
+/* ── b · the film: title outside, above, left ── */
+body.vB .page .hero2__play{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  aspect-ratio:auto!important;min-height:0!important;
+  background:transparent!important;border-radius:0!important;overflow:visible!important;
+}
+body.vB .page .hero2__playtext{
+  position:static!important;order:0!important;
+  padding:0 0 18px!important;margin:0!important;left:auto!important;right:auto!important;bottom:auto!important;
+  align-items:flex-start!important;gap:4px!important;
+}
+body.vB .page .hero2__playtext b{color:#003349!important;font-size:clamp(20px,2vw,26px)!important;font-weight:500!important}
+body.vB .page .hero2__playtext small{color:rgba(0,51,73,.56)!important}
+html[data-theme="dark"] body.vB .page .hero2__playtext b{color:#E9EEF3!important}
+html[data-theme="dark"] body.vB .page .hero2__playtext small{color:rgba(233,238,243,.56)!important}
+body.vB .page .hero2__thumb{
+  position:relative!important;order:1!important;inset:auto!important;
+  width:100%!important;height:auto!important;aspect-ratio:16/9!important;
+  border-radius:16px!important;overflow:hidden!important;background:#0A1520!important;
+}
+body.vB .page .hero2__thumb img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+body.vB .page .hero2__thumb::after{background:linear-gradient(180deg,rgba(0,20,32,.06),rgba(0,20,32,.32))!important}
+/* the play, drawn on the picture itself (the old button element is retired) */
+body.vB .page .hero2__playbtn{display:none!important}
+body.vB .page .hero2__thumb::before{
+  content:"";position:absolute;left:50%;top:50%;z-index:2;
+  width:84px;height:84px;border-radius:50%;transform:translate(-50%,-50%);
+  background:rgba(255,255,255,.92) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9 6.5v11l9-5.5z' fill='%23003349'/></svg>") center/34px no-repeat;
+  transition:transform var(--d-2) var(--ease),background-color var(--d-2) var(--ease);
+}
+body.vB .page .hero2__play:hover .hero2__thumb::before{transform:translate(-50%,-50%) scale(1.06);background-color:#FFFFFF}
+@media (max-width:860px){
+  body.vB .page .hero2__thumb::before{width:64px;height:64px;background-size:28px}
+  body.vB .page .hero2__thumb{border-radius:12px!important}
+}
+
+/* ── c · the portfolio: square cards, centred header ── */
+body.vB .about__h3{text-align:center!important;max-width:24ch!important;margin:0 auto 18px!important;border-top:0!important;padding-top:0!important}
+body.vB .about__h3 + p{text-align:center!important;margin:0 auto 44px!important}
+body.vB .about__portfolio{padding-top:clamp(64px,8vh,96px)!important;border-top:1px solid rgba(0,51,73,.12)!important}
+body.vB .tier{border-radius:0!important}
+body.vB .about__tiers{gap:24px!important}
+
+/* ── d · the suite: a padded panel with room between the cards ── */
+body.vB .bcta__in{padding:clamp(56px,6vw,80px)!important}
+body.vB .bcta__grid{gap:28px!important;grid-auto-rows:340px!important}
+body.vB .bcta__lede{margin-bottom:52px!important}
+body.vB .callback{margin-top:28px!important}
+@media (max-width:860px){
+  body.vB .bcta__in{padding:36px 22px!important}
+  body.vB .bcta__grid{gap:18px!important;grid-auto-rows:280px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   107 · DARK MODE IN NAVY, NOT BLACK (client, Sep 3).
+   The dark room was #070D14 — black with a hint of blue. It is the
+   brand's navy family now: a deep navy ground, navy cards, lighter
+   navy wells. The banners keep their gradients and take an edge so
+   they still read as blocks on a navy page.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="dark"]{
+  --paper:#0A2A3F;--surface:#0F3A54;--surface-2:#154764;
+  --ink:#EAF3F8;--ink-2:rgba(234,243,248,.78);--ink-3:rgba(234,243,248,.58);--ink-4:rgba(234,243,248,.38);
+  --line:rgba(234,243,248,.12);--line-2:rgba(234,243,248,.20);
+  --dk-ground:#001A2B;      /* behind the container */
+  --dk-page:#0A2A3F;        /* the container */
+  --dk-card:#0F3A54;        /* cards, the chat */
+  --dk-well:#0C3349;        /* wells inside cards */
+  --dk-raised:#154764;      /* hover / selected */
+  --dk-line:rgba(234,243,248,.12);
+  --dk-line-2:rgba(234,243,248,.20);
+}
+html[data-theme="dark"],html[data-theme="dark"] body{background:var(--dk-ground)!important}
+html[data-theme="dark"] .page{background:var(--dk-page)!important}
+html[data-theme="dark"] body::before{background-image:radial-gradient(rgba(234,243,248,.06) .85px,transparent .85px)!important}
+html[data-theme="dark"] .nav,html[data-theme="dark"] .bnav,html[data-theme="dark"] header.nav{
+  background:var(--dk-ground)!important;border-bottom-color:var(--dk-line)!important;
+}
+html[data-theme="dark"] .mnav{background:var(--dk-card)!important}
+
+/* the chat */
+html[data-theme="dark"] .pick{background:var(--dk-card)!important;border-color:var(--dk-line-2)!important}
+html[data-theme="dark"] .pick__hint{background:var(--dk-card)!important;border-bottom-color:var(--dk-line)!important}
+html[data-theme="dark"] .pick__list{background:var(--dk-card)!important;border-right-color:var(--dk-line)!important}
+html[data-theme="dark"] .pick__detail,
+html[data-theme="dark"] .pick__detail:has(.pick__detail-empty){background:var(--dk-well)!important;border:0!important}
+html[data-theme="dark"] .pick__foot{background:var(--dk-card)!important;border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] .pick__site input{background:var(--dk-well)!important;color:var(--ink)!important;border-color:var(--dk-line-2)!important}
+html[data-theme="dark"] .pick__list .pick__mark{background:rgba(119,227,246,.14)!important;color:#77E3F6!important}
+html[data-theme="dark"] .pick__list .pick__row.is-on .pick__mark,html[data-theme="dark"] .pick__list .pick__row[aria-checked="true"] .pick__mark{background:#77E3F6!important;color:#003349!important}
+html[data-theme="dark"] .pick__list .pick__row.is-on,html[data-theme="dark"] .pick__list .pick__row[aria-checked="true"]{background:var(--dk-raised)!important;border-left-color:#FFB81C!important}
+html[data-theme="dark"] .pick__hinttext,html[data-theme="dark"] .pick__list .pick__label,html[data-theme="dark"] .say__line{color:var(--ink)!important}
+html[data-theme="dark"] .say__now{color:var(--ink-3)!important}
+html[data-theme="dark"] .pick__dh{color:var(--ink)!important}
+html[data-theme="dark"] .pick__dl,html[data-theme="dark"] .pick__dgood{color:var(--ink-2)!important}
+html[data-theme="dark"] .pick__tags span,html[data-theme="dark"] .pick__morechip{background:var(--dk-card)!important;border-color:var(--dk-line-2)!important;color:var(--ink)!important}
+
+/* cards and blocks */
+html[data-theme="dark"] body.vB .tier,html[data-theme="dark"] .stat,html[data-theme="dark"] .scard{background:var(--dk-card)!important;border-color:var(--dk-line)!important}
+html[data-theme="dark"] body.vB .tier__facts dt,html[data-theme="dark"] body.vB .tier__name{color:var(--ink)!important}
+html[data-theme="dark"] body.vB .tier__facts dt::after{border-color:var(--ink)!important}
+html[data-theme="dark"] body.vB .tier__facts dd{color:var(--ink-2)!important}
+html[data-theme="dark"] body.vB .tier__facts > div{border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] body.vB .tier__cat{background:rgba(119,227,246,.12)!important;color:#77E3F6!important}
+html[data-theme="dark"] body.vB .tier--orange .tier__cat{background:rgba(255,109,36,.16)!important;color:#FF9A5C!important}
+html[data-theme="dark"] body.vB .tier--amber .tier__cat{background:rgba(255,184,28,.16)!important;color:#FFC94D!important}
+html[data-theme="dark"] .scard__stage{background:var(--dk-well)!important}
+html[data-theme="dark"] .cmini{background:var(--dk-card)!important;border-color:var(--dk-line-2)!important}
+html[data-theme="dark"] .aud{border-top-color:var(--dk-line)!important}
+/* the banners take an edge on a navy page */
+html[data-theme="dark"] body.vB .about__head,html[data-theme="dark"] body.vB .about__proof,html[data-theme="dark"] body.vB .bcta__in{
+  border:1px solid var(--dk-line-2)!important;
+}
+html[data-theme="dark"] body.vB .about__h3,html[data-theme="dark"] body.vB .about__h3 + p{color:var(--ink)!important}
+html[data-theme="dark"] body.vB .about__h3 + p{color:var(--ink-2)!important}
+html[data-theme="dark"] body.vB .about__portfolio{border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] body.vB .bcta__grid .ctacard{border-color:var(--dk-line)!important}
+html[data-theme="dark"] body.vB .hero2__thumb{background:#062033!important}
+/* controls */
+html[data-theme="dark"] body.vB .btn--dark,html[data-theme="dark"] body.vB .nav__cta,html[data-theme="dark"] body.vB .scard .btn--xs{background:#1A76AE!important;color:#F1FAFF!important}
+html[data-theme="dark"] body.vB #pickGo{background:#1A76AE!important}
+html[data-theme="dark"] .theme-toggle{border-color:var(--dk-line-2)!important;color:var(--ink-2)!important}
+/* footer */
+html[data-theme="dark"] .bfoot{border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] .bfoot__foot{border-top-color:var(--dk-line)!important}
+html[data-theme="dark"] .bfoot__links a{color:var(--ink)!important}
+html[data-theme="dark"] .bfoot__note{color:var(--ink-3)!important}
+/* §107 b · the figures inside the scale banner sit on the banner, not in
+   a box of their own (the dark card rule had caught .stat); and below
+   1100px they run two-by-two so the labels keep their measure */
+html[data-theme="dark"] body.vB .about__proof .stat,html[data-theme="dark"] body.vB .about__stats{
+  background:transparent!important;border-color:rgba(234,243,248,.22)!important;
+}
+html[data-theme="dark"] body.vB .about__proof .stat{border-left:1px solid rgba(234,243,248,.22)!important;border-top:0!important;border-right:0!important;border-bottom:0!important}
+@media (min-width:861px) and (max-width:1099px){
+  body.vB .about__stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:22px 0!important}
+}
+@media (max-width:860px){
+  html[data-theme="dark"] body.vB .about__proof .stat{border-left:0!important;border-top:1px solid rgba(234,243,248,.22)!important}
+}
+
+/* §108 · the container runs edge to edge (client, Sep 3): no gutters, no
+   rounded top — the ground behind it never shows */
+.page{margin-left:0!important;margin-right:0!important;border-radius:0!important}
+@media (max-width:860px){.page{margin-left:0!important;margin-right:0!important}}
+/* a long label in a narrow stat column wraps instead of clipping */
+body.vB .stat dd{overflow-wrap:anywhere;hyphens:auto}
+/* §106 e · the film: only the title, bigger; no duration / sound line */
+body.vB .page .hero2__playtext small{display:none!important}
+body.vB .page .hero2__playtext b{font-size:clamp(26px,3vw,38px)!important;letter-spacing:-.02em!important;line-height:1.1!important}
+body.vB .page .hero2__playtext{padding-bottom:22px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   109 · THE SUITE, TO THE FIZENS REFERENCE (client, Sep 3).
+   Light cards on the page ground — a soft blue-white gradient, a
+   hairline, the photograph framed inside the card like a UI fragment,
+   navy title and line at the foot. The header is centred and two-tone.
+   The fourth card is the solid brand tile with a white pill.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .bcta__in,body.vB .bcta__in{
+  background:none!important;padding:0!important;border:0!important;border-radius:0!important;
+  color:inherit!important;overflow:visible!important;
+}
+body.vB .bcta{padding:clamp(72px,9vh,112px) 0 clamp(64px,8vh,96px)!important}
+/* two-tone header */
+html[data-theme="light"] body.vB .bcta__in > h2,body.vB .bcta__in > h2{color:#003349!important;font-weight:500!important}
+html[data-theme="light"] body.vB .bcta__in > h2 span,body.vB .bcta__in > h2 span{color:#0E5F8E!important;font-weight:500!important}
+html[data-theme="light"] body.vB .bcta__lede{color:rgba(0,51,73,.72)!important}
+
+/* the bento */
+body.vB .bcta__grid{grid-template-columns:minmax(0,7fr) minmax(0,5fr)!important;grid-auto-rows:380px!important;gap:22px!important}
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n),body.vB .bcta__grid .ctacard{
+  position:relative!important;overflow:hidden!important;
+  display:flex!important;flex-direction:column!important;justify-content:flex-end!important;
+  padding:26px 28px 28px!important;border-radius:18px!important;
+  background:linear-gradient(160deg,#F9FBFE 0%,#EEF4FA 100%)!important;background-image:linear-gradient(160deg,#F9FBFE 0%,#EEF4FA 100%)!important;
+  border:1px solid rgba(0,51,73,.10)!important;color:#003349!important;
+}
+/* the photograph as a framed fragment in the upper part */
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n)::after,body.vB .bcta__grid .ctacard::after{
+  content:"";display:block!important;position:absolute!important;
+  left:28px!important;right:28px!important;top:26px!important;height:48%!important;
+  border-radius:12px!important;
+  background-image:var(--photo,none)!important;background-size:cover!important;background-position:center!important;
+  opacity:1!important;filter:none!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+  border:1px solid rgba(0,51,73,.08);
+}
+body.vB .bcta__grid .ctacard b,html[data-theme="light"] body.vB .bcta__grid .ctacard b,html[data-theme="light"] .ctacard b{
+  color:#003349!important;font-size:clamp(20px,1.9vw,26px)!important;max-width:16ch!important;margin:0 0 8px!important;position:relative;z-index:2;
+}
+body.vB .bcta__grid .ctacard span,html[data-theme="light"] body.vB .bcta__grid .ctacard span{color:rgba(0,51,73,.72)!important;font-size:14px!important;max-width:36ch!important;position:relative;z-index:2}
+body.vB .bcta__grid .ctacard b svg{display:none!important}
+/* the pill sits bottom-right, out of the text's way */
+body.vB .bcta__grid .ctacard::before{left:auto!important;right:24px!important;bottom:24px!important;background:#FFB81C!important;color:#003349!important;z-index:3}
+/* the line icon top-left of the fragment is retired: the fragment carries the card */
+body.vB .bcta__grid .ctacard > svg,body.vB .ctacard__ico{display:none!important}
+
+/* the fourth: the brand tile */
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(4),body.vB .bcta__grid .ctacard:nth-child(4){
+  background:
+    radial-gradient(38% 46% at 82% 18%, rgba(119,227,246,.55), transparent 62%),
+    radial-gradient(34% 40% at 74% 30%, rgba(255,255,255,.22), transparent 60%),
+    linear-gradient(160deg,#003349 0%,#0B5586 62%,#0A8AB0 100%)!important;
+  background-color:#003349!important;border-color:transparent!important;
+}
+body.vB .bcta__grid .ctacard:nth-child(4)::after{display:none!important}
+body.vB .bcta__grid .ctacard:nth-child(4) b,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(4) b{color:#F1FAFF!important;max-width:12ch!important}
+body.vB .bcta__grid .ctacard:nth-child(4) span,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(4) span{color:rgba(241,250,255,.78)!important}
+body.vB .bcta__grid .ctacard:nth-child(4)::before{background:#FFFFFF!important;color:#003349!important}
+
+/* the callback: a light card under the bento */
+html[data-theme="light"] body.vB .callback{background:#FFFFFF!important;border:1px solid rgba(0,51,73,.12)!important;color:#003349!important}
+html[data-theme="light"] body.vB .callback__t b,html[data-theme="light"] body.vB .callback b{color:#003349!important}
+html[data-theme="light"] body.vB .callback__t span,html[data-theme="light"] body.vB .callback span{color:rgba(0,51,73,.72)!important}
+html[data-theme="light"] body.vB .callback input{background:#FAFBFC!important;color:#003349!important;border:1px solid rgba(0,51,73,.16)!important}
+html[data-theme="light"] body.vB .callback input::placeholder{color:rgba(0,51,73,.45)!important}
+html[data-theme="light"] body.vB .callback .btn{background:#003349!important;color:#F1FAFF!important}
+
+/* dark theme: the same shapes in navy */
+html[data-theme="dark"] body.vB .bcta__grid .ctacard{background:var(--dk-card)!important;background-image:none!important;border-color:var(--dk-line)!important;color:var(--ink)!important}
+html[data-theme="dark"] body.vB .bcta__grid .ctacard b{color:var(--ink)!important}
+html[data-theme="dark"] body.vB .bcta__grid .ctacard span{color:var(--ink-2)!important}
+html[data-theme="dark"] body.vB .bcta__in > h2{color:var(--ink)!important}
+html[data-theme="dark"] body.vB .bcta__in > h2 span{color:#77E3F6!important}
+html[data-theme="dark"] body.vB .bcta__lede{color:var(--ink-2)!important}
+html[data-theme="dark"] body.vB .callback{background:var(--dk-card)!important;border-color:var(--dk-line)!important}
+
+@media (max-width:860px){
+  body.vB .bcta__grid{grid-template-columns:1fr!important;grid-auto-rows:340px!important;gap:16px!important}
+  body.vB .bcta__grid .ctacard{padding:20px 20px 22px!important}
+  body.vB .bcta__grid .ctacard::after{left:20px!important;right:20px!important;top:20px!important;height:44%!important}
+}
+
+/* the poster is exactly 16:9, so at 16:9 its caption strip is in frame;
+   a top-anchored zoom pushes the bottom fifth out */
+body.vB .page .hero2__thumb img{transform:scale(1.22)!important;transform-origin:50% 0!important;object-position:50% 0!important}
+body.vB .page .hero2__play:hover .hero2__thumb img{transform:scale(1.25)!important}
+/* §109 b · the card's ::before was the line icon AND the pill at once: the
+   icon's mask, size and top position survived under the pill's label. The
+   pill wins; the frame carries the card. And the text gets its room. */
+body.vB .bcta__grid .ctacard::before,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n)::before{
+  -webkit-mask:none!important;mask:none!important;-webkit-mask-image:none!important;mask-image:none!important;
+  width:auto!important;height:38px!important;padding:0 18px!important;
+  top:auto!important;left:auto!important;right:24px!important;bottom:24px!important;
+  display:inline-flex!important;align-items:center!important;
+  font-size:13px!important;font-weight:600!important;letter-spacing:.02em!important;
+  border-radius:999px!important;
+}
+body.vB .bcta__grid{grid-auto-rows:430px!important}
+body.vB .bcta__grid .ctacard::after,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n)::after{height:42%!important}
+body.vB .bcta__grid .ctacard span,html[data-theme="light"] body.vB .bcta__grid .ctacard span{max-width:calc(100% - 156px)!important;padding-bottom:0!important}
+body.vB .bcta__grid .ctacard:nth-child(4) span{max-width:calc(100% - 156px)!important}
+@media (max-width:860px){
+  body.vB .bcta__grid{grid-auto-rows:420px!important}
+  body.vB .bcta__grid .ctacard::after{height:40%!important}
+  body.vB .bcta__grid .ctacard span{max-width:100%!important;padding-bottom:52px!important}
+  body.vB .bcta__grid .ctacard::before{left:20px!important;right:auto!important;bottom:20px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   110 · LIGHT MODE IS LIGHT (client, Sep 3). The navy gradient blocks
+   (About, the scale banner) are the dark theme's; in light they are
+   soft light cards with navy type, like the suite's.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .about__head,
+html[data-theme="light"] body.vB .about__proof{
+  background:linear-gradient(160deg,#F9FBFE 0%,#EEF4FA 100%)!important;
+  border:1px solid rgba(0,51,73,.10)!important;
+  color:#003349!important;
+}
+html[data-theme="light"] body.vB .about__proof::before{display:none!important}
+/* About */
+html[data-theme="light"] body.vB .about__head .eyebrow{background:#FFFFFF!important;border-color:rgba(0,51,73,.18)!important;color:#003349!important}
+html[data-theme="light"] body.vB .about__head .about__title{color:#003349!important}
+html[data-theme="light"] body.vB .about__lede{color:rgba(0,51,73,.74)!important}
+/* the scale banner */
+html[data-theme="light"] body.vB .proof__h{color:#003349!important}
+html[data-theme="light"] body.vB .about__proofnote{color:rgba(0,51,73,.72)!important}
+html[data-theme="light"] body.vB .proof__say *:not(.btn):not(.btn *){color:#003349!important}
+html[data-theme="light"] body.vB .proof__say span,html[data-theme="light"] body.vB .proof__say p{color:rgba(0,51,73,.72)!important}
+html[data-theme="light"] body.vB .proof__say .about__more{color:#003349!important}
+html[data-theme="light"] body.vB .stat{border-left-color:rgba(0,51,73,.16)!important}
+html[data-theme="light"] body.vB .stat dt{color:#003349!important}
+html[data-theme="light"] body.vB .stat dd{color:rgba(0,51,73,.66)!important}
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .stat{border-top-color:rgba(0,51,73,.16)!important}
+  /* the pill and the last line of the description no longer meet */
+  body.vB .bcta__grid .ctacard span{padding-bottom:66px!important}
+}
+/* §109 c · the suite keeps side gutters at every width (removing the banner
+   padding had removed them too), and its cards drop an old fixed 420px
+   width that ran past a phone screen */
+html[data-theme="light"] body.vB .bcta__in,body.vB .bcta__in{
+  box-sizing:border-box!important;
+  padding:0 clamp(20px,4vw,56px)!important;
+  max-width:calc(1068px + 2 * clamp(20px,4vw,56px))!important;
+}
+body.vB .bcta__grid .ctacard,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n){
+  width:auto!important;min-width:0!important;max-width:100%!important;flex:none!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   111 · THE THEMES DIVIDE AT THE HERO, NOT INSIDE THE PAGE (client, Sep 3)
+   · light: the hero is light too — no navy gradient at the top
+   · dark: one gradient behind the whole page; the container is
+     transparent, blocks are translucent navy on it
+   ═══════════════════════════════════════════════════════════════ */
+/* ── light ── */
+html[data-theme="light"],html[data-theme="light"] body{background:#F7F8FA!important}
+html[data-theme="light"] .hero2--band .hero2__band{
+  background:linear-gradient(180deg,#FFFFFF 0%,#F2F6FA 100%)!important;color:#003349!important;
+}
+html[data-theme="light"] .hero2__dots{display:none!important}
+html[data-theme="light"] .hero2--band .display,html[data-theme="light"] .hero2--band h1{color:#003349!important}
+html[data-theme="light"] .hero2--band .eyebrow,html[data-theme="light"] #heroEyebrow{color:rgba(0,51,73,.72)!important}
+html[data-theme="light"] .hero2--band .eyebrow .pulse{background:#FFB81C!important}
+html[data-theme="light"] .hero2--band .display .accent{
+  background:linear-gradient(90deg,#FFB81C 0%,#FF8A2E 55%,#FF6D24 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;
+}
+/* the bar over a light hero: navy type, the light-background logo */
+html[data-theme="light"].over-hero .nav__brand,html[data-theme="light"].over-hero .nav__links a,html[data-theme="light"].over-hero .nav a{color:#003349!important}
+html[data-theme="light"].over-hero .nav__logo--dark{display:none!important}
+html[data-theme="light"].over-hero .nav__logo--light{display:block!important}
+html[data-theme="light"].over-hero .nav__cta{background:#003349!important;color:#F1FAFF!important}
+html[data-theme="light"].over-hero .nav__cta:hover{background:#0E5F8E!important;color:#F1FAFF!important}
+html[data-theme="light"].over-hero .theme-toggle{color:#003349!important;border-color:rgba(0,51,73,.25)!important}
+html[data-theme="light"].over-hero .nav__menu{background:rgba(0,51,73,.06)!important;color:#003349!important;border-color:rgba(0,51,73,.18)!important}
+html[data-theme="light"].over-hero .nav__playdot{background:#003349!important;color:#FFFFFF!important}
+/* the light chat card lifts off a light hero with its hairline; the seam
+   between hero and page is a tone, not a colour */
+html[data-theme="light"] .page{background:#F7F8FA!important}
+
+/* ── dark: one gradient, fixed, the page transparent over it ── */
+html[data-theme="dark"]{
+  background:linear-gradient(160deg,#00253A 0%,#003349 32%,#0B5586 70%,#0A8AB0 100%) fixed!important;
+  background-attachment:fixed!important;
+}
+html[data-theme="dark"] body{background:transparent!important}
+html[data-theme="dark"] .page{background:transparent!important}
+html[data-theme="dark"] .hero2--band .hero2__band{background:transparent!important}
+html[data-theme="dark"] body::before{display:none!important}
+html[data-theme="dark"] .nav,html[data-theme="dark"] .bnav,html[data-theme="dark"] header.nav{
+  background:rgba(0,26,43,.72)!important;-webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important;
+}
+html[data-theme="dark"].over-hero .nav{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* blocks read as translucent navy on the gradient */
+html[data-theme="dark"] body.vB .about__head,html[data-theme="dark"] body.vB .about__proof{
+  background:rgba(0,20,34,.38)!important;border:1px solid rgba(234,243,248,.16)!important;
+}
+html[data-theme="dark"] .pick,html[data-theme="dark"] .pick__hint,html[data-theme="dark"] .pick__list,html[data-theme="dark"] .pick__foot{background:rgba(0,26,43,.78)!important}
+html[data-theme="dark"] .pick__detail,html[data-theme="dark"] .pick__detail:has(.pick__detail-empty){background:rgba(0,20,34,.45)!important}
+html[data-theme="dark"] body.vB .tier,html[data-theme="dark"] .stat,html[data-theme="dark"] .scard,html[data-theme="dark"] body.vB .bcta__grid .ctacard,html[data-theme="dark"] body.vB .callback{
+  background:rgba(0,26,43,.62)!important;border-color:rgba(234,243,248,.14)!important;
+}
+html[data-theme="dark"] .scard__stage{background:rgba(0,20,34,.5)!important}
+html[data-theme="dark"] .cmini{background:rgba(0,26,43,.8)!important}
+html[data-theme="dark"] .bfoot{border-top-color:rgba(234,243,248,.16)!important}
+html[data-theme="dark"] .mnav{background:#0A2A3F!important}
+
+/* ── suite fixes ── */
+/* the pill sits under the text on its own line, so the description keeps
+   its measure at every card width */
+body.vB .bcta__grid .ctacard::before,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n)::before{
+  position:static!important;margin-top:18px!important;align-self:flex-start!important;
+  right:auto!important;bottom:auto!important;left:auto!important;
+}
+body.vB .bcta__grid .ctacard span,html[data-theme="light"] body.vB .bcta__grid .ctacard span,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n) span{max-width:38ch!important;padding-bottom:0!important}
+body.vB .bcta__grid .ctacard:nth-child(4) span{max-width:30ch!important}
+body.vB .bcta__grid .ctacard:nth-child(4) b,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(4) b{max-width:14ch!important}
+/* the fourth tile is solid: its photo layer is off at the same specificity
+   that turns the others on */
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(4)::after,body.vB .bcta__grid .ctacard:nth-child(4)::after{display:none!important;content:none!important}
+@media (max-width:860px){ body.vB .bcta__grid .ctacard span{padding-bottom:0!important} body.vB .bcta__grid{grid-auto-rows:440px!important} }
+
+/* ═══════════════════════════════════════════════════════════════
+   112 · THE SUITE, PROPERLY TO THE REFERENCE (client, Sep 3).
+   Three faults against the Fizens layout:
+   · the pill rendered ABOVE the title — a static ::before is the first
+     flex item, so it has to be ordered last
+   · the photograph was an inset frame with margins; in the reference
+     the art bleeds to the card's edges
+   · every card was the same width; the reference alternates 5/7 then
+     7/5, and its type is small and tight
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .bcta__grid{
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-auto-rows:400px!important;gap:22px!important;
+}
+body.vB .bcta__grid .ctacard:nth-child(1){grid-column:span 5!important}
+body.vB .bcta__grid .ctacard:nth-child(2){grid-column:span 7!important}
+body.vB .bcta__grid .ctacard:nth-child(3){grid-column:span 7!important}
+body.vB .bcta__grid .ctacard:nth-child(4){grid-column:span 5!important}
+
+/* the card is a frame with no padding of its own; the art bleeds */
+body.vB .bcta__grid .ctacard,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n){
+  padding:0!important;overflow:hidden!important;
+  display:flex!important;flex-direction:column!important;justify-content:flex-end!important;
+}
+body.vB .bcta__grid .ctacard::after,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n)::after{
+  position:static!important;order:0!important;
+  width:100%!important;height:auto!important;flex:1 1 auto!important;min-height:0!important;
+  left:auto!important;right:auto!important;top:auto!important;
+  border:0!important;border-radius:0!important;
+  background-position:center 30%!important;
+}
+body.vB .bcta__grid .ctacard b,html[data-theme="light"] body.vB .bcta__grid .ctacard b{
+  order:1!important;
+  margin:0!important;padding:22px 26px 0!important;
+  font-size:20px!important;line-height:1.22!important;max-width:none!important;letter-spacing:-.015em!important;
+}
+body.vB .bcta__grid .ctacard span,html[data-theme="light"] body.vB .bcta__grid .ctacard span,
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n) span{
+  order:2!important;
+  margin:0!important;padding:8px 26px 0!important;
+  font-size:14px!important;line-height:1.5!important;max-width:44ch!important;
+}
+body.vB .bcta__grid .ctacard::before,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n)::before{
+  order:3!important;
+  margin:16px 26px 24px!important;align-self:flex-start!important;
+  height:36px!important;padding:0 16px!important;font-size:12.5px!important;
+}
+/* the brand tile: no art, the block of colour is the card */
+body.vB .bcta__grid .ctacard:nth-child(4) b{padding-top:0!important;margin-top:auto!important}
+body.vB .bcta__grid .ctacard:nth-child(4) span{max-width:32ch!important}
+
+@media (max-width:860px){
+  body.vB .bcta__grid{grid-template-columns:1fr!important;grid-auto-rows:380px!important;gap:16px!important}
+  body.vB .bcta__grid .ctacard:nth-child(n){grid-column:1!important}
+  body.vB .bcta__grid .ctacard b{padding:18px 20px 0!important;font-size:19px!important}
+  body.vB .bcta__grid .ctacard span{padding:6px 20px 0!important}
+  body.vB .bcta__grid .ctacard::before{margin:14px 20px 20px!important}
+}
+
+/* §113 · the hero breathes (client, Sep 3): more room above the tagline,
+   between tagline and headline, and under the headline before the chat */
+.hero2--band .hero2__band{
+  padding-top:calc(60px + clamp(72px,10vh,120px))!important;
+  padding-bottom:clamp(340px,36vh,400px)!important;
+}
+.hero2--band .hero2__band > .eyebrow,.hero2--band .hero2__band > #heroEyebrow{
+  margin:0 auto clamp(34px,4.6vh,48px)!important;
+}
+@media (max-width:860px){
+  .hero2--band .hero2__band{padding-top:calc(60px + 56px)!important;padding-bottom:250px!important}
+  .hero2--band .hero2__band > .eyebrow{margin-bottom:26px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   114 · THE SUITE CARDS ARE FULL-BACKGROUND (client, Sep 3).
+   The art fills the whole card and the copy sits on it, rather than
+   the card being split into a picture half and a text half. Gaps
+   tightened.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .bcta__grid{gap:14px!important}
+body.vB .bcta__grid .ctacard,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n){
+  position:relative!important;justify-content:flex-end!important;
+  background:#0A1520!important;background-image:none!important;border:0!important;
+}
+/* the photograph: the card's whole surface */
+body.vB .bcta__grid .ctacard::after,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n)::after{
+  position:absolute!important;inset:0!important;z-index:0!important;
+  width:auto!important;height:auto!important;flex:none!important;order:0!important;
+  background-position:center!important;background-size:cover!important;
+}
+/* one scrim, so the copy reads on any frame */
+body.vB .bcta__grid .ctacard > b::before{content:none}
+body.vB .bcta__grid .ctacard{isolation:isolate}
+body.vB .bcta__grid .ctacard b,body.vB .bcta__grid .ctacard span,body.vB .bcta__grid .ctacard::before{position:relative!important;z-index:2!important}
+body.vB .bcta__grid .ctacard::after{
+  box-shadow:inset 0 -180px 140px -60px rgba(0,20,34,.86),inset 0 60px 120px -40px rgba(0,20,34,.34)!important;
+}
+/* the copy, on the picture */
+body.vB .bcta__grid .ctacard b,html[data-theme="light"] body.vB .bcta__grid .ctacard b,html[data-theme="light"] .ctacard b{
+  color:#FFFFFF!important;padding:0 26px!important;margin:0!important;
+  font-size:22px!important;line-height:1.15!important;max-width:16ch!important;
+}
+body.vB .bcta__grid .ctacard span,html[data-theme="light"] body.vB .bcta__grid .ctacard span,
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n) span{
+  color:rgba(255,255,255,.82)!important;padding:8px 26px 0!important;margin:0!important;
+  font-size:14px!important;line-height:1.5!important;max-width:38ch!important;
+}
+body.vB .bcta__grid .ctacard::before,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n)::before{
+  background:#FFFFFF!important;color:#003349!important;margin:18px 26px 26px!important;
+}
+body.vB .bcta__grid .ctacard:hover::before{background:#FFB81C!important;color:#003349!important}
+/* the brand tile keeps its gradient and needs no scrim */
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(4),body.vB .bcta__grid .ctacard:nth-child(4){
+  background:
+    radial-gradient(38% 46% at 82% 18%, rgba(119,227,246,.55), transparent 62%),
+    linear-gradient(160deg,#003349 0%,#0B5586 62%,#0A8AB0 100%)!important;
+  background-color:#003349!important;
+}
+body.vB .bcta__grid .ctacard:nth-child(4) span{color:rgba(241,250,255,.82)!important}
+body.vB .bcta__grid .ctacard:nth-child(4) b{margin-top:0!important}
+html[data-theme="dark"] body.vB .bcta__grid .ctacard{background-color:#0A1520!important}
+@media (max-width:860px){
+  body.vB .bcta__grid{gap:12px!important;grid-auto-rows:320px!important}
+  body.vB .bcta__grid .ctacard b{padding:0 20px!important;font-size:21px!important}
+  body.vB .bcta__grid .ctacard span{padding:8px 20px 0!important}
+  body.vB .bcta__grid .ctacard::before{margin:16px 20px 20px!important}
+}
+/* §114 b · the wide cards were capped at 400px by a leftover
+   aspect-ratio:1/1 from the square-card pass: against a 400px row it
+   forced a 400px width and left a 72px hole beside every wide card.
+   The grid decides the shape now. */
+body.vB .bcta__grid .ctacard,html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n){
+  aspect-ratio:auto!important;width:auto!important;height:auto!important;
+  justify-self:stretch!important;align-self:stretch!important;
+}
+
+/* §115 · the dark chat (client, Sep 3)
+   · it read almost black: the panel was 78% opaque navy over an
+     already dark gradient. Lighter, and the panes are separated by
+     tone rather than by darkness.
+   · the agent pane was 300px inside a 352px row, so 52px of empty
+     ground sat under it — it stretches to the row now. */
+html[data-theme="dark"] .pick{background:rgba(13,52,78,.90)!important;border-color:rgba(234,243,248,.22)!important}
+html[data-theme="dark"] .pick__hint{background:rgba(17,63,92,.92)!important;border-bottom-color:rgba(234,243,248,.16)!important}
+html[data-theme="dark"] .pick__list{background:transparent!important;border-right-color:rgba(234,243,248,.16)!important}
+html[data-theme="dark"] .pick__detail,
+html[data-theme="dark"] .pick__detail:has(.pick__detail-empty){background:rgba(6,36,56,.55)!important}
+html[data-theme="dark"] .pick__foot{background:transparent!important;border-top-color:rgba(234,243,248,.16)!important}
+html[data-theme="dark"] .pick__site input{background:rgba(6,36,56,.6)!important;border-color:rgba(234,243,248,.22)!important}
+html[data-theme="dark"] .pick__list .pick__row.is-on,
+html[data-theme="dark"] .pick__list .pick__row[aria-checked="true"]{background:rgba(234,243,248,.10)!important}
+
+/* the pane fills its row, so no ground shows beneath it */
+@media (min-width:861px){
+  .pick__detail{align-self:stretch!important;height:auto!important;min-height:0!important}
+  .pick__detail:has(.pick__detail-empty){
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    padding:26px 22px!important;max-height:none!important;
+  }
+  .pick__detail-empty{margin:0!important}
+}
+/* §114 c · every suite card: a two-line title over a two-line line.
+   Measured caps rather than a clamp, so nothing is truncated: the
+   longest title is "Request your full AI workspace" and the longest
+   line "Every solution, grouped by the problem it solves." */
+/* measures taken from the longest string in each role: the title
+   "Request your full AI workspace" (30 chars) needs 16ch to break in
+   two, the line "Sixty minutes with the strategists who run these
+   products." (58) needs 31ch. Both fit the narrow card's 281px. */
+body.vB .bcta__grid .ctacard b,html[data-theme="light"] body.vB .bcta__grid .ctacard b,html[data-theme="light"] .ctacard b{
+  max-width:20ch!important;min-height:2.3em!important;display:block!important;   /* 19ch is the measured threshold for two lines; 20 for margin */
+}
+body.vB .bcta__grid .ctacard span,html[data-theme="light"] body.vB .bcta__grid .ctacard span,
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(n) span{
+  max-width:31ch!important;min-height:3em!important;display:block!important;
+}
+@media (max-width:860px){
+  body.vB .bcta__grid .ctacard b{max-width:18ch!important}
+  body.vB .bcta__grid .ctacard span{max-width:36ch!important}
+}
+
+/* §116 · the film title (client, Sep 3): centred over the picture, in
+   the headline's amber→orange gradient, with room off the chat */
+body.vB .film{margin-top:clamp(96px,12vh,140px)!important}
+body.vB .page .hero2__playtext{align-items:center!important;padding-bottom:26px!important}
+body.vB .page .hero2__playtext b{
+  text-align:center!important;
+  background:linear-gradient(90deg,#FFB81C 0%,#FF8A2E 55%,#FF6D24 100%);
+  -webkit-background-clip:text!important;background-clip:text!important;
+  color:transparent!important;-webkit-text-fill-color:transparent!important;
+}
+html[data-theme="dark"] body.vB .page .hero2__playtext b{color:transparent!important}
+@media (max-width:860px){body.vB .film{margin-top:64px!important}}
+/* §117 · the reveal clipped its own descenders. The measured descent of
+   the headline face is .209em and the ascent .731em against a 1.0 line
+   box, so the clip box was .12em short at the foot. Padding covers both,
+   with matching negative margins so nothing moves. */
+.ln{padding:.10em .04em .28em!important;margin:-.10em -.04em -.28em!important}
+/* §118 · the constellation shows in light mode too */
+html[data-theme="light"] .hero2__dots{display:block!important;opacity:.75}
+.hero2__dots{pointer-events:none}
+
+/* §119 · the portfolio cards lose their card (client, Sep 3): no fill, no
+   frame, no radius — just the category stroke on the left, with the copy
+   flush to its top and bottom so it aligns to the line */
+body.vB .tier,html[data-theme="light"] body.vB .tier,html[data-theme="dark"] body.vB .tier{
+  background:transparent!important;
+  border:0!important;border-left:3px solid var(--tier-stroke,#009CBD)!important;
+  border-radius:0!important;
+  padding:0 0 0 24px!important;
+}
+body.vB .tier > *:first-child{margin-top:0!important}
+body.vB .tier__cat{margin-top:0!important}
+body.vB .tier__facts{padding-top:10px!important}
+body.vB .tier__facts > div:last-child{border-bottom:0!important}
+body.vB .tier__facts > div:last-child dd{padding-bottom:0!important}
+body.vB .about__tiers{gap:32px!important;align-items:stretch!important}
+@media (max-width:860px){
+  body.vB .tier{padding-left:18px!important}
+  body.vB .about__tiers{gap:26px!important}
+}
+/* §118 b · the field fades before every edge, so no dot is cut off by the
+   band's boundary */
+.hero2__dots{
+  -webkit-mask-image:radial-gradient(115% 105% at 50% 45%,#000 42%,rgba(0,0,0,.55) 72%,transparent 100%)!important;
+          mask-image:radial-gradient(115% 105% at 50% 45%,#000 42%,rgba(0,0,0,.55) 72%,transparent 100%)!important;
+}
+html[data-theme="light"] .hero2__dots{opacity:.85!important}
+/* §117 b · gradient text loses its descenders. With background-clip:text the
+   glyph is painted only where the background box is; at line-height 1 the
+   descender of a g or y falls ~8px BELOW that box, so it rendered as
+   nothing. The background box is extended past the descender (with a
+   matching negative margin, so nothing moves) and the clip box with it. */
+.ln{padding-bottom:.42em!important;margin-bottom:-.42em!important}
+#hero2Title .accent .ln__in,
+.hero2--band .display .accent .ln__in,
+.hero2--band .display .accent{
+  padding-bottom:.30em!important;margin-bottom:-.30em!important;
+  background-size:var(--acc-w,100%) 100%!important;
+}
+/* §116 b · only "Watch:" carries the gradient; the rest of the film title
+   is plain ink */
+body.vB .page .hero2__playtext b{
+  background:none!important;-webkit-text-fill-color:currentColor!important;
+  color:#003349!important;
+}
+html[data-theme="dark"] body.vB .page .hero2__playtext b{color:#E9EEF3!important}
+body.vB .page .hero2__playtext b .filmw{
+  background:linear-gradient(90deg,#FFB81C 0%,#FF8A2E 55%,#FF6D24 100%);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent!important;-webkit-text-fill-color:transparent!important;
+  padding-bottom:.14em;margin-bottom:-.14em;   /* the same descender rule */
+}
+/* §120 · the constellation is removed (client, Sep 3). The canvas stays in
+   the markup and hero-band.js still guards it, so it is one line to bring
+   back if wanted; nothing paints and no frames are spent. */
+.hero2__dots,#heroDots{display:none!important}
+html[data-theme="light"] .hero2__dots{display:none!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   121 · THE PORTFOLIO AS AN ACCORDION (client reference, Sep 3).
+   Full-width rows stacked. The open one carries its number, title,
+   copy and a large arrow in a column of its own behind a hairline;
+   the others collapse to a label. No colour fills — the category
+   colour stays a stroke on the left over a whisper of tint.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .about__tiers{
+  display:flex!important;flex-direction:column!important;
+  gap:8px!important;counter-reset:tier!important;
+  grid-template-columns:none!important;grid-template-rows:none!important;
+}
+body.vB .tier{
+  counter-increment:tier;position:relative;overflow:hidden;
+  display:block!important;grid-row:auto!important;
+  background:color-mix(in srgb,var(--tier-stroke,#009CBD) 6%,transparent)!important;
+  border:0!important;border-left:3px solid var(--tier-stroke,#009CBD)!important;border-radius:0!important;
+  padding:20px 26px!important;cursor:pointer;
+  min-height:0!important;height:auto!important;
+  transition:background var(--d-2) var(--ease),padding var(--d-2) var(--ease)!important;
+}
+body.vB .tier:hover{background:color-mix(in srgb,var(--tier-stroke,#009CBD) 10%,transparent)!important}
+/* the label line: 01 → NAME */
+body.vB .tier__name{
+  display:flex!important;align-items:baseline!important;gap:16px!important;
+  margin:0!important;font-size:15px!important;line-height:1.3!important;
+  letter-spacing:.06em!important;text-transform:uppercase!important;font-weight:600!important;
+  transition:font-size var(--d-2) var(--ease)!important;
+}
+body.vB .tier__name::before{
+  content:"0" counter(tier);flex:none;
+  font-family:var(--mono);font-size:.8em;letter-spacing:.08em;opacity:.6;
+}
+/* everything else is the open state */
+body.vB .tier__cat,body.vB .tier__head,body.vB .tier__line,body.vB .tier__facts{
+  display:none!important;
+}
+body.vB .tier.is-open{
+  padding:30px 26px 32px!important;
+  background:color-mix(in srgb,var(--tier-stroke,#009CBD) 9%,transparent)!important;
+}
+body.vB .tier.is-open .tier__name{
+  font-size:clamp(20px,2vw,26px)!important;letter-spacing:.02em!important;text-transform:none!important;
+  margin-bottom:22px!important;
+}
+body.vB .tier.is-open .tier__head,body.vB .tier.is-open .tier__line{
+  display:block!important;max-width:52ch!important;margin:0 0 10px!important;
+  font-size:15px!important;line-height:1.6!important;color:var(--ink-2)!important;
+}
+body.vB .tier.is-open .tier__facts{display:block!important;max-width:52ch!important;margin-top:18px!important}
+/* the arrow, in its own column behind a hairline */
+body.vB .tier::after{
+  content:"";position:absolute;right:0;top:0;bottom:0;width:26%;
+  border-left:1px solid color-mix(in srgb,var(--tier-stroke,#009CBD) 34%,transparent);
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' stroke='%23000' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/30px no-repeat;
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' stroke='%23000' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/30px no-repeat;
+  opacity:0;transition:opacity var(--d-2) var(--ease),transform var(--d-2) var(--ease);
+  pointer-events:none;
+}
+body.vB .tier.is-open::after{opacity:1}
+body.vB .tier.is-open:hover::after{transform:translateX(5px)}
+body.vB .tier.is-open .tier__name,body.vB .tier.is-open .tier__head,
+body.vB .tier.is-open .tier__line,body.vB .tier.is-open .tier__facts{position:relative;z-index:1;max-width:70%!important}
+body.vB .tier:focus-visible{outline:2px solid var(--tier-stroke);outline-offset:-2px}
+@media (max-width:860px){
+  body.vB .tier{padding:16px 18px!important}
+  body.vB .tier.is-open{padding:24px 18px 26px!important}
+  body.vB .tier::after{width:0;border:0}
+  body.vB .tier.is-open .tier__name,body.vB .tier.is-open .tier__head,
+  body.vB .tier.is-open .tier__line,body.vB .tier.is-open .tier__facts{max-width:none!important}
+}
+/* §121 b · the section header sits left at one size, like the reference,
+   with the rows running the full width beneath it */
+body.vB .about__portfolio .about__h3,body.vB .about__h3{
+  text-align:left!important;margin:0 0 20px!important;max-width:16ch!important;
+  font-size:clamp(34px,4.4vw,58px)!important;line-height:1.02!important;letter-spacing:-.03em!important;
+}
+body.vB .about__h3 + p{text-align:left!important;margin:0 0 52px!important;max-width:46ch!important}
+@media (max-width:860px){
+  body.vB .about__h3{font-size:clamp(28px,7.4vw,38px)!important;max-width:none!important}
+  body.vB .about__h3 + p{margin-bottom:32px!important}
+}
+
+/* §121 c · the accordion rules lost to §119, whose selector list carries an
+   html[data-theme] prefix and therefore higher specificity. Restated with
+   the same prefix so order decides. Explicit tints per tier, and the
+   collapsed bars get real height. */
+html[data-theme="light"] body.vB .tier,html[data-theme="dark"] body.vB .tier,body.vB .tier{
+  padding:22px 26px!important;
+  background:var(--tier-tint,rgba(0,156,189,.07))!important;
+  border:0!important;border-left:3px solid var(--tier-stroke,#009CBD)!important;border-radius:0!important;
+}
+html[data-theme="light"] body.vB .tier--orange,body.vB .tier--orange{--tier-tint:rgba(255,109,36,.08)}
+html[data-theme="light"] body.vB .tier--cyan,body.vB .tier--cyan{--tier-tint:rgba(0,156,189,.08)}
+html[data-theme="light"] body.vB .tier--amber,body.vB .tier--amber{--tier-tint:rgba(255,184,28,.12)}
+html[data-theme="dark"] body.vB .tier--orange{--tier-tint:rgba(255,109,36,.13)}
+html[data-theme="dark"] body.vB .tier--cyan{--tier-tint:rgba(119,227,246,.11)}
+html[data-theme="dark"] body.vB .tier--amber{--tier-tint:rgba(255,184,28,.13)}
+html[data-theme="light"] body.vB .tier:hover,html[data-theme="dark"] body.vB .tier:hover,body.vB .tier:hover{
+  filter:brightness(.985)saturate(1.1);
+}
+html[data-theme="light"] body.vB .tier.is-open,html[data-theme="dark"] body.vB .tier.is-open,body.vB .tier.is-open{
+  padding:32px 26px 34px!important;
+}
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .tier,html[data-theme="dark"] body.vB .tier,body.vB .tier{padding:18px!important}
+  html[data-theme="light"] body.vB .tier.is-open,html[data-theme="dark"] body.vB .tier.is-open,body.vB .tier.is-open{padding:24px 18px 26px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   122 · the chat's title moves into the options column, above the
+   list, instead of a bar across the whole card (client, Sep 3)
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:861px){
+  /* two rows in the left column: the title, then the options. The agent's
+     pane spans both. Stacking them in one cell overlapped the first row. */
+  .pick__panes{grid-template-rows:auto minmax(0,1fr)!important}
+  .pick__col{display:contents!important}
+  .pick__hint{
+    grid-column:1!important;grid-row:1!important;align-self:start!important;
+    border-bottom:0!important;background:transparent!important;
+    padding:24px 22px 6px!important;
+  }
+  .pick__list{grid-column:1!important;grid-row:2!important;align-self:start!important;padding-top:8px!important}
+  .pick__detail{grid-column:2!important;grid-row:1/-1!important}
+  .pick__hint .pick__hinttext{font-size:14.5px!important;line-height:1.45!important;max-width:30ch!important}
+  .pick__hint .pick__hinti{width:26px!important}
+}
+html[data-theme="dark"] .pick__hint{background:transparent!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   123 · the portfolio rows: white, a button on the right, the facts
+   always shown, and open on click only (client, Sep 3)
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .tier,body.vB .tier{background:#FFFFFF!important}
+html[data-theme="dark"] body.vB .tier{background:rgba(0,26,43,.55)!important}
+html[data-theme="light"] body.vB .tier:hover,html[data-theme="dark"] body.vB .tier:hover,body.vB .tier:hover{filter:none!important}
+html[data-theme="light"] body.vB .tier:not(.is-open):hover{background:#FAFBFC!important}
+html[data-theme="dark"] body.vB .tier:not(.is-open):hover{background:rgba(0,26,43,.72)!important}
+
+/* the arrow column becomes a button, bottom right */
+body.vB .tier::after{
+  content:"Learn more"!important;
+  position:absolute!important;right:26px!important;bottom:32px!important;
+  top:auto!important;width:auto!important;height:38px!important;
+  border:0!important;border-left:0!important;
+  display:inline-flex!important;align-items:center!important;gap:9px!important;
+  padding:0 20px 0 18px!important;border-radius:999px!important;
+  background:#003349!important;color:#F1FAFF!important;
+  -webkit-mask:none!important;mask:none!important;
+  font-family:var(--body,Montserrat)!important;font-size:12.5px!important;font-weight:600!important;
+  letter-spacing:.03em!important;text-transform:none!important;
+  transition:background var(--d-1) var(--ease),transform var(--d-1) var(--ease)!important;
+}
+body.vB .tier.is-open:hover::after{transform:none!important;background:#0E5F8E!important}
+html[data-theme="dark"] body.vB .tier::after{background:#1A76AE!important}
+/* the little arrow inside the button */
+body.vB .tier.is-open .tier__facts::after{
+  content:"";position:absolute;right:34px;bottom:44px;width:14px;height:14px;
+  background:#F1FAFF;pointer-events:none;z-index:2;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 8h9M8.5 4.5L12 8l-3.5 3.5' stroke='%23000' stroke-width='1.7' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 8h9M8.5 4.5L12 8l-3.5 3.5' stroke='%23000' stroke-width='1.7' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
+}
+
+/* the facts, always shown: label above value, two columns, one rule */
+body.vB .tier.is-open .tier__facts{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:0 40px!important;max-width:62%!important;
+  margin-top:26px!important;padding-top:20px!important;
+  border-top:1px solid rgba(0,51,73,.14)!important;
+}
+html[data-theme="dark"] body.vB .tier.is-open .tier__facts{border-top-color:rgba(234,243,248,.18)!important}
+body.vB .tier.is-open .tier__facts > div{border:0!important;padding:0!important;display:block!important}
+body.vB .tier.is-open .tier__facts dt{
+  display:block!important;padding:0 0 6px!important;cursor:default!important;
+  font-family:var(--mono)!important;font-size:10.5px!important;font-weight:500!important;
+  letter-spacing:.13em!important;text-transform:uppercase!important;color:var(--ink-3)!important;
+}
+body.vB .tier.is-open .tier__facts dt::after{content:none!important;display:none!important}
+body.vB .tier.is-open .tier__facts dd{
+  display:block!important;padding:0!important;
+  font-size:14.5px!important;line-height:1.5!important;color:var(--ink)!important;
+}
+@media (max-width:860px){
+  body.vB .tier::after{right:18px!important;bottom:24px!important}
+  body.vB .tier.is-open .tier__facts{grid-template-columns:1fr!important;gap:18px 0!important;max-width:none!important;margin-bottom:52px!important}
+  body.vB .tier.is-open .tier__facts::after{right:26px;bottom:36px}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   124 · THE CHAT TO THE POLYMET REFERENCE (client, Sep 3).
+   Left column: title, then rows of icon tile + name + one line, the
+   chosen one tinted with an accent bar. Right column: the agent's
+   panel behind a hairline. A quiet footer bar across the foot.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:861px){
+  .pick__panes{grid-template-columns:minmax(0,400px) minmax(0,1fr)!important}
+  .pick__list{
+    border-right:1px solid rgba(0,51,73,.12)!important;
+    padding:6px 14px 20px!important;gap:2px!important;
+  }
+  .pick__hint{padding:26px 20px 14px!important}
+  .pick__hint .pick__hinttext{font-size:15px!important;max-width:32ch!important}
+
+  .pick__list .pick__row{
+    display:grid!important;grid-template-columns:38px minmax(0,1fr)!important;
+    align-items:start!important;gap:14px!important;
+    width:100%!important;min-height:0!important;
+    padding:12px 14px!important;
+    border:0!important;border-left:3px solid transparent!important;
+    border-radius:10px!important;background:transparent!important;text-align:left!important;
+    transition:background 160ms var(--ease)!important;
+  }
+  .pick__list .pick__mark{
+    grid-column:1!important;width:38px!important;height:38px!important;
+    border-radius:10px!important;background:#F4F6F8!important;color:#0A7E9B!important;
+    border:1px solid rgba(0,51,73,.10)!important;
+    display:grid!important;place-items:center!important;
+  }
+  .pick__list .pick__txt{grid-column:2!important;display:block!important;min-width:0}
+  .pick__list .pick__label{
+    display:block!important;font-size:14.5px!important;font-weight:600!important;
+    line-height:1.35!important;color:#003349!important;white-space:normal!important;
+  }
+  .pick__list .pick__sub{
+    display:block!important;margin-top:2px!important;
+    font-size:13px!important;line-height:1.45!important;color:rgba(0,51,73,.60)!important;
+    display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .pick__list .pick__row:hover{background:#F7F9FB!important}
+  .pick__list .pick__row.is-on,.pick__list .pick__row[aria-checked="true"]{
+    background:#F4F7FA!important;border-left-color:#FF6D24!important;
+  }
+  .pick__list .pick__row.is-on .pick__mark,.pick__list .pick__row[aria-checked="true"] .pick__mark{
+    background:#003349!important;color:#FFFFFF!important;border-color:#003349!important;
+  }
+}
+/* the footer reads as a bar under both columns */
+.pick__foot{background:#FAFBFC!important;border-top:1px solid rgba(0,51,73,.12)!important}
+
+/* dark */
+html[data-theme="dark"] .pick__list{border-right-color:rgba(234,243,248,.14)!important}
+html[data-theme="dark"] .pick__list .pick__mark{background:rgba(234,243,248,.07)!important;border-color:rgba(234,243,248,.14)!important;color:#77E3F6!important}
+html[data-theme="dark"] .pick__list .pick__label{color:var(--ink)!important}
+html[data-theme="dark"] .pick__list .pick__sub{color:var(--ink-3)!important}
+html[data-theme="dark"] .pick__list .pick__row:hover{background:rgba(234,243,248,.05)!important}
+html[data-theme="dark"] .pick__list .pick__row.is-on,html[data-theme="dark"] .pick__list .pick__row[aria-checked="true"]{background:rgba(234,243,248,.09)!important;border-left-color:#FF8A3D!important}
+html[data-theme="dark"] .pick__list .pick__row.is-on .pick__mark{background:#77E3F6!important;color:#003349!important;border-color:#77E3F6!important}
+html[data-theme="dark"] .pick__foot{background:rgba(0,20,34,.4)!important;border-top-color:rgba(234,243,248,.14)!important}
+
+/* phones keep the chips, so the new line is hidden there */
+@media (max-width:860px){ .pick__list .pick__sub{display:none!important} }
+
+/* §124 b · the chat's opening line, to Polymet: the mark sits on its own
+   line and the sentence runs the full column beneath it. Beside the mark
+   it was boxed into ~30ch and broke into four stubs. */
+@media (min-width:861px){
+  .pick__hint{
+    display:block!important;
+    padding:26px 20px 16px!important;
+  }
+  .pick__hint .pick__hinti{
+    display:block!important;width:30px!important;height:auto!important;
+    margin:0 0 14px!important;
+  }
+  .pick__hint .pick__hinttext{
+    display:block!important;max-width:none!important;margin:0!important;padding:0!important;
+    font-size:15px!important;line-height:1.5!important;text-align:left!important;
+    color:#003349!important;font-weight:500!important;
+  }
+}
+html[data-theme="dark"] .pick__hint .pick__hinttext{color:var(--ink)!important}
+/* §124 c · the mark was still pinned right by grid-column:3 / justify-self:end
+   from the abandoned centred-header pass; the hint is a block now, so those
+   are cleared and it sits above the line on the left */
+.pick__hint .pick__hinti,.pick__hinti{
+  grid-column:auto!important;justify-self:start!important;align-self:start!important;
+}
+/* §124 d · a title over a lighter paragraph, as the reference has it,
+   instead of one bold block */
+.pick__hinth{
+  display:block;margin:0 0 6px;
+  font-family:var(--display),var(--sans);font-weight:600;
+  font-size:16px;line-height:1.3;letter-spacing:-.01em;color:#003349;
+}
+@media (min-width:861px){
+  .pick__hint .pick__hinttext{
+    font-weight:400!important;font-size:14px!important;line-height:1.55!important;
+    color:rgba(0,51,73,.66)!important;
+  }
+}
+@media (max-width:860px){
+  .pick__hinth{font-size:15px;margin-bottom:4px}
+  .pick__hint .pick__hinttext{font-weight:400!important;font-size:13.5px!important;color:rgba(0,51,73,.66)!important}
+}
+html[data-theme="dark"] .pick__hinth{color:var(--ink)!important}
+html[data-theme="dark"] .pick__hint .pick__hinttext{color:var(--ink-3)!important}
+/* §124 e · the phone header stacks too: the old flex row was splitting the
+   mark, title and paragraph into three squeezed columns */
+@media (max-width:860px){
+  .pick__hint{display:block!important;padding:20px 18px 14px!important;text-align:left!important}
+  .pick__hint .pick__hinti{display:block!important;width:28px!important;height:auto!important;margin:0 0 10px!important}
+  .pick__hinth{display:block!important;max-width:none!important}
+  .pick__hint .pick__hinttext{display:block!important;max-width:none!important;text-align:left!important;margin:0!important;padding:0!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   125 · THE ABOUT BANNER TAKES THE ARTWORK (client, Sep 3).
+   The glass panels sit on the right; the copy holds the left half
+   and never crosses them. Light: the art's own pale ground. Dark:
+   the same art, dimmed under the navy so the panels still read.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .about__head,html[data-theme="dark"] body.vB .about__head,body.vB .about__head{
+  position:relative;isolation:isolate;overflow:hidden;
+  background:#F7FAFD url("/assets/img/about-bg.jpg") right center/auto 100% no-repeat!important;
+  border:1px solid rgba(0,51,73,.10)!important;border-radius:22px!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-items:start!important;
+  padding:clamp(44px,5vw,68px)!important;gap:0!important;
+  min-height:clamp(380px,44vw,470px);
+}
+/* the copy keeps the left half, clear of the panels */
+body.vB .about__head > *{grid-column:1!important;max-width:min(52%,620px)!important;position:relative;z-index:1}
+html[data-theme="light"] body.vB .about__head .about__title{color:#0B2233!important}
+html[data-theme="light"] body.vB .about__lede{color:rgba(11,34,51,.72)!important;max-width:44ch!important}
+html[data-theme="light"] body.vB .about__head .eyebrow{background:rgba(255,255,255,.72)!important;border-color:rgba(0,51,73,.14)!important;color:#0B2233!important}
+body.vB .about__head .about__title .accent{
+  background:linear-gradient(90deg,#FFB81C 0%,#FF9A2E 55%,#FF8A2E 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;
+  padding-bottom:.16em;margin-bottom:-.16em;
+}
+/* dark: the art stays, the navy sits over it */
+html[data-theme="dark"] body.vB .about__head{
+  background:linear-gradient(90deg,rgba(0,26,43,.94) 0%,rgba(0,26,43,.72) 46%,rgba(0,26,43,.34) 100%),
+             url("/assets/img/about-bg.jpg") right center/auto 100% no-repeat,#001A2B!important;
+  border-color:rgba(234,243,248,.18)!important;
+}
+html[data-theme="dark"] body.vB .about__head .about__title{color:var(--ink)!important}
+html[data-theme="dark"] body.vB .about__lede{color:var(--ink-2)!important}
+@media (max-width:1000px){
+  body.vB .about__head{background-position:right -140px center!important}
+  body.vB .about__head > *{max-width:min(64%,560px)!important}
+}
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .about__head,body.vB .about__head{
+    background:#F7FAFD url("/assets/img/about-bg.jpg") center bottom/140% auto no-repeat!important;
+    min-height:0;padding:30px 22px 210px!important;border-radius:18px!important;
+  }
+  html[data-theme="dark"] body.vB .about__head{
+    background:linear-gradient(180deg,rgba(0,26,43,.92) 0%,rgba(0,26,43,.62) 58%,rgba(0,26,43,.3) 100%),
+               url("/assets/img/about-bg.jpg") center bottom/140% auto no-repeat,#001A2B!important;
+  }
+  body.vB .about__head > *{max-width:none!important}
+}
+/* §125 b · air between the headline and the paragraph, and the eyebrow pill
+   is a soft filled chip rather than an outlined one (client, Sep 3) */
+body.vB .about__head .about__title{margin:0 0 clamp(22px,2.6vh,30px)!important}
+body.vB .about__head .eyebrow{
+  border:0!important;
+  background:rgba(11,34,51,.06)!important;color:rgba(11,34,51,.72)!important;
+  padding:8px 14px!important;margin:0 0 clamp(20px,2.4vh,28px)!important;
+}
+html[data-theme="dark"] body.vB .about__head .eyebrow{
+  background:rgba(234,243,248,.12)!important;color:rgba(234,243,248,.80)!important;border:0!important;
+}
+/* §125 c · the paragraph sits clear of the headline. §98's `.about__title
+   { margin:0 }` matched at equal weight and was capping the gap. */
+html[data-theme="light"] body.vB .about__head .about__title,
+html[data-theme="dark"] body.vB .about__head .about__title,
+body.vB .about__head .about__title{
+  margin:0 0 clamp(30px,3.6vh,42px)!important;
+}
+body.vB .about__head .about__lede{margin:0 0 clamp(28px,3.4vh,38px)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   126 · ONE WIDTH FOR THE PAGE (client, Sep 3). The blocks had drifted
+   to five different measures — chat 1000, film 1068, video 820,
+   banners 1140, footer full-bleed. They all take --shell now. Only
+   the carousel still breaks out, by design.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB{--shell:1140px;--shell-gut:clamp(20px,4vw,48px)}
+body.vB .pick,
+body.vB .film,
+body.vB .about__in,
+body.vB .bcta__in,
+body.vB .bfoot__top,
+body.vB .bfoot__foot{
+  width:100%!important;max-width:var(--shell)!important;
+  margin-left:auto!important;margin-right:auto!important;
+  padding-left:0!important;padding-right:0!important;
+  box-sizing:border-box!important;
+}
+body.vB .bfoot__top,body.vB .bfoot__foot{padding-left:0!important;padding-right:0!important}
+body.vB .page > .hero2{padding-left:var(--shell-gut)!important;padding-right:var(--shell-gut)!important}
+body.vB .about,body.vB .bcta,body.vB .bfoot{padding-left:var(--shell-gut)!important;padding-right:var(--shell-gut)!important}
+/* the video fills the shell; its own 820 cap is gone */
+body.vB .page .hero2__play,body.vB .film .hero2__play{max-width:none!important;width:100%!important}
+
+/* ── the film section: title left in two lines, a CTA opposite ── */
+body.vB .film__head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:32px;
+  margin:0 0 24px;
+}
+body.vB .film__head .hero2__playtext{
+  position:static!important;padding:0!important;margin:0!important;
+  align-items:flex-start!important;text-align:left!important;
+}
+body.vB .film__head .hero2__playtext b{
+  text-align:left!important;max-width:14ch!important;display:block!important;
+  font-size:clamp(28px,3.4vw,44px)!important;line-height:1.06!important;letter-spacing:-.025em!important;
+}
+body.vB .film__cta{
+  flex:none;height:46px!important;padding:0 24px!important;border-radius:999px!important;
+  background:#003349!important;color:#F1FAFF!important;border:0!important;
+  font-size:13px!important;font-weight:600!important;letter-spacing:.03em!important;cursor:pointer;
+}
+body.vB .film__cta:hover{background:#0E5F8E!important}
+html[data-theme="dark"] body.vB .film__cta{background:#1A76AE!important}
+@media (max-width:860px){
+  body.vB .film__head{flex-direction:column;align-items:flex-start;gap:16px;margin-bottom:18px}
+  body.vB .film__head .hero2__playtext b{max-width:none!important}
+}
+/* §126 b · three blocks that stayed off the shell
+   · the chat: #heroPick (an ID, 1000px) is the WRAPPER, so capping .pick
+     alone could not widen it
+   · the suite: §109c's side padding survived and shrank its grid to 1040
+   · the film header overlapped the video by 12px */
+body.vB #heroPick{width:100%!important;max-width:var(--shell)!important;margin-inline:auto!important}
+body.vB .bcta__in{padding-left:0!important;padding-right:0!important;max-width:var(--shell)!important}
+body.vB .film{display:block!important}
+body.vB .film__head{margin:0 0 26px!important;position:relative;z-index:1}
+body.vB .film .hero2__play{margin-top:0!important;position:relative!important;top:auto!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   127 · THE SCALE BANNER TAKES ITS ARTWORK (client, Sep 3).
+   A dark earth-from-orbit plate with the glass panels at the right.
+   The copy holds the left; the figures sit over the darker water on
+   the lower right, so both stay legible in either theme.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .about__proof,html[data-theme="dark"] body.vB .about__proof,body.vB .about__proof{
+  background:#02121F url("/assets/img/scale-bg.jpg") center right/cover no-repeat!important;
+  border:0!important;border-radius:22px!important;
+  color:#F1FAFF!important;overflow:hidden;position:relative;isolation:isolate;
+  padding:clamp(44px,5vw,68px)!important;
+}
+/* a wash from the left so the copy never fights the city lights */
+body.vB .about__proof::before{
+  content:""!important;display:block!important;position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(90deg,rgba(2,18,31,.92) 0%,rgba(2,18,31,.72) 42%,rgba(2,18,31,.30) 72%,rgba(2,18,31,.12) 100%)!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+}
+html[data-theme="light"] body.vB .proof__h,body.vB .proof__h{color:#F1FAFF!important}
+html[data-theme="light"] body.vB .about__proofnote,body.vB .about__proofnote{color:rgba(241,250,255,.78)!important}
+html[data-theme="light"] body.vB .proof__say *:not(.btn):not(.btn *),
+body.vB .proof__say *:not(.btn):not(.btn *){color:#F1FAFF!important}
+html[data-theme="light"] body.vB .proof__say span,html[data-theme="light"] body.vB .proof__say p,
+body.vB .proof__say span,body.vB .proof__say p{color:rgba(241,250,255,.78)!important}
+html[data-theme="light"] body.vB .stat dt,body.vB .stat dt{color:#F1FAFF!important}
+html[data-theme="light"] body.vB .stat dd,body.vB .stat dd{color:rgba(241,250,255,.72)!important}
+html[data-theme="light"] body.vB .stat,body.vB .stat,html[data-theme="dark"] body.vB .about__proof .stat{
+  background:transparent!important;border-left-color:rgba(241,250,255,.24)!important;
+}
+@media (max-width:860px){
+  body.vB .about__proof{background-position:center bottom!important;padding:32px 22px!important}
+  body.vB .about__proof::before{background:linear-gradient(180deg,rgba(2,18,31,.92) 0%,rgba(2,18,31,.78) 55%,rgba(2,18,31,.5) 100%)!important}
+  html[data-theme="light"] body.vB .stat,body.vB .stat{border-top-color:rgba(241,250,255,.24)!important}
+}
+/* §126 c · the last two off the shell
+   · the film: head and video are separated by a flex gap, which no
+     margin collapse can eat (they were overlapping by 10px)
+   · the suite: §109c sets its padding behind an html[data-theme] prefix,
+     so the shell rule has to carry the same prefix to win */
+body.vB .film{display:flex!important;flex-direction:column!important;gap:26px!important}
+body.vB .film__head{margin-bottom:0!important}
+html[data-theme="light"] body.vB .bcta__in,html[data-theme="dark"] body.vB .bcta__in,body.vB .bcta__in{
+  padding-left:0!important;padding-right:0!important;
+  max-width:var(--shell)!important;width:100%!important;
+}
+body.vB .bcta__grid,body.vB .callback{width:100%!important;max-width:none!important}
+/* §126 d · the film header
+   · the gradient span on the title carries a negative bottom margin so its
+     descender ink is painted; that pulled the video 10px into the title.
+     The head reserves that space instead.
+   · one control only: the play on the picture, smaller */
+body.vB .film{gap:34px!important}
+body.vB .film__head{padding-bottom:12px!important}
+body.vB .film__cta{display:none!important}
+body.vB .page .hero2__thumb::before{
+  width:64px!important;height:64px!important;background-size:26px!important;
+}
+@media (max-width:860px){
+  body.vB .film{gap:22px!important}
+  body.vB .page .hero2__thumb::before{width:52px!important;height:52px!important;background-size:22px!important}
+}
+/* §126 e · the video carried top:-36px from an earlier pass, dragging it
+   back over the header no matter how large the flex gap was */
+body.vB .film .hero2__play,body.vB .page .film .hero2__play,
+html[data-theme="light"] body.vB .film .hero2__play,html[data-theme="dark"] body.vB .film .hero2__play{
+  top:0!important;bottom:auto!important;left:auto!important;right:auto!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   128 · THE PORTFOLIO AS THREE COLUMNS (client, Sep 3).
+   No boxes, no fills, no left strokes and no accordion. Each tier is
+   a column of content under a hairline, with its category in colour,
+   the title, the copy, and the two facts as label-and-value rows.
+   Everything is visible; whitespace does the separating.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .about__tiers{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0 clamp(32px,4vw,64px)!important;
+  counter-reset:tier!important;
+}
+html[data-theme="light"] body.vB .tier,html[data-theme="dark"] body.vB .tier,body.vB .tier{
+  counter-increment:tier;
+  display:flex!important;flex-direction:column!important;
+  background:none!important;background-color:transparent!important;
+  border:0!important;border-top:1px solid rgba(0,51,73,.16)!important;border-radius:0!important;
+  padding:22px 0 0!important;margin:0!important;
+  cursor:default!important;overflow:visible!important;min-height:0!important;
+}
+html[data-theme="dark"] body.vB .tier{border-top-color:rgba(234,243,248,.20)!important}
+body.vB .tier::after,body.vB .tier::before{content:none!important;display:none!important}
+body.vB .tier:hover{background:none!important;filter:none!important}
+
+/* the category, in its own colour */
+body.vB .tier__cat{
+  display:block!important;background:none!important;padding:0!important;
+  margin:0 0 14px!important;
+  font-family:var(--mono)!important;font-size:10.5px!important;font-weight:600!important;
+  letter-spacing:.14em!important;text-transform:uppercase!important;
+  color:var(--tier-stroke,#0A7E9B)!important;
+}
+body.vB .tier--orange{--tier-stroke:#C24E0E}
+body.vB .tier--cyan{--tier-stroke:#0A7E9B}
+body.vB .tier--amber{--tier-stroke:#8A5A00}
+html[data-theme="dark"] body.vB .tier--orange{--tier-stroke:#FF9A5C}
+html[data-theme="dark"] body.vB .tier--cyan{--tier-stroke:#77E3F6}
+html[data-theme="dark"] body.vB .tier--amber{--tier-stroke:#FFC94D}
+
+body.vB .tier__name{
+  display:block!important;margin:0 0 14px!important;
+  font-size:clamp(20px,1.8vw,24px)!important;line-height:1.2!important;
+  letter-spacing:-.015em!important;text-transform:none!important;font-weight:600!important;
+  color:var(--ink)!important;
+}
+body.vB .tier__name::before{content:none!important}
+body.vB .tier__head,body.vB .tier__line{
+  display:block!important;margin:0 0 12px!important;max-width:none!important;
+  font-size:14.5px!important;line-height:1.6!important;color:var(--ink-2)!important;
+}
+/* the facts: label over value, stacked, under one rule */
+body.vB .tier__facts{
+  display:block!important;margin:auto 0 0!important;padding:18px 0 0!important;
+  max-width:none!important;border-top:1px solid rgba(0,51,73,.12)!important;grid-template-columns:none!important;
+}
+html[data-theme="dark"] body.vB .tier__facts{border-top-color:rgba(234,243,248,.16)!important}
+body.vB .tier__facts > div{display:block!important;border:0!important;padding:0 0 14px!important;margin:0!important}
+body.vB .tier__facts > div:last-child{padding-bottom:0!important}
+body.vB .tier__facts dt{
+  display:block!important;padding:0 0 4px!important;cursor:default!important;
+  font-family:var(--mono)!important;font-size:10px!important;font-weight:500!important;
+  letter-spacing:.13em!important;text-transform:uppercase!important;color:var(--ink-3)!important;
+}
+body.vB .tier__facts dt::after{content:none!important;display:none!important}
+body.vB .tier__facts dd{
+  display:block!important;padding:0!important;
+  font-size:14px!important;line-height:1.5!important;color:var(--ink)!important;
+}
+
+/* the section header breaks in two lines, not four */
+body.vB .about__h3{max-width:26ch!important;font-size:clamp(32px,4vw,52px)!important}
+body.vB .about__h3 + p{max-width:60ch!important}
+
+@media (max-width:860px){
+  body.vB .about__tiers{grid-template-columns:1fr!important;gap:0!important}
+  html[data-theme="light"] body.vB .tier,html[data-theme="dark"] body.vB .tier,body.vB .tier{
+    padding:20px 0 26px!important;
+  }
+  body.vB .about__h3{max-width:none!important}
+}
+/* §128 b · two rules that lost on specificity
+   · §121b's `body.vB .about__portfolio .about__h3` is more specific than a
+     bare `body.vB .about__h3`, so the 16ch cap held and the header stayed
+     four lines
+   · the category pill's tint is set behind an html[data-theme] prefix */
+body.vB .about__portfolio .about__h3,body.vB .about__why .about__h3,body.vB .about__h3{
+  max-width:26ch!important;
+}
+html[data-theme="light"] body.vB .tier__cat,html[data-theme="dark"] body.vB .tier__cat,
+html[data-theme="light"] body.vB .tier--orange .tier__cat,html[data-theme="light"] body.vB .tier--amber .tier__cat,
+html[data-theme="dark"] body.vB .tier--orange .tier__cat,html[data-theme="dark"] body.vB .tier--amber .tier__cat,
+body.vB .tier__cat{
+  background:none!important;background-color:transparent!important;
+  border-radius:0!important;padding:0!important;
+  color:var(--tier-stroke,#0A7E9B)!important;
+}
+/* §124 f · the divider runs the whole height of the chat, not just beside
+   the list — the header row had none, so the white column blended into
+   the grey pane at the top. Stronger, too. */
+@media (min-width:861px){
+  .pick__hint{border-right:1px solid rgba(0,51,73,.16)!important}
+  .pick__list{border-right:1px solid rgba(0,51,73,.16)!important}
+  html[data-theme="dark"] .pick__hint,html[data-theme="dark"] .pick__list{
+    border-right-color:rgba(234,243,248,.20)!important;
+  }
+}
+/* §124 g · the divider stopped under the header: §96's phone rule
+   `.pick__list{border-right:0}` is unscoped, so it zeroed the list's border
+   at every width while the header kept its 1px. Stated per breakpoint. */
+@media (min-width:861px){
+  body.vB .pick__list,html[data-theme="light"] body.vB .pick__list,html[data-theme="dark"] body.vB .pick__list{
+    border-right:1px solid rgba(0,51,73,.16)!important;
+  }
+  html[data-theme="dark"] body.vB .pick__list{border-right-color:rgba(234,243,248,.20)!important}
+}
+@media (max-width:860px){
+  body.vB .pick__list,body.vB .pick__hint{border-right:0!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   129 · the banner artwork: larger, further right so the panels clear
+   the copy, and a slow parallax on scroll (client, Sep 3).
+   The plate is oversized vertically and its Y position is driven by
+   --par, which hero-band.js updates from the scroll position.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .about__head,body.vB .about__head{
+  background-size:auto 128%!important;
+  background-position:right -80px top calc(50% + var(--par,0%))!important;   /* 4-value: a keyword before each offset, or the whole declaration is invalid */
+}
+html[data-theme="dark"] body.vB .about__head{
+  background-size:auto auto,auto 128%!important;
+  background-position:0 0,right -80px top calc(50% + var(--par,0%))!important;
+}
+html[data-theme="light"] body.vB .about__proof,html[data-theme="dark"] body.vB .about__proof,body.vB .about__proof{
+  background-size:cover!important;
+  background-position:center calc(50% + var(--par,0%))!important;
+}
+body.vB .about__head,body.vB .about__proof{
+  transition:background-position 120ms linear;
+  will-change:background-position;
+}
+/* the copy keeps clear of the glass */
+@media (min-width:1001px){
+  body.vB .about__head > *{max-width:min(48%,560px)!important}
+}
+@media (max-width:1000px){
+  html[data-theme="light"] body.vB .about__head,body.vB .about__head{background-position:right -220px top calc(50% + var(--par,0%))!important}
+  html[data-theme="dark"] body.vB .about__head{background-position:0 0,right -220px top calc(50% + var(--par,0%))!important}
+}
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .about__head,body.vB .about__head{
+    background-size:150% auto!important;background-position:center bottom!important;
+  }
+  html[data-theme="dark"] body.vB .about__head{background-size:auto auto,150% auto!important;background-position:0 0,center bottom!important}
+  body.vB .about__proof{background-position:center bottom!important}
+  body.vB .about__head,body.vB .about__proof{transition:none;will-change:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  body.vB .about__head,body.vB .about__proof{transition:none!important;will-change:auto!important}
+}
+/* §130 · the film's own thumbnail (client, Sep 3). The plate is framed
+   whole rather than zoomed, since it was drawn for this slot. */
+body.vB .page .hero2__thumb img{
+  transform:none!important;object-position:center!important;object-fit:cover!important;
+}
+body.vB .page .hero2__play:hover .hero2__thumb img{transform:scale(1.02)!important}
+body.vB .page .hero2__thumb::after{
+  background:linear-gradient(180deg,rgba(0,20,32,.04),rgba(0,20,32,.16))!important;
+}
+/* §129 b · the plate was pushed 80px past the right edge at 128% and lost
+   too much of itself. It sits flush right at a gentler scale, and the copy
+   column narrows a little to keep clear of the glass. */
+html[data-theme="light"] body.vB .about__head,body.vB .about__head{
+  background-size:auto 112%!important;
+  background-position:right top calc(50% + var(--par,0%))!important;
+}
+html[data-theme="dark"] body.vB .about__head{
+  background-size:auto auto,auto 112%!important;
+  background-position:0 0,right top calc(50% + var(--par,0%))!important;
+}
+@media (min-width:1001px){ body.vB .about__head > *{max-width:min(46%,540px)!important} }
+@media (max-width:1000px){
+  html[data-theme="light"] body.vB .about__head,body.vB .about__head{background-position:right -120px top calc(50% + var(--par,0%))!important}
+  html[data-theme="dark"] body.vB .about__head{background-position:0 0,right -120px top calc(50% + var(--par,0%))!important}
+}
+/* §129 c · the copy never sits on the artwork. The plate is anchored hard
+   right at a smaller scale, and a wash from the left keeps clean ground
+   under the text — the same device the dark theme already used. */
+html[data-theme="light"] body.vB .about__head,body.vB .about__head{
+  background-size:auto 96%!important;
+  background-position:right -40px top calc(50% + var(--par,0%))!important;
+}
+html[data-theme="dark"] body.vB .about__head{
+  background-size:auto auto,auto 96%!important;
+  background-position:0 0,right -40px top calc(50% + var(--par,0%))!important;
+}
+html[data-theme="light"] body.vB .about__head::after{
+  content:""!important;display:block!important;position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(90deg,#F4F9FD 0%,rgba(244,249,253,.94) 34%,rgba(244,249,253,.55) 52%,rgba(244,249,253,0) 68%)!important;
+}
+body.vB .about__head > *{position:relative;z-index:1}
+@media (min-width:1001px){ body.vB .about__head > *{max-width:min(50%,560px)!important} }
+@media (max-width:1000px){
+  html[data-theme="light"] body.vB .about__head,body.vB .about__head{background-position:right -90px top calc(50% + var(--par,0%))!important}
+  html[data-theme="dark"] body.vB .about__head{background-position:0 0,right -90px top calc(50% + var(--par,0%))!important}
+}
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .about__head::after{
+    background:linear-gradient(180deg,#F4F9FD 0%,rgba(244,249,253,.92) 46%,rgba(244,249,253,0) 74%)!important;
+  }
+}
+/* §129 d · the plate moves a further ~300px right (client, Sep 3) */
+html[data-theme="light"] body.vB .about__head,body.vB .about__head{
+  background-position:right -340px top calc(50% + var(--par,0%))!important;
+}
+html[data-theme="dark"] body.vB .about__head{
+  background-position:0 0,right -340px top calc(50% + var(--par,0%))!important;
+}
+@media (max-width:1000px){
+  html[data-theme="light"] body.vB .about__head,body.vB .about__head{background-position:right -390px top calc(50% + var(--par,0%))!important}
+  html[data-theme="dark"] body.vB .about__head{background-position:0 0,right -390px top calc(50% + var(--par,0%))!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   130 · THE HERO GETS ITS ARTWORK (client, Sep 6).
+   The mock-up shows the aurora sweep filling the whole hero band,
+   edge to edge, with the headline sitting straight on it and the
+   art dissolving into the page ground just before the chat card.
+   Light only: in dark the band stays transparent so the site-wide
+   navy gradient shows through, which §"dark" already handles.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] .hero2--band .hero2__band,
+.hero2--band .hero2__band{
+  background:
+    /* the art has to end before the chat card or the seam shows as a band */
+    linear-gradient(180deg,rgba(247,248,250,0) 58%,rgba(247,248,250,.72) 84%,#F7F8FA 100%),
+    url("/assets/img/hero-bg.jpg") center top/cover no-repeat,
+    #FFFFFF!important;
+}
+/* the sweep runs corner to corner, so on a narrow screen a "cover" crop
+   lands on the empty middle of it — bias the crop to the lit side */
+@media (max-width:860px){
+  html[data-theme="light"] .hero2--band .hero2__band,
+  .hero2--band .hero2__band{
+    background:
+      linear-gradient(180deg,rgba(247,248,250,0) 54%,rgba(247,248,250,.72) 82%,#F7F8FA 100%),
+      url("/assets/img/hero-bg.jpg") 72% top/cover no-repeat,
+      #FFFFFF!important;
+  }
+}
+html[data-theme="dark"] .hero2--band .hero2__band{background:transparent!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   131 · THE NAV LINKS SIT ON THE CENTRE LINE, AND THE HERO
+   ARTWORK FILLS THE FIRST SCREEN (client, Sep 6).
+   ═══════════════════════════════════════════════════════════════ */
+/* Three tracks, not space-between: the outer two are equal, so the links are
+   centred on the BAR rather than on whatever gap the brand and the buttons
+   happen to leave. Below the desktop breakpoint the links are hidden and the
+   drawer takes over, so the grid only applies where there is something to
+   centre. */
+@media (min-width:1001px){
+  .nav .nav__in{
+    display:grid!important;
+    grid-template-columns:1fr auto 1fr!important;
+    align-items:center!important;
+  }
+  .nav .nav__links{
+    justify-self:center!important;margin:0!important;
+    display:flex!important;align-items:center!important;
+    gap:clamp(24px,2.6vw,40px)!important;white-space:nowrap!important;
+  }
+  .nav .nav__acts{justify-self:end!important;margin:0!important}
+  .nav .nav__brand{justify-self:start!important}
+}
+
+/* The band is the first screen. svh so a phone's collapsing URL bar doesn't
+   make the hero taller than the screen it is meant to match; the vh line above
+   it is the fallback for anything that doesn't know svh. */
+.hero2--band .hero2__band{
+  min-height:100vh!important;
+  min-height:100svh!important;
+  justify-content:center!important;
+}
