@@ -6499,3 +6499,24 @@ html[data-theme="dark"]  body.vB .about__stats dd,
 body.vB .about__stats dd,body.vB .about__stats dt{
   hyphens:none!important;-webkit-hyphens:none!important;text-wrap:pretty;
 }
+
+/* §147 c · the four figures share two rows, not four separate stacks.
+   One caption runs to three lines while the others take two, so each stat
+   started its caption at a different height and the row read as ragged. Each
+   stat becomes a subgrid spanning the parent's two rows: every number sits on
+   the first row, every caption starts on the second, and the tallest caption
+   sets a height they all keep. The dividers then run the full row, so the four
+   read as equal cells. */
+html[data-theme="light"] body.vB .about__stats,
+html[data-theme="dark"]  body.vB .about__stats,
+body.vB .about__stats{grid-template-rows:auto auto!important;align-items:stretch!important}
+@supports (grid-template-rows: subgrid){
+  body.vB .about__stats > *{
+    display:grid!important;grid-template-rows:subgrid!important;
+    grid-row:span 2!important;align-content:start!important;
+  }
+}
+/* without subgrid they still line up at the top, just not at the foot */
+@supports not (grid-template-rows: subgrid){
+  body.vB .about__stats > *{align-self:stretch!important}
+}
