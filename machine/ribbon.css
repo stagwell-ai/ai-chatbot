@@ -6823,3 +6823,42 @@ body.vB .pick__panes{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)!impo
     grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr)!important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   152 · THE ROWS, CENTRED AND QUIET (client, Sep 6).
+   The label sat 8px above the icon's centre — the row was aligned
+   to the start, which was right when it carried a second line and
+   wrong the moment that line went. And the chosen row was saying
+   the same thing four ways at once: a fill, an inset ring, an
+   orange bar down its left edge and a filled mark. One signal is
+   enough, and it should be the card's own language: a soft tint of
+   the brand navy, with the mark taking the accent.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .pick__row,html[data-theme="dark"] body.vB .pick__row,
+body.vB .pick__row{align-items:center!important}
+
+html[data-theme="light"] body.vB .pick__row.is-on,
+html[data-theme="dark"]  body.vB .pick__row.is-on,
+html[data-theme="light"] body.vB .pick__list .pick__row[aria-checked="true"],
+html[data-theme="dark"]  body.vB .pick__list .pick__row[aria-checked="true"],
+body.vB .pick__row.is-on{
+  background:rgba(0,51,73,.06)!important;
+  box-shadow:none!important;border:0!important;border-radius:10px!important;
+}
+html[data-theme="dark"] body.vB .pick__row.is-on,
+html[data-theme="dark"] body.vB .pick__list .pick__row[aria-checked="true"]{
+  background:rgba(234,243,248,.10)!important;
+}
+body.vB .pick__row.is-on::before{display:none!important;content:none!important}
+html[data-theme="light"] body.vB .pick__row.is-on .pick__label,
+body.vB .pick__list .pick__row[aria-checked="true"] .pick__label{color:#003349!important}
+html[data-theme="dark"] body.vB .pick__row.is-on .pick__label,
+html[data-theme="dark"] body.vB .pick__list .pick__row[aria-checked="true"] .pick__label{color:#EAF6FF!important}
+/* the mark is the one thing that changes: it takes the accent */
+html[data-theme="light"] body.vB .pick__row.is-on .pick__mark,
+body.vB .pick__row.is-on .pick__mark{
+  background:#003349!important;color:#FFFFFF!important;border-color:transparent!important;
+}
+html[data-theme="dark"] body.vB .pick__row.is-on .pick__mark{
+  background:#EAF6FF!important;color:#001A2B!important;
+}
