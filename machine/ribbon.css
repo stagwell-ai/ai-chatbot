@@ -5706,3 +5706,39 @@ html[data-theme="dark"] .hero2--band .hero2__band{background:transparent!importa
   min-height:100svh!important;
   justify-content:center!important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   132 · THE HERO GRADIENT RUNS THE WHOLE HEIGHT (client, Sep 6).
+   Two faults in §130. The band sat 1px below the top of the page,
+   so the header read as a bar detached from the page; and the
+   artwork was faded out from 58% down, so the bottom of a
+   full-height hero was flat ground colour. On top of that the
+   photograph's own top edge is near-white in the middle, which is
+   exactly where the header sits — so the header had nothing to sit
+   on. A blue wash over the top of the art fixes that without
+   touching the file.
+   ═══════════════════════════════════════════════════════════════ */
+.hero2--band{margin-top:-61px!important}   /* nav height incl. its hairline */
+
+html[data-theme="light"] .hero2--band .hero2__band,
+.hero2--band .hero2__band{
+  background:
+    /* 1 · the header sits on colour, not on the white middle of the photo */
+    linear-gradient(180deg,rgba(198,221,247,.62) 0%,rgba(205,226,248,.30) 18%,rgba(210,229,249,0) 40%),
+    /* 2 · the art carries almost the whole band; it only lets go at the very
+       foot, where the page ground has to take over without a seam */
+    linear-gradient(180deg,rgba(247,248,250,0) 88%,#F7F8FA 100%),
+    url("/assets/img/hero-bg.jpg") center top/cover no-repeat,
+    #FFFFFF!important;
+}
+@media (max-width:860px){
+  html[data-theme="light"] .hero2--band .hero2__band,
+  .hero2--band .hero2__band{
+    background:
+      linear-gradient(180deg,rgba(198,221,247,.62) 0%,rgba(205,226,248,.30) 18%,rgba(210,229,249,0) 40%),
+      linear-gradient(180deg,rgba(247,248,250,0) 88%,#F7F8FA 100%),
+      url("/assets/img/hero-bg.jpg") 72% top/cover no-repeat,
+      #FFFFFF!important;
+  }
+}
+html[data-theme="dark"] .hero2--band .hero2__band{background:transparent!important}
