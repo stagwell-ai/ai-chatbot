@@ -5727,7 +5727,7 @@ html[data-theme="light"] .hero2--band .hero2__band,
     linear-gradient(180deg,rgba(198,221,247,.62) 0%,rgba(205,226,248,.30) 18%,rgba(210,229,249,0) 40%),
     /* 2 · the art carries almost the whole band; it only lets go at the very
        foot, where the page ground has to take over without a seam */
-    linear-gradient(180deg,rgba(247,248,250,0) 88%,#F7F8FA 100%),
+    linear-gradient(180deg,rgba(247,248,250,0) 97%,rgba(247,248,250,.55) 100%),
     url("/assets/img/hero-bg.jpg") center center/cover no-repeat,
     #FFFFFF!important;
 }
@@ -5736,7 +5736,7 @@ html[data-theme="light"] .hero2--band .hero2__band,
   .hero2--band .hero2__band{
     background:
       linear-gradient(180deg,rgba(198,221,247,.62) 0%,rgba(205,226,248,.30) 18%,rgba(210,229,249,0) 40%),
-      linear-gradient(180deg,rgba(247,248,250,0) 88%,#F7F8FA 100%),
+      linear-gradient(180deg,rgba(247,248,250,0) 97%,rgba(247,248,250,.55) 100%),
       url("/assets/img/hero-bg.jpg") 72% center/cover no-repeat,
       #FFFFFF!important;
   }
@@ -5844,11 +5844,22 @@ body.vB .pick,body.vB .pick__lead{max-width:980px!important}
   body.vB .pick,body.vB .pick__lead{max-width:100%!important}
 }
 
-/* §134 b · the headline sits closer to the lead beneath it. The band keeps a
-   deep foot for the artwork, but not so deep that the copy is stranded at the
-   top of a screen-tall hero with the chooser a long way under it. */
-.hero2--band .hero2__band{padding-bottom:clamp(150px,17vh,210px)!important}
+/* §134 b · the headline and the lead beneath it.
+   The headline's line-height equals its font size, so the descenders of
+   "solving today?" hang below its box: a measured 64px gap read as barely
+   twenty, and the lead looked stuck to the type. Deepening the band's foot
+   lifts the headline — the copy is centred between the two paddings — while
+   the lead and the card, which hang off the bottom of a viewport-tall band,
+   do not move. So the air opens up without pushing the chat out of the fold. */
+.hero2--band .hero2__band{padding-bottom:clamp(220px,26vh,310px)!important}
 @media (max-width:860px){
-  .hero2--band .hero2__band{padding-bottom:clamp(110px,13vh,150px)!important}
+  .hero2--band .hero2__band{padding-bottom:clamp(150px,18vh,200px)!important}
 }
 body.vB .page{margin-top:clamp(-190px,-15vh,-110px)!important}
+
+/* §134 c · the artwork reaches the bottom of the band.
+   The "grey strip under the background" was never a layout gap — it was this
+   file's own fade, dissolving the photograph into the page ground from 88%
+   down, which on a viewport-tall hero is a hundred-plus pixels of flat colour
+   at the foot of the first screen. The fade now only softens the last 3%,
+   enough to kill the seam against the page without eating the picture. */
