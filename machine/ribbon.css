@@ -5725,6 +5725,10 @@ html[data-theme="light"] .hero2--band .hero2__band,
   background:
     /* 1 · the header sits on colour, not on the white middle of the photo */
     linear-gradient(180deg,rgba(198,221,247,.62) 0%,rgba(205,226,248,.30) 18%,rgba(210,229,249,0) 40%),
+    /* and the same at the foot: the photograph's lower edge is nearly
+       white, so a viewport-tall hero ran out of colour before it ran out
+       of height and read as a background that had stopped */
+    linear-gradient(0deg,rgba(191,216,245,.58) 0%,rgba(203,225,248,.26) 16%,rgba(210,229,249,0) 34%),
     /* 2 · the art carries almost the whole band; it only lets go at the very
        foot, where the page ground has to take over without a seam */
     linear-gradient(180deg,rgba(247,248,250,0) 97%,rgba(247,248,250,.55) 100%),
@@ -5736,6 +5740,11 @@ html[data-theme="light"] .hero2--band .hero2__band,
   .hero2--band .hero2__band{
     background:
       linear-gradient(180deg,rgba(198,221,247,.62) 0%,rgba(205,226,248,.30) 18%,rgba(210,229,249,0) 40%),
+      linear-gradient(0deg,rgba(191,216,245,.58) 0%,rgba(203,225,248,.26) 16%,rgba(210,229,249,0) 34%),
+    /* and the same at the foot: the photograph's lower edge is nearly
+       white, so a viewport-tall hero ran out of colour before it ran out
+       of height and read as a background that had stopped */
+    linear-gradient(0deg,rgba(191,216,245,.58) 0%,rgba(203,225,248,.26) 16%,rgba(210,229,249,0) 34%),
       linear-gradient(180deg,rgba(247,248,250,0) 97%,rgba(247,248,250,.55) 100%),
       url("/assets/img/hero-bg.jpg") 72% center/cover no-repeat,
       #FFFFFF!important;
@@ -5863,3 +5872,31 @@ body.vB .page{margin-top:clamp(-190px,-15vh,-110px)!important}
    down, which on a viewport-tall hero is a hundred-plus pixels of flat colour
    at the foot of the first screen. The fade now only softens the last 3%,
    enough to kill the seam against the page without eating the picture. */
+
+/* ═══════════════════════════════════════════════════════════════
+   135 · THE PAGE STOPS PAINTING OVER THE HERO (client, Sep 6).
+   .page carries the ground colour AND is pulled up 135px so the
+   chat rides into the foot of the hero. Being opaque and z-index 2,
+   it painted #F7F8FA straight over the bottom of the artwork — a
+   hard grey band across the full width, which is the "background
+   doesn't reach the bottom" that survived every other fix.
+   The body already carries the same ground colour, so the page has
+   nothing to add by repeating it: transparent, and the artwork
+   shows through the overlap exactly as far as the band goes.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .page,
+html[data-theme="dark"] body.vB .page,
+body.vB .page{background:transparent!important}
+
+/* §135 b · the header logo had no size.
+   An inline <svg> with neither width/height attributes nor a viewBox falls
+   back to 150x150. The symbol it draws is 1870x153, so it letterboxed to
+   about twelve pixels tall and sat CENTRED in a 150px box — painting the
+   lockup some seventy-five pixels below the top of a 61px bar. The bar was
+   always at y=0; the logo inside it was not, which is what "the header is too
+   separated from the top" was. The svg carries its viewBox now, so height is
+   the only thing left to state. */
+/* height and width only — NOT display: the theme swap shows one lockup and
+   hides the other with display, and forcing it here printed both at once */
+.nav .nav__logo{height:22px!important;width:auto!important}
+@media (max-width:860px){.nav .nav__logo{height:19px!important}}
