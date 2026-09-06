@@ -1192,66 +1192,36 @@ window.resetLanding = resetB;
 
 /* ─────────────────────────── NAV / MODAL ─────────────────────────── */
 
-/* The header rides with you: away on the way down, back the moment you head up.
+/* The header stays put.
 
-   Hiding is rate-limited, coming back is not. An earlier version accumulated
-   distance in BOTH directions and it could leave the bar stranded off-screen:
-   the browser coalesces scroll events, so a gesture arrives as a few large
-   deltas with sub-pixel jitter between them, and every sign flip reset the
-   upward accumulator before it ever reached its threshold. A nav that refuses
-   to return is a far worse failure than one that hides a little too eagerly,
-   so the show side now has no threshold at all — any upward movement restores
-   it, on the same frame. */
+   It used to hide on the way down and come back on the way up. Two rounds of
+   bugs came out of that. First it could be stranded off-screen: distance was
+   accumulated in BOTH directions, and because browsers coalesce scroll events
+   a gesture arrives as a few large deltas with sub-pixel jitter between them,
+   so every sign flip reset the upward accumulator before it reached its
+   threshold. Then, once that was fixed, it slid away the moment the hero
+   stopped being behind it — which is exactly where the chat begins, so the
+   header vanished at the point you were reaching for it.
+
+   A header that leaves while you are still reading the first screen is worse
+   than one that simply stays, and nothing at the top of this page needs the
+   sixty pixels back. Only its background changes now: transparent at rest,
+   frosted while there is artwork behind it, solid past the hero. */
 (() => {
   const nav = $('#nav');
-  const HIDE_AFTER = 64;   // px of continuous downward travel
-  let lastY = scrollY, acc = 0, ticking = false;
-
-  const show = () => { nav.classList.remove('is-up'); acc = 0; };
+  let ticking = false;
 
   const onScroll = () => {
     ticking = false;
-    const y = Math.max(0, scrollY);
-    const d = y - lastY;
-    lastY = y;
-    nav.classList.toggle('is-stuck', y > 8);
-
-    if (document.body.classList.contains('nav-open')) return;
-    if (y < 90) return show();
-
-    if (d < 0) return show();       // heading up, for any distance at all
-    if (d === 0) return;            // a no-op event must not disturb the count
-
-    /* Never hide while there is still hero artwork behind the bar. Sliding
-       the header away over a full-screen hero is the most conspicuous motion
-       on the page and it reads as a glitch — the bar is the only thing
-       moving, against a background that is not. Below the hero it hides as
-       before, where the content scrolling past explains the movement. */
-    if (document.documentElement.classList.contains('over-art')) { acc = 0; return; }
-
-    acc += d;
-    if (acc > HIDE_AFTER) { nav.classList.add('is-up'); acc = 0; }
+    nav.classList.toggle('is-stuck', Math.max(0, scrollY) > 8);
+    nav.classList.remove('is-up');   // nothing sets it; this is the belt
   };
 
   addEventListener('scroll', () => {
     if (ticking) return;
     ticking = true; requestAnimationFrame(onScroll);
   }, { passive: true });
-
-  /* Two safety nets, so the bar is never unreachable. A wheel or a touch that
-     pulls upward shows it even before the scroll position has moved (rubber
-     banding at the bottom of the page emits no scroll event at all), and
-     reaching for the top edge of the window brings it back the way it does in
-     a full-screen app. */
-  addEventListener('wheel', e => { if (e.deltaY < 0) show(); }, { passive: true });
-  let touchY = 0;
-  addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
-  addEventListener('touchmove',  e => {
-    const ty = e.touches[0].clientY;
-    if (ty > touchY + 4) show();
-    touchY = ty;
-  }, { passive: true });
-  addEventListener('pointermove', e => { if (e.clientY < 70) show(); }, { passive: true });
+  onScroll();
 })();
 
 const closeNav = () => document.body.classList.remove('nav-open');

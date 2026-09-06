@@ -5900,3 +5900,68 @@ body.vB .page{background:transparent!important}
    hides the other with display, and forcing it here printed both at once */
 .nav .nav__logo{height:22px!important;width:auto!important}
 @media (max-width:860px){.nav .nav__logo{height:19px!important}}
+
+/* ═══════════════════════════════════════════════════════════════
+   136 · DARK-MODE CLEAN-UP AND HEADER TRIMS (client, Sep 6)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* a · the "stroke around the container" on the suite. Two leftover 1px
+   rectangles — one on the section, one on its inner shell — with no radius,
+   invisible on a light ground and a clear frame on a dark one. */
+html[data-theme="dark"] body.vB #cta.bcta,html[data-theme="light"] body.vB #cta.bcta,body.vB #cta.bcta,
+html[data-theme="dark"] body.vB .bcta__in,html[data-theme="light"] body.vB .bcta__in,body.vB .bcta__in{
+  border:0!important;
+}
+
+/* b · the About banner in dark. The artwork was a plate sized to the panel's
+   height and pushed 340px off the right edge, so it had a hard vertical cut on
+   its left and was sliced by the panel's rounded corner on its right — read,
+   fairly, as cropped. In dark it fills the panel instead and the scrim carries
+   the reading contrast, so there is no edge to notice. */
+html[data-theme="dark"] body.vB .about__head{
+  background:
+    linear-gradient(90deg,rgba(0,26,43,.96) 0%,rgba(0,26,43,.88) 38%,rgba(0,26,43,.55) 72%,rgba(0,26,43,.42) 100%),
+    url("/assets/img/about-bg.jpg") right center/cover no-repeat,
+    #001A2B!important;
+}
+@media (max-width:1000px){
+  html[data-theme="dark"] body.vB .about__head{
+    background:
+      linear-gradient(180deg,rgba(0,26,43,.72) 0%,rgba(0,26,43,.94) 62%),
+      url("/assets/img/about-bg.jpg") center center/cover no-repeat,
+      #001A2B!important;
+  }
+}
+
+/* c · a smaller lockup in the bar */
+.nav .nav__logo{height:18px!important}
+@media (max-width:860px){.nav .nav__logo{height:16px!important}}
+
+/* d · twice the air between the headline and the chooser's lead. The copy is
+   centred between the band's two paddings, so deepening the foot lifts the
+   headline and leaves the lead and the card where they are. */
+.hero2--band .hero2__band{padding-bottom:clamp(430px,50vh,540px)!important}
+@media (max-width:860px){
+  .hero2--band .hero2__band{padding-bottom:clamp(230px,27vh,300px)!important}
+}
+
+/* §136 e · the chooser in dark mode.
+   Four different blues were stacked inside one card: the card itself, the left
+   column, the rows, and the detail pane. On a light ground those tints are
+   invisible; on a dark one each becomes a visible block, and the list read as
+   a column of filled tabs rather than a list of icons and labels. The rows and
+   the column go back to carrying nothing — the card is the only surface —
+   and only the hovered/selected row lifts. */
+html[data-theme="dark"] body.vB .pick__col{background:transparent!important}
+html[data-theme="dark"] body.vB .pick__row{
+  background:transparent!important;border-color:transparent!important;
+}
+html[data-theme="dark"] body.vB .pick__row:hover,
+html[data-theme="dark"] body.vB .pick__row[aria-selected="true"],
+html[data-theme="dark"] body.vB .pick__row.is-on{
+  background:rgba(234,243,248,.07)!important;
+}
+/* the mark is a logo, not a button: it had the row-icon's chip behind it */
+body.vB .pick__hinti,html[data-theme="dark"] body.vB .pick__hinti{
+  background:none!important;border:0!important;border-radius:0!important;padding:0!important;
+}
