@@ -5782,15 +5782,20 @@ body.vB .pick__lead .pick__hinttext{
   display:block!important;
   font-size:clamp(14px,1.05vw,15.5px)!important;line-height:1.55!important;
   font-weight:400!important;color:rgba(0,51,73,.66)!important;
-  max-width:62ch!important;margin:0 auto!important;
+  /* no measure cap: the sentence is one line on a desktop and the lead's own
+     shell width is the only thing that should ever break it */
+  max-width:none!important;margin:0 auto!important;text-wrap:pretty;
 }
 html[data-theme="dark"] body.vB .pick__lead .pick__hinth{color:#EAF6FF!important}
 html[data-theme="dark"] body.vB .pick__lead .pick__hinttext{color:rgba(234,246,255,.68)!important}
 /* the card keeps its mark; with the words gone it is just the mark */
+/* the mark lines up with the rows below it, not with the card's border —
+   the list insets its content by 14px, so this does too */
 body.vB .pick__col .pick__hint{
   display:flex!important;align-items:center!important;
-  background:none!important;border:0!important;padding:0!important;
-  margin:0 0 clamp(14px,1.6vw,20px)!important;
+  background:none!important;border:0!important;
+  padding:18px 14px 0!important;
+  margin:0 0 clamp(10px,1.2vw,14px)!important;
 }
 
 /* ── the card is smaller, and its right side is not a white void ── */
