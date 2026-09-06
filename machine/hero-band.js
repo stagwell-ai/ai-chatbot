@@ -235,13 +235,29 @@
     const band = document.querySelector('.hero2--band');
     if (!band) return;
     const root = document.documentElement;
+    const nav = document.querySelector('#nav');
     let raf = null;
     const check = () => {
       raf = null;
-      /* transparent only at the very top: the moment scrolling starts the
-         regular bar returns (the reference does the same), so the headline
-         never slides under a see-through bar */
-      root.classList.toggle('over-hero', scrollY < 24 && band.getBoundingClientRect().bottom > 60);
+      const bottom = band.getBoundingClientRect().bottom;
+      const navH = nav ? nav.getBoundingClientRect().height : 61;
+
+      /* The hero is a full screen tall now, so "has the band gone past the
+         bar" and "are we still at the top of the page" are no longer the same
+         question. Scrolling 40px used to slam an opaque white bar across a
+         hero that still filled the window. Two states instead of one:
+         `over-hero` is the pristine top of the page, where the bar is
+         completely transparent; `over-art` is anywhere else that still has
+         artwork behind the bar, where it frosts rather than going solid, so
+         the headline stays readable underneath without a hard white edge. */
+      root.classList.toggle('over-hero', scrollY < 24 && bottom > navH);
+      root.classList.toggle('over-art', bottom > navH);
+
+      /* The band is pulled up under the bar by exactly the bar's height. A
+         hard-coded number is wrong the moment the bar wraps or a font renders
+         a pixel taller, and the error shows as a strip of page ground above
+         the header. Measure it instead. */
+      band.style.marginTop = '-' + Math.round(navH) + 'px';
     };
     addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
     addEventListener('resize', check, { passive: true });
@@ -293,6 +309,19 @@
       }
       hint.dataset.hoisted = '1';
       sub.hidden = true;
+      /* The words sit ABOVE the card and centred, introducing the chooser the
+         way a section header introduces a section — but the mark stays inside
+         the card where it belongs (client, Sep 6). So only the two text nodes
+         travel; moving them rather than copying keeps the strings
+         single-sourced. */
+      const card = document.querySelector('.pick');
+      if (card && card.parentNode) {
+        const lead = document.createElement('div');
+        lead.className = 'pick__lead';
+        lead.appendChild(h);
+        if (rest) lead.appendChild(hint.querySelector('.pick__hinttext'));
+        card.parentNode.insertBefore(lead, card);
+      }
       return true;
     };
     if (!hoist()) {

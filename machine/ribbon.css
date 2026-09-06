@@ -5658,7 +5658,7 @@ html[data-theme="light"] .hero2--band .hero2__band,
   background:
     /* the art has to end before the chat card or the seam shows as a band */
     linear-gradient(180deg,rgba(247,248,250,0) 58%,rgba(247,248,250,.72) 84%,#F7F8FA 100%),
-    url("/assets/img/hero-bg.jpg") center top/cover no-repeat,
+    url("/assets/img/hero-bg.jpg") center center/cover no-repeat,
     #FFFFFF!important;
 }
 /* the sweep runs corner to corner, so on a narrow screen a "cover" crop
@@ -5668,7 +5668,7 @@ html[data-theme="light"] .hero2--band .hero2__band,
   .hero2--band .hero2__band{
     background:
       linear-gradient(180deg,rgba(247,248,250,0) 54%,rgba(247,248,250,.72) 82%,#F7F8FA 100%),
-      url("/assets/img/hero-bg.jpg") 72% top/cover no-repeat,
+      url("/assets/img/hero-bg.jpg") 72% center/cover no-repeat,
       #FFFFFF!important;
   }
 }
@@ -5728,7 +5728,7 @@ html[data-theme="light"] .hero2--band .hero2__band,
     /* 2 · the art carries almost the whole band; it only lets go at the very
        foot, where the page ground has to take over without a seam */
     linear-gradient(180deg,rgba(247,248,250,0) 88%,#F7F8FA 100%),
-    url("/assets/img/hero-bg.jpg") center top/cover no-repeat,
+    url("/assets/img/hero-bg.jpg") center center/cover no-repeat,
     #FFFFFF!important;
 }
 @media (max-width:860px){
@@ -5737,8 +5737,69 @@ html[data-theme="light"] .hero2--band .hero2__band,
     background:
       linear-gradient(180deg,rgba(198,221,247,.62) 0%,rgba(205,226,248,.30) 18%,rgba(210,229,249,0) 40%),
       linear-gradient(180deg,rgba(247,248,250,0) 88%,#F7F8FA 100%),
-      url("/assets/img/hero-bg.jpg") 72% top/cover no-repeat,
+      url("/assets/img/hero-bg.jpg") 72% center/cover no-repeat,
       #FFFFFF!important;
   }
 }
 html[data-theme="dark"] .hero2--band .hero2__band{background:transparent!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   133 · THE BAR OVER A FULL-HEIGHT HERO, AND THE CHOOSER'S
+   HEADER MOVES OUT OF THE CARD (client, Sep 6).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Frosted, not solid, for as long as there is artwork behind the bar. The
+   opaque white version is for the rest of the page, where it belongs. */
+html.over-art .nav.is-stuck,html.over-art .nav{
+  background:rgba(255,255,255,.66)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(140%)!important;
+          backdrop-filter:blur(16px) saturate(140%)!important;
+  border-bottom-color:transparent!important;
+}
+html.over-hero .nav,html.over-hero .nav.is-stuck{
+  background:transparent!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html[data-theme="dark"].over-art .nav.is-stuck,html[data-theme="dark"].over-art .nav{
+  background:rgba(0,26,43,.60)!important;
+}
+
+/* ── the chooser's lead: centred copy above the card. The mark is NOT
+      here — it stays inside the card's own header (client, Sep 6). ── */
+body.vB .pick__lead{
+  width:100%!important;max-width:var(--shell,1140px)!important;
+  margin:0 auto clamp(20px,2.4vw,30px)!important;padding:0!important;
+  display:block!important;text-align:center!important;
+  background:none!important;border:0!important;
+}
+body.vB .pick__lead .pick__hinth{
+  display:block!important;
+  font-size:clamp(20px,1.7vw,25px)!important;line-height:1.2!important;
+  font-weight:600!important;letter-spacing:-.01em!important;color:#003349!important;
+  margin:0 0 6px!important;
+}
+body.vB .pick__lead .pick__hinttext{
+  display:block!important;
+  font-size:clamp(14px,1.05vw,15.5px)!important;line-height:1.55!important;
+  font-weight:400!important;color:rgba(0,51,73,.66)!important;
+  max-width:62ch!important;margin:0 auto!important;
+}
+html[data-theme="dark"] body.vB .pick__lead .pick__hinth{color:#EAF6FF!important}
+html[data-theme="dark"] body.vB .pick__lead .pick__hinttext{color:rgba(234,246,255,.68)!important}
+/* the card keeps its mark; with the words gone it is just the mark */
+body.vB .pick__col .pick__hint{
+  display:flex!important;align-items:center!important;
+  background:none!important;border:0!important;padding:0!important;
+  margin:0 0 clamp(14px,1.6vw,20px)!important;
+}
+
+/* ── the card is smaller, and its right side is not a white void ── */
+body.vB .pick__panes{min-height:0!important}
+body.vB .pick__list{max-height:none!important}
+body.vB .pick__detail,body.vB #pickDetail{
+  min-height:0!important;
+  background:#F1F5F9!important;
+}
+html[data-theme="dark"] body.vB .pick__detail,html[data-theme="dark"] body.vB #pickDetail{
+  background:rgba(0,26,43,.34)!important;
+}
