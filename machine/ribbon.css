@@ -6520,3 +6520,48 @@ body.vB .about__stats{grid-template-rows:auto auto!important;align-items:stretch
 @supports not (grid-template-rows: subgrid){
   body.vB .about__stats > *{align-self:stretch!important}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   148 · THE FIRST SCREEN HOLDS THE WHOLE CHAT (client, Sep 6).
+   Every value below is height-aware, so a tall window keeps the
+   generous spacing and a laptop gets the compact one, rather than
+   one fixed compromise that is cramped on both.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:861px){
+  /* the theme prefixes are load-bearing: §138 states these with them, and a
+     bare body.vB selector loses to it however far down the file it sits */
+  html[data-theme="light"] body.vB .hero2--band .hero2__band,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+  body.vB .hero2--band .hero2__band{
+    padding-top:calc(61px + clamp(20px,4.2vh,90px))!important;
+    padding-bottom:clamp(16px,3.2vh,100px)!important;
+  }
+  html[data-theme="light"] body.vB .hero2--band .hero2__band > .eyebrow,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band > .eyebrow,
+  body.vB .hero2--band .hero2__band > .eyebrow,
+  body.vB .hero2--band .hero2__band > #heroEyebrow{
+    margin:0 auto clamp(10px,1.9vh,44px)!important;
+  }
+  /* the headline answers to the window's height as well as its width */
+  html[data-theme="light"] .hero2--band .display:not(#tw_),
+  html[data-theme="dark"]  .hero2--band .display:not(#tw_),
+  .hero2--band .display:not(#tw_),#hero2Title:not(#tw_){
+    font-size:clamp(44px,min(6.2vw,7.7vh),100px)!important;
+    line-height:1.04!important;
+  }
+  body.vB .pick__lead{margin-bottom:clamp(10px,1.5vh,30px)!important}
+
+  /* the card: the same trim, spread across every part of it */
+  body.vB .pick__col .pick__hint{padding:clamp(10px,1.4vh,18px) 14px 0!important;margin-bottom:8px!important}
+  body.vB .pick__list{padding:4px 14px clamp(8px,1.4vh,20px)!important}
+  html[data-theme="light"] body.vB .pick__row,html[data-theme="dark"] body.vB .pick__row,
+  body.vB .pick__row{padding:clamp(3px,.55vh,12px) 14px!important}
+  html[data-theme="light"] body.vB .pick__sub,html[data-theme="dark"] body.vB .pick__sub,
+  body.vB .pick__sub{font-size:12.5px!important;line-height:1.34!important}
+  html[data-theme="light"] body.vB .pick__label,html[data-theme="dark"] body.vB .pick__label,
+  body.vB .pick__label{line-height:1.24!important}
+  html[data-theme="light"] body.vB .pick__foot,html[data-theme="dark"] body.vB .pick__foot,
+  body.vB .pick__foot{padding:clamp(8px,1.2vh,20px) 18px!important}
+  body.vB .pick__act{min-height:0!important}
+  body.vB .pick__site,body.vB #pickSiteWrap{height:48px!important;min-height:48px!important}
+}
