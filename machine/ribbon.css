@@ -6958,3 +6958,68 @@ body.vB #pickDetail .pick__pane,body.vB #pickDetail .pick__pane--free{
 html[data-theme="light"] body.vB .about__portfolio,
 html[data-theme="dark"]  body.vB .about__portfolio,
 body.vB .about__portfolio{border-top:0!important;border-bottom:0!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   155 · ONE GAP BETWEEN EVERY BLOCK (client, Sep 6).
+   Measured down the page: 175, 173, 181, 151. Close enough to look
+   like a mistake rather than a rhythm. The smallest is the one to
+   keep, so 150 everywhere — half from each section's padding where
+   two sections meet, and stated as a gap where blocks stack inside
+   one section, with the stray margins that were topping it up
+   removed.
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width:861px){
+  html[data-theme="light"] body.vB #about,html[data-theme="dark"] body.vB #about,
+  html[data-theme="light"] body.vB #cloud,html[data-theme="dark"] body.vB #cloud,
+  html[data-theme="light"] body.vB #cta,html[data-theme="dark"] body.vB #cta,
+  body.vB #about,body.vB #cloud,body.vB #cta{
+    padding-top:75px!important;padding-bottom:75px!important;
+    margin:0!important;
+  }
+  body.vB #hero2{padding-bottom:75px!important}
+  body.vB .film{margin-top:75px!important;margin-bottom:0!important}
+
+  /* the blocks stacked inside #about state their own gap */
+  html[data-theme="light"] body.vB .about__in,html[data-theme="dark"] body.vB .about__in,
+  body.vB .about__in{
+    display:flex!important;flex-direction:column!important;
+    gap:150px!important;
+  }
+  html[data-theme="light"] body.vB .about__head,html[data-theme="dark"] body.vB .about__head,
+  html[data-theme="light"] body.vB .about__portfolio,html[data-theme="dark"] body.vB .about__portfolio,
+  html[data-theme="light"] body.vB .about__proof,html[data-theme="dark"] body.vB .about__proof,
+  body.vB .about__head,body.vB .about__portfolio,body.vB .about__proof{
+    margin-top:0!important;margin-bottom:0!important;
+  }
+}
+
+/* §155 b · the two banner plates.
+   · "What is Stagwell.AI" sized its artwork to 96% of the panel height, and
+     the parallax then slides it up and down within that — so at most of the
+     travel a band of bare panel shows at one edge, which reads as the image
+     being cropped short. Sized past the panel it always covers, whatever the
+     parallax is doing.
+   · "Built on Stagwell's own scale" moves its plate left. */
+html[data-theme="light"] body.vB .about__head,
+body.vB .about__head{
+  background-size:auto 118%!important;
+}
+html[data-theme="dark"] body.vB .about__head{
+  background-size:auto,cover!important;
+}
+html[data-theme="light"] body.vB .about__proof,
+html[data-theme="dark"]  body.vB .about__proof,
+body.vB .about__proof{
+  /* a HIGHER percentage shows more of the plate's right-hand side, which
+     slides the picture leftwards in the frame — 32% did the opposite */
+  background-position:72% calc(50% + var(--par,0%))!important;
+}
+
+/* §155 c · .hero2__in carries 24px of bottom padding under the film, which is
+   what kept that one gap at 174 while every other measured 150. */
+@media (min-width:861px){
+  html[data-theme="light"] body.vB #hero2 .hero2__in,
+  html[data-theme="dark"]  body.vB #hero2 .hero2__in,
+  body.vB #hero2 .hero2__in{padding-bottom:0!important}
+  body.vB #hero2 .chat{margin-bottom:0!important}
+}
