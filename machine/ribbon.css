@@ -6090,11 +6090,11 @@ body.vB .hero2--band .hero2__band{
   min-height:0!important;
   justify-content:flex-start!important;
   padding-top:calc(61px + 90px)!important;   /* bar, then the tagline */
-  padding-bottom:168px!important;            /* headline, then the lead */
+  padding-bottom:70px!important;             /* headline, then the lead */
 }
 @media (max-width:860px){
   body.vB .hero2--band .hero2__band{
-    padding-top:calc(61px + 54px)!important;padding-bottom:104px!important;
+    padding-top:calc(61px + 54px)!important;padding-bottom:44px!important;
   }
 }
 /* the chooser follows the copy now, not the bottom of the window. Both pulls
