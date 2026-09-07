@@ -81,7 +81,7 @@ d.setAttribute('data-theme',t||sys);})();
 
 <!-- ═══════════════════════ 1 · HERO ═══════════════════════ -->
 <section class="hero" id="hero">
-  <div class="wrap hero__in">
+  <div class="hero__in">
     <!-- one column, read top to bottom: the question, the answer, the two
          ways in. The right column is reserved for the client's image. -->
     <div class="hero__l">
@@ -104,7 +104,15 @@ d.setAttribute('data-theme',t||sys);})();
         <button type="button" class="btn btn--line btn--lg btn--ic" data-cta="callback"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
       </div>
     </div>
-    <div class="hero__r" aria-hidden="true"><!-- the image goes here --></div>
+    <!-- the right half: the client's film, once it lands; a frame of it until
+         then. The control sits bottom right, over the picture. -->
+    <div class="hero__media" id="heroMedia">
+      <img class="hero__pic" src="/assets/img/hero-split.jpg" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
+      <button type="button" class="hero__pause" id="heroPause" aria-label="Pause" aria-pressed="false">
+        <svg class="hero__pause-ic hero__pause-ic--pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="4" y="3" width="4" height="14" rx="1" fill="currentColor"/><rect x="12" y="3" width="4" height="14" rx="1" fill="currentColor"/></svg>
+        <svg class="hero__pause-ic hero__pause-ic--play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- the hero's visual moment: the client's own film. It arrives inset and

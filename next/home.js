@@ -54,6 +54,17 @@
   }
 
 
+  /* ── the split's control: pauses the film once there is one; until then it
+        turns over, so the state reads ─────────────────────────────────────── */
+  const media = $('#heroMedia'), pauseBtn = $('#heroPause');
+  if (media && pauseBtn) pauseBtn.addEventListener('click', () => {
+    const paused = media.classList.toggle('is-paused');
+    pauseBtn.setAttribute('aria-pressed', String(paused));
+    pauseBtn.setAttribute('aria-label', paused ? 'Play' : 'Pause');
+    const film = $('video', media);
+    if (film) paused ? film.pause() : film.play().catch(() => {});
+  });
+
   /* ── the bar: solid once you have moved; white-on-dark over the AI section ─ */
   const nav = $('#nav'), ask = $('#ask');
   if (nav) {
