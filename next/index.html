@@ -117,16 +117,6 @@ d.setAttribute('data-theme',t||sys);})();
     <!-- one column, read top to bottom: the question, the answer, the two
          ways in. The right column is reserved for the client's image. -->
     <div class="hero__l">
-      <!-- where the billboard carries its tagline: the question, big, two lines,
-           turning over. The first three are the client's; the rest match them. -->
-      <p class="turn rv" style="--d:.1s" id="turn" aria-live="polite" aria-atomic="true">
-        <span class="turn__w is-on">A complex challenge?</span>
-        <span class="turn__w">New markets?</span>
-        <span class="turn__w">A bolder opportunity?</span>
-        <span class="turn__w">A brand that needs momentum?</span>
-        <span class="turn__w">Customers you haven't reached?</span>
-        <span class="turn__w">A launch that has to land?</span>
-      </p>
       <h1 class="display display--hero" id="heroTitle">
         <span class="ln"><span class="ln__in"><em>Ask</em></span></span><span class="ln"><span class="ln__in"><span class="navy">Stagwell.</span></span></span>
       </h1>
@@ -150,6 +140,16 @@ d.setAttribute('data-theme',t||sys);})();
   <div class="hero__media" id="heroMedia">
     <img class="hero__pic" src="/assets/img/hero-split-fold.jpg" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
     <video class="hero__film" id="heroFilm" playsinline preload="metadata" src="/assets/video/hero-reel.mp4"></video>
+    <!-- the question, over the picture: one white line, centred in the visible
+       strip, turning over. The first three are the client's; the rest match. -->
+    <p class="turn rv" style="--d:.1s" id="turn" aria-live="polite" aria-atomic="true">
+      <span class="turn__w is-on">A complex challenge?</span>
+      <span class="turn__w">New markets?</span>
+      <span class="turn__w">A bolder opportunity?</span>
+      <span class="turn__w">A brand that needs momentum?</span>
+      <span class="turn__w">Customers you haven't reached?</span>
+      <span class="turn__w">A launch that has to land?</span>
+    </p>
     <!-- at rest: the invitation, a white pill bottom right -->
     <button type="button" class="hero__pill hero__watch" id="heroWatch"><svg class="ic ic-play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7 4.2v11.6c0 .8.9 1.3 1.6.9l9-5.8c.6-.4.6-1.4 0-1.8l-9-5.8C7.9 2.9 7 3.4 7 4.2Z" fill="currentColor"/></svg>Watch the film</button>
     <!-- open: pause, sound, close — three discs in the same corner -->

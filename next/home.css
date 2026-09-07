@@ -289,15 +289,18 @@ body.chat-open{overflow:hidden}
 /* the bar's buttons stay ink over the still — the still is light in places
    and white buttons vanished on it. They turn white only over the open film
    (nav.on-dark). */
-/* the question, where the billboard's tagline sits: big, light, two lines.
-   One phrase showing, the rest stacked beneath out of view; a change is the
-   old one lifting out and the next rising in. */
+/* the question, over the picture: one phrase showing, the rest stacked
+   beneath out of view; a change is the old one lifting out and the next
+   rising in. */
 .turn{
-  position:relative;display:block;width:100%;height:1.4em;overflow:hidden;   /* one line */
-  margin:0 0 var(--s-9);                        /* 32 above the title */
-  font-size:var(--hero-copy);font-weight:300;line-height:1.2;
-  color:var(--ink);text-align:left;
+  position:absolute;z-index:1;top:50%;translate:0 -50%;
+  left:calc(100% - var(--media-w));right:0;   /* the visible strip, so "centred" is centred */
+  height:1.4em;overflow:hidden;margin:0;padding:0 var(--gutter);   /* one line */
+  font-size:clamp(24px, 1rem + 1vw, 32px);font-weight:300;line-height:1.2;
+  color:#FFFFFF;text-align:center;text-shadow:0 1px 24px rgba(0,0,0,.28);
+  transition:opacity .3s ease;
 }
+.hero__media.is-open .turn{opacity:0}          /* the film carries its own words */
 /* a change is two moves in sequence, never one on top of the other: the old
    phrase leaves fast and completely, THEN the new one rises in. Two large
    phrases crossing at half opacity is what read as "not smooth". */
