@@ -15,6 +15,13 @@
    rest of the site: this page is allowed to breathe.
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* Roobert, the client's title face (his licence; TTF until the woff2 tooling
+   is here). Heavy for the word that matters, Regular beside it. */
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Heavy.ttf') format('truetype');font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Light.ttf') format('truetype');font-weight:300;font-style:normal;font-display:swap}
+
 :root{
   --ink:#0B1220;
   --ink-2:rgba(11,18,32,.72);
@@ -27,7 +34,7 @@
   --navy:#003349;                               /* the wordmark's blue — the user's turns */
   --amber:#FFB81C;
 
-  --display:'Geist',"Helvetica Neue",Helvetica,Arial,sans-serif;   /* one family: Geist is the body sans and, variable to 900, the display too */
+  --display:'Roobert','Geist',"Helvetica Neue",Helvetica,Arial,sans-serif;   /* the client's face for every title */
   --sans:'Geist',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 
   --wrap:1440px;
@@ -77,8 +84,8 @@ h1,h2,p,figure{margin:0}
 
 /* ── display type ────────────────────────────────────────────────────────── */
 .display{
-  font-family:var(--display);font-weight:800;
-  text-transform:uppercase;letter-spacing:-.04em;line-height:.9;
+  font-family:var(--display);font-weight:900;
+  text-transform:uppercase;letter-spacing:-.03em;line-height:.9;
   text-align:center;text-wrap:balance;
 }
 .display em{font-style:normal;color:var(--orange)}
@@ -86,12 +93,11 @@ h1,h2,p,figure{margin:0}
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
 .display--hero {font-size:clamp(60px, min(1.5rem + 6.2vw, 15vh), 116px);text-transform:none;text-align:left;line-height:.88}
-/* "Ask" is the main thing: heavy, orange, tight. "Stagwell." steps back to a
-   medium weight in the ink at the same size — contrast of weight, not size —
-   and its full stop is orange, a small echo of the word above. */
-.display--hero em{font-weight:800;letter-spacing:-.045em}
-.display--hero .navy{font-weight:500;letter-spacing:-.03em}
-.display--hero .dot{color:var(--orange)}
+/* "Ask" is the main thing: heavy, orange, tight. "Stagwell." steps back to
+   the regular weight in the ink at the same size — contrast of weight, not
+   size. (An orange full stop was tried; the client didn't like it.) */
+.display--hero em{font-weight:900;letter-spacing:-.04em}
+.display--hero .navy{font-weight:400;letter-spacing:-.025em}
 .display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
 /* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
 .display--hero em{color:var(--orange)}
