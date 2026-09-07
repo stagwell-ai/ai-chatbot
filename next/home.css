@@ -80,7 +80,13 @@ h1,h2,p,figure{margin:0}
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
 .display--hero {font-size:clamp(80px, 2rem + 9.6vw, 184px);text-transform:none;letter-spacing:-.04em}
-.display--hero .navy{color:#003349}
+.display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
+/* the reveal wrapper clips; at this size the descender of the g drops below
+   the .9 line box and was being cut. Room for it, and the rise-in offset grows
+   to match so the line still starts fully hidden. */
+.display--hero .ln{padding-bottom:.22em;margin-bottom:-.22em}
+.display--hero .ln__in{transform:translateY(125%)}
+.is-ready .display--hero .ln__in{transform:translateY(0)}
 /* every .display is then fitted to its wrap by home.js — the clamp is the ceiling */
 .display--ask  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px);color:#FFFFFF}
 .display--cos  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px)}
