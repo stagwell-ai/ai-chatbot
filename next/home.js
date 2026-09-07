@@ -54,29 +54,21 @@
   }
 
 
-  /* ── the split's control: pauses the film once there is one; until then it
-        turns over, so the state reads ─────────────────────────────────────── */
-  const media = $('#heroMedia'), pauseBtn = $('#heroPause');
-  if (media && pauseBtn) pauseBtn.addEventListener('click', () => {
-    const paused = media.classList.toggle('is-paused');
-    pauseBtn.setAttribute('aria-pressed', String(paused));
-    pauseBtn.setAttribute('aria-label', paused ? 'Play' : 'Pause');
-    const film = $('video', media);
-    if (film) paused ? film.pause() : film.play().catch(() => {});
-  });
-
   /* ── the bar: solid once you have moved; white-on-dark over the AI section ─ */
   const nav = $('#nav'), ask = $('#ask');
+  let syncNav = () => {};
   if (nav) {
     let ticking = false;
+    const under = (el) => { const r = el.getBoundingClientRect(); return r.top <= 72 && r.bottom >= 72; };
     const onScroll = () => {
       ticking = false;
       nav.classList.toggle('is-stuck', scrollY > 8);
-      const dark = [$('#reel'), ask].filter(Boolean).some(el => {
-        const r = el.getBoundingClientRect(); return r.top <= 72 && r.bottom >= 72;
-      });
-      nav.classList.toggle('on-dark', dark);
+      /* dark under the bar: the AI section, or the hero while its film is open */
+      const heroMedia = $('#heroMedia');
+      const dark = (ask && under(ask)) || (heroMedia && heroMedia.classList.contains('is-open') && under(heroMedia));
+      nav.classList.toggle('on-dark', !!dark);
     };
+    syncNav = onScroll;
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
     onScroll();
   }
@@ -93,30 +85,46 @@
     }
   }
 
-  /* ── the reel: inset on arrival, full-bleed by the time it has been scrolled
-        through, and alive only once it is full. Progress is the sticky runner's
-        travel; width, height and radius follow it; is-live flips at 92%. ─── */
-  const reel = $('#reel'), stage = $('#reelStage');
-  if (reel && stage) {
-    let t = false;
-    const tick = () => {
-      t = false;
-      const r = reel.getBoundingClientRect();
-      const travel = r.height - innerHeight;
-      const p = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 1;
-      const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;   /* ease in-out */
-      stage.style.setProperty('--reel-w', (58 + 42 * e).toFixed(2) + '%');
-      stage.style.setProperty('--reel-h', (64 + 36 * e).toFixed(2) + 'vh');
-      stage.style.setProperty('--reel-r', (10 - 10 * e).toFixed(1) + 'px');
-      const live = p >= .92 || REDUCED;
-      stage.classList.toggle('is-live', live);
-      /* the film runs only while the stage is full; it rests otherwise */
-      const v = $('#reelV');
-      if (v) { if (live) { if (v.paused) v.play().catch(() => {}); } else if (!v.paused) v.pause(); }
+  /* ── the film's panel: clipped to the right column at rest. A tap unclips it
+        to the left over the words and runs the film from the start, with
+        sound. Close returns it; scrolling on simply leaves it behind. ─────── */
+  const media = $('#heroMedia'), film = $('#heroFilm'), watch = $('#heroWatch'),
+        pauseBtn = $('#heroPause'), closeBtn = $('#heroClose');
+  if (media && film && watch && pauseBtn && closeBtn) {
+    const setPaused = (p) => {
+      media.classList.toggle('is-paused', p);
+      pauseBtn.setAttribute('aria-pressed', String(p));
+      pauseBtn.setAttribute('aria-label', p ? 'Play' : 'Pause');
     };
-    addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(tick); } }, { passive: true });
-    addEventListener('resize', tick);
-    tick();
+    const openFilm = () => {
+      if (media.classList.contains('is-open')) return;
+      media.classList.add('is-open');
+      watch.hidden = true; pauseBtn.hidden = false; closeBtn.hidden = false;
+      film.currentTime = 0; film.muted = false; setPaused(false);
+      /* the film starts as the panel finishes opening; with sound if the
+         browser allows it on this tap, silently if not */
+      setTimeout(() => film.play().catch(() => { film.muted = true; film.play().catch(() => {}); }), REDUCED ? 0 : 450);
+      closeBtn.focus({ preventScroll: true }); syncNav();
+    };
+    const closeFilm = () => {
+      if (!media.classList.contains('is-open')) return;
+      media.classList.remove('is-open', 'is-playing'); film.pause();
+      watch.hidden = false; pauseBtn.hidden = true; closeBtn.hidden = true;
+      watch.focus({ preventScroll: true }); syncNav();
+    };
+    media.addEventListener('click', (e) => { if (!media.classList.contains('is-open') && !e.target.closest('button')) openFilm(); });
+    watch.addEventListener('click', openFilm);
+    closeBtn.addEventListener('click', closeFilm);
+    pauseBtn.addEventListener('click', () => { const p = !film.paused; p ? film.pause() : film.play().catch(() => {}); setPaused(p); });
+    film.addEventListener('playing', () => media.classList.add('is-playing'));
+    film.addEventListener('ended', closeFilm);
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFilm(); });
+    /* scrolled away, the film rests; back on screen, it goes on */
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => {
+      if (!media.classList.contains('is-open')) return;
+      if (!es[0].isIntersecting) film.pause();
+      else if (!media.classList.contains('is-paused')) film.play().catch(() => {});
+    }, { threshold: .2 }).observe(media);
   }
 
   /* ── "Ask Stagwell" scrolls to the experience, then lands in the field ──── */

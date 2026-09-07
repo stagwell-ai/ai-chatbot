@@ -105,30 +105,26 @@ d.setAttribute('data-theme',t||sys);})();
         <button type="button" class="btn btn--line btn--lg btn--ic" data-cta="callback"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
       </div>
     </div>
-    <!-- the right half: the client's film, once it lands; a frame of it until
-         then. The control sits bottom right, over the picture. -->
-    <div class="hero__media" id="heroMedia">
-      <img class="hero__pic" src="/assets/img/hero-split.jpg" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
-      <button type="button" class="hero__pause" id="heroPause" aria-label="Pause" aria-pressed="false">
-        <svg class="hero__pause-ic hero__pause-ic--pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="4" y="3" width="4" height="14" rx="1" fill="currentColor"/><rect x="12" y="3" width="4" height="14" rx="1" fill="currentColor"/></svg>
-        <svg class="hero__pause-ic hero__pause-ic--play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>
-      </button>
-    </div>
+    <!-- the right column only holds the place: the picture is the panel
+         below, clipped to this column until it is opened. -->
+    <div class="hero__r" aria-hidden="true"></div>
   </div>
 
-  <!-- the hero's visual moment: the client's own film. It arrives inset and
-       grows to the full width as you scroll; once it is full it plays. The film
-       carries its own type, so nothing is set over it. -->
-  <div class="reel" id="reel" aria-label="Stagwell.AI — the film">
-    <div class="reel__sticky">
-      <div class="reel__stage" id="reelStage">
-        <video class="reel__v" id="reelV" muted loop playsinline preload="metadata"
-               poster="/assets/video/hero-reel-poster.jpg">
-          <source src="/assets/video/hero-reel.mp4" type="video/mp4">
-        </video>
-      </div>
-    </div>
-  </div>
+  <!-- the film's panel. It is the whole first screen, clipped to the right
+       column at rest — a still from the film and "watch the full film". A tap
+       unclips it leftward over the words and the film runs from the start,
+       with sound; close returns it, or scroll on and leave it behind. -->
+  <div class="hero__media" id="heroMedia">
+    <img class="hero__pic" src="/assets/img/hero-split.jpg" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
+    <video class="hero__film" id="heroFilm" playsinline preload="metadata" src="/assets/video/hero-reel.mp4"></video>
+    <button type="button" class="hero__watch" id="heroWatch">
+      <span class="hero__disc"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg></span><span class="hero__watch-l">Watch the full film</span>
+    </button>
+    <button type="button" class="hero__disc hero__pause" id="heroPause" aria-label="Pause" aria-pressed="false" hidden>
+      <svg class="hero__pause-ic hero__pause-ic--pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="4" y="3" width="4" height="14" rx="1" fill="currentColor"/><rect x="12" y="3" width="4" height="14" rx="1" fill="currentColor"/></svg>
+      <svg class="hero__pause-ic hero__pause-ic--play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>
+    </button>
+    <button type="button" class="hero__disc hero__close" id="heroClose" aria-label="Close the film" hidden><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
 </section>
 
 <!-- ═══════════════════════ 2 · AI EXPERIENCE ═══════════════════════ -->
