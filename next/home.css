@@ -96,7 +96,7 @@ h1,h2,p,figure{margin:0}
 /* "Ask" is the main thing: heavy, orange, tight. "Stagwell." steps back to
    the regular weight in the ink at the same size — contrast of weight, not
    size. (An orange full stop was tried; the client didn't like it.) */
-.display--hero em{font-weight:900;letter-spacing:-.04em}
+.display--hero em{font-weight:700;letter-spacing:-.035em}   /* Heavy "seems too bold" — Bold */
 .display--hero .navy{font-weight:400;letter-spacing:-.025em}
 .display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
 /* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
