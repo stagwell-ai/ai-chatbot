@@ -427,7 +427,7 @@ body.chat-open{overflow:hidden}
 .call__num::placeholder{color:rgba(255,255,255,.5)}
 .call.is-bad .call__num::placeholder,.call.is-bad .call__num{color:var(--orange)}
 .call__go{width:48px;height:48px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:#FFFFFF;color:var(--ink);transition:transform .3s var(--ease)}
-.call__go .btn__ic{width:22px;height:22px}
+.call__go svg{width:20px;height:20px}   /* the send arrow, as in the chat field */
 .call__go:hover{transform:scale(1.06)}
 .call__go:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
 /* the call on its way, in the same pill */
