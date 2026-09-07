@@ -207,7 +207,7 @@
           return { x: A.x + (B.x - A.x) * u + wob, y: A.y + (B.y - A.y) * u - wob * .6, dx: B.x - A.x, dy: B.y - A.y, moving: u0 < 1 ? 1 : 0 };
         };
         const c = at(s), c2 = at(s - .55);                                 /* the head and the trail */
-        const R = 150 + 18 * Math.sin(s * .9), stretch = 1 + .55 * c.moving;
+        const R = 92 + 10 * Math.sin(s * .9), stretch = 1 + .35 * c.moving;   /* smaller and rounder (client: 'too big') */
         const len = Math.hypot(c.dx, c.dy) || 1, ux = c.dx / len, uy = c.dy / len;   /* along the way */
         const blob = (p, cx, cy, r, st) => {
           const px = p.x - cx, py = p.y - cy;
