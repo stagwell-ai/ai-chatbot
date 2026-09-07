@@ -192,8 +192,8 @@ h1,h2,p,figure{margin:0}
 .nav__search svg{width:19px;height:19px;display:block}
 .nav__search:hover{background:rgba(11,18,32,.06)}
 .nav__search:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.nav.on-dark:not(.is-stuck) .nav__search,.home .nav:not(.is-stuck) .nav__acts .nav__search{color:#FFFFFF}
-.nav.on-dark:not(.is-stuck) .nav__search:hover,.home .nav:not(.is-stuck) .nav__acts .nav__search:hover{background:rgba(255,255,255,.14)}
+.nav.on-dark:not(.is-stuck) .nav__search{color:#FFFFFF}
+.nav.on-dark:not(.is-stuck) .nav__search:hover{background:rgba(255,255,255,.14)}
 
 /* ── the chat over the page: the Ask block, in light ─────────────────────── */
 .chat-over{
@@ -224,7 +224,8 @@ body.chat-open{overflow:hidden}
 /* The first screen holds everything: the turning line, the title, the two
    buttons. It is the viewport's height with the content centred in it, so the
    buttons are inside the frame at 700px as surely as at 950. */
-.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden;--media-w:41.667%}
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden;--media-w:41.667%;
+  --hero-copy:clamp(20px, .9rem + .7vw, 26px)}   /* the question and the paragraph share it */
 /* a full split: the words fill the left half, the film the right, edge to
    edge. The left half keeps the page's gutter so the words line up with the
    bar's; the right half owns its picture and the control over it. */
@@ -283,17 +284,16 @@ body.chat-open{overflow:hidden}
 .hero__media.is-paused #heroPause .ic-play{display:block}
 .hero__media.is-muted #heroMute .ic-sound{display:none}
 .hero__media.is-muted #heroMute .ic-muted{display:block}
-/* the bar's buttons sit over the picture until the bar goes solid: the film
-   is dark, so they turn inside out there */
-.home .nav:not(.is-stuck) .nav__acts .btn--ink{background:#FFFFFF;color:var(--ink)}
-.home .nav:not(.is-stuck) .nav__acts .btn--line{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}
+/* the bar's buttons stay ink over the still — the still is light in places
+   and white buttons vanished on it. They turn white only over the open film
+   (nav.on-dark). */
 /* the question, where the billboard's tagline sits: big, light, two lines.
    One phrase showing, the rest stacked beneath out of view; a change is the
    old one lifting out and the next rising in. */
 .turn{
   position:relative;display:block;width:100%;height:1.4em;overflow:hidden;   /* one line */
-  margin:0 0 var(--s-8);                        /* 24 above the title */
-  font-size:clamp(22px, 1rem + .9vw, 30px);font-weight:300;line-height:1.2;
+  margin:0 0 var(--s-9);                        /* 32 above the title */
+  font-size:var(--hero-copy);font-weight:300;line-height:1.2;
   color:var(--ink);text-align:left;
 }
 /* a change is two moves in sequence, never one on top of the other: the old
@@ -315,9 +315,9 @@ body.chat-open{overflow:hidden}
 }
 /* the line under the title: two lines, light, quieter than the title */
 .hero__lede{
-  margin-top:var(--s-10);                       /* 40 under the title */
-  font-size:clamp(17px, .9rem + .5vw, 21px);font-weight:300;line-height:1.5;
-  color:var(--ink-2);
+  margin-top:var(--s-11);                       /* 48 under the title */
+  font-size:var(--hero-copy);font-weight:300;line-height:1.4;
+  color:var(--ink);
 }
 .hero__acts{
   margin-top:var(--s-11);                       /* 48 under the paragraph */
