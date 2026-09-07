@@ -71,7 +71,7 @@ d.setAttribute('data-theme',t||sys);})();
       <svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg>
     </a>
     <div class="nav__acts">
-      <a class="nav__ask" href="#ask">Ask Stagwell.AI</a>
+      <a class="btn btn--orange" href="#ask">Ask Stagwell<span class="btn__arrow" aria-hidden="true">→</span></a>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo<span class="btn__arrow" aria-hidden="true">→</span></button>
     </div>
   </nav>
@@ -90,23 +90,37 @@ d.setAttribute('data-theme',t||sys);})();
     <p class="hero__lede rv" style="--d:.55s">People. Technology. A global network<br>built to solve what's next.</p>
     <div class="hero__acts rv" style="--d:.7s">
       <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo<span class="btn__arrow" aria-hidden="true">→</span></button>
-      <a class="link link--lg" href="#ask" id="askLink">Ask Stagwell.AI<span class="link__arrow" aria-hidden="true">→</span></a>
+      <a class="btn btn--orange btn--lg" href="#ask" id="askLink">Ask Stagwell<span class="btn__arrow" aria-hidden="true">→</span></a>
     </div>
   </div>
 
-  <!-- the hero's photographic moment: full-bleed film, muted, under a poster -->
-  <figure class="film rv" style="--d:.2s" id="film">
-    <video class="film__v" id="filmV" muted loop playsinline autoplay preload="metadata"
-           poster="/assets/img/film-poster.jpg" aria-label="Stagwell.AI — the film">
-      <source src="/assets/video/stagwell-ai-explainer.mp4" type="video/mp4">
-    </video>
-  </figure>
+  <!-- the hero's visual moment. It arrives inset and grows to the full width
+       as you scroll; once it is full it comes alive. Built here as a 3D piece
+       with type on it, in place of a film that does not yet exist — when one
+       does, it drops into .reel__stage and the scroll mechanic is already
+       there. The words are the hero's own line, set as title cards. -->
+  <div class="reel" id="reel" aria-label="People. Technology. A global network built to solve what's next.">
+    <div class="reel__sticky">
+      <div class="reel__stage" id="reelStage">
+        <div class="scene" aria-hidden="true">
+          <i class="pl pl--1"></i><i class="pl pl--2"></i><i class="pl pl--3"></i>
+          <i class="pl pl--4"></i><i class="pl pl--5"></i>
+          <i class="ring ring--1"></i><i class="ring ring--2"></i>
+        </div>
+        <div class="reel__type">
+          <span class="reel__w" style="--i:0">People.</span>
+          <span class="reel__w" style="--i:1">Technology.</span>
+          <span class="reel__w" style="--i:2">A global network.</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ═══════════════════════ 2 · AI EXPERIENCE ═══════════════════════ -->
 <section class="ask" id="ask">
   <div class="wrap ask__in">
-    <h2 class="display display--ask rv"><span class="ln"><span class="ln__in">Bring us</span></span><span class="ln"><span class="ln__in">the challenge.</span></span></h2>
+    <h2 class="display display--ask rv"><span class="ln"><span class="ln__in">Ask <em>Stagwell.</em></span></span></h2>
     <p class="ask__lede rv" style="--d:.15s">Ask anything. Stagwell.AI finds the right expertise,<br>technology and people to solve it.</p>
 
     <form class="ask__form rv" style="--d:.3s" id="askForm" action="/next/agent" method="get" autocomplete="off">
@@ -115,18 +129,18 @@ d.setAttribute('data-theme',t||sys);})();
         <input class="ask__input" id="askInput" name="q" type="text"
                placeholder="What are you working on?" spellcheck="false">
         <input type="hidden" name="autostart" value="1">
-        <button class="ask__go" type="submit" aria-label="Ask Stagwell.AI">
+        <button class="ask__go" type="submit" aria-label="Ask Stagwell">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
     </form>
 
-    <ul class="ask__prompts rv" style="--d:.45s" aria-label="Suggested questions">
-      <li><button type="button" class="prompt" data-q="Increase brand awareness">Increase brand awareness</button></li>
-      <li><button type="button" class="prompt" data-q="Reach Gen Z">Reach Gen Z</button></li>
-      <li><button type="button" class="prompt" data-q="Improve sales">Improve sales</button></li>
-      <li><button type="button" class="prompt" data-q="Analyze competitors">Analyze competitors</button></li>
-      <li><button type="button" class="prompt" data-q="Explore new markets">Explore new markets</button></li>
+    <ul class="ask__tags rv" style="--d:.45s" role="group" aria-label="Pick a starting point">
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Increase brand awareness">Increase brand awareness</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Reach Gen Z">Reach Gen Z</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Improve sales">Improve sales</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Analyze competitors">Analyze competitors</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Explore new markets">Explore new markets</button></li>
     </ul>
   </div>
 </section>
@@ -316,7 +330,7 @@ d.setAttribute('data-theme',t||sys);})();
       <li><a href="/next/why">Why Stagwell.AI</a></li>
     </ul>
     <ul class="foot__col">
-      <li><a href="#ask">Ask Stagwell.AI</a></li>
+      <li><a href="#ask">Ask Stagwell</a></li>
       <li><button type="button" data-cta="session">Book a demo</button></li>
       <li><button type="button" data-cta="expert">Talk to an expert</button></li>
     </ul>

@@ -65,24 +65,29 @@
     }
   }
 
-  /* ── the film settles: 1.08 at the top of its travel, 1 by the time it has
-        crossed the viewport, and drifts a little slower than the page ────── */
-  const film = $('#film'), filmV = $('#filmV');
-  if (film && filmV && !REDUCED) {
+  /* ── the reel: inset on arrival, full-bleed by the time it has been scrolled
+        through, and alive only once it is full. Progress is the sticky runner's
+        travel; width, height and radius follow it; is-live flips at 92%. ─── */
+  const reel = $('#reel'), stage = $('#reelStage');
+  if (reel && stage) {
     let t = false;
     const tick = () => {
       t = false;
-      const r = film.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, 1 - (r.top - innerHeight * .1) / (innerHeight * .9)));
-      filmV.style.setProperty('--film-s', (1.08 - .08 * p).toFixed(4));
-      filmV.style.setProperty('--film-y', ((r.top / innerHeight) * -22).toFixed(1) + 'px');
+      const r = reel.getBoundingClientRect();
+      const travel = r.height - innerHeight;
+      const p = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 1;
+      const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;   /* ease in-out */
+      stage.style.setProperty('--reel-w', (58 + 42 * e).toFixed(2) + '%');
+      stage.style.setProperty('--reel-h', (64 + 36 * e).toFixed(2) + 'vh');
+      stage.style.setProperty('--reel-r', (10 - 10 * e).toFixed(1) + 'px');
+      stage.classList.toggle('is-live', p >= .92 || REDUCED);
     };
     addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(tick); } }, { passive: true });
+    addEventListener('resize', tick);
     tick();
   }
-  if (filmV) { filmV.play && filmV.play().catch(() => {}); }
 
-  /* ── "Ask Stagwell.AI" scrolls to the experience, then lands in the field ─ */
+  /* ── "Ask Stagwell" scrolls to the experience, then lands in the field ──── */
   $$('a[href="#ask"]').forEach(a => a.addEventListener('click', (e) => {
     if (!ask) return;
     e.preventDefault();
@@ -91,19 +96,24 @@
     if (input) setTimeout(() => input.focus({ preventScroll: true }), REDUCED ? 0 : 700);
   }));
 
-  /* ── the input: prompts fill it; submit hands off to the real agent ─────── */
-  const form = $('#askForm'), input = $('#askInput');
+  /* ── the input: a tag puts its words in the field and nothing more. The
+        arrow, or Enter, is what sends — to the real agent, by the form's own
+        GET carrying q and autostart=1 to /next/agent. ───────────────────── */
+  const form = $('#askForm'), input = $('#askInput'), tags = $$('.tag');
   if (form && input) {
-    $$('.prompt').forEach(b => b.addEventListener('click', () => {
-      input.value = b.dataset.q || b.textContent.trim();
+    tags.forEach(b => b.addEventListener('click', () => {
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      tags.forEach(o => o.setAttribute('aria-pressed', 'false'));
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      input.value = on ? (b.dataset.q || b.textContent.trim()) : '';
       input.focus();
-      /* a chosen prompt is a complete question: go */
-      form.requestSubmit ? form.requestSubmit() : form.submit();
     }));
+    /* typing something else un-picks the tag */
+    input.addEventListener('input', () => {
+      tags.forEach(o => { if (o.getAttribute('aria-pressed') === 'true' && input.value !== o.dataset.q) o.setAttribute('aria-pressed', 'false'); });
+    });
     form.addEventListener('submit', (e) => {
       if (!input.value.trim()) { e.preventDefault(); input.focus(); }
-      /* otherwise the form's own GET carries q and autostart=1 to /next/agent,
-         which convo.js reads and opens the conversation on */
     });
   }
 
@@ -166,9 +176,29 @@
     };
     track.addEventListener('pointerup', endDrag);
     track.addEventListener('pointercancel', endDrag);
-    track.addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { track.scrollLeft += e.deltaY; e.preventDefault(); }
-    }, { passive: false });
+    /* No wheel capture. Turning a vertical wheel sideways is what made the
+       page "scroll in place" over the field and stop dead at its last card.
+       A trackpad still scrolls it sideways natively; a mouse drags it. */
+
+    /* a slow drift of its own, so the field is never a still row. It rests
+       while you are over it, dragging it, or in it with the keyboard, and it
+       turns around at either end. */
+    let drift = !REDUCED, dir = 1, resting = false, last = 0;
+    const step = (now) => {
+      if (drift && !resting && !dragging) {
+        const dt = Math.min(48, now - (last || now)); last = now;
+        const max = track.scrollWidth - track.clientWidth;
+        let next = track.scrollLeft + dir * 0.022 * dt;
+        if (next >= max) { next = max; dir = -1; } else if (next <= 0) { next = 0; dir = 1; }
+        track.scrollLeft = next;
+      } else last = now;
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    track.addEventListener('pointerenter', () => { resting = true; });
+    track.addEventListener('pointerleave', () => { resting = false; });
+    track.addEventListener('focusin',  () => { resting = true; });
+    track.addEventListener('focusout', () => { resting = false; });
 
     /* click: a card off-centre comes to the centre; the centred card flips.
        A drag is not a click. */
