@@ -160,9 +160,14 @@
     const add = (el) => { thread.appendChild(el); requestAnimationFrame(settle); return el; };
     const me = (text) => { const t = document.createElement('div'); t.className = 'turnb turnb--me'; t.textContent = text; return add(t); };
     const wait = () => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>'; return add(t); };
-    const ai = (html, chips) => {
+    const ai = (html, chips, go) => {
       const t = document.createElement('div'); t.className = 'turnb turnb--ai';
-      t.innerHTML = '<div class="turnb__who">Stagwell AI</div><div class="turnb__text">' + html + '</div>';
+      t.innerHTML = '<div class="turnb__text">' + html + '</div>';
+      if (go) {
+        const a = document.createElement('a'); a.className = 'btn btn--ink turnb__go'; a.href = go.href; a.textContent = go.label;
+        a.addEventListener('click', () => { if (state.site) { try { sessionStorage.setItem('sai-lead-site', state.site); } catch (e) {} } });
+        t.appendChild(a);
+      }
       if (chips) {
         const row = document.createElement('div'); row.className = 'turnb__chips';
         chips.forEach(cp => { const b = document.createElement('button'); b.type = 'button'; b.className = 'tag'; b.textContent = cp; b.addEventListener('click', () => send(cp)); row.appendChild(b); });
@@ -171,19 +176,13 @@
       return add(t);
     };
     const esc = (s) => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
-    const reply = (html, chips) => new Promise(res => {
+    const reply = (html, chips, go) => new Promise(res => {
       const w = wait();
-      setTimeout(() => { w.remove(); ai(html, chips); res(); }, REDUCED ? 0 : 900);
+      setTimeout(() => { w.remove(); ai(html, chips, go); res(); }, REDUCED ? 0 : 900);
     });
-    /* the handoff: the site the agent's own door would have seeded, and the
-       problem as its first answer; the agent page opens with both and goes
-       on from there */
-    const handoff = () => {
-      state.done = true;
-      if (state.site) { try { sessionStorage.setItem('sai-lead-site', state.site); } catch (e) {} }
-      const q = state.problem || '';
-      setTimeout(() => { location.href = '/next/agent.html?autostart=1' + (q ? '&q=' + encodeURIComponent(q) : ''); }, REDUCED ? 0 : 1400);
-    };
+    /* the way on: a link to the agent page, which opens with the problem as
+       its first answer and the site seeded (set when the link is followed) */
+    const goLink = () => ({ href: '/next/agent.html?autostart=1' + (state.problem ? '&q=' + encodeURIComponent(state.problem) : ''), label: 'See your snapshot' });
     const send = async (raw) => {
       const v = (raw || '').trim();
       if (state.busy || state.done) return;
@@ -202,8 +201,8 @@
         await reply('Got it. What’s your company? A website works — I’ll start pulling your snapshot.');
       } else {
         const who = state.site || state.company;
-        await reply('Perfect. Give me a moment — I’m pulling ' + (who ? '<b>' + esc(who) + '</b>’s' : 'your') + ' snapshot…');
-        handoff();
+        state.done = true;
+        await reply('Perfect — I have what I need. Your snapshot' + (who ? ' of <b>' + esc(who) + '</b>' : '') + ' and the tools that fit are ready when you are.', null, goLink());
       }
       state.busy = false;
       miniInput.focus({ preventScroll: true });
