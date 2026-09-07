@@ -79,7 +79,7 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(80px, 2rem + 9.6vw, 184px);text-transform:none;letter-spacing:-.04em;text-align:left;line-height:.88}
+.display--hero {font-size:clamp(80px, min(2rem + 9.6vw, 20vh), 184px);text-transform:none;letter-spacing:-.04em;text-align:left;line-height:.88}
 .display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
 /* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
 .display--hero em{color:var(--orange)}
@@ -114,23 +114,31 @@ h1,h2,p,figure{margin:0}
 
 /* ── buttons and links ───────────────────────────────────────────────────── */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
   height:48px;padding:0 28px;border-radius:999px;
   font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
   white-space:nowrap;transition:background-color .25s ease,color .25s ease,transform .3s var(--ease);
 }
 .btn--ink{background:var(--ink);color:#FFFFFF}
 .btn--ink:hover{background:#000;transform:translateY(-1px)}
-/* Ask Stagwell: the one orange button on the page. White type on it is the
-   client's decision, taken knowing it measures 2.8:1 on this orange. */
-.btn--orange{background:var(--orange);color:#FFFFFF}
-.btn--orange:hover{background:#FF7D3B;transform:translateY(-1px)}
-/* the nav's Ask Stagwell, inside out: white ground, orange type, a soft stroke.
-   The client's spec; orange type on white measures 2.8:1 and he knows it. */
-.btn--line{background:#FFFFFF;color:var(--orange);box-shadow:inset 0 0 0 1px rgba(255,109,36,.38)}
-.btn--line:hover{box-shadow:inset 0 0 0 1px rgba(255,109,36,.8);transform:translateY(-1px)}
+/* buttons are black and white only (client, 2026-09-07 late): the filled ink
+   button and its outline twin — white ground, ink type, a one-pixel ink
+   stroke. No orange on a button anywhere; the orange belongs to "Ask". */
+.btn--line{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn--line:hover{background:var(--ink);color:#FFFFFF;transform:translateY(-1px)}
 .btn--lg{height:60px;padding:0 34px;font-size:15px}
-.btn:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* an icon leads the label: sized here, never by the container */
+.btn__ic{width:16px;height:16px;flex-shrink:0;display:block}
+.btn--lg .btn__ic{width:18px;height:18px}
+.btn--ic{padding-left:24px}
+.btn--lg.btn--ic{padding-left:28px}
+/* the voice wave breathes while you hover the call button — a state, not a show */
+.btn__ic--wave rect{transform-origin:center;transition:transform .3s var(--ease)}
+.btn:hover .btn__ic--wave rect{animation:wave .9s ease-in-out infinite alternate}
+.btn:hover .btn__ic--wave rect:nth-child(2),.btn:hover .btn__ic--wave rect:nth-child(4){animation-delay:.15s}
+.btn:hover .btn__ic--wave rect:nth-child(3){animation-delay:.3s}
+@keyframes wave{from{transform:scaleY(.55)}to{transform:scaleY(1.15)}}
 
 .link{
   display:inline-flex;align-items:center;gap:var(--s-4);
@@ -158,7 +166,7 @@ h1,h2,p,figure{margin:0}
 .nav__links a{font-size:14px;font-weight:500;color:var(--ink);padding:6px 0;border-bottom:1px solid transparent;transition:border-color .25s ease}
 .nav__links a:hover{border-bottom-color:var(--ink)}
 .nav__brand{justify-self:start;color:var(--ink);display:block}
-.nav__brand svg{height:19px;width:auto}
+.nav__brand svg{height:16px;width:auto}
 .nav__acts{justify-self:end;display:flex;align-items:center;gap:var(--s-5)}   /* 12 — a pair */
 .nav__ask{font-size:14px;font-weight:500;color:var(--ink-2);transition:color .25s ease}
 .nav__ask:hover{color:var(--ink)}
@@ -176,31 +184,29 @@ h1,h2,p,figure{margin:0}
    buttons. It is the viewport's height with the content centred in it, so the
    buttons are inside the frame at 700px as surely as at 950. */
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden}
-/* the band stands on the right of the first screen, the way it does on the
-   billboard — beside the words, not behind them. Sized to the first screen,
-   not the section: sized to the section it sat under the fold. */
-.hero__bg{position:absolute;top:0;right:0;width:36%;height:100svh;display:block;pointer-events:none}
-/* three zones, as on the billboard: the title block, the question beside it,
-   the band beyond. The first two are a grid; the band is the canvas behind. */
+/* two columns: the words on the left, read top to bottom; the right column
+   is the client's image (not yet supplied). Clear air under the bar before
+   the words begin, scaled to the screen's height. */
 .hero__in{
   position:relative;z-index:1;
   flex:1;min-height:calc(100svh - var(--nav-h));
-  padding-top:var(--nav-h);
+  padding-top:calc(var(--nav-h) + clamp(2.5rem, 8vh, 5rem));
+  padding-bottom:var(--s-12);
   display:grid;grid-template-columns:minmax(0,auto) minmax(300px,1fr);
   column-gap:clamp(2rem, 1rem + 4vw, 5rem);
-  align-items:center;text-align:left;
+  align-items:start;text-align:left;
   max-width:var(--wrap);
 }
 .hero__l{display:flex;flex-direction:column;align-items:flex-start;max-width:min(52vw,760px)}
+.hero__r{min-height:1px}
 /* the question, where the billboard's tagline sits: big, light, two lines.
    One phrase showing, the rest stacked beneath out of view; a change is the
    old one lifting out and the next rising in. */
 .turn{
   position:relative;display:block;width:100%;height:2.3em;overflow:hidden;
-  justify-self:start;
+  margin:0 0 var(--s-8);                        /* 24 above the title */
   font-size:clamp(28px, 1rem + 2.2vw, 46px);font-weight:300;line-height:1.12;
   color:var(--ink);text-align:left;
-  padding-right:var(--s-8);
 }
 /* a change is two moves in sequence, never one on top of the other: the old
    phrase leaves fast and completely, THEN the new one rises in. Two large

@@ -81,29 +81,30 @@ d.setAttribute('data-theme',t||sys);})();
 
 <!-- ═══════════════════════ 1 · HERO ═══════════════════════ -->
 <section class="hero" id="hero">
-  <!-- the light field: thin vertical bars, three slow wave bands in the brand's
-       colours, drawn on a canvas by home.js. Decorative; nothing reads from it. -->
-  <canvas class="hero__bg" id="heroBg" aria-hidden="true"></canvas>
   <div class="wrap hero__in">
+    <!-- one column, read top to bottom: the question, the answer, the two
+         ways in. The right column is reserved for the client's image. -->
     <div class="hero__l">
+      <!-- where the billboard carries its tagline: the question, big, two lines,
+           turning over. The first three are the client's; the rest match them. -->
+      <p class="turn rv" style="--d:.1s" id="turn" aria-live="polite" aria-atomic="true">
+        <span class="turn__w is-on">A complex<br>challenge?</span>
+        <span class="turn__w">New<br>markets?</span>
+        <span class="turn__w">A bolder<br>opportunity?</span>
+        <span class="turn__w">A brand that<br>needs momentum?</span>
+        <span class="turn__w">Customers you<br>haven't reached?</span>
+        <span class="turn__w">A launch that<br>has to land?</span>
+      </p>
       <h1 class="display display--hero" id="heroTitle">
         <span class="ln"><span class="ln__in"><em>Ask</em></span></span><span class="ln"><span class="ln__in"><span class="navy">Stagwell.</span></span></span>
       </h1>
+      <!-- black and white only: the one filled button, and its outline twin -->
       <div class="hero__acts rv" style="--d:.5s">
-        <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
-        <a class="btn btn--orange btn--lg" href="#ask" id="askLink">Ask Stagwell</a>
+        <a class="btn btn--ink btn--lg btn--ic" href="#ask" id="askLink"><svg class="btn__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10 1.5c.6 3.9 2.6 5.9 6.5 6.5-3.9.6-5.9 2.6-6.5 6.5-.6-3.9-2.6-5.9-6.5-6.5 3.9-.6 5.9-2.6 6.5-6.5Z"/><path fill="currentColor" d="M16 12.5c.3 1.6 1.1 2.4 2.7 2.7-1.6.3-2.4 1.1-2.7 2.7-.3-1.6-1.1-2.4-2.7-2.7 1.6-.3 2.4-1.1 2.7-2.7Z"/></svg> Ask Stagwell</a>
+        <button type="button" class="btn btn--line btn--lg btn--ic" data-cta="callback"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
       </div>
     </div>
-    <!-- where the billboard carries its tagline: the question, big, two lines,
-         turning over. The first three are the client's; the rest match them. -->
-    <p class="turn rv" style="--d:.3s" id="turn" aria-live="polite" aria-atomic="true">
-      <span class="turn__w is-on">A complex<br>challenge?</span>
-      <span class="turn__w">New<br>markets?</span>
-      <span class="turn__w">A bolder<br>opportunity?</span>
-      <span class="turn__w">A brand that<br>needs momentum?</span>
-      <span class="turn__w">Customers you<br>haven't reached?</span>
-      <span class="turn__w">A launch that<br>has to land?</span>
-    </p>
+    <div class="hero__r" aria-hidden="true"><!-- the image goes here --></div>
   </div>
 
   <!-- the hero's visual moment: the client's own film. It arrives inset and
