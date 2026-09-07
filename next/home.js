@@ -159,45 +159,63 @@
     const settle = () => { stack.scrollTo({ top: stack.scrollHeight, behavior: REDUCED ? 'auto' : 'smooth' }); };
     const add = (el) => { thread.appendChild(el); requestAnimationFrame(settle); return el; };
     const me = (text) => { const t = document.createElement('div'); t.className = 'turnb turnb--me'; t.textContent = text; return add(t); };
-    /* the thinking field: ~90 tiny ink dots drifting slowly behind the
-       column, each breathing on its own — on while a reply is on its way */
+    /* the thinking field: not particles — a fine lattice of dots that never
+       move, whose brightness travels through the grid as slow coherent
+       waves (a processor, not dust). At rest one faint wave passes; while a
+       reply is on its way, rings spread from where the answer will land. */
     const think = (() => {
-      const cv = $('#heroThink'); if (!cv || !cv.getContext || REDUCED) return { on() {}, off() {} };
-      const ctx = cv.getContext('2d'); let dots = [], raf = 0, W = 0, H = 0, t0 = 0;
-      /* two levels: ambient at rest (barely there), lifted while thinking */
-      let lift = 0, liftTarget = 0;
+      const cv = $('#heroThink'); if (!cv || !cv.getContext || REDUCED) return { ambient() {}, on() {}, off() {}, at() {} };
+      const ctx = cv.getContext('2d'); let pts = [], raf = 0, W = 0, H = 0, t0 = 0, last = 0;
+      let lift = 0, liftTarget = 0, ox = 0, oy = 0;
+      const GAP = 22;
       const size = () => {
         const d = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight;
         cv.width = Math.round(W * d); cv.height = Math.round(H * d); ctx.setTransform(d, 0, 0, d, 0, 0);
+        pts = [];
+        for (let y = GAP / 2; y < H; y += GAP) for (let x = GAP / 2; x < W; x += GAP) pts.push({ x, y });
+        if (!ox) { ox = W * .3; oy = H * .6; }
       };
-      const seed = () => { dots = Array.from({ length: 90 }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * 14, vy: (Math.random() - .5) * 14, r: .8 + Math.random() * 1.2, ph: Math.random() * Math.PI * 2, sp: .6 + Math.random() * .9 })); };
       const frame = (t) => {
-        if (!t0) t0 = t; const dt = Math.min(.05, (t - (frame.last || t)) / 1000); frame.last = t;
-        ctx.clearRect(0, 0, W, H);
+        if (!t0) t0 = t; const dt = Math.min(.05, (t - (last || t)) / 1000); last = t;
+        const s = (t - t0) / 1000;
         lift += (liftTarget - lift) * Math.min(1, dt * 3);
-        const speed = 1 + lift * .8, base = .05 + lift * .06, range = .12 + lift * .18;
-        for (const p of dots) {
-          p.x += p.vx * speed * dt; p.y += p.vy * speed * dt;
-          if (p.x < -4) p.x = W + 4; if (p.x > W + 4) p.x = -4; if (p.y < -4) p.y = H + 4; if (p.y > H + 4) p.y = -4;
-          const a = base + range * (0.5 + 0.5 * Math.sin((t - t0) / 1000 * p.sp + p.ph));
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = 'rgba(11,18,32,' + a.toFixed(3) + ')'; ctx.fill();
+        ctx.clearRect(0, 0, W, H);
+        const base = .03 + lift * .02, wave = .07 + lift * .08, ringA = lift * .30;
+        for (const p of pts) {
+          /* two slow waves crossing the grid, one a little faster than the other */
+          const w1 = 0.5 + 0.5 * Math.sin((p.x * .012 + p.y * .008) - s * .9);
+          const w2 = 0.5 + 0.5 * Math.sin((p.x * -.006 + p.y * .014) - s * .55);
+          let a = base + wave * w1 * w2 * 1.6;
+          if (lift > .01) {
+            /* rings from the origin: two, a beat apart, widening and fading */
+            const r = Math.hypot(p.x - ox, p.y - oy);
+            for (let k = 0; k < 2; k++) {
+              const ph = ((s * 140 + k * 260) % 520);
+              const ring = Math.exp(-Math.pow((r - ph) / 26, 2)) * (1 - ph / 520);
+              a += ringA * ring;
+            }
+          }
+          if (a < .012) continue;
+          ctx.fillStyle = 'rgba(11,18,32,' + Math.min(.5, a).toFixed(3) + ')';
+          ctx.fillRect(p.x - 1, p.y - 1, 2, 2);
         }
         raf = requestAnimationFrame(frame);
       };
-      const start = () => { size(); if (!dots.length) seed(); cv.classList.add('is-on'); if (!raf) { frame.last = 0; raf = requestAnimationFrame(frame); } };
+      const start = () => { if (!pts.length) size(); cv.classList.add('is-on'); if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
       addEventListener('resize', () => { if (raf) size(); });
-      /* off screen the field rests; back on, it goes on */
       if ('IntersectionObserver' in window) new IntersectionObserver(es => {
         if (es[0].isIntersecting) { if (!raf) start(); } else if (raf) { cancelAnimationFrame(raf); raf = 0; }
       }, { threshold: 0 }).observe(cv);
       return {
         ambient() { liftTarget = 0; start(); },
         on() { liftTarget = 1; start(); },
-        off() { liftTarget = 0; }
+        off() { liftTarget = 0; },
+        /* where the rings come from: the spot the reply will land */
+        at(el) { const r = el.getBoundingClientRect(), c = cv.getBoundingClientRect(); ox = r.left - c.left + 40; oy = r.top - c.top + r.height / 2; }
       };
     })();
     think.ambient();   /* on from landing: the column is quietly alive */
-    const wait = () => { think.on(); const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>'; return add(t); };
+    const wait = () => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>'; add(t); think.at(t); think.on(); return t; };
     const ai = (html, chips, go) => {
       const t = document.createElement('div'); t.className = 'turnb turnb--ai';
       t.innerHTML = '<div class="turnb__text">' + html + '</div>';
