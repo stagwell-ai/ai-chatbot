@@ -261,23 +261,43 @@ body.chat-open{overflow:hidden}
   padding:calc(var(--nav-h) + var(--s-8)) var(--gutter) var(--gutter)
           max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
 }
-/* the title and the paragraph float in the space above the bottom row */
-.hero__l > .display--hero{margin-top:auto}
+/* the stack above the bottom row: the title floats down to the paragraph and
+   the tags; once the conversation starts it scrolls, anchored to its bottom,
+   so each new turn pushes what came before up and out */
+.hero__stack{flex:1;min-height:0;align-self:stretch;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}
+.hero__stack > .display--hero{margin-top:auto;align-self:stretch}
+.hero__l.is-chat .hero__stack{overflow-y:auto;scrollbar-width:none;padding-right:var(--s-4);mask-image:linear-gradient(to bottom,transparent,#000 56px)}
+.hero__l.is-chat .hero__stack::-webkit-scrollbar{display:none}
 /* the title takes the column's width, not its own: a start-aligned flex item
    shrink-wraps its text, so fitDisplays() measured a box that already equalled
    the line and never brought the size down — it ran 5px into the picture. */
 .hero__l > .display--hero,.hero__l > .hero__acts{align-self:stretch}   /* the row too: shrink-wrapped, it ignored the field's basis */
-/* the conversation takes the column: the title and the paragraph go, the
-   frame fills the height above the bottom row, Call me stays */
-.hero__l.is-chat{justify-content:flex-start}
-.hero__l.is-chat > .display--hero,.hero__l.is-chat > .hero__lede,.hero__l.is-chat > .hero__tags,.hero__l.is-chat .ask-mini{display:none}
+/* the turns: yours as an ink pill from the right, the agent's as plain
+   words under a small name; each rises in from below */
+.hero__thread{align-self:stretch;display:flex;flex-direction:column;gap:var(--s-5);width:100%}
+.hero__thread:not(:empty){padding-top:var(--s-9)}
+.turnb{max-width:min(88%,640px);animation:turnIn .55s var(--ease) both}
+.turnb--me{align-self:flex-end;background:var(--ink);color:#FFFFFF;border-radius:22px 22px 6px 22px;padding:12px 18px;font-size:17px;line-height:1.4}
+.turnb--ai{align-self:flex-start;font-size:var(--hero-copy);line-height:1.45;color:var(--ink)}
+.turnb__who{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.turnb__who::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--orange)}
+.turnb__chips{display:flex;flex-wrap:wrap;gap:var(--s-4);margin-top:var(--s-6)}
+.turnb__chips .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2)}
+.turnb__chips .tag:hover{border-color:var(--ink);color:var(--ink)}
+/* the agent thinking: three dots breathing */
+.turnb--wait{display:flex;gap:5px;padding:8px 0}
+.turnb--wait i{width:7px;height:7px;border-radius:50%;background:var(--ink-4);animation:dot 1s ease-in-out infinite}
+.turnb--wait i:nth-child(2){animation-delay:.15s}.turnb--wait i:nth-child(3){animation-delay:.3s}
+@keyframes turnIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes dot{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+/* once the conversation is on, the tags under the paragraph are no longer
+   the way in — the agent asks in its own turn */
+.hero__l.is-chat > .hero__stack > .hero__tags{display:none}
 /* the starting points under the paragraph: outlined, ink on white, left */
 .hero__tags{display:flex;flex-wrap:wrap;gap:var(--s-4);margin:0 0 var(--s-11);justify-content:flex-start}
 .hero__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2)}
 .hero__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
 .hero__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.hero__chat{flex:1;min-height:0;align-self:stretch;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line);background:#FFFFFF}
-.hero__chat iframe{width:100%;height:100%;border:0;display:block}
 .hero__l.is-chat .hero__acts{margin-top:var(--s-6)}
 .hero__r{min-height:1px}
 /* the panel: the whole first screen, clipped to the right column. Opening is
@@ -356,6 +376,7 @@ body.chat-open{overflow:hidden}
 /* the line under the title: two lines, light, quieter than the title */
 .hero__lede{
   margin:var(--s-11) 0 var(--s-8);              /* 48 under the title, 24 above the tags */
+  white-space:nowrap;                           /* one line, by the client's cut */
   font-size:var(--hero-copy);font-weight:300;line-height:1.4;
   color:var(--ink);
 }
@@ -576,7 +597,7 @@ body.chat-open{overflow:hidden}
 
 /* ── motion off ──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion:reduce){
-  .rv,.ln__in,.co,.co__face,.co__back,.co__img,.hero__media,.chat-over{transition:none!important;opacity:1!important}
+  .rv,.ln__in,.co,.co__face,.co__back,.co__img,.hero__media,.chat-over{transition:none!important;animation:none!important;opacity:1!important}
   .turn__w{transition:none!important}
 
   .rv,.ln__in,.co,.co__face,.co__back,.co__img{transform:none!important}

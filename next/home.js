@@ -141,35 +141,83 @@
     }, { threshold: .2 }).observe(media);
   }
 
-  /* ── the conversation in the hero: sending the field starts the real agent
-        (agent.html, framed bare with ?embed=1, in light) in place of the title
-        and the paragraph. Same conversation as /next/agent; different place. */
-  const heroL = $('.hero__l'), heroChat = $('#heroChat'), mini = $('#askMini'), miniInput = $('#askMiniInput');
-  if (heroL && heroChat && mini && miniInput) {
-    const startHeroChat = (v) => {
-      if (!v || heroChat.querySelector('iframe')) return;
-      /* a website is the company, handed to the agent the way its own door
-         does (the session seed convo.js consumes); anything else is the
-         problem, and rides in as q */
+  /* ── the conversation in the hero. Native to the column: your words rise
+        from the bottom as a turn and push the title up; the agent answers in
+        the page's voice. It takes the two things the agent needs — the problem
+        and the company — then says it is pulling the snapshot and hands the
+        session to the agent page, which continues the same conversation.
+        The agent's lines here are placeholders until the client writes them. */
+  const heroL = $('.hero__l'), stack = $('#heroStack'), thread = $('#heroThread'),
+        mini = $('#askMini'), miniInput = $('#askMiniInput');
+  if (heroL && stack && thread && mini && miniInput) {
+    const state = { site: null, company: null, problem: null, busy: false, done: false };
+    const CHIPS = ['Increase brand awareness', 'Reach Gen Z', 'Improve sales', 'Analyze competitors', 'Explore new markets'];
+    const domainOf = (v) => {
       const m = v.match(/^(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,})(?:[\/?#].*)?$/i);
-      const domain = m && !/\s/.test(v) ? m[1].toLowerCase() : null;
-      let src = '/next/agent.html?theme=light&embed=1&autostart=1';
-      if (domain) { try { sessionStorage.setItem('sai-lead-site', domain); } catch (e) {} }
-      else src += '&q=' + encodeURIComponent(v);
-      const f = document.createElement('iframe');
-      f.className = 'hero__chat-frame'; f.title = 'Ask Stagwell';
-      f.src = src;
-      heroChat.appendChild(f); heroChat.hidden = false; heroL.classList.add('is-chat');
-      f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} });
+      return m && !/\s/.test(v) ? m[1].toLowerCase() : null;
+    };
+    const settle = () => { stack.scrollTo({ top: stack.scrollHeight, behavior: REDUCED ? 'auto' : 'smooth' }); };
+    const add = (el) => { thread.appendChild(el); requestAnimationFrame(settle); return el; };
+    const me = (text) => { const t = document.createElement('div'); t.className = 'turnb turnb--me'; t.textContent = text; return add(t); };
+    const wait = () => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>'; return add(t); };
+    const ai = (html, chips) => {
+      const t = document.createElement('div'); t.className = 'turnb turnb--ai';
+      t.innerHTML = '<div class="turnb__who">Stagwell AI</div><div class="turnb__text">' + html + '</div>';
+      if (chips) {
+        const row = document.createElement('div'); row.className = 'turnb__chips';
+        chips.forEach(cp => { const b = document.createElement('button'); b.type = 'button'; b.className = 'tag'; b.textContent = cp; b.addEventListener('click', () => send(cp)); row.appendChild(b); });
+        t.appendChild(row);
+      }
+      return add(t);
+    };
+    const esc = (s) => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
+    const reply = (html, chips) => new Promise(res => {
+      const w = wait();
+      setTimeout(() => { w.remove(); ai(html, chips); res(); }, REDUCED ? 0 : 900);
+    });
+    /* the handoff: the site the agent's own door would have seeded, and the
+       problem as its first answer; the agent page opens with both and goes
+       on from there */
+    const handoff = () => {
+      state.done = true;
+      if (state.site) { try { sessionStorage.setItem('sai-lead-site', state.site); } catch (e) {} }
+      const q = state.problem || '';
+      setTimeout(() => { location.href = '/next/agent.html?autostart=1' + (q ? '&q=' + encodeURIComponent(q) : ''); }, REDUCED ? 0 : 1400);
+    };
+    const send = async (raw) => {
+      const v = (raw || '').trim();
+      if (state.busy || state.done) return;
+      heroL.classList.add('is-chat');
+      state.busy = true; miniInput.value = '';
+      if (v) me(v);
+      const d = v ? domainOf(v) : null;
+      if (d) state.site = d;
+      else if (v && !state.problem) state.problem = v;
+      else if (v) state.company = v;
+      if (state.site && !state.problem) {
+        miniInput.placeholder = 'What do you need help solving?';
+        await reply('Got it — I’m reading <b>' + esc(state.site) + '</b> now. What do you need help solving today?', CHIPS);
+      } else if (state.problem && !state.site && !state.company) {
+        miniInput.placeholder = 'Your website (optional)';
+        await reply('Got it. What’s your company? A website works — I’ll start pulling your snapshot.');
+      } else {
+        const who = state.site || state.company;
+        await reply('Perfect. Give me a moment — I’m pulling ' + (who ? '<b>' + esc(who) + '</b>’s' : 'your') + ' snapshot…');
+        handoff();
+      }
+      state.busy = false;
+      miniInput.focus({ preventScroll: true });
     };
     mini.addEventListener('submit', (e) => {
       e.preventDefault();
       const v = miniInput.value.trim();
-      if (!v) { miniInput.focus(); return; }
-      startHeroChat(v);
+      /* an empty send only means something at "your website (optional)": skip it */
+      if (!v && !(state.problem && !state.site && !state.company)) { miniInput.focus(); return; }
+      send(v);
     });
     /* a starting point is the problem, said for you */
-    $$('#heroTags .tag').forEach(b => b.addEventListener('click', () => startHeroChat(b.dataset.q || b.textContent.trim())));
+    $$('#heroTags .tag').forEach(b => b.addEventListener('click', () => send(b.dataset.q || b.textContent.trim())));
+    addEventListener('resize', () => { if (heroL.classList.contains('is-chat')) settle(); });
   }
 
   /* ── the chat over the page: the magnifier opens the Ask block full screen,
