@@ -74,7 +74,11 @@
   }
 
   /* ── reveals: once, when a thing enters the lower 88% of the viewport ──── */
-  const rv = $$('.rv');
+  /* the hero's own reveals go on load — the observer ignores the bottom 12%
+     of the screen, and on a shorter window the buttons sat in that strip and
+     never appeared */
+  $$('.hero .rv').forEach(el => el.classList.add('in'));
+  const rv = $$('.rv:not(.hero .rv)');
   if (rv.length) {
     if (REDUCED || !('IntersectionObserver' in window)) rv.forEach(el => el.classList.add('in'));
     else {
