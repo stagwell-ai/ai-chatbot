@@ -174,6 +174,17 @@
         pts = [];
         for (let y = GAP / 2; y < H; y += GAP) for (let x = GAP / 2; x < W; x += GAP) pts.push({ x, y });
         if (!ox) { ox = W * .3; oy = H * .6; }
+        stopsCache = null;
+      };
+      /* the loop's stops: the title, Call me, the chat field, the tags — as
+         they actually sit; fractions of the canvas if any is missing */
+      let stopsCache = null;
+      const stops = () => {
+        if (stopsCache) return stopsCache;
+        const c = cv.getBoundingClientRect();
+        const mid = (sel, fx, fy) => { const el = $(sel); if (!el) return { x: W * fx, y: H * fy }; const r = el.getBoundingClientRect(); return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
+        stopsCache = [mid('#heroTitle', .3, .32), mid('#callBtn', .8, .88), mid('#askMini', .3, .88), mid('#heroTags', .25, .62)];
+        return stopsCache;
       };
       const frame = (t) => {
         if (!t0) t0 = t; const dt = Math.min(.05, (t - (last || t)) / 1000); last = t;
@@ -181,21 +192,31 @@
         lift += (liftTarget - lift) * Math.min(1, dt * 3);
         ctx.clearRect(0, 0, W, H);
         const base = .02 + lift * .02, ringA = lift * .30;
-        /* the resting motion leads the eye: one soft band of light sweeps
-           from the title, top left, down through the tags to the chat and
-           Call me at the bottom, then begins again at the title. Organic,
-           not a ruler: the pass eases in and out (it lingers at the title
-           and at the bottom), the band's front is a slow wavy edge, and its
-           width breathes. An 8s cycle. */
-        const T = 8, u0 = (s % T) / T, u = u0 * u0 * (3 - 2 * u0);   /* smoothstep: slow at both ends */
-        const diag = W + H, pos = u * (diag + 360) - 180;
-        const sig = 120 + 30 * Math.sin(s * .8);           /* the width breathing */
+        /* the resting motion is a SHAPE, not a line: a soft blob, stretched
+           a little along its way, that travels a loop through the column —
+           the title, Call me, the chat field, the tags, the title again —
+           easing into each and pausing a beat there, like attention moving.
+           A fainter blob follows a moment behind: a short trail. */
+        const P = stops();                                  /* the loop's stops, from the real elements */
+        const SEG = 3.2, DWELL = .9, L = P.length, cyc = (SEG + DWELL) * L;
+        const at = (time) => {
+          const tt = ((time % cyc) + cyc) % cyc, i = Math.floor(tt / (SEG + DWELL)), f = tt - i * (SEG + DWELL);
+          const A = P[i], B = P[(i + 1) % L];
+          const u0 = Math.min(1, f / SEG), u = u0 * u0 * (3 - 2 * u0);     /* eased travel, then a dwell */
+          const wob = Math.sin(time * 1.3 + i) * 18;                       /* a little organic wander */
+          return { x: A.x + (B.x - A.x) * u + wob, y: A.y + (B.y - A.y) * u - wob * .6, dx: B.x - A.x, dy: B.y - A.y, moving: u0 < 1 ? 1 : 0 };
+        };
+        const c = at(s), c2 = at(s - .55);                                 /* the head and the trail */
+        const R = 150 + 18 * Math.sin(s * .9), stretch = 1 + .55 * c.moving;
+        const len = Math.hypot(c.dx, c.dy) || 1, ux = c.dx / len, uy = c.dy / len;   /* along the way */
+        const blob = (p, cx, cy, r, st) => {
+          const px = p.x - cx, py = p.y - cy;
+          const u = px * ux + py * uy, v = -px * uy + py * ux;             /* rotate into the way's frame */
+          const su = r * st, sv = r / Math.sqrt(st);
+          return Math.exp(-(u * u / (2 * su * su) + v * v / (2 * sv * sv)));
+        };
         for (const p of pts) {
-          /* the front is warped by two slow sines, so it never reads as a line */
-          const warp = 70 * Math.sin(p.y * .009 + s * .6) + 45 * Math.sin(p.x * .013 - s * .45);
-          const d = (p.x + p.y + warp) - pos;
-          const band = Math.exp(-(d * d) / (2 * sig * sig));
-          let a = base + .10 * band * (1 - lift * .5);
+          let a = base + (1 - lift * .5) * (.11 * blob(p, c.x, c.y, R, stretch) + .05 * blob(p, c2.x, c2.y, R * .85, stretch));
           if (lift > .01) {
             /* rings from the origin: two, a beat apart, widening and fading */
             const r = Math.hypot(p.x - ox, p.y - oy);
