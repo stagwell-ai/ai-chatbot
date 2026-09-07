@@ -202,9 +202,25 @@ h1,h2,p,figure{margin:0}
   position:fixed;inset:0;z-index:200;background:#FFFFFF;color:var(--ink);
   display:flex;align-items:center;justify-content:center;overflow:auto;
   padding:var(--s-15) 0;
-  opacity:0;transform:scale(.985);transition:opacity .35s ease,transform .45s var(--ease);
+  /* it spreads from where it was asked for — the field, or the magnifier —
+     as a circle that takes the screen; home.js sets the origin */
+  clip-path:circle(0px at var(--ox,50%) var(--oy,50%));
+  transition:clip-path .75s var(--ease);
 }
-.chat-over.is-in{opacity:1;transform:none}
+.chat-over.is-in{clip-path:circle(150vmax at var(--ox,50%) var(--oy,50%))}
+/* compact: sentence case, a size down, tighter steps */
+.chat-over__in{max-width:880px}
+.chat-over .chat-over__title{font-size:clamp(44px, 1rem + 3.6vw, 76px);text-transform:none;letter-spacing:-.03em}
+.chat-over .ask__lede{margin-top:var(--s-8);font-size:clamp(16px, .8rem + .4vw, 19px)}
+.chat-over .ask__form{margin-top:var(--s-11);max-width:760px}
+/* the field is a pill with a stroke and the send disc inside — not one line */
+.chat-over .ask__field{height:68px;padding:0 8px 0 26px;border:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:999px;background:#FFFFFF;transition:border-color .25s ease,box-shadow .25s ease}
+.chat-over .ask__field:focus-within{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.chat-over .ask__input{height:100%;padding:0 16px 0 0;font-size:clamp(17px, .8rem + .5vw, 21px);font-weight:400}
+.chat-over .ask__go{position:static;transform:none;width:52px;height:52px}
+.chat-over .ask__go:hover{transform:scale(1.06)}
+.chat-over .ask__tags{margin-top:var(--s-8)}
+.chat-over .tag{height:36px;padding:0 16px;font-size:13px}
 /* the disc rules sit later in the file: state these with the parent so they win */
 .chat-over .chat-over__close{position:absolute;top:var(--s-6);right:var(--gutter);background:var(--ink);color:#FFFFFF}
 .chat-over .chat-over__close .ic-x{display:block}
@@ -246,7 +262,7 @@ body.chat-open{overflow:hidden}
 /* the title takes the column's width, not its own: a start-aligned flex item
    shrink-wraps its text, so fitDisplays() measured a box that already equalled
    the line and never brought the size down — it ran 5px into the picture. */
-.hero__l > .display--hero{align-self:stretch}
+.hero__l > .display--hero,.hero__l > .hero__acts{align-self:stretch}   /* the row too: shrink-wrapped, it ignored the field's basis */
 .hero__r{min-height:1px}
 /* the panel: the whole first screen, clipped to the right column. Opening is
    the clip letting go to the left — the picture underneath is already full
@@ -331,6 +347,28 @@ body.chat-open{overflow:hidden}
   margin-top:var(--s-11);                       /* 48 under the paragraph */
   display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
 }
+/* the chat field: a white pill with the ink stroke, the send disc inside at
+   the right — the same height as the button beside it */
+.ask-mini{
+  position:relative;display:flex;align-items:center;
+  flex:0 1 400px;max-width:100%;height:60px;padding:0 6px 0 24px;border-radius:999px;   /* a basis, not a %, in a shrink-wrapped row */
+  background:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink);
+  transition:box-shadow .25s ease,transform .3s var(--ease);
+}
+.ask-mini:focus-within{box-shadow:inset 0 0 0 2px var(--ink)}
+.ask-mini__input{
+  flex:1;min-width:0;height:100%;background:none;border:0;outline:none;padding:0;
+  font-family:var(--sans);font-size:17px;font-weight:400;color:var(--ink);caret-color:var(--ink);
+}
+.ask-mini__input::placeholder{color:var(--ink-3)}
+.ask-mini__go{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;background:var(--ink);color:#FFFFFF;
+  transition:transform .3s var(--ease),background-color .25s ease;
+}
+.ask-mini__go svg{width:20px;height:20px}
+.ask-mini__go:hover{transform:scale(1.06)}
+.ask-mini__go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
 /* ── 2 · the AI experience ───────────────────────────────────────────────── */
 .ask{

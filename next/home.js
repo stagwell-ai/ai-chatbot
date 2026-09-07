@@ -146,7 +146,15 @@
   const over = $('#chatOver'), overClose = $('#chatOverClose'), searchBtn = $('#navSearch');
   if (over && overClose && searchBtn) {
     let lastFocus = null;
-    const openChat = () => {
+    /* where it spreads from: the centre of the thing that asked */
+    const originAt = (el) => {
+      const r = el.getBoundingClientRect();
+      over.style.setProperty('--ox', Math.round(r.left + r.width / 2) + 'px');
+      over.style.setProperty('--oy', Math.round(r.top + r.height / 2) + 'px');
+    };
+    const openChat = (from) => {
+      if (!over.hidden) return;
+      originAt(from || searchBtn);
       lastFocus = document.activeElement;
       over.hidden = false; document.body.classList.add('chat-open');
       searchBtn.setAttribute('aria-expanded', 'true');
@@ -159,11 +167,26 @@
       if (over.hidden) return;
       over.classList.remove('is-in');
       const done = () => { over.hidden = true; document.body.classList.remove('chat-open'); };
-      REDUCED ? done() : setTimeout(done, 360);
+      REDUCED ? done() : setTimeout(done, 760);
       searchBtn.setAttribute('aria-expanded', 'false');
       (lastFocus || searchBtn).focus({ preventScroll: true });
     };
-    searchBtn.addEventListener('click', openChat);
+    searchBtn.addEventListener('click', () => openChat(searchBtn));
+    /* the hero's field: the first keystroke opens the chat from the field,
+       carrying the words; the caret lands at their end */
+    const mini = $('#askMini'), miniInput = $('#askMiniInput'), overInput = $('.ask__input', over);
+    if (mini && miniInput && overInput) {
+      miniInput.addEventListener('input', () => {
+        if (over.hidden && miniInput.value.length) {
+          overInput.value = miniInput.value;
+          openChat(mini);
+          setTimeout(() => { overInput.focus({ preventScroll: true }); overInput.setSelectionRange(overInput.value.length, overInput.value.length); }, REDUCED ? 0 : 200);
+        }
+      });
+      mini.addEventListener('submit', (e) => {
+        if (!miniInput.value.trim()) { e.preventDefault(); miniInput.focus(); }
+      });
+    }
     overClose.addEventListener('click', closeChat);
     addEventListener('keydown', (e) => { if (e.key === 'Escape' && !over.hidden) closeChat(); });
   }
