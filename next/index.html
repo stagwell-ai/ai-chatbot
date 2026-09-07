@@ -15,13 +15,13 @@ d.setAttribute('data-theme',t||sys);})();
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
-<title>Stagwell.AI — The intelligence behind modern marketing</title>
+<title>Stagwell.AI — Ask Stagwell</title>
 <meta name="description" content="People. Technology. A global network built to solve what's next.">
 
 <link rel="canonical" href="https://stagwell.vercel.app/next">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Stagwell.AI">
-<meta property="og:title" content="Stagwell.AI — The intelligence behind modern marketing">
+<meta property="og:title" content="Stagwell.AI — Ask Stagwell">
 <meta property="og:description" content="People. Technology. A global network built to solve what's next.">
 <meta property="og:url" content="https://stagwell.vercel.app/next">
 <meta property="og:image" content="https://stagwell.vercel.app/next/assets/share/og.png">
@@ -82,13 +82,21 @@ d.setAttribute('data-theme',t||sys);})();
 <!-- ═══════════════════════ 1 · HERO ═══════════════════════ -->
 <section class="hero" id="hero">
   <div class="wrap hero__in">
+    <!-- the line above the title turns over: the problem changes, the answer
+         does not. The first three are the client's; the rest are written to
+         match them and are flagged as such. -->
+    <p class="turn rv" style="--d:.1s" id="turn" aria-live="polite" aria-atomic="true">
+      <span class="turn__w is-on">A complex challenge</span>
+      <span class="turn__w">New markets</span>
+      <span class="turn__w">A bigger opportunity</span>
+      <span class="turn__w">A brand that needs momentum</span>
+      <span class="turn__w">Customers you haven't reached</span>
+      <span class="turn__w">A launch that has to land</span>
+    </p>
     <h1 class="display display--hero" id="heroTitle">
-      <span class="ln"><span class="ln__in">The <em>intelligence</em></span></span>
-      <span class="ln"><span class="ln__in">behind modern</span></span>
-      <span class="ln"><span class="ln__in">marketing.</span></span>
+      <span class="ln"><span class="ln__in">Ask <em>Stagwell.</em></span></span>
     </h1>
-    <p class="hero__lede rv" style="--d:.55s">People. Technology. A global network<br>built to solve what's next.</p>
-    <div class="hero__acts rv" style="--d:.7s">
+    <div class="hero__acts rv" style="--d:.5s">
       <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
       <a class="btn btn--orange btn--lg" href="#ask" id="askLink">Ask Stagwell</a>
     </div>

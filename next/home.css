@@ -76,7 +76,7 @@ h1,h2,p,figure{margin:0}
   text-align:center;text-wrap:balance;
 }
 .display em{font-style:normal;color:var(--orange)}
-.display--hero {font-size:clamp(64px, 1.5rem + 6.6vw, 124px)}
+.display--hero {font-size:clamp(72px, 1.6rem + 7.4vw, 140px)}
 /* every .display is then fitted to its wrap by home.js — the clamp is the ceiling */
 .display--ask  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px);color:#FFFFFF}
 .display--cos  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px)}
@@ -107,9 +107,9 @@ h1,h2,p,figure{margin:0}
 }
 .btn--ink{background:var(--ink);color:#FFFFFF}
 .btn--ink:hover{background:#000;transform:translateY(-1px)}
-/* Ask Stagwell: the one orange button on the page, so it is never missed.
-   Navy type — white on this orange is 2.8:1, navy is 5.6:1. */
-.btn--orange{background:var(--orange);color:var(--ink)}
+/* Ask Stagwell: the one orange button on the page. White type on it is the
+   client's decision, taken knowing it measures 2.8:1 on this orange. */
+.btn--orange{background:var(--orange);color:#FFFFFF}
 .btn--orange:hover{background:#FF7D3B;transform:translateY(-1px)}
 .btn--lg{height:60px;padding:0 34px;font-size:15px}
 .btn:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
@@ -153,21 +153,37 @@ h1,h2,p,figure{margin:0}
 .nav.on-dark:not(.is-stuck) .btn--ink{background:#FFFFFF;color:var(--ink)}
 
 /* ── 1 · hero ────────────────────────────────────────────────────────────── */
-/* 296px sat above the headline and pushed the primary CTA 65px under a 950px
-   fold. The headline is the moment; the space above it is the bar plus one
-   generous step, not a whole section. */
-.hero{padding-top:calc(var(--nav-h) + clamp(6rem, 3.6rem + 4.2vw, 9rem))}   /* 72 + 96→144 */
+/* The first screen holds everything: the turning line, the title, the two
+   buttons. It is the viewport's height with the content centred in it, so the
+   buttons are inside the frame at 700px as surely as at 950. */
+.hero{min-height:100svh;display:flex;flex-direction:column}
 .hero__in{
-  display:flex;flex-direction:column;align-items:center;text-align:center;
-  padding-bottom:var(--sec);
+  flex:1;min-height:calc(100svh - var(--nav-h));
+  padding-top:var(--nav-h);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
 }
-.hero__lede{
-  margin-top:var(--s-12);                       /* 64 under the headline */
-  font-size:clamp(20px, 1rem + .7vw, 26px);font-weight:300;line-height:1.4;
+/* the turning line: one phrase showing, the rest stacked beneath it out of
+   view; a change is the old one lifting out and the next rising in */
+.turn{
+  /* a flex item in a centred column shrinks to its content, and this one's
+     content is all absolutely positioned — so it measured 0px wide and every
+     phrase collapsed into nothing. The width has to be stated. */
+  position:relative;display:block;width:100%;max-width:40ch;height:1.4em;overflow:hidden;
+  text-align:center;
+  margin-bottom:var(--s-8);                     /* 24 above the title */
+  font-size:clamp(20px, 1rem + .8vw, 28px);font-weight:300;line-height:1.4;
   color:var(--ink-2);
 }
+.turn__w{
+  position:absolute;left:0;right:0;top:0;
+  opacity:0;transform:translateY(100%);
+  transition:opacity .5s ease,transform .7s var(--ease);
+}
+.turn__w.is-on{opacity:1;transform:none}
+.turn__w.is-off{opacity:0;transform:translateY(-100%)}
+
 .hero__acts{
-  margin-top:var(--s-11);                       /* 48 */
+  margin-top:var(--s-12);                       /* 64 under the title */
   display:flex;align-items:center;gap:var(--s-11);
 }
 
@@ -424,6 +440,7 @@ h1,h2,p,figure{margin:0}
 /* ── motion off ──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion:reduce){
   .rv,.ln__in,.co,.co__face,.co__back,.co__img,.reel__w{transition:none!important;opacity:1!important}
+  .turn__w{transition:none!important}
   .rv,.ln__in,.co,.co__face,.co__back,.co__img,.reel__w{transform:none!important}
   .reel__stage .pl,.reel__stage .ring{animation:none!important}
   .reel__stage{width:100%!important;height:64vh!important;border-radius:0!important}

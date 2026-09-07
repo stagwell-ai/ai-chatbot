@@ -37,6 +37,19 @@
   addEventListener('resize', () => { clearTimeout(fitDisplays._t); fitDisplays._t = setTimeout(fitDisplays, 120); });
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(fitDisplays);
 
+  /* ── the turning line above the title: every 2.6s the phrase lifts out and
+        the next rises in. Reduced motion holds the first phrase. ───────── */
+  const turn = $('#turn');
+  if (turn && !REDUCED) {
+    const ws = $$('.turn__w', turn); let i = 0;
+    setInterval(() => {
+      const prev = ws[i]; i = (i + 1) % ws.length; const next = ws[i];
+      prev.classList.remove('is-on'); prev.classList.add('is-off');
+      next.classList.remove('is-off'); next.classList.add('is-on');
+      setTimeout(() => prev.classList.remove('is-off'), 750);
+    }, 2600);
+  }
+
   /* ── the bar: solid once you have moved; white-on-dark over the AI section ─ */
   const nav = $('#nav'), ask = $('#ask');
   if (nav) {
