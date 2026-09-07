@@ -83,7 +83,7 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(72px, min(2rem + 8vw, 18vh), 150px);   /* 184 read "huge"; 150 ceiling */text-transform:none;letter-spacing:-.04em;text-align:left;line-height:.88}
+.display--hero {font-size:clamp(68px, min(1.8rem + 7.2vw, 17vh), 136px);font-weight:600;   /* 184 → 150 → 136, and a weight down: "a bit smaller, less bold" */text-transform:none;letter-spacing:-.04em;text-align:left;line-height:.88}
 .display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
 /* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
 .display--hero em{color:var(--orange)}
@@ -258,6 +258,9 @@ body.chat-open{overflow:hidden}
 }
 .hero__media.is-open{clip-path:inset(0 0 0 0);cursor:default}
 .hero__pic,.hero__film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* the client composed the thumbnail at the film's size with the subject at
+   the right: the strip shows the right edge, not the centre */
+.hero__pic{object-position:right center}
 /* the film shows only once it is actually running, so the still never gives
    way to a black frame */
 .hero__film{opacity:0;transition:opacity .4s ease}
