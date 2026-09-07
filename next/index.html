@@ -71,11 +71,22 @@ d.setAttribute('data-theme',t||sys);})();
       <li><a href="/next/why">Why Stagwell.AI</a></li>
     </ul>
     <div class="nav__acts">
+      <!-- the magnifier opens the chat over the page, full screen, in light -->
+      <button type="button" class="nav__search" id="navSearch" aria-label="Search — ask Stagwell" aria-haspopup="dialog" aria-expanded="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12.8 12.8L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
       <a class="btn btn--line" href="#ask">Ask Stagwell</a>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
     </div>
   </nav>
 </header>
+
+<!-- the chat, full screen over the page: the agent experience in a frame,
+     forced light, loaded the first time it is opened. -->
+<div class="chat-over" id="chatOver" role="dialog" aria-modal="true" aria-label="Ask Stagwell" hidden>
+  <div class="chat-over__bar"><button type="button" class="chat-over__close" id="chatOverClose"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Close</button></div>
+  <iframe class="chat-over__frame" id="chatOverFrame" title="Ask Stagwell" src="about:blank" data-src="/next/agent.html?theme=light" allow="clipboard-write"></iframe>
+</div>
 
 <main id="top">
 

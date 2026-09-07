@@ -127,6 +127,32 @@
     }, { threshold: .2 }).observe(media);
   }
 
+  /* ── the chat over the page: the magnifier opens the agent experience full
+        screen, in light, in a frame loaded on first use. Close, or Escape. ── */
+  const over = $('#chatOver'), overFrame = $('#chatOverFrame'), overClose = $('#chatOverClose'), searchBtn = $('#navSearch');
+  if (over && overFrame && overClose && searchBtn) {
+    let lastFocus = null;
+    const openChat = () => {
+      if (!overFrame.getAttribute('src') || overFrame.getAttribute('src') === 'about:blank') overFrame.src = overFrame.dataset.src;
+      lastFocus = document.activeElement;
+      over.hidden = false; document.body.classList.add('chat-open');
+      searchBtn.setAttribute('aria-expanded', 'true');
+      requestAnimationFrame(() => requestAnimationFrame(() => over.classList.add('is-in')));
+      overClose.focus({ preventScroll: true });
+    };
+    const closeChat = () => {
+      if (over.hidden) return;
+      over.classList.remove('is-in');
+      const done = () => { over.hidden = true; document.body.classList.remove('chat-open'); };
+      REDUCED ? done() : setTimeout(done, 360);
+      searchBtn.setAttribute('aria-expanded', 'false');
+      (lastFocus || searchBtn).focus({ preventScroll: true });
+    };
+    searchBtn.addEventListener('click', openChat);
+    overClose.addEventListener('click', closeChat);
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && !over.hidden) closeChat(); });
+  }
+
   /* ── "Ask Stagwell" scrolls to the experience, then lands in the field ──── */
   $$('a[href="#ask"]').forEach(a => a.addEventListener('click', (e) => {
     if (!ask) return;

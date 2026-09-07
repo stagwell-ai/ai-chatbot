@@ -187,6 +187,33 @@ h1,h2,p,figure{margin:0}
 .nav.on-dark:not(.is-stuck) .nav__brand{color:#FFFFFF}
 .nav.on-dark:not(.is-stuck) .btn--ink{background:#FFFFFF;color:var(--ink)}
 .nav.on-dark:not(.is-stuck) .btn--line{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+/* the magnifier: a square the height of the small buttons, glyph only */
+.nav__search{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--ink);transition:background-color .25s ease,color .25s ease}
+.nav__search svg{width:19px;height:19px;display:block}
+.nav__search:hover{background:rgba(11,18,32,.06)}
+.nav__search:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.nav.on-dark:not(.is-stuck) .nav__search,.home .nav:not(.is-stuck) .nav__acts .nav__search{color:#FFFFFF}
+.nav.on-dark:not(.is-stuck) .nav__search:hover,.home .nav:not(.is-stuck) .nav__acts .nav__search:hover{background:rgba(255,255,255,.14)}
+
+/* ── the chat over the page ──────────────────────────────────────────────── */
+.chat-over{
+  position:fixed;inset:0;z-index:200;background:#FFFFFF;
+  opacity:0;transform:scale(.985);transition:opacity .35s ease,transform .45s var(--ease);
+}
+.chat-over.is-in{opacity:1;transform:none}
+/* a slim bar of its own holds Close; the frame starts beneath it, so the
+   framed page's own header keeps its corner */
+.chat-over__bar{position:absolute;top:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:flex-end;padding:0 var(--gutter);border-bottom:1px solid var(--line);background:#FFFFFF}
+.chat-over__frame{position:absolute;top:56px;left:0;right:0;bottom:0;width:100%;height:calc(100% - 56px);border:0;display:block;background:#FFFFFF}
+.chat-over__close{
+  display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px 0 14px;border-radius:999px;
+  background:var(--ink);color:#FFFFFF;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  transition:transform .3s var(--ease);
+}
+.chat-over__close svg{width:16px;height:16px;display:block}
+.chat-over__close:hover{transform:translateY(-1px)}
+.chat-over__close:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+body.chat-open{overflow:hidden}
 
 /* ── 1 · hero ────────────────────────────────────────────────────────────── */
 /* The first screen holds everything: the turning line, the title, the two
@@ -472,7 +499,7 @@ h1,h2,p,figure{margin:0}
 
 /* ── motion off ──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion:reduce){
-  .rv,.ln__in,.co,.co__face,.co__back,.co__img,.hero__media{transition:none!important;opacity:1!important}
+  .rv,.ln__in,.co,.co__face,.co__back,.co__img,.hero__media,.chat-over{transition:none!important;opacity:1!important}
   .turn__w{transition:none!important}
 
   .rv,.ln__in,.co,.co__face,.co__back,.co__img{transform:none!important}
