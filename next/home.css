@@ -179,43 +179,48 @@ h1,h2,p,figure{margin:0}
 /* the band stands on the right of the first screen, the way it does on the
    billboard — beside the words, not behind them. Sized to the first screen,
    not the section: sized to the section it sat under the fold. */
-.hero__bg{position:absolute;top:0;right:0;width:46%;height:100svh;display:block;pointer-events:none}
+.hero__bg{position:absolute;top:0;right:0;width:36%;height:100svh;display:block;pointer-events:none}
+/* three zones, as on the billboard: the title block, the question beside it,
+   the band beyond. The first two are a grid; the band is the canvas behind. */
 .hero__in{
   position:relative;z-index:1;
   flex:1;min-height:calc(100svh - var(--nav-h));
   padding-top:var(--nav-h);
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;
+  display:grid;grid-template-columns:minmax(0,auto) minmax(300px,1fr);
+  column-gap:clamp(2rem, 1rem + 4vw, 5rem);
+  align-items:center;text-align:left;
   max-width:var(--wrap);
 }
-/* the words own the left ~60%; the band the right — the billboard's split */
-.hero__in > *{max-width:min(62%, 860px)}
-/* the turning line: one phrase showing, the rest stacked beneath it out of
-   view; a change is the old one lifting out and the next rising in */
+.hero__l{display:flex;flex-direction:column;align-items:flex-start;max-width:min(52vw,760px)}
+/* the question, where the billboard's tagline sits: big, light, two lines.
+   One phrase showing, the rest stacked beneath out of view; a change is the
+   old one lifting out and the next rising in. */
 .turn{
-  /* a flex item in a centred column shrinks to its content, and this one's
-     content is all absolutely positioned — so it measured 0px wide and every
-     phrase collapsed into nothing. The width has to be stated. */
-  position:relative;display:block;width:100%;max-width:40ch;height:1.4em;overflow:hidden;
-  text-align:left;
-  margin-bottom:var(--s-8);                     /* 24 above the title */
-  font-size:clamp(20px, 1rem + .8vw, 28px);font-weight:300;line-height:1.4;
-  color:var(--ink-2);
+  position:relative;display:block;width:100%;height:2.3em;overflow:hidden;
+  justify-self:start;
+  font-size:clamp(28px, 1rem + 2.2vw, 46px);font-weight:300;line-height:1.12;
+  color:var(--ink);text-align:left;
+  padding-right:var(--s-8);
 }
+/* a change is two moves in sequence, never one on top of the other: the old
+   phrase leaves fast and completely, THEN the new one rises in. Two large
+   phrases crossing at half opacity is what read as "not smooth". */
 .turn__w{
-  position:absolute;left:0;right:0;top:0;
-  opacity:0;transform:translateY(100%);
-  transition:opacity .5s ease,transform .7s var(--ease);
+  position:absolute;left:0;right:0;top:50%;translate:0 -50%;white-space:nowrap;   /* the <br> sets the two lines */
+  opacity:0;transform:translateY(40%);
+  transition:opacity .55s ease,transform .8s var(--ease);
+  transition-delay:.34s;                       /* waits for the exit */
 }
 .turn__w.is-on{opacity:1;transform:none}
-.turn__w.is-off{opacity:0;transform:translateY(-100%)}
+.turn__w.is-off{opacity:0;transform:translateY(-34%);transition:opacity .28s ease,transform .32s ease-in;transition-delay:0s}
 
 .hero__sign{
-  margin-top:var(--s-9);                        /* 32 under the title */
+  margin:0 0 var(--s-8);                        /* 24 above the title */
   font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
   color:var(--ink-3);
 }
 .hero__acts{
-  margin-top:var(--s-11);                       /* 48 under the sign-off */
+  margin-top:var(--s-13);                       /* 80 under the title */
   display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
 }
 

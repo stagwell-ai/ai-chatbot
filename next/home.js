@@ -67,7 +67,9 @@
        edge — fading in from its inner end so it sits beside the words rather
        than crowding them. The band rides a slow wave and each bar breathes. */
     /* warm beside the words, cool at the edge — the billboard's run */
-    const STOPS = [[255, 109, 36], [255, 184, 28], [255, 184, 28], [0, 156, 189], [0, 156, 189]];
+    /* the poster's run: orange, amber, a pale bloom at the centre, light blue,
+       the mark's blue — evenly spaced, blended in floats so nothing steps */
+    const STOPS = [[255, 109, 36], [255, 184, 28], [255, 238, 204], [118, 206, 226], [0, 156, 189]];
     const mix = (u) => {
       const n = STOPS.length - 1, p = Math.min(n - 1e-6, Math.max(0, u * n)), i = Math.floor(p), f = p - i;
       const a = STOPS[i], b = STOPS[i + 1];
@@ -75,40 +77,46 @@
     };
     /* full-height strokes: a long bar the height of the screen with soft ends,
        and a shorter brighter core that rides a slow wave inside it */
-    const BANDS = [
-      { base: .50, amp: .02,  freq: .6,  speed: .00009, phase: 0.0, len: .92, alpha: .55 },
-      { base: .50, amp: .07,  freq: .9,  speed: .00013, phase: 1.4, len: .46, alpha: .70 },
-    ];
+    /* one field, not layers. Every bar is nearly the height of the screen with
+       soft ends; the only motion is a slow drift of the spectrum along the run
+       and a slow, shallow wave in the bars' length — one smooth function of
+       position and time, nothing per-bar and nothing fast. */
     let W = 0, H = 0, dpr = 1, bars = 0, gap = 0, bw = 0, raf = 0, visible = true;
     const size = () => {
       dpr = Math.min(2, devicePixelRatio || 1);
       W = bg.clientWidth; H = bg.clientHeight;
       bg.width = Math.round(W * dpr); bg.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      bars = Math.max(48, Math.round(W / 9));
-      gap = W / bars; bw = Math.max(2, gap * .36);
+      /* fewer, thicker: tubes, not hairlines */
+      bars = Math.max(22, Math.round(W / 19));
+      gap = W / bars; bw = Math.max(5, gap * .46);
+    };
+    /* one bar: a soft halo behind, a rounded tube in front, both lit from the
+       centre and dying at the ends — the poster's shape */
+    const tube = (x, y, len, w, rgb, a) => {
+      const [r, gg, bl] = rgb;
+      const g = ctx.createLinearGradient(0, y - len / 2, 0, y + len / 2);
+      g.addColorStop(0,   `rgba(${r},${gg},${bl},0)`);
+      g.addColorStop(.22, `rgba(${r},${gg},${bl},${a})`);
+      g.addColorStop(.78, `rgba(${r},${gg},${bl},${a})`);
+      g.addColorStop(1,   `rgba(${r},${gg},${bl},0)`);
+      ctx.strokeStyle = g; ctx.lineWidth = w; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(x, y - len / 2 + w / 2); ctx.lineTo(x, y + len / 2 - w / 2); ctx.stroke();
     };
     const draw = (t) => {
       ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'source-over';
+      const T = t * 0.00004;                                   /* one slow clock */
       for (let i = 0; i < bars; i++) {
         const x = i * gap + gap / 2, u = i / bars;
-        /* fade in from the inner edge: nothing at u=0, full by u≈.4 */
-        const fade = Math.min(1, u / .42);
-        const [r, gg, bl] = mix(((u + t * .000015) % 1 + 1) % 1);
-        for (const b of BANDS) {
-          const y = H * (b.base + b.amp * Math.sin(u * Math.PI * 2 * b.freq + t * b.speed + b.phase));
-          const breathe = 0.72 + 0.28 * Math.sin(u * 6 + t * b.speed * 2.2 + b.phase);
-          const len = H * b.len * (0.86 + 0.14 * breathe);
-          const a = b.alpha * fade * breathe;
-          const g = ctx.createLinearGradient(0, y - len / 2, 0, y + len / 2);
-          g.addColorStop(0,   `rgba(${r|0},${gg|0},${bl|0},0)`);
-          g.addColorStop(.12, `rgba(${r|0},${gg|0},${bl|0},${a})`);
-          g.addColorStop(.88, `rgba(${r|0},${gg|0},${bl|0},${a})`);
-          g.addColorStop(1,   `rgba(${r|0},${gg|0},${bl|0},0)`);
-          ctx.fillStyle = g;
-          ctx.fillRect(x - bw / 2, y - len / 2, bw, len);
-        }
+        const fade = Math.min(1, Math.pow(u / .5, 1.6));       /* nothing beside the words, full by the middle */
+        const rgb = mix(((u * .92 + T * .35) % 1 + 1) % 1).map(v => Math.round(v * 10) / 10);
+        const wave = 0.5 + 0.5 * Math.sin(u * Math.PI * 1.6 + T * 2.2);
+        const len = H * (0.58 + 0.30 * wave);
+        const y = H * 0.5;
+        const a = (0.42 + 0.55 * u) * fade;
+        tube(x, y, len, bw * 2.6, rgb, a * .22);              /* the halo */
+        tube(x, y, len, bw,       rgb, a);                    /* the tube */
       }
     };
     const loop = (t) => { raf = 0; if (!visible) return; draw(t); raf = requestAnimationFrame(loop); };
