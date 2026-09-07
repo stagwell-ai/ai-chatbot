@@ -270,7 +270,7 @@ body.chat-open{overflow:hidden}
    so each new turn pushes what came before up and out */
 .hero__stack{flex:1;min-height:0;align-self:stretch;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}
 .hero__stack > .display--hero{margin-top:auto;align-self:stretch}
-.hero__l.is-chat .hero__stack{overflow-y:auto;scrollbar-width:none;padding-right:var(--s-4);mask-image:linear-gradient(to bottom,transparent,#000 56px)}
+.hero__l.is-chat .hero__stack{overflow-y:auto;scrollbar-width:none}   /* a clean edge under the bar, no fade */
 .hero__l.is-chat .hero__stack::-webkit-scrollbar{display:none}
 /* the title takes the column's width, not its own: a start-aligned flex item
    shrink-wraps its text, so fitDisplays() measured a box that already equalled
@@ -279,8 +279,8 @@ body.chat-open{overflow:hidden}
 /* the turns, a regular chat: yours in the mark's blue from the right, the
    agent's in a quiet grey from the left, no names; each rises in from below */
 .hero__thread{align-self:stretch;display:flex;flex-direction:column;gap:var(--s-5);width:100%}
-.hero__thread:not(:empty){padding-top:var(--s-9)}
-.turnb{max-width:min(88%,640px);animation:turnIn .55s var(--ease) both;font-size:17px;line-height:1.45}
+.hero__thread:not(:empty){padding:var(--s-9) 0 var(--s-10)}   /* 40 between the last turn and the composer */
+.turnb{max-width:80%;animation:turnIn .55s var(--ease) both;font-size:17px;line-height:1.45}
 .turnb--me{align-self:flex-end;background:var(--navy);color:#FFFFFF;border-radius:22px 22px 6px 22px;padding:12px 18px}
 .turnb--ai{align-self:flex-start;background:#F1F2F4;color:var(--ink);border-radius:22px 22px 22px 6px;padding:12px 18px}
 .turnb__chips{display:flex;flex-wrap:wrap;gap:var(--s-4);margin-top:var(--s-6)}
@@ -299,7 +299,9 @@ body.chat-open{overflow:hidden}
    the way in — the agent asks in its own turn */
 .hero__l.is-chat > .hero__stack > .hero__tags{display:none}
 /* the starting points under the paragraph: outlined, ink on white, left */
-.hero__tags{display:flex;flex-wrap:wrap;gap:var(--s-4);margin:0 0 var(--s-11);justify-content:flex-start}
+/* margin-bottom:auto with the title's margin-top:auto centres the block in
+   the stack — up from the bottom row, with at least 64 to it */
+.hero__tags{display:flex;flex-wrap:wrap;gap:var(--s-4);margin:0 0 auto;padding-bottom:var(--s-12);justify-content:flex-start}
 .hero__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2)}
 .hero__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
 .hero__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
@@ -381,7 +383,7 @@ body.chat-open{overflow:hidden}
 }
 /* the line under the title: two lines, light, quieter than the title */
 .hero__lede{
-  margin:var(--s-11) 0 var(--s-8);              /* 48 under the title, 24 above the tags */
+  margin:var(--s-11) 0 var(--s-9);              /* 48 under the title, 32 above the tags */
   white-space:nowrap;                           /* one line, by the client's cut */
   font-size:var(--hero-copy);font-weight:300;line-height:1.4;
   color:var(--ink);
@@ -394,7 +396,7 @@ body.chat-open{overflow:hidden}
    the right — the same height as the button beside it */
 .ask-mini{
   position:relative;display:flex;align-items:center;
-  flex:0 1 400px;max-width:100%;height:60px;padding:0 6px 0 24px;border-radius:999px;   /* a basis, not a %, in a shrink-wrapped row */
+  flex:1 1 auto;min-width:0;height:60px;padding:0 6px 0 24px;border-radius:999px;   /* fills the row beside Call me: as wide as the conversation */
   background:#F1F2F4;                          /* a light grey, no stroke: "so it pops" */
   transition:box-shadow .25s ease,background-color .25s ease,transform .3s var(--ease);
 }
