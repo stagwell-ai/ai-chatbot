@@ -219,40 +219,37 @@
     addEventListener('resize', () => { if (heroL.classList.contains('is-chat')) settle(); });
   }
 
-  /* ── Call me: one popover above the button. Hover shows it as a tooltip; a
-        tap opens it as the phone card; sending turns it into the call's
-        status. The row underneath never changes. The request resolves here
-        after a beat — the real call API goes where `place()` is. ────────── */
-  const callWrap = $('#callWrap'), callBtn = $('#callBtn'), pop = $('#callPop'), callForm = $('#callForm'),
-        callClose = $('#callClose'), callCode = $('#callCode'), callNum = $('#callNum'),
-        callField = $('.call__field', pop || document), callLine = $('#callLine'), callTo = $('#callTo');
-  if (callWrap && callBtn && pop && callForm && callClose && callCode && callNum && callLine) {
-    const canHover = matchMedia('(hover:hover)').matches;
-    let open = false;
-    const show = () => pop.classList.add('is-on');
-    const hide = () => { if (!open) pop.classList.remove('is-on'); };
-    const openCard = () => {
-      open = true; pop.dataset.state = 'phone'; pop.classList.remove('is-placed'); show();
-      callBtn.setAttribute('aria-expanded', 'true');
-      setTimeout(() => callNum.focus({ preventScroll: true }), 120);
+  /* ── Call me: the button becomes the phone pill in its own place. Its
+        width eases from the button's to the pill's and back; the chat field
+        beside it takes up the difference. Sent, the pill shows the call's
+        status. The request resolves here after a beat — the real call API
+        goes where `place()` is. ────────────────────────────────────────── */
+  const call = $('#call'), callBtn = $('#callBtn'), callForm = $('#callForm'), callDone = $('#callDone'),
+        callCode = $('#callCode'), callNum = $('#callNum'), callLine = $('#callLine'), callTo = $('#callTo');
+  if (call && callBtn && callForm && callDone && callCode && callNum && callLine) {
+    const PILL = 360;
+    const setW = (px) => call.style.setProperty('--call-w', px + 'px');
+    /* the button's own width is the resting one; measured once it has fonts */
+    let restW = 0;
+    const rest = () => { restW = Math.round(callBtn.getBoundingClientRect().width) || restW; setW(restW); };
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(rest);
+    const openPill = () => {
+      if (!restW) rest();
+      call.dataset.state = 'phone'; call.classList.remove('is-bad', 'is-placed'); setW(PILL);
+      setTimeout(() => callNum.focus({ preventScroll: true }), 200);
     };
-    const closeCard = () => {
-      open = false; pop.classList.remove('is-on');
-      callBtn.setAttribute('aria-expanded', 'false');
-      setTimeout(() => { if (!open) pop.dataset.state = 'tip'; }, 220);
+    const closePill = () => {
+      call.dataset.state = 'idle'; setW(restW);
       callBtn.focus({ preventScroll: true });
     };
-    if (canHover) {
-      callWrap.addEventListener('mouseenter', () => { if (!open) show(); });
-      callWrap.addEventListener('mouseleave', hide);
-    }
-    callBtn.addEventListener('focus', () => { if (!open) show(); });
-    callBtn.addEventListener('blur', () => { setTimeout(() => { if (!open && !callWrap.matches(':hover')) hide(); }, 0); });
-    callBtn.addEventListener('click', () => open ? closeCard() : openCard());
-    callClose.addEventListener('click', closeCard);
-    addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) closeCard(); });
-    addEventListener('pointerdown', (e) => { if (open && !callWrap.contains(e.target)) closeCard(); });
-    callNum.addEventListener('input', () => callField.classList.remove('is-bad'));
+    callBtn.addEventListener('click', openPill);
+    $('#callClose').addEventListener('click', closePill);
+    $('#doneClose').addEventListener('click', closePill);
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && call.dataset.state !== 'idle') closePill(); });
+    /* a tap elsewhere with nothing typed puts the button back */
+    addEventListener('pointerdown', (e) => { if (call.dataset.state === 'phone' && !call.contains(e.target) && !callNum.value.trim()) closePill(); });
+    callNum.addEventListener('input', () => call.classList.remove('is-bad'));
+    addEventListener('resize', () => { if (call.dataset.state === 'idle') { call.style.removeProperty('--call-w'); rest(); } });
     /* +1 415 555 0134: ten digits as 3-3-4; otherwise groups of three, and a
        lone last digit joins the group before it */
     const pretty = (code, digits) => {
@@ -264,15 +261,15 @@
     callForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const digits = callNum.value.replace(/\D/g, '');
-      if (digits.length < 6 || digits.length > 14) { callField.classList.add('is-bad'); callNum.focus(); return; }
+      if (digits.length < 6 || digits.length > 14) { call.classList.add('is-bad'); callNum.focus(); return; }
       const code = callCode.value;
       callLine.textContent = 'Calling you now…';
-      callTo.textContent = pretty(code, digits);
-      pop.dataset.state = 'done';
-      callClose.focus({ preventScroll: true });
+      callTo.textContent = 'Stagwell AI will call ' + pretty(code, digits);
+      call.dataset.state = 'done';
+      $('#doneClose').focus({ preventScroll: true });
       await place(code, digits);
       callLine.textContent = 'Your call is on the way.';
-      pop.classList.add('is-placed');
+      call.classList.add('is-placed');
     });
   }
 
