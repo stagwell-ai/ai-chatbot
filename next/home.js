@@ -219,6 +219,47 @@
     addEventListener('resize', () => { if (heroL.classList.contains('is-chat')) settle(); });
   }
 
+  /* ── Call me: the second way in. The bottom row changes mode in place —
+        text → phone → done — the same footprint, nothing else moves. The
+        request itself resolves here after a beat; the real call API goes
+        where `place()` is. ─────────────────────────────────────────────── */
+  const acts = $('#heroActs'), callBtn = $('#callBtn'), phoneForm = $('#modePhone'),
+        callCode = $('#callCode'), callNum = $('#callNum'), callField = $('.call__field', phoneForm || document),
+        callLine = $('#callLine'), callSub = $('#callSub'), callTo = $('#callTo');
+  if (acts && callBtn && phoneForm && callCode && callNum && callLine) {
+    const setMode = (m) => { acts.dataset.mode = m; acts.classList.remove('is-placed'); };
+    const toChat = () => { setMode('text'); setTimeout(() => miniInput && miniInput.focus({ preventScroll: true }), 380); };
+    callBtn.addEventListener('click', () => {
+      setMode('phone');
+      setTimeout(() => callNum.focus({ preventScroll: true }), 380);
+    });
+    $('#phoneBack').addEventListener('click', toChat);
+    $('#doneBack').addEventListener('click', toChat);
+    callNum.addEventListener('input', () => callField.classList.remove('is-bad'));
+    /* +1 415 555 0134: ten digits as 3-3-4; otherwise groups of three, and a
+       lone last digit joins the group before it */
+    const pretty = (code, digits) => {
+      let g = digits.length === 10 ? [digits.slice(0, 3), digits.slice(3, 6), digits.slice(6)] : (digits.match(/\d{1,3}/g) || [digits]);
+      if (g.length > 1 && g[g.length - 1].length === 1) { g[g.length - 2] += g.pop(); }
+      return '+' + code + ' ' + g.join(' ');
+    };
+    const place = (code, digits) => new Promise(res => setTimeout(res, REDUCED ? 0 : 1800));   /* ← the call API */
+    phoneForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const digits = callNum.value.replace(/\D/g, '');
+      if (digits.length < 6 || digits.length > 14) { callField.classList.add('is-bad'); callNum.focus(); return; }
+      const code = callCode.value;
+      callLine.textContent = 'Calling you now…';
+      callSub.textContent = 'Stagwell AI will call the number you provided.';
+      callTo.textContent = pretty(code, digits);
+      setMode('done');
+      await place(code, digits);
+      callLine.textContent = 'Your call is on the way.';
+      acts.classList.add('is-placed');
+    });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && acts.dataset.mode === 'phone') toChat(); });
+  }
+
   /* ── the chat over the page: the magnifier opens the Ask block full screen,
         in light. Close, or Escape. ────────────────────────────────────────── */
   const over = $('#chatOver'), overClose = $('#chatOverClose'), searchBtn = $('#navSearch');
