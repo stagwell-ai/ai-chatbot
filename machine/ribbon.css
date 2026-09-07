@@ -6778,7 +6778,7 @@ html[data-theme="light"] body.vB .pick__detail,html[data-theme="dark"] body.vB .
 body.vB .pick__detail,body.vB #pickDetail{
   height:auto!important;min-height:0!important;
   max-height:calc(100svh - 260px)!important;
-  overflow-y:auto!important;overscroll-behavior:contain!important;
+  overflow-y:auto!important;overscroll-behavior-y:auto!important;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -6928,7 +6928,7 @@ body.vB #dash{padding:0!important;margin:0!important;border:0!important;min-heig
   html[data-theme="light"] body.vB .pick__detail,html[data-theme="dark"] body.vB .pick__detail,
   body.vB .pick__list,body.vB .pick__detail,body.vB #pickDetail{
     min-height:0!important;max-height:none!important;height:100%!important;
-    overflow-y:auto!important;overscroll-behavior:contain!important;
+    overflow-y:auto!important;overscroll-behavior-y:auto!important;
   }
 }
 /* and the headline gets its third line back */
@@ -7022,4 +7022,1663 @@ body.vB .about__proof{
   html[data-theme="dark"]  body.vB #hero2 .hero2__in,
   body.vB #hero2 .hero2__in{padding-bottom:0!important}
   body.vB #hero2 .chat{margin-bottom:0!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   156 · THE INNER PAGES (client, Sep 6) — WORK IN PROGRESS.
+   why.html shares the homepage's blocks but not its script, so the
+   portfolio had no marks, no reveal, and the partner name never
+   cycled. That is fixed by loading hero-band.js there. What is left
+   here is the spacing those blocks need when they are the whole
+   page rather than a section of it.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:860px){
+  /* the banner reserved 150px under the copy for artwork that now covers the
+     panel on its own, so it was 150px of nothing at the foot of the card */
+  html[data-theme="light"] body.vB .about__head,
+  html[data-theme="dark"]  body.vB .about__head,
+  body.vB .about__head{
+    padding:28px 20px 48px!important;
+    background-size:cover!important;
+    background-position:center center!important;
+  }
+  /* one rhythm on the inner pages too, matched to the sections around them */
+  html[data-theme="light"] body.vB .about--full .about__in,
+  html[data-theme="dark"]  body.vB .about--full .about__in,
+  body.vB .about--full .about__in{gap:56px!important}
+  html[data-theme="light"] body.vB .about__portfolio,
+  html[data-theme="dark"]  body.vB .about__portfolio,
+  body.vB .about__portfolio{padding:0!important}
+  body.vB .about__proof{padding:32px 22px!important}
+}
+
+/* §156 b · the "Why Stagwell.AI" reasons.
+   A 2px left bar with 13px titles over 12px body — a third visual language on
+   a page that already has two, and a type size smaller than anything around
+   it. They take the portfolio's treatment instead: a hairline above each, the
+   site's own type sizes, and the same rhythm. */
+html[data-theme="light"] body.vB .about__reasons,
+html[data-theme="dark"]  body.vB .about__reasons,
+body.vB .about__reasons{
+  gap:clamp(22px,2.4vw,32px) clamp(28px,3vw,48px)!important;
+  list-style:none!important;padding:0!important;margin:0!important;
+}
+html[data-theme="light"] body.vB .about__reasons > li,
+html[data-theme="dark"]  body.vB .about__reasons > li,
+body.vB .about__reasons > li{
+  border-left:0!important;
+  border-top:1px solid rgba(0,51,73,.16)!important;
+  padding:18px 0 0!important;
+}
+html[data-theme="dark"] body.vB .about__reasons > li{border-top-color:rgba(234,243,248,.18)!important}
+body.vB .about__reasons > li > :first-child,
+body.vB .about__reasons > li strong,body.vB .about__reasons > li b{
+  display:block!important;font-size:15.5px!important;line-height:1.3!important;
+  font-weight:600!important;margin:0 0 7px!important;
+}
+body.vB .about__reasons > li p,
+body.vB .about__reasons > li > :last-child:not(:first-child){
+  font-size:14px!important;line-height:1.55!important;margin:0!important;
+}
+@media (min-width:861px){
+  body.vB .about__reasons{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+
+/* §156 c · the inner-page heroes on a phone.
+   .prodhero stacked 106px of section padding on top of 57px of inner padding
+   — 162px of nothing above the eyebrow. One value, once. And the calls to
+   action came out 335px and 174px wide side by side, which reads as a mistake
+   rather than a hierarchy: on a phone they stack, both full width, the
+   secondary keeping its outline so the order is still legible. */
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .prodhero,html[data-theme="dark"] body.vB .prodhero,
+  body.vB .prodhero,body.vB .solhero,body.vB .camphero,body.vB .chero{
+    padding-top:56px!important;padding-bottom:56px!important;
+  }
+  body.vB .prodhero__in,body.vB .solhero__in,body.vB .camphero__in{
+    padding-top:0!important;padding-bottom:0!important;
+  }
+  /* the CTA row */
+  body.vB .prodhero__cta,body.vB .solhero__cta,body.vB .hero__cta,
+  body.vB .prodhero__in .btnrow,body.vB .btnrow{
+    display:flex!important;flex-direction:column!important;
+    align-items:stretch!important;gap:12px!important;width:100%!important;
+  }
+  body.vB .prodhero .btn,body.vB .solhero .btn,body.vB .camphero .btn,
+  body.vB .btnrow .btn{
+    width:100%!important;justify-content:center!important;
+  }
+}
+
+/* §156 d · the demo chrome on a phone.
+   Three fixed pills — demo control, previous versions, the HubSpot console —
+   sat across the bottom of the screen. On a 375px viewport the lower two are
+   308px wide between them, so they covered whatever the page had there,
+   which in the campaign page is the caption under the diagram. They stack
+   into one corner instead, smaller, and the page keeps enough clearance at
+   its foot that nothing is permanently hidden behind them.
+   This is demo chrome, not product: it should be reachable and never in the
+   way. (DESIGN.md §7 flagged the overlap; this is the phone half of it.) */
+@media (max-width:860px){
+  body.vB .democorner,body.vB .vercorner,body.vB .sc-pill{
+    font-size:9.5px!important;padding:5px 10px!important;
+    height:auto!important;min-height:0!important;
+    left:auto!important;right:8px!important;
+    max-width:calc(100vw - 16px)!important;
+    opacity:.82!important;
+  }
+  body.vB .sc-pill{bottom:8px!important}
+  body.vB .vercorner{bottom:44px!important}
+  body.vB .democorner{bottom:80px!important}
+  /* clearance so the last of the page is never parked under them */
+  body.vB .bfoot{padding-bottom:104px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   157 · THE PRODUCTS PAGE, IN THE HOMEPAGE'S LANGUAGE
+   (client, Sep 6).
+
+   It had its own vocabulary and none of it agreed with the home
+   page: a 22px section heading where the homepage sets ~40px, a
+   number sitting inline at body size, a 46px navy tile beside 17px
+   type, and a block of 15px capsule pills. Nothing was wrong with
+   any single value; together they read as a page nobody had drawn.
+
+   It takes the homepage's parts instead — the eyebrow, the section
+   heading, the hairline that opens a group, the row mark at the
+   size the chooser uses, and the small quiet chip from the detail
+   pane.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── the group header ── */
+html[data-theme="light"] body.vB .prodgroup,html[data-theme="dark"] body.vB .prodgroup,
+body.vB .prodgroup{
+  padding-top:clamp(56px,7vh,88px)!important;
+  padding-bottom:clamp(56px,7vh,88px)!important;
+  border-top:1px solid rgba(0,51,73,.14)!important;
+}
+html[data-theme="dark"] body.vB .prodgroup{border-top-color:rgba(234,243,248,.16)!important}
+body.vB .prodgroup:first-of-type{border-top:0!important}
+
+html[data-theme="light"] body.vB .prodgroup__head,html[data-theme="dark"] body.vB .prodgroup__head,
+body.vB .prodgroup__head{
+  display:block!important;margin:0 0 clamp(26px,3vw,40px)!important;
+}
+/* the number becomes an eyebrow, not a word sitting next to the title */
+html[data-theme="light"] body.vB .prodgroup__n,html[data-theme="dark"] body.vB .prodgroup__n,
+body.vB .prodgroup__n{
+  display:block!important;margin:0 0 12px!important;
+  font-size:11px!important;line-height:1!important;font-weight:600!important;
+  letter-spacing:.16em!important;text-transform:uppercase!important;
+  color:rgba(0,51,73,.55)!important;
+}
+html[data-theme="dark"] body.vB .prodgroup__n{color:rgba(234,243,248,.55)!important}
+html[data-theme="light"] body.vB .prodgroup__h,html[data-theme="dark"] body.vB .prodgroup__h,
+body.vB .prodgroup__h{
+  font-size:clamp(26px,2.6vw,38px)!important;line-height:1.1!important;
+  font-weight:600!important;letter-spacing:-.015em!important;
+  max-width:22ch!important;margin:0!important;text-wrap:balance;
+}
+
+/* ── the cards ── */
+html[data-theme="light"] body.vB .prodgroup__cards,html[data-theme="dark"] body.vB .prodgroup__cards,
+body.vB .prodgroup__cards{gap:clamp(16px,1.6vw,22px)!important}
+html[data-theme="light"] body.vB .prodcard,html[data-theme="dark"] body.vB .prodcard,
+body.vB .prodcard{
+  background:#FFFFFF!important;
+  border:1px solid rgba(0,51,73,.10)!important;border-radius:18px!important;
+  padding:clamp(20px,2vw,26px)!important;gap:14px!important;box-shadow:none!important;
+}
+html[data-theme="dark"] body.vB .prodcard{
+  background:rgba(13,52,78,.55)!important;border-color:rgba(234,243,248,.14)!important;
+}
+/* the mark, at the size and weight the chooser's rows use */
+html[data-theme="light"] body.vB .prodcard__id,html[data-theme="dark"] body.vB .prodcard__id,
+body.vB .prodcard__id{align-items:center!important;gap:12px!important}
+html[data-theme="light"] body.vB .prodcard__mark,html[data-theme="dark"] body.vB .prodcard__mark,
+body.vB .prodcard__mark{
+  width:36px!important;height:36px!important;flex:0 0 36px!important;
+  border-radius:10px!important;background:#003349!important;
+}
+html[data-theme="dark"] body.vB .prodcard__mark{background:#EAF6FF!important;color:#001A2B!important}
+html[data-theme="light"] body.vB .prodcard__name,html[data-theme="dark"] body.vB .prodcard__name,
+body.vB .prodcard__name{font-size:18px!important;line-height:1.25!important;font-weight:600!important;margin:0!important}
+body.vB .prodcard__pos{font-size:14px!important;line-height:1.55!important;margin:0!important}
+body.vB .prodcard__who{
+  font-size:12px!important;line-height:1.5!important;letter-spacing:.02em!important;margin:0!important;
+}
+
+/* the chips, taken from the chooser's detail pane */
+html[data-theme="light"] body.vB .prodcard__pills,html[data-theme="dark"] body.vB .prodcard__pills,
+body.vB .prodcard__pills{
+  display:flex!important;flex-wrap:wrap!important;gap:7px!important;
+  list-style:none!important;padding:0!important;margin:2px 0 0!important;
+}
+html[data-theme="light"] body.vB .prodcard__pills > li,html[data-theme="dark"] body.vB .prodcard__pills > li,
+body.vB .prodcard__pills > li{
+  display:inline-flex!important;align-items:center!important;
+  font-size:12px!important;line-height:1.2!important;
+  padding:6px 11px!important;border-radius:999px!important;
+  background:rgba(0,51,73,.055)!important;border:0!important;
+  color:rgba(0,51,73,.74)!important;white-space:nowrap!important;
+}
+html[data-theme="dark"] body.vB .prodcard__pills > li{
+  background:rgba(234,243,248,.09)!important;color:rgba(234,246,255,.78)!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   158 · THE PRODUCTS PAGE, PROPERLY (client, Sep 6).
+
+   Four things, each measured rather than guessed:
+
+   · The headline was 48.96px at weight 600 on a 1.0 line — the
+     homepage's is ~80px at 400 on 1.06. Different scale, different
+     weight, different rhythm. It takes the homepage's.
+   · Thirteen of the fourteen groups hold exactly ONE card, in a
+     three-column grid. That is the raggedness: a lone card in a
+     row built for three, and once in a while two. The group is a
+     two-column layout instead — the heading holds the left, the
+     cards the right — which is the same shape the scale panel uses
+     and fills the width whether a group has one card or three.
+   · Thirty-one jump links, 340px wide, stacked. Nobody reads a
+     wall. They become one compact wrapping row of the same quiet
+     chip the cards use.
+   · And the hero had no artwork at all where the homepage has its
+     gradient.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── the hero ── */
+body.vB .prodhero{position:relative!important;overflow:hidden!important}
+html[data-theme="light"] body.vB .prodhero::before,
+body.vB .prodhero::before{
+  content:""!important;display:block!important;position:absolute!important;
+  inset:0!important;z-index:0!important;pointer-events:none!important;
+  opacity:1!important;filter:none!important;transform:none!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+  background-image:
+    linear-gradient(180deg,rgba(198,221,247,.55) 0%,rgba(205,226,248,.24) 26%,rgba(210,229,249,0) 58%),
+    linear-gradient(0deg,rgba(247,248,250,.9) 0%,rgba(247,248,250,0) 34%),
+    url("/assets/img/hero-bg.jpg")!important;
+  background-size:100% 100%,100% 100%,cover!important;
+  background-position:50% 0,50% 100%,center center!important;
+  background-repeat:no-repeat!important;
+}
+html[data-theme="dark"] body.vB .prodhero::before{display:none!important}
+body.vB .prodhero > *{position:relative!important;z-index:1!important}
+
+html[data-theme="light"] body.vB .prodhero h1,html[data-theme="dark"] body.vB .prodhero h1,
+body.vB .prodhero h1,body.vB .prodhero__h{
+  font-size:clamp(38px,min(5.2vw,8.4vh),80px)!important;
+  line-height:1.06!important;font-weight:400!important;
+  letter-spacing:-.02em!important;max-width:17ch!important;margin:0 0 22px!important;
+}
+
+/* ── the jump links: one compact row, not a wall ── */
+html[data-theme="light"] body.vB .prodjump,html[data-theme="dark"] body.vB .prodjump,
+/* NB: `.prodhero + div` was here too and it matches .ptoc — an over-broad
+   selector that zeroed the index's own padding. Named elements only. */
+body.vB .prodjump,body.vB .prodnav{
+  display:flex!important;flex-wrap:wrap!important;gap:8px!important;
+  padding:0!important;margin:0!important;list-style:none!important;
+}
+html[data-theme="light"] body.vB .prodjump a,html[data-theme="dark"] body.vB .prodjump a,
+body.vB .prodjump a,body.vB .prodnav a{
+  display:inline-flex!important;align-items:center!important;
+  width:auto!important;max-width:none!important;
+  font-size:12.5px!important;line-height:1.2!important;
+  padding:7px 13px!important;border-radius:999px!important;
+  background:rgba(0,51,73,.055)!important;border:0!important;
+  color:rgba(0,51,73,.76)!important;text-decoration:none!important;
+}
+html[data-theme="dark"] body.vB .prodjump a,html[data-theme="dark"] body.vB .prodnav a{
+  background:rgba(234,243,248,.09)!important;color:rgba(234,246,255,.8)!important;
+}
+
+/* ── the group: heading left, cards right ── */
+@media (min-width:1000px){
+  html[data-theme="light"] body.vB .prodgroup,html[data-theme="dark"] body.vB .prodgroup,
+  body.vB .prodgroup{
+    display:grid!important;
+    grid-template-columns:minmax(0,0.78fr) minmax(0,1.22fr)!important;
+    column-gap:clamp(40px,4.6vw,80px)!important;align-items:start!important;
+  }
+  body.vB .prodgroup__head{margin:0!important;position:sticky!important;top:96px!important}
+  body.vB .prodgroup__cards{
+    grid-template-columns:repeat(auto-fit,minmax(0,1fr))!important;
+  }
+}
+
+/* §158 b · the table of contents is one line, not a wall.
+   Fourteen jump links, each carrying a whole section heading, wrapped into
+   seven rows of near-identical pills — a block nobody reads and which pushes
+   the first product a screen down. One scrolling row instead: it keeps the
+   jump-to behaviour, reads as the secondary control it is, and costs a single
+   line whatever the window width. */
+html[data-theme="light"] body.vB .prodtoc,html[data-theme="dark"] body.vB .prodtoc,
+body.vB .prodtoc{
+  display:flex!important;flex-wrap:nowrap!important;
+  gap:8px!important;padding:2px 0 10px!important;margin:0 0 clamp(28px,3.4vw,48px)!important;
+  overflow-x:auto!important;overscroll-behavior-x:contain!important;
+  scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;
+  /* the row fades out at the right so it reads as continuing */
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 48px),transparent 100%)!important;
+          mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 48px),transparent 100%)!important;
+}
+body.vB .prodtoc::-webkit-scrollbar{display:none!important}
+html[data-theme="light"] body.vB .prodtoc > a,html[data-theme="dark"] body.vB .prodtoc > a,
+body.vB .prodtoc > a{
+  flex:0 0 auto!important;white-space:nowrap!important;
+  font-size:12.5px!important;line-height:1.2!important;
+  padding:8px 14px!important;border-radius:999px!important;
+  background:rgba(0,51,73,.055)!important;border:0!important;
+  color:rgba(0,51,73,.72)!important;text-decoration:none!important;
+}
+html[data-theme="dark"] body.vB .prodtoc > a{
+  background:rgba(234,243,248,.09)!important;color:rgba(234,246,255,.78)!important;
+}
+/* the end of the strip still needs to be reachable once the mask fades it */
+body.vB .prodtoc::after{content:""!important;flex:0 0 44px!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   159 · THE SECTION INDEX AS A LINE YOU FILL IN (client, Sep 6,
+   after pentagram.com).
+
+   The index used to be fourteen jump links: a wall stacked, a long
+   sideways scroll in a row. Neither is read. It is a sentence now
+   with the choice set into it — one word at rest, the whole index
+   as a cluster of tags when you open it, closed again the moment
+   you pick. The word swaps in place rather than jumping, and the
+   control animates its width with it so the line never twitches.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .ptoc{
+  position:relative!important;
+  /* it sat flush against the section above, which reads as an oversight */
+  padding-top:clamp(40px,5.4vw,76px)!important;
+  margin:0 0 clamp(34px,4vw,60px)!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+}
+body.vB .ptoc__line{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:10px!important;flex-wrap:wrap!important;margin:0!important;
+  font-size:clamp(17px,1.5vw,21px)!important;line-height:1.3!important;
+}
+body.vB .ptoc__lead{color:rgba(0,51,73,.55)!important}
+html[data-theme="dark"] body.vB .ptoc__lead{color:rgba(234,246,255,.55)!important}
+
+body.vB .ptoc__btn{
+  display:inline-flex!important;align-items:center!important;gap:8px!important;
+  font:inherit!important;font-weight:600!important;
+  color:#003349!important;background:rgba(0,51,73,.055)!important;
+  border:0!important;border-radius:999px!important;
+  padding:8px 14px!important;cursor:pointer!important;
+  overflow:hidden!important;white-space:nowrap!important;
+  transition:width .36s cubic-bezier(.16,1,.3,1),background .2s ease!important;
+}
+html[data-theme="dark"] body.vB .ptoc__btn{
+  color:#EAF6FF!important;background:rgba(234,243,248,.10)!important;
+}
+body.vB .ptoc__btn:hover{background:rgba(0,51,73,.09)!important}
+html[data-theme="dark"] body.vB .ptoc__btn:hover{background:rgba(234,243,248,.16)!important}
+
+/* the word itself, swapping */
+body.vB .ptoc__label{
+  display:inline-block!important;
+  transition:opacity .13s ease,transform .13s ease!important;
+}
+body.vB .ptoc__label.is-out{opacity:0!important;transform:translateY(-.5em)!important}
+body.vB .ptoc__chev{
+  width:15px!important;height:15px!important;flex:0 0 15px!important;
+  transition:transform .28s cubic-bezier(.16,1,.3,1)!important;
+}
+body.vB .ptoc.is-open .ptoc__chev{transform:rotate(180deg)!important}
+
+/* the index opens as a full-screen sheet, not a block in the flow — opening it
+   must not move the page underneath, and fourteen options deserve the whole
+   window rather than a strip of it */
+body.vB .ptoc__panel{
+  position:fixed!important;inset:0!important;z-index:200!important;
+  display:grid!important;place-items:center!important;
+  padding:clamp(20px,5vw,64px)!important;
+  /* one flat ground and nothing else: the blur plus a translucent scrim plus
+     translucent chips was three effects stacked on a simple menu */
+  background:rgba(0,26,43,.94)!important;
+  animation:ptocFade .2s ease both!important;
+}
+body.vB .ptoc__sheet{
+  display:flex!important;flex-wrap:wrap!important;
+  justify-content:center!important;align-content:center!important;
+  gap:9px!important;width:100%!important;max-width:1180px!important;
+  animation:ptocIn .28s cubic-bezier(.16,1,.3,1) both!important;
+}
+body.vB .ptoc__close{
+  position:absolute!important;top:clamp(16px,2.4vw,28px)!important;
+  right:clamp(16px,2.4vw,28px)!important;
+  width:44px!important;height:44px!important;display:grid!important;place-items:center!important;
+  border:0!important;border-radius:999px!important;cursor:pointer!important;
+  background:rgba(255,255,255,.14)!important;color:#FFFFFF!important;
+}
+body.vB .ptoc__close:hover{background:rgba(255,255,255,.24)!important}
+body.vB .ptoc__close svg{width:19px!important;height:19px!important}
+@keyframes ptocFade{from{opacity:0}to{opacity:1}}
+@keyframes ptocIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* the chips: short labels, so they read at a glance */
+/* Rounded, and one line each. The headings are long, so the pills come out
+   different widths — that is the cluster doing its job. What does not work is
+   a pill wrapping to two lines: the radius stops reading as a radius and the
+   ends look clipped. Each keeps its own width and never wraps. */
+body.vB .ptoc__item{
+  display:inline-flex!important;align-items:center!important;
+  font-size:clamp(13.5px,1.15vw,15.5px)!important;line-height:1.2!important;
+  font-weight:450!important;
+  padding:11px 20px!important;border-radius:999px!important;
+  background:transparent!important;color:rgba(255,255,255,.84)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;max-width:none!important;
+  transition:background .16s ease,color .16s ease,border-color .16s ease!important;
+}
+body.vB .ptoc__item:hover,body.vB .ptoc__item:focus-visible{
+  background:#FFFFFF!important;color:#001A2B!important;border-color:#FFFFFF!important;
+}
+@media (prefers-reduced-motion:reduce){
+  body.vB .ptoc__panel,body.vB .ptoc__sheet{animation:none!important}
+  body.vB .ptoc__label,body.vB .ptoc__btn,body.vB .ptoc__chev,body.vB .ptoc__item{transition:none!important}
+}
+
+/* §159 b · a lone card no longer leaves an empty column beside it below the
+   two-column breakpoint — the grid still declared two fixed tracks for one
+   card, which is the gap that appeared next to the title. */
+html[data-theme="light"] body.vB .prodgroup__cards,html[data-theme="dark"] body.vB .prodgroup__cards,
+body.vB .prodgroup__cards{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))!important;
+}
+
+/* §159 c · [hidden] has to win.
+   Both .prodtoc and .ptoc__panel are given display:flex!important above, and
+   an !important display beats the hidden attribute — so the old strip never
+   went away and the panel was never closed, however correctly the script set
+   the property. State first, layout second. */
+body.vB .prodtoc[hidden],
+body.vB .ptoc__panel[hidden],
+html[data-theme="light"] body.vB .prodtoc[hidden],
+html[data-theme="dark"]  body.vB .prodtoc[hidden],
+html[data-theme="light"] body.vB .ptoc__panel[hidden],
+html[data-theme="dark"]  body.vB .ptoc__panel[hidden]{display:none!important}
+
+/* §159 d · no rule above the first group.
+   .prodgroup opens with a hairline so the groups read as a series, but the
+   first one has the index directly above it — a line there separates the
+   menu from its own first result. */
+html[data-theme="light"] body.vB .prodgroup:first-of-type,
+html[data-theme="dark"]  body.vB .prodgroup:first-of-type,
+html[data-theme="light"] body.vB .ptoc + .prodgroup,
+html[data-theme="dark"]  body.vB .ptoc + .prodgroup,
+body.vB .prodgroup:first-of-type,body.vB .ptoc + .prodgroup{border-top:0!important}
+
+/* §159 e · on a narrow window a one-line pill would run off the sheet, so
+   below the point where the longest heading fits, the list becomes a column
+   of full-width rows — still rounded, still one line each, just stacked. */
+@media (max-width:820px){
+  body.vB .ptoc__sheet{flex-direction:column!important;align-items:stretch!important}
+  body.vB .ptoc__item{
+    white-space:normal!important;justify-content:center!important;
+    text-align:center!important;border-radius:14px!important;
+    font-size:14px!important;padding:12px 16px!important;
+  }
+}
+
+/* §159 f · the sheet follows the theme (client, Sep 6).
+   It was navy-on-white in both, which is a third mode: in light it arrived as
+   a dark slab over a light page. Light ground with navy type in light, the
+   navy ground it already had in dark. The dark rules come second so they win
+   on the same specificity. */
+html[data-theme="light"] body.vB .ptoc__panel,
+body.vB .ptoc__panel{background:rgba(247,248,250,.97)!important}
+html[data-theme="light"] body.vB .ptoc__item,
+body.vB .ptoc__item{
+  color:rgba(0,51,73,.86)!important;
+  border-color:rgba(0,51,73,.20)!important;
+}
+html[data-theme="light"] body.vB .ptoc__item:hover,
+html[data-theme="light"] body.vB .ptoc__item:focus-visible,
+body.vB .ptoc__item:hover,body.vB .ptoc__item:focus-visible{
+  background:#003349!important;color:#FFFFFF!important;border-color:#003349!important;
+}
+html[data-theme="light"] body.vB .ptoc__close,
+body.vB .ptoc__close{
+  background:rgba(0,51,73,.08)!important;color:#003349!important;
+}
+html[data-theme="light"] body.vB .ptoc__close:hover,
+body.vB .ptoc__close:hover{background:rgba(0,51,73,.16)!important}
+
+html[data-theme="dark"] body.vB .ptoc__panel{background:rgba(0,20,34,.97)!important}
+html[data-theme="dark"] body.vB .ptoc__item{
+  color:rgba(234,246,255,.86)!important;border-color:rgba(234,243,248,.24)!important;
+}
+html[data-theme="dark"] body.vB .ptoc__item:hover,
+html[data-theme="dark"] body.vB .ptoc__item:focus-visible{
+  background:#EAF6FF!important;color:#001A2B!important;border-color:#EAF6FF!important;
+}
+html[data-theme="dark"] body.vB .ptoc__close{
+  background:rgba(234,243,248,.12)!important;color:#EAF6FF!important;
+}
+html[data-theme="dark"] body.vB .ptoc__close:hover{background:rgba(234,243,248,.22)!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   160 · THE MENU BUTTON MATCHES ITS NEIGHBOUR (client, Sep 6).
+   It was a solid rgb(14,95,142) block sitting immediately beside a
+   theme toggle that is transparent with a hairline — two different
+   button languages touching each other, and on a light page the
+   blue reads as a stray dark tile. They are a pair now: same size,
+   same hairline, same radius, in both themes.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .nav__menu,
+html[data-theme="light"] body.vB #navMenu,
+body.vB .nav__menu,body.vB #navMenu{
+  width:36px!important;height:36px!important;
+  background:transparent!important;
+  border:1px solid rgba(0,51,73,.15)!important;
+  border-radius:999px!important;
+  color:rgba(0,51,73,.78)!important;
+  display:grid!important;place-items:center!important;
+}
+html[data-theme="light"] body.vB .nav__menu:hover,
+body.vB .nav__menu:hover,body.vB #navMenu:hover{
+  background:rgba(0,51,73,.06)!important;border-color:rgba(0,51,73,.28)!important;
+}
+html[data-theme="dark"] body.vB .nav__menu,
+html[data-theme="dark"] body.vB #navMenu{
+  background:transparent!important;
+  border-color:rgba(234,243,248,.22)!important;
+  color:rgba(234,246,255,.82)!important;
+}
+html[data-theme="dark"] body.vB .nav__menu:hover,
+html[data-theme="dark"] body.vB #navMenu:hover{
+  background:rgba(234,243,248,.10)!important;border-color:rgba(234,243,248,.36)!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   161 · THE DEMO CHROME LIVES IN THE HEADER (client, Sep 6).
+   Three fixed pills sat over the page at all times, on every page,
+   at every width — on a phone the lower two spanned 308px of a
+   375px screen. They are demo chrome: reachable, never in the way.
+   One button in the header now, opening the same kind of sheet the
+   products index uses.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB .demomenu__btn{
+  width:36px!important;height:36px!important;flex:0 0 36px!important;
+  display:grid!important;place-items:center!important;
+  background:transparent!important;
+  border:1px solid rgba(0,51,73,.15)!important;border-radius:999px!important;
+  color:rgba(0,51,73,.7)!important;cursor:pointer!important;padding:0!important;
+}
+body.vB .demomenu__btn svg{width:18px!important;height:18px!important}
+body.vB .demomenu__btn:hover{background:rgba(0,51,73,.06)!important;border-color:rgba(0,51,73,.28)!important}
+html[data-theme="dark"] body.vB .demomenu__btn{
+  border-color:rgba(234,243,248,.22)!important;color:rgba(234,246,255,.78)!important;
+}
+html[data-theme="dark"] body.vB .demomenu__btn:hover{background:rgba(234,243,248,.10)!important}
+
+/* the sheet */
+body.vB .demomenu{
+  position:fixed!important;inset:0!important;z-index:210!important;
+  display:grid!important;place-items:center!important;
+  padding:clamp(20px,5vw,64px)!important;
+  background:rgba(247,248,250,.97)!important;
+  animation:ptocFade .2s ease both!important;
+}
+html[data-theme="dark"] body.vB .demomenu{background:rgba(0,20,34,.97)!important}
+body.vB .demomenu[hidden]{display:none!important}
+body.vB .demomenu__sheet{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  gap:10px!important;width:100%!important;max-width:420px!important;
+  animation:ptocIn .28s cubic-bezier(.16,1,.3,1) both!important;
+}
+body.vB .demomenu__title{
+  margin:0 0 6px!important;font-size:11px!important;font-weight:600!important;
+  letter-spacing:.16em!important;text-transform:uppercase!important;
+  color:rgba(0,51,73,.5)!important;text-align:center!important;
+}
+html[data-theme="dark"] body.vB .demomenu__title{color:rgba(234,246,255,.5)!important}
+body.vB .demomenu__close{
+  position:absolute!important;top:clamp(16px,2.4vw,28px)!important;right:clamp(16px,2.4vw,28px)!important;
+  width:44px!important;height:44px!important;display:grid!important;place-items:center!important;
+  border:0!important;border-radius:999px!important;cursor:pointer!important;
+  background:rgba(0,51,73,.08)!important;color:#003349!important;
+}
+html[data-theme="dark"] body.vB .demomenu__close{background:rgba(234,243,248,.12)!important;color:#EAF6FF!important}
+body.vB .demomenu__close svg{width:19px!important;height:19px!important}
+
+/* the controls themselves: they were position:fixed, so every one of those
+   properties has to be undone before they can sit in a list */
+body.vB .demomenu__item{
+  position:static!important;inset:auto!important;
+  top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;
+  transform:none!important;opacity:1!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:8px!important;width:100%!important;max-width:none!important;
+  min-height:52px!important;padding:14px 20px!important;
+  font-size:14px!important;letter-spacing:.02em!important;
+  border-radius:14px!important;border:1px solid rgba(0,51,73,.18)!important;
+  background:transparent!important;color:rgba(0,51,73,.86)!important;
+  text-decoration:none!important;cursor:pointer!important;
+  transition:background .16s ease,color .16s ease,border-color .16s ease!important;
+}
+body.vB .demomenu__item:hover{background:#003349!important;color:#FFFFFF!important;border-color:#003349!important}
+html[data-theme="dark"] body.vB .demomenu__item{
+  border-color:rgba(234,243,248,.24)!important;color:rgba(234,246,255,.86)!important;
+}
+html[data-theme="dark"] body.vB .demomenu__item:hover{
+  background:#EAF6FF!important;color:#001A2B!important;border-color:#EAF6FF!important;
+}
+/* whatever the old mobile pass said about their corners no longer applies */
+@media (max-width:860px){
+  body.vB .demomenu__item{
+    position:static!important;right:auto!important;bottom:auto!important;left:auto!important;
+    font-size:14px!important;padding:14px 20px!important;opacity:1!important;
+  }
+}
+
+/* §161 b · the versions, listed in the menu.
+   "Previous versions" still goes to the index; these go straight to one. The
+   sub-heading gets air above it so the two groups read apart, and the version
+   you are already looking at is marked rather than offered. */
+body.vB .demomenu__title--sub{margin:18px 0 6px!important}
+body.vB .demomenu__item--version{
+  min-height:46px!important;padding:12px 20px!important;
+  font-size:14.5px!important;letter-spacing:0!important;text-transform:none!important;
+}
+body.vB .demomenu__item.is-here{
+  opacity:.5!important;pointer-events:none!important;
+}
+body.vB .demomenu__item.is-here::after{
+  content:"you are here"!important;
+  margin-left:8px!important;font-size:11px!important;letter-spacing:.1em!important;
+  text-transform:uppercase!important;opacity:.8!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   162 · SPACING (client, Sep 6). Design unchanged — only the
+   space between things.
+
+   THE AUDIT. Measured across the build: the chooser row put 14px
+   between a 34px icon and a 14.5px label; the portfolio card used
+   14px for BOTH eyebrow→title and title→body, so two different
+   relationships got the same value and neither read as a group;
+   the card header had 12px beside the mark and 1px between its own
+   two lines; and half the values were clamp results landing off
+   any grid at all (11.7px, 13.5px, 7px).
+
+   THE RULES, in the order they matter:
+
+   1 · One 4px grid. 4 8 12 16 24 32 48 64 96. Nothing between.
+   2 · The space AROUND a group must exceed every space INSIDE it.
+       That single rule is what makes a card read as one thing
+       rather than four stacked things. It was the one being broken.
+   3 · An icon's gap to its label is about a third of the icon, and
+       never more than the label's own cap height — 14px next to a
+       34px tile is why it "takes too much place".
+   4 · A title and its own paragraph are one unit: 8px. An eyebrow
+       and its title are a tighter unit still. The daylight goes
+       BETWEEN units, not inside them.
+   5 · A button is a new intent, not the end of a paragraph: 24px.
+   6 · Chips are peers in one cluster: 8px, uniform, both axes.
+   7 · Cards in a grid sit further apart than anything inside them.
+   ═══════════════════════════════════════════════════════════════ */
+body.vB{
+  --sp-1:4px;  --sp-2:8px;   --sp-3:12px; --sp-4:16px;
+  --sp-6:24px; --sp-8:32px;  --sp-12:48px; --sp-16:64px;
+}
+
+/* ── the chooser row: icon and label are one unit ── */
+html[data-theme="light"] body.vB .pick__row,html[data-theme="dark"] body.vB .pick__row,
+body.vB .pick__row{
+  gap:10px!important;                      /* was 14, against a 34px tile */
+  padding:var(--sp-3) var(--sp-4)!important;
+}
+body.vB .pick__mark,html[data-theme="dark"] body.vB .pick__mark{
+  width:30px!important;height:30px!important;
+  min-width:30px!important;flex:0 0 30px!important;
+}
+body.vB .pick__mark svg,html[data-theme="dark"] body.vB .pick__mark svg{
+  width:14px!important;height:14px!important;
+}
+
+/* ── the card header: two lines that belong together ── */
+body.vB .pick > .pick__hint{
+  column-gap:10px!important;row-gap:3px!important;      /* was 12 / 1 */
+  padding:var(--sp-4) 18px!important;
+}
+body.vB .pick > .pick__hint .pick__hinti{width:30px!important;height:30px!important}
+
+/* ── the portfolio card: four relationships, four values ── */
+body.vB .tier__mark{margin:0 0 var(--sp-4)!important}   /* mark → the block */
+body.vB .tier__cat{margin:0 0 var(--sp-2)!important}    /* eyebrow → title, one unit */
+body.vB .tier__name{margin:0 0 10px!important}          /* title → its own lead */
+body.vB .tier__head{margin:0 0 var(--sp-3)!important}   /* lead → the body */
+body.vB .tier__line{margin:0 0 var(--sp-6)!important}   /* body → the facts below */
+body.vB .tier__facts{margin:0!important}
+body.vB .tier__facts > div + div{margin-top:var(--sp-4)!important}
+body.vB .tier__facts dt{margin:0 0 var(--sp-1)!important}
+body.vB .tier__facts dd{margin:0!important}
+
+/* ── the product card ── */
+body.vB .prodcard{gap:var(--sp-3)!important;padding:var(--sp-6)!important}
+body.vB .prodcard__id{gap:10px!important}
+body.vB .prodcard__mark{width:32px!important;height:32px!important;flex:0 0 32px!important}
+body.vB .prodcard__pos{margin:0!important}
+body.vB .prodcard__who{margin:0!important}
+body.vB .prodcard__pills{margin:var(--sp-1) 0 0!important;gap:var(--sp-2)!important}
+body.vB .prodcard__pills > li{padding:6px var(--sp-3)!important}
+
+/* ── clusters of chips are peers: one gap, both axes ── */
+body.vB .ptoc__sheet{gap:var(--sp-2)!important}
+body.vB .prodtoc{gap:var(--sp-2)!important}
+
+/* ── a button is a new intent ── */
+body.vB .about__act,body.vB .about__cta > .btn:first-child{margin-top:var(--sp-6)!important}
+
+/* ── cards in a grid sit further apart than anything inside them ── */
+body.vB .prodgroup__cards{gap:var(--sp-6)!important}
+body.vB .about__tiers{column-gap:clamp(var(--sp-8),4vw,var(--sp-16))!important}
+
+/* §162 b · the chooser rows on a phone.
+   The gap measured 10px and looked like 26. On mobile the mark's chip is
+   transparent — background none, radius 0 — so a 14px glyph was floating in
+   an invisible 30px box, and the eye reads the distance from the GLYPH, not
+   from a box it cannot see: 8px of dead air on each side plus the 10px gap.
+
+   Two ways to fix that: give the box back its chip, or shrink the box to the
+   glyph. On a phone the second is right — five chips of decoration in a
+   narrow column is noise, and the row is a pill already. So the box fits the
+   glyph, the glyph grows, and the row loses the height it was spending on
+   nothing. 56px to 44px per row, 332px to 240 for the five. */
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pick__row .pick__mark,
+  html[data-theme="dark"]  body.vB .pick__row .pick__mark,
+  body.vB .pick__row .pick__mark{
+    width:18px!important;height:18px!important;
+    min-width:18px!important;flex:0 0 18px!important;
+    background:none!important;border:0!important;padding:0!important;
+  }
+  html[data-theme="light"] body.vB .pick__row .pick__mark svg,
+  html[data-theme="dark"]  body.vB .pick__row .pick__mark svg,
+  body.vB .pick__row .pick__mark svg{width:17px!important;height:17px!important}
+
+  html[data-theme="light"] body.vB .pick__row,html[data-theme="dark"] body.vB .pick__row,
+  body.vB .pick__row{
+    padding:10px 16px!important;gap:10px!important;
+  }
+  html[data-theme="light"] body.vB .pick__label,html[data-theme="dark"] body.vB .pick__label,
+  body.vB .pick__label{font-size:14px!important;line-height:1.25!important}
+  /* the list closes up with them */
+  html[data-theme="light"] body.vB .pick__list,html[data-theme="dark"] body.vB .pick__list,
+  body.vB .pick__list{gap:8px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   163 · THE CHOOSER IS A RAIL ON A PHONE (client, Sep 6).
+   Five tags stacked cost 271px of a 812px screen before the chat
+   had said anything. They are peers, not a menu — one horizontal
+   row that scrolls, cropped at the edge so it is obvious there is
+   more, which is the pattern every phone user already knows. Five
+   rows become one, and the answer pane gets the height back.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pick__list,html[data-theme="dark"] body.vB .pick__list,
+  body.vB .pick__list{
+    display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+    gap:8px!important;padding:12px 16px!important;margin:0!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;
+    scrollbar-width:none!important;
+    scroll-snap-type:x proximity!important;
+    /* cropped, not cut: the fade says the row continues */
+    -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 34px),transparent 100%)!important;
+            mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 34px),transparent 100%)!important;
+    border-right:0!important;
+  }
+  body.vB .pick__list::-webkit-scrollbar{display:none!important}
+  html[data-theme="light"] body.vB .pick__row,html[data-theme="dark"] body.vB .pick__row,
+  body.vB .pick__row{
+    flex:0 0 auto!important;white-space:nowrap!important;
+    scroll-snap-align:start!important;
+    padding:9px 15px!important;
+  }
+  body.vB .pick__label{white-space:nowrap!important}
+  /* the end of the rail has to be reachable past the fade */
+  body.vB .pick__list::after{content:""!important;flex:0 0 26px!important}
+
+  /* the panes stack, and the divider between them goes horizontal */
+  html[data-theme="light"] body.vB .pick__panes,html[data-theme="dark"] body.vB .pick__panes,
+  body.vB .pick__panes{
+    grid-template-columns:minmax(0,1fr)!important;height:auto!important;overflow:visible!important;
+  }
+  html[data-theme="light"] body.vB .pick__detail,html[data-theme="dark"] body.vB .pick__detail,
+  body.vB .pick__detail,body.vB #pickDetail{
+    border-left:0!important;border-top:1px solid rgba(0,51,73,.12)!important;
+    height:auto!important;overflow:visible!important;
+  }
+  html[data-theme="dark"] body.vB .pick__detail,html[data-theme="dark"] body.vB #pickDetail{
+    border-top-color:rgba(234,243,248,.16)!important;
+  }
+}
+
+/* §163 b · the rail keeps its inset when it snaps.
+   scroll-snap-align:start aligns an item to the SCROLLPORT edge, and the
+   scrollport ignores the container's own padding — so the first tag sprang
+   back flush against the card's edge every time the rail settled, however
+   much padding-left the list had. scroll-padding is the property that moves
+   the snap line itself. */
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pick__list,html[data-theme="dark"] body.vB .pick__list,
+  body.vB .pick__list{
+    scroll-padding-left:16px!important;scroll-padding-right:16px!important;
+    scroll-padding-inline:16px!important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   164 · THE SITE-WIDE RHYTHM (client, Sep 6).
+
+   The honest audit, run over every visible block on the page:
+   66 gaps, 34 distinct values, 29 of them off the 4px grid —
+   22, 25, 30, 35, 47, 93, 107, 123, 165, 185, 243. A unique value
+   for every second gap is not a spacing system, it is the absence
+   of one, and §162 only reached four components.
+
+   One ladder, used everywhere. Each step is a different KIND of
+   relationship, not a different size of the same one:
+
+     8   inside a unit      (eyebrow to its own title)
+     12  between lines of one block
+     24  between blocks in one group
+     40  between groups in one section
+     56  between sections on a phone
+     96+ between sections on a desktop
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── the hero: eyebrow, headline, chat — three units, three steps ── */
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .hero2--band .hero2__band > .eyebrow,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band > .eyebrow,
+  body.vB .hero2--band .hero2__band > .eyebrow,
+  body.vB .hero2--band .hero2__band > #heroEyebrow{
+    margin:0 auto 24px!important;          /* was 22 — and 25 to the next */
+  }
+  html[data-theme="light"] body.vB .hero2--band .hero2__band,
+  html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+  body.vB .hero2--band .hero2__band{
+    padding-bottom:40px!important;         /* headline → the chat, a group step */
+  }
+}
+
+/* ── the answer pane's empty state was 123px above and 93 below ── */
+html[data-theme="light"] body.vB .pick__detail-empty,
+html[data-theme="dark"]  body.vB .pick__detail-empty,
+body.vB .pick__detail-empty{
+  padding:40px 24px!important;margin:0!important;
+}
+@media (max-width:860px){
+  body.vB .pick__detail-empty{padding:32px 20px!important}
+  body.vB .pick__detail,body.vB #pickDetail{padding:0!important}
+}
+
+/* ── the portfolio card's own ladder: 10/30/35/47 were four accidents ── */
+body.vB .tier__name{margin:0 0 12px!important}          /* was 10 */
+body.vB .tier__facts{margin:24px 0 0!important;padding-top:24px!important}
+body.vB .tier__facts > div + div{margin-top:24px!important}   /* was 30/35 */
+body.vB .tier__facts dt{margin:0 0 8px!important}
+body.vB .tier + .tier{margin-top:40px!important}        /* was 47 */
+@media (min-width:861px){body.vB .tier + .tier{margin-top:0!important}}
+
+/* ── the film block ── */
+body.vB .film__h,body.vB .film h2,body.vB .film h3{margin:0 0 24px!important}
+body.vB .hero2__play{margin-top:24px!important}         /* was 34 */
+
+/* ── the About banner's copy ── */
+body.vB .about__lede{margin:0 0 24px!important}         /* was 30 */
+body.vB .about__title{margin:0 0 24px!important}
+
+/* §164 b · the selectors were pointing at a structure that no longer exists.
+   When the hero split into two columns the eyebrow and the headline moved
+   into .hero2__copy, so every rule written as `.hero2__band > .eyebrow` — mine
+   included — silently stopped matching. That is why two passes of spacing work
+   left the hero untouched at 22 and 25px. */
+@media (max-width:1099px){
+  html[data-theme="light"] body.vB .hero2__copy .eyebrow,
+  html[data-theme="dark"]  body.vB .hero2__copy .eyebrow,
+  html[data-theme="light"] body.vB .hero2__copy #heroEyebrow,
+  html[data-theme="dark"]  body.vB .hero2__copy #heroEyebrow,
+  body.vB .hero2__copy .eyebrow,body.vB .hero2__copy #heroEyebrow{
+    margin:0 auto 24px!important;display:block!important;
+  }
+  html[data-theme="light"] body.vB .hero2__copy .display,
+  html[data-theme="dark"]  body.vB .hero2__copy .display,
+  body.vB .hero2__copy .display,body.vB .hero2__copy #hero2Title{
+    margin:0!important;
+  }
+  /* headline → the chat: a step between groups, not between lines */
+  html[data-theme="light"] body.vB .hero2__copy,
+  html[data-theme="dark"]  body.vB .hero2__copy,
+  body.vB .hero2__copy{margin:0 0 40px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   165 · SPACING SYSTEM — Phase C, homepage only.
+   Implements STAGWELL_SPACING_SYSTEM.md v1.0 after the rendered
+   audit. Scope is deliberately narrow: portfolio, chat and scale
+   panel INTERNALS are untouched by instruction, as are typography,
+   colour, alignment and component structure.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1 · the scale (§3/§4 of the spec) ── */
+:root{
+  --space-0:0; --space-1:.125rem; --space-2:.25rem;  --space-3:.375rem;
+  --space-4:.5rem; --space-5:.75rem; --space-6:1rem; --space-7:1.25rem;
+  --space-8:1.5rem; --space-9:2rem;  --space-10:2.5rem; --space-11:3rem;
+  --space-12:4rem; --space-13:5rem;  --space-14:6rem;   --space-15:7.5rem;
+  --space-16:9rem; --space-17:11.25rem;
+
+  /* three section categories, assigned by editorial role, not by width.
+     Starting values per the brief; trimmed after rendering where the mobile
+     page read as stretched (see §165 f). */
+  --section-compact: clamp(4.5rem, 3.4rem + 2.2vw, 6rem);    /* 72 → 96  */
+  --section-standard:clamp(6rem,   4.4rem + 3.2vw, 8rem);    /* 96 → 128 */
+  --section-major:   clamp(7.5rem, 5.6rem + 3.8vw, 10rem);   /* 120 → 160 */
+}
+
+/* ── 2 · the hero keeps min-height:100svh (client), but its floor becomes a
+      stated value rather than a viewport-height clamp. Two reasons: the clamp
+      made the hero→film boundary vary 130–196px across widths for the same
+      relationship, and a fixed floor is what guarantees the card cannot touch
+      the bottom edge when content outgrows a short viewport. min-height, not
+      height, so the hero still expands naturally. ── */
+html[data-theme="light"] body.vB .hero2--band .hero2__band,
+html[data-theme="dark"]  body.vB .hero2--band .hero2__band,
+body.vB .hero2--band .hero2__band{
+  padding-bottom:var(--space-10)!important;      /* 40 — the hero's own floor */
+}
+
+/* ── 3 · hero eyebrow → H1. Bare 11px caps with no box of its own, so the
+      measured gap is the optical gap. 24 → 12 mobile / 16 desktop (§6).
+      The BANNER eyebrow is not changed: it is a padded pill whose box already
+      carries 8px below its text, so its 20px measures wide and reads right. ── */
+@media (max-width:1099px){
+  html[data-theme="light"] body.vB .hero2__copy .eyebrow,
+  html[data-theme="dark"]  body.vB .hero2__copy .eyebrow,
+  html[data-theme="light"] body.vB .hero2__copy #heroEyebrow,
+  html[data-theme="dark"]  body.vB .hero2__copy #heroEyebrow,
+  body.vB .hero2__copy .eyebrow,body.vB .hero2__copy #heroEyebrow{
+    margin:0 auto var(--space-5)!important;      /* 12 */
+  }
+}
+@media (min-width:1100px){
+  html[data-theme="light"] body.vB .hero2__copy .eyebrow,
+  html[data-theme="dark"]  body.vB .hero2__copy .eyebrow,
+  body.vB .hero2__copy .eyebrow,body.vB .hero2__copy #heroEyebrow{
+    margin:0 0 var(--space-6)!important;         /* 16 */
+  }
+}
+
+/* ── 4 · the chat → film boundary. The film's margin-top owns it; the hero
+      contributes its 40px floor. Combined target is the compact category, so
+      the film carries the remainder. One owner, one documented sum. ── */
+html[data-theme="light"] body.vB .film,html[data-theme="dark"] body.vB .film,
+body.vB .film{
+  margin-top:var(--section-standard)!important;
+  margin-bottom:0!important;
+}
+
+/* ── 5 · section categories.
+      film      → compact   (a beat between two arguments)
+      about/cloud → standard (heading block plus a component)
+      cta       → major     (the closing ask; the one arrival) ── */
+@media (min-width:0px){
+  html[data-theme="light"] body.vB #about,html[data-theme="dark"] body.vB #about,
+  html[data-theme="light"] body.vB #cloud,html[data-theme="dark"] body.vB #cloud,
+  body.vB #about,body.vB #cloud{
+    padding-top:var(--section-standard)!important;
+    padding-bottom:var(--section-standard)!important;
+    margin:0!important;
+  }
+  html[data-theme="light"] body.vB #cta,html[data-theme="dark"] body.vB #cta,
+  body.vB #cta{
+    padding-top:var(--section-major)!important;
+    padding-bottom:var(--section-major)!important;
+    margin:0!important;
+  }
+  html[data-theme="light"] body.vB #hero2,html[data-theme="dark"] body.vB #hero2,
+  body.vB #hero2{padding-bottom:var(--section-standard)!important}
+  /* the blocks stacked inside #about take the same standard rhythm */
+  html[data-theme="light"] body.vB .about__in,html[data-theme="dark"] body.vB .about__in,
+  body.vB .about__in{gap:var(--section-standard)!important}
+}
+
+/* ── 6 · banner: the CTA had drifted further from the copy (53–55) than the
+      copy's own internal step (30–32), inverting the hierarchy. ── */
+html[data-theme="light"] body.vB .about__act,html[data-theme="dark"] body.vB .about__act,
+body.vB .about__act{margin-top:var(--space-9)!important}   /* 32 */
+html[data-theme="light"] body.vB .about__lede,html[data-theme="dark"] body.vB .about__lede,
+body.vB .about__lede{margin:0 0 var(--space-8)!important}  /* 24 */
+
+/* ── 7 · the stats grid: content loss at 390. Four columns computed to 50.5px
+      against a 65px figure, so every number was clipped. 2×2 keeps them
+      readable as a SET of proof points; 1×4 cost a further 127px and turned
+      them into a list you scroll past. ── */
+@media (max-width:640px){
+  html[data-theme="light"] body.vB .about__stats,html[data-theme="dark"] body.vB .about__stats,
+  body.vB .about__stats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    column-gap:var(--space-7)!important;row-gap:var(--space-9)!important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   165 e · OWNERSHIP CORRECTION, after rendering (Phase D).
+
+   The first pass put a category value on BOTH sides of every
+   boundary, so film→banner rendered at 216px instead of 96 — the
+   accidental doubling §10 warns against, produced by me. One
+   documented strategy instead: THE SECTION THAT STARTS OWNS THE
+   SPACE ABOVE IT. Trailing paddings are zero; only the last
+   section before the footer keeps one.
+
+   Mobile values also come down a step. At 96/128 standard the
+   phone page grew from 8671 to 9129px and read as stretched, which
+   the brief said to correct after rendering rather than defend.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --section-compact: clamp(4rem,   3.1rem + 1.8vw, 6rem);    /* 64 → 96  */
+  --section-standard:clamp(5rem,   3.7rem + 2.6vw, 8rem);    /* 80 → 128 */
+  --section-major:   clamp(6rem,   4.4rem + 3.2vw, 10rem);   /* 96 → 160 */
+}
+
+/* trailing paddings off: the boundary belongs to what comes next */
+html[data-theme="light"] body.vB #hero2,html[data-theme="dark"] body.vB #hero2,
+body.vB #hero2{padding-bottom:0!important}
+html[data-theme="light"] body.vB #about,html[data-theme="dark"] body.vB #about,
+body.vB #about{padding-top:var(--section-standard)!important;padding-bottom:0!important}
+html[data-theme="light"] body.vB #cloud,html[data-theme="dark"] body.vB #cloud,
+body.vB #cloud{padding-top:var(--section-standard)!important;padding-bottom:0!important}
+/* the last section keeps a floor, or the footer collides with the cards */
+html[data-theme="light"] body.vB #cta,html[data-theme="dark"] body.vB #cta,
+body.vB #cta{padding-top:var(--section-major)!important;padding-bottom:var(--section-standard)!important}
+
+/* the film's own inner padding sat inside the boundary and inflated it */
+@media (min-width:0px){
+  html[data-theme="light"] body.vB #hero2 .hero2__in,
+  html[data-theme="dark"]  body.vB #hero2 .hero2__in,
+  body.vB #hero2 .hero2__in{padding-top:0!important;padding-bottom:0!important}
+}
+
+/* 165 f · the banner CTA rule lost to a theme-prefixed selector; restated at
+   matching specificity so the CTA sits closer to the copy than the copy's own
+   blocks sit to each other. */
+html[data-theme="light"] body.vB .about__head .about__act,
+html[data-theme="dark"]  body.vB .about__head .about__act,
+body.vB .about__head .about__act{margin:var(--space-9) 0 0!important}
+
+/* 165 g · two places where a margin was stacking on top of a gap rather than
+   collapsing into it, because the parents are flex/grid containers:
+
+   · .about__lede's 24px bottom margin sat under the CTA's own 32px top
+     margin — 56 rendered, which is why the CTA still read as detached after
+     the first correction. The CTA's margin owns the relationship; the lede
+     carries none.
+   · .about__head's 56px bottom margin sat on top of .about__in's 80px gap,
+     giving 136 for a boundary the container already owns.
+
+   §10: components own their interiors, the container owns what is between
+   them. Two owners for one gap is how a system drifts. */
+html[data-theme="light"] body.vB .about__head .about__lede,
+html[data-theme="dark"]  body.vB .about__head .about__lede,
+body.vB .about__head .about__lede{margin-bottom:0!important}
+html[data-theme="light"] body.vB .about__head .about__act .btn,
+html[data-theme="dark"]  body.vB .about__head .about__act .btn,
+body.vB .about__head .about__act .btn{margin-top:0!important}
+
+html[data-theme="light"] body.vB .about__in > .about__head,
+html[data-theme="dark"]  body.vB .about__in > .about__head,
+html[data-theme="light"] body.vB .about__in > .about__portfolio,
+html[data-theme="dark"]  body.vB .about__in > .about__portfolio,
+html[data-theme="light"] body.vB .about__in > .about__proof,
+html[data-theme="dark"]  body.vB .about__in > .about__proof,
+body.vB .about__in > .about__head,
+body.vB .about__in > .about__portfolio,
+body.vB .about__in > .about__proof{margin-top:0!important;margin-bottom:0!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   166 · WHY.HTML — the approved spacing baseline, applied.
+   Scoped to .about--full, which only this page carries, so the
+   homepage is untouched. Typography, colour, content, component
+   structure and interaction are not changed.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* a · mobile was pinned at a flat 56px and never reached the approved
+   --section-standard. Desktop already inherited it at 84. */
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .about--full .about__in,
+  html[data-theme="dark"]  body.vB .about--full .about__in,
+  body.vB .about--full .about__in{gap:var(--section-standard)!important}
+}
+
+/* b · the one boundary on this page that is NOT a section boundary.
+   "Expertise you can activate" elaborates the banner above it — same
+   argument, continued. Standard spacing there would say they are separate
+   claims. It takes the compact category instead, so the page reads as
+   banner+promises, then three independent blocks. */
+html[data-theme="light"] body.vB .about--full .about__promises,
+html[data-theme="dark"]  body.vB .about--full .about__promises,
+body.vB .about--full .about__promises{
+  margin-top:calc(var(--section-compact) - var(--section-standard))!important;
+}
+
+/* c · the reasons list sat at 22.87 — a clamp landing off the scale. */
+html[data-theme="light"] body.vB .about__reasons,
+html[data-theme="dark"]  body.vB .about__reasons,
+body.vB .about__reasons{
+  row-gap:var(--space-8)!important;                     /* 24 */
+  column-gap:clamp(1.75rem,1.2rem + 1.6vw,3rem)!important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §167  PORTFOLIO EXPLORER
+   The "One portfolio" grid of three tiers, rebuilt as a tabbed explorer:
+   a vertical index on the left, one editorial panel on the right. The copy is
+   read out of the old markup by portfolio-explorer.js, so nothing here sets
+   text — only structure, rhythm and state.
+
+   Spacing comes from the §165 scale. Type, colour and the tier accents are the
+   ones already in the system; no new values are invented.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html[data-theme="light"] body.vB .pex,
+html[data-theme="dark"]  body.vB .pex,
+body.vB .pex{
+  display:grid;
+  grid-template-columns:minmax(0,380px) minmax(0,1fr);
+  column-gap:clamp(2.5rem,1.2rem + 4vw,6rem);
+  align-items:start;
+  margin-top:var(--space-11);                     /* 48 — head → explorer      */
+  text-align:left;                                /* the section is centred    */
+}
+
+/* ── the index ───────────────────────────────────────────────────────────── */
+body.vB .pex__tabs{display:flex;flex-direction:column}
+
+html[data-theme="light"] body.vB .pex__tab,
+html[data-theme="dark"]  body.vB .pex__tab,
+body.vB .pex__tab{
+  position:relative;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  align-items:center;
+  column-gap:var(--space-7);                      /* 20 — icon → label         */
+  width:100%;
+  padding:var(--space-8) 0;                       /* 24 top and bottom         */
+  margin:0;border:0;background:none;
+  font:inherit;text-align:left;color:inherit;
+  cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+}
+html[data-theme="light"] body.vB .pex__tab:first-child,
+html[data-theme="dark"]  body.vB .pex__tab:first-child,
+body.vB .pex__tab:first-child{padding-top:0}
+
+body.vB .pex__ico{
+  display:grid;place-items:center;
+  width:64px;height:56px;
+  color:var(--ink-3);
+  transition:color .35s ease;
+}
+body.vB .pex__tab.is-active .pex__ico{color:var(--ink)}
+body.vB .pex__tab:hover .pex__ico{color:var(--ink-2)}
+body.vB .pex__tab.is-active:hover .pex__ico{color:var(--ink)}
+body.vB .pex__icon{width:64px;height:56px;display:block;overflow:visible}
+
+body.vB .pex__meta{display:flex;flex-direction:column;gap:var(--space-3)} /* 6 */
+
+html[data-theme="light"] body.vB .pex__n,
+html[data-theme="dark"]  body.vB .pex__n,
+body.vB .pex__n{
+  font-family:var(--mono,ui-monospace,SFMono-Regular,Menlo,monospace);
+  font-size:11px;line-height:1;letter-spacing:.14em;
+  color:var(--ink-4);
+  transition:color .35s ease;
+}
+body.vB .pex__tab.is-active .pex__n{color:var(--pex-accent)}
+
+html[data-theme="light"] body.vB .pex__title,
+html[data-theme="dark"]  body.vB .pex__title,
+body.vB .pex__title{
+  font-family:var(--sans,ui-sans-serif),system-ui,sans-serif;
+  font-size:clamp(1.0625rem,.98rem + .3vw,1.25rem);   /* 17 → 20 */
+  line-height:1.25;font-weight:600;letter-spacing:-.01em;
+  color:var(--ink-3);
+  transition:color .35s ease;
+}
+body.vB .pex__tab.is-active .pex__title{color:var(--ink)}
+body.vB .pex__tab:hover .pex__title{color:var(--ink-2)}
+body.vB .pex__tab.is-active:hover .pex__title{color:var(--ink)}
+
+/* One line, not two: the neutral track and the accent progress occupy the same
+   1px row, so the accent replaces the grey instead of sitting beside it. */
+html[data-theme="light"] body.vB .pex__rule,
+html[data-theme="dark"]  body.vB .pex__rule,
+body.vB .pex__rule{
+  position:absolute;left:0;right:0;bottom:0;
+  height:1px;
+  background:var(--line);
+}
+body.vB .pex__tab:last-child .pex__rule{bottom:0}
+body.vB .pex__prog{
+  position:absolute;inset:0;
+  background:var(--pex-accent);
+  transform:scaleX(0);transform-origin:left center;
+}
+
+body.vB .pex__tab:focus{outline:none}
+body.vB .pex__tab:focus-visible{
+  outline:2px solid var(--pex-accent);
+  outline-offset:4px;border-radius:4px;
+}
+
+/* ── the panel ───────────────────────────────────────────────────────────── */
+body.vB .pex__panels{position:relative}
+body.vB .pex__panel{padding-top:var(--space-2)}          /* optical, 4 */
+body.vB .pex__panel:focus{outline:none}
+body.vB .pex__panel:focus-visible{outline:2px solid var(--pex-accent);outline-offset:8px;border-radius:4px}
+
+html[data-theme="light"] body.vB .pex__eyebrow,
+html[data-theme="dark"]  body.vB .pex__eyebrow,
+body.vB .pex__eyebrow{
+  margin:0 0 var(--space-5) 0;                    /* 12 — eyebrow → H          */
+  font-family:var(--mono,ui-monospace,SFMono-Regular,Menlo,monospace);
+  font-size:11px;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--pex-accent);
+}
+
+html[data-theme="light"] body.vB .pex__h,
+html[data-theme="dark"]  body.vB .pex__h,
+body.vB .pex__h{
+  margin:0 0 var(--space-8) 0;                    /* 24 — H → body             */
+  font-family:var(--display,var(--sans,ui-sans-serif)),system-ui,sans-serif;
+  font-size:clamp(1.75rem,1.35rem + 1.7vw,2.5rem);    /* 28 → 40 */
+  line-height:1.12;letter-spacing:-.02em;font-weight:600;
+  color:var(--ink);
+}
+
+body.vB .pex__body{
+  display:grid;
+  grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+  column-gap:clamp(2rem,1.2rem + 2.4vw,3.5rem);
+  align-items:start;
+}
+
+html[data-theme="light"] body.vB .pex__copy p,
+html[data-theme="dark"]  body.vB .pex__copy p,
+body.vB .pex__copy p{
+  margin:0;
+  font-size:clamp(.9375rem,.9rem + .2vw,1.0625rem);   /* 15 → 17 */
+  line-height:1.6;color:var(--ink-2);
+}
+html[data-theme="light"] body.vB .pex__copy p + p,
+html[data-theme="dark"]  body.vB .pex__copy p + p,
+body.vB .pex__copy p + p{margin-top:var(--space-6)}   /* 16 */
+
+body.vB .pex__facts{margin:0;padding:0}
+html[data-theme="light"] body.vB .pex__facts dt,
+html[data-theme="dark"]  body.vB .pex__facts dt,
+body.vB .pex__facts dt{
+  margin:0 0 var(--space-4) 0;                    /* 8 — label → value         */
+  font-family:var(--mono,ui-monospace,SFMono-Regular,Menlo,monospace);
+  font-size:10px;line-height:1.2;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-4);
+}
+html[data-theme="light"] body.vB .pex__facts dd,
+html[data-theme="dark"]  body.vB .pex__facts dd,
+body.vB .pex__facts dd{
+  margin:0;
+  font-size:.9375rem;line-height:1.5;color:var(--ink);
+}
+html[data-theme="light"] body.vB .pex__factrule,
+html[data-theme="dark"]  body.vB .pex__factrule,
+body.vB .pex__factrule{
+  height:1px;background:var(--line);
+  margin:var(--space-7) 0;                        /* 20 between the two facts  */
+}
+
+/* the source tiers carry no link; the rule exists for when one is added */
+html[data-theme="light"] body.vB .pex__link,
+html[data-theme="dark"]  body.vB .pex__link,
+body.vB .pex__link{
+  display:inline-flex;align-items:center;gap:var(--space-4);   /* 8 */
+  margin-top:var(--space-9);                                   /* 32 */
+  font-size:.9375rem;font-weight:600;line-height:1.3;
+  color:var(--pex-accent);text-decoration:none;
+}
+body.vB .pex__link svg{width:20px;height:12px;flex-shrink:0;transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+body.vB .pex__link:hover svg{transform:translateX(4px)}
+body.vB .pex__link:hover{text-decoration:underline;text-underline-offset:4px}
+
+/* ── panel transition ────────────────────────────────────────────────────── */
+body.vB .pex__panel.is-in{animation:pexIn .32s cubic-bezier(.22,.61,.36,1) both}
+body.vB .pex__panel.is-out{
+  position:absolute;inset:0;pointer-events:none;
+  animation:pexOut .18s ease both;
+}
+@keyframes pexIn { from{opacity:0;translate:0 10px} to{opacity:1;translate:0 0} }
+@keyframes pexOut{ from{opacity:1} to{opacity:0} }
+
+/* ── icon choreography ───────────────────────────────────────────────────── */
+body.vB .pex__icon .pex__layer,
+body.vB .pex__icon .pex__seed,
+body.vB .pex__icon .pex__node{opacity:.6}
+body.vB .pex__icon .pex__wire{
+  stroke-dasharray:1 1;stroke-dashoffset:0;opacity:.5;
+
+}
+body.vB .pex__icon .pex__core{opacity:.4}
+
+body.vB .pex__icon.is-playing .pex__wire{
+  stroke-dashoffset:1;opacity:1;
+  animation:pexDraw .55s cubic-bezier(.22,.61,.36,1) forwards;
+}
+body.vB .pex__icon.is-playing .pex__wire:nth-of-type(2){animation-delay:.09s}
+body.vB .pex__icon.is-playing .pex__wire:nth-of-type(3){animation-delay:.18s}
+body.vB .pex__icon.is-playing .pex__wire:nth-of-type(4){animation-delay:.27s}
+body.vB .pex__icon.is-playing .pex__wire:nth-of-type(5){animation-delay:.36s}
+body.vB .pex__icon.is-playing .pex__wire:nth-of-type(6){animation-delay:.45s}
+
+body.vB .pex__icon.is-playing .pex__layer,
+body.vB .pex__icon.is-playing .pex__seed,
+body.vB .pex__icon.is-playing .pex__node{
+  animation:pexFade .4s ease forwards;
+}
+body.vB .pex__icon.is-playing .pex__layer:nth-of-type(2),
+body.vB .pex__icon.is-playing .pex__seed:nth-of-type(2),
+body.vB .pex__icon.is-playing .pex__node:nth-of-type(2){animation-delay:.08s}
+body.vB .pex__icon.is-playing .pex__layer:nth-of-type(3),
+body.vB .pex__icon.is-playing .pex__seed:nth-of-type(3),
+body.vB .pex__icon.is-playing .pex__node:nth-of-type(3){animation-delay:.16s}
+body.vB .pex__icon.is-playing .pex__seed:nth-of-type(4),
+body.vB .pex__icon.is-playing .pex__node:nth-of-type(4){animation-delay:.24s}
+body.vB .pex__icon.is-playing .pex__node:nth-of-type(5){animation-delay:.32s}
+body.vB .pex__icon.is-playing .pex__node:nth-of-type(6){animation-delay:.40s}
+
+body.vB .pex__icon.is-playing .pex__core{
+  animation:pexCore .6s cubic-bezier(.22,.61,.36,1) .38s forwards;
+}
+@keyframes pexDraw{ to{stroke-dashoffset:0} }
+@keyframes pexFade{ to{opacity:1} }
+@keyframes pexCore{ 0%{opacity:.35;scale:.72} 60%{opacity:1;scale:1.12} 100%{opacity:1;scale:1} }
+body.vB .pex__core{transform-box:fill-box;transform-origin:center}
+
+/* ── responsive ──────────────────────────────────────────────────────────── */
+@media (max-width:1024px){
+  html[data-theme="light"] body.vB .pex,
+  html[data-theme="dark"]  body.vB .pex,
+  body.vB .pex{grid-template-columns:minmax(0,300px) minmax(0,1fr);column-gap:var(--space-11)}
+  body.vB .pex__ico,body.vB .pex__icon{width:52px;height:46px}
+  html[data-theme="light"] body.vB .pex__body,
+  html[data-theme="dark"]  body.vB .pex__body,
+  body.vB .pex__body{grid-template-columns:minmax(0,1fr);row-gap:var(--space-9)}
+}
+
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pex,
+  html[data-theme="dark"]  body.vB .pex,
+  body.vB .pex{
+    grid-template-columns:minmax(0,1fr);
+    row-gap:var(--space-9);                       /* 32 — index → panel        */
+    margin-top:var(--space-9);
+  }
+  /* the index becomes a side-scroller: three compact tabs, one visible rule   */
+  html[data-theme="light"] body.vB .pex__tabs,
+  html[data-theme="dark"]  body.vB .pex__tabs,
+  body.vB .pex__tabs{
+    flex-direction:row;
+    gap:var(--space-8);                           /* 24 */
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    /* the section's own inset, so the first tab is not glued to the edge and
+       snapping does not ignore it */
+    margin-inline:calc(var(--pex-inset,0px) * -1);
+    padding-inline:var(--pex-inset,0px);
+    scroll-padding-inline:var(--pex-inset,0px);
+    -ms-overflow-style:none;scrollbar-width:none;
+  }
+  body.vB .pex__tabs::-webkit-scrollbar{display:none}
+  html[data-theme="light"] body.vB .pex__tab,
+  html[data-theme="dark"]  body.vB .pex__tab,
+  body.vB .pex__tab{
+    flex:0 0 auto;width:auto;min-width:0;
+    grid-template-columns:auto minmax(0,1fr);
+    column-gap:var(--space-5);                    /* 12 */
+    padding:0 0 var(--space-6) 0;                 /* 16 above the rule         */
+    scroll-snap-align:start;
+  }
+  html[data-theme="light"] body.vB .pex__tab:first-child,
+  html[data-theme="dark"]  body.vB .pex__tab:first-child,
+  body.vB .pex__tab:first-child{padding-top:0}
+  body.vB .pex__ico,body.vB .pex__icon{width:40px;height:36px}
+  body.vB .pex__title{font-size:.9375rem;white-space:nowrap}
+  body.vB .pex__n{font-size:10px}
+}
+
+@media (max-width:520px){
+  body.vB .pex__h{font-size:clamp(1.5rem,1.1rem + 2vw,1.875rem)}
+  body.vB .pex__tabs{gap:var(--space-7)}          /* 20 */
+}
+
+/* 320px: the tabs still scroll, the panel reflows, nothing is cut off */
+@media (max-width:360px){
+  body.vB .pex__title{font-size:.875rem}
+  body.vB .pex__ico,body.vB .pex__icon{width:34px;height:30px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.vB .pex__panel.is-in,body.vB .pex__panel.is-out{animation:none}
+  body.vB .pex__icon .pex__wire{stroke-dasharray:none;stroke-dashoffset:0}
+  body.vB .pex__icon.is-playing .pex__wire,
+  body.vB .pex__icon.is-playing .pex__layer,
+  body.vB .pex__icon.is-playing .pex__seed,
+  body.vB .pex__icon.is-playing .pex__node,
+  body.vB .pex__icon.is-playing .pex__core{animation:none;opacity:1}
+  body.vB .pex__prog{transition:none!important}
+  body.vB .pex__link svg{transition:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §167b  PORTFOLIO EXPLORER — the enclosure
+   Without a frame the two columns read as two loose lists floating on the
+   page. One bordered card, a divider between the index and the panel, a rule
+   under every tab (the active one being the progress line), and a short rule
+   between the two metadata facts. Structure only — no copy, no new colours.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html[data-theme="light"] body.vB .pex,
+html[data-theme="dark"]  body.vB .pex,
+body.vB .pex{
+  column-gap:0!important;                        /* the divider replaces it   */
+  border:1px solid var(--line)!important;
+  border-radius:20px!important;
+  overflow:hidden!important;                     /* keeps the tint in the card */
+  background:var(--paper,transparent)!important;
+}
+
+/* index ↔ panel */
+html[data-theme="light"] body.vB .pex__tabs,
+html[data-theme="dark"]  body.vB .pex__tabs,
+body.vB .pex__tabs{border-right:1px solid var(--line)!important}
+
+html[data-theme="light"] body.vB .pex__tab,
+html[data-theme="dark"]  body.vB .pex__tab,
+body.vB .pex__tab{
+  padding:var(--space-10) var(--space-9)!important;     /* 40 / 32 */
+  transition:background-color .35s ease;
+}
+html[data-theme="light"] body.vB .pex__tab:first-child,
+html[data-theme="dark"]  body.vB .pex__tab:first-child,
+body.vB .pex__tab:first-child{padding-top:var(--space-10)!important}
+
+/* the active row is tinted with its own accent, barely */
+html[data-theme="light"] body.vB .pex__tab.is-active,
+body.vB .pex__tab.is-active{
+  background:color-mix(in srgb, var(--pex-accent) 7%, transparent);
+}
+html[data-theme="dark"] body.vB .pex__tab.is-active{
+  background:color-mix(in srgb, var(--pex-accent) 12%, transparent);
+}
+html[data-theme="light"] body.vB .pex__tab:hover:not(.is-active),
+html[data-theme="dark"]  body.vB .pex__tab:hover:not(.is-active),
+body.vB .pex__tab:hover:not(.is-active){
+  background:color-mix(in srgb, var(--ink) 3%, transparent);
+}
+
+/* the last rule would double up with the card's own border */
+html[data-theme="light"] body.vB .pex__tab:last-child .pex__rule,
+html[data-theme="dark"]  body.vB .pex__tab:last-child .pex__rule,
+body.vB .pex__tab:last-child .pex__rule{background:transparent}
+
+/* focus ring has to live inside an overflow:hidden card */
+body.vB .pex__tab:focus-visible{outline-offset:-3px;border-radius:0}
+
+/* the panel */
+html[data-theme="light"] body.vB .pex__panel,
+html[data-theme="dark"]  body.vB .pex__panel,
+body.vB .pex__panel{padding:var(--space-12) var(--space-11)!important}  /* 64 / 48 */
+body.vB .pex__panel.is-out{padding:var(--space-12) var(--space-11)!important}
+body.vB .pex__panel:focus-visible{outline-offset:-4px}
+
+/* copy ↔ metadata */
+html[data-theme="light"] body.vB .pex__facts,
+html[data-theme="dark"]  body.vB .pex__facts,
+body.vB .pex__facts{
+  border-left:1px solid var(--line);
+  padding-left:clamp(1.5rem,1rem + 1.6vw,2.5rem);
+}
+
+@media (max-width:1024px){
+  /* stacked: the divider goes horizontal so the two blocks stay separated */
+  html[data-theme="light"] body.vB .pex__facts,
+  html[data-theme="dark"]  body.vB .pex__facts,
+  body.vB .pex__facts{
+    border-left:0;border-top:1px solid var(--line);
+    padding-left:0;padding-top:var(--space-9);
+  }
+}
+
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pex,
+  html[data-theme="dark"]  body.vB .pex,
+  body.vB .pex{row-gap:0!important;border-radius:16px!important}
+  html[data-theme="light"] body.vB .pex__tabs,
+  html[data-theme="dark"]  body.vB .pex__tabs,
+  body.vB .pex__tabs{
+    border-right:0!important;
+    border-bottom:1px solid var(--line)!important;
+    gap:0!important;
+    margin-inline:0!important;padding-inline:0!important;scroll-padding-inline:0!important;
+  }
+  html[data-theme="light"] body.vB .pex__tab,
+  html[data-theme="dark"]  body.vB .pex__tab,
+  body.vB .pex__tab{
+    padding:var(--space-7) var(--space-8)!important;     /* 20 / 24 */
+    border-right:1px solid var(--line);
+  }
+  html[data-theme="light"] body.vB .pex__tab:first-child,
+  html[data-theme="dark"]  body.vB .pex__tab:first-child,
+  body.vB .pex__tab:first-child{padding-top:var(--space-7)!important}
+  body.vB .pex__tab:last-child{border-right:0}
+  /* on a row the rule sits under each tab and still carries the progress */
+  html[data-theme="light"] body.vB .pex__tab:last-child .pex__rule,
+  html[data-theme="dark"]  body.vB .pex__tab:last-child .pex__rule,
+  body.vB .pex__tab:last-child .pex__rule{background:var(--line)}
+  html[data-theme="light"] body.vB .pex__panel,
+  html[data-theme="dark"]  body.vB .pex__panel,
+  body.vB .pex__panel{padding:var(--space-10) var(--space-8)!important}   /* 40 / 24 */
+  body.vB .pex__panel.is-out{padding:var(--space-10) var(--space-8)!important}
+}
+
+/* §167c — the index sets on two lines, so it can be narrower */
+html[data-theme="light"] body.vB .pex,
+html[data-theme="dark"]  body.vB .pex,
+body.vB .pex{grid-template-columns:minmax(0,322px) minmax(0,1fr)!important}
+body.vB .pex__w{display:block}
+@media (max-width:1024px){
+  html[data-theme="light"] body.vB .pex,
+  html[data-theme="dark"]  body.vB .pex,
+  body.vB .pex{grid-template-columns:minmax(0,278px) minmax(0,1fr)!important}
+}
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pex,
+  html[data-theme="dark"]  body.vB .pex,
+  body.vB .pex{grid-template-columns:minmax(0,1fr)!important}
+  body.vB .pex__w{display:inline}     /* one line again in the scrolling row */
+}
+
+/* §167d — icons on the larger 72×64 grid */
+html[data-theme="light"] body.vB .pex__ico,
+html[data-theme="dark"]  body.vB .pex__ico,
+body.vB .pex__ico,
+body.vB .pex__icon{width:72px!important;height:64px!important}
+body.vB .pex__icon .pex__pips{opacity:.6}
+body.vB .pex__icon.is-playing .pex__pips{animation:pexFade .4s ease .18s forwards}
+@media (max-width:1024px){
+  body.vB .pex__ico,body.vB .pex__icon{width:60px!important;height:54px!important}
+}
+@media (max-width:860px){
+  body.vB .pex__ico,body.vB .pex__icon{width:44px!important;height:39px!important}
+}
+@media (max-width:360px){
+  body.vB .pex__ico,body.vB .pex__icon{width:38px!important;height:34px!important}
+}
+
+/* §167e — tab 02's first line ("Purpose-Built") filled 85% of the column at
+   20px while "Enterprise" filled 64%, so the row read as over-long. Smaller
+   type and slightly tighter tracking even the three rows out. */
+html[data-theme="light"] body.vB .pex__title,
+html[data-theme="dark"]  body.vB .pex__title,
+body.vB .pex__title{
+  font-size:clamp(1rem,.95rem + .22vw,1.125rem)!important;   /* 16 → 18 */
+  letter-spacing:-.015em!important;
+  line-height:1.28!important;
+}
+
+/* the CTA sits under the copy, as in the reference: a text link, not a chip */
+html[data-theme="light"] body.vB .pex__copy .pex__link,
+html[data-theme="dark"]  body.vB .pex__copy .pex__link,
+body.vB .pex__copy .pex__link{
+  margin-top:var(--space-9);                      /* 32 — copy → CTA */
+  padding-bottom:var(--space-3);                  /* 6 above the underline */
+  border-bottom:1px solid var(--pex-accent);
+  text-decoration:none;
+}
+body.vB .pex__copy .pex__link:hover{text-decoration:none}
+body.vB .pex__copy .pex__link svg{margin-left:var(--space-2)}
+body.vB .pex__link:focus-visible{outline:2px solid var(--pex-accent);outline-offset:3px}
+
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pex__title,
+  html[data-theme="dark"]  body.vB .pex__title,
+  body.vB .pex__title{font-size:.9375rem!important}
+  body.vB .pex__copy .pex__link{margin-top:var(--space-8)}   /* 24 */
+}
+
+/* §167f — the portfolio heading opens on the brand cyan, so the section has a
+   point of colour of its own instead of a wall of navy. */
+html[data-theme="light"] body.vB .about__portfolio .about__h3 .about__h3mark,
+html[data-theme="dark"]  body.vB .about__portfolio .about__h3 .about__h3mark,
+body.vB .about__h3mark{color:#009CBD!important}
+html[data-theme="dark"] body.vB .about__portfolio .about__h3 .about__h3mark{color:#3FC4DE!important}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §167g  The index column stopped 24px short of the card, so the divider ran
+   out before the bottom corner: the grid was align-items:start, which sizes
+   each column to its own content. Stretch makes the column own the full card
+   height and the stroke reaches the corner.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .pex,
+html[data-theme="dark"]  body.vB .pex,
+body.vB .pex{align-items:stretch!important}
+
+/* type and fills use the readable twin; icons, rules and the tint keep the
+   brand stroke (see the INK map in portfolio-explorer.js) */
+html[data-theme="light"] body.vB .pex__eyebrow,
+body.vB .pex__eyebrow{color:var(--pex-ink,var(--pex-accent))!important}
+html[data-theme="dark"] body.vB .pex__eyebrow{color:var(--pex-ink-dark,var(--pex-accent))!important}
+html[data-theme="light"] body.vB .pex__tab.is-active .pex__n,
+body.vB .pex__tab.is-active .pex__n{color:var(--pex-ink,var(--pex-accent))!important}
+html[data-theme="dark"] body.vB .pex__tab.is-active .pex__n{color:var(--pex-ink-dark,var(--pex-accent))!important}
+
+/* ── the CTA is a button, not a text link ── */
+html[data-theme="light"] body.vB .pex__copy .pex__link,
+html[data-theme="dark"]  body.vB .pex__copy .pex__link,
+body.vB .pex__copy .pex__link{
+  display:inline-flex;align-items:center;gap:var(--space-4);   /* 8 */
+  margin-top:var(--space-9);                                   /* 32 */
+  padding:var(--space-5) var(--space-8)!important;             /* 12 / 24 */
+  border:0!important;border-radius:999px!important;
+  background:var(--pex-ink,var(--pex-accent))!important;
+  color:#fff!important;
+  font-size:.9375rem;font-weight:600;line-height:1.2;
+  text-decoration:none!important;
+  transition:background-color .25s ease, transform .25s cubic-bezier(.22,.61,.36,1);
+}
+html[data-theme="dark"] body.vB .pex__copy .pex__link{
+  background:var(--pex-ink-dark,var(--pex-accent))!important;
+  color:#0A2A3F!important;
+}
+body.vB .pex__copy .pex__link:hover{transform:translateY(-1px)}
+body.vB .pex__copy .pex__link:active{transform:translateY(0)}
+body.vB .pex__copy .pex__link svg{margin-left:var(--space-1);width:18px;height:11px}
+body.vB .pex__link:focus-visible{outline:2px solid var(--pex-ink,var(--pex-accent));outline-offset:3px}
+
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pex__copy .pex__link,
+  html[data-theme="dark"]  body.vB .pex__copy .pex__link,
+  body.vB .pex__copy .pex__link{margin-top:var(--space-8)}   /* 24 */
 }

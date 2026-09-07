@@ -51,7 +51,9 @@ d.setAttribute('data-theme',t);})();
 <link rel="stylesheet" href="/machine/ribbon.css">
 <link rel="stylesheet" href="/machine/tweaks.css">
 </head>
-<body class="vSolution vProducts">
+<!-- vB joins the shared design system in ribbon.css; the page-specific
+     vSolution/vProducts rules still win where they are more specific -->
+<body class="vB vSolution vProducts">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="sw-mark" viewBox="0 0 158.2 153">
@@ -81,7 +83,7 @@ d.setAttribute('data-theme',t);})();
 <!-- ─────────────── HEADER ─────────────── -->
 <header class="nav" id="nav">
   <div class="nav__in">
-    <a class="nav__brand" href="/" aria-label="Stagwell AI">
+    <a class="nav__brand" href="/machine/b.html" aria-label="Stagwell AI">
       <svg><use href="#sw-logo"/></svg>
     </a>
     <nav class="nav__links">
@@ -153,9 +155,13 @@ d.setAttribute('data-theme',t);})();
 <!-- lead.js before solution.js: the [data-cta] handler checks for SAILEAD -->
 <script src="/machine/lead.js"></script>
 <script src="/machine/products.js"></script>
+<!-- the section index, as a menu rather than a wall of links -->
+<script src="/machine/prodtoc.js"></script>
 <script src="/machine/directory.js"></script>
 <!-- S6 · the demo aid: observer only, loads last, never emits -->
 <script src="/machine/console.js"></script>
 <script src="/machine/tweaks.js"></script>
+<!-- the demo chrome, collected into one control in the header -->
+<script src="/machine/demomenu.js"></script>
 </body>
 </html>

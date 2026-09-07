@@ -541,6 +541,29 @@
       .observe(eb, { childList: true, subtree: true, characterData: true });
   })();
 
+  /* ── 6f · keep the chosen tag in view on the rail (client, Sep 6) ────── */
+  /* On a phone the chooser is one scrolling row. Picking a tag that is half
+     off the edge should bring it fully into the rail, or you lose track of
+     what you chose. Horizontal only — scrollIntoView would also drag the
+     page vertically to the card. */
+  (function () {
+    document.addEventListener('click', (e) => {
+      const row = e.target.closest('.pick__row');
+      if (!row) return;
+      const list = row.closest('.pick__list');
+      if (!list || list.scrollWidth <= list.clientWidth + 2) return;
+      const r = row.getBoundingClientRect(), l = list.getBoundingClientRect();
+      const pad = 16;
+      let delta = 0;
+      if (r.left < l.left + pad) delta = r.left - l.left - pad;
+      else if (r.right > l.right - pad) delta = r.right - l.right + pad;
+      if (delta) list.scrollBy({
+        left: delta,
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      });
+    }, { passive: true });
+  })();
+
   /* ── 7 · the tier facts as dropdowns (client, Sep 3) ─────────────────── */
   /* "Best for" / "Core value" open on click, FAQ-style. Markup untouched:
      the <dt> is the toggle, the <dd> the panel. */

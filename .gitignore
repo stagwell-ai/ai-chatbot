@@ -2,3 +2,4 @@
 .vercel
 *.log
 .env*
+.claude/
