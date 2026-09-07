@@ -321,7 +321,7 @@ body.chat-open{overflow:hidden}
 .hero__pic,.hero__film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 /* the client composed the thumbnail at the film's size with the subject at
    the right: the strip shows the right edge, not the centre */
-.hero__pic{object-position:right center;animation:drift 44s linear infinite alternate}
+.hero__pic{object-position:right center;animation:drift 120s linear infinite alternate}
 /* the still drifts: the strip shows ~42% of the frame, and the crop travels
    slowly from its left edge to its right and back — never still, never a cut */
 @keyframes drift{from{object-position:0% 50%}to{object-position:100% 50%}}
