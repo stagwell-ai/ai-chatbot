@@ -8682,3 +8682,941 @@ body.vB .pex__link:focus-visible{outline:2px solid var(--pex-ink,var(--pex-accen
   html[data-theme="dark"]  body.vB .pex__copy .pex__link,
   body.vB .pex__copy .pex__link{margin-top:var(--space-8)}   /* 24 */
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §167h  Three corrections to the explorer.
+
+   1 · The index filled the card but the three tabs did not fill the index, so
+       the last row's tint and its progress line stopped in mid-air with a
+       band of empty card beneath them — worst on the amber tier, and worst on
+       small screens. The rows now share the column's height between them, so
+       the third row ends on the card's own bottom edge.
+   2 · The CTA was carrying a darkened tier colour. The site has two button
+       colours — dark blue and yellow — and this is the dark blue one.
+   3 · The arrow arrives on hover instead of sitting there permanently.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (min-width:861px){
+  html[data-theme="light"] body.vB .pex__tab,
+  html[data-theme="dark"]  body.vB .pex__tab,
+  body.vB .pex__tab{flex:1 1 0!important;min-height:0!important}
+}
+
+/* ── the CTA is the site's dark-blue button ── */
+html[data-theme="light"] body.vB .pex__copy .pex__link,
+body.vB .pex__copy .pex__link{
+  background:#003349!important;color:#F1FAFF!important;
+}
+html[data-theme="light"] body.vB .pex__copy .pex__link:hover,
+body.vB .pex__copy .pex__link:hover{background:#0E5F8E!important;color:#F1FAFF!important}
+/* on the dark card the navy disappears, so it takes the other brand button */
+html[data-theme="dark"] body.vB .pex__copy .pex__link{
+  background:#FFB81C!important;color:#003349!important;
+}
+html[data-theme="dark"] body.vB .pex__copy .pex__link:hover{background:#FFC53D!important;color:#003349!important}
+body.vB .pex__link:focus-visible{outline:2px solid #003349!important;outline-offset:3px}
+html[data-theme="dark"] body.vB .pex__link:focus-visible{outline-color:#FFB81C!important}
+
+/* ── the arrow is revealed by the hover, not decoration that is always on ── */
+@media (hover:hover){
+  html[data-theme="light"] body.vB .pex__copy .pex__link svg,
+  html[data-theme="dark"]  body.vB .pex__copy .pex__link svg,
+  body.vB .pex__copy .pex__link svg{
+    width:0!important;margin-left:0!important;opacity:0;
+    transform:translateX(-6px);
+    transition:width .28s cubic-bezier(.22,.61,.36,1),
+               margin-left .28s cubic-bezier(.22,.61,.36,1),
+               opacity .2s ease .04s,
+               transform .28s cubic-bezier(.22,.61,.36,1);
+  }
+  html[data-theme="light"] body.vB .pex__copy .pex__link:hover svg,
+  html[data-theme="dark"]  body.vB .pex__copy .pex__link:hover svg,
+  html[data-theme="light"] body.vB .pex__copy .pex__link:focus-visible svg,
+  html[data-theme="dark"]  body.vB .pex__copy .pex__link:focus-visible svg,
+  body.vB .pex__copy .pex__link:hover svg,
+  body.vB .pex__copy .pex__link:focus-visible svg{
+    width:18px!important;margin-left:var(--space-4)!important;   /* 8 */
+    opacity:1;transform:translateX(0);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  body.vB .pex__copy .pex__link svg{transition:none!important}
+  body.vB .pex__copy .pex__link:hover{transform:none!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §168  THE FINAL CTA, THE BRAND TILE, AND THE HERO'S BREATH
+
+   Three notes from the client, all about the page's last screen feeling flat
+   next to its first. No copy, no layout, no component structure changes.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · the final CTA sat on the bare page grey. A warm wash lifts it off the
+      page and puts the brand orange in the section, without inverting it —
+      every word in here is navy on light and stays that way. ── */
+html[data-theme="light"] body.vB .bcta,
+body.vB .bcta{
+  position:relative!important;
+  background-image:
+    radial-gradient(58% 68% at 84% 6%,  rgba(255,109,36,.13) 0%, rgba(255,109,36,0) 60%),
+    radial-gradient(52% 62% at 6%  94%, rgba(0,156,189,.10) 0%, rgba(0,156,189,0) 62%),
+    linear-gradient(180deg,#F7F8FA 0%,#FFF4EC 52%,#F7F8FA 100%)!important;
+  background-repeat:no-repeat!important;
+}
+html[data-theme="dark"] body.vB .bcta{
+  background-image:
+    radial-gradient(58% 68% at 84% 6%,  rgba(255,109,36,.20) 0%, rgba(255,109,36,0) 60%),
+    radial-gradient(52% 62% at 6%  94%, rgba(10,138,176,.22) 0%, rgba(10,138,176,0) 62%)!important;
+  background-repeat:no-repeat!important;
+}
+
+/* ── 2 · the brand tile read as the flat one beside three photographs: a single
+      cyan blob on navy. It now carries the hero's own navy ramp with an orange
+      glow above it, and drifts, so it holds its own in the row. ── */
+html[data-theme="light"] body.vB .bcta__grid .ctacard:nth-child(4),
+html[data-theme="dark"]  body.vB .bcta__grid .ctacard:nth-child(4),
+body.vB .bcta__grid .ctacard:nth-child(4){
+  background-image:
+    radial-gradient(52% 58% at 76% 14%, rgba(255,138,77,.62) 0%, rgba(255,138,77,0) 62%),
+    radial-gradient(46% 54% at 22% 88%, rgba(102,210,232,.42) 0%, rgba(102,210,232,0) 66%),
+    linear-gradient(158deg,#00253A 0%,#003349 34%,#0B5586 72%,#0A8AB0 100%)!important;
+  background-color:#00253A!important;
+  background-repeat:no-repeat!important;
+  background-size:190% 190%,210% 210%,100% 100%!important;
+  background-position:76% 14%,22% 88%,50% 50%!important;
+  animation:ctaDrift 26s ease-in-out infinite alternate!important;
+}
+@keyframes ctaDrift{
+  from{background-position:70%  8%, 28% 92%, 50% 50%}
+  to  {background-position:84% 22%, 14% 80%, 50% 50%}
+}
+
+/* ── 3 · the hero settles once over 16s and then holds perfectly still, which
+      is what "it isn't animated" means. A very slow breath picks up where the
+      settle lands: same property, later in the list, so it takes over cleanly
+      at the handover instead of fighting it. ── */
+@keyframes heroBreathe{
+  from{scale:1}
+  to  {scale:1.035}
+}
+body.vB .hero2--band::before{
+  animation:
+    heroSettle  16s cubic-bezier(.16,.72,.24,1) both,
+    heroBreathe 30s ease-in-out 16s infinite alternate!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.vB .hero2--band::before{animation:none!important;scale:1!important}
+  body.vB .bcta__grid .ctacard:nth-child(4){animation:none!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §169  ARROWS ARRIVE ON HOVER — every CTA, every page.
+
+   The arrow was permanent furniture on nine buttons plus the CTA tiles. It is
+   now the reward for pointing at the button. Two mechanisms carry arrows on
+   this site and both are handled: .btn--arrow paints a masked glyph in its
+   ::after, and .ctacard::before is a pill whose arrow lived inside its own
+   content string.
+
+   Width, not just opacity: an invisible-but-present arrow leaves a hole in the
+   button, and a hidden one that appears would jog the label. Animating width
+   and the cancelling margin together keeps the label still while the arrow
+   opens out to its right.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (hover:hover){
+  html[data-theme="light"] body.vB .btn--arrow::after,
+  html[data-theme="dark"]  body.vB .btn--arrow::after,
+  body.vB .btn--arrow::after{
+    width:0!important;                       /* the 9px flex gap is cancelled */
+    margin-left:-9px!important;
+    opacity:0!important;
+    transition:width .26s cubic-bezier(.22,.61,.36,1),
+               margin-left .26s cubic-bezier(.22,.61,.36,1),
+               opacity .18s ease .04s,
+               transform var(--d-2) var(--ease)!important;
+  }
+  html[data-theme="light"] body.vB .btn--arrow:hover::after,
+  html[data-theme="dark"]  body.vB .btn--arrow:hover::after,
+  html[data-theme="light"] body.vB .btn--arrow:focus-visible::after,
+  html[data-theme="dark"]  body.vB .btn--arrow:focus-visible::after,
+  body.vB .btn--arrow:hover::after,
+  body.vB .btn--arrow:focus-visible::after{
+    width:14px!important;margin-left:0!important;opacity:1!important;
+  }
+
+  /* the CTA tile's pill: its arrow was a character inside the content string,
+     so it comes out of the text and returns as a background that grows in */
+  html[data-theme="light"] body.vB .bcta__grid .ctacard::before,
+  html[data-theme="dark"]  body.vB .bcta__grid .ctacard::before,
+  body.vB .ctacard::before{content:"Learn more"!important}
+  html[data-theme="light"] body.vB .bcta__grid .ctacard::before,
+  html[data-theme="dark"]  body.vB .bcta__grid .ctacard::before,
+  body.vB .bcta__grid .ctacard::before{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 8h9M8.5 4.5L12 8l-3.5 3.5' stroke='%23003349' stroke-width='1.7' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>")!important;
+    background-repeat:no-repeat!important;
+    background-position:right 12px center!important;
+    background-size:0 0!important;
+    padding-right:16px!important;
+    transition:background-size .26s cubic-bezier(.22,.61,.36,1),
+               padding-right .26s cubic-bezier(.22,.61,.36,1),
+               background-color .2s ease!important;
+  }
+  html[data-theme="light"] body.vB .bcta__grid .ctacard:hover::before,
+  html[data-theme="dark"]  body.vB .bcta__grid .ctacard:hover::before,
+  body.vB .bcta__grid .ctacard:hover::before,
+  body.vB .bcta__grid .ctacard:focus-visible::before{
+    background-size:13px 13px!important;
+    padding-right:33px!important;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  body.vB .btn--arrow::after,
+  body.vB .bcta__grid .ctacard::before{transition:none!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §170  THE CHAT HEADER: the mark and the words were 10px apart, ink to ink,
+   with a 30px mark — the type read as crowded against it. A rule now sits
+   between them, in its own grid column, spanning both rows of the header, so
+   the mark reads as a sibling of the text block rather than stuck to it.
+   Measured gap becomes 14 · rule · 14.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .pick > .pick__hint,
+html[data-theme="dark"]  body.vB .pick > .pick__hint,
+body.vB .pick > .pick__hint{
+  grid-template-columns:auto 1px minmax(0,1fr)!important;
+  grid-template-areas:"mark rule title" "mark rule text"!important;
+  column-gap:14px!important;
+}
+/* ::before on this element is already owned (a spacer, held at display:none),
+   so the rule takes ::after, which nothing claims */
+html[data-theme="light"] body.vB .pick > .pick__hint::after,
+html[data-theme="dark"]  body.vB .pick > .pick__hint::after,
+body.vB .pick > .pick__hint::after{
+  content:""!important;display:block!important;
+  grid-area:rule!important;align-self:stretch!important;justify-self:stretch!important;
+  width:1px!important;min-height:100%!important;
+  background:rgba(0,51,73,.16)!important;
+  border:0!important;margin:0!important;padding:0!important;
+  opacity:1!important;transform:none!important;
+}
+html[data-theme="dark"] body.vB .pick > .pick__hint::after{background:rgba(234,243,248,.18)!important}
+
+/* §170b — the eyebrow now reads as the headline's paragraph, not a label */
+/* the rule this has to beat is `body.vB .hero2__copy #heroEyebrow`, and an id
+   outranks any number of classes — so the id is stated here too */
+html[data-theme="light"] body.vB .hero2__copy #heroEyebrow.eyebrow--lede,
+html[data-theme="dark"]  body.vB .hero2__copy #heroEyebrow.eyebrow--lede,
+body.vB .hero2__copy #heroEyebrow.eyebrow--lede,
+body.vB .eyebrow--lede{
+  text-transform:none!important;
+  font-family:var(--sans,ui-sans-serif),system-ui,sans-serif!important;
+  /* the hero copy column is 524px; the first sentence measures 590px at 19px
+     and 497px at 16px, so 16 is what lets each sentence hold its own line
+     instead of spilling the first one onto three */
+  font-size:1rem!important;                                   /* 16 */
+  line-height:1.5!important;
+  letter-spacing:0!important;
+  font-weight:400!important;
+  color:var(--ink-2)!important;
+  margin:var(--space-8) 0 0!important;                        /* 24 under the H1 */
+  /* 46ch computed to ~390px and was clipping the first sentence before the
+     column ever did; 60ch is ~510px, just past the 497px it needs at 16px */
+  max-width:60ch!important;
+}
+html[data-theme="dark"] body.vB .eyebrow--lede{color:rgba(234,243,248,.78)!important}
+/* the live-dot belonged to a label, not to a paragraph */
+body.vB .eyebrow--lede .pulse{display:none!important}
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .hero2__copy #heroEyebrow.eyebrow--lede,
+  html[data-theme="dark"]  body.vB .hero2__copy #heroEyebrow.eyebrow--lede,
+  body.vB .hero2__copy #heroEyebrow.eyebrow--lede,
+  body.vB .eyebrow--lede{
+    margin:var(--space-7) 0 0!important;                      /* 20 */
+    font-size:1rem!important;max-width:none!important;
+  }
+  /* on a phone the two sentences set as one wrapped block */
+  body.vB .eyebrow--lede .eb-break{display:none!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §171  THE AGENT CARD AS ONE COLUMN
+
+   The card was a two-column split: a list of five tall rows on the left, the
+   answer pane on the right. It becomes a single column — header, the animated
+   area, then five compact pills, then the composer — with the pills staying
+   put and the animated area doing all the changing.
+
+   Done with `order`, not by moving nodes: the row handler delegates from
+   .pick, and taking an element out of its delegating ancestor is exactly what
+   silently killed this card once before.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html[data-theme="light"] body.vB .pick .pick__panes,
+html[data-theme="dark"]  body.vB .pick .pick__panes,
+body.vB .pick .pick__panes{
+  display:flex!important;flex-direction:column!important;
+  grid-template-columns:none!important;
+  gap:var(--space-10)!important;                   /* 40 — rail → answer */
+  padding:0 18px var(--space-9)!important;         /* the card's own inset */
+  align-items:stretch!important;
+  min-width:0!important;
+}
+body.vB .pick .pick__panes > *{min-width:0!important}
+/* the chooser on top as one scrolling rail, the answer under it.
+   .pick__col is display:contents — its own box is gone, so the list is the
+   real flex item and the order has to be stated on the list itself. */
+body.vB .pick .pick__panes > .pick__col{order:1!important}
+body.vB .pick .pick__panes #pickList,
+body.vB .pick .pick__panes .pick__list{order:1!important}
+body.vB .pick .pick__panes > #pickDetail,
+body.vB .pick .pick__panes > .pick__detail{order:2!important}
+
+/* ── the dynamic area: full width, centred, and a floor so switching category
+      never makes the card jump ── */
+html[data-theme="light"] body.vB .pick #pickDetail,
+html[data-theme="dark"]  body.vB .pick #pickDetail,
+body.vB .pick .pick__detail,body.vB .pick #pickDetail{
+  width:100%!important;max-width:none!important;
+  /* the card's height is set by the hero band, and .pick__panes clips. So the
+     answer takes the leftover space rather than asserting a floor: the rail
+     above it and the composer below it can then never be pushed out. */
+  flex:1 1 auto!important;
+  min-height:0!important;height:auto!important;max-height:none!important;
+  overflow:auto!important;overscroll-behavior-y:auto!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  text-align:center!important;
+  border:0!important;background:none!important;padding:0!important;
+  /* NB: no `overflow:visible` here. It used to sit below the `overflow:auto`
+     above, in this same rule — the later declaration won, so the panel clipped
+     its content instead of scrolling it. */
+}
+html[data-theme="light"] body.vB .pick .pick__col,
+html[data-theme="dark"]  body.vB .pick .pick__col,
+body.vB .pick .pick__col{
+  width:100%!important;min-width:0!important;border:0!important;
+  padding:0!important;background:none!important;
+}
+
+/* ── the chooser: five compact pills, three then two, centred ── */
+html[data-theme="light"] body.vB .pick #pickList,
+html[data-theme="dark"]  body.vB .pick #pickList,
+body.vB .pick #pickList,body.vB .pick .pick__list{
+  display:flex!important;
+  /* an earlier rule made this a column with a fixed 125px height, which turned
+     it into columns of pills instead of one row */
+  flex-direction:row!important;flex-flow:row nowrap!important;
+  /* spread across the rail rather than bunched at the left. space-between,
+     not center or space-around: when the rail does overflow (narrow desktop,
+     phones) those two push the first pill off the scrollable start where it
+     cannot be reached, while space-between simply falls back to flex-start. */
+  justify-content:space-between!important;align-items:center!important;
+  gap:var(--space-4)!important;                    /* 8 */
+  width:calc(100% + 36px)!important;max-width:none!important;
+  /* without this a flex item's automatic minimum size is its CONTENT size —
+     all 837px of pills — which forced the whole card wider than the phone and
+     shoved it off the left edge. It is what lets the rail scroll at all. */
+  min-width:0!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  flex:0 0 auto!important;
+  /* one rail that scrolls sideways. It runs to the card's edges, so the
+     padding is given back as the rail's own — and to scroll-padding too,
+     because scroll-snap aligns to the scrollport and would otherwise glue the
+     first pill to the edge. */
+  overflow-x:auto!important;overflow-y:hidden!important;
+  scroll-snap-type:x proximity!important;
+  margin:0 -18px!important;
+  /* even above and below, and the same 18px inset as the header and composer */
+  padding:var(--space-6) 18px!important;           /* 16 */
+  scroll-padding-inline:18px!important;
+  -ms-overflow-style:none!important;scrollbar-width:none!important;
+  /* the rail is full-bleed, so its own bottom border is the divider and runs
+     the whole width of the card. It sits on the container, not the scrolling
+     content, so it stays put while the pills move under it. */
+  border:0!important;border-bottom:1px solid rgba(0,51,73,.12)!important;
+  background:none!important;
+}
+html[data-theme="dark"] body.vB .pick #pickList,
+html[data-theme="dark"] body.vB .pick .pick__list{
+  border-bottom-color:rgba(234,243,248,.16)!important;
+}
+body.vB .pick #pickList::-webkit-scrollbar,
+body.vB .pick .pick__list::-webkit-scrollbar{display:none!important}
+/* the wrap point belonged to the two-row version */
+body.vB .pick .pick__break{display:none!important}
+
+html[data-theme="light"] body.vB .pick .pick__row,
+html[data-theme="dark"]  body.vB .pick .pick__row,
+body.vB .pick .pick__row{
+  display:inline-flex!important;align-items:center!important;
+  gap:6px!important;                               /* icon → label */
+  width:auto!important;min-width:0!important;flex:0 0 auto!important;
+  scroll-snap-align:start!important;
+  height:36px!important;min-height:36px!important;
+  padding:0 14px 0 6px!important;
+  border:1px solid rgba(0,51,73,.13)!important;
+  border-left-width:1px!important;                 /* the 3px state bar goes */
+  border-radius:999px!important;
+  background:#FFFFFF!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  transition:border-color .2s ease, background-color .2s ease!important;
+}
+html[data-theme="dark"] body.vB .pick .pick__row{
+  background:rgba(255,255,255,.04)!important;
+  border-color:rgba(234,243,248,.16)!important;
+}
+html[data-theme="light"] body.vB .pick .pick__row:hover,
+body.vB .pick .pick__row:hover{
+  background:#FFFFFF!important;border-color:rgba(0,51,73,.28)!important;
+  border-radius:999px!important;
+}
+html[data-theme="dark"] body.vB .pick .pick__row:hover{
+  background:rgba(255,255,255,.08)!important;border-color:rgba(234,243,248,.30)!important;
+}
+/* selected: obvious, but still understated — no fill, no colour flood */
+html[data-theme="light"] body.vB .pick .pick__row[aria-checked="true"],
+html[data-theme="light"] body.vB .pick .pick__row.is-on,
+body.vB .pick .pick__row[aria-checked="true"],
+body.vB .pick .pick__row.is-on{
+  /* radius and border-width have to be restated: an older .is-on rule takes
+     the pill down to a 10px radius with no border, so choosing a tab squared
+     off its ends */
+  border-radius:999px!important;
+  /* one stroke, not two: a 1px border plus a 1px inset shadow was painting an
+     effective 2px ring and the chosen pill read as heavy */
+  border:1px solid rgba(0,51,73,.55)!important;
+  box-shadow:none!important;
+  background:#FFFFFF!important;
+}
+html[data-theme="dark"] body.vB .pick .pick__row[aria-checked="true"],
+html[data-theme="dark"] body.vB .pick .pick__row.is-on{
+  border-radius:999px!important;
+  border:1px solid rgba(234,243,248,.6)!important;
+  box-shadow:none!important;
+}
+body.vB .pick .pick__row:focus-visible{outline:2px solid #003349!important;outline-offset:2px!important}
+
+/* the radio dot belonged to a list of rows, not to a pill */
+body.vB .pick .pick__row .pick__radio{display:none!important}
+
+/* the label */
+html[data-theme="light"] body.vB .pick .pick__row .pick__t,
+html[data-theme="dark"]  body.vB .pick .pick__row .pick__t,
+body.vB .pick .pick__row .pick__t,
+body.vB .pick .pick__row > span:not(.pick__mark):not(.pick__radio){
+  font-size:10px!important;line-height:1!important;font-weight:500!important;
+  letter-spacing:.005em!important;white-space:nowrap!important;
+  color:#003349!important;margin:0!important;
+}
+html[data-theme="dark"] body.vB .pick .pick__row .pick__t,
+html[data-theme="dark"] body.vB .pick .pick__row > span:not(.pick__mark):not(.pick__radio){
+  color:#EAF3F8!important;
+}
+
+/* ── the only colour in the card lives in the icon chips ── */
+html[data-theme="light"] body.vB .pick .pick__row .pick__mark,
+html[data-theme="dark"]  body.vB .pick .pick__row .pick__mark,
+body.vB .pick .pick__row .pick__mark{
+  display:grid!important;place-items:center!important;
+  /* a flex row will happily squash this into an oval: state both axes, forbid
+     the shrink, and let aspect-ratio hold it round whatever the label does */
+  width:24px!important;height:24px!important;
+  min-width:24px!important;min-height:24px!important;
+  flex:0 0 24px!important;aspect-ratio:1/1!important;
+  border-radius:50%!important;overflow:hidden!important;
+  background:color-mix(in srgb, var(--pill-accent,#003349) 13%, transparent)!important;
+  color:var(--pill-accent,#003349)!important;
+  margin:0!important;border:0!important;
+}
+body.vB .pick .pick__row .pick__icon,
+body.vB .pick .pick__row .pick__mark svg{
+  width:13px!important;height:13px!important;
+  color:var(--pill-accent,#003349)!important;stroke:currentColor!important;
+}
+body.vB .pick .pick__row[data-accent="blue"]  {--pill-accent:#2563EB}
+body.vB .pick .pick__row[data-accent="orange"]{--pill-accent:#E8811C}
+body.vB .pick .pick__row[data-accent="green"] {--pill-accent:#2E9E6B}
+body.vB .pick .pick__row[data-accent="purple"]{--pill-accent:#7C5CD6}
+body.vB .pick .pick__row[data-accent="pink"]  {--pill-accent:#DB5A72}
+
+/* ── the composer: no placeholder, a caret instead ── */
+html[data-theme="light"] body.vB .pick #pickSiteWrap,
+html[data-theme="dark"]  body.vB .pick #pickSiteWrap,
+body.vB .pick .pick__site,body.vB .pick #pickSiteWrap{position:relative!important}
+html[data-theme="light"] body.vB .pick .pick__caret,
+html[data-theme="dark"]  body.vB .pick .pick__caret,
+body.vB .pick .pick__caret{
+  position:absolute!important;
+  /* the input's own padding-left, so the drawn caret stands exactly where the
+     native one will appear — focusing the field must not make it jump */
+  left:var(--caret-x,22px)!important;
+  top:50%!important;transform:translateY(-50%)!important;
+  width:1.5px!important;height:17px!important;
+  background:#003349!important;border-radius:1px!important;
+  pointer-events:none!important;
+  /* opacity is left WITHOUT !important on purpose. An important author
+     declaration outranks a CSS animation, so `opacity:1!important` on the
+     visible state pinned the caret solid and the blink never rendered. The
+     animation owns opacity; only its presence is switched. */
+  opacity:0;animation:none!important;
+}
+html[data-theme="dark"] body.vB .pick .pick__caret{background:#EAF3F8!important}
+/* it stands in only while the field is empty AND unfocused — the moment the
+   real caret exists, the drawn one gets out of its way */
+body.vB .pick #pickSiteWrap.is-blank .pick__caret{
+  animation:pickCaret 1.06s steps(1,end) infinite!important;
+}
+/* the moment a real caret exists, the drawn one gets out of its way */
+body.vB .pick #pickSiteWrap.is-blank:focus-within .pick__caret{
+  opacity:0!important;animation:none!important;
+}
+@keyframes pickCaret{0%,49%{opacity:1}50%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  body.vB .pick .pick__caret{animation:none!important}
+  body.vB .pick #pickSiteWrap.is-blank .pick__caret{opacity:1!important}
+}
+/* focused by default in feel, not in furniture */
+html[data-theme="light"] body.vB .pick #pickSite:focus,
+html[data-theme="dark"]  body.vB .pick #pickSite:focus,
+body.vB .pick #pickSite:focus{outline:none!important;box-shadow:none!important}
+html[data-theme="light"] body.vB .pick #pickSiteWrap:focus-within,
+body.vB .pick #pickSiteWrap:focus-within{border-color:rgba(0,51,73,.30)!important}
+
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .pick .pick__panes,
+  html[data-theme="dark"]  body.vB .pick .pick__panes,
+  body.vB .pick .pick__panes{
+    padding:0 16px var(--space-8)!important;          /* 24 */
+    gap:var(--space-9)!important;                     /* 32 */
+  }
+  body.vB .pick .pick__detail,body.vB .pick #pickDetail{min-height:180px!important}
+  body.vB .pick #pickList,body.vB .pick .pick__list{
+    margin:0 -16px!important;
+    width:calc(100% + 32px)!important;
+    padding:var(--space-5) 16px!important;          /* 12 */
+    scroll-padding-inline:16px!important;
+    gap:var(--space-4)!important;                   /* 8 */
+  }
+  body.vB .pick .pick__row{height:34px!important;min-height:34px!important;padding:0 12px 0 6px!important}
+  body.vB .pick .pick__row .pick__t,
+  body.vB .pick .pick__row > span:not(.pick__mark):not(.pick__radio){font-size:10.5px!important}
+}
+
+/* §171b — the chat column is a flex item of the hero band with min-width:auto,
+   so its automatic minimum size is its content's. With a sideways-scrolling
+   rail inside, that content is 846px wide and the column refused to shrink:
+   at 375px the whole card sat at left:-225. The scroll container can only do
+   its job once every box between it and the band is allowed to be narrower
+   than what it holds. */
+html[data-theme="light"] body.vB .hero2__chat,
+html[data-theme="dark"]  body.vB .hero2__chat,
+body.vB .hero2__chat,
+body.vB #heroPick,
+body.vB .pick,
+body.vB .pick .pick__panes,
+body.vB .pick .pick__foot{min-width:0!important;max-width:100%!important}
+
+/* §171c — the helper line comes back, standing beside the caret instead of
+   being replaced by it: `| Your website (optional)`. It is drawn, not a real
+   placeholder, so it can sit clear of the caret; both disappear together the
+   moment the field is focused or has anything in it. */
+html[data-theme="light"] body.vB .pick .pick__ph,
+html[data-theme="dark"]  body.vB .pick .pick__ph,
+body.vB .pick .pick__ph{
+  position:absolute!important;
+  /* sitting right against the caret, the way text follows a text cursor —
+     not a caret and then a gap and then a label */
+  left:calc(var(--caret-x,22px) + 6px)!important;
+  top:50%!important;transform:translateY(-50%)!important;
+  font-family:inherit!important;font-size:15px!important;line-height:1!important;
+  font-weight:400!important;letter-spacing:0!important;white-space:nowrap!important;
+  color:rgba(0,51,73,.42)!important;
+  pointer-events:none!important;
+  opacity:0;transition:opacity .16s ease!important;
+}
+html[data-theme="dark"] body.vB .pick .pick__ph{color:rgba(234,243,248,.42)!important}
+body.vB .pick #pickSiteWrap.is-blank .pick__ph{opacity:1}
+@media (max-width:860px){
+  body.vB .pick .pick__ph{font-size:14px!important}
+}
+
+/* §171d — the label the eye actually reads is .pick__label, one level inside
+   .pick__txt, and it carries its own 14.5px. Every size set on the wrapper was
+   inherited by nothing, which is why the pills never got narrower. */
+html[data-theme="light"] body.vB .pick .pick__row .pick__label,
+html[data-theme="dark"]  body.vB .pick .pick__row .pick__label,
+body.vB .pick .pick__row .pick__label{
+  font-size:12px!important;line-height:1!important;font-weight:500!important;
+  letter-spacing:.005em!important;white-space:nowrap!important;
+  color:#003349!important;margin:0!important;
+}
+html[data-theme="dark"] body.vB .pick .pick__row .pick__label{color:#EAF3F8!important}
+@media (max-width:860px){
+  body.vB .pick .pick__row .pick__label{font-size:12px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §172  THE HERO ACTUALLY MOVES
+
+   Two separate reasons "nothing's happening":
+
+   1 · In light the breath was real but 3.5% of scale spread over 30 seconds —
+       about a tenth of a percent per second on a photograph, which is below
+       the threshold of noticing. Bigger amplitude, and a drift as well as a
+       zoom, so the picture travels rather than just breathing in place.
+       scale and translate are both compositor properties, so this costs
+       nothing per frame; animating background-position on a full-bleed photo
+       would repaint the whole hero.
+
+   2 · In dark the animated layer is display:none — the photograph belongs to
+       the light theme and nothing replaced it, so there was no moving part at
+       all. The same pseudo-element comes back carrying the navy ramp with an
+       orange glow over it, and drifts.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes heroDrift{
+  0%   {scale:1;     translate:0 0}
+  50%  {scale:1.055; translate:1.1% .7%}
+  100% {scale:1;     translate:0 0}
+}
+/* the scale stays ahead of the translate throughout, so the layer never pulls
+   its own edge into view */
+
+body.vB .hero2--band::before{
+  animation:
+    heroSettle 16s cubic-bezier(.16,.72,.24,1) both,
+    heroDrift  24s ease-in-out 16s infinite!important;
+}
+
+/* ── dark: the layer returns, as a gradient rather than a photograph ── */
+@keyframes heroNebula{
+  0%   {background-position:24% 16%, 78% 84%}
+  50%  {background-position:38% 32%, 64% 68%}
+  100% {background-position:24% 16%, 78% 84%}
+}
+html[data-theme="dark"] body.vB .hero2--band::before{
+  display:block!important;
+  opacity:1!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+  filter:none!important;
+  background-color:#0A2A3F!important;
+  background-image:
+    radial-gradient(46% 52% at 24% 16%, rgba(255,138,77,.34) 0%, rgba(255,138,77,0) 62%),
+    radial-gradient(50% 56% at 78% 84%, rgba(10,138,176,.40) 0%, rgba(10,138,176,0) 66%),
+    linear-gradient(158deg,#00253A 0%,#0A2A3F 34%,#0B5586 78%,#0A8AB0 100%)!important;
+  background-repeat:no-repeat!important;
+  background-size:200% 200%,220% 220%,100% 100%!important;
+  background-position:24% 16%,78% 84%,50% 50%!important;
+  animation:heroDrift 24s ease-in-out infinite!important;
+}
+/* ::after carries the two glows. It is a separate layer precisely because the
+   base rule pins ::before's background-position with !important, and an
+   important declaration outranks a CSS animation — the keyframes computed
+   fine and moved nothing. Nothing has locked ::after's position. */
+html[data-theme="dark"] body.vB .hero2--band::after{
+  content:""!important;display:block!important;
+  position:absolute!important;
+  top:0!important;left:0!important;right:0!important;bottom:auto!important;
+  height:100vh!important;height:100svh!important;
+  z-index:-1!important;pointer-events:none!important;
+  opacity:1!important;filter:none!important;transform:none!important;
+  -webkit-mask-image:none!important;mask-image:none!important;
+  background-color:transparent!important;
+  background-image:
+    radial-gradient(46% 52% at 50% 50%, rgba(255,138,77,.30) 0%, rgba(255,138,77,0) 62%),
+    radial-gradient(50% 56% at 50% 50%, rgba(10,138,176,.34) 0%, rgba(10,138,176,0) 66%)!important;
+  background-repeat:no-repeat!important;
+  background-size:190% 190%,210% 210%!important;
+  background-position:24% 16%,78% 84%;      /* no !important — the animation owns it */
+  animation:heroNebula 30s ease-in-out infinite!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.vB .hero2--band::before,
+  html[data-theme="dark"] body.vB .hero2--band::before,
+  html[data-theme="dark"] body.vB .hero2--band::after{
+    animation:none!important;scale:1!important;translate:0 0!important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §173  Two small things the client can see and I could measure.
+
+   1 · The nav's play marker was a solid 16px navy disc with an 8px white
+       triangle punched into it — the triangle read as a speck. An outlined
+       ring with a larger mark carries the same meaning at the same size
+       without the cramped solid.
+   2 · The composer's send button sat 23px from the card's inner edge against
+       21 above and 20 below. Two or three pixels is nothing on its own and
+       obvious on a circle, because the eye reads the round edge against two
+       straight ones.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html[data-theme="light"] body.vB .nav__film .nav__playdot,
+html[data-theme="dark"]  body.vB .nav__film .nav__playdot,
+body.vB .nav__playdot{
+  width:18px!important;height:18px!important;
+  flex:0 0 18px!important;
+  display:grid!important;place-items:center!important;
+  background:transparent!important;
+  border:1.25px solid currentColor!important;
+  border-radius:50%!important;
+  color:#003349!important;
+}
+html[data-theme="dark"] body.vB .nav__playdot{color:#EAF3F8!important}
+body.vB .nav__film:hover .nav__playdot{color:#0E5F8E!important}
+html[data-theme="dark"] body.vB .nav__film:hover .nav__playdot{color:#FFFFFF!important}
+/* CSS outranks the svg's width/height presentation attributes. The path is
+   already drawn right of centre in its own viewBox, which is the optical
+   correction a triangle needs inside a ring. */
+body.vB .nav__playdot svg{
+  width:9px!important;height:9px!important;display:block!important;
+  overflow:visible!important;
+}
+body.vB .nav__playdot svg path{fill:currentColor!important}
+
+/* the send button: 3px right so its right gap matches the 20/21 above and below */
+html[data-theme="light"] body.vB .pick .pick__act #pickGo,
+html[data-theme="dark"]  body.vB .pick .pick__act #pickGo,
+body.vB .pick #pickGo{margin-right:-3px!important}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §174  THE ANSWER PANEL SPEAKS THE CARD'S LANGUAGE
+
+   The panel was designed before the pills existed and kept its own vocabulary:
+   a 56px gradient tile at a 14px radius, and "good for" items as grey 6px
+   boxes at 15px. Beside a row of white hairline pills with tinted round icons
+   it read as a different product. Same content, same order, same words — the
+   shapes, weights and colours are brought into line with the rail.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* the icon: the pill's round tinted chip, at panel size — not a gradient tile */
+html[data-theme="light"] body.vB .pick .pick__art,
+html[data-theme="dark"]  body.vB .pick .pick__art,
+body.vB .pick .pick__art{
+  width:48px!important;height:48px!important;
+  min-width:48px!important;min-height:48px!important;
+  flex:0 0 48px!important;aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  background-image:none!important;
+  background-color:color-mix(in srgb, var(--panel-accent,#003349) 13%, transparent)!important;
+  color:var(--panel-accent,#003349)!important;
+  box-shadow:none!important;border:0!important;
+}
+body.vB .pick .pick__art svg{
+  width:21px!important;height:21px!important;
+  color:var(--panel-accent,#003349)!important;stroke:currentColor!important;
+}
+/* the accent is stamped on the panel by chat-shape.js from the chosen pill */
+body.vB .pick #pickDetail[data-accent="blue"]  {--panel-accent:#2563EB}
+body.vB .pick #pickDetail[data-accent="orange"]{--panel-accent:#E8811C}
+body.vB .pick #pickDetail[data-accent="green"] {--panel-accent:#2E9E6B}
+body.vB .pick #pickDetail[data-accent="purple"]{--panel-accent:#7C5CD6}
+body.vB .pick #pickDetail[data-accent="pink"]  {--panel-accent:#DB5A72}
+
+/* "good for" items become the same pill as the rail above them */
+html[data-theme="light"] body.vB .pick .pick__tags li,
+html[data-theme="dark"]  body.vB .pick .pick__tags li,
+body.vB .pick .pick__tags li{
+  background:#FFFFFF!important;
+  border:1px solid rgba(0,51,73,.13)!important;
+  border-radius:999px!important;
+  padding:0 12px!important;height:30px!important;
+  display:inline-flex!important;align-items:center!important;
+  font-size:12px!important;font-weight:500!important;line-height:1!important;
+  letter-spacing:.005em!important;
+  color:#003349!important;
+}
+html[data-theme="dark"] body.vB .pick .pick__tags li{
+  background:rgba(255,255,255,.04)!important;
+  border-color:rgba(234,243,248,.16)!important;color:#EAF3F8!important;
+}
+/* the "or pick one of these" chips were already pills; only the type differed */
+html[data-theme="light"] body.vB .pick .pick__morechip,
+html[data-theme="dark"]  body.vB .pick .pick__morechip,
+body.vB .pick .pick__morechip{
+  font-size:12px!important;font-weight:500!important;
+  letter-spacing:.005em!important;
+  padding:0 12px!important;height:30px!important;
+  display:inline-flex!important;align-items:center!important;
+}
+
+/* one composer, not two: the free-text pane's textarea is folded into the
+   field at the bottom of the card. It stays in the DOM because it is still
+   what the form submits — chat-shape.js keeps it fed. */
+body.vB .pick .pick__pane--free .pick__free{display:none!important}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §175  ONE ALIGNMENT FOR THE WHOLE CARD: LEFT.
+
+   The rail reads left-to-right from the card's inset, the header sits left,
+   the composer types from the left — and the answer panel was centred. Two
+   axes of alignment in one card is what made it feel like two components.
+   Everything in the panel now starts on the same line as everything else.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .pick #pickDetail,
+html[data-theme="dark"]  body.vB .pick #pickDetail,
+body.vB .pick .pick__detail,body.vB .pick #pickDetail{
+  align-items:flex-start!important;
+  text-align:left!important;
+}
+body.vB .pick #pickDetail > *:not(.pick__art),
+body.vB .pick #pickDetail .pick__pane{
+  text-align:left!important;width:100%!important;
+}
+/* stated with the id as well, so nothing can stretch the chip again */
+body.vB .pick #pickDetail .pick__art{
+  width:48px!important;height:48px!important;flex:0 0 48px!important;
+  align-self:flex-start!important;
+}
+body.vB .pick .pick__art{margin-left:0!important;margin-right:auto!important}
+html[data-theme="light"] body.vB .pick .pick__dh,
+html[data-theme="dark"]  body.vB .pick .pick__dh,
+body.vB .pick .pick__dh,
+body.vB .pick .pick__dl,
+body.vB .pick .pick__dgood{text-align:left!important;margin-left:0!important;margin-right:0!important}
+body.vB .pick .pick__dl{max-width:52ch!important}
+body.vB .pick .pick__tags,
+body.vB .pick .pick__more{justify-content:flex-start!important;text-align:left!important}
+/* the idle intro stays centred: it is the one block with nothing to align to */
+body.vB .pick .pick__detail-empty,
+body.vB .pick .pick__detail-empty .say,
+body.vB .pick .pick__detail-empty *{text-align:center!important}
+body.vB .pick .pick__detail-empty{align-items:center!important}
+
+/* §175b — the helper line sits against the caret, and can never run under the
+   send button. It is nowrap and absolutely positioned, so on a narrow field
+   the long "Describe your problem…" string would have slid straight beneath
+   the round button; it truncates instead. */
+html[data-theme="light"] body.vB .pick .pick__ph,
+html[data-theme="dark"]  body.vB .pick .pick__ph,
+body.vB .pick .pick__ph{
+  left:calc(var(--caret-x,22px) + 4px)!important;
+  max-width:calc(100% - var(--caret-x,22px) - 74px)!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;
+}
+
+/* §175c — the idle block centres its own children on the cross axis, which is
+   why the message, the dots and the rotating line still sat middle-aligned
+   after the panel went left. justify-content stays as it is: on a column that
+   is the vertical centring, which is wanted. */
+html[data-theme="light"] body.vB .pick .pick__detail-empty .say,
+html[data-theme="dark"]  body.vB .pick .pick__detail-empty .say,
+body.vB .pick .say{
+  align-items:center!important;
+  width:100%!important;max-width:none!important;
+}
+body.vB .pick .say__line,
+body.vB .pick .say__now,
+body.vB .pick .say__word{text-align:center!important;justify-content:center!important}
+body.vB .pick .say__dots{align-self:center!important;margin-left:0!important}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §176  THE SPACING SYSTEM, INSIDE THE CARD
+
+   The card was built before §165 and kept its own numbers: 24 / 16 / 26 / 16
+   with a 6px chip gap. Two of those are off the 4px scale, and more to the
+   point the steps were flat — the gap between two halves of one thought was
+   nearly the gap between separate groups, so nothing read as grouped.
+
+   One hierarchy, all from the scale:
+     8   within a set          (chip to chip)
+     12  a label and its own content
+     20  an icon and the line it belongs to
+     24  a break between groups
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* icon → question: one unit */
+html[data-theme="light"] body.vB .pick .pick__art,
+html[data-theme="dark"]  body.vB .pick .pick__art,
+body.vB .pick #pickDetail .pick__art{
+  margin-bottom:var(--space-7)!important;          /* 20 */
+}
+/* question → its own description */
+html[data-theme="light"] body.vB .pick .pick__dh,
+html[data-theme="dark"]  body.vB .pick .pick__dh,
+body.vB .pick .pick__dh{margin:0 0 var(--space-5)!important}   /* 12 */
+html[data-theme="light"] body.vB .pick .pick__dl,
+html[data-theme="dark"]  body.vB .pick .pick__dl,
+body.vB .pick .pick__dl{margin:0!important}
+/* a new group starts: the widest step in the panel */
+html[data-theme="light"] body.vB .pick .pick__dgood,
+html[data-theme="dark"]  body.vB .pick .pick__dgood,
+body.vB .pick .pick__dgood{
+  margin:var(--space-8) 0 var(--space-5)!important;             /* 24 / 12 */
+}
+/* within a set */
+html[data-theme="light"] body.vB .pick .pick__tags,
+html[data-theme="dark"]  body.vB .pick .pick__tags,
+body.vB .pick .pick__tags,
+body.vB .pick .pick__more{
+  gap:var(--space-4)!important;                                 /* 8 */
+  margin:0!important;padding:0!important;
+}
+
+/* the idle block keeps the same steps, read vertically */
+html[data-theme="light"] body.vB .pick .say__line,
+html[data-theme="dark"]  body.vB .pick .say__line,
+body.vB .pick .say__line{margin:0 0 var(--space-9)!important}   /* 32 */
+html[data-theme="light"] body.vB .pick .say__dots,
+html[data-theme="dark"]  body.vB .pick .say__dots,
+body.vB .pick .say__dots{margin:0 0 var(--space-8)!important}   /* 24 */
+
+@media (max-width:860px){
+  body.vB .pick #pickDetail .pick__art{margin-bottom:var(--space-6)!important}  /* 16 */
+  body.vB .pick .pick__dgood{margin:var(--space-7) 0 var(--space-5)!important}  /* 20 / 12 */
+  body.vB .pick .say__line{margin:0 0 var(--space-8)!important}                 /* 24 */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §177  THE PANEL'S ICON GOES, AND NOTHING TOUCHES THE COMPOSER
+
+   On a 780px-tall window the answer panel gets 280px and the taller states
+   need 305 — so the last chip was being cut off by the composer with no gap
+   to even signal it. Measured overflow per state: 6, 17, 25, 25, 0.
+
+   The icon is the right thing to cut rather than the padding. It costs 68px
+   (48 plus its 20px margin), which clears every one of those overflows with
+   room to spare, and it is the only redundant element in the panel: the pill
+   sixty pixels above it already shows the same glyph in the same accent. The
+   panel loses nothing it was not saying twice.
+
+   The padding is added as well, so the last row can never sit flush against
+   the composer even when a state does scroll.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .pick .pick__art,
+html[data-theme="dark"]  body.vB .pick .pick__art,
+body.vB .pick #pickDetail .pick__art{display:none!important}
+
+html[data-theme="light"] body.vB .pick #pickDetail,
+html[data-theme="dark"]  body.vB .pick #pickDetail,
+body.vB .pick .pick__detail,body.vB .pick #pickDetail{
+  padding-bottom:var(--space-4)!important;          /* 8 */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §178  EVERY PANEL QUESTION ENDS IN THE HERO'S GRADIENT
+
+   One gradient, not five: the same amber→orange the headline uses on "solving
+   today?" (§85f), byte for byte, on the tail of every question in the panel.
+   The tier colours stay where they belong — the pill icons and the rail — and
+   the type keeps a single voice.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .pick .pick__dh .pick__acc,
+html[data-theme="dark"]  body.vB .pick .pick__dh .pick__acc,
+body.vB .pick .pick__dh .pick__acc{
+  background-image:linear-gradient(90deg,#FFB81C 0%,#FF8A2E 55%,#FF6D24 100%)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  color:transparent!important;-webkit-text-fill-color:transparent!important;
+}
+/* if background-clip:text is not supported the tail simply stays solid orange */
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){
+  body.vB .pick .pick__dh .pick__acc{
+    color:#FF6D24!important;-webkit-text-fill-color:currentColor!important;
+    background-image:none!important;
+  }
+}

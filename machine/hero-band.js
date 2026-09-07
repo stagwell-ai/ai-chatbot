@@ -506,37 +506,48 @@
     }
   })();
 
-  /* ── 6e · the tagline breaks after "grounded" (client, Sep 6) ────────── */
-  /* A wide column let it break wherever the width happened to run out, so the
-     two lines came out a different shape at every window size. The break is
-     stated instead — and it has to be re-stated: the eyebrow is re-rendered
-     from data after this file runs, which silently threw the first <br> away
-     and left the natural wrap looking like a fix that had not worked. */
+  /* ── 6e · the eyebrow becomes the lede, under the headline (client) ──── */
+  /* It used to sit above the H1 as small caps. The client asked for it below
+     the title, reading as the headline's paragraph, in sentence case, with new
+     copy. Same element and same id so nothing that references #heroEyebrow
+     breaks — it is moved, re-typed and re-styled, not replaced.
+
+     It has to be re-applied: the eyebrow is re-rendered from data after this
+     file runs, which is what silently threw the old forced <br> away. */
   (function () {
+    const LEDE = [
+      'Agentic solutions grounded in real-world marketing expertise.',
+      'Tell us what you\u2019re solving \u2014 we\u2019ll find your fit.',
+    ];
+
     const eb = document.querySelector('#heroEyebrow, .hero2__band .eyebrow');
     if (!eb) return;
 
     let applying = false;
     const apply = () => {
-      if (applying || eb.querySelector('.eb-break')) return;
+      if (applying) return;
       applying = true;
-      const walk = document.createTreeWalker(eb, NodeFilter.SHOW_TEXT);
-      let node;
-      while ((node = walk.nextNode())) {
-        const i = node.nodeValue.indexOf('grounded ');
-        if (i < 0) continue;
-        const tail = node.splitText(i + 'grounded'.length);
-        tail.nodeValue = tail.nodeValue.replace(/^\s+/, ' ');
+
+      const h1 = (eb.closest('.hero2__copy') || eb.parentElement).querySelector('h1');
+      if (h1 && h1.nextElementSibling !== eb) h1.after(eb);
+
+      eb.classList.add('eyebrow--lede');
+      if (eb.textContent.trim() !== LEDE.join(' ')) {
+        eb.textContent = '';
+        eb.append(LEDE[0]);
         const br = document.createElement('br');
         br.className = 'eb-break';
-        tail.parentNode.insertBefore(br, tail);
-        break;
+        /* the space matters: the <br> is hidden on a phone, where the two
+           sentences wrap as one block and would otherwise run together.
+           A leading space after a <br> is collapsed at the start of a line,
+           so the desktop break is unaffected. */
+        eb.append(br, ' ' + LEDE[1]);
       }
+
       applying = false;
     };
 
     apply();
-    /* and again any time the line is rewritten */
     new MutationObserver(apply)
       .observe(eb, { childList: true, subtree: true, characterData: true });
   })();
