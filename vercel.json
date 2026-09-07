@@ -24,6 +24,38 @@
   ],
   "rewrites": [
     {
+      "source": "/next",
+      "destination": "/next/index.html"
+    },
+    {
+      "source": "/next/chat",
+      "destination": "/next/index.html"
+    },
+    {
+      "source": "/next/snapshot",
+      "destination": "/next/index.html"
+    },
+    {
+      "source": "/next/path",
+      "destination": "/next/index.html"
+    },
+    {
+      "source": "/next/products",
+      "destination": "/next/products.html"
+    },
+    {
+      "source": "/next/why",
+      "destination": "/next/why.html"
+    },
+    {
+      "source": "/next/p/:campaign",
+      "destination": "/next/campaign.html"
+    },
+    {
+      "source": "/next/s/:solution",
+      "destination": "/next/solution.html"
+    },
+    {
       "source": "/",
       "destination": "/machine/b.html"
     },

@@ -1,0 +1,54 @@
+/* ═══════════════════════════════════════════════════════════
+   LEAD.CSS — the shared lead-capture modal (machine/lead.js).
+
+   The panel itself is the site's own .modal / .modal__panel /
+   .modal__form / .modal__ok, which live in machine/styles.css.
+   Every page that loads lead.js already loads styles.css, so
+   those rules are NOT restated here: one definition, and the
+   modal on /p/{id} and /ads stays pixel-identical to the one on
+   "/" that the client signed off on. (b.css is not needed —
+   it only carries the .modal--wide video variant.)
+
+   What IS here is the small set of things styles.css has no
+   reason to know about: the field rows, the inline email hint,
+   and the shake that replaces a browser alert.
+   ═══════════════════════════════════════════════════════════ */
+
+.lead[hidden]{display:none !important}
+
+/* the panel takes focus programmatically; never draw a ring on the box */
+.lead__panel:focus{outline:none}
+.lead__panel:focus-visible{outline:none}
+
+/* visually hidden — campaign.css already defines .vh, but b.html does not
+   load campaign.css and the field labels must not become visible text there */
+.lead .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* each field is a <label> wrapping its input, so .modal__form's column gap
+   spaces the rows and the input still fills the row */
+.lead__row{display:block;margin:0;min-width:0}
+.lead__row input{width:100%;box-sizing:border-box;font-family:var(--sans);font-size:var(--t-body);color:var(--ink)}
+.lead__row input::placeholder{color:var(--ink-4)}
+
+/* ── invalid email: the site's shake idiom (.prompt.is-shake), never a
+      browser alert and never a native validation bubble ── */
+.lead__row.is-shake input{
+  border-color:var(--lead-warn,#A6231B);
+  animation:leadShake 420ms var(--ease-io,cubic-bezier(.45,0,.15,1));
+}
+@keyframes leadShake{
+  20%{transform:translateX(-5px)} 45%{transform:translateX(4px)}
+  70%{transform:translateX(-2px)} 100%{transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .lead__row.is-shake input{animation:none}
+}
+
+/* the hint sits between the email row and the role row; .modal p would give
+   it lede spacing and ink-2, which is not what an error line should read as */
+.lead__hint{
+  margin:-2px 0 0 !important;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.04em;
+  line-height:1.5;color:var(--lead-warn,#A6231B) !important;
+}
+.lead__hint[hidden]{display:none !important}

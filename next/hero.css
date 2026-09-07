@@ -1,0 +1,241 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   HERO PICKER — the landing's chooser (machine/hero.js).
+
+   The shape is Meta's ad-objective dialog, in this site's materials: a card
+   split into a radio list and a detail pane, with the action bar along the
+   bottom — email beside the button, exactly where the client asked for it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* THE LIGHT CARD (client, Sep 2, after the designer's review: the chooser was
+   navy on navy and got lost). The card carries its own light room — every
+   token below is scoped to it, so the rules that follow are untouched and the
+   same card would still work on a light page. Navy ink, white pane, the
+   orange button; the brand ships the logo in exactly this light variant. */
+.pick, .chat {
+  --paper: #FFFFFF; --surface: #F5F7F6; --surface-2: #E8EEF1;
+  --ink: #003349; --ink-2: rgba(0,51,73,.76); --ink-3: rgba(0,51,73,.56); --ink-4: rgba(0,51,73,.36);
+  --line: rgba(0,51,73,.12); --line-2: rgba(0,51,73,.22); --on-void: #F1FAFF;
+  --bubble: #0E5F8E; --bubble-ink: #F1FAFF;
+  color: var(--ink);
+}
+.pick :focus-visible, .chat :focus-visible { outline-color: var(--teal); }
+.pick { background: var(--surface); border: 1px solid rgba(255,255,255,.14); border-radius: var(--r-lg);
+  overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.45), 0 2px 0 rgba(255,255,255,.06) inset;
+  max-width: 880px; margin: 0 auto;
+  /* the hero centres its own text; the dialog inside it is left-aligned,
+     the way a form has to be */
+  text-align: left; }
+
+/* b.css does not define one and this page never loaded campaign.css */
+.pick .vh { position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ── the two panes ── */
+.pick__panes { display: grid; grid-template-columns: minmax(0,272px) minmax(0,1fr); }
+
+/* no error state on the list any more: choosing a row is optional, so there
+   is nothing here left to get wrong (see go() in machine/hero.js) */
+.pick__list { padding: 10px; display: flex; flex-direction: column; gap: 0;
+  border-right: 1px solid var(--line); border-radius: inherit; }
+
+.pick__row { display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 8px 12px; border: 0; border-radius: var(--r); background: none;
+  font-family: var(--sans); font-size: var(--t-sm); color: var(--ink); text-align: left;
+  cursor: pointer; transition: background var(--d-2) var(--ease); }
+.pick__row:hover { background: var(--surface-2); }
+.pick__row.is-on { background: var(--surface-2); }
+.pick__row:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+
+.pick__radio { flex: none; width: 17px; height: 17px; border-radius: 50%;
+  border: 1.5px solid var(--line-2); background: var(--surface);
+  transition: border-color var(--d-2) var(--ease), box-shadow var(--d-2) var(--ease); }
+.pick__row.is-on .pick__radio { border-color: var(--teal); border-width: 5px; }
+
+.pick__mark { flex: none; width: 30px; height: 30px; border-radius: var(--r);
+  background: var(--surface-2); display: grid; place-items: center; color: var(--ink-2);
+  border: 1px solid var(--line); }
+.pick__row.is-on .pick__mark { background: var(--blue); border-color: var(--blue); color: var(--on-void); }
+.pick__icon { width: 16px; height: 16px; display: block; }
+
+.pick__label { min-width: 0; line-height: 1.35; }
+
+/* ── the detail pane ── */
+/* THE HEIGHT CONTRACT. Every option's pane is a different length — a couple
+   of tags here, a text box there — and the card was resizing under the
+   visitor and, on the free-text row, dropping below the fold. So the pane is
+   capped against the viewport instead: tall enough for the list beside it,
+   never taller than the fold can carry, and anything longer scrolls inside
+   rather than pushing the Ask AI button off the screen. */
+.pick__detail { padding: 20px 24px; display: flex; flex-direction: column; gap: 8px;
+  background: var(--paper); min-height: 296px;
+  max-height: clamp(260px, 42vh, 392px); overflow-y: auto; overscroll-behavior: contain; }
+.pick__detail-empty { margin: auto; text-align: center; color: var(--ink-3); font-size: var(--t-sm); }
+.pick__detail-empty p { margin: 0; }
+
+.pick__art { width: 56px; height: 56px; border-radius: var(--r-lg); display: grid; place-items: center;
+  background: linear-gradient(140deg, color-mix(in srgb, var(--teal) 16%, transparent),
+    color-mix(in srgb, var(--orange) 22%, transparent)); color: var(--ink); margin-bottom: 6px; }
+.pick__art .pick__icon { width: 26px; height: 26px; }
+
+.pick__dh { margin: 0; font-size: 1.125rem; font-weight: 600; letter-spacing: -.014em; color: var(--ink); }
+.pick__dl { margin: 0; font-size: var(--t-sm); line-height: 1.55; color: var(--ink-2); max-width: 52ch; }
+.pick__dgood { margin: 4px 0 0; font-size: var(--t-xs); font-weight: 600; color: var(--ink); }
+.pick__tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.pick__tags li { font-size: var(--t-xs); color: var(--ink-2); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: var(--r-sm); padding: 5px 10px; }
+
+/* THE FREE-TEXT PANE fits without scrolling: it is the only pane with ten
+   chips and a text box in it, so it runs tighter than the others — no icon
+   tile, one-line copy, compact chips, a two-row box. */
+.pick__pane--free { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.pick__pane--free .pick__dh { font-size: 1.0625rem; }
+.pick__pane--free .pick__dl { font-size: var(--t-xs); line-height: 1.45; }
+.pick__pane--free .pick__dgood { margin-top: 0; }
+.pick__pane--free .pick__free { margin-top: 0; }
+.pick__pane--free .pick__free textarea { padding: 9px 12px; }
+
+.pick__more { display: flex; flex-wrap: wrap; gap: 5px; }
+.pick__morechip { font-family: var(--sans); font-size: var(--t-xs); line-height: 1.15; color: var(--ink-2);
+  background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-full);
+  padding: 5px 10px; cursor: pointer; min-height: 28px;
+  transition: border-color var(--d-2) var(--ease), background var(--d-2) var(--ease), color var(--d-2) var(--ease); }
+.pick__morechip:hover { border-color: var(--ink-3); }
+.pick__morechip.is-on { background: var(--blue); border-color: var(--blue); color: var(--on-void); }
+.pick__morechip:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.pick__free { display: block; margin-top: 4px; }
+.pick__free textarea { width: 100%; border: 1px solid var(--line-2); border-radius: var(--r);
+  background: var(--surface); padding: 12px 14px; font-family: var(--sans); font-size: var(--t-sm);
+  color: var(--ink); line-height: 1.5; resize: vertical; outline: none;
+  transition: border-color var(--d-2) var(--ease); }
+.pick__free textarea:focus { border-color: color-mix(in srgb, var(--ink) 42%, transparent); }
+.pick__free textarea::placeholder { color: var(--ink-4); }
+
+/* ── the action bar ── */
+.pick__foot { border-top: 1px solid var(--line); padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px; background: var(--surface); }
+.pick__act { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+
+/* the optional website (the email moved to the gate in front of the snapshot, Sep 2) */
+.pick__site { flex: 1 1 260px; max-width: 380px; display: block; }
+.pick__site input { width: 100%; height: 46px; border-radius: var(--r);
+  border: 1px solid var(--line-2); background: var(--paper); padding: 0 16px;
+  font-family: var(--sans); font-size: var(--t-sm); color: var(--ink); outline: none;
+  transition: border-color var(--d-2) var(--ease), box-shadow var(--d-2) var(--ease); }
+.pick__site input::placeholder { color: var(--ink-4); }
+.pick__site input:focus { border-color: color-mix(in srgb, var(--ink) 42%, transparent); }
+/* the highlight the client asked for: the box itself says it is the problem */
+.pick__site.is-bad input { border-color: var(--amber); box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 26%, transparent); }
+
+.pick__go { height: 46px; padding: 0 28px; font-size: .9375rem; letter-spacing: .05em; flex: none; }
+
+.pick__err { margin: 0; font-size: var(--t-sm); line-height: 1.5; color: #a7660a;
+  max-width: 68ch; }
+.pick__hint { margin: 0; font-size: var(--t-xs); line-height: 1.5; color: var(--ink-3); }
+
+.is-shake { animation: shake 440ms var(--ease-io); }
+
+/* the fold — the whole card, Ask AI included, has to be visible on a 1280×720
+   laptop without scrolling; the headline block gives up the height */
+#hero2:not(.is-chatting) .hero2__in { padding-top: clamp(16px, 3vh, 36px); padding-bottom: 24px; }
+#hero2:not(.is-chatting) .eyebrow { margin-bottom: 8px; }
+#hero2:not(.is-chatting) .display { font-size: clamp(1.8rem, 3.4vw, 3.1rem); margin-bottom: 6px; line-height: 1.08; }
+/* one line on a laptop: the standfirst is the cheapest height on the page */
+#hero2:not(.is-chatting) .hero2__sub { margin: 0 auto 16px; max-width: 78ch; font-size: .9375rem; line-height: 1.45; }
+@media (max-height: 760px) {
+  #hero2:not(.is-chatting) .pick__row { padding-top: 6px; padding-bottom: 6px; }
+  #hero2:not(.is-chatting) .pick__detail { padding: 16px 22px; }
+}
+
+/* the conversation takes the stage: the picker leaves, the chat panel arrives */
+#hero2 .chat { display: none; }
+#hero2.is-chatting .chat { display: block; }
+#hero2.is-chatting #heroPick { display: none; }
+
+@media (max-width: 860px) {
+  /* the empty-state illustration stays a desktop object: on a phone it
+     pushed the email field and Ask AI 113px below the fold before a row was
+     even picked (QA, Sep 2). The pane shrinks to its one line until a row
+     is chosen; the chosen row's detail still renders in full. */
+  .pick__detail:has(.pick__detail-empty) { display: none; }
+
+  .pick__panes { grid-template-columns: minmax(0,1fr); }
+  .pick__list { border-right: 0; border-bottom: 1px solid var(--line); }
+  /* stacked: the page scrolls, so capping the pane only made it scroll
+     inside a card that was already scrolling (client, Sep 2) */
+  .pick__detail { min-height: 0; padding: 22px; max-height: none; overflow: visible; }
+  .pick__act { justify-content: stretch; }
+  .pick__site { flex: 1 1 100%; max-width: none; }
+  .pick__go { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pick__row, .pick__site input, .pick__list { transition: none; }
+  .is-shake { animation: none; }
+}
+
+/* ── the empty pane: what the agent is about to do ─────────────────────────
+   Drawn in the brand's own colours (inline SVG, nothing to load) unless
+   data/questions.json sets hero.emptyImage, in which case that file renders
+   instead and these SVG rules simply go unused. */
+.pick__detail-empty { margin: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; gap: 4px;
+  padding: 2px 0; width: 100%;
+  /* flex 1 1 auto + min-height 0 is what actually lets the art shrink: the
+     old max-height:calc(100% - 30px) resolved against an auto-height parent,
+     so it bound nothing and the pane scrolled (client, Sep 2) */
+  flex: 1 1 auto; min-height: 0; }
+.pick__illo { width: auto; max-width: 430px; height: auto; display: block;
+  font-family: var(--sans);
+  flex: 1 1 auto; min-height: 0; max-height: 100%; object-fit: contain; }
+/* the artwork carries its own small type, so give it every pixel the fold
+   can spare — but only where the fold can spare them */
+@media (min-height: 820px) { .pick__illo { max-width: 486px; } }
+@media (min-height: 1000px) { .pick__illo { max-width: 520px; } }
+/* the artwork was drawn on white. On the dark room: invert it (white → black),
+   swing the hue back so teal stays teal and marigold stays marigold, then
+   screen it so the black ground disappears into the pane. */
+.pick__illo--img { border-radius: var(--r); mix-blend-mode: multiply; }  /* drawn on white; the pane is white again */
+
+.pick__illo-g1 { stop-color: var(--teal); stop-opacity: .14; }
+.pick__illo-g2 { stop-color: var(--amber); stop-opacity: .16; }
+
+.pick__illo-card { fill: var(--surface); stroke: var(--line-2); stroke-width: 1.5; }
+.pick__illo-list { fill: var(--paper); stroke: var(--line); stroke-width: 1.2; }
+.pick__illo-bubble { fill: var(--paper); stroke: var(--line); stroke-width: 1.2; }
+
+/* the agent */
+.pick__illo-head { fill: var(--navy); }
+.pick__illo-eye { fill: var(--teal); }
+.pick__illo-ring { fill: none; stroke: var(--teal); stroke-width: 2.4; stroke-linecap: round;
+  stroke-dasharray: 163; stroke-dashoffset: 163;
+  animation: pickRing 1.1s var(--ease-io) 120ms both; }
+.pick__illo-says { fill: var(--ink); font-size: 11px; letter-spacing: -.01em; }
+
+/* the four steps */
+.pick__illo-step { opacity: 0; animation: pickStep 460ms var(--ease) both; animation-delay: var(--d, 0ms); }
+.pick__illo-check { fill: var(--teal); }
+.pick__illo-tick { stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.pick__illo-steptile { fill: var(--surface); stroke: var(--line-2); stroke-width: 1; }
+.pick__illo-label { fill: var(--ink); font-size: 11px; font-weight: 500; letter-spacing: -.008em; }
+.pick__illo-tico { color: var(--ink-2); }
+
+/* the inputs and outputs either side */
+.pick__illo-tile { fill: var(--surface); stroke: var(--line-2); stroke-width: 1.2; }
+.pick__illo-flank { color: var(--teal); }
+.pick__illo-wire { stroke: var(--line-2); stroke-width: 1.4; stroke-dasharray: 3 4; fill: none; }
+
+.pick__empty-h { margin: 8px 0 0; font-size: .9375rem; font-weight: 600; color: var(--ink); }
+.pick__empty-l { margin: 0; max-width: 44ch; font-size: var(--t-xs); line-height: 1.5; color: var(--ink-3); }
+
+@keyframes pickRing { to { stroke-dashoffset: 42; } }
+@keyframes pickStep { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+@media (max-height: 800px) {
+  .pick__illo { max-width: 370px; }
+  .pick__empty-l { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pick__illo-step, .pick__illo-ring { animation: none; opacity: 1; }
+  .pick__illo-ring { stroke-dashoffset: 42; }
+}
