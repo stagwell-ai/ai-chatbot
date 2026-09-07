@@ -76,7 +76,11 @@ h1,h2,p,figure{margin:0}
   text-align:center;text-wrap:balance;
 }
 .display em{font-style:normal;color:var(--orange)}
-.display--hero {font-size:clamp(72px, 1.6rem + 7.4vw, 140px)}
+/* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
+   "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
+   two-word line in mixed case has the room. */
+.display--hero {font-size:clamp(80px, 2rem + 9.6vw, 184px);text-transform:none;letter-spacing:-.04em}
+.display--hero .navy{color:#003349}
 /* every .display is then fitted to its wrap by home.js — the clamp is the ceiling */
 .display--ask  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px);color:#FFFFFF}
 .display--cos  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px)}
@@ -184,7 +188,7 @@ h1,h2,p,figure{margin:0}
 
 .hero__acts{
   margin-top:var(--s-12);                       /* 64 under the title */
-  display:flex;align-items:center;gap:var(--s-11);
+  display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
 }
 
 /* the reel: inset when it enters, full-bleed once you have scrolled it, and
