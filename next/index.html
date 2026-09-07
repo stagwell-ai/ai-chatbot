@@ -117,41 +117,16 @@ d.setAttribute('data-theme',t||sys);})();
   <div class="hero__media" id="heroMedia">
     <img class="hero__pic" src="/assets/img/hero-split.jpg" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
     <video class="hero__film" id="heroFilm" playsinline preload="metadata" src="/assets/video/hero-reel.mp4"></video>
-    <button type="button" class="hero__watch" id="heroWatch">
-      <span class="hero__disc"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg></span><span class="hero__watch-l">Watch the full film</span>
-    </button>
-    <button type="button" class="hero__disc hero__pause" id="heroPause" aria-label="Pause" aria-pressed="false" hidden>
-      <svg class="hero__pause-ic hero__pause-ic--pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="4" y="3" width="4" height="14" rx="1" fill="currentColor"/><rect x="12" y="3" width="4" height="14" rx="1" fill="currentColor"/></svg>
-      <svg class="hero__pause-ic hero__pause-ic--play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>
-    </button>
-    <button type="button" class="hero__disc hero__close" id="heroClose" aria-label="Close the film" hidden><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-</section>
-
-<!-- ═══════════════════════ 2 · AI EXPERIENCE ═══════════════════════ -->
-<section class="ask" id="ask">
-  <div class="wrap ask__in">
-    <h2 class="display display--ask rv"><span class="ln"><span class="ln__in">Ask <em>Stagwell.</em></span></span></h2>
-    <p class="ask__lede rv" style="--d:.15s">Ask anything. Stagwell.AI finds the right expertise,<br>technology and people to solve it.</p>
-
-    <form class="ask__form rv" style="--d:.3s" id="askForm" action="/next/agent" method="get" autocomplete="off">
-      <label class="vh" for="askInput">What are you working on?</label>
-      <div class="ask__field">
-        <input class="ask__input" id="askInput" name="q" type="text"
-               placeholder="What are you working on?" spellcheck="false">
-        <input type="hidden" name="autostart" value="1">
-        <button class="ask__go" type="submit" aria-label="Ask Stagwell">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </form>
-
-    <ul class="ask__tags rv" style="--d:.45s" role="group" aria-label="Pick a starting point">
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Increase brand awareness">Increase brand awareness</button></li>
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Reach Gen Z">Reach Gen Z</button></li>
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Improve sales">Improve sales</button></li>
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Analyze competitors">Analyze competitors</button></li>
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Explore new markets">Explore new markets</button></li>
-    </ul>
+    <!-- at rest: the invitation, a white pill bottom right -->
+    <button type="button" class="hero__pill hero__watch" id="heroWatch"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>Watch the full film</button>
+    <!-- open: pause and close, in the same corner the invitation was -->
+    <div class="hero__ctl" id="heroCtl" hidden>
+      <button type="button" class="hero__disc hero__pause" id="heroPause" aria-label="Pause" aria-pressed="false">
+        <svg class="hero__pause-ic hero__pause-ic--pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="4" y="3" width="4" height="14" rx="1" fill="currentColor"/><rect x="12" y="3" width="4" height="14" rx="1" fill="currentColor"/></svg>
+        <svg class="hero__pause-ic hero__pause-ic--play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="hero__pill hero__close" id="heroClose"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Close</button>
+    </div>
   </div>
 </section>
 

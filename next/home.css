@@ -227,22 +227,23 @@ h1,h2,p,figure{margin:0}
    way to a black frame */
 .hero__film{opacity:0;transition:opacity .4s ease}
 .hero__media.is-playing .hero__film{opacity:1}
-/* the discs: white, ink glyph */
+/* one white pill for the words, one white disc for the glyph */
+.hero__pill{
+  display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 26px 0 20px;border-radius:999px;
+  background:#FFFFFF;color:var(--ink);
+  font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+  transition:transform .3s var(--ease),background-color .25s ease;
+}
+.hero__pill svg{width:18px;height:18px;flex-shrink:0;display:block}
+.hero__pill:hover{transform:translateY(-1px)}
 .hero__disc{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#FFFFFF;color:var(--ink);transition:transform .3s var(--ease)}
 .hero__disc svg{width:20px;height:20px;grid-area:1/1;display:block}
-/* at rest: the invitation, bottom right */
-.hero__watch{
-  position:absolute;right:var(--gutter);bottom:var(--gutter);z-index:1;
-  display:flex;align-items:center;gap:var(--s-5);
-  color:#FFFFFF;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-}
-.hero__watch:hover .hero__disc{transform:scale(1.06)}
-.hero__watch:focus-visible{outline:2px solid #FFFFFF;outline-offset:4px;border-radius:999px}
-/* open: pause where the invitation was; close at the top right, under the bar */
-.hero__pause{position:absolute;right:var(--gutter);bottom:var(--gutter);z-index:1}
-.hero__close{position:absolute;right:var(--gutter);top:calc(var(--nav-h) + var(--s-6));z-index:1;width:44px;height:44px}
-.hero__pause:hover,.hero__close:hover{transform:scale(1.06)}
-.hero__pause:focus-visible,.hero__close:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+.hero__disc:hover{transform:scale(1.06)}
+/* at rest the invitation sits bottom right; open, pause and close take the
+   same corner — the eye already knows where to go */
+.hero__watch,.hero__ctl{position:absolute;right:var(--gutter);bottom:var(--gutter);z-index:1}
+.hero__ctl{display:flex;align-items:center;gap:var(--s-5)}
+.hero__pill:focus-visible,.hero__disc:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
 .hero__pause-ic--play{display:none}
 .hero__media.is-paused .hero__pause-ic--pause{display:none}
 .hero__media.is-paused .hero__pause-ic--play{display:block}

@@ -89,8 +89,8 @@
         to the left over the words and runs the film from the start, with
         sound. Close returns it; scrolling on simply leaves it behind. ─────── */
   const media = $('#heroMedia'), film = $('#heroFilm'), watch = $('#heroWatch'),
-        pauseBtn = $('#heroPause'), closeBtn = $('#heroClose');
-  if (media && film && watch && pauseBtn && closeBtn) {
+        pauseBtn = $('#heroPause'), closeBtn = $('#heroClose'), ctl = $('#heroCtl');
+  if (media && film && watch && pauseBtn && closeBtn && ctl) {
     const setPaused = (p) => {
       media.classList.toggle('is-paused', p);
       pauseBtn.setAttribute('aria-pressed', String(p));
@@ -99,7 +99,7 @@
     const openFilm = () => {
       if (media.classList.contains('is-open')) return;
       media.classList.add('is-open');
-      watch.hidden = true; pauseBtn.hidden = false; closeBtn.hidden = false;
+      watch.hidden = true; ctl.hidden = false;
       film.currentTime = 0; film.muted = false; setPaused(false);
       /* the film starts as the panel finishes opening; with sound if the
          browser allows it on this tap, silently if not */
@@ -109,7 +109,7 @@
     const closeFilm = () => {
       if (!media.classList.contains('is-open')) return;
       media.classList.remove('is-open', 'is-playing'); film.pause();
-      watch.hidden = false; pauseBtn.hidden = true; closeBtn.hidden = true;
+      watch.hidden = false; ctl.hidden = true;
       watch.focus({ preventScroll: true }); syncNav();
     };
     media.addEventListener('click', (e) => { if (!media.classList.contains('is-open') && !e.target.closest('button')) openFilm(); });
