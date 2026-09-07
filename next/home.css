@@ -85,7 +85,7 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(64px, min(1.6rem + 6.7vw, 16vh), 126px);font-weight:600;   /* 184 → 150 → 136 → 126 ("around ten pixels"), weight 600 */text-transform:none;letter-spacing:-.04em;text-align:left;line-height:.88}
+.display--hero {font-size:clamp(64px, min(1.6rem + 6.7vw, 16vh), 126px);font-weight:600;   /* 184 → 150 → 136 → 126 ("around ten pixels"), weight 600 */text-transform:none;letter-spacing:-.025em;text-align:left;line-height:.88}   /* "a bit more kerning": opened from -.04em */
 .display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
 /* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
 .display--hero em{color:var(--orange)}
@@ -327,7 +327,7 @@ body.chat-open{overflow:hidden}
    back — five minutes each way, one constant creep, with a breath of zoom.
    (object-position could not pan it: the image already covers the width.) */
 .hero__pic{object-position:right center;transform-origin:100% 50%;will-change:transform;animation:drift 300s linear infinite alternate}
-@keyframes drift{from{transform:translateX(0) scale(1.02)}to{transform:translateX(46%) scale(1.06)}}
+@keyframes drift{from{transform:translateX(46%) scale(1.06)}to{transform:translateX(0) scale(1.02)}}   /* content moves LEFT (his call), starting from the image's left side */
 /* the film shows only once it is actually running, so the still never gives
    way to a black frame */
 .hero__film{opacity:0;transition:opacity .4s ease}
