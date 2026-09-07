@@ -177,7 +177,7 @@ h1,h2,p,figure{margin:0}
 .nav__links a{font-size:14px;font-weight:500;color:var(--ink);padding:6px 0;border-bottom:1px solid transparent;transition:border-color .25s ease}
 .nav__links a:hover{border-bottom-color:var(--ink)}
 .nav__brand{justify-self:start;color:var(--ink);display:block}
-.nav__brand svg{height:16px;width:auto}
+.nav__brand svg{height:13px;width:auto}   /* 20% down from 16 (client) */
 .nav__acts{justify-self:end;display:flex;align-items:center;gap:var(--s-5)}   /* 12 — a pair */
 .nav__ask{font-size:14px;font-weight:500;color:var(--ink-2);transition:color .25s ease}
 .nav__ask:hover{color:var(--ink)}
@@ -303,6 +303,7 @@ body.chat-open{overflow:hidden}
 /* margin-bottom:auto with the title's margin-top:auto centres the block in
    the stack — up from the bottom row, with at least 64 to it */
 .hero__tags{display:flex;flex-wrap:wrap;gap:var(--s-4);margin:0 0 auto;padding-bottom:var(--s-12);justify-content:flex-start}
+.hero__tags-br{flex-basis:100%;height:0;margin:0}   /* the row break: three on top, two below */
 .hero__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2)}
 .hero__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
 .hero__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
@@ -327,7 +328,7 @@ body.chat-open{overflow:hidden}
    back — five minutes each way, one constant creep, with a breath of zoom.
    (object-position could not pan it: the image already covers the width.) */
 .hero__pic{object-position:right center;transform-origin:100% 50%;will-change:transform;animation:drift 300s linear infinite alternate}
-@keyframes drift{from{transform:translateX(46%) scale(1.06)}to{transform:translateX(0) scale(1.02)}}   /* content moves LEFT (his call), starting from the image's left side */
+@keyframes drift{from{transform:translateX(0) scale(1.02)}to{transform:translateX(46%) scale(1.06)}}   /* lands on the image's RIGHT edge (the man on the right), then the content moves right to show the rest */
 /* the film shows only once it is actually running, so the still never gives
    way to a black frame */
 .hero__film{opacity:0;transition:opacity .4s ease}
