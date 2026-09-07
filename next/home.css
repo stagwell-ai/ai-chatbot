@@ -245,7 +245,7 @@ body.chat-open{overflow:hidden}
    buttons. It is the viewport's height with the content centred in it, so the
    buttons are inside the frame at 700px as surely as at 950. */
 .hero{position:relative;height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden;--media-w:41.667%;   /* exactly one screen: a min-height let the conversation grow it */
-  --hero-copy:14px}   /* the paragraph, at the tags' size (client) */
+  --hero-copy:16px}   /* the paragraph (client: 16) */
 /* a full split: the words fill the left half, the film the right, edge to
    edge. The left half keeps the page's gutter so the words line up with the
    bar's; the right half owns its picture and the control over it. */
