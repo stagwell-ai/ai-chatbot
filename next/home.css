@@ -259,7 +259,7 @@ body.chat-open{overflow:hidden}
   text-align:left;
 }
 .hero__l{
-  min-height:0;
+  position:relative;min-height:0;
   display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;
   /* the bottom row sits a gutter from the bottom — the same line as the
      Watch the film pill across the split */
@@ -277,6 +277,11 @@ body.chat-open{overflow:hidden}
    shrink-wraps its text, so fitDisplays() measured a box that already equalled
    the line and never brought the size down — it ran 5px into the picture. */
 .hero__l > .display--hero,.hero__l > .hero__acts{align-self:stretch}   /* the row too: shrink-wrapped, it ignored the field's basis */
+/* the thinking field: behind everything in the column, only while a reply
+   is on its way */
+.hero__think{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .6s ease}
+.hero__think.is-on{opacity:1}
+.hero__l > :not(.hero__think){position:relative;z-index:1}
 /* the turns, a regular chat: yours in the mark's blue from the right, the
    agent's in a quiet grey from the left, no names; each rises in from below */
 .hero__thread{align-self:stretch;display:flex;flex-direction:column;gap:var(--s-5);width:100%}

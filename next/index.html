@@ -117,6 +117,9 @@ d.setAttribute('data-theme',t||sys);})();
     <!-- one column, read top to bottom: the question, the answer, the two
          ways in. The right column is reserved for the client's image. -->
     <div class="hero__l">
+      <!-- while the agent thinks: a faint field of tiny dots drifting behind
+           the column, drawn by home.js; gone as the reply lands -->
+      <canvas class="hero__think" id="heroThink" aria-hidden="true"></canvas>
       <!-- everything above the bottom row lives in one stack. When the
            conversation starts, messages join the bottom of it and push the
            title, the paragraph and the tags up and out. -->

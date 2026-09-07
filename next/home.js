@@ -159,7 +159,45 @@
     const settle = () => { stack.scrollTo({ top: stack.scrollHeight, behavior: REDUCED ? 'auto' : 'smooth' }); };
     const add = (el) => { thread.appendChild(el); requestAnimationFrame(settle); return el; };
     const me = (text) => { const t = document.createElement('div'); t.className = 'turnb turnb--me'; t.textContent = text; return add(t); };
-    const wait = () => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>'; return add(t); };
+    /* the thinking field: ~90 tiny ink dots drifting slowly behind the
+       column, each breathing on its own — on while a reply is on its way */
+    const think = (() => {
+      const cv = $('#heroThink'); if (!cv || !cv.getContext || REDUCED) return { on() {}, off() {} };
+      const ctx = cv.getContext('2d'); let dots = [], raf = 0, W = 0, H = 0, t0 = 0;
+      /* two levels: ambient at rest (barely there), lifted while thinking */
+      let lift = 0, liftTarget = 0;
+      const size = () => {
+        const d = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight;
+        cv.width = Math.round(W * d); cv.height = Math.round(H * d); ctx.setTransform(d, 0, 0, d, 0, 0);
+      };
+      const seed = () => { dots = Array.from({ length: 90 }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * 14, vy: (Math.random() - .5) * 14, r: .8 + Math.random() * 1.2, ph: Math.random() * Math.PI * 2, sp: .6 + Math.random() * .9 })); };
+      const frame = (t) => {
+        if (!t0) t0 = t; const dt = Math.min(.05, (t - (frame.last || t)) / 1000); frame.last = t;
+        ctx.clearRect(0, 0, W, H);
+        lift += (liftTarget - lift) * Math.min(1, dt * 3);
+        const speed = 1 + lift * .8, base = .05 + lift * .06, range = .12 + lift * .18;
+        for (const p of dots) {
+          p.x += p.vx * speed * dt; p.y += p.vy * speed * dt;
+          if (p.x < -4) p.x = W + 4; if (p.x > W + 4) p.x = -4; if (p.y < -4) p.y = H + 4; if (p.y > H + 4) p.y = -4;
+          const a = base + range * (0.5 + 0.5 * Math.sin((t - t0) / 1000 * p.sp + p.ph));
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = 'rgba(11,18,32,' + a.toFixed(3) + ')'; ctx.fill();
+        }
+        raf = requestAnimationFrame(frame);
+      };
+      const start = () => { size(); if (!dots.length) seed(); cv.classList.add('is-on'); if (!raf) { frame.last = 0; raf = requestAnimationFrame(frame); } };
+      addEventListener('resize', () => { if (raf) size(); });
+      /* off screen the field rests; back on, it goes on */
+      if ('IntersectionObserver' in window) new IntersectionObserver(es => {
+        if (es[0].isIntersecting) { if (!raf) start(); } else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      }, { threshold: 0 }).observe(cv);
+      return {
+        ambient() { liftTarget = 0; start(); },
+        on() { liftTarget = 1; start(); },
+        off() { liftTarget = 0; }
+      };
+    })();
+    think.ambient();   /* on from landing: the column is quietly alive */
+    const wait = () => { think.on(); const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>'; return add(t); };
     const ai = (html, chips, go) => {
       const t = document.createElement('div'); t.className = 'turnb turnb--ai';
       t.innerHTML = '<div class="turnb__text">' + html + '</div>';
@@ -178,7 +216,7 @@
     const esc = (s) => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
     const reply = (html, chips, go) => new Promise(res => {
       const w = wait();
-      setTimeout(() => { w.remove(); ai(html, chips, go); res(); }, REDUCED ? 0 : 900);
+      setTimeout(() => { w.remove(); think.off(); ai(html, chips, go); res(); }, REDUCED ? 0 : 900);
     });
     /* the way on: a link to the agent page, which opens with the problem as
        its first answer and the site seeded (set when the link is followed) */
