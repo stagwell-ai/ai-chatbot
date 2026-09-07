@@ -121,16 +121,29 @@ d.setAttribute('data-theme',t||sys);})();
         <span class="ln"><span class="ln__in"><em>Ask</em></span></span><span class="ln"><span class="ln__in"><span class="navy">Stagwell.</span></span></span>
       </h1>
       <p class="hero__lede rv" style="--d:.35s">Tell us what you’re trying to solve.<br>We’ll connect you with the right people and solutions.</p>
-      <!-- a chat field where the Ask Stagwell button was: the first keystroke
-           opens the chat over the page, carrying the words; Enter sends. -->
+      <!-- a hand: the same five starting points as the Ask section, left; a
+           tap starts the conversation with that as the problem -->
+      <ul class="hero__tags" id="heroTags" role="group" aria-label="Pick a starting point">
+        <li><button type="button" class="tag" data-q="Increase brand awareness">Increase brand awareness</button></li>
+        <li><button type="button" class="tag" data-q="Reach Gen Z">Reach Gen Z</button></li>
+        <li><button type="button" class="tag" data-q="Improve sales">Improve sales</button></li>
+        <li><button type="button" class="tag" data-q="Analyze competitors">Analyze competitors</button></li>
+        <li><button type="button" class="tag" data-q="Explore new markets">Explore new markets</button></li>
+      </ul>
+      <!-- the conversation, once it starts: the agent page framed bare, in
+           place of the title and the paragraph. The field and Call me stay
+           at the bottom; the composer inside the frame takes over. -->
+      <div class="hero__chat" id="heroChat" hidden></div>
+      <!-- a chat field where the Ask Stagwell button was: sending it starts
+           the conversation right here, in this column -->
       <div class="hero__acts rv" style="--d:.5s">
         <form class="ask-mini" id="askMini" action="/next/agent" method="get" autocomplete="off">
           <label class="vh" for="askMiniInput">Ask Stagwell</label>
-          <input class="ask-mini__input" id="askMiniInput" name="q" type="text" placeholder="Ask Stagwell" spellcheck="false">
+          <input class="ask-mini__input" id="askMiniInput" name="q" type="text" placeholder="Let’s start with your website" spellcheck="false">
           <input type="hidden" name="autostart" value="1">
           <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </form>
-        <button type="button" class="btn btn--line btn--lg btn--ic" data-cta="callback"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
+        <button type="button" class="btn btn--ink btn--lg btn--ic" data-cta="callback"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
       </div>
     </div>
     <!-- the right column only holds the place: the picture is the panel

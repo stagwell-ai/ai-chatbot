@@ -141,6 +141,37 @@
     }, { threshold: .2 }).observe(media);
   }
 
+  /* ── the conversation in the hero: sending the field starts the real agent
+        (agent.html, framed bare with ?embed=1, in light) in place of the title
+        and the paragraph. Same conversation as /next/agent; different place. */
+  const heroL = $('.hero__l'), heroChat = $('#heroChat'), mini = $('#askMini'), miniInput = $('#askMiniInput');
+  if (heroL && heroChat && mini && miniInput) {
+    const startHeroChat = (v) => {
+      if (!v || heroChat.querySelector('iframe')) return;
+      /* a website is the company, handed to the agent the way its own door
+         does (the session seed convo.js consumes); anything else is the
+         problem, and rides in as q */
+      const m = v.match(/^(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,})(?:[\/?#].*)?$/i);
+      const domain = m && !/\s/.test(v) ? m[1].toLowerCase() : null;
+      let src = '/next/agent.html?theme=light&embed=1&autostart=1';
+      if (domain) { try { sessionStorage.setItem('sai-lead-site', domain); } catch (e) {} }
+      else src += '&q=' + encodeURIComponent(v);
+      const f = document.createElement('iframe');
+      f.className = 'hero__chat-frame'; f.title = 'Ask Stagwell';
+      f.src = src;
+      heroChat.appendChild(f); heroChat.hidden = false; heroL.classList.add('is-chat');
+      f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} });
+    };
+    mini.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const v = miniInput.value.trim();
+      if (!v) { miniInput.focus(); return; }
+      startHeroChat(v);
+    });
+    /* a starting point is the problem, said for you */
+    $$('#heroTags .tag').forEach(b => b.addEventListener('click', () => startHeroChat(b.dataset.q || b.textContent.trim())));
+  }
+
   /* ── the chat over the page: the magnifier opens the Ask block full screen,
         in light. Close, or Escape. ────────────────────────────────────────── */
   const over = $('#chatOver'), overClose = $('#chatOverClose'), searchBtn = $('#navSearch');
@@ -172,21 +203,6 @@
       (lastFocus || searchBtn).focus({ preventScroll: true });
     };
     searchBtn.addEventListener('click', () => openChat(searchBtn));
-    /* the hero's field: the first keystroke opens the chat from the field,
-       carrying the words; the caret lands at their end */
-    const mini = $('#askMini'), miniInput = $('#askMiniInput'), overInput = $('.ask__input', over);
-    if (mini && miniInput && overInput) {
-      miniInput.addEventListener('input', () => {
-        if (over.hidden && miniInput.value.length) {
-          overInput.value = miniInput.value;
-          openChat(mini);
-          setTimeout(() => { overInput.focus({ preventScroll: true }); overInput.setSelectionRange(overInput.value.length, overInput.value.length); }, REDUCED ? 0 : 200);
-        }
-      });
-      mini.addEventListener('submit', (e) => {
-        if (!miniInput.value.trim()) { e.preventDefault(); miniInput.focus(); }
-      });
-    }
     overClose.addEventListener('click', closeChat);
     addEventListener('keydown', (e) => { if (e.key === 'Escape' && !over.hidden) closeChat(); });
   }

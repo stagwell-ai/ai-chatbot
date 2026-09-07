@@ -255,14 +255,30 @@ body.chat-open{overflow:hidden}
   text-align:left;
 }
 .hero__l{
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
-  padding:calc(var(--nav-h) + var(--s-12)) var(--gutter) var(--s-12)
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;
+  /* the bottom row sits a gutter from the bottom — the same line as the
+     Watch the film pill across the split */
+  padding:calc(var(--nav-h) + var(--s-8)) var(--gutter) var(--gutter)
           max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
 }
+/* the title and the paragraph float in the space above the bottom row */
+.hero__l > .display--hero{margin-top:auto}
 /* the title takes the column's width, not its own: a start-aligned flex item
    shrink-wraps its text, so fitDisplays() measured a box that already equalled
    the line and never brought the size down — it ran 5px into the picture. */
 .hero__l > .display--hero,.hero__l > .hero__acts{align-self:stretch}   /* the row too: shrink-wrapped, it ignored the field's basis */
+/* the conversation takes the column: the title and the paragraph go, the
+   frame fills the height above the bottom row, Call me stays */
+.hero__l.is-chat{justify-content:flex-start}
+.hero__l.is-chat > .display--hero,.hero__l.is-chat > .hero__lede,.hero__l.is-chat > .hero__tags,.hero__l.is-chat .ask-mini{display:none}
+/* the starting points under the paragraph: outlined, ink on white, left */
+.hero__tags{display:flex;flex-wrap:wrap;gap:var(--s-4);margin:0 0 var(--s-11);justify-content:flex-start}
+.hero__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2)}
+.hero__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
+.hero__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.hero__chat{flex:1;min-height:0;align-self:stretch;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line);background:#FFFFFF}
+.hero__chat iframe{width:100%;height:100%;border:0;display:block}
+.hero__l.is-chat .hero__acts{margin-top:var(--s-6)}
 .hero__r{min-height:1px}
 /* the panel: the whole first screen, clipped to the right column. Opening is
    the clip letting go to the left — the picture underneath is already full
@@ -339,12 +355,12 @@ body.chat-open{overflow:hidden}
 }
 /* the line under the title: two lines, light, quieter than the title */
 .hero__lede{
-  margin-top:var(--s-11);                       /* 48 under the title */
+  margin:var(--s-11) 0 var(--s-8);              /* 48 under the title, 24 above the tags */
   font-size:var(--hero-copy);font-weight:300;line-height:1.4;
   color:var(--ink);
 }
 .hero__acts{
-  margin-top:var(--s-11);                       /* 48 under the paragraph */
+  margin-top:auto;                              /* pinned to the bottom row */
   display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
 }
 /* the chat field: a white pill with the ink stroke, the send disc inside at
@@ -352,10 +368,10 @@ body.chat-open{overflow:hidden}
 .ask-mini{
   position:relative;display:flex;align-items:center;
   flex:0 1 400px;max-width:100%;height:60px;padding:0 6px 0 24px;border-radius:999px;   /* a basis, not a %, in a shrink-wrapped row */
-  background:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink);
-  transition:box-shadow .25s ease,transform .3s var(--ease);
+  background:#F1F2F4;                          /* a light grey, no stroke: "so it pops" */
+  transition:box-shadow .25s ease,background-color .25s ease,transform .3s var(--ease);
 }
-.ask-mini:focus-within{box-shadow:inset 0 0 0 2px var(--ink)}
+.ask-mini:focus-within{background:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink)}
 .ask-mini__input{
   flex:1;min-width:0;height:100%;background:none;border:0;outline:none;padding:0;
   font-family:var(--sans);font-size:17px;font-weight:400;color:var(--ink);caret-color:var(--ink);

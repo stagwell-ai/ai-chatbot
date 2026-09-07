@@ -846,12 +846,13 @@ function seedStoredEmail() {
   try {
     domain = sessionStorage.getItem(LEAD_KEY);
     sessionStorage.removeItem(LEAD_KEY);
-  } catch (e) { return; }
+  } catch (e) { return null; }
   const S = window.SAI;
-  if (!domain || !S || typeof S.setSlot !== 'function') return;
+  if (!domain || !S || typeof S.setSlot !== 'function') return null;
   try {
     if (!S.session.slots.company_domain) S.setSlot('company_domain', String(domain).trim().toLowerCase(), 'visitor');
   } catch (e) { /* a refused slot is not worth losing the conversation over */ }
+  return domain;
 }
 
 async function autostart() {
@@ -876,13 +877,15 @@ async function autostart() {
      visible in the address bar, the history and any referrer. Consumed
      exactly once: the key is cleared whether or not the seeding works, so a
      later visit never inherits a stale one. */
-  seedStoredEmail();
+  const seededSite = seedStoredEmail();
 
   /* a bare autostart=1 only means anything when an ad actually briefed this
-     session — otherwise there is nothing to open with */
+     session, or when a door handed over a website (the homepage's hero field,
+     Sep 7: the company is known, the agent opens by asking the problem) —
+     otherwise there is nothing to open with */
   if (!req.q) {
     const a = (window.SAI && window.SAI.session && window.SAI.session.attribution) || {};
-    if (!a.utm_campaign) return false;
+    if (!a.utm_campaign && !seededSite) return false;
   }
 
   if (visitorInteracted()) return false;

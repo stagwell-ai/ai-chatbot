@@ -19,7 +19,8 @@ try{var raw=localStorage.getItem('sw-theme');
     if(o&&(o.choice==='light'||o.choice==='dark')&&o.sys===sys)t=o.choice;}
   else if(raw){localStorage.removeItem('sw-theme');}
 }catch(e){}
-var q=/[?&]theme=(light|dark)\b/.exec(location.search);   /* the homepage opens this in a frame, in light */
+var q=/[?&]theme=(light|dark)\b/.exec(location.search);
+if(/[?&]embed=1\b/.test(location.search))d.setAttribute('data-embed','');   /* the homepage's hero frames this page bare */   /* the homepage opens this in a frame, in light */
 d.setAttribute('data-theme',q?q[1]:(t||sys));})();
 </script>
 <meta charset="utf-8">
@@ -66,6 +67,7 @@ d.setAttribute('data-theme',q?q[1]:(t||sys));})();
 <link rel="stylesheet" href="/next/cloud.css">
 <link rel="stylesheet" href="/next/ribbon.css">
 <link rel="stylesheet" href="/next/tweaks.css">
+<link rel="stylesheet" href="/next/embed.css">
 </head>
 <body class="vB" data-state="boot">
 
