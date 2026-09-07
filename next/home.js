@@ -23,7 +23,10 @@
   const fitDisplays = () => {
     $$('.display').forEach(h => {
       h.style.fontSize = '';
-      const box = h.parentElement.getBoundingClientRect().width;
+      /* the title's OWN box — a capped column, not its parent's full width.
+         Measuring the parent let a 170px line overflow a 760px column and the
+         clipping wrapper cut "Ask Stagwell." to "Ask Stagw". */
+      const box = h.getBoundingClientRect().width;
       const lines = $$('.ln__in', h);
       if (!box || !lines.length) return;
       const widest = Math.max(...lines.map(l => l.scrollWidth));
@@ -50,6 +53,75 @@
     }, 2600);
   }
 
+  /* ── the light field behind the hero ──────────────────────────────────────
+        Thin vertical bars across the width; three bands ride slow sine waves
+        through them, each in a brand colour, and glow where they cross. Drawn
+        additively on a 2D canvas at device resolution, at most 60fps, and only
+        while the hero is on screen. Reduced motion draws one frame and stops. */
+  const bg = $('#heroBg');
+  if (bg && bg.getContext) {
+    const ctx = bg.getContext('2d');
+    /* the billboard's graphic: a band of upright light bars standing at the
+       right of the screen, its colour turning through the brand along its
+       length — blue where it begins, amber through the middle, orange at the
+       edge — fading in from its inner end so it sits beside the words rather
+       than crowding them. The band rides a slow wave and each bar breathes. */
+    /* warm beside the words, cool at the edge — the billboard's run */
+    const STOPS = [[255, 109, 36], [255, 184, 28], [255, 184, 28], [0, 156, 189], [0, 156, 189]];
+    const mix = (u) => {
+      const n = STOPS.length - 1, p = Math.min(n - 1e-6, Math.max(0, u * n)), i = Math.floor(p), f = p - i;
+      const a = STOPS[i], b = STOPS[i + 1];
+      return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
+    };
+    /* full-height strokes: a long bar the height of the screen with soft ends,
+       and a shorter brighter core that rides a slow wave inside it */
+    const BANDS = [
+      { base: .50, amp: .02,  freq: .6,  speed: .00009, phase: 0.0, len: .92, alpha: .55 },
+      { base: .50, amp: .07,  freq: .9,  speed: .00013, phase: 1.4, len: .46, alpha: .70 },
+    ];
+    let W = 0, H = 0, dpr = 1, bars = 0, gap = 0, bw = 0, raf = 0, visible = true;
+    const size = () => {
+      dpr = Math.min(2, devicePixelRatio || 1);
+      W = bg.clientWidth; H = bg.clientHeight;
+      bg.width = Math.round(W * dpr); bg.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      bars = Math.max(48, Math.round(W / 9));
+      gap = W / bars; bw = Math.max(2, gap * .36);
+    };
+    const draw = (t) => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over';
+      for (let i = 0; i < bars; i++) {
+        const x = i * gap + gap / 2, u = i / bars;
+        /* fade in from the inner edge: nothing at u=0, full by u≈.4 */
+        const fade = Math.min(1, u / .42);
+        const [r, gg, bl] = mix(((u + t * .000015) % 1 + 1) % 1);
+        for (const b of BANDS) {
+          const y = H * (b.base + b.amp * Math.sin(u * Math.PI * 2 * b.freq + t * b.speed + b.phase));
+          const breathe = 0.72 + 0.28 * Math.sin(u * 6 + t * b.speed * 2.2 + b.phase);
+          const len = H * b.len * (0.86 + 0.14 * breathe);
+          const a = b.alpha * fade * breathe;
+          const g = ctx.createLinearGradient(0, y - len / 2, 0, y + len / 2);
+          g.addColorStop(0,   `rgba(${r|0},${gg|0},${bl|0},0)`);
+          g.addColorStop(.12, `rgba(${r|0},${gg|0},${bl|0},${a})`);
+          g.addColorStop(.88, `rgba(${r|0},${gg|0},${bl|0},${a})`);
+          g.addColorStop(1,   `rgba(${r|0},${gg|0},${bl|0},0)`);
+          ctx.fillStyle = g;
+          ctx.fillRect(x - bw / 2, y - len / 2, bw, len);
+        }
+      }
+    };
+    const loop = (t) => { raf = 0; if (!visible) return; draw(t); raf = requestAnimationFrame(loop); };
+    size(); addEventListener('resize', () => { size(); if (REDUCED) draw(0); });
+    if (REDUCED) draw(0);
+    else {
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible && !raf) raf = requestAnimationFrame(loop); }, { threshold: 0 }).observe(bg);
+      }
+      raf = requestAnimationFrame(loop);
+    }
+  }
+
   /* ── the bar: solid once you have moved; white-on-dark over the AI section ─ */
   const nav = $('#nav'), ask = $('#ask');
   if (nav) {
@@ -57,10 +129,10 @@
     const onScroll = () => {
       ticking = false;
       nav.classList.toggle('is-stuck', scrollY > 8);
-      if (ask) {
-        const r = ask.getBoundingClientRect();
-        nav.classList.toggle('on-dark', r.top <= 72 && r.bottom >= 72);
-      }
+      const dark = [$('#reel'), ask].filter(Boolean).some(el => {
+        const r = el.getBoundingClientRect(); return r.top <= 72 && r.bottom >= 72;
+      });
+      nav.classList.toggle('on-dark', dark);
     };
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
     onScroll();

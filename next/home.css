@@ -79,13 +79,12 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(80px, 2rem + 9.6vw, 184px);text-transform:none;letter-spacing:-.04em}
+.display--hero {font-size:clamp(80px, 2rem + 9.6vw, 184px);text-transform:none;letter-spacing:-.04em;text-align:left;line-height:.88}
 .display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
-/* "Ask" arrives orange, turns amber, and settles on the mark's blue — there is
-   enough orange on the page already. One pass, on landing. */
-.display--hero em{color:#009CBD}
-.is-ready .display--hero em{animation:askHue 4.6s var(--ease) .4s both}
-@keyframes askHue{0%{color:var(--orange)}38%{color:var(--amber)}72%{color:#009CBD}100%{color:#009CBD}}
+/* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
+.display--hero em{color:var(--orange)}
+/* "Stagwell." in the page ink, as on the billboard */
+.display--hero .navy{color:var(--ink)}
 /* the reveal wrapper clips; at this size the descender of the g drops below
    the .9 line box and was being cut. Room for it, and the rise-in offset grows
    to match so the line still starts fully hidden. */
@@ -153,12 +152,12 @@ h1,h2,p,figure{margin:0}
 .nav.is-stuck{background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);box-shadow:0 1px 0 var(--line)}
 .nav__in{
   height:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter);
-  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:var(--s-12);
 }
 .nav__links{display:flex;gap:var(--s-9)}
 .nav__links a{font-size:14px;font-weight:500;color:var(--ink);padding:6px 0;border-bottom:1px solid transparent;transition:border-color .25s ease}
 .nav__links a:hover{border-bottom-color:var(--ink)}
-.nav__brand{justify-self:center;color:var(--ink);display:block}
+.nav__brand{justify-self:start;color:var(--ink);display:block}
 .nav__brand svg{height:19px;width:auto}
 .nav__acts{justify-self:end;display:flex;align-items:center;gap:var(--s-5)}   /* 12 — a pair */
 .nav__ask{font-size:14px;font-weight:500;color:var(--ink-2);transition:color .25s ease}
@@ -176,12 +175,20 @@ h1,h2,p,figure{margin:0}
 /* The first screen holds everything: the turning line, the title, the two
    buttons. It is the viewport's height with the content centred in it, so the
    buttons are inside the frame at 700px as surely as at 950. */
-.hero{min-height:100svh;display:flex;flex-direction:column}
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden}
+/* the band stands on the right of the first screen, the way it does on the
+   billboard — beside the words, not behind them. Sized to the first screen,
+   not the section: sized to the section it sat under the fold. */
+.hero__bg{position:absolute;top:0;right:0;width:46%;height:100svh;display:block;pointer-events:none}
 .hero__in{
+  position:relative;z-index:1;
   flex:1;min-height:calc(100svh - var(--nav-h));
   padding-top:var(--nav-h);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;
+  max-width:var(--wrap);
 }
+/* the words own the left ~60%; the band the right — the billboard's split */
+.hero__in > *{max-width:min(62%, 860px)}
 /* the turning line: one phrase showing, the rest stacked beneath it out of
    view; a change is the old one lifting out and the next rising in */
 .turn{
@@ -189,7 +196,7 @@ h1,h2,p,figure{margin:0}
      content is all absolutely positioned — so it measured 0px wide and every
      phrase collapsed into nothing. The width has to be stated. */
   position:relative;display:block;width:100%;max-width:40ch;height:1.4em;overflow:hidden;
-  text-align:center;
+  text-align:left;
   margin-bottom:var(--s-8);                     /* 24 above the title */
   font-size:clamp(20px, 1rem + .8vw, 28px);font-weight:300;line-height:1.4;
   color:var(--ink-2);
@@ -202,15 +209,20 @@ h1,h2,p,figure{margin:0}
 .turn__w.is-on{opacity:1;transform:none}
 .turn__w.is-off{opacity:0;transform:translateY(-100%)}
 
+.hero__sign{
+  margin-top:var(--s-9);                        /* 32 under the title */
+  font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink-3);
+}
 .hero__acts{
-  margin-top:var(--s-12);                       /* 64 under the title */
+  margin-top:var(--s-11);                       /* 48 under the sign-off */
   display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
 }
 
 /* the reel: inset when it enters, full-bleed once you have scrolled it, and
    only then alive. A tall runner with a sticky stage: the runner's travel is
    the progress, the stage's width follows it. */
-.reel{position:relative;height:190vh;margin-top:var(--s-9)}
+.reel{position:relative;height:190vh;margin-top:0}
 .reel__sticky{position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));display:flex;align-items:center;justify-content:center}
 .reel__stage{
   position:relative;overflow:hidden;
@@ -414,7 +426,7 @@ h1,h2,p,figure{margin:0}
 @media (prefers-reduced-motion:reduce){
   .rv,.ln__in,.co,.co__face,.co__back,.co__img,.reel__w{transition:none!important;opacity:1!important}
   .turn__w{transition:none!important}
-  .display--hero em{animation:none!important;color:#009CBD!important}
+
   .rv,.ln__in,.co,.co__face,.co__back,.co__img,.reel__w{transform:none!important}
   .reel__stage .pl,.reel__stage .ring{animation:none!important}
   .reel__stage{width:100%!important;height:64vh!important;border-radius:0!important}
