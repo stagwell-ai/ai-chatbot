@@ -311,7 +311,7 @@ body.chat-open{overflow:hidden}
 .hero__tags-br{flex-basis:100%;height:0;margin:0}   /* the row break: three on top, two below */
 /* the tags come last, one after the other, with a shorter lift than the big pieces */
 .hero__tags > .rv{transform:translateY(12px);transition-duration:.6s,.7s}
-.hero__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2)}
+.hero__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2);background:#FFFFFF}   /* white, so they sit on the lattice */
 .hero__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
 .hero__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 /* the bottom row never moves when the conversation starts — the stack above

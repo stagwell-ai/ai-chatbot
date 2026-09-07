@@ -167,7 +167,7 @@
       const cv = $('#heroThink'); if (!cv || !cv.getContext || REDUCED) return { ambient() {}, on() {}, off() {}, at() {} };
       const ctx = cv.getContext('2d'); let pts = [], raf = 0, W = 0, H = 0, t0 = 0, last = 0;
       let lift = 0, liftTarget = 0, ox = 0, oy = 0;
-      const GAP = 22;
+      const GAP = 16;   /* 22 read as too separated */
       const size = () => {
         const d = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight;
         cv.width = Math.round(W * d); cv.height = Math.round(H * d); ctx.setTransform(d, 0, 0, d, 0, 0);
@@ -180,12 +180,17 @@
         const s = (t - t0) / 1000;
         lift += (liftTarget - lift) * Math.min(1, dt * 3);
         ctx.clearRect(0, 0, W, H);
-        const base = .03 + lift * .02, wave = .07 + lift * .08, ringA = lift * .30;
+        const base = .03 + lift * .02, ringA = lift * .30;
+        /* the resting motion leads the eye: one soft band of light sweeps
+           from the title, top left, down through the tags to the chat and
+           Call me at the bottom, then begins again at the title — a 7s
+           cycle with a beat of nothing between passes */
+        const T = 7, u = (s % T) / T;                    /* 0 → 1 along the diagonal */
+        const diag = W + H, pos = u * (diag + 360) - 180;  /* runs a little past both ends */
         for (const p of pts) {
-          /* two slow waves crossing the grid, one a little faster than the other */
-          const w1 = 0.5 + 0.5 * Math.sin((p.x * .012 + p.y * .008) - s * .9);
-          const w2 = 0.5 + 0.5 * Math.sin((p.x * -.006 + p.y * .014) - s * .55);
-          let a = base + wave * w1 * w2 * 1.6;
+          const d = (p.x + p.y) - pos;                     /* distance to the band along the diagonal */
+          const band = Math.exp(-(d * d) / (2 * 110 * 110));
+          let a = base + .16 * band * (1 - lift * .5);
           if (lift > .01) {
             /* rings from the origin: two, a beat apart, widening and fading */
             const r = Math.hypot(p.x - ox, p.y - oy);
