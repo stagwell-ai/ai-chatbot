@@ -393,7 +393,7 @@ body.chat-open{overflow:hidden}
 .hero__lede{
   margin:var(--s-9) 0 var(--s-9);               /* 32 under the title — the g's descender fills the rest — 32 above the tags */
   white-space:nowrap;                           /* one line, by the client's cut */
-  font-size:var(--hero-copy);font-weight:300;line-height:1.4;
+  font-size:var(--hero-copy);font-weight:400;line-height:1.45;   /* 300 read smaller than the tags at the same 14px */
   color:var(--ink);
 }
 .hero__acts{
