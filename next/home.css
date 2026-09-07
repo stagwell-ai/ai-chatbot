@@ -85,7 +85,7 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(64px, min(1.6rem + 6.7vw, 16vh), 126px);font-weight:600;   /* 184 → 150 → 136 → 126 ("around ten pixels"), weight 600 */text-transform:none;letter-spacing:-.025em;text-align:left;line-height:.88}   /* "a bit more kerning": opened from -.04em */
+.display--hero {font-size:clamp(60px, min(1.5rem + 6.2vw, 15vh), 116px);font-weight:600;   /* 184 → 150 → 136 → 126 → 116 ("a bit smaller"), weight 600 */text-transform:none;letter-spacing:-.025em;text-align:left;line-height:.88}   /* "a bit more kerning": opened from -.04em */
 .display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
 /* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
 .display--hero em{color:var(--orange)}
@@ -245,7 +245,7 @@ body.chat-open{overflow:hidden}
    buttons. It is the viewport's height with the content centred in it, so the
    buttons are inside the frame at 700px as surely as at 950. */
 .hero{position:relative;height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden;--media-w:41.667%;   /* exactly one screen: a min-height let the conversation grow it */
-  --hero-copy:clamp(17px, .8rem + .5vw, 21px)}   /* the paragraph; "too big" at 26 */
+  --hero-copy:14px}   /* the paragraph, at the tags' size (client) */
 /* a full split: the words fill the left half, the film the right, edge to
    edge. The left half keeps the page's gutter so the words line up with the
    bar's; the right half owns its picture and the control over it. */
