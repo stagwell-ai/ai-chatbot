@@ -195,24 +195,29 @@ h1,h2,p,figure{margin:0}
 .nav.on-dark:not(.is-stuck) .nav__search,.home .nav:not(.is-stuck) .nav__acts .nav__search{color:#FFFFFF}
 .nav.on-dark:not(.is-stuck) .nav__search:hover,.home .nav:not(.is-stuck) .nav__acts .nav__search:hover{background:rgba(255,255,255,.14)}
 
-/* ── the chat over the page ──────────────────────────────────────────────── */
+/* ── the chat over the page: the Ask block, in light ─────────────────────── */
 .chat-over{
-  position:fixed;inset:0;z-index:200;background:#FFFFFF;
+  position:fixed;inset:0;z-index:200;background:#FFFFFF;color:var(--ink);
+  display:flex;align-items:center;justify-content:center;overflow:auto;
+  padding:var(--s-15) 0;
   opacity:0;transform:scale(.985);transition:opacity .35s ease,transform .45s var(--ease);
 }
 .chat-over.is-in{opacity:1;transform:none}
-/* a slim bar of its own holds Close; the frame starts beneath it, so the
-   framed page's own header keeps its corner */
-.chat-over__bar{position:absolute;top:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:flex-end;padding:0 var(--gutter);border-bottom:1px solid var(--line);background:#FFFFFF}
-.chat-over__frame{position:absolute;top:56px;left:0;right:0;bottom:0;width:100%;height:calc(100% - 56px);border:0;display:block;background:#FFFFFF}
-.chat-over__close{
-  display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px 0 14px;border-radius:999px;
-  background:var(--ink);color:#FFFFFF;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  transition:transform .3s var(--ease);
-}
-.chat-over__close svg{width:16px;height:16px;display:block}
-.chat-over__close:hover{transform:translateY(-1px)}
+/* the disc rules sit later in the file: state these with the parent so they win */
+.chat-over .chat-over__close{position:absolute;top:var(--s-6);right:var(--gutter);background:var(--ink);color:#FFFFFF}
+.chat-over .chat-over__close .ic-x{display:block}
 .chat-over__close:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* the dark block's parts, read in light */
+.chat-over .display--ask{color:var(--ink)}
+.chat-over .ask__lede{color:var(--ink-2)}
+.chat-over .ask__field{border-bottom-color:var(--line)}
+.chat-over .ask__field:focus-within{border-bottom-color:var(--ink)}
+.chat-over .ask__input{color:var(--ink)}
+.chat-over .ask__input::placeholder{color:var(--ink-4)}
+.chat-over .ask__go{background:var(--ink);color:#FFFFFF}
+.chat-over .tag{border-color:var(--line);color:var(--ink-2)}
+.chat-over .tag:hover{border-color:var(--ink);color:var(--ink)}
+.chat-over .tag[aria-pressed="true"]{background:var(--ink);color:#FFFFFF;border-color:var(--ink)}
 body.chat-open{overflow:hidden}
 
 /* ── 1 · hero ────────────────────────────────────────────────────────────── */
@@ -264,16 +269,20 @@ body.chat-open{overflow:hidden}
 .hero__pill svg{width:18px;height:18px;flex-shrink:0;display:block}
 .hero__pill:hover{transform:translateY(-1px)}
 .hero__disc{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#FFFFFF;color:var(--ink);transition:transform .3s var(--ease)}
-.hero__disc svg{width:20px;height:20px;grid-area:1/1;display:block}
+.hero__disc svg{width:20px;height:20px}
 .hero__disc:hover{transform:scale(1.06)}
 /* at rest the invitation sits bottom right; open, pause and close take the
    same corner — the eye already knows where to go */
 .hero__watch,.hero__ctl{position:absolute;right:var(--gutter);bottom:var(--gutter);z-index:1}
-.hero__ctl{display:flex;align-items:center;gap:var(--s-5)}
+.hero__ctl{display:flex;align-items:center;gap:10px}
 .hero__pill:focus-visible,.hero__disc:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
-.hero__pause-ic--play{display:none}
-.hero__media.is-paused .hero__pause-ic--pause{display:none}
-.hero__media.is-paused .hero__pause-ic--play{display:block}
+/* one icon shows per disc; the state on the panel picks it */
+.hero__disc .ic{grid-area:1/1;display:none}
+#heroPause .ic-pause,#heroMute .ic-sound,#heroClose .ic-x{display:block}
+.hero__media.is-paused #heroPause .ic-pause{display:none}
+.hero__media.is-paused #heroPause .ic-play{display:block}
+.hero__media.is-muted #heroMute .ic-sound{display:none}
+.hero__media.is-muted #heroMute .ic-muted{display:block}
 /* the bar's buttons sit over the picture until the bar goes solid: the film
    is dark, so they turn inside out there */
 .home .nav:not(.is-stuck) .nav__acts .btn--ink{background:#FFFFFF;color:var(--ink)}
@@ -304,8 +313,14 @@ body.chat-open{overflow:hidden}
   font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
   color:var(--ink-3);
 }
+/* the line under the title: two lines, light, quieter than the title */
+.hero__lede{
+  margin-top:var(--s-10);                       /* 40 under the title */
+  font-size:clamp(17px, .9rem + .5vw, 21px);font-weight:300;line-height:1.5;
+  color:var(--ink-2);
+}
 .hero__acts{
-  margin-top:var(--s-13);                       /* 80 under the title */
+  margin-top:var(--s-11);                       /* 48 under the paragraph */
   display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
 }
 

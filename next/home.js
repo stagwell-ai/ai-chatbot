@@ -85,60 +85,71 @@
     }
   }
 
-  /* ── the film's panel: clipped to the right column at rest. A tap unclips it
-        to the left over the words and runs the film from the start, with
-        sound. Close returns it; scrolling on simply leaves it behind. ─────── */
+  /* ── the film's panel: a still, clipped to the right column at rest. A tap
+        unclips it to the left over the words and runs the film from the start
+        with sound. Close returns the still; scrolling away rests the film. ── */
   const media = $('#heroMedia'), film = $('#heroFilm'), watch = $('#heroWatch'),
-        pauseBtn = $('#heroPause'), closeBtn = $('#heroClose'), ctl = $('#heroCtl');
-  if (media && film && watch && pauseBtn && closeBtn && ctl) {
+        ctl = $('#heroCtl'), pauseBtn = $('#heroPause'), muteBtn = $('#heroMute'), closeBtn = $('#heroClose');
+  if (media && film && watch && ctl && pauseBtn && muteBtn && closeBtn) {
+    const isOpen = () => media.classList.contains('is-open');
+    const play = () => film.play().catch(() => {});
     const setPaused = (p) => {
       media.classList.toggle('is-paused', p);
       pauseBtn.setAttribute('aria-pressed', String(p));
       pauseBtn.setAttribute('aria-label', p ? 'Play' : 'Pause');
     };
+    const setMuted = (m) => {
+      film.muted = m;
+      media.classList.toggle('is-muted', m);
+      muteBtn.setAttribute('aria-pressed', String(m));
+      muteBtn.setAttribute('aria-label', m ? 'Sound on' : 'Mute');
+    };
     const openFilm = () => {
-      if (media.classList.contains('is-open')) return;
+      if (isOpen()) return;
       media.classList.add('is-open');
       watch.hidden = true; ctl.hidden = false;
-      film.currentTime = 0; film.muted = false; setPaused(false);
-      /* the film starts as the panel finishes opening; with sound if the
-         browser allows it on this tap, silently if not */
-      setTimeout(() => film.play().catch(() => { film.muted = true; film.play().catch(() => {}); }), REDUCED ? 0 : 450);
+      film.currentTime = 0; setPaused(false); setMuted(false);
+      /* from the start, with sound, as the panel finishes opening; if the
+         browser refuses sound on this tap, silently — the disc says so */
+      setTimeout(() => film.play().catch(() => { setMuted(true); play(); }), REDUCED ? 0 : 450);
       closeBtn.focus({ preventScroll: true }); syncNav();
     };
     const closeFilm = () => {
-      if (!media.classList.contains('is-open')) return;
-      media.classList.remove('is-open', 'is-playing'); film.pause();
+      if (!isOpen()) return;
+      media.classList.remove('is-open', 'is-paused', 'is-playing');
       watch.hidden = false; ctl.hidden = true;
+      film.pause();
       watch.focus({ preventScroll: true }); syncNav();
     };
-    media.addEventListener('click', (e) => { if (!media.classList.contains('is-open') && !e.target.closest('button')) openFilm(); });
+    media.addEventListener('click', (e) => { if (!isOpen() && !e.target.closest('button')) openFilm(); });
     watch.addEventListener('click', openFilm);
     closeBtn.addEventListener('click', closeFilm);
-    pauseBtn.addEventListener('click', () => { const p = !film.paused; p ? film.pause() : film.play().catch(() => {}); setPaused(p); });
+    pauseBtn.addEventListener('click', () => { const p = !film.paused; p ? film.pause() : play(); setPaused(p); });
+    muteBtn.addEventListener('click', () => setMuted(!film.muted));
     film.addEventListener('playing', () => media.classList.add('is-playing'));
     film.addEventListener('ended', closeFilm);
     addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFilm(); });
     /* scrolled away, the film rests; back on screen, it goes on */
     if ('IntersectionObserver' in window) new IntersectionObserver(es => {
-      if (!media.classList.contains('is-open')) return;
+      if (!isOpen()) return;
       if (!es[0].isIntersecting) film.pause();
-      else if (!media.classList.contains('is-paused')) film.play().catch(() => {});
+      else if (!media.classList.contains('is-paused')) play();
     }, { threshold: .2 }).observe(media);
   }
 
-  /* ── the chat over the page: the magnifier opens the agent experience full
-        screen, in light, in a frame loaded on first use. Close, or Escape. ── */
-  const over = $('#chatOver'), overFrame = $('#chatOverFrame'), overClose = $('#chatOverClose'), searchBtn = $('#navSearch');
-  if (over && overFrame && overClose && searchBtn) {
+  /* ── the chat over the page: the magnifier opens the Ask block full screen,
+        in light. Close, or Escape. ────────────────────────────────────────── */
+  const over = $('#chatOver'), overClose = $('#chatOverClose'), searchBtn = $('#navSearch');
+  if (over && overClose && searchBtn) {
     let lastFocus = null;
     const openChat = () => {
-      if (!overFrame.getAttribute('src') || overFrame.getAttribute('src') === 'about:blank') overFrame.src = overFrame.dataset.src;
       lastFocus = document.activeElement;
       over.hidden = false; document.body.classList.add('chat-open');
       searchBtn.setAttribute('aria-expanded', 'true');
+      fitDisplays();                                   /* it had no width while hidden */
       requestAnimationFrame(() => requestAnimationFrame(() => over.classList.add('is-in')));
-      overClose.focus({ preventScroll: true });
+      const input = $('.ask__input', over);
+      setTimeout(() => (input || overClose).focus({ preventScroll: true }), REDUCED ? 0 : 200);
     };
     const closeChat = () => {
       if (over.hidden) return;
@@ -165,8 +176,9 @@
   /* ── the input: a tag puts its words in the field and nothing more. The
         arrow, or Enter, is what sends — to the real agent, by the form's own
         GET carrying q and autostart=1 to /next/agent. ───────────────────── */
-  const form = $('#askForm'), input = $('#askInput'), tags = $$('.tag');
-  if (form && input) {
+  $$('.ask__form').forEach(form => {
+    const input = $('.ask__input', form), tags = $$('.tag', form.closest('.ask__in') || form.parentElement);
+    if (!input) return;
     tags.forEach(b => b.addEventListener('click', () => {
       const on = b.getAttribute('aria-pressed') !== 'true';
       tags.forEach(o => o.setAttribute('aria-pressed', 'false'));
@@ -181,7 +193,7 @@
     form.addEventListener('submit', (e) => {
       if (!input.value.trim()) { e.preventDefault(); input.focus(); }
     });
-  }
+  });
 
   /* ── the companies field ─────────────────────────────────────────────────
         centre detection, drag to scroll, the position line, and the flip. ── */

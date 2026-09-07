@@ -81,11 +81,32 @@ d.setAttribute('data-theme',t||sys);})();
   </nav>
 </header>
 
-<!-- the chat, full screen over the page: the agent experience in a frame,
-     forced light, loaded the first time it is opened. -->
+<!-- the chat, full screen over the page: the Ask Stagwell block itself,
+     in light. The magnifier opens it; the arrow or Enter sends to the agent. -->
 <div class="chat-over" id="chatOver" role="dialog" aria-modal="true" aria-label="Ask Stagwell" hidden>
-  <div class="chat-over__bar"><button type="button" class="chat-over__close" id="chatOverClose"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Close</button></div>
-  <iframe class="chat-over__frame" id="chatOverFrame" title="Ask Stagwell" src="about:blank" data-src="/next/agent.html?theme=light" allow="clipboard-write"></iframe>
+  <button type="button" class="hero__disc chat-over__close" id="chatOverClose" aria-label="Close"><svg class="ic ic-x" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <div class="wrap ask__in chat-over__in">
+    <h2 class="display display--ask">Ask <em>Stagwell.</em></h2>
+    <p class="ask__lede">Ask anything. Stagwell.AI finds the right expertise,<br>technology and people to solve it.</p>
+    <form class="ask__form" id="askFormOver" action="/next/agent" method="get" autocomplete="off">
+      <label class="vh" for="askInputOver">What are you working on?</label>
+      <div class="ask__field">
+        <input class="ask__input" id="askInputOver" name="q" type="text"
+               placeholder="What are you working on?" spellcheck="false">
+        <input type="hidden" name="autostart" value="1">
+        <button class="ask__go" type="submit" aria-label="Ask Stagwell">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </form>
+    <ul class="ask__tags" role="group" aria-label="Pick a starting point">
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Increase brand awareness">Increase brand awareness</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Reach Gen Z">Reach Gen Z</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Improve sales">Improve sales</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Analyze competitors">Analyze competitors</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Explore new markets">Explore new markets</button></li>
+    </ul>
+  </div>
 </div>
 
 <main id="top">
@@ -109,6 +130,7 @@ d.setAttribute('data-theme',t||sys);})();
       <h1 class="display display--hero" id="heroTitle">
         <span class="ln"><span class="ln__in"><em>Ask</em></span></span><span class="ln"><span class="ln__in"><span class="navy">Stagwell.</span></span></span>
       </h1>
+      <p class="hero__lede rv" style="--d:.35s">Tell us what you’re trying to solve.<br>We’ll connect you with the right people and solutions.</p>
       <!-- black and white only: the one filled button, and its outline twin.
            Ask Stagwell leads with a typing caret — it goes to the chat. -->
       <div class="hero__acts rv" style="--d:.5s">
@@ -122,22 +144,48 @@ d.setAttribute('data-theme',t||sys);})();
   </div>
 
   <!-- the film's panel. It is the whole first screen, clipped to the right
-       column at rest — a still from the film and "watch the full film". A tap
-       unclips it leftward over the words and the film runs from the start,
-       with sound; close returns it, or scroll on and leave it behind. -->
+       column at rest — a still from the film and "watch the film". A tap
+       unclips it leftward over the words and the film runs from the start with
+       sound; close returns it, or scroll on and leave it behind. -->
   <div class="hero__media" id="heroMedia">
-    <img class="hero__pic" src="/assets/img/hero-split.jpg" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
+    <img class="hero__pic" src="/assets/img/hero-split-fold.jpg" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
     <video class="hero__film" id="heroFilm" playsinline preload="metadata" src="/assets/video/hero-reel.mp4"></video>
     <!-- at rest: the invitation, a white pill bottom right -->
-    <button type="button" class="hero__pill hero__watch" id="heroWatch"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>Watch the full film</button>
-    <!-- open: pause and close, in the same corner the invitation was -->
+    <button type="button" class="hero__pill hero__watch" id="heroWatch"><svg class="ic ic-play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7 4.2v11.6c0 .8.9 1.3 1.6.9l9-5.8c.6-.4.6-1.4 0-1.8l-9-5.8C7.9 2.9 7 3.4 7 4.2Z" fill="currentColor"/></svg>Watch the film</button>
+    <!-- open: pause, sound, close — three discs in the same corner -->
     <div class="hero__ctl" id="heroCtl" hidden>
-      <button type="button" class="hero__disc hero__pause" id="heroPause" aria-label="Pause" aria-pressed="false">
-        <svg class="hero__pause-ic hero__pause-ic--pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="4" y="3" width="4" height="14" rx="1" fill="currentColor"/><rect x="12" y="3" width="4" height="14" rx="1" fill="currentColor"/></svg>
-        <svg class="hero__pause-ic hero__pause-ic--play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.5 3.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>
-      </button>
-      <button type="button" class="hero__pill hero__close" id="heroClose"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Close</button>
+      <button type="button" class="hero__disc" id="heroPause" aria-label="Pause" aria-pressed="false"><svg class="ic ic-pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="4.8" y="4" width="3.6" height="12" rx="1.3" fill="currentColor"/><rect x="11.6" y="4" width="3.6" height="12" rx="1.3" fill="currentColor"/></svg><svg class="ic ic-play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7 4.2v11.6c0 .8.9 1.3 1.6.9l9-5.8c.6-.4.6-1.4 0-1.8l-9-5.8C7.9 2.9 7 3.4 7 4.2Z" fill="currentColor"/></svg></button>
+      <button type="button" class="hero__disc" id="heroMute" aria-label="Mute" aria-pressed="false"><svg class="ic ic-sound" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 7.6h2.8l4.2-3.4v11.6L6.3 12.4H3.5Z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M13.2 7.2a4 4 0 0 1 0 5.6M15.7 4.9a7.2 7.2 0 0 1 0 10.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="ic ic-muted" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 7.6h2.8l4.2-3.4v11.6L6.3 12.4H3.5Z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M13 8l4.4 4.4M17.4 8L13 12.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      <button type="button" class="hero__disc" id="heroClose" aria-label="Close the film"><svg class="ic ic-x" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
     </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 2 · AI EXPERIENCE ═══════════════════════ -->
+<section class="ask" id="ask">
+  <div class="wrap ask__in">
+    <h2 class="display display--ask rv"><span class="ln"><span class="ln__in">Ask <em>Stagwell.</em></span></span></h2>
+    <p class="ask__lede rv" style="--d:.15s">Ask anything. Stagwell.AI finds the right expertise,<br>technology and people to solve it.</p>
+
+    <form class="ask__form rv" style="--d:.3s" id="askForm" action="/next/agent" method="get" autocomplete="off">
+      <label class="vh" for="askInput">What are you working on?</label>
+      <div class="ask__field">
+        <input class="ask__input" id="askInput" name="q" type="text"
+               placeholder="What are you working on?" spellcheck="false">
+        <input type="hidden" name="autostart" value="1">
+        <button class="ask__go" type="submit" aria-label="Ask Stagwell">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </form>
+
+    <ul class="ask__tags rv" style="--d:.45s" role="group" aria-label="Pick a starting point">
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Increase brand awareness">Increase brand awareness</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Reach Gen Z">Reach Gen Z</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Improve sales">Improve sales</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Analyze competitors">Analyze competitors</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Explore new markets">Explore new markets</button></li>
+    </ul>
   </div>
 </section>
 
