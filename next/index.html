@@ -145,6 +145,7 @@ d.setAttribute('data-theme',t||sys);})();
       <div class="hero__acts rv" style="--d:.5s" id="heroActs">
         <form class="ask-mini" id="askMini" action="/next/agent" method="get" autocomplete="off">
           <label class="vh" for="askMiniInput">Ask Stagwell</label>
+          <span class="ask-mini__caret" aria-hidden="true"></span><!-- a quiet blink: the eye goes here -->
           <input class="ask-mini__input" id="askMiniInput" name="q" type="text" placeholder="Let’s start with your website" spellcheck="false">
           <input type="hidden" name="autostart" value="1">
           <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
