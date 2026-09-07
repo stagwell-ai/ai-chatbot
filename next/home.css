@@ -321,12 +321,13 @@ body.chat-open{overflow:hidden}
 .hero__pic,.hero__film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 /* the client composed the thumbnail at the film's size with the subject at
    the right: the strip shows the right edge, not the centre */
-.hero__pic{object-position:right center;transform-origin:50% 50%;animation:drift 240s linear infinite alternate}
-/* the still moves the way a Netflix billboard does: four minutes across
-   the frame with a breath of zoom, at one constant creep — so it is moving
-   from the first second, and never fast enough to be seen as motion.
-   (Eased, it stood still after a reload and then peaked at twice the pace.) */
-@keyframes drift{from{object-position:0% 50%;transform:scale(1.03)}to{object-position:100% 50%;transform:scale(1.09)}}
+/* the still moves the way a Netflix billboard does. The image is the whole
+   hero wide and the strip shows its right 42%, so the drift is a slide: the
+   image travels right through the clip, revealing what lies to its left, and
+   back — five minutes each way, one constant creep, with a breath of zoom.
+   (object-position could not pan it: the image already covers the width.) */
+.hero__pic{object-position:right center;transform-origin:100% 50%;will-change:transform;animation:drift 300s linear infinite alternate}
+@keyframes drift{from{transform:translateX(0) scale(1.02)}to{transform:translateX(46%) scale(1.06)}}
 /* the film shows only once it is actually running, so the still never gives
    way to a black frame */
 .hero__film{opacity:0;transition:opacity .4s ease}
