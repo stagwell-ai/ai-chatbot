@@ -93,7 +93,11 @@
       stage.style.setProperty('--reel-w', (58 + 42 * e).toFixed(2) + '%');
       stage.style.setProperty('--reel-h', (64 + 36 * e).toFixed(2) + 'vh');
       stage.style.setProperty('--reel-r', (10 - 10 * e).toFixed(1) + 'px');
-      stage.classList.toggle('is-live', p >= .92 || REDUCED);
+      const live = p >= .92 || REDUCED;
+      stage.classList.toggle('is-live', live);
+      /* the film runs only while the stage is full; it rests otherwise */
+      const v = $('#reelV');
+      if (v) { if (live) { if (v.paused) v.play().catch(() => {}); } else if (!v.paused) v.pause(); }
     };
     addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(tick); } }, { passive: true });
     addEventListener('resize', tick);

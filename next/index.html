@@ -71,7 +71,7 @@ d.setAttribute('data-theme',t||sys);})();
       <svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg>
     </a>
     <div class="nav__acts">
-      <a class="btn btn--orange" href="#ask">Ask Stagwell</a>
+      <a class="btn btn--line" href="#ask">Ask Stagwell</a>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
     </div>
   </nav>
@@ -102,24 +102,16 @@ d.setAttribute('data-theme',t||sys);})();
     </div>
   </div>
 
-  <!-- the hero's visual moment. It arrives inset and grows to the full width
-       as you scroll; once it is full it comes alive. Built here as a 3D piece
-       with type on it, in place of a film that does not yet exist — when one
-       does, it drops into .reel__stage and the scroll mechanic is already
-       there. The words are the hero's own line, set as title cards. -->
-  <div class="reel" id="reel" aria-label="People. Technology. A global network built to solve what's next.">
+  <!-- the hero's visual moment: the client's own film. It arrives inset and
+       grows to the full width as you scroll; once it is full it plays. The film
+       carries its own type, so nothing is set over it. -->
+  <div class="reel" id="reel" aria-label="Stagwell.AI — the film">
     <div class="reel__sticky">
       <div class="reel__stage" id="reelStage">
-        <div class="scene" aria-hidden="true">
-          <i class="pl pl--1"></i><i class="pl pl--2"></i><i class="pl pl--3"></i>
-          <i class="pl pl--4"></i><i class="pl pl--5"></i>
-          <i class="ring ring--1"></i><i class="ring ring--2"></i>
-        </div>
-        <div class="reel__type">
-          <span class="reel__w" style="--i:0">People.</span>
-          <span class="reel__w" style="--i:1">Technology.</span>
-          <span class="reel__w" style="--i:2">A global network.</span>
-        </div>
+        <video class="reel__v" id="reelV" muted loop playsinline preload="metadata"
+               poster="/assets/video/hero-reel-poster.jpg">
+          <source src="/assets/video/hero-reel.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
   </div>

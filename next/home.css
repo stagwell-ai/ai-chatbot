@@ -81,6 +81,11 @@ h1,h2,p,figure{margin:0}
    two-word line in mixed case has the room. */
 .display--hero {font-size:clamp(80px, 2rem + 9.6vw, 184px);text-transform:none;letter-spacing:-.04em}
 .display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
+/* "Ask" arrives orange, turns amber, and settles on the mark's blue — there is
+   enough orange on the page already. One pass, on landing. */
+.display--hero em{color:#009CBD}
+.is-ready .display--hero em{animation:askHue 4.6s var(--ease) .4s both}
+@keyframes askHue{0%{color:var(--orange)}38%{color:var(--amber)}72%{color:#009CBD}100%{color:#009CBD}}
 /* the reveal wrapper clips; at this size the descender of the g drops below
    the .9 line box and was being cut. Room for it, and the rise-in offset grows
    to match so the line still starts fully hidden. */
@@ -121,6 +126,10 @@ h1,h2,p,figure{margin:0}
    client's decision, taken knowing it measures 2.8:1 on this orange. */
 .btn--orange{background:var(--orange);color:#FFFFFF}
 .btn--orange:hover{background:#FF7D3B;transform:translateY(-1px)}
+/* the nav's Ask Stagwell, inside out: white ground, orange type, a soft stroke.
+   The client's spec; orange type on white measures 2.8:1 and he knows it. */
+.btn--line{background:#FFFFFF;color:var(--orange);box-shadow:inset 0 0 0 1px rgba(255,109,36,.38)}
+.btn--line:hover{box-shadow:inset 0 0 0 1px rgba(255,109,36,.8);transform:translateY(-1px)}
 .btn--lg{height:60px;padding:0 34px;font-size:15px}
 .btn:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
 
@@ -151,7 +160,7 @@ h1,h2,p,figure{margin:0}
 .nav__links a:hover{border-bottom-color:var(--ink)}
 .nav__brand{justify-self:center;color:var(--ink);display:block}
 .nav__brand svg{height:19px;width:auto}
-.nav__acts{justify-self:end;display:flex;align-items:center;gap:var(--s-9)}
+.nav__acts{justify-self:end;display:flex;align-items:center;gap:var(--s-5)}   /* 12 — a pair */
 .nav__ask{font-size:14px;font-weight:500;color:var(--ink-2);transition:color .25s ease}
 .nav__ask:hover{color:var(--ink)}
 .nav .btn{height:44px;padding:0 22px;font-size:13px}
@@ -161,6 +170,7 @@ h1,h2,p,figure{margin:0}
 .nav.on-dark:not(.is-stuck) .nav__links a,.nav.on-dark:not(.is-stuck) .nav__ask{color:rgba(255,255,255,.86)}
 .nav.on-dark:not(.is-stuck) .nav__brand{color:#FFFFFF}
 .nav.on-dark:not(.is-stuck) .btn--ink{background:#FFFFFF;color:var(--ink)}
+.nav.on-dark:not(.is-stuck) .btn--line{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
 
 /* ── 1 · hero ────────────────────────────────────────────────────────────── */
 /* The first screen holds everything: the turning line, the title, the two
@@ -209,55 +219,8 @@ h1,h2,p,figure{margin:0}
   background:var(--deep);
   will-change:width,height,border-radius;
 }
-/* the scene: five planes and two rings in depth. Nothing photographic, nothing
-   "AI" — geometry, one accent, slow. They sit still until the stage is full. */
-.scene{position:absolute;inset:0;perspective:1400px;perspective-origin:50% 45%;overflow:hidden}
-.scene::before{
-  content:"";position:absolute;inset:-20%;
-  background:radial-gradient(60% 60% at 50% 60%,rgba(255,109,36,.16),rgba(255,109,36,0) 62%),
-             radial-gradient(70% 70% at 30% 20%,rgba(0,156,189,.16),rgba(0,156,189,0) 66%);
-}
-.pl,.ring{position:absolute;left:50%;top:50%;transform-style:preserve-3d;pointer-events:none}
-.pl{
-  width:min(52vw,720px);height:min(30vw,420px);margin:min(-15vw,-210px) 0 0 min(-26vw,-360px);
-  border:1px solid rgba(255,255,255,.14);border-radius:14px;
-  background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
-  transform:translateZ(var(--z)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
-}
-.pl--1{--z:-520px;--rx:14deg;--ry:-8deg}
-.pl--2{--z:-360px;--rx:10deg;--ry:6deg}
-.pl--3{--z:-200px;--rx:6deg;--ry:-4deg}
-.pl--4{--z:-40px;--rx:3deg;--ry:2deg;border-color:rgba(255,255,255,.22)}
-.pl--5{--z:120px;--rx:-2deg;--ry:-1deg;border-color:rgba(255,109,36,.55);width:min(34vw,470px);height:min(20vw,280px);margin:min(-10vw,-140px) 0 0 min(-17vw,-235px)}
-.ring{
-  width:min(70vw,980px);height:min(70vw,980px);margin:min(-35vw,-490px) 0 0 min(-35vw,-490px);
-  border-radius:50%;border:1px solid rgba(255,255,255,.1);
-  transform:rotateX(72deg) translateZ(var(--z));
-}
-.ring--1{--z:-260px}
-.ring--2{--z:-60px;width:min(46vw,640px);height:min(46vw,640px);margin:min(-23vw,-320px) 0 0 min(-23vw,-320px);border-color:rgba(255,109,36,.28)}
-
-/* alive: the planes breathe and the rings turn, once the stage is full */
-.reel__stage.is-live .pl{animation:plDrift 14s ease-in-out infinite alternate;animation-delay:calc(var(--i,0) * -1.6s)}
-.reel__stage.is-live .pl--2{--i:1}.reel__stage.is-live .pl--3{--i:2}.reel__stage.is-live .pl--4{--i:3}.reel__stage.is-live .pl--5{--i:4}
-.reel__stage.is-live .ring{animation:ringTurn 40s linear infinite}
-.reel__stage.is-live .ring--2{animation-duration:28s;animation-direction:reverse}
-@keyframes plDrift{
-  from{transform:translateZ(var(--z)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(0)}
-  to  {transform:translateZ(calc(var(--z) + 60px)) rotateX(calc(var(--rx,0deg) - 5deg)) rotateY(calc(var(--ry,0deg) + 5deg)) translateY(-18px)}
-}
-@keyframes ringTurn{from{transform:rotateX(72deg) rotateZ(0) translateZ(var(--z))}to{transform:rotateX(72deg) rotateZ(360deg) translateZ(var(--z))}}
-
-/* the type, on top: three title cards, arriving one after another */
-.reel__type{
-  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:.1em;color:#FFFFFF;text-align:center;
-  font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:-.03em;line-height:.95;
-  font-size:clamp(40px, 1rem + 4.2vw, 84px);
-}
-.reel__w{display:block;opacity:0;transform:translateY(24px);transition:opacity .9s var(--ease),transform 1s var(--ease);transition-delay:calc(var(--i) * .18s + .1s)}
-.reel__stage.is-live .reel__w{opacity:1;transform:none}
-.reel__w:nth-child(3){color:var(--orange)}
+/* the film fills the stage; its own type is in the picture */
+.reel__v{width:100%;height:100%;object-fit:cover;display:block;background:var(--deep)}
 
 /* ── 2 · the AI experience ───────────────────────────────────────────────── */
 .ask{
@@ -451,6 +414,7 @@ h1,h2,p,figure{margin:0}
 @media (prefers-reduced-motion:reduce){
   .rv,.ln__in,.co,.co__face,.co__back,.co__img,.reel__w{transition:none!important;opacity:1!important}
   .turn__w{transition:none!important}
+  .display--hero em{animation:none!important;color:#009CBD!important}
   .rv,.ln__in,.co,.co__face,.co__back,.co__img,.reel__w{transform:none!important}
   .reel__stage .pl,.reel__stage .ring{animation:none!important}
   .reel__stage{width:100%!important;height:64vh!important;border-radius:0!important}
