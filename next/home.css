@@ -92,6 +92,9 @@ h1,h2,p,figure{margin:0}
   text-align:center;text-wrap:balance;
 }
 .display em{font-style:normal;color:var(--orange)}
+/* Roobert's question mark reads oddly to the client: every "?" inside
+   Roobert text is set in Geist's, the words untouched */
+.q{font-family:'Geist',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */

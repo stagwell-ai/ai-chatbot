@@ -249,7 +249,7 @@
     const wait = () => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>'; add(t); think.at(t); think.on(); return t; };
     const ai = (html, chips, go) => {
       const t = document.createElement('div'); t.className = 'turnb turnb--ai';
-      t.innerHTML = '<div class="turnb__text">' + html + '</div>';
+      t.innerHTML = '<div class="turnb__text">' + html.replace(/\?/g, '<span class="q">?</span>') + '</div>';   /* Geist's question mark */
       if (go) {
         const a = document.createElement('a'); a.className = 'btn btn--ink turnb__go'; a.href = go.href; a.textContent = go.label;
         a.addEventListener('click', () => { if (state.site) { try { sessionStorage.setItem('sai-lead-site', state.site); } catch (e) {} } });

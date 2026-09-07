@@ -86,7 +86,7 @@ d.setAttribute('data-theme',t||sys);})();
 <div class="chat-over" id="chatOver" role="dialog" aria-modal="true" aria-label="Ask Stagwell" hidden>
   <button type="button" class="hero__disc chat-over__close" id="chatOverClose" aria-label="Close"><svg class="ic ic-x" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
   <div class="wrap ask__in chat-over__in">
-    <h2 class="display display--ask chat-over__title">How can we <em>help?</em></h2>
+    <h2 class="display display--ask chat-over__title">How can we <em>help<span class="q">?</span></em></h2>
     <p class="ask__lede">Ask anything. Stagwell.AI finds the right expertise,<br>technology and people to solve it.</p>
     <form class="ask__form" id="askFormOver" action="/next/agent" method="get" autocomplete="off">
       <label class="vh" for="askInputOver">Ask Stagwell</label>
@@ -188,12 +188,12 @@ d.setAttribute('data-theme',t||sys);})();
     <!-- the question, over the picture: one white line, centred in the visible
        strip, turning over. The first three are the client's; the rest match. -->
     <p class="turn rv" style="--d:.1s" id="turn" aria-live="polite" aria-atomic="true">
-      <span class="turn__w is-on">A complex challenge?</span>
-      <span class="turn__w">New markets?</span>
-      <span class="turn__w">A bolder opportunity?</span>
-      <span class="turn__w">A brand that needs momentum?</span>
-      <span class="turn__w">Customers you haven't reached?</span>
-      <span class="turn__w">A launch that has to land?</span>
+      <span class="turn__w is-on">A complex challenge<span class="q">?</span></span>
+      <span class="turn__w">New markets<span class="q">?</span></span>
+      <span class="turn__w">A bolder opportunity<span class="q">?</span></span>
+      <span class="turn__w">A brand that needs momentum<span class="q">?</span></span>
+      <span class="turn__w">Customers you haven't reached<span class="q">?</span></span>
+      <span class="turn__w">A launch that has to land<span class="q">?</span></span>
     </p>
     <!-- at rest: the invitation, a white pill bottom right -->
     <button type="button" class="hero__pill hero__watch" id="heroWatch"><svg class="ic ic-play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7 4.2v11.6c0 .8.9 1.3 1.6.9l9-5.8c.6-.4.6-1.4 0-1.8l-9-5.8C7.9 2.9 7 3.4 7 4.2Z" fill="currentColor"/></svg>Watch the film</button>
