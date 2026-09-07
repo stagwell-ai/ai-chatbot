@@ -8751,24 +8751,11 @@ html[data-theme="dark"] body.vB .pex__link:focus-visible{outline-color:#FFB81C!i
    next to its first. No copy, no layout, no component structure changes.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── 1 · the final CTA sat on the bare page grey. A warm wash lifts it off the
-      page and puts the brand orange in the section, without inverting it —
-      every word in here is navy on light and stays that way. ── */
-html[data-theme="light"] body.vB .bcta,
-body.vB .bcta{
-  position:relative!important;
-  background-image:
-    radial-gradient(58% 68% at 84% 6%,  rgba(255,109,36,.13) 0%, rgba(255,109,36,0) 60%),
-    radial-gradient(52% 62% at 6%  94%, rgba(0,156,189,.10) 0%, rgba(0,156,189,0) 62%),
-    linear-gradient(180deg,#F7F8FA 0%,#FFF4EC 52%,#F7F8FA 100%)!important;
-  background-repeat:no-repeat!important;
-}
-html[data-theme="dark"] body.vB .bcta{
-  background-image:
-    radial-gradient(58% 68% at 84% 6%,  rgba(255,109,36,.20) 0%, rgba(255,109,36,0) 60%),
-    radial-gradient(52% 62% at 6%  94%, rgba(10,138,176,.22) 0%, rgba(10,138,176,0) 62%)!important;
-  background-repeat:no-repeat!important;
-}
+/* ── 1 · WITHDRAWN. The "gradient background for the final CTA" was put on
+      the whole "The Stagwell AI suite." section, which is not what was asked
+      for — it read as an unexplained pink band behind unrelated content. The
+      final CTA is the callback card, and the gradient belongs on the card;
+      see §180. The section goes back to the page's own ground. ── */
 
 /* ── 2 · the brand tile read as the flat one beside three photographs: a single
       cyan blob on navy. It now carries the hero's own navy ramp with an orange
@@ -9620,3 +9607,169 @@ body.vB .pick .pick__dh .pick__acc{
     background-image:none!important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §179  NO SCROLLBAR IN THE ANSWER PANEL
+
+   On a short laptop window the panel overflowed by 4–11px and put a native
+   scrollbar inside the card — clipped by the rounded corner, and a scrollbar
+   for eleven pixels is worse than no scrollbar at all. The panel keeps its
+   overflow as a genuine last resort, but the bar is never drawn, and on short
+   viewports the internal steps tighten by enough to clear the overflow.
+   Measured worst case was 11px; this frees 16.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .pick #pickDetail,
+html[data-theme="dark"]  body.vB .pick #pickDetail,
+body.vB .pick .pick__detail,body.vB .pick #pickDetail{
+  scrollbar-width:none!important;
+  -ms-overflow-style:none!important;
+}
+body.vB .pick #pickDetail::-webkit-scrollbar,
+body.vB .pick .pick__detail::-webkit-scrollbar{display:none!important;width:0!important}
+
+@media (max-height:840px){
+  /* the surer lever is the card's own rhythm, not the type: every pixel taken
+     off the rail-to-answer gap and the panes' floor becomes a pixel of panel
+     height, where shrinking the copy only saves a fraction of one. */
+  html[data-theme="light"] body.vB .pick .pick__panes,
+  html[data-theme="dark"]  body.vB .pick .pick__panes,
+  body.vB .pick .pick__panes{
+    gap:var(--space-8)!important;                         /* 40 → 32 */
+    padding-bottom:var(--space-8)!important;              /* 32 → 24 */
+  }
+  /* the group break and the question's own gap give back the few pixels */
+  html[data-theme="light"] body.vB .pick .pick__dgood,
+  html[data-theme="dark"]  body.vB .pick .pick__dgood,
+  body.vB .pick .pick__dgood{
+    margin:var(--space-6) 0 var(--space-4)!important;     /* 16 / 8 */
+  }
+  html[data-theme="light"] body.vB .pick .pick__dh,
+  html[data-theme="dark"]  body.vB .pick .pick__dh,
+  body.vB .pick .pick__dh{margin:0 0 var(--space-4)!important}   /* 8 */
+}
+
+@media (max-height:740px){
+  html[data-theme="light"] body.vB .pick .pick__panes,
+  html[data-theme="dark"]  body.vB .pick .pick__panes,
+  body.vB .pick .pick__panes{
+    gap:var(--space-7)!important;                         /* 20 */
+    padding-bottom:var(--space-7)!important;              /* 20 */
+  }
+  html[data-theme="light"] body.vB .pick .pick__dgood,
+  html[data-theme="dark"]  body.vB .pick .pick__dgood,
+  body.vB .pick .pick__dgood{margin:var(--space-5) 0 var(--space-4)!important}  /* 12 / 8 */
+  body.vB .pick .pick__tags,body.vB .pick .pick__more{gap:6px!important}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §180  THE FINAL CTA: "Or let Stagwell.AI call you."
+
+   This card is the last thing on the page and it was a white box on a white
+   section — the four tiles above it are dark photographs, so it read as an
+   afterthought rather than the close. It takes the navy ramp with an orange
+   glow, which puts it in the same family as those tiles and as the hero.
+
+   Every piece of type inside is restated. A dark card inherits nothing safely:
+   the heading, the lede, the field and the button each carry their own colour
+   here, so nothing is left navy-on-navy.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] body.vB .callback,
+html[data-theme="dark"]  body.vB .callback,
+body.vB .callback{
+  /* The hero's look, rebuilt at banner scale rather than by cropping its
+     photograph. Sampling hero-bg.jpg on a 6x6 grid gives luminance 0.86–0.99
+     across the whole frame with a single warm cell: it is a near-white haze,
+     and a 130px-tall `cover` crop of it shows nothing at all. These gradients
+     are what that image LOOKS like — a cool blue field with a warm streak
+     running through it — at a size where it actually reads. */
+  background-color:#EEF4FB!important;
+  background-image:
+    radial-gradient(58% 150% at 22% 118%, rgba(255,169,77,.55) 0%, rgba(255,169,77,0) 62%),
+    radial-gradient(46% 130% at 40% 130%, rgba(255,184,28,.42) 0%, rgba(255,184,28,0) 58%),
+    radial-gradient(60% 150% at 96% 20%,  rgba(151,193,238,.55) 0%, rgba(151,193,238,0) 66%),
+    linear-gradient(102deg,#F7FAFD 0%,#EFF5FC 46%,#E7F0FA 100%)!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%!important;
+  border:1px solid rgba(0,51,73,.10)!important;
+  border-radius:18px!important;
+}
+
+/* the words. Navy, not white: white on this orange measures 1.7–2.8:1, while
+   the deep navy holds 9.15 at the amber end and 5.63 at the orange end. */
+html[data-theme="light"] body.vB .callback .callback__t b,
+html[data-theme="dark"]  body.vB .callback .callback__t b,
+body.vB .callback .callback__t b{color:#00253A!important}
+html[data-theme="light"] body.vB .callback .callback__t span,
+html[data-theme="dark"]  body.vB .callback .callback__t span,
+body.vB .callback .callback__t span,
+body.vB .callback .callback__t{color:rgba(0,37,58,.90)!important}   /* 5.1–7.7 */
+body.vB .callback .pulse{background:#00253A!important}
+
+/* the field */
+html[data-theme="light"] body.vB .callback input,
+html[data-theme="dark"]  body.vB .callback input,
+body.vB .callback input{
+  /* the field is nearly opaque white: at 62% the orange showed through enough
+     to drag the placeholder down to 3.36:1 */
+  background:rgba(255,255,255,.90)!important;
+  border:1px solid rgba(0,37,58,.28)!important;
+  color:#00253A!important;
+}
+/* A placeholder is body text and has to clear 4.5, not 3. The theme-prefixed
+   `html[data-theme="light"] body.vB .callback input::placeholder` was winning
+   with rgba(0,51,73,.45) — 2.58:1 — so the theme has to be stated here too. */
+html[data-theme="light"] body.vB .callback input::placeholder,
+html[data-theme="dark"]  body.vB .callback input::placeholder,
+body.vB .callback input::placeholder{color:rgba(0,37,58,.70)!important}
+body.vB .callback input:focus{
+  background:#FFFFFF!important;
+  border-color:rgba(0,37,58,.55)!important;outline:none!important;
+}
+
+/* the button is the navy one — the strongest thing that can sit on orange */
+html[data-theme="light"] body.vB .callback .btn,
+html[data-theme="dark"]  body.vB .callback .btn,
+body.vB .callback .btn,body.vB .callback .btn--light{
+  background:#003349!important;color:#F1FAFF!important;border:0!important;
+}
+html[data-theme="light"] body.vB .callback .btn:hover,
+html[data-theme="dark"]  body.vB .callback .btn:hover,
+body.vB .callback .btn:hover{background:#00253A!important;color:#F1FAFF!important}
+body.vB .callback .btn:focus-visible{outline:2px solid #00253A!important;outline-offset:3px!important}
+
+/* §181 — the hero's booking CTA, under the lede. It is the page's one explicit
+   ask beside the agent card, so it takes the primary dark button. */
+html[data-theme="light"] body.vB .hero2__copy .hero2__demo,
+html[data-theme="dark"]  body.vB .hero2__copy .hero2__demo,
+body.vB .hero2__demo{
+  display:inline-flex!important;align-items:center!important;
+  margin:var(--space-9) 0 0!important;              /* 32 under the lede */
+  height:48px!important;padding:0 26px!important;
+  border-radius:999px!important;
+  font-size:14px!important;font-weight:600!important;letter-spacing:.02em!important;
+  width:auto!important;flex:0 0 auto!important;
+}
+@media (max-width:860px){
+  html[data-theme="light"] body.vB .hero2__copy .hero2__demo,
+  html[data-theme="dark"]  body.vB .hero2__copy .hero2__demo,
+  body.vB .hero2__demo{margin-top:var(--space-8)!important;height:46px!important}
+}
+
+/* §181b — the hero CTA in the brand gradient. Deep navy type, not white:
+   white on this orange measures 1.7–2.8:1, navy holds 5.6 at the orange end
+   and 9.2 at the amber end. */
+html[data-theme="light"] body.vB .hero2__copy .hero2__demo,
+html[data-theme="dark"]  body.vB .hero2__copy .hero2__demo,
+body.vB .hero2__demo,
+body.vB .hero2__demo.btn--dark{
+  background:linear-gradient(104deg,#FFB81C 0%,#FF8A2E 52%,#FF6D24 100%)!important;
+  color:#00253A!important;border:0!important;
+  transition:filter .25s ease, transform .25s cubic-bezier(.22,.61,.36,1)!important;
+}
+html[data-theme="light"] body.vB .hero2__copy .hero2__demo:hover,
+html[data-theme="dark"]  body.vB .hero2__copy .hero2__demo:hover,
+body.vB .hero2__demo:hover,body.vB .hero2__demo.btn--dark:hover{
+  background:linear-gradient(104deg,#FFB81C 0%,#FF8A2E 52%,#FF6D24 100%)!important;
+  color:#00253A!important;filter:brightness(1.06)!important;transform:translateY(-1px)!important;
+}
+body.vB .hero2__demo:focus-visible{outline:2px solid #00253A!important;outline-offset:3px!important}

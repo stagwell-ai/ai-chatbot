@@ -532,6 +532,22 @@
       if (h1 && h1.nextElementSibling !== eb) h1.after(eb);
 
       eb.classList.add('eyebrow--lede');
+
+      /* the hero's own CTA, under the lede. data-cta="session" is the existing
+         booking flow (CTA_COPY.session in b.js), and the delegated handler in
+         b.js picks it up by closest('[data-cta]') — so this needs no wiring of
+         its own and opens the same modal every other booking CTA opens. */
+      let cta = document.getElementById('heroDemoCta');
+      if (!cta) {
+        cta = document.createElement('button');
+        cta.type = 'button';
+        cta.id = 'heroDemoCta';
+        cta.className = 'btn btn--dark btn--arrow hero2__demo';
+        cta.dataset.cta = 'session';
+        cta.textContent = 'Book a demo';
+      }
+      if (eb.nextElementSibling !== cta) eb.after(cta);
+
       if (eb.textContent.trim() !== LEDE.join(' ')) {
         eb.textContent = '';
         eb.append(LEDE[0]);
