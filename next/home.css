@@ -50,7 +50,7 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .btn__caret,.btn__ic--wave rect,.call__wave{animation:none}
-  .mode,.tip{transition:none}
+  .pop{transition:none}
 }
 body.home{
   margin:0;background:var(--paper);color:var(--ink);
@@ -391,65 +391,65 @@ body.chat-open{overflow:hidden}
 }
 .hero__acts{
   margin-top:auto;                              /* pinned to the bottom row */
-  position:relative;display:grid;               /* the three modes share one cell */
+  display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
 }
-/* ── the row's modes: text, phone, done — same footprint, one showing ───── */
-.mode{grid-area:1/1;display:flex;align-items:center;gap:var(--s-5);min-height:60px;
-  transition:opacity .32s ease,transform .36s var(--ease),visibility 0s linear .36s;
-  opacity:0;transform:translateY(10px);visibility:hidden;pointer-events:none}
-.hero__acts[data-mode="text"]  .mode--text,
-.hero__acts[data-mode="phone"] .mode--phone,
-.hero__acts[data-mode="done"]  .mode--done{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition-delay:.06s,.06s,0s}
-.mode--text{flex:1}
-/* the short line above the row, in the room the row already keeps above
-   itself — nothing moves. "Back to chat" rides at its end. */
-.mode__note{position:absolute;left:0;right:0;bottom:calc(100% + 12px);margin:0;
-  display:flex;align-items:baseline;justify-content:space-between;gap:var(--s-6);
-  font-size:15px;line-height:1.4;color:var(--ink-2);white-space:nowrap}
-.mode__back{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);
-  border-bottom:1px solid transparent;transition:color .2s ease,border-color .2s ease;flex-shrink:0;margin-left:auto}
-.mode__back:hover{color:var(--ink);border-bottom-color:var(--ink)}
-.mode__back:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
-/* ── Call me: the tooltip above it ───────────────────────────────────────── */
+/* ── Call me: one dark popover above the button. At rest it is the tooltip;
+   tapped, it becomes the phone card; sent, the call's status. Ink ground,
+   white type, a small tail to the button — the way a system tooltip reads. */
 .call-wrap{position:relative;display:inline-flex;flex-shrink:0}
-.tip{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translate(-50%,6px);
-  width:max-content;max-width:280px;padding:10px 14px;border-radius:12px;
-  background:#FFFFFF;color:var(--ink);font-size:13px;line-height:1.45;text-align:left;white-space:normal;
-  box-shadow:0 10px 30px rgba(11,18,32,.14),0 0 0 1px rgba(11,18,32,.06);
-  opacity:0;pointer-events:none;transition:opacity .2s ease,transform .24s var(--ease);z-index:2}
-@media (hover:hover){
-  .call-wrap:hover .tip,.call-wrap:focus-within .tip{opacity:1;transform:translate(-50%,0)}
-}
-
-/* ── the phone state: the same grey pill, a code and a number in it ──────── */
-.mode--phone{flex:1}
-.call__field{flex:1 1 auto;min-width:0;height:60px;display:flex;align-items:center;gap:12px;padding:0 20px 0 18px;border-radius:999px;
-  background:#F1F2F4;transition:background-color .25s ease,box-shadow .25s ease}
-.call__field:focus-within{background:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink)}
+.pop{position:absolute;right:0;bottom:calc(100% + 14px);z-index:3;
+  color:#FFFFFF;background:var(--ink);border-radius:16px;
+  box-shadow:0 18px 44px rgba(11,18,32,.28),0 0 0 1px rgba(255,255,255,.06) inset;
+  opacity:0;transform:translateY(6px) scale(.98);transform-origin:calc(100% - 82px) 100%;pointer-events:none;
+  transition:opacity .2s ease,transform .28s var(--ease),width .32s var(--ease)}
+.pop::after{content:"";position:absolute;right:70px;bottom:-6px;width:12px;height:12px;background:var(--ink);transform:rotate(45deg);border-radius:2px}
+.pop.is-on{opacity:1;transform:none;pointer-events:auto}
+/* the two faces share the box; one shows */
+.pop__tip,.pop__card{transition:opacity .22s ease}
+.pop__tip{margin:0;padding:12px 16px;font-size:13.5px;line-height:1.45;white-space:nowrap;color:rgba(255,255,255,.92)}
+.pop__card{display:none;padding:22px 22px 20px;width:380px;max-width:calc(100vw - 2 * var(--gutter))}
+.pop[data-state="tip"]{width:max-content}
+.pop[data-state="phone"] .pop__tip,.pop[data-state="done"] .pop__tip{display:none}
+.pop[data-state="phone"] .pop__card,.pop[data-state="done"] .pop__card{display:block;animation:popIn .3s var(--ease) both}
+@keyframes popIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pop__x{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:rgba(255,255,255,.7);transition:background-color .2s ease,color .2s ease}
+.pop__x svg{width:16px;height:16px}
+.pop__x:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
+.pop__x:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px}
+.pop__lead{margin:0 32px 16px 0;font-size:17px;font-weight:600;line-height:1.35;letter-spacing:-.01em}
+.pop__lead span{display:block;margin-top:4px;font-size:14px;font-weight:400;color:rgba(255,255,255,.7)}
+/* the phone field on the dark card: a translucent pill */
+.pop__phone{display:flex;flex-direction:column;gap:10px}
+.call__field{height:52px;display:flex;align-items:center;gap:12px;padding:0 16px;border-radius:999px;
+  background:rgba(255,255,255,.1);transition:background-color .2s ease,box-shadow .2s ease}
+.call__field:focus-within{background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.55)}
+.call__field.is-bad{box-shadow:inset 0 0 0 1px var(--orange)}
 .call__cc{appearance:none;-webkit-appearance:none;border:0;background:none;outline:none;padding:0 18px 0 0;height:100%;
-  font-family:var(--sans);font-size:17px;color:var(--ink);cursor:pointer;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2.5 4.5l3.5 3.5 3.5-3.5' fill='none' stroke='%230B1220' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-  background-repeat:no-repeat;background-position:right center;background-size:12px;width:auto;max-width:96px;text-overflow:ellipsis}
-.call__cc:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
-.call__sep{width:1px;height:22px;background:var(--line);flex-shrink:0}
+  font-family:var(--sans);font-size:16px;color:#FFFFFF;cursor:pointer;width:auto;max-width:92px;text-overflow:ellipsis;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2.5 4.5l3.5 3.5 3.5-3.5' fill='none' stroke='%23FFFFFF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat:no-repeat;background-position:right center;background-size:12px}
+.call__cc option{color:var(--ink);background:#FFFFFF}
+.call__cc:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px;border-radius:4px}
+.call__sep{width:1px;height:20px;background:rgba(255,255,255,.22);flex-shrink:0}
 .call__num{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;padding:0;
-  font-family:var(--sans);font-size:17px;color:var(--ink);caret-color:var(--ink)}
-.call__num::placeholder{color:var(--ink-3)}
-.call__field.is-bad{box-shadow:inset 0 0 0 1px var(--orange);background:#FFFFFF}
-
-/* ── the call on its way ─────────────────────────────────────────────────── */
-.mode--done{gap:var(--s-6)}
-.call__wave{width:60px;height:60px;border-radius:50%;background:#F1F2F4;color:var(--ink);display:grid;place-items:center;flex-shrink:0}
-.call__wave .btn__ic{width:26px;height:26px}
-.call__status{display:flex;flex-direction:column;gap:3px;min-width:0}
-.call__line{font-size:17px;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
-.call__sub{font-size:14px;line-height:1.4;color:var(--ink-3)}
-.call__to{color:var(--ink-4);white-space:nowrap}
-/* the pulse while the call is being placed: the disc breathes; the wave
-   already moves */
-.hero__acts[data-mode="done"]:not(.is-placed) .call__wave{animation:place 1.6s ease-in-out infinite}
-@keyframes place{0%,100%{box-shadow:0 0 0 0 rgba(11,18,32,.10)}50%{box-shadow:0 0 0 10px rgba(11,18,32,0)}}
+  font-family:var(--sans);font-size:16px;color:#FFFFFF;caret-color:#FFFFFF}
+.call__num::placeholder{color:rgba(255,255,255,.45)}
+/* the card's Call me: white on the ink, the same wave */
+.pop__go{width:100%;height:52px;background:#FFFFFF;color:var(--ink)}
+.pop__go:hover{background:#F1F2F4;transform:translateY(-1px)}
+.pop__go:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+/* the call on its way, on the card */
+.pop__done{display:none;flex-direction:column;align-items:flex-start;gap:4px;padding-right:32px}
+.pop[data-state="done"] .pop__phone{display:none}
+.pop[data-state="done"] .pop__done{display:flex}
+.call__wave{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);color:#FFFFFF;display:grid;place-items:center;margin-bottom:10px}
+.call__wave .btn__ic{width:22px;height:22px}
+.call__line{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.call__sub{font-size:14px;line-height:1.4;color:rgba(255,255,255,.7)}
+.call__to{font-size:13px;color:rgba(255,255,255,.5);margin-top:2px}
+.pop[data-state="done"]:not(.is-placed) .call__wave{animation:place 1.6s ease-in-out infinite}
+@keyframes place{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.18)}50%{box-shadow:0 0 0 10px rgba(255,255,255,0)}}
 /* the chat field: a white pill with the ink stroke, the send disc inside at
    the right — the same height as the button beside it */
 .ask-mini{

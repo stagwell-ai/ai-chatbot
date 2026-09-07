@@ -219,22 +219,39 @@
     addEventListener('resize', () => { if (heroL.classList.contains('is-chat')) settle(); });
   }
 
-  /* ── Call me: the second way in. The bottom row changes mode in place —
-        text → phone → done — the same footprint, nothing else moves. The
-        request itself resolves here after a beat; the real call API goes
-        where `place()` is. ─────────────────────────────────────────────── */
-  const acts = $('#heroActs'), callBtn = $('#callBtn'), phoneForm = $('#modePhone'),
-        callCode = $('#callCode'), callNum = $('#callNum'), callField = $('.call__field', phoneForm || document),
-        callLine = $('#callLine'), callSub = $('#callSub'), callTo = $('#callTo');
-  if (acts && callBtn && phoneForm && callCode && callNum && callLine) {
-    const setMode = (m) => { acts.dataset.mode = m; acts.classList.remove('is-placed'); };
-    const toChat = () => { setMode('text'); setTimeout(() => miniInput && miniInput.focus({ preventScroll: true }), 380); };
-    callBtn.addEventListener('click', () => {
-      setMode('phone');
-      setTimeout(() => callNum.focus({ preventScroll: true }), 380);
-    });
-    $('#phoneBack').addEventListener('click', toChat);
-    $('#doneBack').addEventListener('click', toChat);
+  /* ── Call me: one popover above the button. Hover shows it as a tooltip; a
+        tap opens it as the phone card; sending turns it into the call's
+        status. The row underneath never changes. The request resolves here
+        after a beat — the real call API goes where `place()` is. ────────── */
+  const callWrap = $('#callWrap'), callBtn = $('#callBtn'), pop = $('#callPop'), callForm = $('#callForm'),
+        callClose = $('#callClose'), callCode = $('#callCode'), callNum = $('#callNum'),
+        callField = $('.call__field', pop || document), callLine = $('#callLine'), callTo = $('#callTo');
+  if (callWrap && callBtn && pop && callForm && callClose && callCode && callNum && callLine) {
+    const canHover = matchMedia('(hover:hover)').matches;
+    let open = false;
+    const show = () => pop.classList.add('is-on');
+    const hide = () => { if (!open) pop.classList.remove('is-on'); };
+    const openCard = () => {
+      open = true; pop.dataset.state = 'phone'; pop.classList.remove('is-placed'); show();
+      callBtn.setAttribute('aria-expanded', 'true');
+      setTimeout(() => callNum.focus({ preventScroll: true }), 120);
+    };
+    const closeCard = () => {
+      open = false; pop.classList.remove('is-on');
+      callBtn.setAttribute('aria-expanded', 'false');
+      setTimeout(() => { if (!open) pop.dataset.state = 'tip'; }, 220);
+      callBtn.focus({ preventScroll: true });
+    };
+    if (canHover) {
+      callWrap.addEventListener('mouseenter', () => { if (!open) show(); });
+      callWrap.addEventListener('mouseleave', hide);
+    }
+    callBtn.addEventListener('focus', () => { if (!open) show(); });
+    callBtn.addEventListener('blur', () => { setTimeout(() => { if (!open && !callWrap.matches(':hover')) hide(); }, 0); });
+    callBtn.addEventListener('click', () => open ? closeCard() : openCard());
+    callClose.addEventListener('click', closeCard);
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) closeCard(); });
+    addEventListener('pointerdown', (e) => { if (open && !callWrap.contains(e.target)) closeCard(); });
     callNum.addEventListener('input', () => callField.classList.remove('is-bad'));
     /* +1 415 555 0134: ten digits as 3-3-4; otherwise groups of three, and a
        lone last digit joins the group before it */
@@ -244,20 +261,19 @@
       return '+' + code + ' ' + g.join(' ');
     };
     const place = (code, digits) => new Promise(res => setTimeout(res, REDUCED ? 0 : 1800));   /* ← the call API */
-    phoneForm.addEventListener('submit', async (e) => {
+    callForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const digits = callNum.value.replace(/\D/g, '');
       if (digits.length < 6 || digits.length > 14) { callField.classList.add('is-bad'); callNum.focus(); return; }
       const code = callCode.value;
       callLine.textContent = 'Calling you now…';
-      callSub.textContent = 'Stagwell AI will call the number you provided.';
       callTo.textContent = pretty(code, digits);
-      setMode('done');
+      pop.dataset.state = 'done';
+      callClose.focus({ preventScroll: true });
       await place(code, digits);
       callLine.textContent = 'Your call is on the way.';
-      acts.classList.add('is-placed');
+      pop.classList.add('is-placed');
     });
-    addEventListener('keydown', (e) => { if (e.key === 'Escape' && acts.dataset.mode === 'phone') toChat(); });
   }
 
   /* ── the chat over the page: the magnifier opens the Ask block full screen,

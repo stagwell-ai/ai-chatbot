@@ -138,39 +138,43 @@ d.setAttribute('data-theme',t||sys);})();
       <div class="hero__thread" id="heroThread" role="log" aria-live="polite" aria-relevant="additions"></div>
       </div>
       <!-- the bottom row: the composer and Call me -->
-      <div class="hero__acts rv" style="--d:.5s" id="heroActs" data-mode="text">
-        <!-- one row, three modes stacked in place: text (the field + Call me),
-             phone (number + Call me), done (the call on its way). -->
-        <div class="mode mode--text" id="modeText">
-          <form class="ask-mini" id="askMini" action="/next/agent" method="get" autocomplete="off">
+      <div class="hero__acts rv" style="--d:.5s" id="heroActs">
+        <form class="ask-mini" id="askMini" action="/next/agent" method="get" autocomplete="off">
           <label class="vh" for="askMiniInput">Ask Stagwell</label>
           <input class="ask-mini__input" id="askMiniInput" name="q" type="text" placeholder="Let’s start with your website" spellcheck="false">
           <input type="hidden" name="autostart" value="1">
           <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </form>
-          <span class="call-wrap">
-            <button type="button" class="btn btn--ink btn--lg btn--ic" id="callBtn" aria-describedby="callTip"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
-            <span class="tip" id="callTip" role="tooltip">Talk to Stagwell AI by phone.<br>Enter your number and we’ll call you instantly.</span>
-          </span>
-        </div>
-        <form class="mode mode--phone" id="modePhone" autocomplete="off" novalidate>
-          <p class="mode__note" id="phoneNote">Prefer to talk? Enter your number and Stagwell AI will call you.<button type="button" class="mode__back" id="phoneBack">Back to chat</button></p>
-          <div class="call__field">
-            <label class="vh" for="callCode">Country code</label>
-            <select class="call__cc" id="callCode" aria-label="Country code"><option value="1" selected>United States / Canada (+1)</option><option value="44">United Kingdom (+44)</option><option value="972">Israel (+972)</option><option value="49">Germany (+49)</option><option value="33">France (+33)</option><option value="34">Spain (+34)</option><option value="39">Italy (+39)</option><option value="31">Netherlands (+31)</option><option value="61">Australia (+61)</option><option value="55">Brazil (+55)</option><option value="52">Mexico (+52)</option><option value="91">India (+91)</option><option value="81">Japan (+81)</option><option value="65">Singapore (+65)</option><option value="971">United Arab Emirates (+971)</option></select>
-            <span class="call__sep" aria-hidden="true"></span>
-            <label class="vh" for="callNum">Phone number</label>
-            <input class="call__num" id="callNum" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel-national" spellcheck="false">
+        <!-- Call me: hover shows a dark tooltip above the button; a tap turns
+             that same popover into the phone card, then the call's status.
+             The row itself never changes. -->
+        <span class="call-wrap" id="callWrap">
+          <button type="button" class="btn btn--ink btn--lg btn--ic" id="callBtn" aria-describedby="callTip" aria-haspopup="dialog" aria-expanded="false"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
+          <div class="pop" id="callPop" data-state="tip">
+            <p class="pop__tip" id="callTip" role="tooltip">Talk to Stagwell AI by phone.<br>Enter your number and we’ll call you instantly.</p>
+            <div class="pop__card" id="callCard" role="dialog" aria-label="Call me" aria-modal="false">
+              <button type="button" class="pop__x" id="callClose" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+              <form class="pop__phone" id="callForm" autocomplete="off" novalidate>
+                <p class="pop__lead">Prefer to talk?<br><span>Enter your number and Stagwell AI will call you.</span></p>
+                <div class="call__field">
+                  <label class="vh" for="callCode">Country code</label>
+                  <select class="call__cc" id="callCode" aria-label="Country code"><option value="1" selected>United States / Canada (+1)</option><option value="44">United Kingdom (+44)</option><option value="972">Israel (+972)</option><option value="49">Germany (+49)</option><option value="33">France (+33)</option><option value="34">Spain (+34)</option><option value="39">Italy (+39)</option><option value="31">Netherlands (+31)</option><option value="61">Australia (+61)</option><option value="55">Brazil (+55)</option><option value="52">Mexico (+52)</option><option value="91">India (+91)</option><option value="81">Japan (+81)</option><option value="65">Singapore (+65)</option><option value="971">United Arab Emirates (+971)</option></select>
+                  <span class="call__sep" aria-hidden="true"></span>
+                  <label class="vh" for="callNum">Phone number</label>
+                  <input class="call__num" id="callNum" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel-national" spellcheck="false">
+                </div>
+                <button type="submit" class="btn btn--lg btn--ic pop__go" id="callGo"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
+              </form>
+              <div class="pop__done" id="callDone" role="status" aria-live="polite">
+                <span class="call__wave" aria-hidden="true"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg></span>
+                <b class="call__line" id="callLine">Calling you now…</b>
+                <span class="call__sub" id="callSub">Stagwell AI will call the number you provided.</span>
+                <span class="call__to" id="callTo"></span>
+              </div>
+            </div>
           </div>
-          <button type="submit" class="btn btn--ink btn--lg btn--ic" id="callGo"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
-        </form>
-        <div class="mode mode--done" id="modeDone" role="status" aria-live="polite">
-          <p class="mode__note"><button type="button" class="mode__back" id="doneBack">Back to chat</button></p>
-          <span class="call__wave" aria-hidden="true"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg></span>
-          <div class="call__status">
-            <b class="call__line" id="callLine">Calling you now…</b>
-            <span class="call__sub"><span id="callSub">Stagwell AI will call the number you provided.</span> <span class="call__to" id="callTo"></span></span>
-          </div>
+        </span>
+      </div>
         </div>
       </div>
     </div>
