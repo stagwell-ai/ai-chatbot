@@ -28,16 +28,20 @@
       "destination": "/next/index.html"
     },
     {
+      "source": "/next/agent",
+      "destination": "/next/agent.html"
+    },
+    {
       "source": "/next/chat",
-      "destination": "/next/index.html"
+      "destination": "/next/agent.html"
     },
     {
       "source": "/next/snapshot",
-      "destination": "/next/index.html"
+      "destination": "/next/agent.html"
     },
     {
       "source": "/next/path",
-      "destination": "/next/index.html"
+      "destination": "/next/agent.html"
     },
     {
       "source": "/next/products",
