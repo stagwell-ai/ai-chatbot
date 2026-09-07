@@ -180,17 +180,22 @@
         const s = (t - t0) / 1000;
         lift += (liftTarget - lift) * Math.min(1, dt * 3);
         ctx.clearRect(0, 0, W, H);
-        const base = .03 + lift * .02, ringA = lift * .30;
+        const base = .02 + lift * .02, ringA = lift * .30;
         /* the resting motion leads the eye: one soft band of light sweeps
            from the title, top left, down through the tags to the chat and
-           Call me at the bottom, then begins again at the title — a 7s
-           cycle with a beat of nothing between passes */
-        const T = 7, u = (s % T) / T;                    /* 0 → 1 along the diagonal */
-        const diag = W + H, pos = u * (diag + 360) - 180;  /* runs a little past both ends */
+           Call me at the bottom, then begins again at the title. Organic,
+           not a ruler: the pass eases in and out (it lingers at the title
+           and at the bottom), the band's front is a slow wavy edge, and its
+           width breathes. An 8s cycle. */
+        const T = 8, u0 = (s % T) / T, u = u0 * u0 * (3 - 2 * u0);   /* smoothstep: slow at both ends */
+        const diag = W + H, pos = u * (diag + 360) - 180;
+        const sig = 120 + 30 * Math.sin(s * .8);           /* the width breathing */
         for (const p of pts) {
-          const d = (p.x + p.y) - pos;                     /* distance to the band along the diagonal */
-          const band = Math.exp(-(d * d) / (2 * 110 * 110));
-          let a = base + .16 * band * (1 - lift * .5);
+          /* the front is warped by two slow sines, so it never reads as a line */
+          const warp = 70 * Math.sin(p.y * .009 + s * .6) + 45 * Math.sin(p.x * .013 - s * .45);
+          const d = (p.x + p.y + warp) - pos;
+          const band = Math.exp(-(d * d) / (2 * sig * sig));
+          let a = base + .10 * band * (1 - lift * .5);
           if (lift > .01) {
             /* rings from the origin: two, a beat apart, widening and fading */
             const r = Math.hypot(p.x - ox, p.y - oy);
