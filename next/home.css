@@ -783,7 +783,7 @@ body.chat-open{overflow:hidden}
 
 
 /* ── 6 · the end is the start ────────────────────────────────────────────── */
-.ask-end{padding:var(--s-16) 0 var(--s-16);background:#FFFFFF}   /* white, centred, no line above or below (client) */
+.ask-end{padding:var(--s-13) 0 var(--s-16);background:#FFFFFF}   /* closer to the suite above (client) */   /* white, centred, no line above or below (client) */
 .ask-end__in{display:flex;flex-direction:column;align-items:center;text-align:center}
 .display--end{font-size:clamp(60px, 1.5rem + 6.2vw, 116px);text-transform:none;text-align:center;line-height:.88;letter-spacing:-.035em;font-weight:700}
 .display--end .navy{color:var(--ink)}
@@ -800,11 +800,11 @@ body.chat-open{overflow:hidden}
 }
 .foot__lead{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:var(--s-12)}
 .foot__kicker{font-size:16px;font-weight:500;color:var(--ink);line-height:1.4}
-.foot__mark{width:clamp(96px, 6vw + 40px, 132px);height:auto;color:var(--ink)}   /* the mark, big, at the column's foot — as the reference's badge */
-.foot__big{display:flex;flex-direction:column;gap:var(--s-9)}   /* the rows breathe, as on the reference */
+.foot__mark{width:clamp(72px, 4vw + 32px, 96px);height:auto;color:var(--ink)}   /* the mark, big, at the column's foot — as the reference's badge */
+.foot__big{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:var(--s-9)}   /* the rows breathe; the last one ends on the column's floor, with the mark and the last small link */
 .foot__big a{font-family:var(--display);font-weight:400;font-size:clamp(34px, 1rem + 2.6vw, 56px);letter-spacing:-.02em;line-height:1;color:var(--ink);transition:color .25s ease}
 .foot__big a:hover{color:var(--ink-3)}
-.foot__small{display:flex;flex-direction:column;gap:var(--s-9)}
+.foot__small{display:flex;flex-direction:column;gap:var(--s-9);align-items:flex-end;text-align:right}   /* flush with the container's right edge (client) */
 .foot__small a,.foot__small button{display:inline-flex;align-items:center;gap:14px;font-size:16px;font-weight:500;color:var(--ink);text-align:left;line-height:1.3}
 .foot__disc{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
 .foot__disc svg{width:18px;height:18px;transition:transform .3s var(--ease)}
@@ -820,7 +820,7 @@ body.chat-open{overflow:hidden}
 .foot__legal{display:flex;align-items:center;gap:var(--s-7)}
 .foot__copy{font-size:15px;color:var(--ink-3)}
 .foot__brand{color:var(--ink);display:block}
-.foot__brand svg{height:18px;width:auto;display:block}
+.foot__brand svg{height:15px;width:auto;display:block}
 
 /* ── motion off ──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion:reduce){
