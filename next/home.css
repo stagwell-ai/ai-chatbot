@@ -510,8 +510,11 @@ body.chat-open{overflow:hidden}
 /* the AI, thinking, at the start of the field: three dots in the brand's
    colours, breathing in turn; gone the moment the field is focused or holds
    text (the blinking caret before it read as noise with the turning hint) */
-.ask-mini__dots{display:flex;align-items:center;gap:4px;margin-right:10px;flex-shrink:0}
-.ask-mini__dots i{width:6px;height:6px;border-radius:50%;animation:dot 1.2s ease-in-out infinite}
+.ask-mini__dots{display:flex;align-items:center;gap:3px;margin-right:10px;flex-shrink:0}
+/* the mark's own colours, at full strength: the bounce only moves them —
+   dimming them (the chat's wait dots do) washed them to pastel */
+.ask-mini__dots i{width:5px;height:5px;border-radius:50%;animation:dotLift 1.2s ease-in-out infinite}
+@keyframes dotLift{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 .ask-mini__dots i:nth-child(1){background:var(--orange)}
 .ask-mini__dots i:nth-child(2){background:var(--amber);animation-delay:.16s}
 .ask-mini__dots i:nth-child(3){background:#009CBD;animation-delay:.32s}
@@ -520,7 +523,7 @@ body.chat-open{overflow:hidden}
    while the hint shows): one phrase at a time, the next rising in as the
    last lifts out — hints for what to type */
 .ask-mini{--hint:1}
-.ask-mini__hint{position:absolute;left:calc(24px + 26px + 10px);   /* after the dots */top:0;bottom:0;right:64px;overflow:hidden;pointer-events:none;font-family:var(--ui);font-size:17px;color:var(--ink-3);white-space:nowrap}
+.ask-mini__hint{position:absolute;left:calc(24px + 21px + 10px);   /* after the dots */top:0;bottom:0;right:64px;overflow:hidden;pointer-events:none;font-family:var(--ui);font-size:17px;color:var(--ink-3);white-space:nowrap}
 .ask-mini__hint-w{position:absolute;left:0;top:50%;translate:0 -50%;opacity:0;transform:translateY(60%);transition:opacity .4s ease,transform .55s var(--ease);transition-delay:.26s}
 .ask-mini__hint-w.is-on{opacity:1;transform:none}
 .ask-mini__hint-w.is-off{opacity:0;transform:translateY(-60%);transition:opacity .22s ease,transform .26s ease-in;transition-delay:0s}
