@@ -290,8 +290,9 @@ body.chat-open{overflow:hidden}
   padding:calc(var(--nav-h) + var(--s-8)) var(--gutter) var(--gutter)
           max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
 }
-/* the stack above the bottom row: the title floats down to the paragraph and
-   the tags; once the conversation starts it scrolls, anchored to its bottom,
+/* the stack above the bottom row: the title and the paragraph sit at its
+   bottom, close to the field (the tags are gone — the chat offers them as
+   chips); once the conversation starts it scrolls, anchored to its bottom,
    so each new turn pushes what came before up and out */
 .hero__stack{flex:1;min-height:0;align-self:stretch;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}
 .hero__stack > .display--hero{margin-top:auto;align-self:stretch}
@@ -433,7 +434,7 @@ body.chat-open{overflow:hidden}
 }
 /* the line under the title: two lines, light, quieter than the title */
 .hero__lede{
-  margin:var(--s-11) 0 18px;                    /* 48 under the title, 18 above the tags (client: "instead of 24, 18") */
+  margin:var(--s-11) 0 var(--s-11);             /* 48 under the title, 48 above the composer — the block sits low, with the field */
   white-space:nowrap;                           /* one line, by the client's cut */
   font-size:var(--hero-copy);font-weight:400;line-height:1.45;   /* 300 read smaller than the tags at the same 14px */
   color:var(--ink);

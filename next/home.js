@@ -201,7 +201,7 @@
         if (stopsCache) return stopsCache;
         const c = cv.getBoundingClientRect();
         const mid = (sel, fx, fy) => { const el = $(sel); if (!el) return { x: W * fx, y: H * fy }; const r = el.getBoundingClientRect(); return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
-        stopsCache = [mid('#heroTitle', .3, .32), mid('#callBtn', .8, .88), mid('#askMini', .3, .88), mid('#heroTags', .25, .62)];
+        stopsCache = [mid('#heroTitle', .3, .32), mid('#callBtn', .8, .88), mid('#askMini', .3, .88), mid('.hero__lede', .25, .62)];
         return stopsCache;
       };
       const frame = (t) => {
