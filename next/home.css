@@ -570,7 +570,7 @@ body.chat-open{overflow:hidden}
 }
 /* four lines at most on a desktop, as the reference's three */
 .display--intro{font-size:clamp(36px, 1.2rem + 2.9vw, 58px);text-transform:none;text-align:left;text-wrap:balance;letter-spacing:-.025em;line-height:.96;max-width:12.5em}
-.intro__lede{margin-top:var(--s-11);   /* 48 under the title: twice the gap to the button */font-size:clamp(18px, .9rem + .6vw, 22px);font-weight:300;line-height:1.5;color:var(--ink-2);max-width:640px}
+.intro__lede{margin-top:var(--s-11);   /* 48 under the title: twice the gap to the button */font-size:clamp(18px, .9rem + .6vw, 22px);font-weight:400;line-height:1.5;color:var(--ink);max-width:640px}   /* the ink, regular — the same voice as the hero's paragraph */
 .intro__act{margin-top:var(--s-8);display:flex}     /* 24: the button belongs to the paragraph; flex, so no inline strut adds to it */
 
 /* ── 3 · companies ───────────────────────────────────────────────────────── */
