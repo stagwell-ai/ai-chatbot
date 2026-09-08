@@ -515,9 +515,11 @@ body.chat-open{overflow:hidden}
    dimming them (the chat's wait dots do) washed them to pastel */
 .ask-mini__dots i{width:5px;height:5px;border-radius:50%;animation:dotLift 1.2s ease-in-out infinite}
 @keyframes dotLift{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.ask-mini__dots i:nth-child(1){background:var(--orange)}
-.ask-mini__dots i:nth-child(2){background:var(--amber);animation-delay:.16s}
-.ask-mini__dots i:nth-child(3){background:#009CBD;animation-delay:.32s}
+/* the icon's three colours, in the client's order: black, blue, yellow —
+   no orange (that is the "AI" in the wordmark, not the icon) */
+.ask-mini__dots i:nth-child(1){background:var(--ink)}
+.ask-mini__dots i:nth-child(2){background:#009CBD;animation-delay:.16s}
+.ask-mini__dots i:nth-child(3){background:var(--amber);animation-delay:.32s}
 .ask-mini:focus-within .ask-mini__dots,.ask-mini:has(.ask-mini__input:not(:placeholder-shown)) .ask-mini__dots{display:none}
 /* the turning hint stands in for the placeholder (which is made invisible
    while the hint shows): one phrase at a time, the next rising in as the
