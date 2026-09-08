@@ -358,15 +358,18 @@ body.chat-open{overflow:hidden}
 /* the slides live in the strip itself (the stills are cut for it), one
    showing at a time, a 1.2s cross-fade between them */
 .hero__slides{position:absolute;top:0;bottom:0;right:0;width:var(--media-w);overflow:hidden}
-.hero__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:0;transition:opacity 1.2s ease}
+.hero__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:0}
 .hero__pic.is-on{opacity:1}
 /* the client composed the thumbnail at the film's size with the subject at
    the right: the strip shows the right edge, not the centre */
-/* the showing still moves the way a Netflix billboard does: a slow zoom
-   with a slight pan inside the strip, five minutes each way, one constant
-   creep — never still, never seen as motion */
-.hero__pic.is-on{transform-origin:50% 50%;will-change:transform;animation:drift 300s linear infinite alternate}
-@keyframes drift{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.12) translate(-2.5%,-2%)}}
+/* each still moves while it shows: a slow zoom in over its ten seconds,
+   the next one a slow zoom out — the animation restarts as a slide comes
+   on. The cross-fade between them is two seconds, eased both ends. */
+.hero__pic{transition:opacity 2s ease-in-out}
+.hero__pic.is-on{transform-origin:50% 50%;will-change:transform;animation:kbIn 12s ease-in-out forwards}
+.hero__pic.is-on:nth-child(even){animation-name:kbOut}
+@keyframes kbIn{from{transform:scale(1)}to{transform:scale(1.12)}}
+@keyframes kbOut{from{transform:scale(1.12)}to{transform:scale(1)}}
 /* the film shows only once it is actually running, so the still never gives
    way to a black frame */
 .hero__film{opacity:0;transition:opacity .4s ease}
@@ -411,10 +414,7 @@ body.chat-open{overflow:hidden}
   transition:opacity .3s ease;
 }
 .hero__media.is-open .turn{opacity:0}          /* the film carries its own words */
-/* the slider's stills carry the campaign line themselves ("A bigger
-   opportunity for your brand? Ask Stagwell."), so the turning question
-   stays out of their way. Drop this rule to bring it back. */
-.hero__media .turn{display:none}
+
 /* a change is two moves in sequence, never one on top of the other: the old
    phrase leaves fast and completely, THEN the new one rises in. Two large
    phrases crossing at half opacity is what read as "not smooth". */
