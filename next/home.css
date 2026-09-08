@@ -187,7 +187,11 @@ h1,h2,p,figure{margin:0}
   background:rgba(255,255,255,.0);
   transition:background-color .35s ease,box-shadow .35s ease;
 }
-.nav.is-stuck{background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);box-shadow:0 1px 0 var(--line)}
+.nav.is-stuck{background:#FFFFFF;box-shadow:0 1px 0 var(--line)}   /* full white, no blur (client) */
+/* the bar slides away as you scroll down and back as you scroll up — any
+   upward scroll shows it; hiding needs a little travel first */
+.nav{transition:transform .45s var(--ease),background-color .25s ease,box-shadow .25s ease}
+.nav.is-hidden{transform:translateY(-100%)}
 .nav__in{
   height:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter);
   display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:var(--s-12);

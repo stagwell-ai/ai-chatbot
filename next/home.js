@@ -58,11 +58,18 @@
   const nav = $('#nav'), ask = $('#ask');
   let syncNav = () => {};
   if (nav) {
-    let ticking = false;
+    let ticking = false, lastY = scrollY, down = 0;
     const under = (el) => { const r = el.getBoundingClientRect(); return r.top <= 72 && r.bottom >= 72; };
     const onScroll = () => {
       ticking = false;
-      nav.classList.toggle('is-stuck', scrollY > 8);
+      const y = scrollY, d = y - lastY; lastY = y;
+      nav.classList.toggle('is-stuck', y > 8);
+      /* hide after 14px of downward travel past the bar's own height; show on
+         ANY upward movement, and always at the top. Only hiding accumulates —
+         accumulating both ways is what strands a bar off-screen. */
+      if (d > 0) { down += d; if (y > 72 && down > 14) nav.classList.add('is-hidden'); }
+      else if (d < 0) { down = 0; nav.classList.remove('is-hidden'); }
+      if (y <= 8) { down = 0; nav.classList.remove('is-hidden'); }
       /* dark under the bar: the AI section, or the hero while its film is open */
       const heroMedia = $('#heroMedia');
       const dark = (ask && under(ask)) || (heroMedia && heroMedia.classList.contains('is-open') && under(heroMedia));
