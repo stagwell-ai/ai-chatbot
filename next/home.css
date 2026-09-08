@@ -698,30 +698,32 @@ body.chat-open{overflow:hidden}
 .field__pos{position:absolute;top:-2px;left:0;height:6px;width:22%;background:var(--ink);transition:left .2s ease,width .2s ease}
 
 /* ── 4 · scale ───────────────────────────────────────────────────────────── */
-.scale{padding:var(--sec) 0 var(--sec-lg);border-top:1px solid var(--line)}
+.trust{padding:var(--s-15) 0 var(--s-15);border-top:1px solid var(--line)}
+/* the head: a big title on the left, the paragraphs under it */
+.trust__head{display:flex;flex-direction:column;align-items:flex-start}
+.display--trust{font-size:clamp(48px, 1.4rem + 4.6vw, 96px);text-transform:none;text-align:left;letter-spacing:-.03em;line-height:.94}
+.trust__copy{margin-top:var(--s-13);max-width:1040px;display:flex;flex-direction:column;gap:var(--s-8)}
+.trust__copy p{font-size:clamp(20px, .9rem + .8vw, 26px);font-weight:400;line-height:1.45;color:var(--ink)}
+/* the banner: a frame that never changes size; the picture inside zooms with
+   the scroll, in from the far side of the frame and out again */
+.trust__banner{position:relative;margin-top:var(--s-15);height:min(78vh,820px);overflow:hidden;background:var(--deep)}
+.trust__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transform:scale(var(--zoom,1.2));transform-origin:50% 50%;will-change:transform}
+/* the numbers as cards: a big figure, its name, a line under it */
 .stats{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:var(--s-11);text-align:center;
+  margin-top:var(--s-15);
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-7);
 }
-.stat{display:flex;flex-direction:column;align-items:center;gap:var(--s-6)}
+.stat{
+  display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-6);
+  padding:var(--s-10) var(--s-9);min-height:340px;
+  border:1px solid var(--line);border-radius:24px;
+}
 .stat__n{
-  font-family:var(--display);font-weight:700;letter-spacing:-.045em;line-height:.9;
-  font-size:clamp(56px, 1rem + 4.6vw, 96px);
-  font-variant-numeric:tabular-nums;
+  font-family:var(--display);font-weight:400;font-size:clamp(48px, 1.4rem + 3.6vw, 84px);letter-spacing:-.03em;line-height:1;color:var(--ink);
 }
-.stat__n i{font-style:normal;color:var(--orange)}
-.stat__l{font-size:17px;color:var(--ink-3)}
-
-.brands{
-  margin-top:var(--sec);
-  display:flex;flex-wrap:wrap;justify-content:center;
-  column-gap:clamp(2.5rem, 1rem + 3.4vw, 5rem);row-gap:var(--s-8);
-}
-.brands li{
-  font-size:15px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--ink-4);transition:color .3s ease;
-}
-.brands li:hover{color:var(--ink)}
+.stat__n i{font-style:normal;font-size:.45em;vertical-align:top;margin-left:.15em;color:var(--ink)}
+.stat__l{font-family:var(--display);font-weight:400;font-size:clamp(40px, 1.2rem + 2.8vw, 68px);letter-spacing:-.03em;line-height:1;color:var(--ink);margin-top:-.2em}
+.stat__d{margin-top:auto;padding-top:var(--s-9);font-size:16px;line-height:1.45;color:var(--ink-3)}
 
 /* ── 5 · the close ───────────────────────────────────────────────────────── */
 .close{

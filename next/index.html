@@ -393,20 +393,32 @@ d.setAttribute('data-theme',t||sys);})();
 </section>
 
 <!-- ═══════════════════════ 4 · SCALE ═══════════════════════ -->
-<section class="scale" id="scale">
+<!-- ═══════════════════════ 4 · TRUST ═══════════════════════
+     The client's brief from the DEPT about page: a big title on the left, the
+     paragraph under it, then a full-width banner whose picture zooms as you
+     scroll while the frame stays put, then the numbers as bordered cards.
+     Words and picture are placeholders until his. -->
+<section class="trust" id="scale">
+  <div class="wrap trust__head">
+    <h2 class="display display--trust rv"><span class="ln"><span class="ln__in"><em>Global scale.</em></span></span><span class="ln"><span class="ln__in">Local expertise.</span></span></h2>
+    <div class="trust__copy rv" style="--d:.15s">
+      <p>Stagwell brings together 70+ agencies and 13,000 people across 34 markets — specialists in every discipline, working as one network around your problem.</p>
+      <p>Stagwell.AI is that network made agentic: the expertise of the people, the speed of the technology, and a direct line to the team that fits, wherever you are.</p>
+    </div>
+  </div>
+
+  <!-- the banner: a fixed frame, and inside it a picture that zooms as it
+       travels through the screen (home.js sets --zoom from scroll) -->
+  <div class="trust__banner" id="trustBanner">
+    <img class="trust__pic" src="/assets/img/trust-placeholder.jpg" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+  </div>
+
   <div class="wrap">
     <ul class="stats" aria-label="Stagwell at scale">
-      <li class="stat rv"><span class="stat__n">70<i>+</i></span><span class="stat__l">Agencies</span></li>
-      <li class="stat rv" style="--d:.1s"><span class="stat__n">13,000<i>+</i></span><span class="stat__l">People worldwide</span></li>
-      <li class="stat rv" style="--d:.2s"><span class="stat__n">5,000<i>+</i></span><span class="stat__l">Brands</span></li>
-      <li class="stat rv" style="--d:.3s"><span class="stat__n">34<i>+</i></span><span class="stat__l">Markets</span></li>
-    </ul>
-
-    <!-- trusted brands, set in type: the client logo files are not in the repo,
-         and a wordmark row keeps the section honest until they are -->
-    <ul class="brands rv" style="--d:.2s" aria-label="Trusted by">
-      <li>Google</li><li>Microsoft</li><li>Coca-Cola</li><li>Amazon</li>
-      <li>Samsung</li><li>Visa</li><li>Novartis</li><li>Adobe</li>
+      <li class="stat rv"><span class="stat__n">70<i>+</i></span><span class="stat__l">Agencies</span><span class="stat__d">Specialist companies across every marketing discipline, one network.</span></li>
+      <li class="stat rv" style="--d:.1s"><span class="stat__n">13,000<i>+</i></span><span class="stat__l">People</span><span class="stat__d">Strategists, creatives, technologists and analysts, worldwide.</span></li>
+      <li class="stat rv" style="--d:.2s"><span class="stat__n">5,000<i>+</i></span><span class="stat__l">Brands</span><span class="stat__d">From global leaders to challengers, in every category.</span></li>
+      <li class="stat rv" style="--d:.3s"><span class="stat__n">34<i>+</i></span><span class="stat__l">Markets</span><span class="stat__d">Local teams with global reach, in the markets that matter to you.</span></li>
     </ul>
   </div>
 </section>
