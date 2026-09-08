@@ -478,7 +478,7 @@ body.chat-open{overflow:hidden}
 .ask-mini{
   position:relative;display:flex;align-items:center;
   flex:1 1 auto;min-width:0;height:60px;padding:0 6px 0 24px;border-radius:999px;   /* fills the row beside Call me: as wide as the conversation */
-  background:#F1F2F4;                          /* a light grey, no stroke: "so it pops" */
+  background:#F1F2F4;box-shadow:inset 0 0 0 1px var(--line);   /* a light grey with a soft stroke — on the column's grey it blended without one */
   transition:box-shadow .25s ease,background-color .25s ease,transform .3s var(--ease);
 }
 .ask-mini:focus-within{background:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink)}
