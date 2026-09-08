@@ -715,7 +715,7 @@ body.chat-open{overflow:hidden}
 .port__row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:stretch;padding:var(--s-11) 0 var(--s-11);border-top:1px solid var(--ink-4)}
 .port__body{display:flex;flex-direction:column;align-items:flex-start}
 .port__title{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(32px, 1.1rem + 2.3vw, 50px);letter-spacing:-.025em;line-height:1.05;color:var(--ink)}   /* an h3: the reset only covers h1/h2 */
-.port__head{margin-top:var(--s-11);max-width:560px;font-size:clamp(20px, .9rem + .8vw, 26px);font-weight:400;line-height:1.4;color:var(--ink)}   /* 48 under the title — the reference's proportion */
+.port__head{margin-top:var(--s-6);max-width:560px;font-size:clamp(20px, .9rem + .8vw, 26px);font-weight:400;line-height:1.4;color:var(--ink)}   /* 16 under the title ("much closer") */
 .port__body .port__go{margin-top:auto;padding-top:0}
 .port__body .port__head{margin-bottom:var(--s-11)}   /* at least 48 above the button */
 .port__media{position:relative;height:clamp(340px, 30vw, 540px);overflow:hidden;background:var(--deep)}
