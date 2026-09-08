@@ -419,7 +419,7 @@ body.chat-open{overflow:hidden}
 }
 /* the line under the title: two lines, light, quieter than the title */
 .hero__lede{
-  margin:var(--s-11) 0 var(--s-8);              /* 48 under the title, 24 above the tags — the Agentic section's rule */
+  margin:var(--s-11) 0 18px;                    /* 48 under the title, 18 above the tags (client: "instead of 24, 18") */
   white-space:nowrap;                           /* one line, by the client's cut */
   font-size:var(--hero-copy);font-weight:400;line-height:1.45;   /* 300 read smaller than the tags at the same 14px */
   color:var(--ink);
