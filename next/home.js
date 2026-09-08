@@ -395,13 +395,13 @@
     addEventListener('keydown', (e) => { if (e.key === 'Escape' && !over.hidden) closeChat(); });
   }
 
-  /* ── "Ask Stagwell" scrolls to the experience, then lands in the field ──── */
-  $$('a[href="#ask"]').forEach(a => a.addEventListener('click', (e) => {
-    if (!ask) return;
+  /* ── "Ask Stagwell" (the bar, the footer) goes to the hero's field: the
+        conversation lives there now ──────────────────────────────────────── */
+  $$('a[data-ask]').forEach(a => a.addEventListener('click', (e) => {
     e.preventDefault();
-    ask.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
-    const input = $('#askInput');
-    if (input) setTimeout(() => input.focus({ preventScroll: true }), REDUCED ? 0 : 700);
+    scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+    const input = $('#askMiniInput');
+    if (input) setTimeout(() => input.focus({ preventScroll: true }), REDUCED ? 0 : 600);
   }));
 
   /* ── the input: a tag puts its words in the field and nothing more. The

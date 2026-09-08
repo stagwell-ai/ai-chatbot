@@ -75,7 +75,7 @@ d.setAttribute('data-theme',t||sys);})();
       <button type="button" class="nav__search" id="navSearch" aria-label="Search — ask Stagwell" aria-haspopup="dialog" aria-expanded="false">
         <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12.8 12.8L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
-      <a class="btn btn--line" href="#ask">Ask Stagwell</a>
+      <a class="btn btn--line" href="#hero" data-ask>Ask Stagwell</a>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
     </div>
   </nav>
@@ -207,33 +207,9 @@ d.setAttribute('data-theme',t||sys);})();
   </div>
 </section>
 
-<!-- ═══════════════════════ 2 · AI EXPERIENCE ═══════════════════════ -->
-<section class="ask" id="ask">
-  <div class="wrap ask__in">
-    <h2 class="display display--ask rv"><span class="ln"><span class="ln__in">Ask <em>Stagwell.</em></span></span></h2>
-    <p class="ask__lede rv" style="--d:.15s">Ask anything. Stagwell.AI finds the right expertise,<br>technology and people to solve it.</p>
-
-    <form class="ask__form rv" style="--d:.3s" id="askForm" action="/next/agent" method="get" autocomplete="off">
-      <label class="vh" for="askInput">What are you working on?</label>
-      <div class="ask__field">
-        <input class="ask__input" id="askInput" name="q" type="text"
-               placeholder="What are you working on?" spellcheck="false">
-        <input type="hidden" name="autostart" value="1">
-        <button class="ask__go" type="submit" aria-label="Ask Stagwell">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </form>
-
-    <ul class="ask__tags rv" style="--d:.45s" role="group" aria-label="Pick a starting point">
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Increase brand awareness">Increase brand awareness</button></li>
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Reach Gen Z">Reach Gen Z</button></li>
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Improve sales">Improve sales</button></li>
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Analyze competitors">Analyze competitors</button></li>
-      <li><button type="button" class="tag" aria-pressed="false" data-q="Explore new markets">Explore new markets</button></li>
-    </ul>
-  </div>
-</section>
+<!-- the dark "Ask Stagwell." section lived here; the hero carries the
+     conversation now (client, 2026-09-08), so the film runs straight into the
+     network. -->
 
 <!-- ═══════════════════════ 3 · COMPANIES ═══════════════════════ -->
 <section class="cos" id="companies">
@@ -420,7 +396,7 @@ d.setAttribute('data-theme',t||sys);})();
       <li><a href="/next/why">Why Stagwell.AI</a></li>
     </ul>
     <ul class="foot__col">
-      <li><a href="#ask">Ask Stagwell</a></li>
+      <li><a href="#hero" data-ask>Ask Stagwell</a></li>
       <li><button type="button" data-cta="session">Book a demo</button></li>
       <li><button type="button" data-cta="expert">Talk to an expert</button></li>
     </ul>
