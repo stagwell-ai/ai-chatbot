@@ -358,7 +358,11 @@ body.chat-open{overflow:hidden}
 .hero__film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 /* the slides live in the strip itself (the stills are cut for it), one
    showing at a time, a 1.2s cross-fade between them */
-.hero__slides{position:absolute;top:0;bottom:0;right:0;width:var(--media-w);overflow:hidden}
+.hero__slides{position:absolute;top:0;bottom:0;right:0;width:var(--media-w);overflow:hidden;transition:width .9s var(--ease)}
+/* as the panel opens, the showing slide stretches across the whole of it at
+   the reveal's own pace, so the film fades in over a picture — not over the
+   panel's dark ground */
+.hero__media.is-open .hero__slides{width:100%}
 /* a 20% veil over every slide, so the white words read on any of them */
 .hero__slides::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.2);pointer-events:none}
 .hero__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:0}
@@ -513,7 +517,7 @@ body.chat-open{overflow:hidden}
 /* the AI, thinking, at the start of the field: three dots in the brand's
    colours, breathing in turn; gone the moment the field is focused or holds
    text (the blinking caret before it read as noise with the turning hint) */
-.ask-mini__dots{display:flex;align-items:center;gap:3px;margin-right:10px;flex-shrink:0}
+.ask-mini__dots{display:flex;align-items:center;gap:3px;margin-right:16px;flex-shrink:0}
 /* the mark's own colours, at full strength: the bounce only moves them —
    dimming them (the chat's wait dots do) washed them to pastel */
 .ask-mini__dots i{width:5px;height:5px;border-radius:50%;animation:dotLift 1.2s ease-in-out infinite}
@@ -528,7 +532,7 @@ body.chat-open{overflow:hidden}
    while the hint shows): one phrase at a time, the next rising in as the
    last lifts out — hints for what to type */
 .ask-mini{--hint:1}
-.ask-mini__hint{position:absolute;left:calc(24px + 21px + 10px);   /* after the dots */top:0;bottom:0;right:64px;overflow:hidden;pointer-events:none;font-family:var(--ui);font-size:17px;color:var(--ink-3);white-space:nowrap}
+.ask-mini__hint{position:absolute;left:calc(24px + 21px + 16px);   /* after the dots */top:0;bottom:0;right:64px;overflow:hidden;pointer-events:none;font-family:var(--ui);font-size:17px;color:var(--ink-3);white-space:nowrap}
 .ask-mini__hint-w{position:absolute;left:0;top:50%;translate:0 -50%;opacity:0;transform:translateY(60%);transition:opacity .4s ease,transform .55s var(--ease);transition-delay:.26s}
 .ask-mini__hint-w.is-on{opacity:1;transform:none}
 .ask-mini__hint-w.is-off{opacity:0;transform:translateY(-60%);transition:opacity .22s ease,transform .26s ease-in;transition-delay:0s}
