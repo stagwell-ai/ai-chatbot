@@ -399,8 +399,17 @@ body.chat-open{overflow:hidden}
 .hero__disc:hover{transform:scale(1.06)}
 /* at rest the invitation sits bottom right; open, pause and close take the
    same corner — the eye already knows where to go */
-.hero__watch,.hero__ctl{position:absolute;right:var(--gutter);bottom:var(--gutter);z-index:1}
-.hero__ctl{display:flex;align-items:center;gap:10px}
+/* the invitation is just a play glyph in the middle of the strip: a glass
+   disc, not a pill, not a CTA (client). Open, pause and close sit bottom right. */
+.hero__watch{position:absolute;z-index:1;left:calc(100% - var(--media-w) / 2);top:50%;translate:-50% -50%;
+  width:72px;height:72px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);color:#FFFFFF;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  transition:transform .35s var(--ease),background-color .25s ease}
+.hero__watch svg{width:26px;height:26px;translate:2px 0}   /* the triangle's optical centre */
+.hero__watch:hover{transform:scale(1.08);background:rgba(255,255,255,.26)}
+.hero__watch:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+.hero__ctl{position:absolute;right:var(--gutter);bottom:var(--gutter);z-index:1;display:flex;align-items:center;gap:10px}
 .hero__pill:focus-visible,.hero__disc:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
 /* one icon shows per disc; the state on the panel picks it */
 .hero__disc .ic{grid-area:1/1;display:none}
