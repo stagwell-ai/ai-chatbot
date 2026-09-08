@@ -569,7 +569,7 @@ body.chat-open{overflow:hidden}
   padding:0 0 0 clamp(2.5rem, 2rem + 4vw, 7rem);
 }
 /* four lines at most on a desktop, as the reference's three */
-.display--intro{font-size:clamp(36px, 1.2rem + 2.9vw, 58px);text-align:left;text-wrap:balance;letter-spacing:-.025em;line-height:.96;max-width:12.5em}
+.display--intro{font-size:clamp(36px, 1.2rem + 2.9vw, 58px);text-transform:none;text-align:left;text-wrap:balance;letter-spacing:-.025em;line-height:.96;max-width:12.5em}
 .intro__lede{margin-top:var(--s-10);font-size:clamp(18px, .9rem + .6vw, 22px);font-weight:300;line-height:1.5;color:var(--ink-2);max-width:640px}
 .intro__act{margin-top:var(--s-11)}
 
