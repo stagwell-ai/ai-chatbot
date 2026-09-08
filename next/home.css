@@ -150,7 +150,7 @@ h1,h2,p,figure{margin:0}
 /* buttons are black and white only (client, 2026-09-07 late): the filled ink
    button and its outline twin — white ground, ink type, a one-pixel ink
    stroke. No orange on a button anywhere; the orange belongs to "Ask". */
-.btn--line{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn--line{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}   /* ONE stroke for every white round thing: the footer discs' grey, 1px (client) */
 .btn--line:hover{background:var(--ink);color:#FFFFFF;transform:translateY(-1px)}
 .btn--lg{height:60px;padding:0 34px;font-size:15px}
 .btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
@@ -217,7 +217,7 @@ h1,h2,p,figure{margin:0}
 /* the magnifier: a square the height of the small buttons, glyph only */
 /* a white disc with the ink stroke, like the pill beside it: it reads on the
    still's dark corner as well as its light field */
-.nav__search{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);transition:background-color .25s ease,color .25s ease,transform .3s var(--ease)}
+.nav__search{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);transition:background-color .25s ease,color .25s ease,transform .3s var(--ease)}
 .nav__search svg{width:19px;height:19px;display:block}
 .nav__search:hover{background:var(--ink);color:#FFFFFF;transform:translateY(-1px)}
 .nav__search:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
