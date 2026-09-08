@@ -463,13 +463,28 @@ d.setAttribute('data-theme',t||sys);})();
 </section>
 
 <!-- ═══════════════════════ 5 · FINAL CONVERSION ═══════════════════════ -->
-<section class="close" id="close">
-  <div class="wrap close__in">
-    <h2 class="display display--close rv"><span class="ln"><span class="ln__in">Let's solve</span></span><span class="ln"><span class="ln__in">what's <em>next.</em></span></span></h2>
-    <div class="close__acts rv" style="--d:.2s">
-      <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
-      <button type="button" class="link link--lg" data-cta="expert">Talk to an expert</button>
-      <button type="button" class="link link--lg link--quiet" data-cta="callback">Have Stagwell.AI call me</button>
+<!-- ═══════════════════════ 5 · THE SUITE (final conversion) ═══════════════════════
+     The client's copy, in DEPT's awards layout: a huge centred title with the
+     last word in the orange, the line under it, then the three ways in as a
+     list on the left — the chosen one bold — with its line, a picture and the
+     button on the right. Pictures are placeholders. -->
+<section class="close suite" id="close">
+  <div class="wrap suite__in">
+    <h2 class="display display--close rv"><span class="ln"><span class="ln__in">The Stagwell AI suite.</span></span><span class="ln"><span class="ln__in">Pointed at your hardest <em>problem.</em></span></span></h2>
+    <p class="suite__lede rv" style="--d:.15s">Stagwell.AI puts the Marketing Cloud’s products behind one conversation. Tell the agent what you’re up against; it finds the ones that solve it, and hands you to the people who run them.</p>
+
+    <div class="suite__grid rv" style="--d:.3s" id="suite">
+      <ul class="suite__list" role="tablist" aria-label="Ways in">
+        <li><button type="button" class="suite__item is-on" role="tab" aria-selected="true" data-cta="session" data-line="Sixty minutes with the strategists who run these products." data-pic="/assets/img/hero-slide-3.jpg">Book a strategy session</button></li>
+        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-cta="expert" data-line="A working conversation, not a pitch." data-pic="/assets/img/hero-slide-4.jpg">Talk to an AI expert</button></li>
+        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-cta="demo" data-line="The whole suite, pointed at your brand." data-pic="/assets/img/hero-slide-5.jpg">Request your full AI workspace</button></li>
+        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-href="/next/products" data-line="Every product in the Marketing Cloud, one by one." data-pic="/assets/img/hero-slide-1.jpg">See every product</button></li>
+      </ul>
+      <div class="suite__panel" role="tabpanel">
+        <div class="suite__media"><img class="suite__pic" id="suitePic" src="/assets/img/hero-slide-3.jpg" alt="" loading="lazy" decoding="async"></div>
+        <p class="suite__line" id="suiteLine">Sixty minutes with the strategists who run these products.</p>
+        <button type="button" class="btn btn--ink btn--lg suite__go" id="suiteGo" data-cta="session">Book a strategy session</button>
+      </div>
     </div>
   </div>
 </section>

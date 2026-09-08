@@ -753,15 +753,25 @@ body.chat-open{overflow:hidden}
 .stat__d{margin-top:var(--s-4);font-size:16px;line-height:1.45;color:var(--ink-3)}   /* close under the figure, not pushed to the floor */
 
 /* ── 5 · the close ───────────────────────────────────────────────────────── */
-.close{
-  min-height:100vh;display:flex;align-items:center;
-  padding:var(--sec-lg) 0;border-top:1px solid var(--line);
-}
-.close__in{display:flex;flex-direction:column;align-items:center;text-align:center}
-.close__acts{
-  margin-top:var(--s-13);                        /* 80 */
-  display:flex;flex-direction:column;align-items:center;gap:var(--s-9);
-}
+.close{padding:var(--s-15) 0 var(--s-16);border-top:1px solid var(--line)}
+.suite__in{display:flex;flex-direction:column;align-items:center;text-align:center}
+.display--close{font-size:clamp(48px, 1.4rem + 5vw, 108px);text-transform:none;letter-spacing:-.035em;line-height:.92}
+.display--close .ln{padding-bottom:.2em;margin-bottom:-.2em}
+.suite__lede{margin-top:var(--s-11);max-width:900px;font-size:clamp(20px, .9rem + .8vw, 26px);line-height:1.45;color:var(--ink)}
+/* the ways in: names on the left, the chosen one bold; its line, picture and
+   button on the right */
+.suite__grid{margin-top:var(--s-15);width:100%;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:center;text-align:left}
+.suite__list{display:flex;flex-direction:column;gap:var(--s-5)}
+.suite__item{font-family:var(--display);font-weight:400;font-size:clamp(30px, 1rem + 2.6vw, 56px);letter-spacing:-.02em;line-height:1.1;color:var(--ink-3);text-align:left;transition:color .25s ease,font-weight .1s ease}
+.suite__item:hover{color:var(--ink)}
+.suite__item.is-on{font-weight:700;color:var(--ink)}
+.suite__item:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
+.suite__panel{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-8)}
+.suite__media{position:relative;width:100%;height:clamp(300px, 26vw, 460px);overflow:hidden;background:var(--deep)}
+.suite__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s ease}
+.suite__pic.is-fading{opacity:0}
+.suite__line{font-size:clamp(18px, .9rem + .5vw, 22px);line-height:1.4;color:var(--ink)}
+
 
 /* ── footer ──────────────────────────────────────────────────────────────── */
 .foot{border-top:1px solid var(--line)}
