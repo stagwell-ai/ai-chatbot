@@ -96,6 +96,24 @@
     }
   }
 
+  /* ── the field's turning hint: the website first, then the five starting
+        points, every 2.8s — the last lifts out, the next rises in. Runs only
+        while the field is empty and unfocused (the hint is hidden then). ── */
+  const hint = $('#askMiniHint'), hintInput = $('#askMiniInput');
+  if (hint && hintInput && !REDUCED) {
+    const HINTS = ['Let’s start with your website', 'Increase brand awareness', 'Reach Gen Z', 'Improve sales', 'Analyze competitors', 'Explore new markets'];
+    let i = 0;
+    setInterval(() => {
+      if (document.activeElement === hintInput || hintInput.value) return;
+      const old = hint.querySelector('.ask-mini__hint-w');
+      i = (i + 1) % HINTS.length;
+      const w = document.createElement('span'); w.className = 'ask-mini__hint-w'; w.textContent = HINTS[i];
+      hint.appendChild(w);
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (old) old.classList.replace('is-on', 'is-off'); w.classList.add('is-on'); }));
+      setTimeout(() => old && old.remove(), 700);
+    }, 2800);
+  }
+
   /* ── the slider: the stills in the strip turn over with a cross-fade —
         the first hands over sooner (4.5s after landing), then every 9s;
         with one still there is nothing to turn ────────────────────────────── */
