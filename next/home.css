@@ -643,7 +643,7 @@ body.chat-open{overflow:hidden}
 .intro__act{margin-top:var(--s-8);display:flex}     /* 24: the button belongs to the paragraph; flex, so no inline strut adds to it */
 
 /* ── 3 · companies ───────────────────────────────────────────────────────── */
-.cos{padding:var(--s-15) 0 var(--s-15);background:var(--amber)}   /* a pastel of the mark's amber, to see (client); with a ground of its own the section takes its own 120 above */
+.cos{padding:var(--s-15) 0 var(--s-15);background:#FFF6DC}   /* the pastel of the amber — the full amber "is not looking good" (client) */   /* a pastel of the mark's amber, to see (client); with a ground of its own the section takes its own 120 above */
 .cos .display--cos{margin-bottom:0}
 /* under the title: two centred lines and one outline button, in the Agentic
    section's rhythm — 48 under the title, 24 above the button, 80 to the field */
