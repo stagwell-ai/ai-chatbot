@@ -133,25 +133,26 @@
     tick();
   }
 
-  /* ── the suite's ways in: choose a name (hover or tap) and the panel shows
-        its line, its picture and its button — which fires the same booking
-        the old buttons did (lead.js, by data-cta). ───────────────────────── */
+  /* ── the suite's ways in: hover or focus a name and the panel shows its
+        line and its picture; the names themselves are the buttons — a
+        booking (lead.js reads their data-cta) or a page (data-href). ───── */
   const suite = $('#suite');
   if (suite) {
-    const items = $$('.suite__item', suite), pic = $('#suitePic'), line = $('#suiteLine'), go = $('#suiteGo');
+    const items = $$('.suite__item', suite), pic = $('#suitePic'), line = $('#suiteLine');
     const choose = (b) => {
       if (b.classList.contains('is-on')) return;
       items.forEach(o => { o.classList.toggle('is-on', o === b); o.setAttribute('aria-selected', o === b ? 'true' : 'false'); });
-      line.textContent = b.dataset.line; go.textContent = b.textContent.trim();
-      /* a booking (lead.js reads data-cta) or a page (data-href) */
-      if (b.dataset.href) { delete go.dataset.cta; go.dataset.href = b.dataset.href; } else { delete go.dataset.href; go.dataset.cta = b.dataset.cta; }
+      line.textContent = b.dataset.line;
       if (pic.getAttribute('src') !== b.dataset.pic) {
         pic.classList.add('is-fading');
         setTimeout(() => { pic.src = b.dataset.pic; pic.onload = () => pic.classList.remove('is-fading'); }, REDUCED ? 0 : 200);
       }
     };
-    go.addEventListener('click', () => { if (go.dataset.href) location.href = go.dataset.href; });
-    items.forEach(b => { b.addEventListener('mouseenter', () => choose(b)); b.addEventListener('focus', () => choose(b)); b.addEventListener('click', () => { choose(b); go.click(); }); });
+    items.forEach(b => {
+      b.addEventListener('mouseenter', () => choose(b));
+      b.addEventListener('focus', () => choose(b));
+      b.addEventListener('click', () => { choose(b); if (b.dataset.href) location.href = b.dataset.href; });
+    });
   }
 
   /* ── the slider: the stills in the strip turn over with a cross-fade —

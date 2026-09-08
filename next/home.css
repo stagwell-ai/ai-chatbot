@@ -762,7 +762,7 @@ body.chat-open{overflow:hidden}
    button on the right */
 .suite__grid{margin-top:var(--s-15);width:100%;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:center;text-align:left}
 .suite__list{display:flex;flex-direction:column;gap:var(--s-5)}
-.suite__item{font-family:var(--display);font-weight:400;font-size:clamp(30px, 1rem + 2.6vw, 56px);letter-spacing:-.02em;line-height:1.1;color:var(--ink-3);text-align:left;transition:color .25s ease,font-weight .1s ease}
+.suite__item{font-family:var(--display);font-weight:400;font-size:clamp(26px, .9rem + 2vw, 44px);letter-spacing:-.02em;line-height:1.1;color:var(--ink-3);text-align:left;white-space:nowrap;transition:color .25s ease,font-weight .1s ease}   /* a size down, so the long one holds one line */
 .suite__item:hover{color:var(--ink)}
 .suite__item.is-on{font-weight:700;color:var(--ink)}
 .suite__item:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
