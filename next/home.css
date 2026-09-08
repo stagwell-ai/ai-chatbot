@@ -682,8 +682,10 @@ body.chat-open{overflow:hidden}
   display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
   color:var(--ink);
 }
-.co__name{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.2}
-.co__spec{font-size:15px;color:var(--ink-3)}
+/* under the tile only the description, at the name's size — the name itself
+   is gone (client: "instead of IMAI, only Influencer Marketing AI") */
+.co__name{display:none}
+.co__spec{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
 
 /* click: the tile turns over into a flat typographic panel */
 .co__back{
