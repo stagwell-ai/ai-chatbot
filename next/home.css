@@ -191,7 +191,7 @@ h1,h2,p,figure{margin:0}
 /* the bar slides away as you scroll down and back as you scroll up — any
    upward scroll shows it; hiding needs a little travel first */
 .nav{transition:transform .45s var(--ease),background-color .25s ease,box-shadow .25s ease}
-.nav.is-hidden{transform:translateY(-100%)}
+.nav.is-hidden{transform:translateY(calc(-100% - 2px));box-shadow:none}   /* the hairline under it must go too, or a line stays at the top */
 .nav__in{
   height:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter);
   display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:var(--s-12);
