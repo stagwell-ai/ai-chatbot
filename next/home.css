@@ -685,7 +685,10 @@ body.chat-open{overflow:hidden}
 .field__track{
   display:flex;gap:var(--s-9);
   overflow-x:auto;overscroll-behavior-x:contain;
-  padding:var(--s-8) calc(50vw - 200px);         /* the first and last card can reach the centre */
+  /* the row BEGINS on the page's own left line, with a whole picture there
+     (client: "it needs to start with an image on the left"); the right side
+     still lets the last card reach the middle */
+  padding:var(--s-8) calc(50vw - 200px) var(--s-8) max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
   scrollbar-width:none;-ms-overflow-style:none;
   cursor:grab;
   perspective:1600px;
@@ -702,6 +705,9 @@ body.chat-open{overflow:hidden}
   outline:none;
 }
 .co.is-centre{--k:1;--o:1}
+/* the first card shrinks toward its own left edge, so at rest it sits exactly
+   on the page's left line however far it is from the middle */
+.co:first-child{transform-origin:left center}
 .co:focus-visible .co__face{box-shadow:0 0 0 2px var(--ink)}
 
 /* the tile holds the picture and its back; the words sit under it, as on
@@ -809,26 +815,29 @@ body.chat-open{overflow:hidden}
 .display--close{font-size:clamp(48px, 1.4rem + 5vw, 108px);text-transform:none;letter-spacing:-.035em;line-height:.92}
 .display--close .ln{padding-bottom:.2em;margin-bottom:-.2em}
 .suite__lede{margin-top:var(--s-11);max-width:900px;font-size:clamp(20px, .9rem + .8vw, 26px);line-height:1.45;color:var(--ink)}
-/* the ways in, as four cards: a picture, the name with its arrow, the line.
-   (The old list-plus-one-panel was replaced 2026-09-08: "we need a better
-   design for the suite with the links and the images and the icons".) */
-.suite__cards{margin-top:var(--s-14);width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-9);text-align:left}
-.suite__card{display:flex;flex-direction:column;align-items:stretch;gap:var(--s-7);width:100%;text-align:left;color:var(--ink)}
-.suite__thumb{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--deep);border-radius:6px}
-.suite__thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease)}
-.suite__card:hover .suite__thumb img{transform:scale(1.05)}
-.suite__body{display:flex;flex-direction:column;gap:var(--s-4);min-width:0}
-/* the arrow belongs to the LAST WORD, not to the line: as a flex sibling it
-   was pushed to the far right whenever the name wrapped ("Request your full
-   AI workspace"). Inline, it simply follows the text. */
-.suite__name{display:block;font-family:var(--display);font-weight:700;
-  font-size:clamp(20px, .8rem + .7vw, 25px);line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
-/* the arrow is drawn at rest — on a phone there is no hover to reveal it —
-   and lifts up and to the right when the card is touched or pointed at */
-.suite__arrow{display:inline-block;width:.62em;height:.62em;margin-left:.3em;vertical-align:.04em;color:var(--ink);transition:transform .3s var(--ease)}
-.suite__card:hover .suite__arrow,.suite__card:focus-visible .suite__arrow{transform:translate(3px,-3px)}
-.suite__note{font-size:16px;line-height:1.45;color:var(--ink-3)}
-.suite__card:focus-visible{outline:2px solid var(--ink);outline-offset:6px;border-radius:8px}
+/* the ways in: names on the left, the chosen one bold; its picture and line
+   on the right. (Each name also carries a thumbnail and its own line for the
+   phone's card rows — both are hidden here.) */
+.suite__grid{margin-top:var(--s-15);width:100%;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:center;text-align:left}
+.suite__list{display:flex;flex-direction:column;gap:var(--s-5)}
+.suite__item{display:block;width:100%;font-family:var(--display);font-weight:400;font-size:clamp(26px, .9rem + 2vw, 44px);letter-spacing:-.02em;line-height:1.1;color:var(--ink-3);text-align:left;white-space:nowrap;transition:color .25s ease}
+.suite__item:hover{color:var(--ink)}
+.suite__item.is-on{font-weight:700;color:var(--ink)}
+.suite__thumb,.suite__note{display:none}                 /* the phone's half of the markup */
+/* the arrow beside the chosen name: up and to the right, in the ink, and it
+   draws itself — the shaft first, then the head arriving at its tip. Inline,
+   so a name that wraps keeps its arrow on the last word. */
+.suite__arrow{display:inline-block;width:.5em;height:.5em;margin-left:.3em;vertical-align:.02em;color:currentColor;overflow:visible}
+.suite__arrow-line{stroke-dasharray:17;stroke-dashoffset:17;transition:stroke-dashoffset .45s var(--ease)}
+.suite__arrow-head{opacity:0;transform:translate(-5px,5px);transition:opacity .25s ease .2s,transform .4s var(--ease) .15s}
+.suite__item.is-on .suite__arrow-line{stroke-dashoffset:0}
+.suite__item.is-on .suite__arrow-head{opacity:1;transform:none}
+.suite__item:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
+.suite__panel{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-8)}
+.suite__media{position:relative;width:min(100%,440px);aspect-ratio:1/1;overflow:hidden;background:var(--deep)}
+.suite__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s ease}
+.suite__pic.is-fading{opacity:0}
+.suite__line{width:min(100%,440px);font-size:clamp(18px, .9rem + .5vw, 22px);line-height:1.4;color:var(--ink)}
 
 /* ── 6 · the end is the start ────────────────────────────────────────────── */
 .ask-end{padding:var(--s-15) 0 var(--s-16);background:#E6F5F9}   /* a pastel of the mark's teal, as the network section wears the amber's (client); with a ground of its own it takes 120 above */   /* white, centred, no line above or below (client) */
@@ -950,7 +959,7 @@ body.chat-open{overflow:hidden}
   .cos__lede br,.chat-over .ask__lede br{display:none}
   .cos__lede,.chat-over .ask__lede,.suite__lede,.ask-end__lede{text-wrap:balance}
   .cos__act{margin-bottom:var(--s-10)}
-  .field__track{gap:var(--s-7);padding:var(--s-6) calc(50vw - 140px)}
+  .field__track{gap:var(--s-7);padding:var(--s-6) calc(50vw - 140px) var(--s-6) var(--gutter)}
   .co{flex-basis:280px}
   .co__tile{height:280px}
   .co__spec{font-size:17px}
@@ -979,13 +988,25 @@ body.chat-open{overflow:hidden}
      that already equalled the line and never brought the size down — the
      hero's trap, again: the titles take their column's width */
   .suite__in > .display,.ask-end__in > .display,.trust__head > .display{align-self:stretch}
-  /* the cards become rows: a small picture, the name, its line */
-  .suite__cards{margin-top:var(--s-11);grid-template-columns:1fr;gap:0}
-  .suite__card{flex-direction:row;align-items:center;gap:var(--s-7);padding:var(--s-7) 0;border-top:1px solid var(--line)}
-  .suite__cards li:last-child .suite__card{border-bottom:1px solid var(--line)}
-  .suite__thumb{width:76px;flex:0 0 76px;aspect-ratio:1/1}
-  .suite__name{font-size:19px}
-  .suite__note{font-size:14px}
+  /* the same items become cards: a small picture, the name, its line. The
+     panel steps out — each row carries its own picture now. */
+  .suite__grid{margin-top:var(--s-11);grid-template-columns:1fr}
+  .suite__list{gap:0}
+  .suite__panel{display:none}
+  .suite__item{display:flex;flex-direction:row;align-items:center;gap:var(--s-7);
+    white-space:normal;font-size:19px;font-weight:700;color:var(--ink);
+    padding:var(--s-7) 0;border-top:1px solid var(--line)}
+  .suite__list li:last-child .suite__item{border-bottom:1px solid var(--line)}
+  .suite__item.is-on{font-weight:700}
+  .suite__thumb{display:block;position:relative;width:76px;flex:0 0 76px;aspect-ratio:1/1;overflow:hidden;border-radius:6px;background:var(--deep)}
+  .suite__thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .suite__body{display:flex;flex-direction:column;gap:var(--s-4);min-width:0;text-align:left}
+  .suite__word{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.2;letter-spacing:-.02em}
+  .suite__note{display:block;font-family:var(--sans);font-weight:400;font-size:14px;line-height:1.45;letter-spacing:0;color:var(--ink-3)}
+  .suite__arrow{width:.62em;height:.62em}
+  /* every row shows its arrow on a phone — there is no hover to reveal one */
+  .suite__arrow-line{stroke-dashoffset:0}
+  .suite__arrow-head{opacity:1;transform:none}
 
   /* ── the end ── */
   .ask-end{padding:var(--s-13) 0 var(--s-14)}

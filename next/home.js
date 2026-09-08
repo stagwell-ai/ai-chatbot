@@ -147,12 +147,29 @@
     tick();
   }
 
-  /* ── the suite's four cards: a booking (lead.js reads data-cta from the
-        page) or a page (data-href). Nothing to choose any more — each card
-        carries its own picture and line. ──────────────────────────────── */
-  $$('#suite .suite__card').forEach(b => {
-    if (b.dataset.href) b.addEventListener('click', () => { location.href = b.dataset.href; });
-  });
+  /* ── the suite's ways in: on a desktop, hovering a name shows its picture
+        and line in the panel; on a phone each row carries its own, so the
+        choosing is decoration. A click books (lead.js reads data-cta) or
+        goes to a page (data-href). ───────────────────────────────────── */
+  const suite = $('#suite');
+  if (suite) {
+    const items = $$('.suite__item', suite), pic = $('#suitePic'), line = $('#suiteLine');
+    const choose = (b) => {
+      if (b.classList.contains('is-on')) return;
+      items.forEach(o => { o.classList.toggle('is-on', o === b); o.setAttribute('aria-selected', o === b ? 'true' : 'false'); });
+      if (!pic || !line) return;
+      line.textContent = b.dataset.line;
+      if (pic.getAttribute('src') !== b.dataset.pic) {
+        pic.classList.add('is-fading');
+        setTimeout(() => { pic.src = b.dataset.pic; pic.onload = () => pic.classList.remove('is-fading'); }, REDUCED ? 0 : 200);
+      }
+    };
+    items.forEach(b => {
+      b.addEventListener('mouseenter', () => choose(b));
+      b.addEventListener('focus', () => choose(b));
+      b.addEventListener('click', () => { choose(b); if (b.dataset.href) location.href = b.dataset.href; });
+    });
+  }
 
   /* ── the slider: the stills in the strip turn over with a cross-fade —
         the first hands over sooner (4.5s after landing), then every 9s;
@@ -579,13 +596,13 @@
     track.addEventListener('scroll', () => { if (!raf) { raf = true; requestAnimationFrame(centre); } }, { passive: true });
     addEventListener('resize', centre);
 
-    /* start on the first card, centred */
+    /* the row starts at its own left edge, so the first picture is whole */
     const toCard = (c, smooth) => {
       const r = c.getBoundingClientRect(), t = track.getBoundingClientRect();
       const target = track.scrollLeft + (r.left + r.width / 2) - (t.left + t.width / 2);
       track.scrollTo({ left: target, behavior: smooth && !REDUCED ? 'smooth' : 'auto' });
     };
-    requestAnimationFrame(() => { toCard(cards[0], false); centre(); });
+    requestAnimationFrame(() => { track.scrollLeft = 0; centre(); });
 
     /* drag with the mouse; the wheel already scrolls sideways on a trackpad,
        and a vertical wheel over the field is turned sideways too */
@@ -618,8 +635,11 @@
        while you are over it, dragging it, or in it with the keyboard, and it
        turns around at either end. */
     let drift = !REDUCED, dir = 1, resting = false, last = 0;
+    /* it holds still for a moment first, so what you land on is the row as it
+       was composed — not a picture already half cut by the drift */
+    const HOLD = 2600, t0 = performance.now();
     const step = (now) => {
-      if (drift && !resting && !dragging) {
+      if (drift && !resting && !dragging && now - t0 > HOLD) {
         const dt = Math.min(48, now - (last || now)); last = now;
         const max = track.scrollWidth - track.clientWidth;
         let next = track.scrollLeft + dir * 0.022 * dt;
