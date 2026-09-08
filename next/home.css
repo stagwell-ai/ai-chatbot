@@ -722,7 +722,8 @@ body.chat-open{overflow:hidden}
   font-family:var(--display);font-weight:400;font-size:clamp(48px, 1.4rem + 3.6vw, 84px);letter-spacing:-.03em;line-height:1;color:var(--ink);
 }
 .stat__n i{font-style:normal;font-size:.45em;vertical-align:top;margin-left:.15em;color:var(--ink)}
-.stat__l{font-family:var(--display);font-weight:400;font-size:clamp(40px, 1.2rem + 2.8vw, 68px);letter-spacing:-.03em;line-height:1;color:var(--ink);margin-top:-.2em}
+/* the fourth card carries names, not a figure: the same voice, a size down */
+.stat__n--words{font-size:clamp(26px, 1rem + 1.4vw, 40px);line-height:1.15;letter-spacing:-.02em}
 .stat__d{margin-top:auto;padding-top:var(--s-9);font-size:16px;line-height:1.45;color:var(--ink-3)}
 
 /* ── 5 · the close ───────────────────────────────────────────────────────── */
