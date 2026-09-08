@@ -96,15 +96,17 @@
     }
   }
 
-  /* ── the slider: the stills in the strip turn over every 9s with a
-        cross-fade; with one still there is nothing to turn ───────────────── */
+  /* ── the slider: the stills in the strip turn over with a cross-fade —
+        the first hands over sooner (4.5s after landing), then every 9s;
+        with one still there is nothing to turn ────────────────────────────── */
   const slides = $$('#heroSlides .hero__pic');
   if (slides.length > 1 && !REDUCED) {
     let cur = 0;
-    setInterval(() => {
+    const turn = () => {
       const next = (cur + 1) % slides.length;
       slides[next].classList.add('is-on'); slides[cur].classList.remove('is-on'); cur = next;
-    }, 9000);
+    };
+    setTimeout(() => { turn(); setInterval(turn, 9000); }, 4500);
   }
 
   /* ── the film's panel: a still, clipped to the right column at rest. A tap
