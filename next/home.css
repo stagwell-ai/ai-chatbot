@@ -419,6 +419,9 @@ body.chat-open{overflow:hidden}
   transition:opacity .3s ease;
 }
 .hero__media.is-open .turn{opacity:0}          /* the film carries its own words */
+/* the turning question over the slides is hidden for now (client). Drop this
+   rule to bring it back; the words and the turn keep running underneath. */
+.hero__media .turn{display:none}
 
 /* a change is two moves in sequence, never one on top of the other: the old
    phrase leaves fast and completely, THEN the new one rises in. Two large
