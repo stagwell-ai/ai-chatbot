@@ -327,8 +327,11 @@ body.chat-open{overflow:hidden}
 /* the starting points under the paragraph: outlined, ink on white, left */
 /* margin-bottom:auto with the title's margin-top:auto centres the block in
    the stack — up from the bottom row, with at least 64 to it */
-.hero__tags{display:flex;flex-wrap:wrap;gap:var(--s-4);margin:0 0 auto;padding-bottom:var(--s-12);justify-content:flex-start}
-.hero__tags-br{flex-basis:100%;height:0;margin:0}   /* the row break: three on top, two below */
+/* one gap both ways: the row-break li is a flex item, so a row gap would
+   count twice around it — rows are spaced by the tags' own bottom margin */
+.hero__tags{display:flex;flex-wrap:wrap;gap:0 var(--s-4);margin:0 0 auto;padding-bottom:calc(var(--s-12) - var(--s-4));justify-content:flex-start}
+.hero__tags > li{margin-bottom:var(--s-4)}
+.hero__tags-br{flex-basis:100%;height:0;margin:0!important}   /* the row break: three on top, two below */
 /* the tags come last, one after the other, with a shorter lift than the big pieces */
 .hero__tags > .rv{transform:translateY(12px);transition-duration:.6s,.7s}
 .hero__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2);background:#FFFFFF}   /* white, so they sit on the lattice */
