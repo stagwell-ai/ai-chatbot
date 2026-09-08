@@ -77,9 +77,30 @@ d.setAttribute('data-theme',t||sys);})();
       </button>
       <a class="btn btn--line" href="#hero" data-ask>Try for free</a>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
+      <!-- the phone's way in: the links and both buttons live in the sheet -->
+      <button type="button" class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navMenu"><span></span><span></span></button>
     </div>
   </nav>
 </header>
+
+<!-- the menu, on a phone: under the bar, the pages then the two ways in -->
+<nav class="menu" id="navMenu" aria-label="Menu" hidden>
+  <div class="menu__top">
+    <!-- the magnifier lives here on a phone; it opens the same chat -->
+    <button type="button" class="menu__search" id="menuSearch" aria-haspopup="dialog">
+      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12.8 12.8L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Ask Stagwell</span>
+    </button>
+    <ul class="menu__links">
+      <li><a href="#companies">Companies</a></li>
+      <li><a href="/next/products">Products</a></li>
+      <li><a href="/next/why">Why Stagwell</a></li>
+    </ul>
+  </div>
+  <div class="menu__acts">
+    <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
+  </div>
+</nav>
 
 <!-- the chat, full screen over the page: the Ask Stagwell block itself,
      in light. The magnifier opens it; the arrow or Enter sends to the agent. -->
@@ -478,18 +499,38 @@ d.setAttribute('data-theme',t||sys);})();
     <h2 class="display display--close rv"><span class="ln"><span class="ln__in">The Stagwell <em>suite.</em></span></span></h2>
     <p class="suite__lede rv" style="--d:.15s">Stagwell puts the Marketing Cloud’s products behind one conversation. Tell the agent what you’re up against; it finds the ones that solve it, and hands you to the people who run them.</p>
 
-    <div class="suite__grid rv" style="--d:.3s" id="suite">
-      <ul class="suite__list" role="tablist" aria-label="Ways in">
-        <li><button type="button" class="suite__item is-on" role="tab" aria-selected="true" data-cta="session" data-line="Sixty minutes with the strategists who run these products." data-pic="/assets/img/co-imai.jpg"><span class="suite__word">Book a strategy session</span><svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="suite__arrow-line" d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="suite__arrow-head" d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
-        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-cta="expert" data-line="A working conversation, not a pitch." data-pic="/assets/img/hero-slide-2.jpg"><span class="suite__word">Talk to an AI expert</span><svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="suite__arrow-line" d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="suite__arrow-head" d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
-        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-cta="demo" data-line="The whole suite, pointed at your brand." data-pic="/assets/img/co-newvoices.jpg"><span class="suite__word">Request your full AI workspace</span><svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="suite__arrow-line" d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="suite__arrow-head" d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
-        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-href="/next/products" data-line="Every product in the Marketing Cloud, one by one." data-pic="/assets/img/hero-slide-1.jpg"><span class="suite__word">See every product</span><svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="suite__arrow-line" d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="suite__arrow-head" d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></li>
-      </ul>
-      <div class="suite__panel" role="tabpanel">
-        <div class="suite__media"><img class="suite__pic" id="suitePic" src="/assets/img/co-imai.jpg" alt="" loading="lazy" decoding="async"></div>
-        <p class="suite__line" id="suiteLine">Sixty minutes with the strategists who run these products.</p>
-      </div>
-    </div>
+    <!-- four ways in, each its own card: a picture, the name with its arrow,
+         and the line under it. On a phone the cards become rows. -->
+    <ul class="suite__cards rv" style="--d:.3s" id="suite">
+        <li><button type="button" class="suite__card" data-cta="session">
+          <span class="suite__thumb"><img src="/assets/img/co-imai.jpg" alt="" loading="lazy" decoding="async"></span>
+          <span class="suite__body">
+            <span class="suite__name">Book a strategy session<svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="suite__note">Sixty minutes with the strategists who run these products.</span>
+          </span>
+        </button></li>
+        <li><button type="button" class="suite__card" data-cta="expert">
+          <span class="suite__thumb"><img src="/assets/img/hero-slide-2.jpg" alt="" loading="lazy" decoding="async"></span>
+          <span class="suite__body">
+            <span class="suite__name">Talk to an AI expert<svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="suite__note">A working conversation, not a pitch.</span>
+          </span>
+        </button></li>
+        <li><button type="button" class="suite__card" data-cta="demo">
+          <span class="suite__thumb"><img src="/assets/img/co-newvoices.jpg" alt="" loading="lazy" decoding="async"></span>
+          <span class="suite__body">
+            <span class="suite__name">Request your full AI workspace<svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="suite__note">The whole suite, pointed at your brand.</span>
+          </span>
+        </button></li>
+        <li><button type="button" class="suite__card" data-href="/next/products">
+          <span class="suite__thumb"><img src="/assets/img/hero-slide-1.jpg" alt="" loading="lazy" decoding="async"></span>
+          <span class="suite__body">
+            <span class="suite__name">See every product<svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="suite__note">Every product in the Marketing Cloud, one by one.</span>
+          </span>
+        </button></li>
+    </ul>
   </div>
 </section>
 

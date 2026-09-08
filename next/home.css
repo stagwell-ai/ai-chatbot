@@ -121,7 +121,7 @@ h1,h2,p,figure{margin:0}
 .display--cos em{color:var(--teal)}
 .display--port em{color:var(--amber)}
 .display--trust em{color:var(--teal)}
-.display--close em{color:var(--amber)}
+.display--close em{color:var(--teal)}   /* the amber belongs to the network band (client) */
 /* the reveal wrapper clips; at this size the descender of the g drops below
    the .9 line box and was being cut. Room for it, and the rise-in offset grows
    to match so the line still starts fully hidden. */
@@ -219,6 +219,33 @@ h1,h2,p,figure{margin:0}
 .nav__ask{font-size:14px;font-weight:500;color:var(--ink-2);transition:color .25s ease}
 .nav__ask:hover{color:var(--ink)}
 .nav .btn{height:44px;padding:0 22px;font-size:13px}
+
+/* the phone's menu button: two lines that cross when the sheet is open.
+   Hidden on a desktop, where the links sit in the bar. */
+.nav__burger{display:none;width:40px;height:40px;border-radius:50%;place-items:center;position:relative;color:var(--ink)}
+.nav__burger span{position:absolute;left:11px;width:18px;height:1.6px;border-radius:2px;background:currentColor;transition:transform .32s var(--ease),opacity .2s ease}
+.nav__burger span:nth-child(1){transform:translateY(-4px)}
+.nav__burger span:nth-child(2){transform:translateY(4px)}
+.nav__burger[aria-expanded="true"] span:nth-child(1){transform:rotate(45deg)}
+.nav__burger[aria-expanded="true"] span:nth-child(2){transform:rotate(-45deg)}
+/* the sheet itself sits UNDER the bar, so the button stays reachable */
+.menu{position:fixed;inset:0;z-index:40;background:#FFFFFF;
+  padding:calc(var(--nav-h) + var(--s-11)) var(--gutter) var(--s-12);
+  display:flex;flex-direction:column;justify-content:space-between;gap:var(--s-12);
+  opacity:0;transition:opacity .28s var(--ease)}
+.menu.is-in{opacity:1}
+.menu__top{display:flex;flex-direction:column;gap:var(--s-11)}
+/* the search, as a field: it opens the chat over the page */
+.menu__search{display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 20px;border-radius:999px;
+  background:#F1F2F4;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-3);font-family:var(--ui);font-size:15px;
+  transition:background-color .25s ease,box-shadow .25s ease}
+.menu__search svg{width:18px;height:18px;color:var(--ink)}
+.menu__links{display:flex;flex-direction:column;gap:var(--s-8)}
+.menu__links a{font-family:var(--display);font-weight:400;font-size:clamp(32px, 9vw, 40px);letter-spacing:-.025em;line-height:1.1;color:var(--ink)}
+.menu__acts{display:flex;flex-direction:column;gap:var(--s-5)}
+.menu__acts .btn{width:100%}
+body.menu-open{overflow:hidden}
+body.menu-open .nav{background:#FFFFFF;transform:none!important}
 
 /* over the dark AI section the bar reads white-on-dark */
 .nav.on-dark:not(.is-stuck){color:#FFFFFF}
@@ -777,33 +804,28 @@ body.chat-open{overflow:hidden}
 .stat__d{margin-top:var(--s-4);font-size:16px;line-height:1.45;color:var(--ink-3)}   /* close under the figure, not pushed to the floor */
 
 /* ── 5 · the close ───────────────────────────────────────────────────────── */
-.close{padding:var(--s-15) 0 var(--s-16);border-top:1px solid var(--line)}
+.close{padding:var(--s-15) 0 var(--s-16);background:#FFFFFF}   /* white, and no line: the pastel bands do the dividing now */
 .suite__in{display:flex;flex-direction:column;align-items:center;text-align:center}
 .display--close{font-size:clamp(48px, 1.4rem + 5vw, 108px);text-transform:none;letter-spacing:-.035em;line-height:.92}
 .display--close .ln{padding-bottom:.2em;margin-bottom:-.2em}
 .suite__lede{margin-top:var(--s-11);max-width:900px;font-size:clamp(20px, .9rem + .8vw, 26px);line-height:1.45;color:var(--ink)}
-/* the ways in: names on the left, the chosen one bold; its line, picture and
-   button on the right */
-.suite__grid{margin-top:var(--s-15);width:100%;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:center;text-align:left}
-.suite__list{display:flex;flex-direction:column;gap:var(--s-5)}
-.suite__item{font-family:var(--display);font-weight:400;font-size:clamp(26px, .9rem + 2vw, 44px);letter-spacing:-.02em;line-height:1.1;color:var(--ink-3);text-align:left;white-space:nowrap;transition:color .25s ease,font-weight .1s ease}   /* a size down, so the long one holds one line */
-.suite__item:hover{color:var(--ink)}
-.suite__item.is-on{font-weight:700;color:var(--ink)}
-/* the arrow beside the chosen name: up and to the right, in the ink, and it
-   draws itself — the shaft first, then the head arriving at its tip */
-.suite__item{display:inline-flex;align-items:center;gap:.3em}
-.suite__arrow{width:.5em;height:.5em;color:currentColor;overflow:visible;flex-shrink:0;margin-top:.04em}
-.suite__arrow-line{stroke-dasharray:17;stroke-dashoffset:17;transition:stroke-dashoffset .45s var(--ease)}
-.suite__arrow-head{opacity:0;transform:translate(-5px,5px);transition:opacity .25s ease .2s,transform .4s var(--ease) .15s}
-.suite__item.is-on .suite__arrow-line{stroke-dashoffset:0}
-.suite__item.is-on .suite__arrow-head{opacity:1;transform:none}
-.suite__item:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
-.suite__panel{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-8)}
-.suite__media{position:relative;width:min(100%,440px);aspect-ratio:1/1;overflow:hidden;background:var(--deep)}   /* square — 4:5 ran too tall for the screen (client) */
-.suite__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s ease}
-.suite__pic.is-fading{opacity:0}
-.suite__line{width:min(100%,440px);font-size:clamp(18px, .9rem + .5vw, 22px);line-height:1.4;color:var(--ink)}   /* never wider than the picture */
-
+/* the ways in, as four cards: a picture, the name with its arrow, the line.
+   (The old list-plus-one-panel was replaced 2026-09-08: "we need a better
+   design for the suite with the links and the images and the icons".) */
+.suite__cards{margin-top:var(--s-14);width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-9);text-align:left}
+.suite__card{display:flex;flex-direction:column;align-items:stretch;gap:var(--s-7);width:100%;text-align:left;color:var(--ink)}
+.suite__thumb{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--deep);border-radius:6px}
+.suite__thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease)}
+.suite__card:hover .suite__thumb img{transform:scale(1.05)}
+.suite__body{display:flex;flex-direction:column;gap:var(--s-4);min-width:0}
+.suite__name{display:flex;align-items:flex-start;gap:.35em;font-family:var(--display);font-weight:700;
+  font-size:clamp(20px, .8rem + .7vw, 25px);line-height:1.15;letter-spacing:-.02em;color:var(--ink)}
+/* the arrow is drawn at rest — on a phone there is no hover to reveal it —
+   and lifts up and to the right when the card is touched or pointed at */
+.suite__arrow{width:.62em;height:.62em;flex-shrink:0;margin-top:.16em;color:var(--ink);transition:transform .3s var(--ease)}
+.suite__card:hover .suite__arrow,.suite__card:focus-visible .suite__arrow{transform:translate(3px,-3px)}
+.suite__note{font-size:16px;line-height:1.45;color:var(--ink-3)}
+.suite__card:focus-visible{outline:2px solid var(--ink);outline-offset:6px;border-radius:8px}
 
 /* ── 6 · the end is the start ────────────────────────────────────────────── */
 .ask-end{padding:var(--s-15) 0 var(--s-16);background:#E6F5F9}   /* a pastel of the mark's teal, as the network section wears the amber's (client); with a ground of its own it takes 120 above */   /* white, centred, no line above or below (client) */
@@ -864,24 +886,33 @@ body.chat-open{overflow:hidden}
 @media (max-width:820px){
   :root{--nav-h:64px}
 
-  /* ── nav: the wordmark, the magnifier, one button ── */
-  .nav__in{grid-template-columns:auto 1fr auto;column-gap:var(--s-6)}
+  /* ── nav: the wordmark, the magnifier, the menu — tight to both edges ── */
+  /* the links are display:none on a phone, so they are no longer grid items:
+     with three columns the acts landed in the 1fr and stopped a column-gap
+     short of the edge — the right side read as heavier padding than the
+     left. Two columns, and both ends sit on the same 16. */
+  .nav__in{grid-template-columns:1fr auto;column-gap:var(--s-5);padding-inline:16px}
   .nav__links{display:none}
   .nav__brand svg{height:12px}
+  .nav__acts{gap:var(--s-4)}
   .nav__search{width:40px;height:40px}
   .nav__search svg{width:17px;height:17px}
-  .nav .btn{height:40px;padding:0 16px;font-size:12px}
-  .nav .btn--ink{display:none}                    /* Book a demo lives in the suite and the footer on a phone */
+  /* the bar keeps one way in; Book a demo and the magnifier moved into the menu */
+  .nav .btn--ink{display:none}
+  .nav .btn--line{height:36px;padding:0 15px;font-size:11px;letter-spacing:.05em}
+  .nav__search{display:none}
+  .nav__burger{display:grid;margin-right:-11px}   /* the glyph is inset in its 40px target: pull the box out so the ink lands on the same 16 as the wordmark */
+  .menu{padding-inline:16px}
 
   /* ── hero: the column first, the picture under it ── */
   .hero{height:auto;min-height:100svh;--media-w:100%}
   .hero__in{display:flex;flex-direction:column;flex:none}
-  .hero__l{padding:calc(var(--nav-h) + var(--s-9)) var(--gutter) var(--s-9);min-height:0}
+  .hero__l{padding:calc(var(--nav-h) + var(--s-13)) var(--gutter) var(--s-11);min-height:0}   /* 80 clear of the bar: the title was stuck to it (client) */
   .hero__stack{flex:none;overflow:visible}
   .hero__stack > .display--hero{margin-top:0}
   .hero__l.is-chat .hero__stack{max-height:62svh;overflow-y:auto}
   .display--hero{font-size:clamp(52px, 15vw, 64px)}
-  .hero__lede{margin:var(--s-8) 0 var(--s-9);white-space:normal;font-size:17px}
+  .hero__lede{margin:var(--s-9) 0 var(--s-11);white-space:normal;font-size:17px}   /* 32 under the title, 48 to the field */
   .hero__r{display:none}
   .hero__acts{flex-direction:column;align-items:stretch;gap:var(--s-5)}
   .hero__acts .call,.ask-end__acts .call{width:100%}     /* the pill takes the column; its faces fit inside */
@@ -928,11 +959,10 @@ body.chat-open{overflow:hidden}
   .trust{padding:var(--s-13) 0}
   .trust__copy{margin-top:var(--s-10)}
   .trust__banner{margin-top:var(--s-12);height:auto;aspect-ratio:4/5}
-  .stats{margin-top:var(--s-12);grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-4)}   /* the three figures in a row, the partners under them */
-  .stat{padding:var(--s-7) var(--s-6);border-radius:16px;gap:var(--s-4)}
-  .stat__n{font-size:32px}
-  .stat:last-child{grid-column:1 / -1;padding:var(--s-8) var(--s-7)}
-  .stat__n--words{font-size:26px}
+  .stats{margin-top:var(--s-12);grid-template-columns:1fr 1fr;gap:var(--s-5)}   /* two and two: three in a row crushed the words (client) */
+  .stat{padding:var(--s-8) var(--s-7);border-radius:18px;gap:var(--s-5)}
+  .stat__n{font-size:38px}
+  .stat__n--words{font-size:21px}
   .stat__d{font-size:13px}
 
   /* ── the suite: the names, then the picture ── */
@@ -941,11 +971,14 @@ body.chat-open{overflow:hidden}
      that already equalled the line and never brought the size down — the
      hero's trap, again: the titles take their column's width */
   .suite__in > .display,.ask-end__in > .display,.trust__head > .display{align-self:stretch}
-  .suite__grid{margin-top:var(--s-12);grid-template-columns:1fr;row-gap:var(--s-11)}
-  .suite__list{gap:var(--s-6)}
-  .suite__item{white-space:normal;font-size:26px;align-items:flex-start}
-  .suite__arrow{margin-top:.22em}
-  .suite__media,.suite__line{width:100%}
+  /* the cards become rows: a small picture, the name, its line */
+  .suite__cards{margin-top:var(--s-11);grid-template-columns:1fr;gap:0}
+  .suite__card{flex-direction:row;align-items:center;gap:var(--s-7);padding:var(--s-7) 0;border-top:1px solid var(--line)}
+  .suite__cards li:last-child .suite__card{border-bottom:1px solid var(--line)}
+  .suite__thumb{width:76px;flex:0 0 76px;aspect-ratio:1/1}
+  .suite__name{font-size:19px}
+  .suite__note{font-size:14px}
+  .suite__arrow{margin-top:.14em}
 
   /* ── the end ── */
   .ask-end{padding:var(--s-13) 0 var(--s-14)}
@@ -955,8 +988,14 @@ body.chat-open{overflow:hidden}
 
   /* ── footer: one column; the mark beside the kicker; the band stacks ── */
   .foot__in{grid-template-columns:1fr;gap:var(--s-11);padding-top:var(--s-13);padding-bottom:var(--s-12)}
-  .foot__lead{flex-direction:row;align-items:center;justify-content:space-between;gap:var(--s-8)}
-  .foot__mark{width:56px}
+  /* the mark beside the kicker read as an accident; it ends the column
+     instead, under the links (client). display:contents lifts both out of
+     .foot__lead so the grid can order them. */
+  .foot__lead{display:contents}
+  .foot__kicker{order:1}
+  .foot__big{order:2}
+  .foot__small{order:3}
+  .foot__mark{order:4;width:64px;margin-top:var(--s-5)}
   .foot__big{gap:var(--s-7)}
   .foot__big a{font-size:34px}
   .foot__small{gap:var(--s-7);align-items:flex-start;text-align:left}

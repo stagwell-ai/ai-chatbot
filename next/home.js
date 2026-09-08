@@ -147,27 +147,12 @@
     tick();
   }
 
-  /* ── the suite's ways in: hover or focus a name and the panel shows its
-        line and its picture; the names themselves are the buttons — a
-        booking (lead.js reads their data-cta) or a page (data-href). ───── */
-  const suite = $('#suite');
-  if (suite) {
-    const items = $$('.suite__item', suite), pic = $('#suitePic'), line = $('#suiteLine');
-    const choose = (b) => {
-      if (b.classList.contains('is-on')) return;
-      items.forEach(o => { o.classList.toggle('is-on', o === b); o.setAttribute('aria-selected', o === b ? 'true' : 'false'); });
-      line.textContent = b.dataset.line;
-      if (pic.getAttribute('src') !== b.dataset.pic) {
-        pic.classList.add('is-fading');
-        setTimeout(() => { pic.src = b.dataset.pic; pic.onload = () => pic.classList.remove('is-fading'); }, REDUCED ? 0 : 200);
-      }
-    };
-    items.forEach(b => {
-      b.addEventListener('mouseenter', () => choose(b));
-      b.addEventListener('focus', () => choose(b));
-      b.addEventListener('click', () => { choose(b); if (b.dataset.href) location.href = b.dataset.href; });
-    });
-  }
+  /* ── the suite's four cards: a booking (lead.js reads data-cta from the
+        page) or a page (data-href). Nothing to choose any more — each card
+        carries its own picture and line. ──────────────────────────────── */
+  $$('#suite .suite__card').forEach(b => {
+    if (b.dataset.href) b.addEventListener('click', () => { location.href = b.dataset.href; });
+  });
 
   /* ── the slider: the stills in the strip turn over with a cross-fade —
         the first hands over sooner (4.5s after landing), then every 9s;
@@ -502,8 +487,37 @@
       (lastFocus || searchBtn).focus({ preventScroll: true });
     };
     searchBtn.addEventListener('click', () => openChat(searchBtn));
+    /* the phone's magnifier, inside the menu: the sheet closes behind it */
+    const menuSearch = $('#menuSearch');
+    if (menuSearch) menuSearch.addEventListener('click', () => openChat(menuSearch));
     overClose.addEventListener('click', closeChat);
     addEventListener('keydown', (e) => { if (e.key === 'Escape' && !over.hidden) closeChat(); });
+  }
+
+  /* ── the phone's menu: the sheet under the bar. The button crosses, the
+        page holds still, Escape closes, and any link inside closes it as it
+        does its own work. ─────────────────────────────────────────────── */
+  const burger = $('#navBurger'), menu = $('#navMenu');
+  if (burger && menu) {
+    const closeMenu = () => {
+      if (menu.hidden) return;
+      menu.classList.remove('is-in');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
+      const done = () => { menu.hidden = true; };
+      REDUCED ? done() : setTimeout(done, 300);
+    };
+    const openMenu = () => {
+      menu.hidden = false;
+      burger.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('menu-open');
+      requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-in')));
+    };
+    burger.addEventListener('click', () => (menu.hidden ? openMenu() : closeMenu()));
+    menu.addEventListener('click', (e) => { if (e.target.closest('a,button')) closeMenu(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) closeMenu(); });
+    /* back on a desktop the sheet has no business being open */
+    addEventListener('resize', () => { if (innerWidth > 820) closeMenu(); });
   }
 
   /* ── "Ask Stagwell" (the bar, the footer) goes to the hero's field: the
