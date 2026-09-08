@@ -102,17 +102,31 @@
   const HINTS = ['Maybe just start with your site.', 'Want to improve sales?', 'Need to analyze your competitors?', 'Trying to reach Gen Z?', 'Building brand awareness?', 'Exploring new markets?'];
   if (!REDUCED) $$('.ask-mini__hint').forEach(hint => {
     const hintInput = $('.ask-mini__input', hint.parentElement); if (!hintInput) return;
-    /* the AI nudging, not labels: questions, and a way in */
-    let i = 0;
-    setInterval(() => {
+    /* the AI nudging, not labels: questions, and a way in.
+       One phrase is live at a time — `cur`. The old rAF-driven version
+       queued its fades while the tab was hidden and the interval kept
+       appending, so on return several phrases switched on at once and sat
+       stacked in the field. Now: no ticks while hidden, a style flush instead
+       of rAF to start the transition, and every tick (and every return to
+       the tab) removes anything that is not the live phrase. */
+    let i = 0, busy = false, cur = hint.querySelector('.ask-mini__hint-w');
+    const heal = () => { $$('.ask-mini__hint-w', hint).forEach(s => { if (s !== cur) s.remove(); }); if (cur) { cur.classList.remove('is-off'); cur.classList.add('is-on'); } busy = false; };
+    const tick = () => {
+      if (document.hidden || busy) return;
       if (document.activeElement === hintInput || hintInput.value) return;
-      const old = hint.querySelector('.ask-mini__hint-w');
+      heal();
+      busy = true;
       i = (i + 1) % HINTS.length;
       const w = document.createElement('span'); w.className = 'ask-mini__hint-w'; w.textContent = HINTS[i];
       hint.appendChild(w);
-      requestAnimationFrame(() => requestAnimationFrame(() => { if (old) old.classList.replace('is-on', 'is-off'); w.classList.add('is-on'); }));
-      setTimeout(() => old && old.remove(), 700);
-    }, 2800);
+      const old = cur; cur = w;
+      void w.offsetWidth;                                   /* flush, so the rise-in transitions from the hidden state */
+      if (old) old.classList.replace('is-on', 'is-off');
+      w.classList.add('is-on');
+      setTimeout(() => { if (old) old.remove(); busy = false; }, 800);
+    };
+    setInterval(tick, 2800);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) heal(); });
   });
 
   /* ── the trust banner: the frame stays; the picture inside zooms with the
