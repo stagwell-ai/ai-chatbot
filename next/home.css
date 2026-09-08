@@ -715,16 +715,19 @@ body.chat-open{overflow:hidden}
 }
 .stat{
   display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-6);
-  padding:var(--s-10) var(--s-9);min-height:340px;
+  padding:var(--s-10) var(--s-9) var(--s-10);
   border:1px solid var(--line);border-radius:24px;
 }
 .stat__n{
   font-family:var(--display);font-weight:400;font-size:clamp(48px, 1.4rem + 3.6vw, 84px);letter-spacing:-.03em;line-height:1;color:var(--ink);
 }
 .stat__n i{font-style:normal;font-size:.45em;vertical-align:top;margin-left:.15em;color:var(--ink)}
-/* the fourth card carries names, not a figure: the same voice, a size down */
-.stat__n--words{font-size:clamp(26px, 1rem + 1.4vw, 40px);line-height:1.15;letter-spacing:-.02em}
-.stat__d{margin-top:auto;padding-top:var(--s-9);font-size:16px;line-height:1.45;color:var(--ink-3)}
+/* the fourth card carries names, not a figure: one per line, a bullet before
+   each, the same voice a size down */
+.stat__n--words{display:flex;flex-direction:column;gap:.12em;font-size:clamp(32px, 1.1rem + 2vw, 54px);line-height:1.05;letter-spacing:-.025em}
+.stat__n--words span{display:flex;align-items:center;gap:.3em}
+.stat__n--words span::before{content:"";width:.28em;height:.28em;border-radius:50%;background:var(--orange);flex-shrink:0}
+.stat__d{margin-top:var(--s-4);font-size:16px;line-height:1.45;color:var(--ink-3)}   /* close under the figure, not pushed to the floor */
 
 /* ── 5 · the close ───────────────────────────────────────────────────────── */
 .close{

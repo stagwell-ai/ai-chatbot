@@ -116,7 +116,7 @@
   }
 
   /* ── the trust banner: the frame stays; the picture inside zooms with the
-        scroll — 1.25 as the banner enters at the bottom, 1 as it leaves at
+        scroll — 1.45 as the banner enters at the bottom, 1 as it leaves at
         the top. One function of position, nothing per-frame beyond that. ── */
   const banner = $('#trustBanner'), bannerPic = $('.trust__pic', banner || document);
   if (banner && bannerPic && !REDUCED) {
@@ -126,7 +126,7 @@
       const r = banner.getBoundingClientRect(), vh = innerHeight;
       if (r.bottom < 0 || r.top > vh) return;
       const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));   /* 0 entering → 1 leaving */
-      bannerPic.style.setProperty('--zoom', (1.25 - .25 * p).toFixed(4));
+      bannerPic.style.setProperty('--zoom', (1.45 - .45 * p).toFixed(4));   /* 1.45 → 1: a zoom you can see */
     };
     addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(tick); } }, { passive: true });
     addEventListener('resize', tick);
