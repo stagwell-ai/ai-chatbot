@@ -358,6 +358,8 @@ body.chat-open{overflow:hidden}
 /* the slides live in the strip itself (the stills are cut for it), one
    showing at a time, a 1.2s cross-fade between them */
 .hero__slides{position:absolute;top:0;bottom:0;right:0;width:var(--media-w);overflow:hidden}
+/* a 20% veil over every slide, so the white words read on any of them */
+.hero__slides::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.2);pointer-events:none}
 .hero__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:0}
 .hero__pic.is-on{opacity:1}
 /* the client composed the thumbnail at the film's size with the subject at
@@ -366,10 +368,12 @@ body.chat-open{overflow:hidden}
    the next one a slow zoom out — the animation restarts as a slide comes
    on. The cross-fade between them is two seconds, eased both ends. */
 .hero__pic{transition:opacity 2s ease-in-out}
-.hero__pic.is-on{transform-origin:50% 50%;will-change:transform;animation:kbIn 12s ease-in-out forwards}
-.hero__pic.is-on:nth-child(even){animation-name:kbOut}
-@keyframes kbIn{from{transform:scale(1)}to{transform:scale(1.12)}}
-@keyframes kbOut{from{transform:scale(1.12)}to{transform:scale(1)}}
+/* .is-off keeps the outgoing slide's animation alive through its fade —
+   losing it snapped the image back to scale 1 mid-fade: the "zoom jump" */
+.hero__pic.is-on,.hero__pic.is-off{transform-origin:50% 50%;will-change:transform;animation:kbIn 12s ease-in-out forwards}
+.hero__pic.is-on:nth-child(even),.hero__pic.is-off:nth-child(even){animation-name:kbOut}
+@keyframes kbIn{from{transform:scale(1)}to{transform:scale(1.1)}}
+@keyframes kbOut{from{transform:scale(1.1)}to{transform:scale(1)}}
 /* the film shows only once it is actually running, so the still never gives
    way to a black frame */
 .hero__film{opacity:0;transition:opacity .4s ease}

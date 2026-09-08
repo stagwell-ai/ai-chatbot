@@ -103,8 +103,11 @@
   if (slides.length > 1 && !REDUCED) {
     let cur = 0;
     const turn = () => {
-      const next = (cur + 1) % slides.length;
-      slides[next].classList.add('is-on'); slides[cur].classList.remove('is-on'); cur = next;
+      const next = (cur + 1) % slides.length, prev = slides[cur];
+      slides[next].classList.add('is-on');
+      prev.classList.add('is-off'); prev.classList.remove('is-on');      /* keeps its zoom while it fades */
+      setTimeout(() => prev.classList.remove('is-off'), 2200);
+      cur = next;
     };
     setTimeout(() => { turn(); setInterval(turn, 9000); }, 4500);
   }
