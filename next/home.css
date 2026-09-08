@@ -622,7 +622,7 @@ body.chat-open{overflow:hidden}
 .intro__act{margin-top:var(--s-8);display:flex}     /* 24: the button belongs to the paragraph; flex, so no inline strut adds to it */
 
 /* ── 3 · companies ───────────────────────────────────────────────────────── */
-.cos{padding:var(--s-15) 0}                     /* 120 — the section rhythm was "too high" */
+.cos{padding:var(--s-9) 0 var(--s-15)}          /* 32 above — the Agentic section already leaves 120 under itself — 120 below */
 .cos .display--cos{margin-bottom:var(--s-13)}   /* 80 */
 
 /* the field: one full-width horizontal scroller with depth. The card at the
