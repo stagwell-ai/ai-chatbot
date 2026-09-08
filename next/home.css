@@ -31,6 +31,13 @@
   --paper:#FFFFFF;
   --deep:#07141D;
   --orange:#FF6D24;
+  /* the brand board's colours (2026-09-08): the accent word in every title
+     wears a GRADIENT of these, a different one each time — never the orange */
+  --g-blue:linear-gradient(120deg,#0A5F80 0%,#2CC0E4 100%);          /* deep teal-navy → cyan */
+  --g-bluegreen:linear-gradient(120deg,#0E8EB0 0%,#2FC08A 100%);     /* teal → green */
+  --g-yellowgreen:linear-gradient(120deg,#F2C13B 0%,#1FAE9B 100%);   /* yellow → sea green */
+  --g-amberblue:linear-gradient(120deg,#FFB81C 0%,#2CB4DC 100%);     /* amber → cyan, the board's tile */
+  --g-cyanblue:linear-gradient(120deg,#35C3E3 0%,#0B5C7A 100%);      /* cyan → deep */
   --navy:#003349;                               /* the wordmark's blue — the user's turns */
   --amber:#FFB81C;
 
@@ -110,6 +117,15 @@ h1,h2,p,figure{margin:0}
 .display--hero em{color:var(--orange)}
 /* "Stagwell." in the page ink, as on the billboard */
 .display--hero .navy{color:var(--ink)}
+/* the accent word is a gradient of the board's colours, cut into the type:
+   one gradient per title, so no two neighbours repeat */
+.display em{--g:var(--g-blue);background-image:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.display--hero em,.display--end em,.chat-over__title em{--g:var(--g-blue)}
+.display--intro em{--g:var(--g-amberblue)}
+.display--cos em{--g:var(--g-bluegreen)}
+.display--port em{--g:var(--g-yellowgreen)}
+.display--trust em{--g:var(--g-cyanblue)}
+.display--close em{--g:var(--g-amberblue)}
 /* the reveal wrapper clips; at this size the descender of the g drops below
    the .9 line box and was being cut. Room for it, and the rise-in offset grows
    to match so the line still starts fully hidden. */
@@ -181,7 +197,7 @@ h1,h2,p,figure{margin:0}
 .link--lg{font-size:18px}
 .link--quiet{color:var(--ink-3)}
 .link:hover{border-bottom-color:currentColor}
-.link:focus-visible{outline:2px solid var(--orange);outline-offset:4px;border-radius:2px}
+.link:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:2px}
 
 /* ── nav ─────────────────────────────────────────────────────────────────── */
 .nav{
@@ -595,7 +611,7 @@ body.chat-open{overflow:hidden}
 }
 .ask__go svg{width:22px;height:22px}
 .ask__go:hover{transform:translateY(-50%) scale(1.06)}
-.ask__go:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.ask__go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
 .ask__tags{
   margin-top:var(--s-10);                       /* 40 */
@@ -612,7 +628,7 @@ body.chat-open{overflow:hidden}
 }
 .tag:hover{border-color:rgba(255,255,255,.7);color:#FFFFFF}
 .tag[aria-pressed="true"]{background:#FFFFFF;color:var(--ink);border-color:#FFFFFF}
-.tag:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
 /* ── 2 · agentic solutions: the split ───────────────────────────────────── */
 /* the picture is inset, as on the reference: white around it on the left and
@@ -663,7 +679,7 @@ body.chat-open{overflow:hidden}
   outline:none;
 }
 .co.is-centre{--k:1;--o:1}
-.co:focus-visible .co__face{box-shadow:0 0 0 2px var(--orange)}
+.co:focus-visible .co__face{box-shadow:0 0 0 2px var(--ink)}
 
 /* the tile holds the picture and its back; the words sit under it, as on
    the reference — outside the picture, centred */
@@ -707,7 +723,7 @@ body.chat-open{overflow:hidden}
 /* the position line, as on the reference: a long thin ink line, a thicker
    ink segment where you are */
 .field__bar{position:relative;width:min(920px,50vw);height:2px;margin:var(--s-12) auto 0;background:var(--ink)}
-.field__pos{position:absolute;top:-2px;left:0;height:6px;width:22%;background:var(--ink);transition:left .2s ease,width .2s ease}
+.field__pos{position:absolute;top:-2px;left:0;height:6px;width:22%;background:#009CBD;   /* the mark's teal — the thumb wears a logo colour (client) */transition:left .2s ease,width .2s ease}
 
 /* ── 4 · scale ───────────────────────────────────────────────────────────── */
 /* ── 3b · portfolio: DEPT's "Solutions" block ────────────────────────────── */
@@ -761,7 +777,7 @@ body.chat-open{overflow:hidden}
    each, the same voice a size down */
 .stat__n--words{display:flex;flex-direction:column;gap:.12em;font-size:clamp(32px, 1.1rem + 2vw, 54px);line-height:1.05;letter-spacing:-.025em}
 .stat__n--words span{display:flex;align-items:center;gap:.3em}
-.stat__n--words span::before{content:"";width:.28em;height:.28em;border-radius:50%;background:var(--orange);flex-shrink:0}
+.stat__n--words span::before{content:"";width:.28em;height:.28em;border-radius:50%;background:var(--g-blue);flex-shrink:0}
 .stat__d{margin-top:var(--s-4);font-size:16px;line-height:1.45;color:var(--ink-3)}   /* close under the figure, not pushed to the floor */
 
 /* ── 5 · the close ───────────────────────────────────────────────────────── */
