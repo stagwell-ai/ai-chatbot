@@ -117,7 +117,7 @@ h1,h2,p,figure{margin:0}
 .is-ready .display--hero .ln__in{transform:translateY(0)}
 /* every .display is then fitted to its wrap by home.js — the clamp is the ceiling */
 .display--ask  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px);color:#FFFFFF}
-.display--cos  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px)}
+.display--cos  {font-size:clamp(36px, 1.2rem + 2.9vw, 58px);text-transform:none;letter-spacing:-.025em;line-height:.96}   /* the Agentic section's title, as the client asked */
 .display--close{font-size:clamp(60px, 1.3rem + 6vw, 112px)}
 
 /* a headline arrives one line at a time, from beneath its own baseline */
@@ -622,8 +622,8 @@ body.chat-open{overflow:hidden}
 .intro__act{margin-top:var(--s-8);display:flex}     /* 24: the button belongs to the paragraph; flex, so no inline strut adds to it */
 
 /* ── 3 · companies ───────────────────────────────────────────────────────── */
-.cos{padding:var(--sec-lg) 0 var(--sec)}
-.cos .display--cos{margin-bottom:var(--s-16)}   /* 144 */
+.cos{padding:var(--s-15) 0}                     /* 120 — the section rhythm was "too high" */
+.cos .display--cos{margin-bottom:var(--s-13)}   /* 80 */
 
 /* the field: one full-width horizontal scroller with depth. The card at the
    centre stands forward at full scale; the rest recede and dim. Scroll-snap
@@ -632,7 +632,7 @@ body.chat-open{overflow:hidden}
 .field__track{
   display:flex;gap:var(--s-9);
   overflow-x:auto;overscroll-behavior-x:contain;
-  padding:var(--s-8) calc(50vw - 300px);         /* the first and last card can reach the centre */
+  padding:var(--s-8) calc(50vw - 200px);         /* the first and last card can reach the centre */
   scrollbar-width:none;-ms-overflow-style:none;
   cursor:grab;
   perspective:1600px;
@@ -641,7 +641,7 @@ body.chat-open{overflow:hidden}
 .field__track.is-dragging{cursor:grabbing}
 
 .co{
-  position:relative;flex:0 0 600px;height:400px;
+  position:relative;flex:0 0 400px;               /* a square tile, as the reference — not wide */
   transform:scale(var(--k,.86)) translateZ(0);
   opacity:var(--o,.5);
   transition:transform .6s var(--ease),opacity .6s var(--ease);
@@ -651,6 +651,9 @@ body.chat-open{overflow:hidden}
 .co.is-centre{--k:1;--o:1}
 .co:focus-visible .co__face{box-shadow:0 0 0 2px var(--orange)}
 
+/* the tile holds the picture and its back; the words sit under it, as on
+   the reference — outside the picture, centred */
+.co__tile{position:relative;height:400px;transform-style:preserve-3d}
 .co__face,.co__back{
   position:absolute;inset:0;border-radius:6px;overflow:hidden;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
@@ -661,18 +664,12 @@ body.chat-open{overflow:hidden}
 .co:hover .co__img{transform:scale(1.04)}
 
 .co__meta{
-  position:absolute;left:0;right:0;bottom:0;padding:var(--s-8) var(--s-9);
-  display:flex;flex-direction:column;gap:4px;
-  color:#FFFFFF;
-  background:linear-gradient(180deg,rgba(11,18,32,0) 0%,rgba(11,18,32,.72) 100%);
+  padding:var(--s-7) 0 0;
+  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
+  color:var(--ink);
 }
-.co__name{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em;line-height:1}
-.co__spec{
-  font-size:14px;color:rgba(255,255,255,.78);
-  max-height:0;opacity:0;transform:translateY(6px);overflow:hidden;
-  transition:max-height .5s var(--ease),opacity .4s ease,transform .5s var(--ease);
-}
-.co:hover .co__spec,.co.is-centre .co__spec,.co:focus-visible .co__spec{max-height:2.2em;opacity:1;transform:none}
+.co__name{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.2}
+.co__spec{font-size:15px;color:var(--ink-3)}
 
 /* click: the tile turns over into a flat typographic panel */
 .co__back{
@@ -691,15 +688,10 @@ body.chat-open{overflow:hidden}
   background:#FFFFFF;color:var(--ink);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
 }
 
-/* the position line: thin track, a thicker segment where you are */
-.field__bar{position:relative;width:min(560px,60vw);height:2px;margin:var(--s-11) auto 0;background:var(--line)}
-.field__pos{position:absolute;top:-1px;left:0;height:4px;width:22%;background:var(--ink);transition:left .2s ease,width .2s ease}
-
-.cos__foot{
-  margin-top:var(--s-14);                        /* 96 */
-  display:flex;flex-direction:column;align-items:center;gap:var(--s-9);
-}
-.cos__count{font-size:15px;color:var(--ink-3)}
+/* the position line, as on the reference: a long thin ink line, a thicker
+   ink segment where you are */
+.field__bar{position:relative;width:min(920px,50vw);height:2px;margin:var(--s-12) auto 0;background:var(--ink)}
+.field__pos{position:absolute;top:-2px;left:0;height:6px;width:22%;background:var(--ink);transition:left .2s ease,width .2s ease}
 
 /* ── 4 · scale ───────────────────────────────────────────────────────────── */
 .scale{padding:var(--sec) 0 var(--sec-lg);border-top:1px solid var(--line)}
