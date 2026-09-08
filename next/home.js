@@ -101,7 +101,8 @@
         while the field is empty and unfocused (the hint is hidden then). ── */
   const hint = $('#askMiniHint'), hintInput = $('#askMiniInput');
   if (hint && hintInput && !REDUCED) {
-    const HINTS = ['Let’s start with your website', 'Increase brand awareness', 'Reach Gen Z', 'Improve sales', 'Analyze competitors', 'Explore new markets'];
+    /* the AI nudging, not labels: questions, and a way in */
+    const HINTS = ['Maybe just start with your site.', 'Want to improve sales?', 'Need to analyze your competitors?', 'Trying to reach Gen Z?', 'Building brand awareness?', 'Exploring new markets?'];
     let i = 0;
     setInterval(() => {
       if (document.activeElement === hintInput || hintInput.value) return;
