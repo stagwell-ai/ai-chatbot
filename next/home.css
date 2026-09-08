@@ -702,14 +702,22 @@ body.chat-open{overflow:hidden}
 .port{padding:var(--s-15) 0 var(--s-13)}
 .port__eyebrow{font-family:var(--ui);font-size:17px;font-weight:500;color:var(--ink-3);padding-bottom:var(--s-7);border-bottom:1px solid var(--ink-4)}
 /* the big title: huge, left, the last line in the orange */
-.display--port{margin-top:var(--s-9);font-size:clamp(56px, 1.6rem + 6.4vw, 132px);text-transform:none;text-align:left;letter-spacing:-.035em;line-height:.9}
+.display--port{margin-top:var(--s-9);font-size:clamp(48px, 1.4rem + 5.2vw, 112px);text-transform:none;text-align:left;letter-spacing:-.035em;line-height:.92}
+/* the reveal clip cut the g of "agentic": room for the descender, and the
+   rise-in offset grows to match (the hero's rule) */
+.display--port .ln{padding-bottom:.22em;margin-bottom:-.22em}
+.display--port .ln__in{transform:translateY(125%)}
+.rv.in .display--port .ln__in,.display--port.rv.in .ln__in{transform:translateY(0)}
 /* the rows: a hairline above each; words left, a wide picture right */
 .port__rows{margin-top:var(--s-13)}
-.port__row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:start;padding:var(--s-11) 0 var(--s-13);border-top:1px solid var(--ink-4)}
-.port__body{display:flex;flex-direction:column;align-items:flex-start;min-height:100%}
-.port__title{font-family:var(--display);font-weight:400;font-size:clamp(36px, 1.2rem + 2.9vw, 60px);letter-spacing:-.025em;line-height:1.05;color:var(--ink)}
-.port__head{margin-top:var(--s-9);max-width:560px;font-size:clamp(20px, .9rem + .8vw, 26px);font-weight:400;line-height:1.4;color:var(--ink)}
-.port__body .port__go{margin-top:var(--s-11)}
+/* the row: words left, picture right, the same height — the button sits on
+   the row's floor, level with the picture's bottom, as on the reference */
+.port__row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:stretch;padding:var(--s-11) 0 var(--s-11);border-top:1px solid var(--ink-4)}
+.port__body{display:flex;flex-direction:column;align-items:flex-start}
+.port__title{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(32px, 1.1rem + 2.3vw, 50px);letter-spacing:-.025em;line-height:1.05;color:var(--ink)}   /* an h3: the reset only covers h1/h2 */
+.port__head{margin-top:var(--s-11);max-width:560px;font-size:clamp(20px, .9rem + .8vw, 26px);font-weight:400;line-height:1.4;color:var(--ink)}   /* 48 under the title — the reference's proportion */
+.port__body .port__go{margin-top:auto;padding-top:0}
+.port__body .port__head{margin-bottom:var(--s-11)}   /* at least 48 above the button */
 .port__media{position:relative;height:clamp(340px, 30vw, 540px);overflow:hidden;background:var(--deep)}
 .port__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 
