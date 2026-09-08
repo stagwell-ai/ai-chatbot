@@ -96,6 +96,17 @@
     }
   }
 
+  /* ── the slider: the stills in the strip turn over every 9s with a
+        cross-fade; with one still there is nothing to turn ───────────────── */
+  const slides = $$('#heroSlides .hero__pic');
+  if (slides.length > 1 && !REDUCED) {
+    let cur = 0;
+    setInterval(() => {
+      const next = (cur + 1) % slides.length;
+      slides[next].classList.add('is-on'); slides[cur].classList.remove('is-on'); cur = next;
+    }, 9000);
+  }
+
   /* ── the film's panel: a still, clipped to the right column at rest. A tap
         unclips it to the left over the words and runs the film from the start
         with sound. Close returns the still; scrolling away rests the film. ── */
