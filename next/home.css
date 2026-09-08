@@ -798,7 +798,9 @@ body.chat-open{overflow:hidden}
   display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:var(--s-12);align-items:start;
   padding-top:var(--s-15);padding-bottom:var(--s-15);
 }
+.foot__lead{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:var(--s-12)}
 .foot__kicker{font-size:16px;font-weight:500;color:var(--ink);line-height:1.4}
+.foot__mark{width:clamp(96px, 6vw + 40px, 132px);height:auto;color:var(--ink)}   /* the mark, big, at the column's foot — as the reference's badge */
 .foot__big{display:flex;flex-direction:column;gap:var(--s-9)}   /* the rows breathe, as on the reference */
 .foot__big a{font-family:var(--display);font-weight:400;font-size:clamp(34px, 1rem + 2.6vw, 56px);letter-spacing:-.02em;line-height:1;color:var(--ink);transition:color .25s ease}
 .foot__big a:hover{color:var(--ink-3)}
