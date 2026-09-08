@@ -115,7 +115,8 @@ h1,h2,p,figure{margin:0}
    the amber, turn and turn about down the page. (Gradients were tried and
    dropped: "the blend is not that nice".) */
 .display em{color:var(--teal)}
-.display--hero em,.display--end em,.chat-over__title em{color:var(--teal)}
+.display--hero em,.chat-over__title em{color:var(--teal)}
+.display--end em{color:var(--amber)}   /* on the pastel blue the Ask is the amber (client) */
 .display--intro em{color:var(--amber)}
 .display--cos em{color:var(--teal)}
 .display--port em{color:var(--amber)}
@@ -805,14 +806,14 @@ body.chat-open{overflow:hidden}
 
 
 /* ── 6 · the end is the start ────────────────────────────────────────────── */
-.ask-end{padding:var(--s-13) 0 var(--s-16);background:#FFFFFF}   /* closer to the suite above (client) */   /* white, centred, no line above or below (client) */
+.ask-end{padding:var(--s-15) 0 var(--s-16);background:#E6F5F9}   /* a pastel of the mark's teal, as the network section wears the amber's (client); with a ground of its own it takes 120 above */   /* white, centred, no line above or below (client) */
 .ask-end__in{display:flex;flex-direction:column;align-items:center;text-align:center}
 .display--end{font-size:clamp(60px, 1.5rem + 6.2vw, 116px);text-transform:none;text-align:center;line-height:.88;letter-spacing:-.035em;font-weight:700}
 .display--end .navy{color:var(--ink)}
 .display--end .ln{padding-bottom:.22em;margin-bottom:-.22em}
 .ask-end__lede{margin:var(--s-11) 0 0;font-size:var(--hero-copy);line-height:1.45;color:var(--ink)}   /* 48 under the title, as in the hero */
 .ask-end__acts{margin-top:var(--s-11);width:min(100%,640px);display:flex;flex-direction:column;align-items:center;gap:var(--s-8)}   /* the field, then Call me under it — 24 */
-.ask-end__acts .ask-mini{width:100%}
+.ask-end__acts .ask-mini{width:100%;background:#FFFFFF}   /* white on the blue ground; the stroke stays */
 
 /* ── footer: keep exploring, the big ways in, the small ways out — light ── */
 .foot{background:#FFFFFF}
