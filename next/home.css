@@ -816,7 +816,7 @@ body.chat-open{overflow:hidden}
 .ask-end__acts .ask-mini{width:100%;background:#FFFFFF}   /* white on the blue ground; the stroke stays */
 
 /* ── footer: keep exploring, the big ways in, the small ways out — light ── */
-.foot{background:#FFFFFF}
+.foot{background:#E6F5F9}   /* the closing section's pastel teal runs on into the footer (client): one ground from "Ask Stagwell." to the end */
 .foot__in{
   display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:var(--s-12);align-items:start;
   padding-top:var(--s-15);padding-bottom:var(--s-15);
