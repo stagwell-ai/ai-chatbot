@@ -433,7 +433,7 @@
       if (digits.length < 6 || digits.length > 14) { call.classList.add('is-bad'); callNum.focus(); return; }
       const code = callCode.value;
       callLine.textContent = 'Calling you now…';
-      callTo.textContent = 'Stagwell AI will call ' + pretty(code, digits);
+      callTo.textContent = 'Stagwell will call ' + pretty(code, digits);
       call.dataset.state = 'done';
       $('.call__x', callDone).focus({ preventScroll: true });
       await place(code, digits);
