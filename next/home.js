@@ -99,10 +99,10 @@
   /* ── the field's turning hint: the website first, then the five starting
         points, every 2.8s — the last lifts out, the next rises in. Runs only
         while the field is empty and unfocused (the hint is hidden then). ── */
-  const hint = $('#askMiniHint'), hintInput = $('#askMiniInput');
-  if (hint && hintInput && !REDUCED) {
+  const HINTS = ['Maybe just start with your site.', 'Want to improve sales?', 'Need to analyze your competitors?', 'Trying to reach Gen Z?', 'Building brand awareness?', 'Exploring new markets?'];
+  if (!REDUCED) $$('.ask-mini__hint').forEach(hint => {
+    const hintInput = $('.ask-mini__input', hint.parentElement); if (!hintInput) return;
     /* the AI nudging, not labels: questions, and a way in */
-    const HINTS = ['Maybe just start with your site.', 'Want to improve sales?', 'Need to analyze your competitors?', 'Trying to reach Gen Z?', 'Building brand awareness?', 'Exploring new markets?'];
     let i = 0;
     setInterval(() => {
       if (document.activeElement === hintInput || hintInput.value) return;
@@ -113,7 +113,7 @@
       requestAnimationFrame(() => requestAnimationFrame(() => { if (old) old.classList.replace('is-on', 'is-off'); w.classList.add('is-on'); }));
       setTimeout(() => old && old.remove(), 700);
     }, 2800);
-  }
+  });
 
   /* ── the trust banner: the frame stays; the picture inside zooms with the
         scroll — 1.45 as the banner enters at the bottom, 1 as it leaves at
@@ -393,9 +393,10 @@
         beside it takes up the difference. Sent, the pill shows the call's
         status. The request resolves here after a beat — the real call API
         goes where `place()` is. ────────────────────────────────────────── */
-  const call = $('#call'), callBtn = $('#callBtn'), callForm = $('#callForm'), callDone = $('#callDone'),
-        callCode = $('#callCode'), callNum = $('#callNum'), callLine = $('#callLine'), callTo = $('#callTo');
-  if (call && callBtn && callForm && callDone && callCode && callNum && callLine) {
+  $$('.call').forEach(call => {
+    const callBtn = $('.call__btn', call), callForm = $('.call__form', call), callDone = $('.call__done', call),
+          callCode = $('.call__cc', call), callNum = $('.call__num', call), callLine = $('.call__line', call), callTo = $('.call__to', call);
+    if (!(callBtn && callForm && callDone && callCode && callNum && callLine)) return;
     const PILL = 360;
     const setW = (px) => call.style.setProperty('--call-w', px + 'px');
     /* the button's own width is the resting one; measured once it has fonts */
@@ -412,8 +413,7 @@
       callBtn.focus({ preventScroll: true });
     };
     callBtn.addEventListener('click', openPill);
-    $('#callClose').addEventListener('click', closePill);
-    $('#doneClose').addEventListener('click', closePill);
+    $$('.call__x', call).forEach(x => x.addEventListener('click', closePill));
     addEventListener('keydown', (e) => { if (e.key === 'Escape' && call.dataset.state !== 'idle') closePill(); });
     /* a tap elsewhere with nothing typed puts the button back */
     addEventListener('pointerdown', (e) => { if (call.dataset.state === 'phone' && !call.contains(e.target) && !callNum.value.trim()) closePill(); });
@@ -435,10 +435,25 @@
       callLine.textContent = 'Calling you now…';
       callTo.textContent = 'Stagwell AI will call ' + pretty(code, digits);
       call.dataset.state = 'done';
-      $('#doneClose').focus({ preventScroll: true });
+      $('.call__x', callDone).focus({ preventScroll: true });
       await place(code, digits);
       callLine.textContent = 'Your call is on the way.';
       call.classList.add('is-placed');
+    });
+  });
+
+  /* ── the closing field hands what you typed to the hero's conversation:
+        the page scrolls back up and the words are sent there ─────────── */
+  const askEnd = $('#askEnd'), askEndInput = $('#askEndInput'), heroMini = $('#askMini'), heroInput = $('#askMiniInput');
+  if (askEnd && askEndInput && heroMini && heroInput) {
+    askEnd.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const v = askEndInput.value.trim();
+      scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+      setTimeout(() => {
+        if (v) { heroInput.value = v; askEndInput.value = ''; heroMini.requestSubmit(); }
+        else heroInput.focus({ preventScroll: true });
+      }, REDUCED ? 0 : 650);
     });
   }
 

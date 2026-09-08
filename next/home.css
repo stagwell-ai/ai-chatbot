@@ -766,37 +766,60 @@ body.chat-open{overflow:hidden}
 .suite__item{font-family:var(--display);font-weight:400;font-size:clamp(26px, .9rem + 2vw, 44px);letter-spacing:-.02em;line-height:1.1;color:var(--ink-3);text-align:left;white-space:nowrap;transition:color .25s ease,font-weight .1s ease}   /* a size down, so the long one holds one line */
 .suite__item:hover{color:var(--ink)}
 .suite__item.is-on{font-weight:700;color:var(--ink)}
-/* the arrow beside the chosen name: a thin orange line that draws itself out
-   and a head that arrives at its end — not a glyph dropped in */
-.suite__item{display:inline-flex;align-items:center;gap:.35em}
-.suite__arrow{width:.72em;height:.42em;color:var(--orange);overflow:visible;flex-shrink:0}
-.suite__arrow-line{stroke-dasharray:26;stroke-dashoffset:26;transition:stroke-dashoffset .45s var(--ease)}
-.suite__arrow-head{opacity:0;transform:translateX(-8px);transition:opacity .25s ease .2s,transform .4s var(--ease) .15s}
+/* the arrow beside the chosen name: up and to the right, in the ink, and it
+   draws itself — the shaft first, then the head arriving at its tip */
+.suite__item{display:inline-flex;align-items:center;gap:.3em}
+.suite__arrow{width:.5em;height:.5em;color:currentColor;overflow:visible;flex-shrink:0;margin-top:.04em}
+.suite__arrow-line{stroke-dasharray:17;stroke-dashoffset:17;transition:stroke-dashoffset .45s var(--ease)}
+.suite__arrow-head{opacity:0;transform:translate(-5px,5px);transition:opacity .25s ease .2s,transform .4s var(--ease) .15s}
 .suite__item.is-on .suite__arrow-line{stroke-dashoffset:0}
 .suite__item.is-on .suite__arrow-head{opacity:1;transform:none}
 .suite__item:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
 .suite__panel{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-8)}
-.suite__media{position:relative;width:min(100%,440px);aspect-ratio:4/5;overflow:hidden;background:var(--deep)}   /* a post, 4:5 — not a wide banner, not a story */
+.suite__media{position:relative;width:min(100%,440px);aspect-ratio:1/1;overflow:hidden;background:var(--deep)}   /* square — 4:5 ran too tall for the screen (client) */
 .suite__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s ease}
 .suite__pic.is-fading{opacity:0}
 .suite__line{width:min(100%,440px);font-size:clamp(18px, .9rem + .5vw, 22px);line-height:1.4;color:var(--ink)}   /* never wider than the picture */
 
 
-/* ── footer ──────────────────────────────────────────────────────────────── */
-.foot{border-top:1px solid var(--line)}
+/* ── 6 · the end is the start ────────────────────────────────────────────── */
+.ask-end{padding:var(--s-15) 0 var(--s-16);background:#F6F6F7;border-top:1px solid var(--line)}   /* the hero's grey ground */
+.ask-end__in{display:flex;flex-direction:column;align-items:flex-start}
+.display--end{font-size:clamp(60px, 1.5rem + 6.2vw, 116px);text-transform:none;text-align:left;line-height:.88;letter-spacing:-.035em;font-weight:700}
+.display--end .navy{color:var(--ink)}
+.display--end .ln{padding-bottom:.22em;margin-bottom:-.22em}
+.ask-end__lede{margin:var(--s-11) 0 0;font-size:var(--hero-copy);line-height:1.45;color:var(--ink)}   /* 48 under the title, as in the hero */
+.ask-end__acts{margin-top:var(--s-11);width:min(100%,640px);display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-8)}   /* the field, then Call me under it — 24 */
+.ask-end__acts .ask-mini{width:100%;background:#FFFFFF}   /* on the grey the field is white; the stroke keeps it a field */
+.ask-end__acts .ask-mini:focus-within{box-shadow:inset 0 0 0 1px var(--ink)}
+
+/* ── footer: keep exploring, the big ways in, the small ways out — light ── */
+.foot{border-top:1px solid var(--line);background:#FFFFFF}
 .foot__in{
-  display:grid;grid-template-columns:1fr auto auto;gap:var(--s-16);align-items:start;
-  padding-top:var(--s-13);padding-bottom:var(--s-13);
+  display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:var(--s-12);align-items:start;
+  padding-top:var(--s-14);padding-bottom:var(--s-14);
 }
+.foot__kicker{font-size:15px;font-weight:500;color:var(--ink);line-height:1.4}
+.foot__big{display:flex;flex-direction:column;gap:var(--s-6)}
+.foot__big a{font-family:var(--display);font-weight:400;font-size:clamp(34px, 1rem + 2.6vw, 56px);letter-spacing:-.025em;line-height:1.05;color:var(--ink);transition:color .25s ease}
+.foot__big a:hover{color:var(--ink-3)}
+.foot__small{display:flex;flex-direction:column;gap:var(--s-6)}
+.foot__small a,.foot__small button{display:inline-flex;align-items:center;gap:14px;font-size:16px;font-weight:500;color:var(--ink);text-align:left;line-height:1.3}
+.foot__disc{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+.foot__disc svg{width:18px;height:18px;transition:transform .3s var(--ease)}
+.foot__small a:hover .foot__disc,.foot__small button:hover .foot__disc{background:var(--ink);color:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink)}
+.foot__small a:hover .foot__disc svg,.foot__small button:hover .foot__disc svg{transform:translateX(2px)}
+.foot__band{display:flex;align-items:center;justify-content:space-between;gap:var(--s-9);padding-top:var(--s-10);padding-bottom:var(--s-10);
+  border-top:1px solid var(--line)}
+.foot__social{display:flex;align-items:center;gap:8px}
+.foot__so{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+.foot__so svg{width:18px;height:18px}
+.foot__so:hover{background:var(--ink);color:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink)}
+.foot__follow{margin-left:14px;font-size:16px;font-weight:500;color:var(--ink)}
+.foot__legal{display:flex;align-items:center;gap:var(--s-7)}
+.foot__copy{font-size:15px;color:var(--ink-3)}
 .foot__brand{color:var(--ink);display:block}
-.foot__brand svg{height:22px;width:auto}
-.foot__col{display:flex;flex-direction:column;gap:var(--s-5)}
-.foot__col a,.foot__col button{font-size:14px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);padding:2px 0;border-bottom:1px solid transparent;transition:border-color .25s ease}
-.foot__col a:hover,.foot__col button:hover{border-bottom-color:var(--ink)}
-.foot__band{background:var(--orange);color:var(--ink)}
-.foot__bandin{display:flex;align-items:center;justify-content:space-between;height:64px}
-.foot__word{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:22px}
-.foot__tiny{font-family:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.foot__brand svg{height:18px;width:auto;display:block}
 
 /* ── motion off ──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion:reduce){
