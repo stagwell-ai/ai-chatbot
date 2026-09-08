@@ -854,3 +854,118 @@ body.chat-open{overflow:hidden}
   .co.is-open .co__face{display:none}
   .co.is-open .co__back{transform:none!important}
 }
+
+/* ══════════════════════════ MOBILE (≤ 820px) ══════════════════════════════
+   A re-composition, not a scale-down. One column everywhere; the hero's
+   split becomes words over a 4:5 picture with the play disc on it; the film
+   opens full screen; the bottom row stacks; tiles, rows, stats and footer
+   fall into a single column. Kept at the END of the file on purpose: a media
+   block above the rules it overrides loses on equal specificity. */
+@media (max-width:820px){
+  :root{--nav-h:64px}
+
+  /* ── nav: the wordmark, the magnifier, one button ── */
+  .nav__in{grid-template-columns:auto 1fr auto;column-gap:var(--s-6)}
+  .nav__links{display:none}
+  .nav__brand svg{height:12px}
+  .nav__search{width:40px;height:40px}
+  .nav__search svg{width:17px;height:17px}
+  .nav .btn{height:40px;padding:0 16px;font-size:12px}
+  .nav .btn--ink{display:none}                    /* Book a demo lives in the suite and the footer on a phone */
+
+  /* ── hero: the column first, the picture under it ── */
+  .hero{height:auto;min-height:100svh;--media-w:100%}
+  .hero__in{display:flex;flex-direction:column;flex:none}
+  .hero__l{padding:calc(var(--nav-h) + var(--s-9)) var(--gutter) var(--s-9);min-height:0}
+  .hero__stack{flex:none;overflow:visible}
+  .hero__stack > .display--hero{margin-top:0}
+  .hero__l.is-chat .hero__stack{max-height:62svh;overflow-y:auto}
+  .display--hero{font-size:clamp(52px, 15vw, 64px)}
+  .hero__lede{margin:var(--s-8) 0 var(--s-9);white-space:normal;font-size:17px}
+  .hero__r{display:none}
+  .hero__acts{flex-direction:column;align-items:stretch;gap:var(--s-5)}
+  .hero__acts .call,.ask-end__acts .call{width:100%}     /* the pill takes the column; its faces fit inside */
+  .ask-mini{height:56px;padding:0 4px 0 20px}
+  .ask-mini__input,.ask-mini__hint{font-size:14px}
+  .ask-mini__dots{display:none}                   /* the room goes to the phrase */
+  .ask-mini__hint{left:20px;right:56px}
+  .call{height:56px}
+  .call__form,.call__done{height:56px}
+  .turnb{max-width:88%;font-size:16px}
+  /* the panel is a picture in the flow now: 4:5, the play disc on it */
+  .hero__media{position:relative;inset:auto;flex:none;width:100%;aspect-ratio:4/5;clip-path:none;transition:none}
+  .hero__slides{width:100%}
+  .hero__watch{right:var(--s-7);bottom:var(--s-7);width:52px;height:52px}
+  .hero__watch svg{width:20px;height:20px}
+  /* open, the film takes the screen */
+  .hero__media.is-open{position:fixed;inset:0;z-index:60;aspect-ratio:auto;width:auto;height:auto}
+  .hero__ctl{right:var(--s-7);bottom:max(var(--s-7), env(safe-area-inset-bottom))}
+
+  /* ── agentic: picture, then words ── */
+  .intro{grid-template-columns:1fr;min-height:0;padding:var(--s-13) var(--gutter);row-gap:var(--s-10)}
+  .intro__media{height:auto;aspect-ratio:4/5}
+  .intro__body{padding:0}
+  .display--intro{max-width:none}
+  .intro__lede{margin-top:var(--s-9)}
+
+  /* ── companies: smaller tiles, the same field ── */
+  .cos{padding:var(--s-13) 0 var(--s-13)}
+  .cos__act{margin-bottom:var(--s-10)}
+  .field__track{gap:var(--s-7);padding:var(--s-6) calc(50vw - 140px)}
+  .co{flex-basis:280px}
+  .co__tile{height:280px}
+  .co__spec{font-size:17px}
+  .field__bar{width:60vw;margin-top:var(--s-10)}
+
+  /* ── portfolio: one column per row, the picture last ── */
+  .port{padding:var(--s-13) 0 var(--s-12)}
+  .port__rows{margin-top:var(--s-11)}
+  .port__row{grid-template-columns:1fr;row-gap:var(--s-9);padding:var(--s-9) 0}
+  .port__body .port__head{margin-bottom:var(--s-8)}
+  .port__media{height:auto;aspect-ratio:16/10}
+
+  /* ── trust: banner shorter, the numbers two by two ── */
+  .trust{padding:var(--s-13) 0}
+  .trust__copy{margin-top:var(--s-10)}
+  .trust__banner{margin-top:var(--s-12);height:auto;aspect-ratio:4/5}
+  .stats{margin-top:var(--s-12);grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-4)}   /* the three figures in a row, the partners under them */
+  .stat{padding:var(--s-7) var(--s-6);border-radius:16px;gap:var(--s-4)}
+  .stat__n{font-size:32px}
+  .stat:last-child{grid-column:1 / -1;padding:var(--s-8) var(--s-7)}
+  .stat__n--words{font-size:26px}
+  .stat__d{font-size:13px}
+
+  /* ── the suite: the names, then the picture ── */
+  .close{padding:var(--s-13) 0 var(--s-14)}
+  /* a centred column shrink-wraps its title, so fitDisplays() measured a box
+     that already equalled the line and never brought the size down — the
+     hero's trap, again: the titles take their column's width */
+  .suite__in > .display,.ask-end__in > .display,.trust__head > .display{align-self:stretch}
+  .suite__grid{margin-top:var(--s-12);grid-template-columns:1fr;row-gap:var(--s-11)}
+  .suite__list{gap:var(--s-6)}
+  .suite__item{white-space:normal;font-size:26px;align-items:flex-start}
+  .suite__arrow{margin-top:.22em}
+  .suite__media,.suite__line{width:100%}
+
+  /* ── the end ── */
+  .ask-end{padding:var(--s-13) 0 var(--s-14)}
+  .display--end{font-size:clamp(52px, 15vw, 64px)}
+  .ask-end__lede{margin-top:var(--s-8);font-size:17px}
+  .ask-end__acts{margin-top:var(--s-9);width:100%;gap:var(--s-5)}
+
+  /* ── footer: one column; the mark beside the kicker; the band stacks ── */
+  .foot__in{grid-template-columns:1fr;gap:var(--s-11);padding-top:var(--s-13);padding-bottom:var(--s-12)}
+  .foot__lead{flex-direction:row;align-items:center;justify-content:space-between;gap:var(--s-8)}
+  .foot__mark{width:56px}
+  .foot__big{gap:var(--s-7)}
+  .foot__big a{font-size:34px}
+  .foot__small{gap:var(--s-7);align-items:flex-start;text-align:left}
+  .foot__disc{width:40px;height:40px}
+  .foot__band{flex-direction:column;align-items:flex-start;gap:var(--s-8);padding-top:var(--s-9);padding-bottom:max(var(--s-9), env(safe-area-inset-bottom))}
+  .foot__legal{width:100%;justify-content:space-between}
+
+  /* ── the chat over the page ── */
+  .chat-over .ask__field{height:56px;padding:0 4px 0 18px}
+  .chat-over .ask__go{width:46px;height:46px}
+  .chat-over .chat-over__close{top:var(--s-5)}
+}

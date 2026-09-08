@@ -411,7 +411,7 @@
     const callBtn = $('.call__btn', call), callForm = $('.call__form', call), callDone = $('.call__done', call),
           callCode = $('.call__cc', call), callNum = $('.call__num', call), callLine = $('.call__line', call), callTo = $('.call__to', call);
     if (!(callBtn && callForm && callDone && callCode && callNum && callLine)) return;
-    const PILL = 360;
+    const PILL = () => Math.min(360, Math.round(call.parentElement.getBoundingClientRect().width) || 360);   /* never wider than the row it sits in (a phone) */
     const setW = (px) => call.style.setProperty('--call-w', px + 'px');
     /* the button's own width is the resting one; measured once it has fonts */
     let restW = 0;
@@ -419,7 +419,7 @@
     (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(rest);
     const openPill = () => {
       if (!restW) rest();
-      call.dataset.state = 'phone'; call.classList.remove('is-bad', 'is-placed'); setW(PILL);
+      call.dataset.state = 'phone'; call.classList.remove('is-bad', 'is-placed'); setW(PILL());
       setTimeout(() => callNum.focus({ preventScroll: true }), 200);
     };
     const closePill = () => {
