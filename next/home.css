@@ -31,15 +31,9 @@
   --paper:#FFFFFF;
   --deep:#07141D;
   --orange:#FF6D24;
-  /* the brand board's colours (2026-09-08): the accent word in every title
-     wears a GRADIENT of these, a different one each time — never the orange */
-  --g-blue:linear-gradient(120deg,#0A5F80 0%,#2CC0E4 100%);          /* deep teal-navy → cyan */
-  --g-bluegreen:linear-gradient(120deg,#0E8EB0 0%,#2FC08A 100%);     /* teal → green */
-  --g-yellowgreen:linear-gradient(120deg,#F2C13B 0%,#1FAE9B 100%);   /* yellow → sea green */
-  --g-amberblue:linear-gradient(120deg,#FFB81C 0%,#2CB4DC 100%);     /* amber → cyan, the board's tile */
-  --g-cyanblue:linear-gradient(120deg,#35C3E3 0%,#0B5C7A 100%);      /* cyan → deep */
   --navy:#003349;                               /* the wordmark's blue — the user's turns */
   --amber:#FFB81C;
+  --teal:#009CBD;                               /* the mark's blue */
 
   --display:'Roobert','Geist',"Helvetica Neue",Helvetica,Arial,sans-serif;   /* the client's face for every title */
   /* the client's rule (2026-09-08): Roobert for everything you read,
@@ -117,15 +111,16 @@ h1,h2,p,figure{margin:0}
 .display--hero em{color:var(--orange)}
 /* "Stagwell." in the page ink, as on the billboard */
 .display--hero .navy{color:var(--ink)}
-/* the accent word is a gradient of the board's colours, cut into the type:
-   one gradient per title, so no two neighbours repeat */
-.display em{--g:var(--g-blue);background-image:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-.display--hero em,.display--end em,.chat-over__title em{--g:var(--g-blue)}
-.display--intro em{--g:var(--g-amberblue)}
-.display--cos em{--g:var(--g-bluegreen)}
-.display--port em{--g:var(--g-yellowgreen)}
-.display--trust em{--g:var(--g-cyanblue)}
-.display--close em{--g:var(--g-amberblue)}
+/* the accent word wears one of the mark's two colours, flat — the teal or
+   the amber, turn and turn about down the page. (Gradients were tried and
+   dropped: "the blend is not that nice".) */
+.display em{color:var(--teal)}
+.display--hero em,.display--end em,.chat-over__title em{color:var(--teal)}
+.display--intro em{color:var(--amber)}
+.display--cos em{color:var(--teal)}
+.display--port em{color:var(--amber)}
+.display--trust em{color:var(--teal)}
+.display--close em{color:var(--amber)}
 /* the reveal wrapper clips; at this size the descender of the g drops below
    the .9 line box and was being cut. Room for it, and the rise-in offset grows
    to match so the line still starts fully hidden. */
@@ -777,7 +772,7 @@ body.chat-open{overflow:hidden}
    each, the same voice a size down */
 .stat__n--words{display:flex;flex-direction:column;gap:.12em;font-size:clamp(32px, 1.1rem + 2vw, 54px);line-height:1.05;letter-spacing:-.025em}
 .stat__n--words span{display:flex;align-items:center;gap:.3em}
-.stat__n--words span::before{content:"";width:.28em;height:.28em;border-radius:50%;background:var(--g-blue);flex-shrink:0}
+.stat__n--words span::before{content:"";width:.28em;height:.28em;border-radius:50%;background:var(--teal);flex-shrink:0}
 .stat__d{margin-top:var(--s-4);font-size:16px;line-height:1.45;color:var(--ink-3)}   /* close under the figure, not pushed to the floor */
 
 /* ── 5 · the close ───────────────────────────────────────────────────────── */
