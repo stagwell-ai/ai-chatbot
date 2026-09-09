@@ -753,12 +753,13 @@ body.chat-open{overflow:hidden}
 .co{
   position:relative;flex:0 0 400px;               /* a square tile, as the reference — not wide */
   transform:scale(var(--k,.86)) translateZ(0);
-  opacity:var(--o,.5);
-  transition:transform .6s var(--ease),opacity .6s var(--ease);
+  /* the off-centre cards used to dim to 50%, and on the section's amber that
+     read as a yellow wash over the pictures. They recede by scale alone now. */
+  transition:transform .6s var(--ease);
   transform-style:preserve-3d;
   outline:none;
 }
-.co.is-centre{--k:1;--o:1}
+.co.is-centre{--k:1}
 /* the first card shrinks toward its own left edge, so at rest it sits exactly
    on the page's left line however far it is from the middle */
 .co:first-child{transform-origin:left center}
