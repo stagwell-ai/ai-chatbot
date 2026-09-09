@@ -25,6 +25,21 @@ html[data-theme] body #nav{
   transition:transform .45s var(--ease,cubic-bezier(.16,1,.3,1)),box-shadow .25s ease !important}
 html[data-theme] body #nav.is-hidden{transform:translateY(calc(-100% - 2px)) !important;box-shadow:none !important}
 
+/* and the same landing as the homepage: nothing over the picture until you
+   move. Products only — that page opens on a full-bleed still, while /s/{id}
+   opens on white, where a white-on-transparent bar would simply vanish.
+   nav.js toggles is-stuck past 8px, so the solid bar is what every light
+   section below is read under. */
+html[data-theme] body.vProducts #nav:not(.is-stuck){background:transparent !important;box-shadow:none !important;color:#FFFFFF !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__links a{color:rgba(255,255,255,.86) !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__brand,
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__burger{color:#FFFFFF !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .btn--ink,
+html[data-theme] body.vProducts #nav:not(.is-stuck) .btn--dark{background:#FFFFFF !important;color:var(--ink,#0B171E) !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .btn--line{background:transparent !important;color:#FFFFFF !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45) !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search{background:transparent !important;color:#FFFFFF !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45) !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search:hover{background:#FFFFFF !important;color:var(--ink,#0B171E) !important}
+
 /* the column: 1180 wide with a 48px inset, which is exactly where this page's
    own headings and product groups begin */
 html[data-theme] body #nav .nav__in{

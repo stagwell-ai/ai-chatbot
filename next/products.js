@@ -93,9 +93,10 @@
   };
   const internalHref = id => CAMPAIGN_PAGES[id] || '/next/s/' + encodeURIComponent(id);
 
-  /* the lockup PNGs are one normalised 640×200 canvas on the ICP deck's navy,
-     so a fixed plate with a contained image gives every product the same
-     optical weight. The one entry with no lockup gets its name set in type. */
+  /* The lockup plate is gone (client, 2026-09-09): the marks were a 36px navy
+     tile with a contained PNG inside it, and at that size none of them could
+     actually be read. A card leads with the product's name instead. markHTML
+     is kept for the day real marks arrive at a size that works. */
   function markHTML(s) {
     if (s.lockup) {
       return `<span class="prodcard__mark"><img src="${esc(s.lockup)}" alt="${esc(s.name)}"
@@ -159,7 +160,6 @@
       <article class="prodcard${entry.repeatOf ? ' prodcard--again' : ''}">
         ${again}
         <div class="prodcard__id">
-          ${markHTML(s)}
           <h3 class="prodcard__name">${esc(s.name)}${fit}</h3>
         </div>
         <p class="prodcard__pos">${esc(body)}</p>

@@ -13,6 +13,43 @@
      white type: the paragraph and one button were white on white
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── 0. the hero becomes a picture ──────────────────────────────────────────
+   It was a photograph under two heavy pale gradients, which left it reading
+   as a wash of blue with nothing in it. Same treatment as the homepage now:
+   the still full bleed, one graded veil across it, white type on top. */
+html[data-theme] body.vB.vProducts .prodhero{background:#07141D !important;color:#FFFFFF !important;
+  border-bottom:0 !important;
+  /* the bar floats over the picture here, so the eyebrow has to start below
+     it — on a phone the section's own 56px put it behind the logo */
+  padding-top:calc(72px + clamp(28px,6vh,64px)) !important}
+html[data-theme] body.vB.vProducts .prodhero::before{
+  background-image:linear-gradient(100deg,rgba(7,20,29,.80) 0%,rgba(7,20,29,.58) 52%,rgba(7,20,29,.34) 100%),
+    url("/assets/img/crosswalk.jpg") !important;
+  background-size:100% 100%,cover !important;
+  background-position:50% 50%,center center !important;
+  display:block !important}
+html[data-theme] body.vB.vProducts .prodhero h1,html[data-theme] body.vB.vProducts .prodhero__title{color:#FFFFFF !important}
+html[data-theme] body.vB.vProducts .prodhero__title .accent{color:var(--amber,#FFB81C) !important}
+html[data-theme] body.vB.vProducts .prodhero__sub{color:rgba(255,255,255,.86) !important}
+html[data-theme] body.vB.vProducts .prodhero__eyebrow{color:rgba(255,255,255,.62) !important}
+html[data-theme] body.vB.vProducts .prodhero__eyebrow .pulse{background:var(--amber,#FFB81C) !important}
+/* on the picture the second button is glass, the way the homepage's is */
+html[data-theme] body.vB.vProducts .prodhero .btn--ghost{background:rgba(255,255,255,.14) !important;color:#FFFFFF !important;
+  border:0 !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.34) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(1.15) !important;backdrop-filter:blur(16px) saturate(1.15) !important}
+html[data-theme] body.vB.vProducts .prodhero .btn--gold{background:var(--amber,#FFB81C) !important;color:#0B171E !important}
+
+/* ── 0b. "Show me", on its own line ─────────────────────────────────────────
+   The label and the control sat side by side, so a long heading pushed the
+   line into an awkward break on a phone. They stack now, and the word swaps
+   straight up and down — no width animation beside a label any more. */
+html[data-theme] body .ptoc__line{flex-direction:column !important;gap:12px !important}
+html[data-theme] body .ptoc__btn{width:auto !important;max-width:min(92vw,520px) !important;
+  transition:background .2s ease !important}
+html[data-theme] body .ptoc__label{transition:opacity .22s ease,transform .22s var(--ease,cubic-bezier(.16,1,.3,1)) !important}
+html[data-theme] body .ptoc__label.is-out{opacity:0 !important;transform:translateY(-.55em) !important}
+html[data-theme] body .ptoc__label.is-under{opacity:0 !important;transform:translateY(.55em) !important;transition:none !important}
+
 /* ── 1. the headings stop sticking ──────────────────────────────────────────
    They were `position:sticky; top:96px` under a 72px bar, so each one parked
    24px below it and sat there while its cards ran past. Nothing on the

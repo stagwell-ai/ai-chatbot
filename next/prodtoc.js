@@ -124,21 +124,19 @@
   document.body.appendChild(panel);   /* out of the flow entirely */
   toc.hidden = true;                 /* the original list stays in the markup */
 
-  /* the word changes in place: out on its own line, in on the new one. The
-     button's width is animated with it, or the line jumps as the word grows. */
+  /* the word changes in place, straight up and out and back in from below.
+     The button's width used to be animated along with it; the client asked
+     for the movement to be vertical only, and with the control on a line of
+     its own there is nothing beside it for a width change to shove. */
   const setLabel = (text) => {
     if (REDUCED) { label.textContent = text; return; }
-    const from = btn.getBoundingClientRect().width;
     label.classList.add('is-out');
     setTimeout(() => {
       label.textContent = text;
-      btn.style.width = 'auto';
-      const to = btn.getBoundingClientRect().width;
-      btn.style.width = from + 'px';
-      requestAnimationFrame(() => { btn.style.width = to + 'px'; });
+      label.classList.add('is-under');
       label.classList.remove('is-out');
-      setTimeout(() => { btn.style.width = ''; }, 380);
-    }, 130);
+      requestAnimationFrame(() => { label.classList.remove('is-under'); });
+    }, 220);
   };
 
   let scrollLock = 0;
@@ -201,7 +199,9 @@
     turn = (turn + 1) % words.length;
     setLabel(words[turn]);
   };
-  const startCycle = () => { if (cycling && !timer) timer = setInterval(tick, 1500); };
+  /* 1500ms read as a flicker to the client — it now holds each word long
+     enough to be read before the next one arrives */
+  const startCycle = () => { if (cycling && !timer) timer = setInterval(tick, 3400); };
   const stopCycle  = () => { if (timer) { clearInterval(timer); timer = null; } };
   if (cycling) {
     label.textContent = words[0];
