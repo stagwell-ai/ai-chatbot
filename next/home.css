@@ -994,8 +994,13 @@ body.chat-open{overflow:hidden}
 /* on the panel's grey the field and the agent's bubbles turn white, so they
    read as things sitting on it rather than sinking into it */
 .hero__chat .ask-mini{background:#FFFFFF}
-.hero__chat .turnb--ai{background:#FFFFFF}
-.hero__chat .turnb--wait{background:#FFFFFF}
+/* the agent speaks in ink, white on it and a size up — it is the thing you are
+   meant to read first (client) */
+.hero__chat .turnb--ai{background:var(--ink);color:#FFFFFF;font-size:18px;line-height:1.5;padding:14px 20px}
+.hero__chat .turnb--ai b{color:#FFFFFF}
+/* the waiting bubble stays white: its three dots carry the mark's own colours,
+   and the dark blue one would vanish on ink */
+.hero__chat .turnb--wait{background:#FFFFFF;padding:14px 18px}
 /* the three ways to a person: plain words under the field, not more buttons */
 .chat__ways{margin:var(--s-6) 0 0;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4) var(--s-7)}   /* smaller, and centred under the field (client) */
 .chat__way{font-family:var(--ui);font-size:12px;font-weight:500;color:var(--ink-3);border-bottom:1px solid transparent;transition:color .25s ease,border-color .25s ease}
