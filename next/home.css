@@ -322,6 +322,9 @@ body.menu-open .nav{background:#FFFFFF;transform:none!important}
 .chat-over .tag{height:36px;padding:0 16px;font-size:13px}
 /* the disc rules sit later in the file: state these with the parent so they win */
 .chat-over .chat-over__close{position:absolute;top:var(--s-6);right:var(--gutter);background:var(--ink);color:#FFFFFF}
+/* the mark, top left of the overlay, on the close button's own line */
+.chat-over__brand{position:absolute;top:var(--s-6);left:var(--gutter);height:52px;display:grid;align-items:center;color:var(--ink);z-index:1}
+.chat-over__brand svg{height:13px;width:auto;display:block}
 .chat-over .chat-over__close .ic-x{display:block}
 .chat-over__close:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 /* the dark block's parts, read in light */
