@@ -728,7 +728,7 @@ body.chat-open{overflow:hidden}
 .intro__act{margin-top:var(--s-8);display:flex}     /* 24: the button belongs to the paragraph; flex, so no inline strut adds to it */
 
 /* ── 3 · companies ───────────────────────────────────────────────────────── */
-.cos{padding:var(--s-15) 0 var(--s-15);background:#FFF6DC}   /* the pastel of the amber — the full amber "is not looking good" (client) */   /* a pastel of the mark's amber, to see (client); with a ground of its own the section takes its own 120 above */
+.cos{padding:var(--s-15) 0 var(--s-15)}   /* the pastel amber ground came off (client, 2026-09-09) */
 .cos .display--cos{margin-bottom:0}
 /* under the title: two centred lines and one outline button, in the Agentic
    section's rhythm — 48 under the title, 24 above the button, 80 to the field */
@@ -899,7 +899,7 @@ body.chat-open{overflow:hidden}
 .suite__line{width:min(100%,440px);font-size:clamp(18px, .9rem + .5vw, 22px);line-height:1.4;color:var(--ink)}
 
 /* ── 6 · the end is the start ────────────────────────────────────────────── */
-.ask-end{padding:var(--s-15) 0 var(--s-16);background:#E6F5F9}   /* a pastel of the mark's teal, as the network section wears the amber's (client); with a ground of its own it takes 120 above */   /* white, centred, no line above or below (client) */
+.ask-end{padding:var(--s-15) 0 var(--s-16)}   /* and the pastel teal with it: the page is white through */
 .ask-end__in{display:flex;flex-direction:column;align-items:center;text-align:center}
 .display--end{font-size:clamp(60px, 1.5rem + 6.2vw, 116px);text-transform:none;text-align:center;line-height:.88;letter-spacing:-.035em;font-weight:700}
 .display--end .navy{color:var(--ink)}
@@ -909,7 +909,7 @@ body.chat-open{overflow:hidden}
 .ask-end__acts .ask-mini{width:100%;background:#FFFFFF}   /* white on the blue ground; the stroke stays */
 
 /* ── footer: keep exploring, the big ways in, the small ways out — light ── */
-.foot{background:#E6F5F9}   /* the closing section's pastel teal runs on into the footer (client): one ground from "Ask Stagwell." to the end */
+.foot{background:#FFFFFF}
 .foot__in{
   display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:var(--s-12);align-items:start;
   padding-top:var(--s-15);padding-bottom:var(--s-15);
