@@ -59,20 +59,27 @@
         the open film; both are gone, and `#ask` is the hero's WHITE chat panel
         now — so that test was making the bar white on white, which is what
         "the navigation is broken" was. No dark state on this page. ───────── */
-  const nav = $('#nav');
+  const nav = $('#nav'), hero = $('.hero');
   let syncNav = () => {};
   if (nav) {
     let ticking = false, lastY = scrollY, down = 0;
     const onScroll = () => {
       ticking = false;
       const y = scrollY, d = y - lastY; lastY = y;
-      nav.classList.toggle('is-stuck', y > 8);
       /* hide after 14px of downward travel past the bar's own height; show on
          ANY upward movement, and always at the top. Only hiding accumulates —
          accumulating both ways is what strands a bar off-screen. */
       if (d > 0) { down += d; if (y > 72 && down > 14) nav.classList.add('is-hidden'); }
       else if (d < 0) { down = 0; nav.classList.remove('is-hidden'); }
       if (y <= 8) { down = 0; nav.classList.remove('is-hidden'); }
+      /* the white only comes on for a bar that is actually there, and never
+         while you are on your way down the first screen: turning it white and
+         sliding it away in the same breath is the flash the client saw the
+         moment he started scrolling. Past the hero a visible bar is always
+         solid, so it can never go white-on-white further down the page. */
+      const heroEnd = hero ? hero.offsetHeight - 80 : 0;
+      const solid = y > 8 && !nav.classList.contains('is-hidden') && (y > heroEnd || d <= 0);
+      nav.classList.toggle('is-stuck', solid);
     };
     syncNav = onScroll;
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
@@ -307,7 +314,12 @@
       const t = document.createElement('div'); t.className = 'turnb turnb--ai';
       t.innerHTML = '<div class="turnb__text">' + html.replace(/\?/g, '<span class="q">?</span>') + '</div>';   /* Geist's question mark */
       if (go) {
-        const a = document.createElement('a'); a.className = 'btn btn--ink turnb__go'; a.href = go.href; a.textContent = go.label;
+        /* a link when it points somewhere, a lead button when it asks for a
+           person — lead.js listens for [data-cta] on the document */
+        let a;
+        if (go.cta) { a = document.createElement('button'); a.type = 'button'; a.setAttribute('data-cta', go.cta); }
+        else { a = document.createElement('a'); a.href = go.href; }
+        a.className = 'btn btn--ink turnb__go'; a.textContent = go.label;
         a.addEventListener('click', () => { if (state.site) { try { sessionStorage.setItem('sai-lead-site', state.site); } catch (e) {} } });
         t.appendChild(a);
       }
@@ -343,9 +355,10 @@
         const who = state.site || state.company;
         state.done = true;
         /* the end of the conversation is a person, not a document */
-        await reply('Perfect — I have what I need' + (who ? ' for <b>' + esc(who) + '</b>' : '') + '. Book a demo, ask us to call, or talk to an expert, and we’ll take it from here.');
-        const ways = $('.chat__ways');
-        if (ways) ways.classList.add('is-lit');
+        /* the hero no longer carries buttons under the box, so the way to a
+           person is offered here, in the conversation itself (client) */
+        await reply('Perfect — I have what I need' + (who ? ' for <b>' + esc(who) + '</b>' : '') + '. Book a session and we’ll take it from here.',
+          null, { cta: 'session', label: 'Book a demo' });
       }
       state.busy = false;
       miniInput.focus({ preventScroll: true });
@@ -354,18 +367,11 @@
        agent's line, then the starting points one after another — the chat
        opens the conversation rather than sitting there waiting (client). */
     const tagsBox = $('#agentTags');
-    const intro = () => {
-      if (REDUCED) { ai('What do you need help solving?'); if (tagsBox) tagsBox.classList.add('is-in'); return; }
-      const w = wait();
-      /* it takes its time: the thinking is the part that reads as alive */
-      setTimeout(() => {
-        w.remove(); think.off();
-        ai('What do you need help solving?');
-        if (tagsBox) setTimeout(() => tagsBox.classList.add('is-in'), 520);
-      }, 3000);   /* 2.3s read short, 4.6s read long: three seconds is the pause that feels like thought without feeling like a wait (client) */
-    };
-    /* it waits for the page to settle, then starts */
-    setTimeout(intro, REDUCED ? 0 : 700);
+    /* the panel no longer opens by thinking at you: the box asks its question
+       in the placeholder and the starting points simply arrive (client). The
+       dots still run while a real reply is on its way. */
+    const intro = () => { if (tagsBox) tagsBox.classList.add('is-in'); };
+    setTimeout(intro, REDUCED ? 0 : 420);
 
     mini.addEventListener('submit', (e) => {
       e.preventDefault();
