@@ -197,3 +197,12 @@ When it is approved, merge to `main` (via a pull request on GitHub, or
 - **Everything on screen is honest by rule.** Illustrative figures carry an "Illustrative"
   tag, unconfirmed facts appear in `[BRACKETS]`, and no real company is described with
   invented data. Please keep that intact — it is why the demo can be shown to clients.
+- **The homepage agent is real and ends on a contact form.** `/next` runs the same
+  engine/flow as `/next/agent`; after its questions it asks for name, email and phone
+  and POSTs them to `/api/lead`. That function forwards the lead to whatever
+  **`LEAD_WEBHOOK_URL`** points at (HubSpot form endpoint, Zapier, Slack hook — any JSON
+  POST; optional `LEAD_WEBHOOK_AUTH` is sent as the Authorization header). Until that
+  variable is set in Vercel, leads are **not stored anywhere** — the visitor still sees
+  a confirmation and the function log records the miss. The model behind the questions
+  needs `LLM_API_KEY` (plus optional `LLM_BASE_URL`, `LLM_MODEL`); without it the
+  classifier falls back to keywords and the site read is skipped.

@@ -8,22 +8,14 @@
    hover that flips a tile to a flat typographic panel; a centred horizontal
    field with ghosted neighbours and a thin progress line.
 
-   Two faces. Inter Tight 700 for the display voice — every headline, every
-   number. Geist for everything spoken. Nothing else.
+   One face: Montserrat, for headlines, numbers and everything spoken.
 
    Spacing is the §165 scale, but the section steps are one size up from the
    rest of the site: this page is allowed to breathe.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Roobert, the client's title face (his licence; TTF until the woff2 tooling
-   is here). Heavy for the word that matters, Regular beside it. It was taken
-   off for one round on 2026-09-09 and put straight back: this version of the
-   page keeps Roobert, and the corporate option is the one that goes all
-   Montserrat. */
-@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Heavy.ttf') format('truetype');font-weight:900;font-style:normal;font-display:swap}
-@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Light.ttf') format('truetype');font-weight:300;font-style:normal;font-display:swap}
+/* Montserrat is the only face on the page (client, 2026-09-09); the faces are
+   declared in /next/assets/fonts/fonts.css and nothing else is loaded. */
 
 :root{
   --ink:#0B1220;
@@ -51,11 +43,10 @@
   --amber-1:#FFF1D2;  --amber-2:#FFE3A4;
 
   /* 2026-09-09: the homepage goes all Montserrat — one face for titles, copy
-     and controls alike (client). Roobert's @font-face stays declared so the
-     snapshot at /next-v1 keeps rendering as it was approved. */
-  --display:'Montserrat','Geist',"Helvetica Neue",Helvetica,Arial,sans-serif;   /* every title */
-  --sans:'Montserrat','Geist',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  --ui:'Montserrat','Geist',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+     and controls alike (client). No other face is declared anywhere. */
+  --display:'Montserrat',"Helvetica Neue",Helvetica,Arial,sans-serif;   /* every title */
+  --sans:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ui:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 
   --wrap:1440px;
   --gutter:clamp(24px,4vw,64px);
@@ -1203,4 +1194,38 @@ body.chat-open{overflow:hidden}
   .chat-over .ask__field{height:56px;padding:0 4px 0 18px}
   .chat-over .ask__go{width:46px;height:46px}
   .chat-over .chat-over__close{top:var(--s-5)}
+}
+
+/* ── the hero agent's ending: the contact form inside the last bubble (client,
+      2026-09-09: after the questions, a form — name, email, phone — so a
+      Stagwell AI specialist can call). Fields inherit the page's one face. ── */
+.askbox__thread .turnb--form{padding-right:0}
+.askform{display:flex;flex-direction:column;gap:var(--s-5);margin-top:var(--s-6);max-width:440px}
+.askform .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.askform__row{display:block;position:relative;margin:0;min-width:0}
+.askform__row input{
+  width:100%;box-sizing:border-box;height:46px;padding:0 16px;
+  font-family:var(--sans);font-size:15px;color:var(--ink);
+  background:#FFFFFF;border:1px solid var(--line);border-radius:12px;outline:none;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.askform__row input::placeholder{color:var(--ink-4)}
+.askform__row input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(11,18,32,.08)}
+.askform__row.is-shake input{border-color:#A6231B;animation:askShake 420ms var(--ease)}
+@keyframes askShake{20%{transform:translateX(-5px)}45%{transform:translateX(4px)}70%{transform:translateX(-2px)}100%{transform:none}}
+.askform__hint{margin:-4px 0 0;font-size:13px;line-height:1.5;color:#A6231B}
+.askform__hint[hidden]{display:none}
+.askform__bar{display:flex;align-items:center;flex-wrap:wrap;gap:var(--s-5) var(--s-6);margin-top:var(--s-4)}
+.askform__go{height:46px;padding:0 24px;font-size:14px}
+.askform__fine{font-size:12px;line-height:1.5;color:var(--ink-3);flex:1 1 180px}
+.turnb__more{display:inline-block;margin-top:var(--s-6);font-size:14px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.turnb__more:hover{color:var(--navy)}
+.turnb__waitlabel{align-self:center;margin-left:6px;font-size:13px;color:var(--ink-3)}
+/* the composer, closed: the field says why and the send disc is gone */
+.askbox.is-closed .askbox__input{color:var(--ink-3)}
+.askbox.is-closed .askbox__caret{display:none}
+.askbox.is-closed .askbox__bar{padding-top:var(--s-4)}
+@media (prefers-reduced-motion:reduce){.askform__row.is-shake input{animation:none}}
+@media (max-width:640px){
+  .askform{max-width:none}
+  .askbox__thread .turnb--form .turnb__text{font-size:15px}
 }

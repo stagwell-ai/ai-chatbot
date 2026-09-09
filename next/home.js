@@ -198,12 +198,13 @@
      video off the homepage, so the strip is a picture and nothing more. The
      markup, the CSS and /assets/video/hero-reel.mp4 are still in the repo. */
 
-  /* ── the conversation, in its own section under the hero. Your words join
-        the thread above the field; the agent answers in the page's voice and
-        works towards the solution that fits, then hands you to a person — a
-        demo, a call, or an expert. No report: that is postponed past V1
-        (client, 2026-09-09). The agent's lines are placeholders until the
-        client writes them. */
+  /* ── the conversation, in the hero's box. Your words join the thread above
+        the field; the agent asks about your business and works towards the
+        product that fits, then asks for your details so a specialist can
+        call. The real exchange lives in hero-agent.js on top of engine.js /
+        flow.js (client, 2026-09-09); what is left below is the drawing — the
+        bubbles, the dots, the thinking lattice — and a placeholder exchange
+        that only runs on a page without the flow. */
   const agentSec = $('#ask'), thread = $('#agentThread'),
         mini = $('#agentForm'), miniInput = $('#agentInput');
   if (agentSec && thread && mini && miniInput) {
@@ -309,10 +310,11 @@
       };
     })();
     think.ambient();   /* on from landing: the column is quietly alive */
-    const wait = () => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>'; add(t); think.at(t); think.on(); return t; };
-    const ai = (html, chips, go) => {
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+    const wait = (label) => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>' + (label ? '<span class="turnb__waitlabel">' + esc(String(label)) + '</span>' : ''); add(t); think.at(t); think.on(); return t; };
+    const ai = (html, chips, go, onChip) => {
       const t = document.createElement('div'); t.className = 'turnb turnb--ai';
-      t.innerHTML = '<div class="turnb__text">' + html.replace(/\?/g, '<span class="q">?</span>') + '</div>';   /* Geist's question mark */
+      if (html != null) t.innerHTML = '<div class="turnb__text">' + String(html).replace(/\?/g, '<span class="q">?</span>') + '</div>';
       if (go) {
         /* a link when it points somewhere, a lead button when it asks for a
            person — lead.js listens for [data-cta] on the document */
@@ -325,12 +327,22 @@
       }
       if (chips) {
         const row = document.createElement('div'); row.className = 'turnb__chips';
-        chips.forEach(cp => { const b = document.createElement('button'); b.type = 'button'; b.className = 'tag'; b.textContent = cp; b.addEventListener('click', () => send(cp)); row.appendChild(b); });
+        /* a chip is a label, or {label, value} from the flow; the click goes to
+           onChip when there is one, else to the placeholder conversation */
+        chips.forEach(cp => {
+          const c = typeof cp === 'string' ? { label: cp, value: cp } : cp;
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'tag'; b.textContent = c.label;
+          b.addEventListener('click', () => {
+            if (b.disabled) return;
+            row.querySelectorAll('.tag').forEach(o => { o.disabled = true; o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+            if (onChip) onChip(c); else send(c.value);
+          });
+          row.appendChild(b);
+        });
         t.appendChild(row);
       }
       return add(t);
     };
-    const esc = (s) => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
     const reply = (html, chips, go) => new Promise(res => {
       const w = wait();
       setTimeout(() => { w.remove(); think.off(); ai(html, chips, go); res(); }, REDUCED ? 0 : 1300);
@@ -363,6 +375,24 @@
       state.busy = false;
       miniInput.focus({ preventScroll: true });
     };
+    /* ── the drawing helpers, for hero-agent.js: the REAL conversation. When
+          engine.js / flow.js are on the page, hero-agent.js drives this box
+          with the six-question flow and the contact form; the placeholder
+          exchange below only runs when they are not (client, 2026-09-09:
+          "the AI chatbot needs to actually work"). ─────────────────────── */
+    const goBtn = $('.askbox__go', mini);
+    window.SAIHERO = {
+      me, ai, wait, esc, think,
+      open() { agentSec.classList.add('is-chat'); },
+      placeholder(t) { miniInput.placeholder = t || ''; },
+      /* the chips of every earlier question stop taking taps */
+      settleChips() { $$('.turnb__chips .tag', thread).forEach(o => { o.disabled = true; }); },
+      /* the composer closes: the conversation ended on the form */
+      close(t) { miniInput.value = ''; miniInput.placeholder = t || ''; miniInput.disabled = true; miniInput.setAttribute('aria-disabled', 'true'); if (goBtn) goBtn.hidden = true; mini.classList.add('is-closed'); },
+      focus() { miniInput.focus({ preventScroll: true }); }
+    };
+    const REAL = !!window.SAIFLOW;
+
     /* the panel is alive when you arrive: the dots come up first, then the
        agent's line, then the starting points one after another — the chat
        opens the conversation rather than sitting there waiting (client). */
@@ -373,15 +403,17 @@
     const intro = () => { if (tagsBox) tagsBox.classList.add('is-in'); };
     setTimeout(intro, REDUCED ? 0 : 420);
 
-    mini.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const v = miniInput.value.trim();
-      /* an empty send only means something at "your website (optional)": skip it */
-      if (!v && !(state.problem && !state.site && !state.company)) { miniInput.focus(); return; }
-      send(v);
-    });
-    /* a starting point is the problem, said for you */
-    $$('#agentTags .tag').forEach(b => b.addEventListener('click', () => send(b.dataset.q || b.textContent.trim())));
+    if (!REAL) {
+      mini.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v = miniInput.value.trim();
+        /* an empty send only means something at "your website (optional)": skip it */
+        if (!v && !(state.problem && !state.site && !state.company)) { miniInput.focus(); return; }
+        send(v);
+      });
+      /* a starting point is the problem, said for you */
+      $$('#agentTags .tag').forEach(b => b.addEventListener('click', () => send(b.dataset.q || b.textContent.trim())));
+    }
   }
 
   /* ── Call me: the button becomes the phone pill in its own place. Its

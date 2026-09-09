@@ -43,7 +43,7 @@
      Body = Montserrat. The label role stays Montserrat. */
   --display:"Montserrat","Helvetica Neue",Helvetica,Arial,sans-serif;   /* one typeface across the site (client, 2026-09-09) */
   --serif:var(--display);
-  --sans:"Montserrat","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --sans:"Montserrat",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --mono:"Montserrat","Segoe UI",Helvetica,Arial,sans-serif;
 
   /* Set big and tight, the way the references do it. */
