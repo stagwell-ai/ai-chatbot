@@ -78,7 +78,7 @@ d.setAttribute('data-theme',t||sys);})();
       <button type="button" class="nav__search" id="navSearch" aria-label="Search — ask Stagwell" aria-haspopup="dialog" aria-expanded="false">
         <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12.8 12.8L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
-      <a class="btn btn--line" href="#hero" data-ask>Try for free</a>
+      <a class="btn btn--line" href="#ask" data-ask>Try for free</a>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
       <!-- the phone's way in: the links and both buttons live in the sheet -->
       <button type="button" class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navMenu"><span></span><span></span></button>
@@ -112,12 +112,11 @@ d.setAttribute('data-theme',t||sys);})();
   <div class="wrap ask__in chat-over__in">
     <h2 class="display display--ask chat-over__title">How can we <em>help<span class="q">?</span></em></h2>
     <p class="ask__lede">Ask anything. Stagwell AI finds the right expertise, <br>technology and people to solve it.</p>
-    <form class="ask__form" id="askFormOver" action="/next/agent" method="get" autocomplete="off">
+    <form class="ask__form" id="askFormOver" autocomplete="off">
       <label class="vh" for="askInputOver">Ask Stagwell</label>
       <div class="ask__field">
         <input class="ask__input" id="askInputOver" name="q" type="text"
                placeholder="Ask Stagwell" spellcheck="false">
-        <input type="hidden" name="autostart" value="1">
         <button class="ask__go" type="submit" aria-label="Ask Stagwell">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -135,42 +134,79 @@ d.setAttribute('data-theme',t||sys);})();
 
 <main id="top">
 
-<!-- ═══════════════════════ 1 · HERO ═══════════════════════ -->
+<!-- ═══════════════════════ 1 · HERO ═══════════════════════
+     The name, the approved tagline, one short line, and the two ways on:
+     Ask Stagwell (into the agent below) and Book a demo. The right column is
+     the picture strip; the film that lived here was removed on the client's
+     brief (2026-09-09), with its play button and controls. -->
 <section class="hero" id="hero">
   <div class="hero__in">
-    <!-- one column, read top to bottom: the question, the answer, the two
-         ways in. The right column is reserved for the client's image. -->
     <div class="hero__l">
-      <!-- while the agent thinks: a faint field of tiny dots drifting behind
-           the column, drawn by home.js; gone as the reply lands -->
-      <canvas class="hero__think" id="heroThink" aria-hidden="true"></canvas>
-      <!-- everything above the bottom row lives in one stack. When the
-           conversation starts, messages join the bottom of it and push the
-           title, the paragraph and the tags up and out. -->
-      <div class="hero__stack" id="heroStack">
-      <h1 class="display display--hero" id="heroTitle">
-        <span class="ln"><span class="ln__in"><em>Ask</em></span></span><span class="ln"><span class="ln__in"><span class="navy">Stagwell.</span></span></span>
-      </h1>
-      <p class="hero__lede rv" style="--d:.35s">Whatever your marketing challenge,<br>we have the right tool for the job.</p>
-      <!-- the conversation: turns are appended here by home.js -->
-      <div class="hero__thread" id="heroThread" role="log" aria-live="polite" aria-relevant="additions"></div>
+      <div class="hero__stack">
+        <p class="hero__sign rv">Stagwell AI</p>
+        <h1 class="display display--hero" id="heroTitle">
+          <span class="ln"><span class="ln__in"><em>Agentic solutions</em></span></span><span class="ln"><span class="ln__in">built to transform</span></span><span class="ln"><span class="ln__in">your business</span></span>
+        </h1>
+        <p class="hero__lede rv" style="--d:.35s">Whatever your marketing challenge,<br>we have the right tool for the job.</p>
       </div>
-      <!-- the bottom row: the composer and Call me -->
       <div class="hero__acts rv" style="--d:.5s" id="heroActs">
-        <form class="ask-mini" id="askMini" action="/next/agent" method="get" autocomplete="off">
-          <label class="vh" for="askMiniInput">Ask Stagwell</label>
-          <span class="ask-mini__dots" aria-hidden="true"><i></i><i></i><i></i></span><!-- the AI, thinking: three dots in the brand's colours -->
-          <!-- the hint turns over: the website first, then the starting points,
-               each rising in as the last lifts out; gone on focus or text -->
-          <span class="ask-mini__hint" id="askMiniHint" aria-hidden="true"><span class="ask-mini__hint-w is-on">Maybe just start with your site.</span></span>
-          <input class="ask-mini__input" id="askMiniInput" name="q" type="text" placeholder="Let’s start with your website" aria-label="Let’s start with your website, or what you’re solving" spellcheck="false">
-          <input type="hidden" name="autostart" value="1">
-          <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        </form>
-        <!-- Call me: the button itself becomes the phone pill, in its own
-             place — one control, one action. Sent, the same pill carries the
-             call's status. ✕ or Escape brings the button back. -->
-        <div class="call" id="call" data-state="idle">
+        <a class="btn btn--ink btn--lg" href="#ask" data-ask>Ask Stagwell</a>
+        <button type="button" class="btn btn--line btn--lg" data-cta="session">Book a demo</button>
+      </div>
+    </div>
+    <div class="hero__r" aria-hidden="true"></div>
+  </div>
+
+  <!-- the picture, clipped to the right column: the stills cross-fade, each
+       drifting slowly while it shows. No film, no play, no controls. -->
+  <div class="hero__media" id="heroMedia">
+    <div class="hero__slides" id="heroSlides">
+      <img class="hero__pic is-on" src="/assets/img/hero-slide-1.jpg" alt="" width="1024" height="1536" decoding="async" fetchpriority="high">
+      <img class="hero__pic" src="/assets/img/co-imai.jpg" alt="" width="1000" height="1249" decoding="async" loading="lazy">
+      <img class="hero__pic" src="/assets/img/hero-slide-2.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
+      <img class="hero__pic" src="/assets/img/hero-slide-3.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
+      <img class="hero__pic" src="/assets/img/co-newvoices.jpg" alt="" width="1000" height="1249" decoding="async" loading="lazy">
+      <img class="hero__pic" src="/assets/img/hero-slide-4.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
+      <img class="hero__pic" src="/assets/img/co-questbrand.jpg" alt="" width="1000" height="1249" decoding="async" loading="lazy">
+      <img class="hero__pic" src="/assets/img/hero-slide-5.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
+      <img class="hero__pic" src="/assets/img/co-numetrix.jpg" alt="" width="1000" height="1249" decoding="async" loading="lazy">
+      <img class="hero__pic" src="/assets/img/co-geopulse.jpg" alt="" width="1000" height="1777" decoding="async" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 2 · ASK STAGWELL AI ═══════════════════════
+     The agent, straight after the hero and impossible to miss: the opening
+     question, a wide field, the starting points in the open, and the three
+     ways to a human under it. Education and discovery — no report. -->
+<section class="agent" id="ask">
+  <div class="wrap agent__in">
+    <h2 class="display display--agent rv">What do you need help solving?</h2>
+    <p class="agent__lede rv" style="--d:.15s">Ask anything. Stagwell AI finds the right expertise, technology and people to solve it.</p>
+
+    <div class="agent__panel rv" style="--d:.3s">
+      <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
+      <div class="agent__thread" id="agentThread" role="log" aria-live="polite" aria-relevant="additions"></div>
+      <form class="ask-mini ask-mini--lg" id="agentForm" autocomplete="off">
+        <label class="vh" for="agentInput">Ask Stagwell AI</label>
+        <input class="ask-mini__input" id="agentInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
+        <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
+      <!-- the starting points, visible from the start: for anyone who cannot
+           name the problem yet -->
+      <ul class="agent__tags" id="agentTags" aria-label="Pick a starting point">
+        <li><button type="button" class="tag" data-q="Increase brand awareness">Increase brand awareness</button></li>
+        <li><button type="button" class="tag" data-q="Reach Gen Z">Reach Gen Z</button></li>
+        <li><button type="button" class="tag" data-q="Improve sales">Improve sales</button></li>
+        <li><button type="button" class="tag" data-q="Analyze competitors">Analyze competitors</button></li>
+        <li><button type="button" class="tag" data-q="Explore new markets">Explore new markets</button></li>
+      </ul>
+    </div>
+
+    <!-- the ways to a person: a demo, a call, or an expert -->
+    <div class="agent__acts rv" style="--d:.45s">
+      <button type="button" class="btn btn--line btn--lg" data-cta="session">Book a demo</button>
+      <div class="call" id="call" data-state="idle">
           <button type="button" class="btn btn--ink btn--lg btn--ic call__btn" id="callBtn"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
           <form class="call__form" id="callForm" autocomplete="off" novalidate aria-label="Call me">
             <button type="button" class="call__x" id="callClose" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
@@ -187,77 +223,91 @@ d.setAttribute('data-theme',t||sys);})();
             <span class="call__status"><b class="call__line" id="callLine">Calling you now…</b><span class="call__to" id="callTo"></span></span>
           </div>
         </div>
-      </div>
-        </div>
-      </div>
-    </div>
-    <!-- the right column only holds the place: the picture is the panel
-         below, clipped to this column until it is opened. -->
-    <div class="hero__r" aria-hidden="true"></div>
-  </div>
-
-  <!-- the film's panel. It is the whole first screen, clipped to the right
-       column at rest — a still from the film and "watch the film". A tap
-       unclips it leftward over the words and the film runs from the start with
-       sound; close returns it, or scroll on and leave it behind. -->
-  <div class="hero__media" id="heroMedia">
-    <!-- the slider: stills cut for the strip, one showing, cross-fading to
-         the next; each drifts slowly while it shows. Add slides as <img>s. -->
-    <div class="hero__slides" id="heroSlides">
-      <img class="hero__pic is-on" src="/assets/img/hero-slide-1.jpg" alt="" width="1024" height="1536" decoding="async" fetchpriority="high">
-      <img class="hero__pic" src="/assets/img/co-imai.jpg" alt="" width="1000" height="1249" decoding="async" loading="lazy">
-      <img class="hero__pic" src="/assets/img/hero-slide-2.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
-      <img class="hero__pic" src="/assets/img/hero-slide-3.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
-      <img class="hero__pic" src="/assets/img/co-newvoices.jpg" alt="" width="1000" height="1249" decoding="async" loading="lazy">
-      <img class="hero__pic" src="/assets/img/hero-slide-4.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
-      <img class="hero__pic" src="/assets/img/co-questbrand.jpg" alt="" width="1000" height="1249" decoding="async" loading="lazy">
-      <img class="hero__pic" src="/assets/img/hero-slide-5.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
-      <img class="hero__pic" src="/assets/img/co-numetrix.jpg" alt="" width="1000" height="1249" decoding="async" loading="lazy">
-      <img class="hero__pic" src="/assets/img/co-geopulse.jpg" alt="" width="1000" height="1777" decoding="async" loading="lazy">
-    </div>
-    <video class="hero__film" id="heroFilm" playsinline preload="metadata" src="/assets/video/hero-reel.mp4"></video>
-    <!-- the question, over the picture: one white line, centred in the visible
-       strip, turning over. The first three are the client's; the rest match. -->
-    <p class="turn rv" style="--d:.1s" id="turn" aria-live="polite" aria-atomic="true">
-      <span class="turn__w is-on">A complex challenge<span class="q">?</span></span>
-      <span class="turn__w">New markets<span class="q">?</span></span>
-      <span class="turn__w">A bolder opportunity<span class="q">?</span></span>
-      <span class="turn__w">A brand that needs momentum<span class="q">?</span></span>
-      <span class="turn__w">Customers you haven't reached<span class="q">?</span></span>
-      <span class="turn__w">A launch that has to land<span class="q">?</span></span>
-    </p>
-    <!-- at rest: the invitation, a white pill bottom right -->
-    <button type="button" class="hero__watch" id="heroWatch" aria-label="Watch the film"><svg class="ic ic-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.2v13.6L19.4 12z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
-    <!-- open: pause, sound, close — three discs in the same corner -->
-    <div class="hero__ctl" id="heroCtl" hidden>
-      <button type="button" class="hero__disc" id="heroPause" aria-label="Pause" aria-pressed="false"><svg class="ic ic-pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="4.8" y="4" width="3.6" height="12" rx="1.3" fill="currentColor"/><rect x="11.6" y="4" width="3.6" height="12" rx="1.3" fill="currentColor"/></svg><svg class="ic ic-play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7 4.2v11.6c0 .8.9 1.3 1.6.9l9-5.8c.6-.4.6-1.4 0-1.8l-9-5.8C7.9 2.9 7 3.4 7 4.2Z" fill="currentColor"/></svg></button>
-      <button type="button" class="hero__disc" id="heroMute" aria-label="Mute" aria-pressed="false"><svg class="ic ic-sound" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 7.6h2.8l4.2-3.4v11.6L6.3 12.4H3.5Z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M13.2 7.2a4 4 0 0 1 0 5.6M15.7 4.9a7.2 7.2 0 0 1 0 10.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="ic ic-muted" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 7.6h2.8l4.2-3.4v11.6L6.3 12.4H3.5Z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M13 8l4.4 4.4M17.4 8L13 12.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
-      <button type="button" class="hero__disc" id="heroClose" aria-label="Close the film"><svg class="ic ic-x" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button type="button" class="btn btn--line btn--lg" data-cta="expert">Talk to an expert</button>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════ 2 · AGENTIC SOLUTIONS ═══════════════════════
-     A split, as on the reference: a full-height picture on the left, the
-     words on the right — the title big and bold, the paragraph, one outline
-     button that opens the hero's chat. The picture is a placeholder until
-     the client sends his. -->
-<section class="intro" id="agentic">
+<!-- ═══════════════════════ 3 · WHAT IS STAGWELL AI ═══════════════════════ -->
+<section class="intro" id="about">
   <div class="intro__media">
     <img class="intro__pic" src="/assets/img/co-unicepta.jpg" alt="" width="1144" height="1375" loading="lazy" decoding="async">
   </div>
   <div class="intro__body">
-    <h2 class="display display--intro rv"><em>Agentic solutions</em> grounded in real-world marketing expertise</h2>
-    <p class="intro__lede rv" style="--d:.15s">Stagwell AI is Stagwell’s portfolio of agentic solutions purpose-built for marketers, combining AI technology with deep marketing expertise to help brands make better decisions, execute faster, and drive stronger performance.</p>
-    <p class="intro__act rv" style="--d:.3s"><a class="btn btn--line btn--lg" href="#hero" data-ask>Find your fit</a></p>
+    <p class="hero__sign rv">What is Stagwell AI</p>
+    <h2 class="display display--intro rv" style="--d:.1s">Stagwell AI is Stagwell’s portfolio of <em>agentic solutions</em>.</h2>
+    <p class="intro__lede rv" style="--d:.2s">We combine technology with deep marketing expertise to help businesses make better decisions, execute faster, and drive stronger performance.</p>
+    <p class="intro__act rv" style="--d:.3s"><a class="btn btn--line btn--lg" href="#ask" data-ask>Find your fit</a></p>
   </div>
 </section>
 
-<!-- the dark "Ask Stagwell." section lived here; the hero carries the
-     conversation now (client, 2026-09-08), so the film runs straight into the
-     network. -->
+<!-- ═══════════════════════ 4 · AGENTIC SOLUTIONS ═══════════════════════
+     The portfolio in overview, not four landing pages: what it is, who it
+     fits, how it joins what you run, and the agent as the way through. -->
+<section class="port" id="solutions">
+  <div class="wrap">
+    <p class="port__eyebrow rv">Agentic solutions</p>
+    <h2 class="display display--port rv" style="--d:.1s"><span class="ln"><span class="ln__in">How we put agentic AI</span></span><span class="ln"><span class="ln__in"><em>to work</em></span></span></h2>
+    <ul class="port__rows">
+      <li class="port__row rv">
+        <div class="port__body">
+          <h3 class="port__title">For businesses of every size</h3>
+          <p class="port__head">A portfolio of agentic solutions: adopt the ones you need, when you need them.</p>
+          <a class="btn btn--line btn--lg port__go" href="/next/products">Learn more</a>
+        </div>
+        <div class="port__media"><img class="port__pic" src="/assets/img/co-numetrix.jpg" alt="" loading="lazy" decoding="async"></div>
+      </li>
+      <li class="port__row rv">
+        <div class="port__body">
+          <h3 class="port__title">Fits the technology you use</h3>
+          <p class="port__head">The solutions integrate with the stack your business already runs.</p>
+          <a class="btn btn--line btn--lg port__go" href="/next/products">Learn more</a>
+        </div>
+        <div class="port__media"><img class="port__pic" src="/assets/img/co-geopulse.jpg" alt="" loading="lazy" decoding="async"></div>
+      </li>
+      <li class="port__row rv">
+        <div class="port__body">
+          <h3 class="port__title">Guided by Ask Stagwell</h3>
+          <p class="port__head">Tell the agent what you are up against; it points you to the solution that fits.</p>
+          <a class="btn btn--line btn--lg port__go" href="#ask" data-ask>Ask Stagwell</a>
+        </div>
+        <div class="port__media"><img class="port__pic" src="/assets/img/co-questbrand.jpg" alt="" loading="lazy" decoding="async"></div>
+      </li>
+    </ul>
+  </div>
+</section>
 
-<!-- ═══════════════════════ 3 · COMPANIES ═══════════════════════ -->
+<!-- ═══════════════════════ 5 · BUILT ON STAGWELL’S SCALE ═══════════════════════ -->
+<section class="trust" id="scale">
+  <div class="wrap trust__head">
+    <h2 class="display display--trust rv"><span class="ln"><span class="ln__in"><em>Global scale.</em></span></span><span class="ln"><span class="ln__in">Local expertise.</span></span></h2>
+    <div class="trust__copy rv" style="--d:.15s">
+      <p>Stagwell brings together 70+ agencies and 13,000 people across 34 markets — specialists in every discipline, working as one network around your problem.</p>
+      <p>Stagwell AI is that network made agentic: the expertise of the people, the speed of the technology, and a direct line to the team that fits, wherever you are.</p>
+    </div>
+  </div>
+
+  <div class="trust__banner" id="trustBanner">
+    <img class="trust__pic" src="/assets/img/trust-banner.jpg" alt="" loading="lazy" decoding="async">
+  </div>
+</section>
+
+<!-- ═══════════════════════ 6 · WHY STAGWELL AI ═══════════════════════ -->
+<section class="why" id="why">
+  <div class="wrap">
+    <h2 class="display display--cos rv"><span class="ln"><span class="ln__in">Why <em>Stagwell AI</em>.</span></span></h2>
+    <ul class="why__grid">
+      <li class="why__item rv" style="--d:.0s"><h3 class="why__t">Deep marketing expertise</h3><p class="why__d">Built on the practice of 70+ agencies, not on theory.</p></li>
+      <li class="why__item rv" style="--d:.1s"><h3 class="why__t">By practitioners, for practitioners</h3><p class="why__d">Made by the people who run the work every day.</p></li>
+      <li class="why__item rv" style="--d:.2s"><h3 class="why__t">Flexible by design</h3><p class="why__d">Take the solutions you need, when you need them.</p></li>
+      <li class="why__item rv" style="--d:.3s"><h3 class="why__t">Works with your stack</h3><p class="why__d">The solutions integrate with the technology you already use.</p></li>
+      <li class="why__item rv" style="--d:.4s"><h3 class="why__t">Faster decisions and execution</h3><p class="why__d">Less time between the question and the move.</p></li>
+      <li class="why__item rv" style="--d:.5s"><h3 class="why__t">Stronger performance</h3><p class="why__d">Better decisions, carried through to the result.</p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 7 · COMPANIES ═══════════════════════ -->
 <section class="cos" id="companies">
   <div class="wrap">
     <h2 class="display display--cos rv"><span class="ln"><span class="ln__in">One network.</span></span><span class="ln"><span class="ln__in"><em>Endless</em> expertise.</span></span></h2>
@@ -421,66 +471,24 @@ d.setAttribute('data-theme',t||sys);})();
 
 </section>
 
-<!-- ═══════════════════════ 4 · SCALE ═══════════════════════ -->
-<!-- ═══════════════════════ 3b · PORTFOLIO ═══════════════════════
-     The client's brief from DEPT's "Solutions" block: an eyebrow over a
-     hairline, a huge left title with the last line in the orange, then
-     hairline rows — title, a line and LEARN MORE on the left, a wide picture
-     on the right. Words are the site's own tier copy until his; pictures
-     are placeholders. -->
-<section class="port" id="portfolio">
+<!-- ═══════════════════════ 8 · FROM INSIGHT TO IMPACT ═══════════════════════
+     The journey, named in the client's brief — five steps, nothing more. -->
+<section class="impact" id="impact">
   <div class="wrap">
-    <p class="port__eyebrow rv">Portfolio</p>
-    <h2 class="display display--port rv" style="--d:.1s"><span class="ln"><span class="ln__in">How we put agentic AI</span></span><span class="ln"><span class="ln__in"><em>to work</em></span></span></h2>
-    <ul class="port__rows">
-      <li class="port__row rv">
-        <div class="port__body">
-          <h3 class="port__title">Enterprise Solutions</h3>
-          <p class="port__head">Agentic capabilities for complex, enterprise-scale marketing.</p>
-          <a class="btn btn--line btn--lg port__go" href="/next/products">Learn more</a>
-        </div>
-        <div class="port__media"><img class="port__pic" src="/assets/img/co-numetrix.jpg" alt="" loading="lazy" decoding="async"></div>
-      </li>
-      <li class="port__row rv">
-        <div class="port__body">
-          <h3 class="port__title">Purpose-Built Solutions</h3>
-          <p class="port__head">Purpose-built agentic solutions for specific marketing challenges.</p>
-          <a class="btn btn--line btn--lg port__go" href="/next/products">Learn more</a>
-        </div>
-        <div class="port__media"><img class="port__pic" src="/assets/img/co-geopulse.jpg" alt="" loading="lazy" decoding="async"></div>
-      </li>
-      <li class="port__row rv">
-        <div class="port__body">
-          <h3 class="port__title">Self-Service Platform</h3>
-          <p class="port__head">Agentic marketing expertise made accessible to growing businesses.</p>
-          <a class="btn btn--line btn--lg port__go" href="/next/products">Learn more</a>
-        </div>
-        <div class="port__media"><img class="port__pic" src="/assets/img/co-questbrand.jpg" alt="" loading="lazy" decoding="async"></div>
-      </li>
-    </ul>
+    <h2 class="display display--cos rv"><span class="ln"><span class="ln__in">From insight <em>to impact</em>.</span></span></h2>
+    <ol class="impact__steps">
+      <li class="impact__step rv" style="--d:.0s"><span class="impact__n">01</span><span class="impact__t">Business problem</span></li>
+      <li class="impact__step rv" style="--d:.1s"><span class="impact__n">02</span><span class="impact__t">Solution discovery</span></li>
+      <li class="impact__step rv" style="--d:.2s"><span class="impact__n">03</span><span class="impact__t">Integration or activation</span></li>
+      <li class="impact__step rv" style="--d:.3s"><span class="impact__n">04</span><span class="impact__t">Execution</span></li>
+      <li class="impact__step rv" style="--d:.4s"><span class="impact__n">05</span><span class="impact__t">Measurable impact</span></li>
+    </ol>
   </div>
 </section>
 
-<!-- ═══════════════════════ 4 · TRUST ═══════════════════════
-     The client's brief from the DEPT about page: a big title on the left, the
-     paragraph under it, then a full-width banner whose picture zooms as you
-     scroll while the frame stays put, then the numbers as bordered cards.
-     Words and picture are placeholders until his. -->
-<section class="trust" id="scale">
-  <div class="wrap trust__head">
-    <h2 class="display display--trust rv"><span class="ln"><span class="ln__in"><em>Global scale.</em></span></span><span class="ln"><span class="ln__in">Local expertise.</span></span></h2>
-    <div class="trust__copy rv" style="--d:.15s">
-      <p>Stagwell brings together 70+ agencies and 13,000 people across 34 markets — specialists in every discipline, working as one network around your problem.</p>
-      <p>Stagwell AI is that network made agentic: the expertise of the people, the speed of the technology, and a direct line to the team that fits, wherever you are.</p>
-    </div>
-  </div>
-
-  <!-- the banner: a fixed frame, and inside it a picture that zooms as it
-       travels through the screen (home.js sets --zoom from scroll) -->
-  <div class="trust__banner" id="trustBanner">
-    <img class="trust__pic" src="/assets/img/trust-banner.jpg" alt="" loading="lazy" decoding="async">
-  </div>
-
+<!-- ═══════════════════════ 9 · TRUST AND METRICS ═══════════════════════
+     The numbers as bordered cards — the project's own approved values. -->
+<section class="metrics" id="trust">
   <div class="wrap">
     <ul class="stats" aria-label="Stagwell at scale">
       <li class="stat rv"><span class="stat__n">70<i>+</i></span><span class="stat__d">Stagwell agencies contributing expertise</span></li>
@@ -491,78 +499,25 @@ d.setAttribute('data-theme',t||sys);})();
   </div>
 </section>
 
-<!-- ═══════════════════════ 5 · FINAL CONVERSION ═══════════════════════ -->
-<!-- ═══════════════════════ 5 · THE SUITE (final conversion) ═══════════════════════
-     The client's copy, in DEPT's awards layout: a huge centred title with the
-     last word in the orange, the line under it, then the three ways in as a
-     list on the left — the chosen one bold — with its line, a picture and the
-     button on the right. Pictures are placeholders. -->
-<section class="close suite" id="close">
-  <div class="wrap suite__in">
-    <h2 class="display display--close rv"><span class="ln"><span class="ln__in">The Stagwell AI <em>suite.</em></span></span></h2>
-    <p class="suite__lede rv" style="--d:.15s">Stagwell AI puts the Marketing Cloud’s products behind one conversation. Tell the agent what you’re up against; it finds the ones that solve it, and hands you to the people who run them.</p>
-
-    <!-- the ways in. On a desktop: the names on the left, the chosen one bold,
-         its picture and line on the right. On a phone the same items become
-         rows, each with its own thumbnail and line, and the panel steps out. -->
-    <div class="suite__grid rv" style="--d:.3s" id="suite">
-      <ul class="suite__list" role="tablist" aria-label="Ways in">
-        <li><button type="button" class="suite__item is-on" role="tab" aria-selected="true" data-cta="session" data-line="Sixty minutes with the strategists who run these products." data-pic="/assets/img/co-imai.jpg">
-          <span class="suite__thumb"><img src="/assets/img/co-imai.jpg" alt="" loading="lazy" decoding="async"></span>
-          <span class="suite__body">
-            <span class="suite__word">Book a strategy session<svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="suite__arrow-line" d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path class="suite__arrow-head" d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <span class="suite__note">Sixty minutes with the strategists who run these products.</span>
-          </span>
-        </button></li>
-        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-cta="expert" data-line="A working conversation, not a pitch." data-pic="/assets/img/hero-slide-2.jpg">
-          <span class="suite__thumb"><img src="/assets/img/hero-slide-2.jpg" alt="" loading="lazy" decoding="async"></span>
-          <span class="suite__body">
-            <span class="suite__word">Talk to an AI expert<svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="suite__arrow-line" d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path class="suite__arrow-head" d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <span class="suite__note">A working conversation, not a pitch.</span>
-          </span>
-        </button></li>
-        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-cta="demo" data-line="The whole suite, pointed at your brand." data-pic="/assets/img/co-newvoices.jpg">
-          <span class="suite__thumb"><img src="/assets/img/co-newvoices.jpg" alt="" loading="lazy" decoding="async"></span>
-          <span class="suite__body">
-            <span class="suite__word">Request your full AI workspace<svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="suite__arrow-line" d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path class="suite__arrow-head" d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <span class="suite__note">The whole suite, pointed at your brand.</span>
-          </span>
-        </button></li>
-        <li><button type="button" class="suite__item" role="tab" aria-selected="false" data-href="/next/products" data-line="Every product in the Marketing Cloud, one by one." data-pic="/assets/img/hero-slide-1.jpg">
-          <span class="suite__thumb"><img src="/assets/img/hero-slide-1.jpg" alt="" loading="lazy" decoding="async"></span>
-          <span class="suite__body">
-            <span class="suite__word">See every product<svg class="suite__arrow" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="suite__arrow-line" d="M4 16L16 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path class="suite__arrow-head" d="M7 4h9v9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <span class="suite__note">Every product in the Marketing Cloud, one by one.</span>
-          </span>
-        </button></li>
-      </ul>
-      <div class="suite__panel" role="tabpanel">
-        <div class="suite__media"><img class="suite__pic" id="suitePic" src="/assets/img/co-imai.jpg" alt="" loading="lazy" decoding="async"></div>
-        <p class="suite__line" id="suiteLine">Sixty minutes with the strategists who run these products.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════ 6 · THE END IS THE START ═══════════════════════
-     The page ends where it began: Ask Stagwell, the line, the field, and
-     Call me under it. The field hands what you type to the hero's
-     conversation; Call me works here in its own pill. -->
-<section class="ask-end" id="ask">
+<!-- ═══════════════════════ 10 · FINAL CONVERSION ═══════════════════════
+     The page ends where it turned: the agent's field again, a demo, and a
+     call. No report. -->
+<section class="ask-end" id="start">
   <div class="wrap ask-end__in">
     <h2 class="display display--end rv"><span class="ln"><span class="ln__in"><em>Ask</em> <span class="navy">Stagwell.</span></span></span></h2>
     <p class="ask-end__lede rv" style="--d:.15s">Whatever your marketing challenge, we have the right tool for the job.</p>
     <div class="ask-end__acts">
-      <form class="ask-mini rv" id="askEnd" style="--d:.3s" action="/next/agent" method="get" autocomplete="off">
-        <label class="vh" for="askEndInput">Ask Stagwell</label>
+      <form class="ask-mini rv" id="askEnd" style="--d:.3s" autocomplete="off">
+        <label class="vh" for="askEndInput">Ask Stagwell AI</label>
         <span class="ask-mini__dots" aria-hidden="true"><i></i><i></i><i></i></span>
         <span class="ask-mini__hint" aria-hidden="true"><span class="ask-mini__hint-w is-on">Maybe just start with your site.</span></span>
-        <input class="ask-mini__input" id="askEndInput" name="q" type="text" placeholder="Let’s start with your website" aria-label="Let’s start with your website, or what you’re solving" spellcheck="false">
-        <input type="hidden" name="autostart" value="1">
-        <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <input class="ask-mini__input" id="askEndInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
+        <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </form>
-        <div class="call rv" id="callEnd" data-state="idle" style="--d:.45s">
-          <button type="button" class="btn btn--ink btn--lg btn--ic call__btn"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
+      <div class="ask-end__ways">
+        <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
+        <div class="call" id="callEnd" data-state="idle">
+          <button type="button" class="btn btn--line btn--lg btn--ic call__btn"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
           <form class="call__form" autocomplete="off" novalidate aria-label="Call me">
             <button type="button" class="call__x" data-close aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
             <label class="vh" for="callEndCode">Country code</label>
@@ -578,6 +533,7 @@ d.setAttribute('data-theme',t||sys);})();
             <span class="call__status"><b class="call__line">Calling you now…</b><span class="call__to"></span></span>
           </div>
         </div>
+      </div>
     </div>
   </div>
 </section>
@@ -597,7 +553,7 @@ d.setAttribute('data-theme',t||sys);})();
       <li><a href="#companies">Companies</a></li>
       <li><a href="/next/products">Products</a></li>
       <li><a href="/next/why">Why Stagwell AI</a></li>
-      <li><a href="#hero" data-ask>Ask Stagwell</a></li>
+      <li><a href="#ask" data-ask>Ask Stagwell</a></li>
     </ul>
     <ul class="foot__small">
       <li><a href="https://www.stagwellglobal.com" target="_blank" rel="noopener">A Stagwell company <span class="foot__disc" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>

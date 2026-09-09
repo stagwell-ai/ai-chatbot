@@ -333,7 +333,8 @@ body.chat-open{overflow:hidden}
    chips); once the conversation starts it scrolls, anchored to its bottom,
    so each new turn pushes what came before up and out */
 .hero__stack{flex:1;min-height:0;align-self:stretch;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}
-.hero__stack > .display--hero{margin-top:auto;align-self:stretch}
+.hero__stack > :first-child{margin-top:auto}   /* the block sits low in the column, as it did when the title led it */
+.hero__stack > .display--hero{align-self:stretch}
 .hero__l.is-chat .hero__stack{overflow-y:auto;scrollbar-width:none}   /* a clean edge under the bar, no fade */
 .hero__l.is-chat .hero__stack::-webkit-scrollbar{display:none}
 /* the title takes the column's width, not its own: a start-aligned flex item
@@ -386,8 +387,9 @@ body.chat-open{overflow:hidden}
 /* the panel: the whole first screen, clipped to the right column. Opening is
    the clip letting go to the left — the picture underneath is already full
    size, so what was a crop simply becomes the frame. Over the words. */
+/* the film is gone (client, 2026-09-09): the strip is a picture, not a control */
 .hero__media{
-  position:absolute;inset:0;z-index:2;background:var(--deep);overflow:hidden;cursor:pointer;
+  position:absolute;inset:0;z-index:2;background:var(--deep);overflow:hidden;
   clip-path:inset(0 0 0 calc(100% - var(--media-w)));
   transition:clip-path .9s var(--ease);
 }
@@ -886,6 +888,57 @@ body.chat-open{overflow:hidden}
   .co.is-open .co__back{transform:none!important}
 }
 
+
+/* ── 2 · ASK STAGWELL AI — the agent, the centre of the page ─────────────
+   The larger form of the block, as the client asked: the question, a wide
+   field, the starting points in the open, and the ways to a person. Same
+   components as everywhere else — the ask-mini field, the tags, the ink and
+   outline buttons, the Call me pill. */
+.agent{padding:var(--s-15) 0 var(--s-15);background:#F6F6F7}   /* the hero's own grey, carried on */
+.agent__in{display:flex;flex-direction:column;align-items:center;text-align:center}
+.display--agent{font-size:clamp(38px, 1.2rem + 3.2vw, 64px);text-transform:none;letter-spacing:-.03em;line-height:1}
+.agent__lede{margin-top:var(--s-8);max-width:640px;font-size:clamp(18px, .9rem + .6vw, 22px);line-height:1.5;color:var(--ink)}
+.agent__panel{position:relative;margin-top:var(--s-11);width:min(100%,860px);display:flex;flex-direction:column;align-items:stretch}
+.agent__panel > :not(.hero__think){position:relative;z-index:1}
+/* the conversation grows above the field, as it did in the hero */
+.agent__thread{display:flex;flex-direction:column;gap:var(--s-5);width:100%;text-align:left}
+.agent__thread:not(:empty){padding-bottom:var(--s-9)}
+.agent .ask-mini{background:#FFFFFF}                      /* white on the grey ground */
+.ask-mini--lg{height:68px;padding:0 8px 0 26px}
+.ask-mini--lg .ask-mini__input{font-size:18px}
+.ask-mini--lg .ask-mini__go{width:52px;height:52px}
+/* the starting points: the page's own tags, in the open under the field */
+.agent__tags{margin-top:var(--s-7);display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4)}
+.agent__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2);background:#FFFFFF}
+.agent__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
+.agent__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* once the conversation starts the starting points step out of the way */
+.agent.is-chat .agent__tags{display:none}
+.agent__acts{margin-top:var(--s-11);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--s-5)}
+
+/* ── 6 · WHY STAGWELL AI — short cards, the reasons to believe ─────────── */
+.why{padding:var(--s-15) 0 var(--s-14)}
+.why .display--cos{text-align:center}
+.why__grid{margin-top:var(--s-13);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-7)}
+.why__item{display:flex;flex-direction:column;gap:var(--s-5);padding:var(--s-10) var(--s-9);border:1px solid var(--line);border-radius:24px}   /* the numbers' own card */
+.why__t{margin:0;font-family:var(--display);font-weight:700;font-size:clamp(20px, .9rem + .6vw, 24px);letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
+.why__d{margin:0;font-size:16px;line-height:1.5;color:var(--ink-3)}
+
+/* ── 8 · FROM INSIGHT TO IMPACT — the five steps, nothing more ─────────── */
+.impact{padding:var(--s-14) 0 var(--s-14)}
+.impact .display--cos{text-align:center}
+.impact__steps{margin-top:var(--s-13);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s-7)}
+.impact__step{display:flex;flex-direction:column;gap:var(--s-5);padding-top:var(--s-7);border-top:1px solid var(--ink-4)}
+.impact__n{font-family:var(--ui);font-size:13px;font-weight:600;letter-spacing:.12em;color:var(--teal)}
+.impact__t{font-family:var(--display);font-weight:700;font-size:clamp(18px, .8rem + .5vw, 21px);letter-spacing:-.015em;line-height:1.25;color:var(--ink)}
+
+/* ── 9 · TRUST AND METRICS — the cards, on their own now ────────────────── */
+.metrics{padding:var(--s-13) 0 var(--s-15);border-top:1px solid var(--line)}   /* its own block, not the tail of the steps above */
+.metrics .stats{margin-top:0}
+
+/* the final CTA's other two ways, under the field */
+.ask-end__ways{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--s-5)}
+
 /* ══════════════════════════ MOBILE (≤ 820px) ══════════════════════════════
    A re-composition, not a scale-down. One column everywhere; the hero's
    split becomes words over a 4:5 picture with the play disc on it; the film
@@ -918,9 +971,12 @@ body.chat-open{overflow:hidden}
   .hero__in{display:flex;flex-direction:column;flex:none}
   .hero__l{padding:calc(var(--nav-h) + var(--s-13)) var(--gutter) var(--s-11);min-height:0}   /* 80 clear of the bar: the title was stuck to it (client) */
   .hero__stack{flex:none;overflow:visible}
-  .hero__stack > .display--hero{margin-top:0}
+  .hero__stack > :first-child{margin-top:0}
   .hero__l.is-chat .hero__stack{max-height:62svh;overflow-y:auto}
-  .display--hero{font-size:clamp(52px, 15vw, 64px)}
+  /* the tagline is three nowrap lines on a desktop; on a phone that made
+     fitDisplays shrink it to 35px. Let it wrap instead and keep it big. */
+  .display--hero{font-size:clamp(38px, 11.5vw, 48px)}
+  .display--hero .ln__in{white-space:normal}
   .hero__lede{margin:var(--s-9) 0 var(--s-11);white-space:normal;font-size:17px}   /* 32 under the title, 48 to the field */
   .hero__r{display:none}
   .hero__acts{flex-direction:column;align-items:stretch;gap:var(--s-5)}
@@ -1028,6 +1084,26 @@ body.chat-open{overflow:hidden}
   .foot__band{flex-direction:column;align-items:flex-start;gap:var(--s-8);padding-top:var(--s-9);padding-bottom:max(var(--s-9), env(safe-area-inset-bottom))}
   .foot__legal{width:100%;justify-content:space-between}
 
+
+  /* ── the agent, the why cards, the five steps, the metrics ── */
+  .agent{padding:var(--s-13) 0 var(--s-13)}
+  .agent__lede{margin-top:var(--s-7);font-size:17px}
+  .agent__panel{margin-top:var(--s-10)}
+  .ask-mini--lg{height:56px;padding:0 4px 0 20px}
+  .ask-mini--lg .ask-mini__input{font-size:15px}
+  .ask-mini--lg .ask-mini__go{width:46px;height:46px}
+  .agent__tags{margin-top:var(--s-6);gap:8px}
+  .agent__tags .tag{height:34px;padding:0 14px;font-size:13px}
+  .agent__acts{margin-top:var(--s-10);flex-direction:column;align-items:stretch;gap:var(--s-5)}
+  .agent__acts .btn,.agent__acts .call{width:100%}
+  .why{padding:var(--s-13) 0 var(--s-12)}
+  .why__grid{margin-top:var(--s-11);grid-template-columns:1fr;gap:var(--s-5)}
+  .why__item{padding:var(--s-8) var(--s-7);border-radius:18px;gap:var(--s-4)}
+  .impact{padding:var(--s-12) 0}
+  .impact__steps{margin-top:var(--s-11);grid-template-columns:1fr;gap:var(--s-6)}
+  .metrics{padding:var(--s-10) 0 var(--s-13)}
+  .ask-end__ways{flex-direction:column;align-items:stretch;width:100%}
+  .ask-end__ways .btn,.ask-end__ways .call{width:100%}
   /* ── the chat over the page ── */
   .chat-over .ask__field{height:56px;padding:0 4px 0 18px}
   .chat-over .ask__go{width:46px;height:46px}

@@ -187,74 +187,28 @@
     setTimeout(() => { turn(); setInterval(turn, 9000); }, 4500);
   }
 
-  /* ── the film's panel: a still, clipped to the right column at rest. A tap
-        unclips it to the left over the words and runs the film from the start
-        with sound. Close returns the still; scrolling away rests the film. ── */
-  const media = $('#heroMedia'), film = $('#heroFilm'), watch = $('#heroWatch'),
-        ctl = $('#heroCtl'), pauseBtn = $('#heroPause'), muteBtn = $('#heroMute'), closeBtn = $('#heroClose');
-  if (media && film && watch && ctl && pauseBtn && muteBtn && closeBtn) {
-    const isOpen = () => media.classList.contains('is-open');
-    const play = () => film.play().catch(() => {});
-    const setPaused = (p) => {
-      media.classList.toggle('is-paused', p);
-      pauseBtn.setAttribute('aria-pressed', String(p));
-      pauseBtn.setAttribute('aria-label', p ? 'Play' : 'Pause');
-    };
-    const setMuted = (m) => {
-      film.muted = m;
-      media.classList.toggle('is-muted', m);
-      muteBtn.setAttribute('aria-pressed', String(m));
-      muteBtn.setAttribute('aria-label', m ? 'Sound on' : 'Mute');
-    };
-    const openFilm = () => {
-      if (isOpen()) return;
-      media.classList.add('is-open');
-      watch.hidden = true; ctl.hidden = false;
-      film.currentTime = 0; setPaused(false); setMuted(false);
-      /* from the start, with sound, as the panel finishes opening; if the
-         browser refuses sound on this tap, silently — the disc says so */
-      setTimeout(() => film.play().catch(() => { setMuted(true); play(); }), REDUCED ? 0 : 450);
-      closeBtn.focus({ preventScroll: true }); syncNav();
-    };
-    const closeFilm = () => {
-      if (!isOpen()) return;
-      media.classList.remove('is-open', 'is-paused', 'is-playing');
-      watch.hidden = false; ctl.hidden = true;
-      film.pause();
-      watch.focus({ preventScroll: true }); syncNav();
-    };
-    media.addEventListener('click', (e) => { if (!isOpen() && !e.target.closest('button')) openFilm(); });
-    watch.addEventListener('click', openFilm);
-    closeBtn.addEventListener('click', closeFilm);
-    pauseBtn.addEventListener('click', () => { const p = !film.paused; p ? film.pause() : play(); setPaused(p); });
-    muteBtn.addEventListener('click', () => setMuted(!film.muted));
-    film.addEventListener('playing', () => media.classList.add('is-playing'));
-    film.addEventListener('ended', closeFilm);
-    addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFilm(); });
-    /* scrolled away, the film rests; back on screen, it goes on */
-    if ('IntersectionObserver' in window) new IntersectionObserver(es => {
-      if (!isOpen()) return;
-      if (!es[0].isIntersecting) film.pause();
-      else if (!media.classList.contains('is-paused')) play();
-    }, { threshold: .2 }).observe(media);
-  }
+  /* the film's panel lived here — a still that opened into the reel, with a
+     play disc and pause/mute/close. The client's brief of 2026-09-09 takes the
+     video off the homepage, so the strip is a picture and nothing more. The
+     markup, the CSS and /assets/video/hero-reel.mp4 are still in the repo. */
 
-  /* ── the conversation in the hero. Native to the column: your words rise
-        from the bottom as a turn and push the title up; the agent answers in
-        the page's voice. It takes the two things the agent needs — the problem
-        and the company — then says it is pulling the snapshot and hands the
-        session to the agent page, which continues the same conversation.
-        The agent's lines here are placeholders until the client writes them. */
-  const heroL = $('.hero__l'), stack = $('#heroStack'), thread = $('#heroThread'),
-        mini = $('#askMini'), miniInput = $('#askMiniInput');
-  if (heroL && stack && thread && mini && miniInput) {
+  /* ── the conversation, in its own section under the hero. Your words join
+        the thread above the field; the agent answers in the page's voice and
+        works towards the solution that fits, then hands you to a person — a
+        demo, a call, or an expert. No report: that is postponed past V1
+        (client, 2026-09-09). The agent's lines are placeholders until the
+        client writes them. */
+  const agentSec = $('#ask'), thread = $('#agentThread'),
+        mini = $('#agentForm'), miniInput = $('#agentInput');
+  if (agentSec && thread && mini && miniInput) {
     const state = { site: null, company: null, problem: null, busy: false, done: false };
     const CHIPS = ['Increase brand awareness', 'Reach Gen Z', 'Improve sales', 'Analyze competitors', 'Explore new markets'];
     const domainOf = (v) => {
       const m = v.match(/^(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,})(?:[\/?#].*)?$/i);
       return m && !/\s/.test(v) ? m[1].toLowerCase() : null;
     };
-    const settle = () => { stack.scrollTo({ top: stack.scrollHeight, behavior: REDUCED ? 'auto' : 'smooth' }); };
+    /* keep the field in sight as the thread grows above it */
+    const settle = () => { mini.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }); };
     const add = (el) => { thread.appendChild(el); requestAnimationFrame(settle); return el; };
     const me = (text) => { const t = document.createElement('div'); t.className = 'turnb turnb--me'; t.textContent = text; return add(t); };
     /* the thinking field: not particles — a fine lattice of dots that never
@@ -262,7 +216,7 @@
        waves (a processor, not dust). At rest one faint wave passes; while a
        reply is on its way, rings spread from where the answer will land. */
     const think = (() => {
-      const cv = $('#heroThink'); if (!cv || !cv.getContext || REDUCED) return { ambient() {}, on() {}, off() {}, at() {} };
+      const cv = $('#agentThink'); if (!cv || !cv.getContext || REDUCED) return { ambient() {}, on() {}, off() {}, at() {} };
       const ctx = cv.getContext('2d'); let pts = [], raf = 0, W = 0, H = 0, t0 = 0, last = 0;
       let lift = 0, liftTarget = 0, ox = 0, oy = 0;
       const GAP = 16;   /* 22 read as too separated */
@@ -281,7 +235,7 @@
         if (stopsCache) return stopsCache;
         const c = cv.getBoundingClientRect();
         const mid = (sel, fx, fy) => { const el = $(sel); if (!el) return { x: W * fx, y: H * fy }; const r = el.getBoundingClientRect(); return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
-        stopsCache = [mid('#heroTitle', .3, .32), mid('#callBtn', .8, .88), mid('#askMini', .3, .88), mid('.hero__lede', .25, .62)];
+        stopsCache = [mid('#agentForm', .5, .5), mid('.agent__tags', .5, .8), mid('#agentThread', .4, .2), mid('.display--agent', .5, .1)];
         return stopsCache;
       };
       const frame = (t) => {
@@ -365,13 +319,10 @@
       const w = wait();
       setTimeout(() => { w.remove(); think.off(); ai(html, chips, go); res(); }, REDUCED ? 0 : 900);
     });
-    /* the way on: a link to the agent page, which opens with the problem as
-       its first answer and the site seeded (set when the link is followed) */
-    const goLink = () => ({ href: '/next/agent.html?autostart=1' + (state.problem ? '&q=' + encodeURIComponent(state.problem) : ''), label: 'See your snapshot' });
     const send = async (raw) => {
       const v = (raw || '').trim();
       if (state.busy || state.done) return;
-      heroL.classList.add('is-chat');
+      agentSec.classList.add('is-chat');
       state.busy = true; miniInput.value = '';
       if (v) me(v);
       const d = v ? domainOf(v) : null;
@@ -383,11 +334,14 @@
         await reply('Got it — I’m reading <b>' + esc(state.site) + '</b> now. What do you need help solving today?', CHIPS);
       } else if (state.problem && !state.site && !state.company) {
         miniInput.placeholder = 'Your website (optional)';
-        await reply('Got it. What’s your company? A website works — I’ll start pulling your snapshot.');
+        await reply('Got it. What’s your company? A website works — it helps me point you to the right solutions.');
       } else {
         const who = state.site || state.company;
         state.done = true;
-        await reply('Perfect — I have what I need. Your snapshot' + (who ? ' of <b>' + esc(who) + '</b>' : '') + ' and the tools that fit are ready when you are.', null, goLink());
+        /* the end of the conversation is a person, not a document */
+        await reply('Perfect — I have what I need' + (who ? ' for <b>' + esc(who) + '</b>' : '') + '. Book a demo, ask us to call, or talk to an expert, and we’ll take it from here.');
+        const acts = $('.agent__acts');
+        if (acts) setTimeout(() => acts.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }), 400);
       }
       state.busy = false;
       miniInput.focus({ preventScroll: true });
@@ -400,8 +354,7 @@
       send(v);
     });
     /* a starting point is the problem, said for you */
-    $$('#heroTags .tag').forEach(b => b.addEventListener('click', () => send(b.dataset.q || b.textContent.trim())));
-    addEventListener('resize', () => { if (heroL.classList.contains('is-chat')) settle(); });
+    $$('#agentTags .tag').forEach(b => b.addEventListener('click', () => send(b.dataset.q || b.textContent.trim())));
   }
 
   /* ── Call me: the button becomes the phone pill in its own place. Its
@@ -460,12 +413,13 @@
 
   /* ── the closing field hands what you typed to the hero's conversation:
         the page scrolls back up and the words are sent there ─────────── */
-  const askEnd = $('#askEnd'), askEndInput = $('#askEndInput'), heroMini = $('#askMini'), heroInput = $('#askMiniInput');
+  const askEnd = $('#askEnd'), askEndInput = $('#askEndInput'), heroMini = $('#agentForm'), heroInput = $('#agentInput');
   if (askEnd && askEndInput && heroMini && heroInput) {
     askEnd.addEventListener('submit', (e) => {
       e.preventDefault();
       const v = askEndInput.value.trim();
-      scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+      const sec = document.querySelector('#ask');
+      if (sec) sec.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
       setTimeout(() => {
         if (v) { heroInput.value = v; askEndInput.value = ''; heroMini.requestSubmit(); }
         else heroInput.focus({ preventScroll: true });
@@ -540,15 +494,15 @@
   /* ── "Ask Stagwell" (the bar, the footer) goes to the hero's field: the
         conversation lives there now ──────────────────────────────────────── */
   $$('a[data-ask]').forEach(a => a.addEventListener('click', (e) => {
+    const sec = $('#ask'); if (!sec) return;
     e.preventDefault();
-    scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
-    const input = $('#askMiniInput');
+    sec.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+    const input = $('#agentInput');
     if (input) setTimeout(() => input.focus({ preventScroll: true }), REDUCED ? 0 : 600);
   }));
 
-  /* ── the input: a tag puts its words in the field and nothing more. The
-        arrow, or Enter, is what sends — to the real agent, by the form's own
-        GET carrying q and autostart=1 to /next/agent. ───────────────────── */
+  /* ── the overlay's field: a tag puts its words in it, and the arrow or
+        Enter hands the question to the agent section on this page. ─────── */
   $$('.ask__form').forEach(form => {
     const input = $('.ask__input', form), tags = $$('.tag', form.closest('.ask__in') || form.parentElement);
     if (!input) return;
@@ -563,8 +517,22 @@
     input.addEventListener('input', () => {
       tags.forEach(o => { if (o.getAttribute('aria-pressed') === 'true' && input.value !== o.dataset.q) o.setAttribute('aria-pressed', 'false'); });
     });
+    /* the overlay hands its question to the agent ON THIS PAGE: the visitor
+       is not sent to another one (client, 2026-09-09). */
     form.addEventListener('submit', (e) => {
-      if (!input.value.trim()) { e.preventDefault(); input.focus(); }
+      e.preventDefault();
+      const v = input.value.trim();
+      if (!v) { input.focus(); return; }
+      const agentInput = $('#agentInput'), agentForm = $('#agentForm');
+      const over = form.closest('.chat-over');
+      if (over) { const c = $('#chatOverClose'); if (c) c.click(); }
+      if (!agentInput || !agentForm) { location.href = '/next/agent?q=' + encodeURIComponent(v); return; }
+      input.value = '';
+      setTimeout(() => {
+        const sec = $('#ask');
+        if (sec) sec.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+        agentInput.value = v; agentForm.requestSubmit();
+      }, REDUCED ? 0 : 420);
     });
   });
 
