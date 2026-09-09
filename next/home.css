@@ -131,7 +131,7 @@ h1,h2,p,figure{margin:0}
    two in a row repeat: orange, teal, amber, blue, orange, teal, blue, amber
    as you go down the page (client, 2026-09-09). */
 .display em{color:var(--teal)}
-.display--hero em{color:var(--orange)}          /* "Agentic solutions" */
+.display--hero em{color:var(--amber)}           /* "Agentic solutions" — the yellow carries better over the pictures (client) */
 .display--intro em{color:var(--teal)}           /* "agentic solutions" */
 .display--port em{color:var(--amber)}           /* "to work" */
 .display--trust em{color:var(--blue)}           /* "Global scale." */
@@ -176,10 +176,15 @@ h1,h2,p,figure{margin:0}
   white-space:nowrap;transition:background-color .25s ease,color .25s ease,transform .3s var(--ease);
 }
 .btn--ink{background:var(--ink);color:#FFFFFF}
-/* the brand's orange as a button, ink on it as in the footer's band — white
-   on this orange is too thin to read at button size (client asked for orange) */
-.btn--accent{background:var(--orange);color:var(--ink)}
-.btn--accent:hover{background:#F26018;transform:translateY(-1px)}
+/* the brand's yellow as a button, ink on it — it sits better on the hero's
+   pictures than the orange did (client) */
+.btn--accent{background:var(--amber);color:var(--ink)}
+.btn--accent:hover{background:#F0A800;transform:translateY(-1px)}
+/* and its neighbour is glass, not a ghost: it blurs the picture behind it, so
+   the words read whatever the still is doing under them (client) */
+.btn--glass{background:rgba(255,255,255,.14);color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.34);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15);backdrop-filter:blur(16px) saturate(1.15)}
+.btn--glass:hover{background:rgba(255,255,255,.26);transform:translateY(-1px)}
 .btn--ink:hover{background:#000;transform:translateY(-1px)}
 /* buttons are black and white only (client, 2026-09-07 late): the filled ink
    button and its outline twin — white ground, ink type, a one-pixel ink
@@ -428,9 +433,6 @@ body.chat-open{overflow:hidden}
 .hero__l > :not(.hero__bg){position:relative;z-index:1}
 .hero__l .display--hero .navy{color:#FFFFFF}
 .hero__l .hero__lede{color:rgba(255,255,255,.92)}
-/* on a picture the outline button carries its own white edge */
-.hero__l .btn--line{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55)}
-.hero__l .btn--line:hover{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px #FFFFFF}
 
 /* the film is gone (client, 2026-09-09): the strip is a picture, not a control */
 .hero__media{
