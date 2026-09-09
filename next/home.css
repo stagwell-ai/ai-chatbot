@@ -117,7 +117,7 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(42px, min(1rem + 3.9vw, 12vh), 70px);text-transform:none;text-align:left;line-height:1.02}   /* two sizes down, and the lines given room (client, 2026-09-09) */
+.display--hero {font-size:clamp(38px, min(.9rem + 3.5vw, 11vh), 62px);text-transform:none;text-align:left;line-height:1.04}   /* three sizes down now (client, 2026-09-09) */
 /* "Ask" in the orange, "Stagwell." in the ink — the same size and, by the
    client's word, the same weight: Bold. (Heavy read too bold; an orange full
    stop was tried and dropped.) */
@@ -131,7 +131,7 @@ h1,h2,p,figure{margin:0}
    two in a row repeat: orange, teal, amber, blue, orange, teal, blue, amber
    as you go down the page (client, 2026-09-09). */
 .display em{color:var(--teal)}
-.display--hero em{color:var(--amber)}           /* "Agentic solutions" — the yellow carries better over the pictures (client) */
+.display--hero em{color:inherit}                /* the hero title is white throughout: the yellow came off it (client) */
 .display--intro em{color:var(--teal)}           /* "agentic solutions" */
 .display--port em{color:var(--amber)}           /* "to work" */
 .display--trust em{color:var(--blue)}           /* "Global scale." */
