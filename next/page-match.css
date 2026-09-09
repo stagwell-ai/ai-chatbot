@@ -20,11 +20,23 @@
 html[data-theme] body.vB.vProducts .prodhero{background:#07141D !important;color:#FFFFFF !important;
   border-bottom:0 !important;
   /* the bar floats over the picture here, so the eyebrow has to start below
-     it — on a phone the section's own 56px put it behind the logo */
-  padding-top:calc(72px + clamp(28px,6vh,64px)) !important}
+     it — on a phone the section's own 56px put it behind the logo. The rest
+     is kept tight on purpose: the client wants "Show me" on screen the moment
+     you land, at any window height. */
+  padding-top:calc(72px + clamp(34px,7vh,80px)) !important;
+  padding-bottom:clamp(44px,8vh,92px) !important}
+html[data-theme] body.vB.vProducts .prodhero__in{padding-top:0 !important;padding-bottom:0 !important}
+html[data-theme] body.vB.vProducts .prodhero h1,html[data-theme] body.vB.vProducts .prodhero__title{
+  font-size:clamp(30px,min(4.2vw,6.6vh),58px) !important;margin:0 0 16px !important}
+html[data-theme] body.vB.vProducts .prodhero__sub{font-size:clamp(14px,1.15vw,16px) !important;max-width:60ch !important}
+html[data-theme] body.vB.vProducts .prodhero__eyebrow{margin-bottom:20px !important}
+html[data-theme] body.vB.vProducts .prodhero__acts{margin-top:clamp(26px,3.6vh,40px) !important}
+/* and the index rides up under it, so the control is the next thing you see */
+html[data-theme] body.vB.vProducts .ptoc{padding-top:clamp(22px,3vh,38px) !important;
+  margin-bottom:clamp(24px,3vh,40px) !important}
 html[data-theme] body.vB.vProducts .prodhero::before{
   background-image:linear-gradient(100deg,rgba(7,20,29,.80) 0%,rgba(7,20,29,.58) 52%,rgba(7,20,29,.34) 100%),
-    url("/assets/img/crosswalk.jpg") !important;
+    url("/assets/img/glass.jpg") !important;
   background-size:100% 100%,cover !important;
   background-position:50% 50%,center center !important;
   display:block !important}
@@ -38,6 +50,13 @@ html[data-theme] body.vB.vProducts .prodhero .btn--ghost{background:rgba(255,255
   border:0 !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.34) !important;
   -webkit-backdrop-filter:blur(16px) saturate(1.15) !important;backdrop-filter:blur(16px) saturate(1.15) !important}
 html[data-theme] body.vB.vProducts .prodhero .btn--gold{background:var(--amber,#FFB81C) !important;color:#0B171E !important}
+
+/* The wordmark's letters are `fill:var(--ink)` on paths that live inside a
+   <symbol>, so they are in the <use> shadow tree: no selector from here can
+   reach them, and setting the link's colour does nothing. Custom properties
+   DO inherit across that boundary — so the brand link redefines --ink for its
+   own subtree and the letters come out white. */
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__brand{--ink:#FFFFFF}
 
 /* ── 0b. "Show me", on its own line ─────────────────────────────────────────
    The label and the control sat side by side, so a long heading pushed the
@@ -57,16 +76,39 @@ html[data-theme] body .ptoc__label.is-under{opacity:0 !important;transform:trans
 html[data-theme] body .prodgroup__head{position:static !important;top:auto !important}
 html[data-theme] body .prodgroup{scroll-margin-top:104px !important}
 
-/* ── 2. the picture ─────────────────────────────────────────────────────────
-   The row is a two-column grid: the problem on the left, the product card on
-   the right. The left column was empty down its whole height, and a picture
-   inside the card pushed the words 350px down the page — so the still sits
-   under the heading it belongs to, and the card stays words you can read.  */
-html[data-theme] body .prodgroup__pic{margin-top:clamp(22px,2.4vw,32px);border-radius:18px;overflow:hidden;
-  aspect-ratio:4/3;background:#0A1743;max-width:440px}
-html[data-theme] body .prodgroup__pic img{width:100%;height:100%;object-fit:cover;display:block;
-  transform:scale(1.02);transition:transform .8s var(--ease,cubic-bezier(.16,1,.3,1))}
-html[data-theme] body .prodgroup:hover .prodgroup__pic img{transform:scale(1.06)}
+/* ── 2. the picture, inside the card ───────────────────────────────────────
+   It was a full-width band in the card, then a 4:3 block in the left column.
+   Both took more room than the words they belonged to. It is a thumbnail
+   beside the name and the line now (client). */
+html[data-theme] body .prodcard__top{display:flex;align-items:flex-start;gap:16px;min-width:0}
+html[data-theme] body .prodcard__pic{flex:0 0 96px;width:96px;height:96px;border-radius:14px;
+  overflow:hidden;background:#0A1743}
+html[data-theme] body .prodcard__pic img{width:100%;height:100%;object-fit:cover;display:block;
+  transform:scale(1.02);transition:transform .7s var(--ease,cubic-bezier(.16,1,.3,1))}
+html[data-theme] body .prodcard:hover .prodcard__pic img{transform:scale(1.08)}
+html[data-theme] body .prodcard__head{display:flex;flex-direction:column;gap:8px;min-width:0}
+
+/* "See the solution" was a bare tinted link at the foot of the card. It is
+   the card's only action, so it is a button — dark, the way the client asked
+   for every "learn more" on the homepage (2026-09-09). */
+html[data-theme] body .prodcard__link{margin-top:auto !important;align-self:flex-start !important;
+  display:inline-flex !important;align-items:center !important;gap:8px !important;
+  height:42px !important;padding:0 20px !important;border-radius:999px !important;
+  background:var(--ink,#0B171E) !important;color:#FFFFFF !important;
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-size:12px !important;font-weight:600 !important;letter-spacing:.06em !important;
+  text-transform:uppercase !important;text-decoration:none !important;
+  transition:background-color .25s ease !important}
+html[data-theme] body .prodcard__link:hover{background:#000000 !important}
+html[data-theme] body .prodcard__link i{margin-left:0 !important;color:#FFFFFF !important}
+
+/* ── 2b. one product, one panel ────────────────────────────────────────────
+   Fourteen rows separated by a hairline ran together as you scrolled. Every
+   other row now sits on a soft grey panel, which divides them without adding
+   a rule to the page (client). */
+html[data-theme] body .prodgroup{border-top:0 !important;margin-top:0 !important;
+  border-radius:26px !important;padding:clamp(30px,4vh,52px) clamp(20px,2.6vw,38px) !important}
+html[data-theme] body .prodgroup:nth-of-type(even){background:#F4F6F8 !important}
 
 /* ── 3. the closing CTA ─────────────────────────────────────────────────────
    ribbon.css flattens the band's dark gradient to nothing but leaves the type
@@ -82,5 +124,6 @@ html[data-theme] body .prodband .btn--light{background:var(--ink,#0B171E) !impor
 html[data-theme] body .prodband .btn--gold{background:var(--amber,#FFB81C) !important;color:var(--ink,#0B171E) !important}
 
 @media (max-width:820px){
-  html[data-theme] body .prodgroup__pic{aspect-ratio:16/9;max-width:none}
+  html[data-theme] body .prodcard__pic{flex:0 0 72px;width:72px;height:72px}
+  html[data-theme] body .prodgroup{padding:clamp(24px,3vh,36px) 18px !important;border-radius:20px !important}
 }

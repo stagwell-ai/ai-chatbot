@@ -126,13 +126,14 @@
     machines_family: '/assets/img/solutions-guided.jpg',
     agent_cloud: '/assets/img/hero-slide-5.jpg'
   };
-  /* the still sits in the left column, under the problem it answers: that
-     column was empty down its whole height, and a picture inside the card
-     pushed the words 350px down the page (client, 2026-09-09) */
+  /* the still sits INSIDE the card, beside the name and the line — small.
+     It was a full-width band in the card (too much room), then a 4:3 block in
+     the left column (still too much); a thumbnail next to the words is what
+     the client asked for (2026-09-09). */
   function pictureHTML(s) {
     const src = s && s.id && PICTURE[s.id];
     if (!src) return '';
-    return `<div class="prodgroup__pic"><img src="${esc(src)}" alt="" loading="lazy" decoding="async"></div>`;
+    return `<div class="prodcard__pic"><img src="${esc(src)}" alt="" loading="lazy" decoding="async"></div>`;
   }
 
   const PILLS = 4;
@@ -159,10 +160,13 @@
     return `
       <article class="prodcard${entry.repeatOf ? ' prodcard--again' : ''}">
         ${again}
-        <div class="prodcard__id">
-          <h3 class="prodcard__name">${esc(s.name)}${fit}</h3>
+        <div class="prodcard__top">
+          ${pictureHTML(s)}
+          <div class="prodcard__head">
+            <h3 class="prodcard__name">${esc(s.name)}${fit}</h3>
+            <p class="prodcard__pos">${esc(body)}</p>
+          </div>
         </div>
-        <p class="prodcard__pos">${esc(body)}</p>
         ${s.whoFor ? `<p class="prodcard__who">Who it's for: ${esc(s.whoFor)}</p>` : ''}
         ${pillsHTML(s)}
         <a class="prodcard__link" href="${esc(href)}"
@@ -177,7 +181,6 @@
         <header class="prodgroup__head">
           <p class="prodgroup__n">${String(index + 1).padStart(2, '0')}</p>
           <h2 class="prodgroup__h">${esc(domain.label)}</h2>
-          ${pictureHTML(entries[0] && entries[0].solution)}
         </header>
         <div class="prodgroup__cards">${cards}</div>
       </section>`;
