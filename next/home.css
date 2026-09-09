@@ -131,7 +131,6 @@ h1,h2,p,figure{margin:0}
 .display--hero em{color:inherit}                /* the hero title is white throughout: the yellow came off it (client) */
 .display--intro em{color:var(--teal)}           /* "agentic solutions" */
 .display--port em{color:var(--amber)}           /* "to work" */
-.display--trust em{color:var(--blue)}           /* "Global scale." */
 .why .display--cos em{color:var(--orange)}      /* "Stagwell AI" */
 .cos .display--cos em{color:var(--teal)}        /* "Endless" */
 .impact .display--cos em{color:var(--blue)}     /* "to impact" */
@@ -801,16 +800,9 @@ body.chat-open{overflow:hidden}
 .port__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .port__pic--in{transform:scale(1.24)}   /* only the 3D shape is cropped in; the others show as they are (client) */
 
-.trust{padding:var(--s-15) 0 var(--s-15);border-top:1px solid var(--line)}
 /* the head: a big title on the left, the paragraphs under it */
-.trust__head{display:flex;flex-direction:column;align-items:flex-start}
-.display--trust{font-size:clamp(48px, 1.4rem + 4.6vw, 96px);text-transform:none;text-align:left;letter-spacing:-.03em;line-height:.94}
-.trust__copy{margin-top:var(--s-13);max-width:1040px;display:flex;flex-direction:column;gap:var(--s-8)}
-.trust__copy p{font-size:clamp(20px, .9rem + .8vw, 26px);font-weight:400;line-height:1.45;color:var(--ink)}
 /* the banner: a frame that never changes size; the picture inside zooms with
    the scroll, in from the far side of the frame and out again */
-.trust__banner{position:relative;margin-top:var(--s-15);height:min(78vh,820px);overflow:hidden;background:var(--deep)}
-.trust__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transform:scale(var(--zoom,1.2));transform-origin:50% 50%;will-change:transform}
 /* the numbers as cards: a big figure, its name, a line under it */
 .stats{
   margin-top:var(--s-15);
@@ -1111,10 +1103,6 @@ body.chat-open{overflow:hidden}
   .port__body .port__head{margin-bottom:var(--s-8)}
   .port__media{height:auto;aspect-ratio:16/10}
 
-  /* ── trust: banner shorter, the numbers two by two ── */
-  .trust{padding:var(--s-13) 0}
-  .trust__copy{margin-top:var(--s-10)}
-  .trust__banner{margin-top:var(--s-12);height:auto;aspect-ratio:4/5}
   .stats{margin-top:var(--s-12);grid-template-columns:1fr 1fr;gap:var(--s-5)}   /* two and two: three in a row crushed the words (client) */
   .stat{padding:var(--s-8) var(--s-7);border-radius:18px;gap:var(--s-5)}
   .stat__n{font-size:38px}
@@ -1126,7 +1114,7 @@ body.chat-open{overflow:hidden}
   /* a centred column shrink-wraps its title, so fitDisplays() measured a box
      that already equalled the line and never brought the size down — the
      hero's trap, again: the titles take their column's width */
-  .suite__in > .display,.ask-end__in > .display,.trust__head > .display{align-self:stretch}
+  .suite__in > .display,.ask-end__in > .display{align-self:stretch}
   /* the same items become cards: a small picture, the name, its line. The
      panel steps out — each row carries its own picture now. */
   .suite__grid{margin-top:var(--s-11);grid-template-columns:1fr}

@@ -135,23 +135,9 @@
     document.addEventListener('visibilitychange', () => { if (!document.hidden) heal(); });
   });
 
-  /* ── the trust banner: the frame stays; the picture inside zooms with the
-        scroll — 1.45 as the banner enters at the bottom, 1 as it leaves at
-        the top. One function of position, nothing per-frame beyond that. ── */
-  const banner = $('#trustBanner'), bannerPic = $('.trust__pic', banner || document);
-  if (banner && bannerPic && !REDUCED) {
-    let t = false;
-    const tick = () => {
-      t = false;
-      const r = banner.getBoundingClientRect(), vh = innerHeight;
-      if (r.bottom < 0 || r.top > vh) return;
-      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));   /* 0 entering → 1 leaving */
-      bannerPic.style.setProperty('--zoom', (1.45 - .45 * p).toFixed(4));   /* 1.45 → 1: a zoom you can see */
-    };
-    addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(tick); } }, { passive: true });
-    addEventListener('resize', tick);
-    tick();
-  }
+  /* the "Global scale. Local expertise." band and its zooming banner came off
+     the page on the client's word (2026-09-09); the parallax that drove the
+     picture went with it. */
 
   /* ── the suite's ways in: on a desktop, hovering a name shows its picture
         and line in the panel; on a phone each row carries its own, so the
