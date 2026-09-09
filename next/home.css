@@ -311,7 +311,7 @@ body.chat-open{overflow:hidden}
 /* The first screen holds everything: the turning line, the title, the two
    buttons. It is the viewport's height with the content centred in it, so the
    buttons are inside the frame at 700px as surely as at 950. */
-.hero{position:relative;height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden;--media-w:41.667%;   /* exactly one screen: a min-height let the conversation grow it */
+.hero{position:relative;height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden;--media-w:50%;   /* half and half: the words, then the agent (client, 2026-09-09) */   /* exactly one screen: a min-height let the conversation grow it */
   --hero-copy:clamp(18px, .9rem + .6vw, 22px)}   /* the paragraph — the same size as the Agentic section's (client) */
 /* a full split: the words fill the left half, the film the right, edge to
    edge. The left half keeps the page's gutter so the words line up with the
@@ -322,13 +322,13 @@ body.chat-open{overflow:hidden}
      pushed the split off centre (782, not 720). The title fits itself. */
   /* exactly one screen, and a row that cannot grow: the conversation's
      overflow must scroll inside the stack, never push the bottom row down */
-  display:grid;grid-template-columns:minmax(0,1fr) var(--media-w);grid-template-rows:minmax(0,1fr);   /* words 58, picture 42 */
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);   /* the two halves */
   text-align:left;
 }
 .hero__l{
   position:relative;min-height:0;
   background:#F6F6F7;                           /* a very soft grey, so the hero reads as its own ground against the white below (client) */
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;   /* the words and their buttons read as one block, level with the chat beside them */
   /* the bottom row sits a gutter from the bottom — the same line as the
      Watch the film pill across the split */
   padding:calc(var(--nav-h) + var(--s-8)) var(--gutter) var(--gutter)
@@ -338,8 +338,7 @@ body.chat-open{overflow:hidden}
    bottom, close to the field (the tags are gone — the chat offers them as
    chips); once the conversation starts it scrolls, anchored to its bottom,
    so each new turn pushes what came before up and out */
-.hero__stack{flex:1;min-height:0;align-self:stretch;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}
-.hero__stack > :first-child{margin-top:auto}   /* the block sits low in the column, as it did when the title led it */
+.hero__stack{flex:0 1 auto;min-height:0;align-self:stretch;display:flex;flex-direction:column;align-items:flex-start}   /* it held a scrolling conversation once; now it is just the words, and overflow:hidden was cutting the last line of the title */
 .hero__stack > .display--hero{align-self:stretch}
 .hero__l.is-chat .hero__stack{overflow-y:auto;scrollbar-width:none}   /* a clean edge under the bar, no fade */
 .hero__l.is-chat .hero__stack::-webkit-scrollbar{display:none}
@@ -506,7 +505,7 @@ body.chat-open{overflow:hidden}
   color:var(--ink);
 }
 .hero__acts{
-  margin-top:auto;                              /* pinned to the bottom row */
+  margin-top:var(--s-11);                       /* 48 under the paragraph */
   display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
 }
 
@@ -895,32 +894,40 @@ body.chat-open{overflow:hidden}
 }
 
 
-/* ── 2 · ASK STAGWELL AI — the agent, the centre of the page ─────────────
-   The larger form of the block, as the client asked: the question, a wide
-   field, the starting points in the open, and the ways to a person. Same
-   components as everywhere else — the ask-mini field, the tags, the ink and
-   outline buttons, the Call me pill. */
-.agent{padding:var(--s-15) 0 var(--s-15);background:#F6F6F7}   /* the hero's own grey, carried on */
-.agent__in{display:flex;flex-direction:column;align-items:center;text-align:center}
-.display--agent{font-size:clamp(38px, 1.2rem + 3.2vw, 64px);text-transform:none;letter-spacing:-.03em;line-height:1}
-.agent__lede{margin-top:var(--s-8);max-width:640px;font-size:clamp(18px, .9rem + .6vw, 22px);line-height:1.5;color:var(--ink)}
-.agent__panel{position:relative;margin-top:var(--s-11);width:min(100%,860px);display:flex;flex-direction:column;align-items:stretch}
-.agent__panel > :not(.hero__think){position:relative;z-index:1}
-/* the conversation grows above the field, as it did in the hero */
-.agent__thread{display:flex;flex-direction:column;gap:var(--s-5);width:100%;text-align:left}
-.agent__thread:not(:empty){padding-bottom:var(--s-9)}
-.agent .ask-mini{background:#FFFFFF}                      /* white on the grey ground */
-.ask-mini--lg{height:68px;padding:0 8px 0 26px}
-.ask-mini--lg .ask-mini__input{font-size:18px}
-.ask-mini--lg .ask-mini__go{width:52px;height:52px}
-/* the starting points: the page's own tags, in the open under the field */
-.agent__tags{margin-top:var(--s-7);display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4)}
-.agent__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2);background:#FFFFFF}
-.agent__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
-.agent__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-/* once the conversation starts the starting points step out of the way */
-.agent.is-chat .agent__tags{display:none}
-.agent__acts{margin-top:var(--s-11);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--s-5)}
+/* ── the hero's other half: the agent, as a chat you can start at once ────
+   White against the words' grey, its own column: who is talking, the thread
+   (which scrolls on its own), the starting points, the field on the floor,
+   and three quiet ways to a person under it. Every piece is the page's —
+   the turn bubbles, the tags, the ask-mini field. */
+.hero__chat{position:relative;min-width:0;min-height:0;background:#FFFFFF;
+  padding:calc(var(--nav-h) + var(--s-9)) max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))) var(--gutter) var(--gutter);
+  display:flex;flex-direction:column}
+.chat{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+.chat > .hero__think{position:absolute;inset:0}   /* the lattice lies under the whole panel, not under one part of it */
+.chat > :not(.hero__think){position:relative;z-index:1}
+.chat__head{display:flex;align-items:center;gap:10px;padding-bottom:var(--s-7);border-bottom:1px solid var(--line)}
+.chat__mark{width:22px;height:22px;display:grid;place-items:center;color:var(--ink);flex-shrink:0}
+.chat__mark svg{width:22px;height:auto;display:block}
+.chat__who{font-family:var(--ui);font-size:14px;font-weight:600;letter-spacing:.02em;color:var(--ink)}
+.chat__state{margin-left:auto;display:flex;align-items:center;gap:6px;font-family:var(--ui);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.chat__state i{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:dotLift 1.6s ease-in-out infinite}
+/* the body holds the lattice, the thread and the starting points */
+.chat__body{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;padding:var(--s-8) 0}   /* the conversation reads from the top, the field waits on the floor */
+.chat__thread{display:flex;flex-direction:column;gap:var(--s-5);overflow-y:auto;scrollbar-width:none}
+.chat__thread::-webkit-scrollbar{display:none}
+.chat__thread .turnb{max-width:86%}
+.chat__tags{margin-top:var(--s-7);display:flex;flex-wrap:wrap;gap:var(--s-4)}
+.chat__tags .tag{height:36px;padding:0 15px;font-size:13px;border-color:var(--line);color:var(--ink-2);background:#FFFFFF}
+.chat__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
+.chat__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* once the conversation starts, the starting points step out of the way */
+.hero__chat.is-chat .chat__tags{display:none}
+.chat__form{flex:0 0 auto}
+/* the three ways to a person: plain words under the field, not more buttons */
+.chat__ways{margin:var(--s-6) 0 0;display:flex;flex-wrap:wrap;gap:var(--s-4) var(--s-8)}
+.chat__way{font-family:var(--ui);font-size:13px;font-weight:500;color:var(--ink-3);border-bottom:1px solid transparent;transition:color .25s ease,border-color .25s ease}
+.chat__way:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.chat__way:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
 
 /* ── 6 · WHY STAGWELL AI — short cards, the reasons to believe ─────────── */
 .why{padding:var(--s-15) 0 var(--s-14)}
@@ -1091,17 +1098,17 @@ body.chat-open{overflow:hidden}
   .foot__legal{width:100%;justify-content:space-between}
 
 
-  /* ── the agent, the why cards, the five steps, the metrics ── */
-  .agent{padding:var(--s-13) 0 var(--s-13)}
-  .agent__lede{margin-top:var(--s-7);font-size:17px}
-  .agent__panel{margin-top:var(--s-10)}
+  /* ── the hero's chat, under the words on a phone ── */
+  .hero__chat{padding:var(--s-11) var(--gutter) var(--s-12);min-height:auto}
+  .chat{flex:none}
+  .chat__body{padding:var(--s-7) 0;min-height:0}
+  .chat__thread{max-height:46svh}
+  .chat__thread .turnb{max-width:92%;font-size:16px}
+  .chat__tags .tag{height:34px;padding:0 14px;font-size:13px}
+  .chat__ways{gap:var(--s-4) var(--s-7)}
   .ask-mini--lg{height:56px;padding:0 4px 0 20px}
   .ask-mini--lg .ask-mini__input{font-size:15px}
   .ask-mini--lg .ask-mini__go{width:46px;height:46px}
-  .agent__tags{margin-top:var(--s-6);gap:8px}
-  .agent__tags .tag{height:34px;padding:0 14px;font-size:13px}
-  .agent__acts{margin-top:var(--s-10);flex-direction:column;align-items:stretch;gap:var(--s-5)}
-  .agent__acts .btn,.agent__acts .call{width:100%}
   .why{padding:var(--s-13) 0 var(--s-12)}
   .why__grid{margin-top:var(--s-11);grid-template-columns:1fr;gap:var(--s-5)}
   .why__item{padding:var(--s-8) var(--s-7);border-radius:18px;gap:var(--s-4)}

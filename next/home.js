@@ -207,8 +207,8 @@
       const m = v.match(/^(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,})(?:[\/?#].*)?$/i);
       return m && !/\s/.test(v) ? m[1].toLowerCase() : null;
     };
-    /* keep the field in sight as the thread grows above it */
-    const settle = () => { mini.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }); };
+    /* the thread scrolls inside the panel; the newest turn sits at its foot */
+    const settle = () => { thread.scrollTop = thread.scrollHeight; };
     const add = (el) => { thread.appendChild(el); requestAnimationFrame(settle); return el; };
     const me = (text) => { const t = document.createElement('div'); t.className = 'turnb turnb--me'; t.textContent = text; return add(t); };
     /* the thinking field: not particles — a fine lattice of dots that never
@@ -235,7 +235,7 @@
         if (stopsCache) return stopsCache;
         const c = cv.getBoundingClientRect();
         const mid = (sel, fx, fy) => { const el = $(sel); if (!el) return { x: W * fx, y: H * fy }; const r = el.getBoundingClientRect(); return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
-        stopsCache = [mid('#agentForm', .5, .5), mid('.agent__tags', .5, .8), mid('#agentThread', .4, .2), mid('.display--agent', .5, .1)];
+        stopsCache = [mid('#agentForm', .5, .9), mid('#agentTags', .4, .7), mid('#agentThread', .5, .35), mid('.chat__head', .5, .1)];
         return stopsCache;
       };
       const frame = (t) => {
@@ -340,8 +340,8 @@
         state.done = true;
         /* the end of the conversation is a person, not a document */
         await reply('Perfect — I have what I need' + (who ? ' for <b>' + esc(who) + '</b>' : '') + '. Book a demo, ask us to call, or talk to an expert, and we’ll take it from here.');
-        const acts = $('.agent__acts');
-        if (acts) setTimeout(() => acts.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }), 400);
+        const ways = $('.chat__ways');
+        if (ways) ways.classList.add('is-lit');
       }
       state.busy = false;
       miniInput.focus({ preventScroll: true });
@@ -418,8 +418,7 @@
     askEnd.addEventListener('submit', (e) => {
       e.preventDefault();
       const v = askEndInput.value.trim();
-      const sec = document.querySelector('#ask');
-      if (sec) sec.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+      scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
       setTimeout(() => {
         if (v) { heroInput.value = v; askEndInput.value = ''; heroMini.requestSubmit(); }
         else heroInput.focus({ preventScroll: true });
@@ -496,7 +495,7 @@
   $$('a[data-ask]').forEach(a => a.addEventListener('click', (e) => {
     const sec = $('#ask'); if (!sec) return;
     e.preventDefault();
-    sec.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+    scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
     const input = $('#agentInput');
     if (input) setTimeout(() => input.focus({ preventScroll: true }), REDUCED ? 0 : 600);
   }));
@@ -529,8 +528,7 @@
       if (!agentInput || !agentForm) { location.href = '/next/agent?q=' + encodeURIComponent(v); return; }
       input.value = '';
       setTimeout(() => {
-        const sec = $('#ask');
-        if (sec) sec.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+        scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
         agentInput.value = v; agentForm.requestSubmit();
       }, REDUCED ? 0 : 420);
     });
