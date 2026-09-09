@@ -126,7 +126,13 @@
     newvoices: '/assets/img/newvoices.jpg',
     smb_platform: '/assets/img/crosswalk.jpg',
     machines_family: '/assets/img/solutions-guided.jpg',
-    agent_cloud: '/assets/img/hero-slide-5.jpg'
+    agent_cloud: '/assets/img/hero-slide-5.jpg',
+    /* the four added on 2026-09-09 share the neutral brand still until each
+       has a picture of its own */
+    media_machine: '/assets/img/products-hero.jpg',
+    newintel: '/assets/img/products-hero.jpg',
+    search_plus: '/assets/img/products-hero.jpg',
+    id_graph: '/assets/img/products-hero.jpg'
   };
   /* the still IS the left column: a big tile under a dark overlay with the
      problem's number and title set inside it (client, 2026-09-09). It was a
@@ -200,6 +206,9 @@
      so the agent can still reach it; this is a decision about THIS page. */
   const OFF_PAGE = { unlock: true };
 
+  /* added to this page by name, ahead of their copy (client, 2026-09-09) */
+  const NEW_PRODUCTS = ['media_machine', 'newintel', 'search_plus', 'id_graph'];
+
   /* one pass over routing.json's groups, remembering which products have
      already appeared and under which label */
   function buildGroups(data) {
@@ -237,6 +246,25 @@
        rather than that the product is not listed here */
     const shown = built.filter(g => g.entries.length);
     const ordered = shown.filter(g => !g.allRepeats).concat(shown.filter(g => g.allRepeats));
+
+    /* ── the four added on 2026-09-09 ──
+       The Media Machine, NewIntel, Search+ and the Stagwell ID Graph were
+       asked for by name. They answer no routing domain yet, so they cannot
+       join the groups above — routing.json is what those are built from, and
+       putting them in one would be claiming which problem each solves. They
+       get a group of their own at the foot instead, and their positioning is
+       a [BRACKETED] placeholder: the copy is not written and nothing here
+       invents a sentence for a real product. */
+    const extra = NEW_PRODUCTS
+      .map(id => list.find(x => x && x.id === id))
+      .filter(Boolean)
+      .map(sol => ({ solution: sol, fit: null, line: null, repeatOf: null }));
+    if (extra.length) {
+      ordered.push({
+        domain: { id: 'newly_added', label: 'Newly added — copy pending' },
+        entries: extra, allRepeats: false
+      });
+    }
     return { ordered };
   }
 

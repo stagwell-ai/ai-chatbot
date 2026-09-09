@@ -912,7 +912,12 @@ body.chat-open{overflow:hidden}
 .why__grid{margin-top:var(--s-13);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-7)}
 .why__item{display:flex;flex-direction:column;gap:var(--s-5);padding:var(--s-10) var(--s-9);border:1px solid var(--line);border-radius:24px}   /* the numbers' own card */
 .why__t{margin:0;font-family:var(--display);font-weight:700;font-size:clamp(20px, .9rem + .6vw, 24px);letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
-.why__d{margin:0;font-size:16px;line-height:1.5;color:var(--ink-3)}
+.why__d{margin:0;font-size:16px;line-height:1.5;color:var(--ink-2)}
+/* four cards, not six (client, 2026-09-09): two across reads better than a
+   row of three with one stranded under it, and each card now carries a lead
+   line and a paragraph under it. */
+.why__grid--four{grid-template-columns:repeat(2,minmax(0,1fr))}
+.why__d--lead{color:var(--ink);font-weight:600}
 
 /* ── 8 · FROM INSIGHT TO IMPACT — the five steps, nothing more ─────────── */
 .impact{padding:var(--s-14) 0 var(--s-14)}

@@ -96,7 +96,7 @@
     },
     {
       "id": "knowledge_machine",
-      "name": "The Knowledge Machine (Pulse)",
+      "name": "The Knowledge Machine",
       "positioning": "See the story before it breaks. Instead of counting mentions, it reads narrative alignment and emotional intensity — and flags the risks that are about to become headlines.",
       "whoFor": "Communications chiefs who'd rather prevent than respond",
       "shownWhen": "B: domain=reputation; Q6 early-warning/one market · industry boost pharma/finance/insurance/energy/gov · D: beside UNICEPTA when both fit",
@@ -302,6 +302,58 @@
       ],
       "lockup": "/assets/img/lockups/agent-cloud.png",
       "sourceNote": "positioning and valueProps are Agent Cloud's own published lines, the same ones data/products.json carries for the /p/agent-cloud landing. Added Sep 2: until then the product had a landing and five chips but no domain and no solution entry, so a visitor from its own ad could never be routed to it."
+    },
+    {
+      "id": "media_machine",
+      "name": "The Media Machine",
+      "positioning": "[POSITIONING — pending. The Media Machine was added to the page on 2026-09-09; its copy has not been written yet.]",
+      "whoFor": null,
+      "shownWhen": "Listed on /products only, in the \"Newly added\" group, until its copy arrives.",
+      "nextStep": "Demo",
+      "companions": [],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [],
+      "lockup": null
+    },
+    {
+      "id": "newintel",
+      "name": "NewIntel",
+      "positioning": "[POSITIONING — pending. NewIntel was added to the page on 2026-09-09; its copy has not been written yet.]",
+      "whoFor": null,
+      "shownWhen": "Listed on /products only, in the \"Newly added\" group, until its copy arrives.",
+      "nextStep": "Demo",
+      "companions": [],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [],
+      "lockup": null
+    },
+    {
+      "id": "search_plus",
+      "name": "Search+",
+      "positioning": "[POSITIONING — pending. Search+ was added to the page on 2026-09-09; its copy has not been written yet.]",
+      "whoFor": null,
+      "shownWhen": "Listed on /products only, in the \"Newly added\" group, until its copy arrives.",
+      "nextStep": "Demo",
+      "companions": [],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [],
+      "lockup": null
+    },
+    {
+      "id": "id_graph",
+      "name": "Stagwell ID Graph",
+      "positioning": "[POSITIONING — pending. Stagwell ID Graph was added to the page on 2026-09-09; its copy has not been written yet.]",
+      "whoFor": null,
+      "shownWhen": "Listed on /products only, in the \"Newly added\" group, until its copy arrives.",
+      "nextStep": "Demo",
+      "companions": [],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [],
+      "lockup": null
     }
   ]
 }

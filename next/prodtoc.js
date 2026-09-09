@@ -87,6 +87,7 @@
     'p-ai_workspace':       'AI workspace',
     'p-sample_quality':     'Research sample',
     'p-competitive':        'Competitive benchmarking',
+    'p-newly_added':        'Newly added',
   };
   const shortFor = (href) => {
     const id = (href || '').replace(/^#/, '');

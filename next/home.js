@@ -163,21 +163,10 @@
     });
   }
 
-  /* ── the slider: the stills in the strip turn over with a cross-fade —
-        the first hands over sooner (4.5s after landing), then every 9s;
-        with one still there is nothing to turn ────────────────────────────── */
-  const slides = $$('#heroSlides .hero__pic');
-  if (slides.length > 1 && !REDUCED) {
-    let cur = 0;
-    const turn = () => {
-      const next = (cur + 1) % slides.length, prev = slides[cur];
-      slides[next].classList.add('is-on');
-      prev.classList.add('is-off'); prev.classList.remove('is-on');      /* keeps its zoom while it fades */
-      setTimeout(() => prev.classList.remove('is-off'), 2200);
-      cur = next;
-    };
-    setTimeout(() => { turn(); setInterval(turn, 9000); }, 4500);
-  }
+  /* the hero's stills used to turn over on a timer. The client asked for one
+     picture and no cycling (2026-09-09), so the markup carries a single still
+     and the cross-fade that turned them is gone with it. The other stills are
+     still in /assets/img if the rotation is ever wanted back. */
 
   /* the film's panel lived here — a still that opened into the reel, with a
      play disc and pause/mute/close. The client's brief of 2026-09-09 takes the
