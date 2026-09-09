@@ -1,0 +1,265 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PATH — S5 routing/handoff layout (reference/kit/W5-Routing-Handoff.png).
+   Brand tokens from machine/styles.css; the same white-card/dark-band idioms
+   as machine/snapshot.css, scoped fresh here so nothing here has to touch
+   snapshot.css. Nothing renders until machine/path.js mounts #pathView.
+
+   Loads after snapshot.css in machine/b.html, so the two small rules under
+   "confirmation-band hooks" below are the only place this sprint styles the
+   path CTA that machine/snapshot.js's capture/decline confirmations add —
+   that CTA's markup lives in snapshot.js, but its stylesheet lives here.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.path{background:var(--paper);animation:heroIn 620ms var(--ease) both}
+
+.path__in{max-width:1180px;margin:0 auto;
+  padding:clamp(40px,6vh,72px) clamp(20px,4vw,48px) clamp(48px,7vh,72px)}
+
+.path__eyebrow{margin-bottom:14px}
+.path__title{margin:0 0 10px;font-size:clamp(1.625rem,3vw,var(--t-h1));line-height:1.14}
+.path__sub{margin:0;max-width:72ch;color:var(--ink-2);font-size:var(--t-sm);line-height:1.6}
+
+.path__section{margin-top:36px}
+.path__sectionhead{display:flex;align-items:baseline;justify-content:space-between;
+  gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.path__label{margin:0;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3)}
+.path__note{font-size:var(--t-xs);color:var(--ink-3)}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE PRODUCT BAND — the client's "more beefy … the logo of the product",
+   one treatment for all ten products, matched card and cross-discovery card
+   alike (machine/path.js: bandHTML).
+
+   --lockup-navy is not a brand token: it is the measured background of the
+   lockup PNGs in assets/img/lockups/ (corner pixel #0A1743, the ICP deck's
+   own navy — the kit's --navy is Pantone 2189 C #003349 and would show a hard
+   rectangle behind every logo). The PNGs were normalised to one 640×200
+   canvas on exactly this colour, so a lockup has no visible edge: the image
+   simply continues the band.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.path{--lockup-navy:#0A1743}
+
+.pathband{background:var(--lockup-navy);display:flex;align-items:center;min-width:0}
+.pathband--lg{padding:16px 22px;min-height:104px}
+.pathband--sm{padding:10px 16px;min-height:64px}
+.pathband__lockup{display:block;width:auto;max-width:100%;object-fit:contain}
+.pathband--lg .pathband__lockup{max-height:72px}
+.pathband--sm .pathband__lockup{max-height:44px}
+/* solutions.json's one product with no lockup in the deck (Unlock): the band
+   still carries the credit, set rather than left empty. */
+.pathband__word{font-family:var(--sans);font-weight:600;color:var(--on-void);
+  letter-spacing:-.01em;line-height:1.1}
+.pathband--lg .pathband__word{font-size:1.75rem}
+.pathband--sm .pathband__word{font-size:1.125rem}
+
+/* ── the value pills: the ICP deck's use-case chips, quiet outline ── */
+.pathpills{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.pathpill{font-family:var(--sans);font-size:var(--t-xs);line-height:1.45;color:var(--ink-2);
+  border:1px solid var(--line-2);border-radius:var(--r-full);padding:3px 10px;white-space:nowrap}
+
+/* ── matched capability cards ── */
+.pathcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.pathcard{background:var(--surface);border:1px solid var(--line-2);border-left:3px solid var(--amber);
+  border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;
+  min-width:0;animation:fadeUp 460ms var(--ease) both}
+.pathcards .pathcard:nth-child(2){animation-delay:60ms}
+.pathcards .pathcard:nth-child(3){animation-delay:120ms}
+.pathcard__in{padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1;min-width:0}
+.pathcard h3{margin:0;font-size:1.0625rem;font-weight:600;letter-spacing:-.008em;color:var(--ink)}
+.pathcard__body{margin:0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.58}
+.pathcard__why{margin:0;font-size:var(--t-xs);font-weight:600;color:var(--teal)}
+.pathcard__foot{margin-top:auto;padding-top:8px;display:flex;flex-direction:column;
+  align-items:flex-start;gap:5px}
+.pathcard__cta{align-self:flex-start;font-family:var(--sans);font-size:var(--t-sm);font-weight:600;
+  color:var(--cyan);text-decoration:none}
+.pathcard__cta:hover{text-decoration:underline;text-underline-offset:3px}
+.pathcard__cta.is-disabled{color:var(--ink-4);font-weight:400;cursor:not-allowed}
+.pathcard__cta i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.02em}
+.pathcard__note{margin:0;font-size:var(--t-xs);color:var(--ink-3);line-height:1.45}
+
+/* ── choose how to continue: three columns ── */
+.pathcols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pathcol{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:26px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pathcol__eyebrow{margin:0;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3)}
+.pathcol h3{margin:0;font-size:1.0625rem;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.pathcol__body{margin:0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.55}
+.pathcol__slot{border:1px dashed var(--line-2);border-radius:var(--r);padding:22px 14px;
+  text-align:center;font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.03em;color:var(--ink-3)}
+.pathcol__act{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.pathcol__cta{align-self:flex-start}
+/* "Book a demo" is the ask this screen exists to make, so it is never a
+   quiet secondary — it carries the marigold and the larger frame in every
+   state it appears in (client, Sep 1) */
+.pathcol__cta--demo{height:54px;padding:0 28px;font-size:.9375rem;letter-spacing:.05em;
+  box-shadow:0 6px 20px rgba(10,23,67,.16)}
+.pathcol__cta--demo:hover{transform:translateY(-1px)}
+.pathcol__cta.is-disabled{opacity:.55;cursor:not-allowed}
+.pathcol__cta.is-disabled i{font-style:normal;font-family:var(--mono);font-size:9px;margin-left:2px}
+/* the honest caption under a self-serve button (machine/path.js: ctaFor) */
+.pathcol__note{margin:0;max-width:34ch;font-size:var(--t-xs);color:var(--ink-3);line-height:1.45}
+.pathcol.is-recommended .pathcol__note{color:var(--on-void-2)}
+
+.pathcol.is-recommended{background:var(--band);border-color:var(--blue);color:var(--on-void)}
+.pathcol.is-recommended .pathcol__eyebrow{color:var(--orange)}
+.pathcol.is-recommended h3{color:var(--on-void)}
+.pathcol.is-recommended .pathcol__body{color:var(--on-void-2)}
+
+/* ── self-serve state variant: dominant navy hero ── */
+.pathhero{background:var(--navy);color:var(--on-void);border-radius:var(--r-lg);
+  padding:clamp(28px,4vw,44px);display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;gap:24px 32px}
+.pathhero__text{min-width:0;max-width:48ch}
+.pathhero__title{margin:0 0 10px;font-family:var(--serif);font-weight:400;
+  font-size:clamp(1.5rem,2.6vw,var(--t-h1));line-height:1.16}
+.pathhero__title .accent{font-style:normal;font-weight:600;color:var(--orange)}
+.pathhero__sub{margin:0;color:var(--on-void-2);font-size:var(--t-sm);line-height:1.55}
+.pathhero__act{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.pathhero__cta{height:52px;padding:0 28px;font-size:.9375rem}
+.pathhero__cta.is-disabled{opacity:.6;cursor:not-allowed}
+.pathhero__cta.is-disabled i{font-style:normal;font-family:var(--mono);font-size:9px;display:block;margin-top:2px}
+/* right-aligned with the CTA it explains; wraps to the left on the narrow
+   stack below, where .pathhero__act flips to align-items:flex-start */
+.pathhero__note{margin:0;max-width:36ch;text-align:right;font-size:var(--t-xs);
+  color:var(--on-void-2);line-height:1.45}
+.pathhero__walkline{margin:6px 0 0;font-size:var(--t-sm);color:var(--on-void-2)}
+.pathhero__walk{height:52px;padding:0 26px;font-size:.9375rem}
+.pathhero__walk:hover{transform:translateY(-1px)}
+
+/* ── collapsed text links (self-serve & follow-up states) ── */
+.pathcollapse{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px 22px}
+.pathcollapse--demo{align-items:center;gap:14px 22px}
+.pathcollapse__demo{height:54px;padding:0 28px;font-size:.9375rem;letter-spacing:.05em;
+  box-shadow:0 6px 20px rgba(10,23,67,.16)}
+.pathcollapse__demo:hover{transform:translateY(-1px)}
+.pathcollapse__link{background:none;border:0;padding:0;font-family:var(--sans);font-size:var(--t-sm);
+  color:var(--ink-3);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.pathcollapse__link:hover{color:var(--ink)}
+
+/* ── follow-up quiet state ── */
+.pathquiet{background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:30px 28px;text-align:center}
+.pathquiet__eyebrow{margin:0 0 8px;font-family:var(--mono);font-size:var(--t-label);
+  letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.pathquiet h3{margin:0 0 8px;font-size:1.125rem;font-weight:600;color:var(--ink)}
+.pathquiet p{margin:0 0 14px;color:var(--ink-2);font-size:var(--t-sm);line-height:1.55}
+.pathquiet__link{font-family:var(--sans);font-size:var(--t-sm);font-weight:600;color:var(--cyan);
+  text-decoration:underline;text-underline-offset:3px}
+
+/* ── footer strip ── */
+.pathfoot{margin-top:44px;padding-top:24px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 28px}
+.pathfoot__lede{margin:0;font-size:var(--t-sm);color:var(--ink-2)}
+.pathfoot__links{display:flex;flex-wrap:wrap;gap:10px 22px}
+.pathfoot__link{background:none;border:0;padding:0;font-family:var(--sans);font-size:var(--t-sm);
+  font-weight:600;color:var(--cyan);cursor:pointer;text-decoration:none}
+.pathfoot__link:hover{text-decoration:underline}
+.pathfoot__link.is-disabled{color:var(--ink-4);font-weight:400;cursor:not-allowed}
+.pathfoot__link i,.pathquiet__link i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.02em}
+
+/* ── responsive ── */
+@media(max-width:900px){
+  .pathcols{grid-template-columns:1fr}
+  .pathhero{flex-direction:column;align-items:flex-start}
+  .pathhero__act{align-items:flex-start;width:100%}
+  .pathhero__note{text-align:left}
+  .pathfoot{flex-direction:column;align-items:flex-start}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .path,.pathcard{animation:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONFIRMATION-BAND HOOKS — the "See your recommended path →" control
+   machine/snapshot.js's capture/decline confirmations add. Their markup
+   lives in snapshot.js (see its wireCapture()); their rules live here since
+   this sprint's edit to snapshot.js is scoped to markup only.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.snapcap.is-done,.snapcap.is-quiet{flex-direction:column;gap:10px}
+.snapcap__pathbtn{margin-top:2px}
+.snapcap__pathlink{margin-top:2px;background:none;border:0;padding:0;font-family:var(--sans);
+  font-size:var(--t-sm);color:var(--cyan);font-weight:600;text-decoration:underline;
+  text-underline-offset:3px;cursor:pointer}
+.snapcap__pathlink:hover{color:var(--teal)}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SURFACE D — "Teams solving this usually also ask about…" (machine/path.js).
+   Deliberately quieter than a matched card: no amber rule, no credit chip,
+   flat surface. It is a suggestion, and it should read like one.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.path__section--cross{margin-top:34px;padding-top:26px;border-top:1px solid var(--line)}
+.cross__head{margin:0 0 14px;font-size:var(--t-sm);font-weight:600;color:var(--ink-2)}
+/* auto-FILL, not auto-fit: the row is one, two or three cards depending on the
+   primary's companions, and an auto-fit track would stretch a lone card to the
+   full 1180px — a metre of navy band behind one small lockup. Empty tracks
+   stay, so a product's card is the same size however many it shares the row
+   with, which is the consistency the band is for. */
+.crosscards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.crosscard{background:transparent;border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;display:flex;flex-direction:column}
+/* the same band and pills as a matched card, one size down — so a product
+   looks like itself wherever the routing screen shows it */
+.crosscard__in{padding:14px 18px 16px;display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
+.crosscard h3{margin:0;font-size:.9375rem;font-weight:600;letter-spacing:-.006em;color:var(--ink)}
+.crosscard .pathpills{gap:5px}
+.crosscard .pathpill{font-size:.6875rem;padding:2px 8px}
+.crosscard__foot{margin-top:auto;padding-top:6px;display:flex;flex-direction:column;
+  align-items:flex-start;gap:8px}
+.crosscard__tag{margin:0;align-self:flex-start;font-family:var(--mono);font-size:9px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--teal);
+  border:1px solid var(--line-2);border-radius:999px;padding:3px 8px}
+.crosscard__body{margin:0;font-size:var(--t-xs);color:var(--ink-2);line-height:1.55}
+.crosscard__who{margin:0;font-size:var(--t-xs);color:var(--ink-3);font-style:italic}
+.crosscard__link{align-self:flex-start;font-family:var(--sans);
+  font-size:var(--t-xs);font-weight:600;color:var(--cyan);text-decoration:none}
+.crosscard__link:hover{text-decoration:underline;text-underline-offset:3px}
+.crosscard__link.is-disabled{color:var(--ink-4);font-weight:400;cursor:not-allowed}
+.crosscard__link i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.02em}
+
+/* on a laptop-height viewport (≤~920px — both 1280×800 and 1440×900 land
+   here once a matched card plus a cross-discovery row precede it), the
+   self-serve variant's navy hero band
+   (route === 'self_serve' — see heroHTML in path.js) otherwise lands with its
+   own sub-copy right under the fixed corner pills (.sc-pill / .vercorner,
+   ~46px tall at the viewport's bottom-left/right) — three stacked
+   .path__section gaps plus the page's own top padding are enough, on their
+   own, to push it that far down. Trimming the rhythm here (never at
+   1440×900, which already clears them) keeps the hero's own CTAs and text
+   reachable without moving or resizing anything else. Placed after the
+   .path__section--cross rule above so it can win the (otherwise tied)
+   cascade at this equal specificity. */
+@media(max-height:920px){
+  .path__in{padding-top:clamp(20px,3vh,32px)}
+  .path__section{margin-top:6px}
+  .path__section--cross{margin-top:6px}
+  .pathhero{padding:16px clamp(20px,3vw,28px)}
+  .pathcollapse{margin-top:6px}
+  .pathcol{padding:16px}
+  .pathcards{gap:12px}
+  /* the product band is the tallest new thing on this screen — it gives back
+     the same rhythm the rest of this block does, rather than pushing the
+     three columns under the fixed corner pills again */
+  .pathband--lg{min-height:82px;padding:12px 18px}
+  .pathband--lg .pathband__lockup{max-height:58px}
+  .pathband--lg .pathband__word{font-size:1.375rem}
+  .pathband--sm{min-height:54px;padding:8px 14px}
+  .pathband--sm .pathband__lockup{max-height:38px}
+  .pathcard__in{padding:14px 18px 16px}
+  .crosscard__in{padding:12px 14px 14px}
+}
+
+/* same sticky-nav offset as the snapshot view */
+#pathView{scroll-margin-top:84px}
+
+/* the product behind the capability, named in words — the lockup shows the
+   mark, this says which of the ten it is */
+.pathcard__prod{margin:-4px 0 10px;font-size:var(--t-sm);color:var(--ink-2)}
+.pathcard__prod b{color:var(--ink);font-weight:600}
+
+/* a routing.json "[to confirm]" note, shown under the button it qualifies */
+.pathnote--pending{font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.04em;color:var(--ink-3);margin-top:6px}
+/* text links that are tap targets on a phone (QA, Sep 2: 19px tall) */
+.pathcollapse__link,.pathquiet__link,.pathfoot__link{display:inline-flex;align-items:center;min-height:40px}

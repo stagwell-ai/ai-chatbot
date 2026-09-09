@@ -24,6 +24,10 @@
   ],
   "rewrites": [
     {
+      "source": "/next-v1",
+      "destination": "/next-v1/index.html"
+    },
+    {
       "source": "/next",
       "destination": "/next/index.html"
     },

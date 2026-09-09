@@ -1,0 +1,612 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   HERO — the landing as a chooser, not a blank prompt.
+
+   The client, pointing at Meta's ad-objective dialog: "we want to continue
+   using the phrase 'What do you need help solving today?' but we want to
+   have the user select from a few options. on the lower right there would be
+   a button 'Ask AI' and to the left of it a text input — the website now
+   (optional, client Sep 2: "move the email collection to right before they
+   get the snapshot"); it used to be the business email…
+   after they click the button, then we go to the ai chat window with the
+   first conversation put in already of which option they selected."
+
+   So this file renders that dialog and nothing else:
+
+     · a radio list of what the visitor might be solving, LEFT;
+     · a detail pane for whichever row is focused, RIGHT — what that choice
+       means and what it is good for, the shape Meta's panel uses;
+     · a footer bar, an optional website beside the Ask AI button.
+
+   WHERE THE OPTIONS COME FROM. data/questions.json q1.chips — the same list
+   the conversation's first question uses. That is the point: the picker IS
+   q1, asked on the landing, so the choice arrives in the flow as a real chip
+   answer (deterministic domain, no classifier round-trip) rather than as
+   text the machine has to interpret. Detail copy is hero.byDomain, keyed by
+   the same domain ids. One data edit changes both surfaces.
+
+   THE ROW IS OPTIONAL, THE ADDRESS IS NOT. A visitor who types their work
+   email and presses Ask AI goes straight through, picked row or not — the
+   conversation then opens by asking q1 itself. Nothing on this card is
+   allowed to stand between someone and handing us their email.
+
+   THE EMAIL IS NOT A TOLL EITHER. It buys the visitor something immediately: the
+   company comes out of its domain, research starts on it before they answer
+   another question, and q2 is skipped because we no longer need to ask. A
+   personal address can't do that, which is what the refusal copy says.
+
+   WHAT IT NEVER DOES: invent a domain, keep the address anywhere but the
+   session, or send it to an event — capture_email carries the domain only,
+   the same rule every other capture on the site follows.
+
+   window.SAIHERO:
+     .mounted()   → true once the picker is on the page
+     .select(id)  → choose an option programmatically (tests, deep links)
+     .state()     → { option, site, error } for the suites
+   ═══════════════════════════════════════════════════════════════════════════ */
+(() => {
+'use strict';
+
+const root = document.getElementById('heroPick');
+if (!root) return;
+
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+  { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const $ = (s, r = document) => r.querySelector(s);
+const has = v => v != null && String(v).trim() !== '';
+
+/* the copy floor: if data/questions.json fails to load, the picker still
+   renders something honest rather than an empty box */
+const FALLBACK = {
+  title: 'What do you need help solving today?',
+  sub: '',
+  listLabel: "Choose what you're solving",
+  siteLabel: 'Your website (optional)',
+  siteHint: '',
+  submit: 'Ask AI',
+  otherLabel: "Something else — I'll describe it",
+  otherLine: 'Describe the problem in your own words, or paste your website.',
+  otherPlaceholder: 'Describe your problem — or paste your website',
+  otherGoodFor: [],
+  personalDomains: ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com'],
+  errors: {
+    badSite: "That doesn't look like a website — try something like nike.com, or leave it blank."
+  },
+  byDomain: {}
+};
+
+const OTHER = '__other__';
+
+/* ── icons: one per option, drawn rather than imported so the row has a mark
+      at the same weight as Meta's, with nothing to load ─────────────────── */
+const ICONS = {
+  brand_health: '<path d="M3 14.5 7 9l3.2 3.6L15 5.5" /><path d="M11.6 5.5H15v3.4" />',
+  competitive: '<rect x="2.6" y="9" width="3.4" height="6.4" rx="1"/><rect x="8.3" y="5.4" width="3.4" height="10" rx="1"/><rect x="14" y="7.4" width="3.4" height="8" rx="1"/>',
+  ai_visibility: '<circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2 17 17"/>',
+  influencer: '<circle cx="7.4" cy="6.6" r="2.8"/><path d="M2.8 15.4c0-2.6 2.1-4.2 4.6-4.2s4.6 1.6 4.6 4.2"/><path d="M13.4 5.2a2.6 2.6 0 0 1 0 5"/><path d="M14.4 11.6c1.7.5 2.9 1.8 2.9 3.8"/>',
+  audiences: '<path d="M10 2.6 17 6.4 10 10.2 3 6.4z"/><path d="M3 10.4 10 14.2l7-3.8"/>',
+  /* leads: a funnel — the hand-raise narrowing to a booked conversation */
+  leads: '<path d="M3.2 3.6h13.6l-5.2 6.2v6l-3.2 1.7v-7.7z"/>',
+  research: '<path d="M4.4 3.4h11v13h-11z"/><path d="M7 7h5.4M7 10h5.4M7 13h3"/>',
+  __other__: '<circle cx="10" cy="10" r="7.2"/><path d="M7.8 8a2.3 2.3 0 1 1 2.6 2.3v1.2"/><path d="M10.4 14.1h.01"/>'
+};
+const icon = id => `<svg class="pick__icon" viewBox="0 0 20 20" aria-hidden="true" fill="none"
+  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${
+  ICONS[id] || ICONS[OTHER]}</svg>`;
+
+/* ── state ───────────────────────────────────────────────────────────────── */
+let COPY = FALLBACK;
+let OPTIONS = [];
+let MORE = [];            /* q1.moreChips: every door that is not a row */
+let selected = null;      /* option id (a routing domain, or __other__) */
+let more = null;          /* under "Something else": the suggestion chip chosen, if any */
+let lastError = null;
+
+const optionById = id => OPTIONS.find(o => o.id === id) || null;
+
+/* ── the website rule ─────────────────────────────────────────────────────
+   Optional, and forgiving: "nike.com", "www.nike.com", "https://nike.com/uk"
+   all read as nike.com. An email pasted here by habit gives up its domain
+   too — but the address itself is NOT kept: the email is asked once, right
+   before the snapshot (machine/convo.js gate), and nowhere earlier. */
+function siteDomain(value) {
+  let raw = String(value == null ? '' : value).trim().toLowerCase();
+  if (!raw) return null;
+  if (raw.indexOf('@') !== -1) raw = raw.slice(raw.lastIndexOf('@') + 1);
+  raw = raw.replace(/^[a-z]+:\/\//, '').replace(/^www\./, '').split(/[\/?#\s]/)[0];
+  return /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(raw) && raw.length <= 253 ? raw : null;
+}
+
+/* returns null when the field is usable (blank counts), else the error key */
+function siteProblem(value) {
+  const raw = String(value == null ? '' : value).trim();
+  if (!raw) return null;
+  return siteDomain(raw) ? null : 'badSite';
+}
+
+/* ── render ──────────────────────────────────────────────────────────────── */
+function rowHTML(o, i) {
+  return `<button type="button" class="pick__row" role="radio" aria-checked="false"
+      id="pickRow-${esc(o.id)}" data-pick="${esc(o.id)}" tabindex="${i === 0 ? '0' : '-1'}">
+      <span class="pick__radio" aria-hidden="true"></span>
+      <span class="pick__mark" aria-hidden="true">${icon(o.id)}</span>
+      <span class="pick__txt">
+        <span class="pick__label">${esc(o.label)}</span>
+        ${o.line ? `<span class="pick__sub">${esc(o.line)}</span>` : ''}
+      </span>
+    </button>`;
+}
+
+/* THE EMPTY PANE — what stands there before a row is chosen.
+
+   Meta puts an illustration in this space; ours was a line of grey text,
+   which reads as a hole in the card ("it shouldn't be blank and boring").
+   So the pane shows what the agent is about to do, in the shape the client
+   supplied: inputs on the left, the agent and its checklist in the middle,
+   the outputs it produces on the right.
+
+   TWO WAYS TO FILL IT, in order:
+
+     hero.emptyImage   a file path — set it in data/questions.json and that
+                       image renders instead, no code change. This is the
+                       hook for the client's own artwork.
+     (otherwise)       the built-in, drawn below: inline SVG in the brand's
+                       colours, composed from hero.emptySays and
+                       hero.emptySteps so the words stay in the data.
+
+   The drawn version deliberately keeps only what is LEGIBLE at this size.
+   The reference artwork is 1536px wide; this pane is around 480. Labels on
+   the four peripheral cards would render at ~6px, so they are icons here —
+   the composition survives, the unreadable type does not. */
+
+const FLANK = {
+  left: [
+    { icon: 'ai_visibility', y: 74 },     /* AI search   */
+    { icon: 'brand_health', y: 150 }      /* brand signal */
+  ],
+  right: [
+    { icon: 'competitive', y: 74 },       /* performance  */
+    { icon: 'audiences', y: 150 }         /* opportunities */
+  ]
+};
+
+const STEP_ICONS = ['influencer', 'competitive', 'audiences', 'brand_health'];
+
+function flankHTML() {
+  const tile = (x, y, id) => `
+    <g class="pick__illo-flank" transform="translate(${x},${y})">
+      <rect class="pick__illo-tile" width="34" height="34" rx="10"/>
+      <g transform="translate(7,7) scale(0.98)" class="pick__illo-tico">${icon(id)}</g>
+    </g>`;
+  const wire = d => `<path class="pick__illo-wire" d="${d}"/>`;
+  return [
+    tile(4, FLANK.left[0].y, FLANK.left[0].icon),
+    tile(4, FLANK.left[1].y, FLANK.left[1].icon),
+    tile(362, FLANK.right[0].y, FLANK.right[0].icon),
+    tile(362, FLANK.right[1].y, FLANK.right[1].icon),
+    wire('M40 91 H56 Q62 91 62 97 V119'),
+    wire('M40 167 H56 Q62 167 62 161 V139'),
+    wire('M360 91 H344 Q338 91 338 97 V119'),
+    wire('M360 167 H344 Q338 167 338 161 V139')
+  ].join('');
+}
+
+function emptyArtHTML() {
+  /* Centred, both ways: the agent's line, then three dots in the logo's own
+     colours, then one thought at a time from COPY.emptySteps. No logo mark,
+     no list, no checkmarks. Same words as always. */
+  const says  = String(COPY.emptySays || '');
+  const steps = (Array.isArray(COPY.emptySteps) ? COPY.emptySteps : []).slice(0, 4);
+
+  return `
+<div class="say" role="img" aria-label="${esc(says)}">
+  <p class="say__line">${esc(says)}</p>
+  <span class="say__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+  <p class="say__now" id="sayNow" data-steps="${esc(JSON.stringify(steps))}">
+    <span class="say__word"></span>
+  </p>
+</div>`;
+}
+
+/* Walk the scene's steps so the panel is always mid-thought. */
+if (typeof window !== 'undefined') {
+  const runSteps = () => {
+    const host = document.getElementById('sayNow');
+    if (!host) return;
+    let steps = [];
+    try { steps = JSON.parse(host.dataset.steps || '[]'); } catch (e) { return; }
+    if (!steps.length) return;
+    const word = host.querySelector('.say__word');
+    let i = 0;
+    const put = () => { word.textContent = steps[i]; word.classList.remove('is-out'); };
+    put();
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    clearInterval(window.__scSteps);
+    window.__scSteps = setInterval(() => {
+      word.classList.add('is-out');
+      setTimeout(() => { i = (i + 1) % steps.length; put(); }, 260);
+    }, 2200);
+  };
+  setTimeout(runSteps, 400);
+  setTimeout(runSteps, 1200);
+}
+
+/* The mark drifts against the scroll — a light parallax, nothing more.
+   rAF-throttled, and off entirely for reduced motion. */
+if (typeof window !== 'undefined' &&
+    !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  let markRaf = null;
+  const driftMark = () => {
+    markRaf = null;
+    const face = document.querySelector('.markfx__face');
+    if (!face) return;
+    const box = face.closest('.about__mark') || face;
+    const r = box.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    /* -1 at the bottom of the viewport, +1 at the top */
+    const p = 1 - ((r.top + r.height / 2) / innerHeight) * 2;
+    /* proportional, not a flat 26px: on the 104px phone mark that was a
+       quarter of the object and read as a jolt, while on the desktop one
+       it was barely there. 9% of its own height drifts the same either way. */
+    const amp = Math.max(8, Math.min(26, r.height * 0.09));
+    face.style.transform = `translate3d(0, ${(p * amp).toFixed(1)}px, 0)`;
+  };
+  addEventListener('scroll', () => {
+    if (!markRaf) markRaf = requestAnimationFrame(driftMark);
+  }, { passive: true });
+  setTimeout(driftMark, 0);
+  setTimeout(driftMark, 300);
+}
+
+/* Keep the fixed canvas fitted to its box. A scene canvas CLIPS, so this has
+   to re-measure on resize, not just on first paint. */
+function fitScenes(root) {
+  (root || document).querySelectorAll('.scene').forEach(box => {
+    const canvas = box.querySelector('.scene__canvas');
+    if (!canvas) return;
+    const w = box.clientWidth;
+    if (!w) return;                       /* a 0-wide box would scale to nothing */
+    /* fit BOTH ways: a canvas taller than its slot gets cropped, which is how
+       the scene went missing the first time. */
+    const room = box.parentElement ? box.parentElement.clientHeight : 0;
+    let scale = w / 1100;
+    if (room > 80 && 620 * scale > room) scale = room / 620;
+    canvas.style.transform = `scale(${scale})`;
+    canvas.style.left = ((w - 1100 * scale) / 2) + 'px';
+    box.style.height = (620 * scale) + 'px';
+  });
+}
+if (typeof window !== 'undefined') {
+  let rafFit = null;
+  const queueFit = () => { if (!rafFit) rafFit = requestAnimationFrame(() => { rafFit = null; fitScenes(); }); };
+  addEventListener('resize', queueFit, { passive: true });
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(queueFit);
+    const watch = () => document.querySelectorAll('.scene').forEach(el => ro.observe(el));
+    setTimeout(watch, 0);
+  }
+  setTimeout(queueFit, 0);
+  setTimeout(queueFit, 240);
+}
+
+function toggleHint(on) {
+  const h = document.getElementById('pickHint');
+  if (h) h.hidden = !on;
+}
+
+function detailHTML(o) {
+  if (!o) {
+    return `<div class="pick__detail-empty">
+      ${emptyArtHTML()}
+    </div>`;
+  }
+  const free = o.id === OTHER;
+  /* THE OTHER DOORS. "Something else" carries a text box AND a chip for every
+     routing domain that is not one of the four rows (q1.moreChips), so every
+     product has a visible door while the picker keeps its four-row Meta
+     shape (client, Sep 2). A chosen chip repaints this pane with that
+     domain's own detail; the text box stays for anyone who would rather say
+     it in their own words. */
+  if (free) {
+    /* THE HEIGHT BUDGET. This pane carries the most of any: a heading, ten
+       chips and a text box. It also has to fit the pane WITHOUT SCROLLING
+       (client, Sep 2) at 42vh on a 720px laptop — so it drops the 56px icon
+       tile every other pane shows, and the explanatory line goes once a chip
+       is chosen, because the chip and the heading already say it. */
+    const chosen = more ? MORE.find(m => m.domain === more) : null;
+    const d = chosen ? (COPY.byDomain || {})[chosen.domain] || {} : null;
+    const head = chosen
+      ? `<h2 class="pick__dh">${esc(d.title || chosen.label)}</h2>`
+      : `<h2 class="pick__dh">${esc(o.detailTitle || o.label)}</h2>
+         <p class="pick__dl">${esc(o.line || '')}</p>`;
+    const chips = MORE.length ? `<p class="pick__dgood">${esc(COPY.moreLabel || 'Or pick one of these:')}</p>
+      <div class="pick__more" role="group" aria-label="${esc(COPY.moreLabel || 'Other problems')}">${
+        MORE.map(m => `<button type="button" class="pick__morechip${more === m.domain ? ' is-on' : ''}"
+          data-more="${esc(m.domain)}" aria-pressed="${more === m.domain ? 'true' : 'false'}">${esc(m.label)}</button>`).join('')}</div>` : '';
+    return `<div class="pick__pane pick__pane--free">${head}${chips}
+      <label class="pick__free">
+        <span class="vh">${esc(COPY.otherPlaceholder || '')}</span>
+        <textarea id="pickFree" rows="2" placeholder="${esc(chosen ? (COPY.morePlaceholder || 'Anything else the agent should know (optional)') : (COPY.otherPlaceholder || ''))}"></textarea>
+      </label></div>`;
+  }
+  const tags = (o.goodFor || []).filter(Boolean);
+  return `
+    <div class="pick__art" aria-hidden="true">${icon(o.id)}</div>
+    <h2 class="pick__dh">${esc(o.detailTitle || o.label)}</h2>
+    <p class="pick__dl">${esc(o.line || '')}</p>
+    ${tags.length ? `<p class="pick__dgood">Good for:</p>
+      <ul class="pick__tags">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}`;
+}
+
+function render() {
+  root.innerHTML = `
+    <div class="pick">
+      <div class="pick__panes">
+        <div class="pick__col">
+          <p class="pick__hint" id="pickHint">
+            <span class="pick__hinti" aria-hidden="true">
+              <svg viewBox="0 0 28.44 28"><use href="#sw-mark"/></svg>
+            </span>
+            <span>${esc(COPY.emptyTitle || COPY.listLabel || '')}</span>
+          </p>
+          <div class="pick__list" role="radiogroup" aria-label="${esc(COPY.listLabel || '')}" id="pickList">
+            ${OPTIONS.map(rowHTML).join('')}
+          </div>
+        </div>
+        <div class="pick__detail" id="pickDetail">${detailHTML(null)}</div>
+      </div>
+      <div class="pick__foot">
+        <p class="pick__err" id="pickErr" role="alert" hidden></p>
+        <div class="pick__act">
+          <label class="pick__site" id="pickSiteWrap">
+            <span class="vh">${esc(COPY.siteLabel || 'Your website (optional)')}</span>
+            <input id="pickSite" type="text" inputmode="url" autocomplete="url" spellcheck="false"
+              placeholder="${esc(COPY.siteLabel || 'Your website (optional)')}"
+              aria-describedby="pickErr">
+          </label>
+          <button type="button" class="btn btn--gold pick__go" id="pickGo">${esc(COPY.submit || 'Ask AI')}</button>
+        </div>
+      </div>
+    </div>`;
+  wire();
+}
+
+function paintDetail() {
+  const detail = $('#pickDetail', root);
+  if (detail) detail.innerHTML = detailHTML(optionById(selected));
+  toggleHint(!optionById(selected));
+}
+
+function select(id, opts) {
+  const o = optionById(id);
+  if (!o) return false;
+  if (id !== OTHER) more = null;
+  selected = id;
+  root.querySelectorAll('.pick__row').forEach(b => {
+    const on = b.getAttribute('data-pick') === id;
+    b.classList.toggle('is-on', on);
+    b.setAttribute('aria-checked', on ? 'true' : 'false');
+    b.tabIndex = on ? 0 : -1;
+  });
+  paintDetail();
+  if (opts && opts.focus === false) return true;
+  const free = $('#pickFree', root);
+  if (free && id === OTHER) free.focus();
+  return true;
+}
+
+/* ── errors: the box is highlighted AND told why (client's ask) ───────────
+   The website is now the only thing that can fail here (and only when it is
+   not blank), so every error this shows is about that field. */
+function showError(key, focusEl) {
+  const box = $('#pickErr', root);
+  const wrap = $('#pickSiteWrap', root);
+  lastError = key;
+  const msg = (COPY.errors && COPY.errors[key]) || FALLBACK.errors[key] || '';
+  if (box) { box.textContent = msg; box.hidden = false; }
+
+  if (wrap) {
+    wrap.classList.add('is-bad');
+    wrap.classList.remove('is-shake');
+    void wrap.offsetWidth;                            /* restart the animation */
+    wrap.classList.add('is-shake');
+    setTimeout(() => wrap.classList.remove('is-shake'), 460);
+  }
+  if (focusEl) { try { focusEl.focus(); } catch (e) { /* never fatal */ } }
+}
+
+function clearError(onlyKey) {
+  if (onlyKey && lastError !== onlyKey) return;
+  lastError = null;
+  const box = $('#pickErr', root);
+  if (box) { box.hidden = true; box.textContent = ''; }
+  const wrap = $('#pickSiteWrap', root);
+  if (wrap) wrap.classList.remove('is-bad');
+}
+
+/* ── the handoff ─────────────────────────────────────────────────────────── */
+function engine() { return (typeof window !== 'undefined' && window.SAI) || null; }
+
+/* A website typed at the door is the visitor's own answer to q2: the
+   company is known, research starts immediately, and flow.js skips the
+   question (skipReason 'website_in_first_message'). Nothing else is taken
+   here — the email waits for the gate in front of the snapshot. */
+function seedFromSite(value) {
+  const S = engine();
+  const domain = siteDomain(value);
+  if (!S || !domain) return null;
+  try {
+    if (!S.session.slots.company_domain) S.setSlot('company_domain', domain, 'visitor');
+  } catch (e) { /* a slot the engine refuses is not worth losing the click over */ }
+  return domain;
+}
+
+/* THIS DOOR ASKS FOR NOTHING IT CAN REFUSE OVER.
+
+   The picker used to refuse a click until a row was chosen — and refuse
+   again if "Something else" was chosen with an empty box. Both refusals sent
+   a visitor who had already handed over their work email back into the
+   furniture (client, Sep 2: "if the user simply puts in their email address
+   and presses Ask AI, just jump on to the next section and don't block them
+   … we don't want to do anything to block them giving us their email
+   address").
+
+   So the rows are an ACCELERATOR, not a toll: pick one and the conversation
+   opens with q1 already answered; pick nothing and it opens by asking q1 —
+   the same question the headline asks, now with the agent asking it, and
+   a typed website already doing its work behind the scenes (company known,
+   research running, q2 skipped). Nothing is required: the client moved the
+   email to the gate in front of the snapshot (Sep 2) so the way in is one
+   click — a blank website simply means the agent asks for the company. */
+function go() {
+  const siteEl = $('#pickSite', root);
+  const problem = siteProblem(siteEl ? siteEl.value : '');
+  if (problem) { showError(problem, siteEl); return; }
+
+  const o = optionById(selected);
+  let text = o ? o.label : '';
+  if (o && selected === OTHER) {
+    const free = $('#pickFree', root);
+    const typed = free ? free.value.trim() : '';
+    const chosen = more ? MORE.find(m => m.domain === more) : null;
+    /* a suggestion chip is a deterministic q1 answer (its label is in
+       q1.moreChips, which flow.js resolves to a domain); anything typed
+       beside it rides along as the visitor's own words */
+    text = chosen ? (typed ? `${chosen.label} — ${typed}` : chosen.label) : typed;
+  }
+
+  clearError();
+  seedFromSite(siteEl ? siteEl.value : '');
+
+  /* hand the whole hero over to the conversation, with this as its first
+     answer already given — the visitor never sees q1 asked again */
+  const hero = document.getElementById('hero2');
+  if (hero) hero.classList.add('is-chatting');
+  root.hidden = true;
+
+  if (window.SAICONVO && typeof window.SAICONVO.begin === 'function' && window.SAICONVO.begin(text)) return;
+
+  /* the conversation could not take over (no flow.js): put the visitor's
+     words in the composer rather than swallowing them */
+  const input = document.getElementById('promptInput');
+  if (input) { input.value = text; input.focus(); }
+  if (hero) hero.classList.remove('is-chatting');
+  root.hidden = false;
+}
+
+function wire() {
+  root.addEventListener('click', e => {
+    const row = e.target.closest('[data-pick]');
+    if (row) { select(row.getAttribute('data-pick')); return; }
+    const chip = e.target.closest('[data-more]');
+    if (chip) {
+      const id = chip.getAttribute('data-more');
+      more = more === id ? null : id;           /* tap again to un-choose */
+      paintDetail();
+      const again = root.querySelector(`[data-more="${id}"]`);
+      if (again) { try { again.focus({ preventScroll: true }); } catch (err) { /* fine */ } }
+      return;
+    }
+    if (e.target.closest('#pickGo')) go();
+  });
+
+  /* a radiogroup answers to the arrow keys */
+  root.addEventListener('keydown', e => {
+    const row = e.target.closest('[data-pick]');
+    if (!row) return;
+    const keys = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1, Home: 0, End: 0 };
+    if (!(e.key in keys)) return;
+    e.preventDefault();
+    const rows = [...root.querySelectorAll('.pick__row')];
+    const i = rows.indexOf(row);
+    /* Home/End jump to the ends, per the ARIA radiogroup pattern */
+    const next = e.key === 'Home' ? rows[0] : e.key === 'End' ? rows[rows.length - 1]
+      : rows[(i + keys[e.key] + rows.length) % rows.length];
+    if (next) { next.focus(); select(next.getAttribute('data-pick'), { focus: false }); }
+  });
+
+  const site = $('#pickSite', root);
+  if (site) {
+    /* the error clears itself the moment the field becomes usable — no
+       second click needed to find out you fixed it */
+    site.addEventListener('input', () => { if (lastError && !siteProblem(site.value)) clearError(); });
+    site.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+  }
+}
+
+/* ── data ────────────────────────────────────────────────────────────────── */
+function build(data) {
+  const q = data && data.questions;
+  const hero = (q && q.hero) || {};
+  COPY = Object.assign({}, FALLBACK, hero, {
+    errors: Object.assign({}, FALLBACK.errors, hero.errors || {}),
+    personalDomains: Array.isArray(hero.personalDomains) && hero.personalDomains.length
+      ? hero.personalDomains : FALLBACK.personalDomains
+  });
+
+  const q1 = (q && q.questions && q.questions.find(x => x.id === 'q1')) || {};
+  const chips = q1.chips || [];
+  MORE = (Array.isArray(q1.moreChips) ? q1.moreChips : []).filter(c => c && c.domain && c.label);
+  const by = hero.byDomain || {};
+  OPTIONS = chips.filter(c => c && c.domain).map(c => Object.assign(
+    { id: c.domain, label: c.label, detailTitle: (by[c.domain] || {}).title || c.label },
+    by[c.domain] || {}
+  ));
+  OPTIONS.push({
+    id: OTHER,
+    label: COPY.otherLabel,
+    detailTitle: COPY.otherLabel,
+    line: COPY.otherLine,
+    goodFor: COPY.otherGoodFor || []
+  });
+
+  /* the page's own headline and standfirst come from the same block, so the
+     client tunes the whole hero with one data edit */
+  const title = document.getElementById('hero2Title');
+  const sub = document.getElementById('hero2Sub');
+  const eyebrow = document.getElementById('heroEyebrow');
+  if (title && COPY.title) {
+    /* keep the site's two-tone display treatment: the last clause is accented */
+    const m = String(COPY.title).match(/^(.*?)(\s)(\S+\s+\S+)$/);
+    title.innerHTML = m ? `${esc(m[1])}${m[2]}<span class="accent">${esc(m[3])}</span>` : esc(COPY.title);
+  }
+  if (sub && COPY.sub) sub.textContent = COPY.sub;
+  if (eyebrow && COPY.eyebrow) eyebrow.innerHTML = `<i class="pulse"></i>${esc(COPY.eyebrow)}`;
+
+  render();
+}
+
+const DATA = (typeof window !== 'undefined' && window.STAGDATA) || null;
+if (DATA && typeof DATA.then === 'function') DATA.then(build, () => build(null));
+else build(DATA);
+
+/* Back from /chat (b.js resetB) brings the picker back; the selection and
+   any error are cleared, the typed email is kept — it is theirs. */
+function reset() {
+  selected = null;
+  more = null;
+  root.querySelectorAll('.pick__row').forEach((b, i) => {
+    b.classList.remove('is-on'); b.setAttribute('aria-checked', 'false'); b.tabIndex = i === 0 ? 0 : -1;
+  });
+  paintDetail();
+  clearError();
+  root.hidden = false;
+  const hero = document.getElementById('hero2');
+  if (hero) hero.classList.remove('is-chatting');
+}
+
+window.SAIHERO = {
+  mounted: () => !!root.querySelector('.pick'),
+  select: id => select(id),
+  submit: () => go(),
+  reset,
+  state: () => ({
+    option: selected,
+    more,
+    site: ($('#pickSite', root) || {}).value || '',
+    error: lastError
+  }),
+  _siteProblem: siteProblem,
+  _siteDomain: siteDomain
+};
+})();
