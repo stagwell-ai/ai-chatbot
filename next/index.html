@@ -158,16 +158,11 @@ d.setAttribute('data-theme',t||sys);})();
          starting points, and the field on the floor of the panel -->
     <div class="hero__chat" id="ask">
       <div class="chat">
-        <div class="chat__head">
-          <span class="chat__mark" aria-hidden="true"><svg viewBox="0 0 159 153"><path d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z" fill="currentColor"/><path d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z" fill="#FFB81C"/><path d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z" fill="#009CBD"/></svg></span>
-          <span class="chat__who">Ask Stagwell AI</span>
-          <span class="chat__state"><i></i>Ready</span>
-        </div>
         <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
         <div class="chat__body">
-          <div class="chat__thread" id="agentThread" role="log" aria-live="polite" aria-relevant="additions">
-            <div class="turnb turnb--ai">What do you need help solving?</div>
-          </div>
+          <!-- empty on purpose: home.js has the agent type the opening line,
+               then bring the starting points in under it -->
+          <div class="chat__thread" id="agentThread" role="log" aria-live="polite" aria-relevant="additions"></div>
           <!-- the starting points, in the open, for anyone who cannot name it yet -->
           <ul class="chat__tags" id="agentTags" aria-label="Pick a starting point">
             <li><button type="button" class="tag" data-q="Increase brand awareness">Increase brand awareness</button></li>

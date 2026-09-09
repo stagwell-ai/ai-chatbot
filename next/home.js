@@ -346,6 +346,22 @@
       state.busy = false;
       miniInput.focus({ preventScroll: true });
     };
+    /* the panel is alive when you arrive: the dots come up first, then the
+       agent's line, then the starting points one after another — the chat
+       opens the conversation rather than sitting there waiting (client). */
+    const tagsBox = $('#agentTags');
+    const intro = () => {
+      if (REDUCED) { ai('What do you need help solving?'); if (tagsBox) tagsBox.classList.add('is-in'); return; }
+      const w = wait();
+      setTimeout(() => {
+        w.remove(); think.off();
+        ai('What do you need help solving?');
+        if (tagsBox) setTimeout(() => tagsBox.classList.add('is-in'), 380);
+      }, 1250);
+    };
+    /* it waits for the page to settle, then starts */
+    setTimeout(intro, REDUCED ? 0 : 700);
+
     mini.addEventListener('submit', (e) => {
       e.preventDefault();
       const v = miniInput.value.trim();
