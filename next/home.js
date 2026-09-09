@@ -54,12 +54,15 @@
   }
 
 
-  /* ── the bar: solid once you have moved; white-on-dark over the AI section ─ */
-  const nav = $('#nav'), ask = $('#ask');
+  /* ── the bar: it floats over the first screen and turns solid once you have
+        moved. It used to go white-on-dark over the old dark Ask block and over
+        the open film; both are gone, and `#ask` is the hero's WHITE chat panel
+        now — so that test was making the bar white on white, which is what
+        "the navigation is broken" was. No dark state on this page. ───────── */
+  const nav = $('#nav');
   let syncNav = () => {};
   if (nav) {
     let ticking = false, lastY = scrollY, down = 0;
-    const under = (el) => { const r = el.getBoundingClientRect(); return r.top <= 72 && r.bottom >= 72; };
     const onScroll = () => {
       ticking = false;
       const y = scrollY, d = y - lastY; lastY = y;
@@ -70,10 +73,6 @@
       if (d > 0) { down += d; if (y > 72 && down > 14) nav.classList.add('is-hidden'); }
       else if (d < 0) { down = 0; nav.classList.remove('is-hidden'); }
       if (y <= 8) { down = 0; nav.classList.remove('is-hidden'); }
-      /* dark under the bar: the AI section, or the hero while its film is open */
-      const heroMedia = $('#heroMedia');
-      const dark = (ask && under(ask)) || (heroMedia && heroMedia.classList.contains('is-open') && under(heroMedia));
-      nav.classList.toggle('on-dark', !!dark);
     };
     syncNav = onScroll;
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });

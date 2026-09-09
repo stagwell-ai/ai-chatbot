@@ -202,7 +202,7 @@ h1,h2,p,figure{margin:0}
 /* ── nav ─────────────────────────────────────────────────────────────────── */
 .nav{
   position:fixed;inset:0 0 auto 0;z-index:50;height:var(--nav-h);
-  background:#FFFFFF;box-shadow:0 1px 0 var(--line);   /* white from the first screen: over a split hero a clear bar is the only readable one (client) */
+  background:rgba(255,255,255,.0);   /* it floats over the first screen and only turns solid once you scroll (.is-stuck) */
   transition:background-color .35s ease,box-shadow .35s ease;
 }
 .nav.is-stuck{background:#FFFFFF;box-shadow:0 1px 0 var(--line)}   /* full white, no blur (client) */
@@ -223,6 +223,12 @@ h1,h2,p,figure{margin:0}
 .nav__ask{font-size:14px;font-weight:500;color:var(--ink-2);transition:color .25s ease}
 .nav__ask:hover{color:var(--ink)}
 .nav .btn{height:44px;padding:0 22px;font-size:13px}
+/* the bar floats with no ground of its own, and on the first screen its right
+   half now sits over the chat's white: the page's soft hairline disappeared
+   there. In the bar only, the stroke is darkened until it reads on white as
+   well as on the grey. */
+.nav .btn--line,.nav__search{box-shadow:inset 0 0 0 1px rgba(11,18,32,.3)}
+.nav .btn--line:hover{box-shadow:inset 0 0 0 1px var(--ink)}
 
 /* the phone's menu button: two lines that cross when the sheet is open.
    Hidden on a desktop, where the links sit in the bar. */
