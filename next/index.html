@@ -140,63 +140,51 @@ d.setAttribute('data-theme',t||sys);})();
      is the hero's other half, not a section under it — the visitor can start
      talking without scrolling. -->
 <section class="hero" id="hero">
-  <div class="hero__in">
-    <div class="hero__l">
-      <!-- the words' ground: three stills turning over behind them. Motion,
-           zoom and shape only — no faces: a person under the type is what
-           makes it hard to read (client, 2026-09-09). -->
-      <div class="hero__bg" id="heroSlides" aria-hidden="true">
-        <img class="hero__pic is-on" src="/assets/img/hero-slide-3.jpg" alt="" width="1122" height="1402" decoding="async" fetchpriority="high">
-        <img class="hero__pic" src="/assets/img/glass.jpg" alt="" width="1400" height="788" decoding="async" loading="lazy">
-        <img class="hero__pic" src="/assets/img/hero-slide-5.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
-      </div>
-      <div class="hero__stack">
-        <h1 class="display display--hero" id="heroTitle">
-          <span class="ln"><span class="ln__in"><em>Agentic solutions</em></span></span><span class="ln"><span class="ln__in">built to transform</span></span><span class="ln"><span class="ln__in">your business</span></span>
-        </h1>
-        <p class="hero__lede rv" style="--d:.35s">Whatever your marketing challenge,<br>we have the right tool for the job.</p>
-      </div>
-      <!-- no .rv here on purpose: the glass button's backdrop-filter samples
-           its ancestor's group, and a reveal that animates opacity and
-           transform makes the blur flicker until the animation ends -->
-      <div class="hero__acts" id="heroActs">
-        <!-- the chat is already the way to ask, right beside these: the hero's
-             own buttons go somewhere else -->
-        <button type="button" class="btn btn--accent btn--lg" data-cta="session">Book a demo</button>
-        <a class="btn btn--glass btn--lg" href="#solutions">Explore solutions</a>
-      </div>
+  <!-- the ground: three stills turning over behind everything. Motion, zoom
+       and shape only — no faces under the type (client). -->
+  <div class="hero__bg" id="heroSlides" aria-hidden="true">
+    <img class="hero__pic is-on" src="/assets/img/hero-slide-3.jpg" alt="" width="1122" height="1402" decoding="async" fetchpriority="high">
+    <img class="hero__pic" src="/assets/img/glass.jpg" alt="" width="1400" height="788" decoding="async" loading="lazy">
+    <img class="hero__pic" src="/assets/img/hero-slide-5.jpg" alt="" width="1122" height="1402" decoding="async" loading="lazy">
+  </div>
+
+  <!-- one centred column, as in the reference: the title, the line, then the
+       agent — its field, its starting points, and the ways to a person. -->
+  <div class="hero__in wrap" id="ask">
+    <h1 class="display display--hero" id="heroTitle">
+      <span class="ln"><span class="ln__in"><em>Agentic solutions</em></span></span><span class="ln"><span class="ln__in">built to transform</span></span><span class="ln"><span class="ln__in">your business</span></span>
+    </h1>
+    <p class="hero__lede rv" style="--d:.35s">Whatever your marketing challenge,<br>we have the right tool for the job.</p>
+
+    <div class="chat">
+      <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
+      <!-- empty on purpose: home.js has the agent type its opening line, then
+           bring the starting points in under it -->
+      <div class="chat__thread" id="agentThread" role="log" aria-live="polite" aria-relevant="additions"></div>
+      <form class="ask-mini ask-mini--lg chat__form" id="agentForm" autocomplete="off">
+        <label class="vh" for="agentInput">Ask Stagwell AI</label>
+        <input class="ask-mini__input" id="agentInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
+        <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
+      <ul class="chat__tags" id="agentTags" aria-label="Pick a starting point">
+        <li><button type="button" class="tag" data-q="Increase brand awareness">Increase brand awareness</button></li>
+        <li><button type="button" class="tag" data-q="Reach Gen Z">Reach Gen Z</button></li>
+        <li><button type="button" class="tag" data-q="Improve sales">Improve sales</button></li>
+        <li><button type="button" class="tag" data-q="Analyze competitors">Analyze competitors</button></li>
+        <li><button type="button" class="tag" data-q="Explore new markets">Explore new markets</button></li>
+      </ul>
     </div>
 
-    <!-- the agent, in the hero's right half: who is talking, the thread, the
-         starting points, and the field on the floor of the panel -->
-    <div class="hero__chat" id="ask">
-      <div class="chat">
-        <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
-        <div class="chat__body">
-          <!-- empty on purpose: home.js has the agent type the opening line,
-               then bring the starting points in under it -->
-          <div class="chat__thread" id="agentThread" role="log" aria-live="polite" aria-relevant="additions"></div>
-          <!-- the starting points, in the open, for anyone who cannot name it yet -->
-          <ul class="chat__tags" id="agentTags" aria-label="Pick a starting point">
-            <li><button type="button" class="tag" data-q="Increase brand awareness">Increase brand awareness</button></li>
-            <li><button type="button" class="tag" data-q="Reach Gen Z">Reach Gen Z</button></li>
-            <li><button type="button" class="tag" data-q="Improve sales">Improve sales</button></li>
-            <li><button type="button" class="tag" data-q="Analyze competitors">Analyze competitors</button></li>
-            <li><button type="button" class="tag" data-q="Explore new markets">Explore new markets</button></li>
-          </ul>
-        </div>
-        <form class="ask-mini chat__form" id="agentForm" autocomplete="off">
-          <label class="vh" for="agentInput">Ask Stagwell AI</label>
-          <input class="ask-mini__input" id="agentInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
-          <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        </form>
-        <p class="chat__ways">
-          <button type="button" class="chat__way" data-cta="session">Book a demo</button>
-          <button type="button" class="chat__way" data-cta="callback">Ask for a call</button>
-          <button type="button" class="chat__way" data-cta="expert">Talk to an expert</button>
-        </p>
-      </div>
+    <!-- no .rv on this row: a reveal that animates opacity and transform makes
+         the glass button's backdrop-filter flicker until it ends -->
+    <div class="hero__acts" id="heroActs">
+      <button type="button" class="btn btn--accent btn--lg" data-cta="session">Book a demo</button>
+      <a class="btn btn--glass btn--lg" href="#solutions">Explore solutions</a>
     </div>
+    <p class="chat__ways">
+      <button type="button" class="chat__way" data-cta="callback">Ask for a call</button>
+      <button type="button" class="chat__way" data-cta="expert">Talk to an expert</button>
+    </p>
   </div>
 </section>
 

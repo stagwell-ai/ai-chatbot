@@ -120,16 +120,16 @@ h1,h2,p,figure{margin:0}
 /* one weight for the whole title: the accent line sat in an <em> at 700 while
    the bare lines took the .display 900, and with the colour gone that read as
    two different fonts (client) */
-.display--hero {font-weight:700;font-size:clamp(38px, min(.9rem + 3.5vw, 11vh), 62px);text-transform:none;text-align:left;line-height:1.04}
+.display--hero {font-weight:700;font-size:clamp(38px, min(.9rem + 3.5vw, 11vh), 62px);text-transform:none;text-align:center;line-height:1.04}   /* centred over the picture (client, 2026-09-09) */
 /* "Ask" in the orange, "Stagwell." in the ink — the same size and, by the
    client's word, the same weight: Bold. (Heavy read too bold; an orange full
    stop was tried and dropped.) */
 .display--hero em,.display--hero .navy{font-weight:700;letter-spacing:-.035em}   /* one weight for both words (client); the orange alone marks "Ask" */
-.display--hero .navy{color:var(--ink)}          /* "black, not this blue" */
+.display--hero .navy{color:#FFFFFF}          /* "black, not this blue" */
 /* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
 .display--hero em{color:var(--orange)}
 /* "Stagwell." in the page ink, as on the billboard */
-.display--hero .navy{color:var(--ink)}
+.display--hero .navy{color:#FFFFFF}
 /* the accent word in every title carries one of the brand's colours, and no
    two in a row repeat: orange, teal, amber, blue, orange, teal, blue, amber
    as you go down the page (client, 2026-09-09). */
@@ -347,41 +347,20 @@ body.chat-open{overflow:hidden}
 /* The first screen holds everything: the turning line, the title, the two
    buttons. It is the viewport's height with the content centred in it, so the
    buttons are inside the frame at 700px as surely as at 950. */
-.hero{position:relative;height:100svh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);overflow:hidden;--media-w:50%;   /* half and half: the words, then the agent (client, 2026-09-09) */   /* exactly one screen: a min-height let the conversation grow it */
-  --hero-copy:clamp(18px, .9rem + .6vw, 22px)}   /* the paragraph — the same size as the Agentic section's (client) */
-/* a full split: the words fill the left half, the film the right, edge to
-   edge. The left half keeps the page's gutter so the words line up with the
-   bar's; the right half owns its picture and the control over it. */
-.hero__in{
-  position:relative;z-index:1;flex:1 1 0;min-height:0;   /* a flex item will not shrink below its content unless told */
-  /* minmax(0,…): a bare 1fr will not go below the title's natural width and
-     pushed the split off centre (782, not 720). The title fits itself. */
-  /* exactly one screen, and a row that cannot grow: the conversation's
-     overflow must scroll inside the stack, never push the bottom row down */
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);   /* the two halves */
-  text-align:left;
-}
-.hero__l{
-  position:relative;min-height:0;
-  background:var(--deep);color:#FFFFFF;         /* the words now sit on a picture that turns over (client, 2026-09-09) */
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;   /* the words and their buttons read as one block, level with the chat beside them */
-  /* the bottom row sits a gutter from the bottom — the same line as the
-     Watch the film pill across the split */
-  padding:calc(var(--nav-h) + var(--s-8)) var(--gutter) var(--gutter)
-          max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
-}
-/* the stack above the bottom row: the title and the paragraph sit at its
-   bottom, close to the field (the tags are gone — the chat offers them as
-   chips); once the conversation starts it scrolls, anchored to its bottom,
-   so each new turn pushes what came before up and out */
-.hero__stack{flex:0 1 auto;min-height:0;align-self:stretch;display:flex;flex-direction:column;align-items:flex-start}   /* it held a scrolling conversation once; now it is just the words, and overflow:hidden was cutting the last line of the title */
-.hero__stack > .display--hero{align-self:stretch}
+/* ── 1 · THE HERO ─────────────────────────────────────────────────────────
+   One centred column on a picture that turns over: the title, the line, the
+   agent's field with its starting points, and the ways to a person. The
+   half-and-half split it replaced (2026-09-09) is in git. */
+.hero{position:relative;min-height:100svh;display:grid;place-items:center;
+  background:var(--deep);color:#FFFFFF;overflow:hidden;
+  padding:calc(var(--nav-h) + var(--s-12)) 0 var(--s-13)}
+.hero__in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;
+  max-width:min(920px, 100%)}
 .hero__l.is-chat .hero__stack{overflow-y:auto;scrollbar-width:none}   /* a clean edge under the bar, no fade */
 .hero__l.is-chat .hero__stack::-webkit-scrollbar{display:none}
 /* the title takes the column's width, not its own: a start-aligned flex item
    shrink-wraps its text, so fitDisplays() measured a box that already equalled
    the line and never brought the size down — it ran 5px into the picture. */
-.hero__l > .display--hero,.hero__l > .hero__acts{align-self:stretch}   /* the row too: shrink-wrapped, it ignored the field's basis */
 /* the thinking field: behind everything in the column, only while a reply
    is on its way */
 .hero__think{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .6s ease}
@@ -428,7 +407,6 @@ body.chat-open{overflow:hidden}
 .hero__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 /* the bottom row never moves when the conversation starts — the stack above
    it is what scrolls */
-.hero__r{min-height:1px}
 /* the panel: the whole first screen, clipped to the right column. Opening is
    the clip letting go to the left — the picture underneath is already full
    size, so what was a crop simply becomes the frame. Over the words. */
@@ -441,9 +419,6 @@ body.chat-open{overflow:hidden}
    into a black rectangle. */
 .hero__bg::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(100deg,rgba(7,20,29,.68) 0%,rgba(7,20,29,.46) 52%,rgba(7,20,29,.24) 100%)}   /* a stop lighter (client) */
-.hero__l > :not(.hero__bg){position:relative;z-index:1}
-.hero__l .display--hero .navy{color:#FFFFFF}
-.hero__l .hero__lede{color:rgba(255,255,255,.92)}
 
 /* the film is gone (client, 2026-09-09): the strip is a picture, not a control */
 .hero__media{
@@ -551,16 +526,8 @@ body.chat-open{overflow:hidden}
   color:var(--ink-3);
 }
 /* the line under the title: two lines, light, quieter than the title */
-.hero__lede{
-  margin:var(--s-11) 0 0;                      /* 48 under the title; the buttons take their own 24 under this */
-  white-space:nowrap;                           /* one line, by the client's cut */
-  font-size:var(--hero-copy);font-weight:400;line-height:1.45;   /* 300 read smaller than the tags at the same 14px */
-  color:var(--ink);
-}
-.hero__acts{
-  margin-top:var(--s-8);                        /* 24: the buttons belong to the paragraph */
-  display:flex;align-items:center;gap:var(--s-5);   /* 12 — a pair, not two islands */
-}
+.hero__lede{margin:var(--s-9) 0 0;font-size:var(--hero-copy);font-weight:400;line-height:1.5;color:rgba(255,255,255,.92)}
+.hero__acts{margin-top:var(--s-11);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--s-5)}
 
 /* ── Call me: the button that becomes the phone pill. One ink pill, three
    faces stacked in it — the button, the number form, the call's status —
@@ -949,25 +916,27 @@ body.chat-open{overflow:hidden}
 }
 
 
-/* ── the hero's other half: the agent, as a chat you can start at once ────
-   White against the words' grey, its own column: who is talking, the thread
-   (which scrolls on its own), the starting points, the field on the floor,
-   and three quiet ways to a person under it. Every piece is the page's —
-   the turn bubbles, the tags, the ask-mini field. */
-.hero__chat{position:relative;min-width:0;min-height:0;background:#F6F6F7;   /* a soft grey of its own: against the white page below, the panel now has an edge (client) */
-  padding:calc(var(--nav-h) + var(--s-9)) max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))) var(--gutter) var(--gutter);
-  display:flex;flex-direction:column}
-.chat{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
-.chat > .hero__think{position:absolute;inset:0}   /* the lattice lies under the whole panel, not under one part of it */
+/* ── the agent, in the middle of the hero ────────────────────────────────
+   The field, its starting points, and the ways to a person — every piece is
+   the page's own: the turn bubbles, the tags, the ask-mini field. */
+.chat{position:relative;width:min(100%,760px);margin-top:var(--s-11);display:flex;flex-direction:column;align-items:stretch}
+.chat > .hero__think{position:absolute;inset:-24px -24px 0;width:auto;height:auto}
 .chat > :not(.hero__think){position:relative;z-index:1}
-/* the body holds the lattice, the thread and the starting points */
-.chat__body{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 var(--s-10)}   /* the words gather above the field, with 40 between the last tag and it (client) */
-.chat__thread{display:flex;flex-direction:column;gap:var(--s-5);overflow-y:auto;scrollbar-width:none}
+/* the conversation stands above the field; its bubbles keep their sides */
+.chat__thread{display:flex;flex-direction:column;gap:var(--s-5);text-align:left;max-height:38svh;overflow-y:auto;scrollbar-width:none}
 .chat__thread::-webkit-scrollbar{display:none}
+.chat__thread:not(:empty){padding-bottom:var(--s-9)}
 .chat__thread .turnb{max-width:86%}
-/* the starting points are not there at first: they arrive once the agent has
-   said its line, one after the other */
-.chat__tags{margin-top:var(--s-7);display:flex;flex-wrap:wrap;gap:var(--s-4)}
+.chat__form{flex:0 0 auto}
+/* on the picture, the field is white and the agent speaks in ink */
+.hero .ask-mini{background:#FFFFFF}
+.hero .turnb--ai{background:var(--ink);color:#FFFFFF;font-size:18px;line-height:1.5;padding:14px 20px}
+.hero .turnb--ai b{color:#FFFFFF}
+/* the waiting bubble stays white: its three dots carry the mark's own colours,
+   and the dark blue one would vanish on ink */
+.hero .turnb--wait{background:#FFFFFF;padding:14px 18px}
+/* the starting points arrive once the agent has said its line, one by one */
+.chat__tags{margin-top:var(--s-10);display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4)}
 .chat__tags li{opacity:0;transform:translateY(10px);transition:opacity .45s var(--ease),transform .55s var(--ease)}
 .chat__tags.is-in li{opacity:1;transform:none}
 .chat__tags.is-in li:nth-child(1){transition-delay:0s}
@@ -976,8 +945,7 @@ body.chat-open{overflow:hidden}
 .chat__tags.is-in li:nth-child(4){transition-delay:.21s}
 .chat__tags.is-in li:nth-child(5){transition-delay:.28s}
 .chat__tags .tag{height:36px;padding:0 15px;font-size:13px;border-color:transparent;color:var(--ink)}
-/* one brand pastel per starting point, in the palette's order; the border is
-   the same colour a step on, so the edge is felt rather than drawn */
+/* one brand pastel per starting point, in the palette's order */
 .chat__tags li:nth-child(1) .tag,.turnb__chips .tag:nth-child(1),.ask__tags li:nth-child(1) .tag{background:var(--orange-1);border-color:var(--orange-1)}
 .chat__tags li:nth-child(2) .tag,.turnb__chips .tag:nth-child(2),.ask__tags li:nth-child(2) .tag{background:var(--teal-1);border-color:var(--teal-1)}
 .chat__tags li:nth-child(3) .tag,.turnb__chips .tag:nth-child(3),.ask__tags li:nth-child(3) .tag{background:var(--amber-1);border-color:var(--amber-1)}
@@ -990,25 +958,14 @@ body.chat-open{overflow:hidden}
 .chat__tags li:nth-child(5) .tag:hover,.turnb__chips .tag:nth-child(5):hover,.ask__tags li:nth-child(5) .tag:hover{background:var(--sky-2);border-color:var(--sky-2)}
 .chat__tags .tag:hover,.turnb__chips .tag:hover,.ask__tags .tag:hover{color:var(--ink)}
 .turnb__chips .tag,.ask__tags .tag{color:var(--ink);border-color:transparent}
-.chat__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.chat__tags .tag:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
 /* once the conversation starts, the starting points step out of the way */
-.hero__chat.is-chat .chat__tags{display:none}
-.chat__form{flex:0 0 auto}
-/* on the panel's grey the field and the agent's bubbles turn white, so they
-   read as things sitting on it rather than sinking into it */
-.hero__chat .ask-mini{background:#FFFFFF}
-/* the agent speaks in ink, white on it and a size up — it is the thing you are
-   meant to read first (client) */
-.hero__chat .turnb--ai{background:var(--ink);color:#FFFFFF;font-size:18px;line-height:1.5;padding:14px 20px}
-.hero__chat .turnb--ai b{color:#FFFFFF}
-/* the waiting bubble stays white: its three dots carry the mark's own colours,
-   and the dark blue one would vanish on ink */
-.hero__chat .turnb--wait{background:#FFFFFF;padding:14px 18px}
-/* the three ways to a person: plain words under the field, not more buttons */
-.chat__ways{margin:var(--s-6) 0 0;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4) var(--s-7)}   /* smaller, and centred under the field (client) */
-.chat__way{font-family:var(--ui);font-size:12px;font-weight:500;color:var(--ink-3);border-bottom:1px solid transparent;transition:color .25s ease,border-color .25s ease}
-.chat__way:hover{color:var(--ink);border-bottom-color:var(--ink)}
-.chat__way:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+.hero.is-chat .chat__tags{display:none}
+/* the ways to a person: plain words under the field, not more buttons */
+.chat__ways{margin:var(--s-8) 0 0;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4) var(--s-7)}
+.chat__way{font-family:var(--ui);font-size:12px;font-weight:500;color:rgba(255,255,255,.72);border-bottom:1px solid transparent;transition:color .25s ease,border-color .25s ease}
+.chat__way:hover{color:#FFFFFF;border-bottom-color:#FFFFFF}
+.chat__way:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px;border-radius:2px}
 
 /* ── 6 · WHY STAGWELL AI — short cards, the reasons to believe ─────────── */
 .why{padding:var(--s-15) 0 var(--s-14)}
@@ -1063,8 +1020,7 @@ body.chat-open{overflow:hidden}
   /* ── hero: the column first, the picture under it ── */
   .hero{height:auto;min-height:100svh;--media-w:100%}
   .hero__in{display:flex;flex-direction:column;flex:none}
-  .hero__l{padding:calc(var(--nav-h) + var(--s-13)) var(--gutter) var(--s-11);min-height:0}   /* 80 clear of the bar: the title was stuck to it (client) */
-  .hero__stack{flex:none;overflow:visible}
+    .hero__stack{flex:none;overflow:visible}
   .hero__stack > :first-child{margin-top:0}
   .hero__l.is-chat .hero__stack{max-height:62svh;overflow-y:auto}
   /* the tagline is three nowrap lines on a desktop; on a phone that made
