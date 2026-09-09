@@ -316,7 +316,7 @@
     const esc = (s) => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
     const reply = (html, chips, go) => new Promise(res => {
       const w = wait();
-      setTimeout(() => { w.remove(); think.off(); ai(html, chips, go); res(); }, REDUCED ? 0 : 900);
+      setTimeout(() => { w.remove(); think.off(); ai(html, chips, go); res(); }, REDUCED ? 0 : 1300);
     });
     const send = async (raw) => {
       const v = (raw || '').trim();
@@ -352,11 +352,12 @@
     const intro = () => {
       if (REDUCED) { ai('What do you need help solving?'); if (tagsBox) tagsBox.classList.add('is-in'); return; }
       const w = wait();
+      /* it takes its time: the thinking is the part that reads as alive */
       setTimeout(() => {
         w.remove(); think.off();
         ai('What do you need help solving?');
-        if (tagsBox) setTimeout(() => tagsBox.classList.add('is-in'), 380);
-      }, 1250);
+        if (tagsBox) setTimeout(() => tagsBox.classList.add('is-in'), 520);
+      }, 2300);
     };
     /* it waits for the page to settle, then starts */
     setTimeout(intro, REDUCED ? 0 : 700);

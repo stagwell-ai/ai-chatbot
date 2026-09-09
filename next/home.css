@@ -105,7 +105,7 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(46px, min(1.1rem + 4.4vw, 13vh), 80px);text-transform:none;text-align:left;line-height:.9}   /* a size down (client, 2026-09-09) */
+.display--hero {font-size:clamp(42px, min(1rem + 3.9vw, 12vh), 70px);text-transform:none;text-align:left;line-height:.92}   /* two sizes down now (client, 2026-09-09) */
 /* "Ask" in the orange, "Stagwell." in the ink — the same size and, by the
    client's word, the same weight: Bold. (Heavy read too bold; an orange full
    stop was tried and dropped.) */
@@ -913,7 +913,7 @@ body.chat-open{overflow:hidden}
 .chat > .hero__think{position:absolute;inset:0}   /* the lattice lies under the whole panel, not under one part of it */
 .chat > :not(.hero__think){position:relative;z-index:1}
 /* the body holds the lattice, the thread and the starting points */
-.chat__body{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;padding:0 0 var(--s-9)}   /* the question sits level with the title across the split; the field waits on the floor */
+.chat__body{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 var(--s-8)}   /* the words gather just above the field, where a conversation collects (client) */
 .chat__thread{display:flex;flex-direction:column;gap:var(--s-5);overflow-y:auto;scrollbar-width:none}
 .chat__thread::-webkit-scrollbar{display:none}
 .chat__thread .turnb{max-width:86%}
