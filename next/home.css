@@ -37,6 +37,18 @@
   --navy:#003349;                               /* the wordmark's blue — the user's turns */
   --amber:#FFB81C;
   --teal:#009CBD;                               /* the mark's blue */
+  /* Concept Final V3.1 sets six: the two below complete the palette. */
+  --blue:#0E5F8E;                               /* the mid blue */
+  --sky:#77E3F6;                                /* the light cyan */
+  /* and a pastel of each, for grounds that carry a colour without shouting —
+     the tags, and anything else that wants to sit on its own tone. The
+     "-2" steps are the same colours a shade further on, for hover and edges. */
+  --navy-1:#E0E7E9;   --navy-2:#C2CED3;
+  --teal-1:#D6EFF4;   --teal-2:#ADDFEA;
+  --orange-1:#FFE8DC; --orange-2:#FFD0B9;
+  --blue-1:#DDE9EF;   --blue-2:#BCD2DF;
+  --sky-1:#D6F7FC;    --sky-2:#ADEEFA;
+  --amber-1:#FFF1D2;  --amber-2:#FFE3A4;
 
   --display:'Roobert','Geist',"Helvetica Neue",Helvetica,Arial,sans-serif;   /* the client's face for every title */
   /* the client's rule (2026-09-08): Roobert for everything you read,
@@ -115,17 +127,19 @@ h1,h2,p,figure{margin:0}
 .display--hero em{color:var(--orange)}
 /* "Stagwell." in the page ink, as on the billboard */
 .display--hero .navy{color:var(--ink)}
-/* the accent word wears one of the mark's two colours, flat — the teal or
-   the amber, turn and turn about down the page. (Gradients were tried and
-   dropped: "the blend is not that nice".) */
+/* the accent word in every title carries one of the brand's colours, and no
+   two in a row repeat: orange, teal, amber, blue, orange, teal, blue, amber
+   as you go down the page (client, 2026-09-09). */
 .display em{color:var(--teal)}
-.display--hero em,.chat-over__title em{color:var(--teal)}
-.display--end em{color:var(--amber)}   /* on the pastel blue the Ask is the amber (client) */
-.display--intro em{color:var(--amber)}
-.display--cos em{color:var(--teal)}
-.display--port em{color:var(--amber)}
-.display--trust em{color:var(--teal)}
-.display--close em{color:var(--teal)}   /* the amber belongs to the network band (client) */
+.display--hero em{color:var(--orange)}          /* "Agentic solutions" */
+.display--intro em{color:var(--teal)}           /* "agentic solutions" */
+.display--port em{color:var(--amber)}           /* "to work" */
+.display--trust em{color:var(--blue)}           /* "Global scale." */
+.why .display--cos em{color:var(--orange)}      /* "Stagwell AI" */
+.cos .display--cos em{color:var(--teal)}        /* "Endless" */
+.impact .display--cos em{color:var(--blue)}     /* "to impact" */
+.display--end em{color:var(--amber)}            /* "Ask", on the pastel teal */
+.chat-over__title em{color:var(--teal)}
 /* the reveal wrapper clips; at this size the descender of the g drops below
    the .9 line box and was being cut. Room for it, and the rise-in offset grows
    to match so the line still starts fully hidden. */
@@ -927,8 +941,21 @@ body.chat-open{overflow:hidden}
 .chat__tags.is-in li:nth-child(3){transition-delay:.14s}
 .chat__tags.is-in li:nth-child(4){transition-delay:.21s}
 .chat__tags.is-in li:nth-child(5){transition-delay:.28s}
-.chat__tags .tag{height:36px;padding:0 15px;font-size:13px;border-color:var(--line);color:var(--ink-2);background:#FFFFFF}
-.chat__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
+.chat__tags .tag{height:36px;padding:0 15px;font-size:13px;border-color:transparent;color:var(--ink)}
+/* one brand pastel per starting point, in the palette's order; the border is
+   the same colour a step on, so the edge is felt rather than drawn */
+.chat__tags li:nth-child(1) .tag,.turnb__chips .tag:nth-child(1),.ask__tags li:nth-child(1) .tag{background:var(--orange-1);border-color:var(--orange-1)}
+.chat__tags li:nth-child(2) .tag,.turnb__chips .tag:nth-child(2),.ask__tags li:nth-child(2) .tag{background:var(--teal-1);border-color:var(--teal-1)}
+.chat__tags li:nth-child(3) .tag,.turnb__chips .tag:nth-child(3),.ask__tags li:nth-child(3) .tag{background:var(--amber-1);border-color:var(--amber-1)}
+.chat__tags li:nth-child(4) .tag,.turnb__chips .tag:nth-child(4),.ask__tags li:nth-child(4) .tag{background:var(--blue-1);border-color:var(--blue-1)}
+.chat__tags li:nth-child(5) .tag,.turnb__chips .tag:nth-child(5),.ask__tags li:nth-child(5) .tag{background:var(--sky-1);border-color:var(--sky-1)}
+.chat__tags li:nth-child(1) .tag:hover,.turnb__chips .tag:nth-child(1):hover,.ask__tags li:nth-child(1) .tag:hover{background:var(--orange-2);border-color:var(--orange-2)}
+.chat__tags li:nth-child(2) .tag:hover,.turnb__chips .tag:nth-child(2):hover,.ask__tags li:nth-child(2) .tag:hover{background:var(--teal-2);border-color:var(--teal-2)}
+.chat__tags li:nth-child(3) .tag:hover,.turnb__chips .tag:nth-child(3):hover,.ask__tags li:nth-child(3) .tag:hover{background:var(--amber-2);border-color:var(--amber-2)}
+.chat__tags li:nth-child(4) .tag:hover,.turnb__chips .tag:nth-child(4):hover,.ask__tags li:nth-child(4) .tag:hover{background:var(--blue-2);border-color:var(--blue-2)}
+.chat__tags li:nth-child(5) .tag:hover,.turnb__chips .tag:nth-child(5):hover,.ask__tags li:nth-child(5) .tag:hover{background:var(--sky-2);border-color:var(--sky-2)}
+.chat__tags .tag:hover,.turnb__chips .tag:hover,.ask__tags .tag:hover{color:var(--ink)}
+.turnb__chips .tag,.ask__tags .tag{color:var(--ink);border-color:transparent}
 .chat__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 /* once the conversation starts, the starting points step out of the way */
 .hero__chat.is-chat .chat__tags{display:none}
