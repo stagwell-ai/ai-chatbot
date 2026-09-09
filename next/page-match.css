@@ -216,3 +216,84 @@ html[data-theme] body.vB.vProducts .prodhero .btn:hover,
 html[data-theme] body.vB.vProducts .prodband .btn:hover,
 html[data-theme] body.vB.vProducts .prodcard__link:hover{transform:translateY(-1px) !important}
 
+
+/* ── 5. the closing CTA and the footer, as the homepage sets them ───────────
+   /products had a dark band with its own gold/light buttons and no footer at
+   all. Both are the homepage's now (client, 2026-09-09). The values are
+   literal because this page's --s-* scale is a different scale entirely under
+   the same names — --s-5 is 44px here and 12px on the homepage. */
+html[data-theme] body.vB.vProducts .prodband{background:#FFFFFF !important;
+  border-top:1px solid rgba(11,18,32,.14) !important;border-bottom:0 !important;
+  padding:clamp(72px,10vh,120px) clamp(20px,4vw,48px) clamp(88px,12vh,160px) !important}
+html[data-theme] body.vB.vProducts .prodband__in{max-width:1180px !important;margin:0 auto !important;
+  display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center !important}
+html[data-theme] body.vB.vProducts .prodband h2{margin:0 !important;color:#0B1220 !important;
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-weight:500 !important;font-size:clamp(32px,4.2vw,58px) !important;line-height:1.08 !important;
+  letter-spacing:-.02em !important;max-width:18ch !important}
+html[data-theme] body.vB.vProducts .prodband h2 .accent{color:#FFB81C !important;font-weight:500 !important}
+html[data-theme] body.vB.vProducts .prodband p{margin:28px 0 0 !important;max-width:52ch !important;
+  font-size:clamp(16px,1.3vw,19px) !important;line-height:1.45 !important;color:#0B1220 !important}
+html[data-theme] body.vB.vProducts .prodband__acts{margin-top:40px !important;display:flex !important;
+  flex-wrap:wrap !important;align-items:center !important;justify-content:center !important;gap:12px !important}
+/* the closing pair is the homepage's large button */
+html[data-theme] body.vB.vProducts .prodband .btn{height:60px !important;padding:0 34px !important;font-size:15px !important}
+html[data-theme] body.vB.vProducts .prodband .btn--gold{background:#0B1220 !important;color:#FFFFFF !important}
+html[data-theme] body.vB.vProducts .prodband .btn--gold:hover{background:#000000 !important}
+html[data-theme] body.vB.vProducts .prodband .btn--light{background:#FFFFFF !important;color:#0B1220 !important;
+  box-shadow:inset 0 0 0 1px rgba(11,18,32,.14) !important}
+html[data-theme] body.vB.vProducts .prodband .btn--light:hover{background:#0B1220 !important;color:#FFFFFF !important}
+
+/* the footer */
+html[data-theme] body.vB.vProducts .foot{background:#FFFFFF !important;color:#0B1220 !important;
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+html[data-theme] body.vB.vProducts .foot .wrap{max-width:1440px;margin-inline:auto;padding-inline:clamp(24px,4vw,64px)}
+html[data-theme] body.vB.vProducts .foot__in{display:grid;
+  grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:64px;align-items:start;
+  padding-top:clamp(72px,9vw,120px);padding-bottom:clamp(72px,9vw,120px)}
+html[data-theme] body.vB.vProducts .foot__lead{align-self:stretch;display:flex;flex-direction:column;
+  justify-content:space-between;gap:64px}
+html[data-theme] body.vB.vProducts .foot__kicker{font-size:16px;font-weight:500;line-height:1.4}
+html[data-theme] body.vB.vProducts .foot__mark{width:clamp(72px,4vw + 32px,96px);height:auto;color:#0B1220}
+html[data-theme] body.vB.vProducts .foot__big{align-self:stretch;display:flex;flex-direction:column;
+  justify-content:space-between;gap:32px;list-style:none;margin:0;padding:0}
+html[data-theme] body.vB.vProducts .foot__big li{list-style:none;margin:0}
+html[data-theme] body.vB.vProducts .foot__big a{font-weight:400;font-size:clamp(34px,1rem + 2.6vw,56px);
+  letter-spacing:-.02em;line-height:1;color:#0B1220;text-decoration:none;transition:color .25s ease}
+html[data-theme] body.vB.vProducts .foot__big a:hover{color:rgba(11,18,32,.52)}
+html[data-theme] body.vB.vProducts .foot__small{display:flex;flex-direction:column;gap:32px;
+  align-items:flex-end;text-align:right;list-style:none;margin:0;padding:0}
+html[data-theme] body.vB.vProducts .foot__small li{list-style:none;margin:0}
+html[data-theme] body.vB.vProducts .foot__small a,
+html[data-theme] body.vB.vProducts .foot__small button{display:inline-flex;align-items:center;gap:14px;
+  font:inherit;font-size:16px;font-weight:500;color:#0B1220;background:none;border:0;padding:0;
+  text-align:left;line-height:1.3;text-decoration:none;cursor:pointer}
+html[data-theme] body.vB.vProducts .foot__disc{width:44px;height:44px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(11,18,32,.14) !important;color:#0B1220;
+  transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+html[data-theme] body.vB.vProducts .foot__disc svg{width:18px;height:18px;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+html[data-theme] body.vB.vProducts .foot__small a:hover .foot__disc,
+html[data-theme] body.vB.vProducts .foot__small button:hover .foot__disc{background:#0B1220;color:#FFFFFF;
+  box-shadow:inset 0 0 0 1px #0B1220 !important}
+html[data-theme] body.vB.vProducts .foot__band{display:flex;align-items:center;justify-content:space-between;
+  gap:32px;padding-top:48px;padding-bottom:48px;border-top:1px solid rgba(11,18,32,.14)}
+html[data-theme] body.vB.vProducts .foot__social{display:flex;align-items:center;gap:8px}
+html[data-theme] body.vB.vProducts .foot__so{width:44px;height:44px;border-radius:50%;display:grid;
+  place-items:center;box-shadow:inset 0 0 0 1px rgba(11,18,32,.14) !important;color:#0B1220;
+  transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+html[data-theme] body.vB.vProducts .foot__so svg{width:18px;height:18px}
+html[data-theme] body.vB.vProducts .foot__so:hover{background:#0B1220;color:#FFFFFF;box-shadow:inset 0 0 0 1px #0B1220 !important}
+html[data-theme] body.vB.vProducts .foot__follow{margin-left:14px;font-size:16px;font-weight:500}
+html[data-theme] body.vB.vProducts .foot__legal{display:flex;align-items:center;gap:20px}
+html[data-theme] body.vB.vProducts .foot__copy{font-size:15px;color:rgba(11,18,32,.52)}
+html[data-theme] body.vB.vProducts .foot__brand{color:#0B1220;display:block}
+html[data-theme] body.vB.vProducts .foot__brand svg{height:15px;width:auto;display:block}
+/* the disclaimer sits under the footer, quiet */
+html[data-theme] body.vB.vProducts .prodfoot{border-top:1px solid rgba(11,18,32,.14) !important;
+  padding-top:24px !important;color:rgba(11,18,32,.42) !important}
+
+@media (max-width:900px){
+  html[data-theme] body.vB.vProducts .foot__in{grid-template-columns:1fr;gap:44px}
+  html[data-theme] body.vB.vProducts .foot__small{align-items:flex-start;text-align:left}
+  html[data-theme] body.vB.vProducts .foot__band{flex-direction:column;align-items:flex-start;gap:24px}
+}
