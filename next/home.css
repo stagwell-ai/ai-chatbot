@@ -15,12 +15,9 @@
    rest of the site: this page is allowed to breathe.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Roobert, the client's title face (his licence; TTF until the woff2 tooling
-   is here). Heavy for the word that matters, Regular beside it. */
-@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Heavy.ttf') format('truetype');font-weight:900;font-style:normal;font-display:swap}
-@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Light.ttf') format('truetype');font-weight:300;font-style:normal;font-display:swap}
+/* Roobert's four @font-faces stood here until 2026-09-09; the site is one
+   typeface now, Montserrat, loaded by assets/fonts/fonts.css. The TTFs stay
+   in the repo in case the client asks for it back. */
 
 :root{
   --ink:#0B1220;
@@ -35,10 +32,10 @@
   --amber:#FFB81C;
   --teal:#009CBD;                               /* the mark's blue */
 
-  --display:'Roobert','Geist',"Helvetica Neue",Helvetica,Arial,sans-serif;   /* the client's face for every title */
-  /* the client's rule (2026-09-08): Roobert for everything you read,
-     Montserrat for everything you click — links, buttons, tags, fields */
-  --sans:'Roobert','Geist',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  /* ONE typeface, everywhere (client, 2026-09-09): Montserrat, as the brand
+     board sets it. Roobert and the read/click split it served are gone. */
+  --display:'Montserrat','Geist',"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --sans:'Montserrat','Geist',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --ui:'Montserrat','Geist',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 
   --wrap:1440px;
@@ -95,9 +92,9 @@ h1,h2,p,figure{margin:0}
   text-align:center;text-wrap:balance;
 }
 .display em{font-style:normal;color:var(--orange)}
-/* Roobert's question mark reads oddly to the client: every "?" inside
-   Roobert text is set in Geist's, the words untouched */
-.q{font-family:'Geist',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+/* the "?" was borrowed from Geist because Roobert's read oddly to the client.
+   With Montserrat there is nothing to borrow — one face, its own glyphs. */
+.q{font-family:inherit}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
