@@ -216,7 +216,7 @@ h1,h2,p,figure{margin:0}
 /* ── nav ─────────────────────────────────────────────────────────────────── */
 .nav{
   position:fixed;inset:0 0 auto 0;z-index:50;height:var(--nav-h);
-  background:rgba(255,255,255,.0);   /* it floats over the first screen and only turns solid once you scroll (.is-stuck) */
+  background:#FFFFFF;box-shadow:0 1px 0 var(--line);   /* fixed and solid: the hero is a picture on one side and a white panel on the other, and a floating bar could not read on both (client) */
   transition:background-color .35s ease,box-shadow .35s ease;
 }
 .nav.is-stuck{background:#FFFFFF;box-shadow:0 1px 0 var(--line)}   /* full white, no blur (client) */
@@ -348,7 +348,7 @@ body.chat-open{overflow:hidden}
 }
 .hero__l{
   position:relative;min-height:0;
-  background:#F6F6F7;                           /* a very soft grey, so the hero reads as its own ground against the white below (client) */
+  background:var(--deep);color:#FFFFFF;         /* the words now sit on a picture that turns over (client, 2026-09-09) */
   display:flex;flex-direction:column;align-items:flex-start;justify-content:center;   /* the words and their buttons read as one block, level with the chat beside them */
   /* the bottom row sits a gutter from the bottom — the same line as the
      Watch the film pill across the split */
@@ -371,7 +371,6 @@ body.chat-open{overflow:hidden}
    is on its way */
 .hero__think{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .6s ease}
 .hero__think.is-on{opacity:1}
-.hero__l > :not(.hero__think){position:relative;z-index:1}
 /* the turns, a regular chat: yours in the mark's blue from the right, the
    agent's in a quiet grey from the left, no names; each rises in from below */
 .hero__thread{align-self:stretch;display:flex;flex-direction:column;gap:var(--s-5);width:100%}
@@ -413,6 +412,22 @@ body.chat-open{overflow:hidden}
 /* the panel: the whole first screen, clipped to the right column. Opening is
    the clip letting go to the left — the picture underneath is already full
    size, so what was a crop simply becomes the frame. Over the words. */
+/* the words' ground: the stills fill the left half and cross-fade, each
+   drifting while it shows (the .hero__pic machinery, kept from the film's
+   strip). A veil under the type, so white reads on any of them. */
+.hero__bg{position:absolute;inset:0;overflow:hidden}
+/* the veil is graded, not flat: heavy where the words are, light on the far
+   side, so the picture is still a picture. A flat 56% turned the dark stills
+   into a black rectangle. */
+.hero__bg::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(100deg,rgba(7,20,29,.8) 0%,rgba(7,20,29,.56) 52%,rgba(7,20,29,.32) 100%)}
+.hero__l > :not(.hero__bg){position:relative;z-index:1}
+.hero__l .display--hero .navy{color:#FFFFFF}
+.hero__l .hero__lede{color:rgba(255,255,255,.92)}
+/* on a picture the outline button carries its own white edge */
+.hero__l .btn--line{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55)}
+.hero__l .btn--line:hover{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px #FFFFFF}
+
 /* the film is gone (client, 2026-09-09): the strip is a picture, not a control */
 .hero__media{
   position:absolute;inset:0;z-index:2;background:var(--deep);overflow:hidden;
