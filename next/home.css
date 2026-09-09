@@ -176,6 +176,10 @@ h1,h2,p,figure{margin:0}
   white-space:nowrap;transition:background-color .25s ease,color .25s ease,transform .3s var(--ease);
 }
 .btn--ink{background:var(--ink);color:#FFFFFF}
+/* the brand's orange as a button, ink on it as in the footer's band — white
+   on this orange is too thin to read at button size (client asked for orange) */
+.btn--accent{background:var(--orange);color:var(--ink)}
+.btn--accent:hover{background:#F26018;transform:translateY(-1px)}
 .btn--ink:hover{background:#000;transform:translateY(-1px)}
 /* buttons are black and white only (client, 2026-09-07 late): the filled ink
    button and its outline twin — white ground, ink type, a one-pixel ink
@@ -420,7 +424,7 @@ body.chat-open{overflow:hidden}
    side, so the picture is still a picture. A flat 56% turned the dark stills
    into a black rectangle. */
 .hero__bg::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(100deg,rgba(7,20,29,.8) 0%,rgba(7,20,29,.56) 52%,rgba(7,20,29,.32) 100%)}
+  background:linear-gradient(100deg,rgba(7,20,29,.68) 0%,rgba(7,20,29,.46) 52%,rgba(7,20,29,.24) 100%)}   /* a stop lighter (client) */
 .hero__l > :not(.hero__bg){position:relative;z-index:1}
 .hero__l .display--hero .navy{color:#FFFFFF}
 .hero__l .hero__lede{color:rgba(255,255,255,.92)}
