@@ -958,7 +958,7 @@ body.chat-open{overflow:hidden}
 .chat > .hero__think{position:absolute;inset:0}   /* the lattice lies under the whole panel, not under one part of it */
 .chat > :not(.hero__think){position:relative;z-index:1}
 /* the body holds the lattice, the thread and the starting points */
-.chat__body{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 var(--s-8)}   /* the words gather just above the field, where a conversation collects (client) */
+.chat__body{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 var(--s-10)}   /* the words gather above the field, with 40 between the last tag and it (client) */
 .chat__thread{display:flex;flex-direction:column;gap:var(--s-5);overflow-y:auto;scrollbar-width:none}
 .chat__thread::-webkit-scrollbar{display:none}
 .chat__thread .turnb{max-width:86%}
@@ -1179,7 +1179,7 @@ body.chat-open{overflow:hidden}
   /* ── the hero's chat, under the words on a phone ── */
   .hero__chat{padding:var(--s-11) var(--gutter) var(--s-12);min-height:auto}
   .chat{flex:none}
-  .chat__body{padding:var(--s-7) 0;min-height:0}
+  .chat__body{padding:var(--s-7) 0 var(--s-9);min-height:0}
   .chat__thread{max-height:46svh}
   .chat__thread .turnb{max-width:92%;font-size:16px}
   .chat__tags .tag{height:34px;padding:0 14px;font-size:13px}
