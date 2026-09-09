@@ -57,7 +57,7 @@ html[data-theme] body #nav .nav__links li{margin:0 !important;padding:0 !importa
 html[data-theme] body #nav .nav__links a{font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
   font-size:14px !important;font-weight:500 !important;letter-spacing:0 !important;text-transform:none !important;
   color:var(--ink,#0B171E) !important;padding:6px 0 !important;border-bottom:1px solid transparent !important;
-  transition:border-color .25s ease !important}
+  white-space:nowrap !important;transition:border-color .25s ease !important}
 html[data-theme] body #nav .nav__links a:hover{border-bottom-color:var(--ink,#0B171E) !important}
 html[data-theme] body #nav .nav__acts{justify-self:end !important;display:flex !important;align-items:center !important;gap:12px !important}
 
@@ -92,7 +92,7 @@ html[data-theme] body #nav .nav__burger span:nth-child(2){transform:translateY(4
 html[data-theme] body.nav-open #nav .nav__burger span:nth-child(1){transform:rotate(45deg) !important}
 html[data-theme] body.nav-open #nav .nav__burger span:nth-child(2){transform:rotate(-45deg) !important}
 
-@media (max-width:900px){
+@media (max-width:1080px){
   html[data-theme] body #nav .nav__links,
   html[data-theme] body #nav .nav__search,
   html[data-theme] body #nav .btn--line{display:none !important}

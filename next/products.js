@@ -112,7 +112,9 @@
      still rather than nothing, which would leave a ragged grid. */
   const PICTURE = {
     questbrand: '/assets/img/questbrand.jpg',
-    questdiy: '/assets/img/hero-slide-4.jpg',
+    /* not hero-slide-4: that is the same photograph as targeting.jpg, and the
+       two rows sit near each other on this page */
+    questdiy: '/assets/img/glass.jpg',
     bera: '/assets/img/brand-growth.jpg',
     unlock: '/assets/img/hero-slide-3.jpg',
     knowledge_machine: '/assets/img/hero-slide-1.jpg',
@@ -126,14 +128,14 @@
     machines_family: '/assets/img/solutions-guided.jpg',
     agent_cloud: '/assets/img/hero-slide-5.jpg'
   };
-  /* the still sits INSIDE the card, beside the name and the line — small.
-     It was a full-width band in the card (too much room), then a 4:3 block in
-     the left column (still too much); a thumbnail next to the words is what
-     the client asked for (2026-09-09). */
+  /* the still IS the left column: a big tile under a dark overlay with the
+     problem's number and title set inside it (client, 2026-09-09). It was a
+     band in the card, then a block under the heading, then a thumbnail beside
+     the words — this is the one that carries the page. */
   function pictureHTML(s) {
     const src = s && s.id && PICTURE[s.id];
     if (!src) return '';
-    return `<div class="prodcard__pic"><img src="${esc(src)}" alt="" loading="lazy" decoding="async"></div>`;
+    return `<img class="prodgroup__pic" src="${esc(src)}" alt="" loading="lazy" decoding="async">`;
   }
 
   const PILLS = 4;
@@ -161,16 +163,15 @@
       <article class="prodcard${entry.repeatOf ? ' prodcard--again' : ''}">
         ${again}
         <div class="prodcard__top">
-          ${pictureHTML(s)}
           <div class="prodcard__head">
             <h3 class="prodcard__name">${esc(s.name)}${fit}</h3>
             <p class="prodcard__pos">${esc(body)}</p>
+            ${s.whoFor ? `<p class="prodcard__who">Who it's for: ${esc(s.whoFor)}</p>` : ''}
+            ${pillsHTML(s)}
+            <a class="prodcard__link" href="${esc(href)}"
+               data-prod-handoff data-solution="${esc(s.id)}" data-url="${esc(href)}">Explore</a>
           </div>
         </div>
-        ${s.whoFor ? `<p class="prodcard__who">Who it's for: ${esc(s.whoFor)}</p>` : ''}
-        ${pillsHTML(s)}
-        <a class="prodcard__link" href="${esc(href)}"
-           data-prod-handoff data-solution="${esc(s.id)}" data-url="${esc(href)}">Explore</a>
       </article>`;
   }
 
@@ -179,8 +180,11 @@
     return `
       <section class="prodgroup" id="p-${esc(domain.id)}">
         <header class="prodgroup__head">
-          <p class="prodgroup__n">${String(index + 1).padStart(2, '0')}</p>
-          <h2 class="prodgroup__h">${esc(domain.label)}</h2>
+          ${pictureHTML(entries[0] && entries[0].solution)}
+          <div class="prodgroup__words">
+            <p class="prodgroup__n">${String(index + 1).padStart(2, '0')}</p>
+            <h2 class="prodgroup__h">${esc(domain.label)}</h2>
+          </div>
         </header>
         <div class="prodgroup__cards">${cards}</div>
       </section>`;
