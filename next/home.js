@@ -218,7 +218,7 @@
       const cv = $('#agentThink'); if (!cv || !cv.getContext || REDUCED) return { ambient() {}, on() {}, off() {}, at() {} };
       const ctx = cv.getContext('2d'); let pts = [], raf = 0, W = 0, H = 0, t0 = 0, last = 0;
       let lift = 0, liftTarget = 0, ox = 0, oy = 0;
-      const GAP = 16;   /* 22 read as too separated */
+      const GAP = 12;   /* 22 read as too separated, then 16 still did: the closer the dots, the more the wave through them reads as movement (client) */
       const size = () => {
         const d = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight;
         cv.width = Math.round(W * d); cv.height = Math.round(H * d); ctx.setTransform(d, 0, 0, d, 0, 0);
@@ -229,12 +229,12 @@
       };
       /* the loop's stops: the title, Call me, the chat field, the tags — as
          they actually sit; fractions of the canvas if any is missing */
-      let stopsCache = null;
+      let stopsCache = null, stopsAt = -9;
       const stops = () => {
         if (stopsCache) return stopsCache;
         const c = cv.getBoundingClientRect();
         const mid = (sel, fx, fy) => { const el = $(sel); if (!el) return { x: W * fx, y: H * fy }; const r = el.getBoundingClientRect(); return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
-        stopsCache = [mid('#agentForm', .5, .9), mid('#agentTags', .4, .7), mid('#agentThread', .5, .35), mid('.chat__head', .5, .1)];
+        stopsCache = [mid('#agentForm', .5, .9), mid('#agentTags', .4, .72), mid('#agentThread', .5, .38), { x: W * .5, y: H * .12 }];
         return stopsCache;
       };
       const frame = (t) => {
@@ -248,6 +248,11 @@
            the title, Call me, the chat field, the tags, the title again —
            easing into each and pausing a beat there, like attention moving.
            A fainter blob follows a moment behind: a short trail. */
+        /* the panel's contents move as the conversation opens — the thread
+           grows, the tags arrive — so the loop re-reads its stops every so
+           often instead of keeping the ones it measured on an empty panel,
+           which is what made the first breaths look wrong */
+        if (s - stopsAt > 1.2) { stopsCache = null; stopsAt = s; }
         const P = stops();                                  /* the loop's stops, from the real elements */
         const SEG = 3.2, DWELL = .9, L = P.length, cyc = (SEG + DWELL) * L;
         const at = (time) => {

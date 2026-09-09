@@ -155,7 +155,10 @@ d.setAttribute('data-theme',t||sys);})();
         </h1>
         <p class="hero__lede rv" style="--d:.35s">Whatever your marketing challenge,<br>we have the right tool for the job.</p>
       </div>
-      <div class="hero__acts rv" style="--d:.5s" id="heroActs">
+      <!-- no .rv here on purpose: the glass button's backdrop-filter samples
+           its ancestor's group, and a reveal that animates opacity and
+           transform makes the blur flicker until the animation ends -->
+      <div class="hero__acts" id="heroActs">
         <!-- the chat is already the way to ask, right beside these: the hero's
              own buttons go somewhere else -->
         <button type="button" class="btn btn--accent btn--lg" data-cta="session">Book a demo</button>
@@ -199,7 +202,7 @@ d.setAttribute('data-theme',t||sys);})();
 <!-- ═══════════════════════ 3 · WHAT IS STAGWELL AI ═══════════════════════ -->
 <section class="intro" id="about">
   <div class="intro__media">
-    <img class="intro__pic" src="/assets/img/co-unicepta.jpg" alt="" width="1144" height="1375" loading="lazy" decoding="async">
+    <img class="intro__pic" src="/assets/img/about-what.jpg" alt="" width="1100" height="1374" loading="lazy" decoding="async">
   </div>
   <div class="intro__body">
     <p class="hero__sign rv">What is Stagwell AI</p>

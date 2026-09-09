@@ -941,7 +941,7 @@ body.chat-open{overflow:hidden}
    (which scrolls on its own), the starting points, the field on the floor,
    and three quiet ways to a person under it. Every piece is the page's —
    the turn bubbles, the tags, the ask-mini field. */
-.hero__chat{position:relative;min-width:0;min-height:0;background:#FFFFFF;
+.hero__chat{position:relative;min-width:0;min-height:0;background:#F6F6F7;   /* a soft grey of its own: against the white page below, the panel now has an edge (client) */
   padding:calc(var(--nav-h) + var(--s-9)) max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))) var(--gutter) var(--gutter);
   display:flex;flex-direction:column}
 .chat{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
@@ -981,6 +981,11 @@ body.chat-open{overflow:hidden}
 /* once the conversation starts, the starting points step out of the way */
 .hero__chat.is-chat .chat__tags{display:none}
 .chat__form{flex:0 0 auto}
+/* on the panel's grey the field and the agent's bubbles turn white, so they
+   read as things sitting on it rather than sinking into it */
+.hero__chat .ask-mini{background:#FFFFFF}
+.hero__chat .turnb--ai{background:#FFFFFF}
+.hero__chat .turnb--wait{background:#FFFFFF}
 /* the three ways to a person: plain words under the field, not more buttons */
 .chat__ways{margin:var(--s-6) 0 0;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4) var(--s-7)}   /* smaller, and centred under the field (client) */
 .chat__way{font-family:var(--ui);font-size:12px;font-weight:500;color:var(--ink-3);border-bottom:1px solid transparent;transition:color .25s ease,border-color .25s ease}
