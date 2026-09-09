@@ -117,7 +117,10 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(38px, min(.9rem + 3.5vw, 11vh), 62px);text-transform:none;text-align:left;line-height:1.04}   /* three sizes down now (client, 2026-09-09) */
+/* one weight for the whole title: the accent line sat in an <em> at 700 while
+   the bare lines took the .display 900, and with the colour gone that read as
+   two different fonts (client) */
+.display--hero {font-weight:700;font-size:clamp(38px, min(.9rem + 3.5vw, 11vh), 62px);text-transform:none;text-align:left;line-height:1.04}
 /* "Ask" in the orange, "Stagwell." in the ink — the same size and, by the
    client's word, the same weight: Bold. (Heavy read too bold; an orange full
    stop was tried and dropped.) */
