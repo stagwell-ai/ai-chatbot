@@ -398,12 +398,13 @@ body.chat-open{overflow:hidden}
 .turnb__chips .tag:hover{border-color:var(--ink);color:var(--ink)}
 /* the agent thinking: three dots breathing */
 .turnb--wait{display:flex;gap:5px;padding:14px 18px}
-/* the mark's own three colours, read top to bottom — yellow, blue, dark blue
-   — and they only lift: the old dot animation dimmed them to pastel (client) */
+/* the mark's own three colours, left to right: dark blue, blue, yellow — the
+   same order as the field's dots. They only lift; the old dot animation
+   dimmed them to pastel (client) */
 .turnb--wait i{width:7px;height:7px;border-radius:50%;animation:dotLift 1.2s ease-in-out infinite}
-.turnb--wait i:nth-child(1){background:var(--amber)}
+.turnb--wait i:nth-child(1){background:var(--navy)}
 .turnb--wait i:nth-child(2){background:var(--teal);animation-delay:.16s}
-.turnb--wait i:nth-child(3){background:var(--navy);animation-delay:.32s}
+.turnb--wait i:nth-child(3){background:var(--amber);animation-delay:.32s}
 @keyframes turnIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes dot{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
 /* once the conversation is on, the tags under the paragraph are no longer
