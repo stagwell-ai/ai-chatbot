@@ -362,7 +362,7 @@
         w.remove(); think.off();
         ai('What do you need help solving?');
         if (tagsBox) setTimeout(() => tagsBox.classList.add('is-in'), 520);
-      }, 2300);
+      }, 4600);   /* twice the thinking (client): the pause before it speaks is the part that reads as alive */
     };
     /* it waits for the page to settle, then starts */
     setTimeout(intro, REDUCED ? 0 : 700);
