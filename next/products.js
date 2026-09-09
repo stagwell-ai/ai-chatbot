@@ -104,6 +104,36 @@
     return `<span class="prodcard__mark prodcard__mark--word">${esc(s.name)}</span>`;
   }
 
+  /* ── the picture on each card ──
+     The same still the homepage gives that company, so a product reads the
+     same on both pages (client, 2026-09-09). Keyed by solutions.json's id;
+     the three that have no company card of their own take a neutral brand
+     still rather than nothing, which would leave a ragged grid. */
+  const PICTURE = {
+    questbrand: '/assets/img/questbrand.jpg',
+    questdiy: '/assets/img/hero-slide-4.jpg',
+    bera: '/assets/img/brand-growth.jpg',
+    unlock: '/assets/img/hero-slide-3.jpg',
+    knowledge_machine: '/assets/img/hero-slide-1.jpg',
+    unicepta: '/assets/img/newspaper.jpg',
+    imai: '/assets/img/imai.jpg',
+    geopulse: '/assets/img/geopulse.jpg',
+    targeting_machine: '/assets/img/targeting.jpg',
+    numetrix: '/assets/img/numetrix.jpg',
+    newvoices: '/assets/img/newvoices.jpg',
+    smb_platform: '/assets/img/crosswalk.jpg',
+    machines_family: '/assets/img/solutions-guided.jpg',
+    agent_cloud: '/assets/img/hero-slide-5.jpg'
+  };
+  /* the still sits in the left column, under the problem it answers: that
+     column was empty down its whole height, and a picture inside the card
+     pushed the words 350px down the page (client, 2026-09-09) */
+  function pictureHTML(s) {
+    const src = s && s.id && PICTURE[s.id];
+    if (!src) return '';
+    return `<div class="prodgroup__pic"><img src="${esc(src)}" alt="" loading="lazy" decoding="async"></div>`;
+  }
+
   const PILLS = 4;
   function pillsHTML(s) {
     const props = (Array.isArray(s.valueProps) ? s.valueProps : []).filter(Boolean).slice(0, PILLS);
@@ -147,6 +177,7 @@
         <header class="prodgroup__head">
           <p class="prodgroup__n">${String(index + 1).padStart(2, '0')}</p>
           <h2 class="prodgroup__h">${esc(domain.label)}</h2>
+          ${pictureHTML(entries[0] && entries[0].solution)}
         </header>
         <div class="prodgroup__cards">${cards}</div>
       </section>`;
