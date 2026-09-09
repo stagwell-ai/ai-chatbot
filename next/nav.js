@@ -32,16 +32,19 @@
      one that leaves while you are still reading is worse than one that stays. */
   const nav = $('#nav');
   if (nav) {
-    let ticking = false;
+    /* the state is set IN the scroll handler, not deferred to the next frame.
+       Deferring it is what put white type on a white band: on a jump — an
+       anchor from the contents rail, Page Down, a trackpad fling — the page
+       painted at the new offset while the bar was still wearing its
+       over-the-picture treatment, and /products alternates dark and white
+       bands, so that landed white on white. The toggle is one class; it does
+       not need throttling. (products.css also scrims the transparent state,
+       so even a frame that slips through stays readable.) */
     const onScroll = () => {
-      ticking = false;
       nav.classList.toggle('is-stuck', Math.max(0, scrollY) > 8);
       nav.classList.remove('is-up');
     };
-    addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true; requestAnimationFrame(onScroll);
-    }, { passive: true });
+    addEventListener('scroll', onScroll, { passive: true });
     onScroll();
   }
 

@@ -102,3 +102,37 @@ html[data-theme] body.nav-open #nav .nav__burger span:nth-child(2){transform:rot
 @media (max-width:520px){
   html[data-theme] body #nav .btn{height:40px !important;padding:0 16px !important;font-size:12px !important}
 }
+
+/* ── the bar's state swap is instant, not a fade (client, 2026-09-09:
+      "there is white on white text") ──────────────────────────────────────
+   On /products the bar starts transparent with white type over the still, and
+   turns white with ink type once you move. The bar's own background has no
+   transition, so it snapped to white immediately — while the links, the two
+   buttons and the magnifier were still fading their colours over 250ms. For
+   that quarter of a second the type was white on a white bar and "Book a
+   demo" was white on white. Colour changes on the bar's contents now land in
+   the same frame as the background. Hover still lifts, so the transform is
+   kept where there was one; only the colour fades go. */
+html[data-theme] body.vProducts #nav .nav__links a,
+html[data-theme] body.vProducts #nav .nav__brand,
+html[data-theme] body.vProducts #nav .nav__burger{
+  transition:none !important}
+html[data-theme] body.vProducts #nav .btn{
+  transition:transform .3s var(--ease,ease) !important}
+html[data-theme] body.vProducts #nav .nav__search{
+  transition:transform .3s var(--ease,ease) !important}
+
+/* ── the safety net under the transparent bar ──────────────────────────────
+   The over-the-picture state paints white type on whatever the page happens
+   to have behind it, and /products alternates dark stills with white bands.
+   The class that ends that state is set from a scroll handler, so a jump can
+   put a white band under the bar for a frame before it turns solid — which is
+   the white-on-white the client caught. A soft scrim under the bar makes that
+   state legible over anything, and over the hero still it reads as the ordinary
+   darkening a headline sits on. It is only ever drawn while the bar is
+   transparent; the solid white bar has none. */
+html[data-theme] body.vProducts #nav:not(.is-stuck)::before{
+  content:"" !important;
+  position:absolute !important;inset:0 0 -28px 0 !important;
+  background:linear-gradient(180deg,rgba(11,23,30,.80) 0%,rgba(11,23,30,.55) 58%,rgba(11,23,30,0) 100%) !important;
+  pointer-events:none !important;z-index:-1 !important}

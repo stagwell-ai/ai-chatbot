@@ -190,6 +190,16 @@
       </section>`;
   }
 
+  /* ── products this page does not list ──
+     Unlock came off on the client's word (2026-09-09). It is the verified-
+     sample layer under the research products rather than something a visitor
+     picks on its own, and it was the only product under "Get research sample
+     you can trust", so that group has nothing left to show and goes with it —
+     buildGroups drops any group left empty rather than rendering the pending
+     placeholder into it. The entry stays in solutions.json and routing.json,
+     so the agent can still reach it; this is a decision about THIS page. */
+  const OFF_PAGE = { unlock: true };
+
   /* one pass over routing.json's groups, remembering which products have
      already appeared and under which label */
   function buildGroups(data) {
@@ -201,7 +211,9 @@
 
     const seen = Object.create(null);
     const built = domains.map(d => {
-      const entries = resolveDomain(d, list).map(entry => {
+      const entries = resolveDomain(d, list)
+        .filter(entry => !(entry.solution && OFF_PAGE[entry.solution.id]))
+        .map(entry => {
         const s = entry.solution;
         const byDomain = s && s.positioningByDomain && s.positioningByDomain[d.id];
         const out = {
@@ -220,7 +232,11 @@
     /* a group whose every card is a product already listed above sinks to the
        foot: the same product twice running reads as a mistake, however
        differently the two cards are written */
-    const ordered = built.filter(g => !g.allRepeats).concat(built.filter(g => g.allRepeats));
+    /* a group with nothing left to show is not a group: it would render the
+       "[SOLUTION — pending]" placeholder, which says the copy is missing
+       rather than that the product is not listed here */
+    const shown = built.filter(g => g.entries.length);
+    const ordered = shown.filter(g => !g.allRepeats).concat(shown.filter(g => g.allRepeats));
     return { ordered };
   }
 
