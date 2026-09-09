@@ -117,7 +117,7 @@ h1,h2,p,figure{margin:0}
 /* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
    "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
    two-word line in mixed case has the room. */
-.display--hero {font-size:clamp(42px, min(1rem + 3.9vw, 12vh), 70px);text-transform:none;text-align:left;line-height:.92}   /* two sizes down now (client, 2026-09-09) */
+.display--hero {font-size:clamp(42px, min(1rem + 3.9vw, 12vh), 70px);text-transform:none;text-align:left;line-height:1.02}   /* two sizes down, and the lines given room (client, 2026-09-09) */
 /* "Ask" in the orange, "Stagwell." in the ink — the same size and, by the
    client's word, the same weight: Bold. (Heavy read too bold; an orange full
    stop was tried and dropped.) */
