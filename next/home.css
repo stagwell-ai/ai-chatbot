@@ -529,7 +529,9 @@ body.chat-open{overflow:hidden}
   color:var(--ink-3);
 }
 /* the line under the title: two lines, light, quieter than the title */
-.hero__lede{margin:var(--s-9) 0 0;font-size:var(--hero-copy);font-weight:400;line-height:1.5;color:rgba(255,255,255,.92)}
+/* one line under the title (client): the whole sentence holds its own row and
+   only breaks on a phone, where the media block sets white-space back */
+.hero__lede{margin:var(--s-9) 0 0;font-size:var(--hero-copy);font-weight:400;line-height:1.5;color:rgba(255,255,255,.92);white-space:nowrap}
 .hero__acts{margin-top:var(--s-11);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--s-5)}
 
 /* ── Call me: the button that becomes the phone pill. One ink pill, three
