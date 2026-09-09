@@ -46,7 +46,7 @@ const ARROW_ICON = `<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden=
 const DEFAULT_ACTIONS = [
   { id: 'session',   title: 'Book a working session',            line: 'Walk through your snapshot with the team behind these numbers.', primary: true },
   { id: 'workspace', title: 'Request your full AI workspace',    line: 'Your snapshot, tracked and updated, in a workspace of your own.' },
-  { id: 'callback',  title: 'Let Stagwell.AI call you',          line: 'A five-minute call, at a time you pick.' },
+  { id: 'callback',  title: 'Let Stagwell AI call you',          line: 'A five-minute call, at a time you pick.' },
 ];
 
 const isValidEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v || '').trim());
@@ -250,7 +250,7 @@ function sectionHTML(data, session) {
     <div class="snap__in">
       <header class="snap__printhead" aria-hidden="true">
         <svg><use href="#sw-logo"/></svg>
-        <div><b>Your Stagwell.AI Snapshot</b><span>${esc(data.company)}</span></div>
+        <div><b>Your Stagwell AI Snapshot</b><span>${esc(data.company)}</span></div>
       </header>
 
       <div class="snap__head">
@@ -439,7 +439,7 @@ function ensureSection() {
   el.id = 'snapView';
   el.className = 'snap';
   el.hidden = true;
-  el.setAttribute('aria-label', 'Your Stagwell.AI snapshot');
+  el.setAttribute('aria-label', 'Your Stagwell AI snapshot');
   const main = $('#top');
   const hero2 = $('#hero2');
   if (main && hero2 && hero2.parentElement === main) main.insertBefore(el, hero2.nextSibling);

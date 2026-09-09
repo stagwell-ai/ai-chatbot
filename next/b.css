@@ -647,7 +647,7 @@ body.vB .bcta h2 span{font-family:var(--sans);font-weight:600;font-style:normal;
 
 
 /* ═══════════════════════════════════════════════════════════
-   ABOUT — "What is Stagwell.AI" (machine/about.js, data/messaging.json)
+   ABOUT — "What is Stagwell AI" (machine/about.js, data/messaging.json)
    ═══════════════════════════════════════════════════════════ */
 body.vB .about{position:relative;scroll-margin-top:76px;padding:clamp(88px,13vh,160px) clamp(20px,4vw,48px);
   border-top:1px solid var(--line);background:var(--surface)}

@@ -1161,7 +1161,7 @@ function resetB() {
   $('.mnav__new').hidden = true;
   hero.classList.remove('is-chatting', 'is-convo');
   if (!pick) {
-    $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell.AI · Agentic solutions grounded in real-world marketing expertise';
+    $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell AI · Agentic solutions grounded in real-world marketing expertise';
     $('#hero2Title').innerHTML = 'What do you need help <span class="accent">solving today?</span>';
     (window.revealLines||blurWords)($('#hero2Title'));
     $('#hero2Sub').textContent = 'Tell the agent what you\u2019re trying to do \u2014 or just paste your website \u2014 and it will point you to the right solution, with a live snapshot of your brand to show for it.';
@@ -1239,12 +1239,12 @@ const closeModal = () => {
 $$('[data-close]', modal).forEach(e => e.addEventListener('click', closeModal));
 
 const CTA_COPY = {
-  session:   ['Book a strategy session','Sixty minutes with the strategists behind Stagwell.AI. We arrive with your dashboard already open.'],
+  session:   ['Book a strategy session','Sixty minutes with the strategists behind Stagwell AI. We arrive with your dashboard already open.'],
   expert:    ['Talk to an AI expert','A working conversation about the problem you’re facing — and which products in the Stagwell AI suite solve it.'],
   workspace: ['Request your full AI workspace','The whole Stagwell AI suite, pointed at your brand and running continuously. We provision in five working days.'],
   possible:  ['See every product','Every solution in the Marketing Cloud, grouped by the problem it solves.'],
   pdf:       ['Export this dashboard','We will send the full analysis as a designed PDF, plus the raw engine outputs.'],
-  callback:  ['Stagwell.AI will call you','A NewVoices agent will call within two minutes, already briefed on what you told the agent.'],
+  callback:  ['Stagwell AI will call you','A NewVoices agent will call within two minutes, already briefed on what you told the agent.'],
 };
 
 /* The lead form now lives in machine/lead.js — one modal for "/", /p/{id} and
@@ -1255,7 +1255,7 @@ const CTA_COPY = {
    prefill hands over exactly what this file used to fill in by itself. */
 function openModal(kind, fromForm) {
   if (window.SAILEAD && typeof window.SAILEAD.open === 'function') {
-    /* a number typed into the inline "let Stagwell.AI call you" field rides
+    /* a number typed into the inline "let Stagwell AI call you" field rides
        into the modal instead of being asked for twice (QA, Sep 2) */
     const tel = fromForm && fromForm.querySelector ? fromForm.querySelector('input[type="tel"], input[name="phone"]') : null;
     const phone = tel && tel.value ? String(tel.value).trim() : '';
@@ -1279,7 +1279,7 @@ function openModal(kind, fromForm) {
     modalBody.innerHTML = `
       <div class="modal__ok">
         <span class="modal__tick"><svg viewBox="0 0 20 20" width="20" height="20"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <h3>Stagwell.AI has your brief.</h3>
+        <h3>Stagwell AI has your brief.</h3>
         <p>Your ${esc(S.brand || 'brand')} analysis has been enriched by SATS and scored. Someone who already understands the account will be in touch — not an SDR reading a script.</p>
         <button class="btn btn--dark" data-close>Back to the page</button>
       </div>`;

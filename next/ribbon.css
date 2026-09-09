@@ -1543,7 +1543,7 @@ dd,.about__stats dd,.tier dd,.sc-step__t,.sc-row__k,.sc__honesty,
 .pick__hint{gap:15px!important}
 
 /* ═══════════════════════════════════════════════════════════════
-   43 · "What is Stagwell.AI" — a touch smaller, with a CTA under
+   43 · "What is Stagwell AI" — a touch smaller, with a CTA under
    the paragraph. The portfolio block below it centres.
    ═══════════════════════════════════════════════════════════════ */
 .about__title{font-size:clamp(2.125rem,3.8vw,3.25rem)!important;max-width:17ch!important}
@@ -1592,7 +1592,7 @@ dd,.about__stats dd,.tier dd,.sc-step__t,.sc-row__k,.sc__honesty,
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   45 · Room between "What is Stagwell.AI" and the portfolio block.
+   45 · Room between "What is Stagwell AI" and the portfolio block.
    The CTA was landing almost on top of the next title.
    ═══════════════════════════════════════════════════════════════ */
 .about__in{gap:clamp(96px,13vh,180px)!important}
@@ -1826,7 +1826,7 @@ dd,.about__stats dd,.tier dd,.sc-step__t,.sc-row__k,.sc__honesty,
 /* ═══════════════════════════════════════════════════════════════
    53 · The wash meets the seam instead of being cut by it.
    Its strongest point sits at the hero's floor, and the same light
-   continues a little way into "What is Stagwell.AI" before it
+   continues a little way into "What is Stagwell AI" before it
    resolves to white — so scrolling reads as one surface.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -4248,7 +4248,7 @@ body.vB .tier__facts > div.is-open dd{display:block!important}
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   105 · the banner belongs to "What is Stagwell.AI", not the film
+   105 · the banner belongs to "What is Stagwell AI", not the film
    (client, Sep 3). The film stands on its own; the About header sits
    inside a navy banner like the scale one.
    ═══════════════════════════════════════════════════════════════ */
@@ -6952,7 +6952,7 @@ body.vB #pickDetail .pick__pane,body.vB #pickDetail .pick__pane--free{
 
 /* §154 d · the last divider in the portfolio.
    .about__portfolio carries a full-width 1px border-top, which is the line
-   sitting between the "What is Stagwell.AI" banner and the portfolio heading.
+   sitting between the "What is Stagwell AI" banner and the portfolio heading.
    The columns have their own rules; this one is doing nothing but separating
    two things that already read as separate. */
 html[data-theme="light"] body.vB .about__portfolio,
@@ -6994,7 +6994,7 @@ body.vB .about__portfolio{border-top:0!important;border-bottom:0!important}
 }
 
 /* §155 b · the two banner plates.
-   · "What is Stagwell.AI" sized its artwork to 96% of the panel height, and
+   · "What is Stagwell AI" sized its artwork to 96% of the panel height, and
      the parallax then slides it up and down within that — so at most of the
      travel a band of bare panel shows at one edge, which reads as the image
      being cropped short. Sized past the panel it always covers, whatever the
@@ -7052,7 +7052,7 @@ body.vB .about__proof{
   body.vB .about__proof{padding:32px 22px!important}
 }
 
-/* §156 b · the "Why Stagwell.AI" reasons.
+/* §156 b · the "Why Stagwell AI" reasons.
    A 2px left bar with 13px titles over 12px body — a third visual language on
    a page that already has two, and a type size smaller than anything around
    it. They take the portfolio's treatment instead: a hairline above each, the
@@ -9563,7 +9563,7 @@ body.vB .pick .pick__detail::-webkit-scrollbar{display:none!important;width:0!im
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   §180  THE FINAL CTA: "Or let Stagwell.AI call you."
+   §180  THE FINAL CTA: "Or let Stagwell AI call you."
 
    This card is the last thing on the page and it was a white box on a white
    section — the four tiles above it are dark photographs, so it read as an

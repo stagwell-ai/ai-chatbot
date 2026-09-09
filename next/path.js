@@ -702,7 +702,7 @@ function sectionHTML(vm) {
         <p class="pathfoot__lede">Prefer to read first? Deeper education continues on the product sites.</p>
         <div class="pathfoot__links">
           ${footerWorkspaceHTML(vm.session)}
-          <button type="button" class="pathfoot__link" data-cta="callback">Let Stagwell.AI call you</button>
+          <button type="button" class="pathfoot__link" data-cta="callback">Let Stagwell AI call you</button>
           ${productLinkHTML(siteSolution(vm.primarySolution), vm.session, vm.route, 'Explore the product site →', 'pathfoot__link pathfoot__link--arrow')}
         </div>
       </div>

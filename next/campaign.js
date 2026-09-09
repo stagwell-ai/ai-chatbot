@@ -25,7 +25,7 @@
      · every proof figure carries its source line, rendered under the strip;
      · every quote carries its source line, and a quote with no named speaker
        gets no borrowed face and says so;
-     · nothing here is presented as a Stagwell.AI measurement;
+     · nothing here is presented as a Stagwell AI measurement;
      · a [PLACEHOLDER] survives only where the kit genuinely supplies nothing.
    The prototype footnote at the foot of the page stays on every product.
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -228,13 +228,13 @@
 
   /* ── not-found state ──────────────────────────────────────────────────── */
   function renderNotFound(id) {
-    document.title = 'Campaign not found — Stagwell.AI';
+    document.title = 'Campaign not found — Stagwell AI';
     root.innerHTML = `
       <section class="campNF">
-        <p class="eyebrow"><i class="pulse"></i>Stagwell.AI</p>
+        <p class="eyebrow"><i class="pulse"></i>Stagwell AI</p>
         <h1 class="display">Campaign not found</h1>
         <p class="campNF__sub">We don't have a product landing for &ldquo;${esc(id)}&rdquo;. Head back to the main site and tell the agent what you're trying to solve instead.</p>
-        <a class="btn btn--dark" href="/next">Go to Stagwell.AI &rarr;</a>
+        <a class="btn btn--dark" href="/next">Go to Stagwell AI &rarr;</a>
       </section>`;
   }
 
@@ -460,9 +460,9 @@
     const id = campaign.id;
     const p = product || {};
 
-    document.title = `${p.name || campaign.name} — ${p.tagline || 'Stagwell.AI'}`;
+    document.title = `${p.name || campaign.name} — ${p.tagline || 'Stagwell AI'}`;
     const descMeta = document.getElementById('pageDesc');
-    if (descMeta) descMeta.setAttribute('content', p.summary || campaign.opener || `${campaign.name} — Stagwell.AI`);
+    if (descMeta) descMeta.setAttribute('content', p.summary || campaign.opener || `${campaign.name} — Stagwell AI`);
 
     const chips = arr(campaign.chips).slice();
     const hasCross = chips.some(c => String(c).trim() === CROSS);
@@ -516,7 +516,7 @@
           <div class="panel" id="agentPanel">
             <div class="panel__head">
               <span class="panel__avatar">S</span>
-              <b>Stagwell.AI</b>
+              <b>Stagwell AI</b>
             </div>
             <div class="bubble">${esc(campaign.opener)}</div>
 
@@ -576,7 +576,7 @@
         </div>
       </section>
 
-      <p class="campfoot">This is a working prototype of Stagwell.AI, not a live product page. ${
+      <p class="campfoot">This is a working prototype of Stagwell AI, not a live product page. ${
         esc(p.name || campaign.name)} is a third-party product: its name, marks, copy, figures and quoted people belong to their owners and are reproduced here from published material, each line sourced above.</p>`;
 
     wireCampaignEvents(id);

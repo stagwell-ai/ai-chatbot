@@ -380,7 +380,7 @@ const TILES = {
   },
   callback: {
     id: 'callback',
-    title: 'Let Stagwell.AI call you',
+    title: 'Let Stagwell AI call you',
     line: 'A five-minute call, at a time you pick.'
   }
 };
@@ -453,7 +453,7 @@ function pdfMeta(input) {
   const company = companyOf(currentSession(input));
   return {
     filename: slug(company) + '-stagwell-snapshot.pdf',
-    title: company + ' — your Stagwell.AI snapshot'
+    title: company + ' — your Stagwell AI snapshot'
   };
 }
 

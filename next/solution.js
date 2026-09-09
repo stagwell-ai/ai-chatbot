@@ -279,21 +279,21 @@
 
   /* ── not-found state — matches machine/campaign.js's card ─────────────── */
   function renderNotFound(id) {
-    document.title = 'Solution not found — Stagwell.AI';
+    document.title = 'Solution not found — Stagwell AI';
     root.innerHTML = `
       <section class="solNF">
-        <p class="eyebrow"><i class="pulse"></i>Stagwell.AI</p>
+        <p class="eyebrow"><i class="pulse"></i>Stagwell AI</p>
         <h1 class="display">Solution not found</h1>
         <p class="solNF__sub">We don't have a solution page for &ldquo;${esc(id || '')}&rdquo;. Head back to the main site and tell the agent what you're trying to solve instead.</p>
-        <a class="btn btn--dark" href="/next">Go to Stagwell.AI &rarr;</a>
+        <a class="btn btn--dark" href="/next">Go to Stagwell AI &rarr;</a>
       </section>`;
   }
 
   /* ── the page ─────────────────────────────────────────────────────────── */
   function renderSolution(s, domains, list) {
-    document.title = `${s.name} — Stagwell.AI`;
+    document.title = `${s.name} — Stagwell AI`;
     const descMeta = document.getElementById('pageDesc');
-    if (descMeta) descMeta.setAttribute('content', s.positioning || `${s.name} — Stagwell.AI`);
+    if (descMeta) descMeta.setAttribute('content', s.positioning || `${s.name} — Stagwell AI`);
 
     root.innerHTML = `
       <section class="sol">
@@ -327,7 +327,7 @@
         </div>
       </section>
 
-      <p class="solfoot">This is a working prototype of Stagwell.AI, not a live product page. ${
+      <p class="solfoot">This is a working prototype of Stagwell AI, not a live product page. ${
         esc(s.name)} is a third-party product: its name, marks and positioning belong to their owners and are reproduced here from published material. Everything the agent says about ${esc(s.name)} is drawn from that same material.</p>`;
 
     wireHandoffs();

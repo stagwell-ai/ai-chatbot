@@ -229,9 +229,9 @@
         </div>
       </section>
 
-      <p class="prodfoot">This is a working prototype of Stagwell.AI, not a live product page. Every product named
+      <p class="prodfoot">This is a working prototype of Stagwell AI, not a live product page. Every product named
         here is a third-party product: its name, marks and positioning belong to its owners and are reproduced
-        from published material. Nothing on this page is a Stagwell.AI measurement.</p>`;
+        from published material. Nothing on this page is a Stagwell AI measurement.</p>`;
   }
 
   /* ── handoffs ──

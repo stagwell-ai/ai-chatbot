@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   ABOUT — "What is Stagwell.AI", on the landing under the chooser.
+   ABOUT — "What is Stagwell AI", on the landing under the chooser.
 
    The one thing the demo did not say out loud (client, Sep 2, after a
    conversation with Amy: "we didn't really explain what is Stagwell AI
@@ -55,7 +55,7 @@ function render(m) {
         </span>
       </div>
       <header class="about__head">
-        <p class="eyebrow"><i class="pulse"></i>${esc(m.eyebrow || 'What is Stagwell.AI')}</p>
+        <p class="eyebrow"><i class="pulse"></i>${esc(m.eyebrow || 'What is Stagwell AI')}</p>
         <h2 class="about__title display">${taglineHTML(m)}</h2>
         <p class="about__lede">${esc(m.whoWeAre || m.positioning || '')}</p>
         ${(m.cta && m.cta.label) ? `<p class="about__act">
@@ -85,7 +85,7 @@ function render(m) {
       </div>` : ''}
 
       ${reasons.length ? `<div class="about__why">
-        <h3 class="about__h3">Why Stagwell.AI</h3>
+        <h3 class="about__h3">Why Stagwell AI</h3>
         <ul class="about__reasons">
           ${reasons.map(r => `<li><b>${esc(r.title)}</b><span>${esc(r.line)}</span></li>`).join('')}
         </ul>
@@ -98,7 +98,7 @@ function render(m) {
           <div class="about__cta">
             <button type="button" class="btn btn--gold" id="aboutAsk">${esc(cta.label || 'Ask the agent')}</button>
             <span>${esc(cta.line || '')}</span>
-            ${FULL ? '' : `<a class="about__more" href="/next/why">Read why Stagwell.AI →</a>`}
+            ${FULL ? '' : `<a class="about__more" href="/next/why">Read why Stagwell AI →</a>`}
           </div>
         </div>
         <dl class="about__stats">
