@@ -88,19 +88,11 @@ html[data-theme] body .prodcard__pic img{width:100%;height:100%;object-fit:cover
 html[data-theme] body .prodcard:hover .prodcard__pic img{transform:scale(1.08)}
 html[data-theme] body .prodcard__head{display:flex;flex-direction:column;gap:8px;min-width:0}
 
-/* "See the solution" was a bare tinted link at the foot of the card. It is
-   the card's only action, so it is a button — dark, the way the client asked
-   for every "learn more" on the homepage (2026-09-09). */
+/* the card's only action is a button, not a tinted link — dark, the way the
+   client asked for every "learn more" on the homepage */
 html[data-theme] body .prodcard__link{margin-top:auto !important;align-self:flex-start !important;
-  display:inline-flex !important;align-items:center !important;gap:8px !important;
-  height:42px !important;padding:0 20px !important;border-radius:999px !important;
-  background:var(--ink,#0B171E) !important;color:#FFFFFF !important;
-  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
-  font-size:12px !important;font-weight:600 !important;letter-spacing:.06em !important;
-  text-transform:uppercase !important;text-decoration:none !important;
-  transition:background-color .25s ease !important}
+  background:var(--ink,#0B171E) !important;color:#FFFFFF !important}
 html[data-theme] body .prodcard__link:hover{background:#000000 !important}
-html[data-theme] body .prodcard__link i{margin-left:0 !important;color:#FFFFFF !important}
 
 /* ── 2b. one product, one panel ────────────────────────────────────────────
    Fourteen rows separated by a hairline ran together as you scrolled. Every
@@ -127,3 +119,24 @@ html[data-theme] body .prodband .btn--gold{background:var(--amber,#FFB81C) !impo
   html[data-theme] body .prodcard__pic{flex:0 0 72px;width:72px;height:72px}
   html[data-theme] body .prodgroup{padding:clamp(24px,3vh,36px) 18px !important;border-radius:20px !important}
 }
+
+/* ── 4. one button, everywhere ──────────────────────────────────────────────
+   The page had three button sizes and its own gold/light pair. Every button
+   on it is the homepage's button now — 48px, 28px of padding, 14/600/.06em
+   uppercase, fully round — and the arrows have come off the labels (client,
+   2026-09-09). --amber for the primary, ink for the dark one, glass on the
+   picture, exactly as the homepage sets them. */
+html[data-theme] body.vProducts .prodhero .btn,
+html[data-theme] body.vProducts .prodband .btn,
+html[data-theme] body.vProducts .prodcard__link{
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  display:inline-flex !important;align-items:center !important;justify-content:center !important;
+  gap:10px !important;height:48px !important;padding:0 28px !important;border-radius:999px !important;
+  font-size:14px !important;font-weight:600 !important;letter-spacing:.06em !important;
+  text-transform:uppercase !important;white-space:nowrap !important;text-decoration:none !important;
+  border:0 !important;
+  transition:background-color .25s ease,color .25s ease,transform .3s var(--ease,cubic-bezier(.16,1,.3,1)) !important}
+html[data-theme] body.vProducts .prodhero .btn:hover,
+html[data-theme] body.vProducts .prodband .btn:hover,
+html[data-theme] body.vProducts .prodcard__link:hover{transform:translateY(-1px) !important}
+

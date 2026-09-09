@@ -170,7 +170,7 @@
         ${s.whoFor ? `<p class="prodcard__who">Who it's for: ${esc(s.whoFor)}</p>` : ''}
         ${pillsHTML(s)}
         <a class="prodcard__link" href="${esc(href)}"
-           data-prod-handoff data-solution="${esc(s.id)}" data-url="${esc(href)}">See the solution <i aria-hidden="true">&rarr;</i></a>
+           data-prod-handoff data-solution="${esc(s.id)}" data-url="${esc(href)}">Explore</a>
       </article>`;
   }
 
@@ -237,7 +237,7 @@
             AI-search visibility, reputation monitoring, audience activation and voice agents — each built by a team
             that does this and nothing else. Start with the problem; the product follows.</p>
           <div class="prodhero__acts">
-            <a class="btn btn--gold prodhero__cta" href="/next">Find my fit in a conversation →</a>
+            <a class="btn btn--gold prodhero__cta" href="/next">Find my fit in a conversation</a>
             <button class="btn btn--ghost prodhero__alt" type="button" data-cta="demo">Book a demo</button>
           </div>
         </div>
@@ -257,7 +257,7 @@
           <p>Tell the agent what you are up against and it reads your brand first — then names the products that
             actually fit, and the people who run them.</p>
           <div class="prodband__acts">
-            <button class="btn btn--gold prodband__demo" type="button" data-cta="demo">Book a demo →</button>
+            <button class="btn btn--gold prodband__demo" type="button" data-cta="demo">Book a demo</button>
             <a class="btn btn--light" href="/next">Start with the agent</a>
           </div>
         </div>

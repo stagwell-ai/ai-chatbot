@@ -40,13 +40,15 @@ html[data-theme] body.vProducts #nav:not(.is-stuck) .btn--line{background:transp
 html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search{background:transparent !important;color:#FFFFFF !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45) !important}
 html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search:hover{background:#FFFFFF !important;color:var(--ink,#0B171E) !important}
 
-/* the column: 1180 wide with a 48px inset, which is exactly where this page's
-   own headings and product groups begin */
+/* the column is the HOMEPAGE's, not this page's: 1440 wide with the site
+   gutter. It was set to the product page's own 1180/48 column, and the client
+   read the jump as the bar changing shape between pages — the bar has to be
+   the same object everywhere (client, 2026-09-09). */
 html[data-theme] body #nav .nav__in{
-  height:100% !important;max-width:1180px !important;margin-inline:auto !important;
-  padding:0 clamp(20px,3.4vw,48px) !important;
+  height:100% !important;max-width:1440px !important;margin-inline:auto !important;
+  padding:0 clamp(24px,4vw,64px) !important;
   display:grid !important;grid-template-columns:auto 1fr auto !important;
-  align-items:center !important;column-gap:40px !important}
+  align-items:center !important;column-gap:64px !important}
 
 html[data-theme] body #nav .nav__brand{justify-self:start !important;color:var(--ink,#0B171E) !important;display:block !important;line-height:0 !important}
 html[data-theme] body #nav .nav__brand svg{height:13px !important;width:auto !important;display:block !important}
