@@ -304,3 +304,57 @@ html[data-theme] body.vB.vProducts .prodfoot{border-top:1px solid rgba(11,18,32,
   html[data-theme] body.vB.vProducts .foot__small{align-items:flex-start;text-align:left}
   html[data-theme] body.vB.vProducts .foot__band{flex-direction:column;align-items:flex-start;gap:24px}
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   /products IN DARK MODE, and a legibility pass over the faint type.
+
+   The page's tone bands, its closing CTA and its buttons were written in
+   light-mode colours that never flipped, while the type in them is var(--ink)
+   and does flip. On a device set to dark that put white type on the #F5F7F8
+   band — six of the thirteen groups unreadable — a white "Explore" on a
+   near-white button, and white on white in the closing band. Surfaces flip
+   here; type keeps the tokens so it stays correct in both.
+   ══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="dark"] body.vB.vProducts .prodgroup:nth-of-type(even)::before{
+  background:var(--dk-raised,#121D2A)}
+html[data-theme="dark"] body.vB.vProducts .prodcard + .prodcard{
+  border-top-color:var(--dk-line-2,rgba(233,238,243,.16)) !important}
+html[data-theme="dark"] body.vB.vProducts .prodcard__link{
+  background:var(--ink,#E9EEF3) !important;color:var(--dk-ground,#070D14) !important}
+html[data-theme="dark"] body.vB.vProducts .prodcard__link:hover{background:#FFFFFF !important}
+html[data-theme="dark"] body.vB.vProducts .prodband{
+  background:var(--dk-raised,#121D2A) !important;color:var(--ink,#E9EEF3) !important;
+  border-top-color:var(--dk-line,rgba(233,238,243,.10)) !important}
+html[data-theme="dark"] body.vB.vProducts .prodband h2{color:var(--ink,#E9EEF3) !important}
+html[data-theme="dark"] body.vB.vProducts .prodband p{color:var(--ink-2) !important}
+html[data-theme="dark"] body.vB.vProducts .prodband .btn--light{
+  background:var(--ink,#E9EEF3) !important;color:var(--dk-ground,#070D14) !important}
+html[data-theme="dark"] body.vB.vProducts .prodfoot{
+  border-top-color:var(--dk-line,rgba(233,238,243,.10)) !important}
+
+/* the faint type, in both themes: these were set at .34–.55 alpha and fell
+   under the readable floor on their own grounds. The tokens carry the right
+   value for whichever theme is on. */
+html[data-theme] body.vB.vProducts .prodcard__who,
+html[data-theme] body.vB.vProducts .prodcard__fit,
+html[data-theme] body.vB.vProducts .prodcard__again,
+html[data-theme] body.vB.vProducts .prodfoot,
+html[data-theme] body.vB.vProducts .foot__copy,
+html[data-theme] body.vB.vProducts .ptoc__lead{color:var(--ink-2) !important}
+/* the closing band's accent was marigold on a near-white ground (1.7:1). The
+   brand's orange is the accent everywhere else on this site and clears the
+   floor for a heading on both grounds. */
+html[data-theme] body.vB.vProducts .prodband h2 .accent{color:var(--orange,#FF6D24) !important}
+
+/* the footer on this page is a white block in BOTH themes (see .foot above),
+   so its small print cannot take the themed token — in dark that token is
+   near-white and the line vanished into the white. Stated in ink instead. */
+html[data-theme] body.vB.vProducts .foot__copy{color:rgba(11,18,32,.72) !important}
+/* the closing band is white in both themes too, and the brand orange lands at
+   2.8:1 on it — just under the floor for a heading. This is that orange taken
+   down a step so the accent clears it; the brand orange is untouched
+   everywhere else. */
+html[data-theme] body.vB.vProducts .prodband h2 .accent{color:#DF5A14 !important}
+/* on the dark ground the same darkened orange is too quiet; the accent takes a
+   lighter tint of it there, so the word reads on either band */
+html[data-theme="dark"] body.vB.vProducts .prodband h2 .accent{color:#FFA46B !important}

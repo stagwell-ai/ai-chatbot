@@ -136,3 +136,34 @@ html[data-theme] body.vProducts #nav:not(.is-stuck)::before{
   position:absolute !important;inset:0 0 -28px 0 !important;
   background:linear-gradient(180deg,rgba(11,23,30,.80) 0%,rgba(11,23,30,.55) 58%,rgba(11,23,30,0) 100%) !important;
   pointer-events:none !important;z-index:-1 !important}
+
+/* ── the bar in dark mode ──────────────────────────────────────────────────
+   This file forces the bar white so it wins over the page's own chrome, and
+   the type inside it is var(--ink) — which flips to near-white under
+   html[data-theme="dark"]. The background did not flip with it, so on a
+   phone or laptop set to dark the bar was near-white type on a white bar and
+   "Book a demo" was white on white. ribbon.css already dresses .nav for dark;
+   these restate it for #nav, which this file out-specifies. */
+html[data-theme="dark"] body #nav{
+  background:var(--dk-ground,#070D14) !important;
+  box-shadow:0 1px 0 var(--dk-line,rgba(233,238,243,.10)) !important}
+html[data-theme="dark"] body #nav .btn--ink,
+html[data-theme="dark"] body #nav .btn--dark{
+  background:var(--ink,#E9EEF3) !important;color:var(--dk-ground,#070D14) !important}
+html[data-theme="dark"] body #nav .btn--ink:hover,
+html[data-theme="dark"] body #nav .btn--dark:hover{background:#FFFFFF !important}
+html[data-theme="dark"] body #nav .btn--line{
+  color:var(--ink,#E9EEF3) !important;box-shadow:inset 0 0 0 1px rgba(233,238,243,.35) !important}
+html[data-theme="dark"] body #nav .btn--line:hover{box-shadow:inset 0 0 0 1px var(--ink,#E9EEF3) !important}
+html[data-theme="dark"] body #nav .nav__search{
+  background:transparent !important;color:var(--ink,#E9EEF3) !important;
+  box-shadow:inset 0 0 0 1px rgba(233,238,243,.35) !important}
+html[data-theme="dark"] body #nav .nav__search:hover{
+  background:var(--ink,#E9EEF3) !important;color:var(--dk-ground,#070D14) !important}
+/* over the picture the filled button is a light pill: its label must be dark
+   ink in both themes, not var(--ink), which is near-white in this one */
+html[data-theme="dark"] body.vProducts #nav:not(.is-stuck) .btn--ink,
+html[data-theme="dark"] body.vProducts #nav:not(.is-stuck) .btn--dark{
+  background:#FFFFFF !important;color:#0B171E !important}
+html[data-theme="dark"] body.vProducts #nav:not(.is-stuck) .nav__search:hover{
+  background:#FFFFFF !important;color:#0B171E !important}
