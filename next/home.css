@@ -131,8 +131,7 @@ h1,h2,p,figure{margin:0}
 .display--hero em{color:inherit}                /* the hero title is white throughout: the yellow came off it (client) */
 .display--intro em{color:var(--teal)}           /* "agentic solutions" */
 .display--port em{color:var(--amber)}           /* "to work" */
-.why .display--cos em{color:var(--orange)}      /* "Stagwell AI" */
-.cos .display--cos em{color:var(--teal)}        /* "Endless" */
+.why .display--cos em{color:var(--orange)}
 .impact .display--cos em{color:var(--blue)}     /* "to impact" */
 .display--end em{color:var(--amber)}            /* "Ask", on the pastel teal */
 .chat-over__title em{color:var(--teal)}
@@ -688,92 +687,7 @@ body.chat-open{overflow:hidden}
 /* four lines at most on a desktop, as the reference's three */
 .display--intro{font-size:clamp(36px, 1.2rem + 2.9vw, 58px);text-transform:none;text-align:left;text-wrap:balance;letter-spacing:-.025em;line-height:.96;max-width:12.5em}
 .intro__lede{margin-top:var(--s-11);   /* 48 under the title: twice the gap to the button */font-size:clamp(18px, .9rem + .6vw, 22px);font-weight:400;line-height:1.5;color:var(--ink);max-width:640px}   /* the ink, regular — the same voice as the hero's paragraph */
-.intro__act{margin-top:var(--s-8);display:flex}     /* 24: the button belongs to the paragraph; flex, so no inline strut adds to it */
-
-/* ── 3 · companies ───────────────────────────────────────────────────────── */
-.cos{padding:var(--s-15) 0 var(--s-15)}   /* the pastel amber ground came off (client, 2026-09-09) */
-.cos .display--cos{margin-bottom:0}
-/* under the title: two centred lines and one outline button, in the Agentic
-   section's rhythm — 48 under the title, 24 above the button, 80 to the field */
-.cos__lede{margin:var(--s-11) auto 0;max-width:640px;text-align:center;font-size:clamp(18px, .9rem + .6vw, 22px);font-weight:400;line-height:1.5;color:var(--ink)}
-.cos__act{margin:var(--s-8) 0 var(--s-13);display:flex;justify-content:center}
-
-/* the field: one full-width horizontal scroller with depth. The card at the
-   centre stands forward at full scale; the rest recede and dim. Scroll-snap
-   keeps a card centred when the movement stops. */
-.field{position:relative;width:100%}
-.field__track{
-  display:flex;gap:var(--s-9);
-  overflow-x:auto;overscroll-behavior-x:contain;
-  /* the row BEGINS on the page's own left line, with a whole picture there
-     (client: "it needs to start with an image on the left"); the right side
-     still lets the last card reach the middle */
-  padding:var(--s-8) calc(50vw - 200px) var(--s-8) max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
-  scrollbar-width:none;-ms-overflow-style:none;
-  cursor:grab;
-  perspective:1600px;
-}
-.field__track::-webkit-scrollbar{display:none}
-.field__track.is-dragging{cursor:grabbing}
-
-.co{
-  position:relative;flex:0 0 400px;               /* a square tile, as the reference — not wide */
-  transform:scale(var(--k,.86)) translateZ(0);
-  /* the off-centre cards used to dim to 50%, and on the section's amber that
-     read as a yellow wash over the pictures. They recede by scale alone now. */
-  transition:transform .6s var(--ease);
-  transform-style:preserve-3d;
-  outline:none;
-}
-.co.is-centre{--k:1}
-/* the first card shrinks toward its own left edge, so at rest it sits exactly
-   on the page's left line however far it is from the middle */
-.co:first-child{transform-origin:left center}
-.co:focus-visible .co__face{box-shadow:0 0 0 2px var(--ink)}
-
-/* the tile holds the picture and its back; the words sit under it, as on
-   the reference — outside the picture, centred */
-.co__tile{position:relative;height:400px;transform-style:preserve-3d}
-.co__face,.co__back{
-  position:absolute;inset:0;border-radius:6px;overflow:hidden;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  transition:transform .7s var(--ease);
-}
-.co__face{background:#0B1220}
-.co__img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
-.co:hover .co__img{transform:scale(1.04)}
-
-.co__meta{
-  padding:var(--s-7) 0 0;
-  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
-  color:var(--ink);
-}
-/* under the tile only the description, at the name's size — the name itself
-   is gone (client: "instead of IMAI, only Influencer Marketing AI") */
-.co__name{display:none}
-.co__spec{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
-
-/* click: the tile turns over into a flat typographic panel */
-.co__back{
-  background:var(--deep);color:#FFFFFF;
-  transform:rotateY(180deg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:var(--s-11);
-}
-.co.is-open .co__face{transform:rotateY(-180deg)}
-.co.is-open .co__back{transform:rotateY(0)}
-.co__big{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:-.03em;line-height:.92;font-size:clamp(32px,2.6vw,44px)}
-.co__line{margin-top:var(--s-7);font-size:16px;font-weight:300;line-height:1.5;color:rgba(255,255,255,.78);max-width:34ch}
-.co__go{
-  margin-top:var(--s-9);display:inline-flex;align-items:center;
-  height:44px;padding:0 22px;border-radius:999px;
-  background:#FFFFFF;color:var(--ink);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-}
-
-/* the position line, as on the reference: a long thin ink line, a thicker
-   ink segment where you are */
-.field__bar{position:relative;width:min(920px,50vw);height:2px;margin:var(--s-12) auto 0;background:var(--ink)}
-.field__pos{position:absolute;top:-2px;left:0;height:6px;width:22%;background:#009CBD;   /* the mark's teal — the thumb wears a logo colour (client) */transition:left .2s ease,width .2s ease}
+.intro__act{margin-top:var(--s-8);display:flex}
 
 /* ── 4 · scale ───────────────────────────────────────────────────────────── */
 /* ── 3b · portfolio: DEPT's "Solutions" block ────────────────────────────── */
@@ -896,14 +810,11 @@ body.chat-open{overflow:hidden}
 
 /* ── motion off ──────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion:reduce){
-  .rv,.ln__in,.co,.co__face,.co__back,.co__img,.hero__media,.chat-over{transition:none!important;animation:none!important;opacity:1!important}
+  .rv,.ln__in,.hero__media,.chat-over{transition:none!important;animation:none!important;opacity:1!important}
   .turn__w{transition:none!important}
 
-  .rv,.ln__in,.co,.co__face,.co__back,.co__img{transform:none!important}
-  .co.is-open .co__face{display:none}
-  .co.is-open .co__back{transform:none!important}
+  .rv,.ln__in{transform:none!important}
 }
-
 
 /* ── the agent, in the middle of the hero ────────────────────────────────
    The field, its starting points, and the ways to a person — every piece is
@@ -1081,20 +992,11 @@ body.chat-open{overflow:hidden}
   .intro__body{padding:0}
   .display--intro{max-width:none}
   .intro__lede{margin-top:var(--s-9)}
-
-  /* ── companies: smaller tiles, the same field ── */
-  .cos{padding:var(--s-13) 0 var(--s-13)}
   /* the hard break left "network." alone on a line here: let the sentences
      flow and let the browser even the lines out. The space before each <br>
      in the markup is what keeps the words apart once it is hidden. */
-  .cos__lede br,.chat-over .ask__lede br{display:none}
-  .cos__lede,.chat-over .ask__lede,.suite__lede,.ask-end__lede{text-wrap:balance}
-  .cos__act{margin-bottom:var(--s-10)}
-  .field__track{gap:var(--s-7);padding:var(--s-6) calc(50vw - 140px) var(--s-6) var(--gutter)}
-  .co{flex-basis:280px}
-  .co__tile{height:280px}
-  .co__spec{font-size:17px}
-  .field__bar{width:60vw;margin-top:var(--s-10)}
+  .chat-over .ask__lede br{display:none}
+  .chat-over .ask__lede,.suite__lede,.ask-end__lede{text-wrap:balance}
 
   /* ── portfolio: one column per row, the picture last ── */
   .port{padding:var(--s-13) 0 var(--s-12)}
@@ -1157,7 +1059,6 @@ body.chat-open{overflow:hidden}
   .foot__disc{width:40px;height:40px}
   .foot__band{flex-direction:column;align-items:flex-start;gap:var(--s-8);padding-top:var(--s-9);padding-bottom:max(var(--s-9), env(safe-area-inset-bottom))}
   .foot__legal{width:100%;justify-content:space-between}
-
 
   /* ── the hero's chat, under the words on a phone ── */
   .hero__chat{padding:var(--s-11) var(--gutter) var(--s-12);min-height:auto}
