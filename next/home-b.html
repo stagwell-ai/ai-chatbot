@@ -46,6 +46,34 @@ d.setAttribute('data-theme',t||sys);})();
 <!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta]
      click on this page — the same panel every other booking CTA on the site opens -->
 <body class="home hb-page" data-lead-cta>
+<!-- option B's intro, on every load (client, 2026-09-10): the best pictures, fast, in a centred
+     frame; the Stagwell AI logo; "Welcome"; then the page lifts in. All CSS animation (smooth), started
+     here so nothing of the page shows first; skipped with reduced motion; never strands the page. -->
+<script>
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var d = document.documentElement, N = 9, html = '';
+  for (var k = 1; k <= N; k++) html += '<img src="/assets/img/intro/' + k + '.jpg" alt="" style="--k:' + (k - 1) + '">';
+  var el = document.createElement('div');
+  el.className = 'hb-in'; el.setAttribute('aria-hidden', 'true');
+  el.innerHTML = '<div class="hb-in__frame">' + html + '</div><div class="hb-in__end"><svg class="hb-in__mark" viewBox="0 0 1870 153"><use href="#sw-logo"/></svg><p class="hb-in__hi">Welcome</p></div>';
+  d.classList.add('hb-intro');
+  document.body.prepend(el);
+  var done = false, finish = function () { if (done) return; done = true; d.classList.remove('hb-intro'); };
+  var go = function () {
+    if (el.classList.contains('go')) return;
+    el.classList.add('go');
+    setTimeout(finish, 2300);                                   /* the page is revealed as the curtain lifts */
+    setTimeout(function () { el.remove(); }, 3200);
+  };
+  /* start once the first pictures are in, never later than 450ms */
+  var imgs = el.querySelectorAll('img'), ready = 0;
+  for (var i = 0; i < 3; i++) { if (imgs[i].complete) ready++; else imgs[i].addEventListener('load', function () { if (++ready >= 3) go(); }); }
+  if (ready >= 3) go();
+  setTimeout(go, 450);
+  setTimeout(function () { finish(); if (el.isConnected) el.remove(); }, 6000);   /* whatever happens */
+})();
+</script>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="sw-logo" viewBox="0 0 1870 153">
@@ -290,7 +318,7 @@ d.setAttribute('data-theme',t||sys);})();
           <p class="hb-stack__sum">AI voice agents that interview your customers at scale and turn it into insight.</p>
           <a class="hb-stack__go" href="/newvoices">Explore New Voices<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/hero-slide-2.jpg" alt="" width="1122" height="1402" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/products/card-voices.jpg" alt="" width="1086" height="1448" loading="lazy" decoding="async"></div>
       </div>
     </article>
     <article class="hb-stack__card" style="--i:3">
