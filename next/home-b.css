@@ -277,7 +277,7 @@ body.hb-page{--hb-bg:#FEFDFC;background:var(--hb-bg)}
 .hb-page .hero__bg::after{background:radial-gradient(ellipse 62% 58% at 50% 52%,rgba(254,253,252,.78) 0%,rgba(254,253,252,.42) 55%,rgba(254,253,252,0) 82%)}
 .hb-page .hero .hero__bg{animation-name:hbIntroL}
 @keyframes hbIntroL{from{transform:scale(1.32) rotate(-5deg);opacity:.15}to{transform:none;opacity:1}}
-.hb-page .hb-field{background-image:url("/assets/img/hero-home-b2.jpg");mix-blend-mode:multiply;opacity:.32}
+.hb-page .hb-field{background-image:url("/assets/img/products-hero.jpg");mix-blend-mode:multiply;opacity:.32}
 .hb-page .hb-grain{opacity:.035;mix-blend-mode:multiply}
 .hb-page .display--hero,.hb-page .display--hero *{color:var(--hb-ink) !important;text-shadow:none !important}
 .hb-page .hero__lede{color:rgba(11,18,32,.68);text-shadow:none}
@@ -666,3 +666,21 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
   .hb-page #hbAsk .hb-ask__tags li{flex-shrink:0}
   .hb-page #hbAsk .hb-ask__tags::after{content:"";flex:0 0 14px}   /* end padding does not count in a flex scroller */
 }
+
+/* the hero on the dark version of the picture (client: "the dark version instead"): the section's own
+   ground is the picture's navy, so the entrance fades up from dark, not from white */
+.hb-page .hero{background:#001D36}
+
+/* once the chat has started, the field steps out for good (the box layout's display:grid had kept it on screen) */
+#ask:not(.hb-compact) > #hbAsk{display:none !important}
+/* the field, polished: the tags centred in two even rows, a hairline, then the line to type on */
+.hb-page #hbAsk .hb-ask__tags{justify-content:center;margin:0 -14px 0 -20px;padding:2px 14px 14px 20px;border-bottom:1px solid rgba(11,18,32,.08)}
+.hb-page .hero__in > #hbAsk.hb-ask--box{row-gap:12px;padding-top:14px}
+@media (max-width:600px){ .hb-page #hbAsk .hb-ask__tags{justify-content:flex-start;padding-right:0} }
+
+/* while you talk: the hero's content pinned to the top (the title stops moving as the chat grows) and
+   the thread capped to the screen, so the conversation scrolls inside the chat, not the page */
+.hb-page .hero.hb-chatting{place-items:start center;align-content:start;padding-top:calc(var(--nav-h, 72px) + clamp(24px, 5vh, 56px))}
+.hb-page .hero.hb-chatting #agentThread{max-height:var(--hb-thread-max, min(52svh, 560px));overscroll-behavior:contain}
+/* the tags aligned left again, with the typing line (client) — the hairline stays */
+.hb-page #hbAsk .hb-ask__tags{justify-content:flex-start}

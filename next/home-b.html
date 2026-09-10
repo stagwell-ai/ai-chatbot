@@ -197,7 +197,7 @@ d.setAttribute('data-theme',t||sys);})();
   <!-- the ground: ONE still, not a turning strip (client, 2026-09-09). The
        other two stills are still in /assets/img if the rotation comes back. -->
   <div class="hero__bg" id="heroSlides" aria-hidden="true">
-    <img class="hero__pic is-on" src="/assets/img/hero-home-b2.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+    <img class="hero__pic is-on" src="/assets/img/products-hero.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
   </div>
   <!-- the chat's thinking field, behind the whole hero (client: "the small dots, like when ChatGPT is thinking") -->
   <canvas class="hero__think" id="hbThink" aria-hidden="true"></canvas>
@@ -526,7 +526,34 @@ d.setAttribute('data-theme',t||sys);})();
   const hero = document.getElementById('ask'), f = document.getElementById('hbAsk'), i = document.getElementById('hbAskInput'),
         form = document.getElementById('agentForm'), input = document.getElementById('agentInput'), tags = document.getElementById('agentTags');
   if (!hero || !f || !i || !form || !input) return;
-  const reveal = () => hero.classList.remove('hb-compact');
+  /* the chat grows out of the field (client: "it's supposed to expand, not snap"): the title and line
+     glide from where they were, and the chat opens from the field's own place and size to its full size */
+  /* the conversation happens inside the chat: it grows with the talk until it reaches the foot of the
+     screen, then its messages scroll inside it and the page stays still (client) */
+  const thread = document.getElementById('agentThread');
+  const fitThread = () => {
+    const chat = hero.querySelector(':scope > .chat'); if (!chat || !thread) return;
+    const top = chat.getBoundingClientRect().top + scrollY, rest = chat.offsetHeight - thread.offsetHeight;
+    const max = Math.max(200, Math.round(innerHeight - top - rest - Math.max(24, innerHeight * .04)));
+    thread.style.setProperty('--hb-thread-max', max + 'px');
+  };
+  const reveal = () => {
+    if (!hero.classList.contains('hb-compact')) return;
+    const kids = [...hero.children].filter((e) => e !== f && e.offsetParent !== null);
+    const was = new Map(kids.map((e) => [e, e.getBoundingClientRect().top])), fr = f.getBoundingClientRect();
+    hero.classList.remove('hb-compact');
+    const sec = hero.closest('.hero'); if (sec) sec.classList.add('hb-chatting');   /* pinned to the top while you talk */
+    fitThread(); addEventListener('resize', fitThread);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || !Element.prototype.animate) return;
+    const ease = 'cubic-bezier(.16,.72,.24,1)';
+    kids.forEach((e) => { const d = was.get(e) - e.getBoundingClientRect().top; if (Math.abs(d) > 1) e.animate([{ transform: 'translateY(' + d + 'px)' }, { transform: 'none' }], { duration: 650, easing: ease }); });
+    const chat = hero.querySelector(':scope > .chat');
+    if (chat) {
+      const cr = chat.getBoundingClientRect(), dx = Math.max(0, (cr.width - fr.width) / 2), db = Math.max(0, cr.height - fr.height);
+      chat.animate([{ transform: 'translateY(' + (fr.top - cr.top) + 'px)', clipPath: 'inset(0 ' + dx + 'px ' + db + 'px ' + dx + 'px round 24px)' },
+                    { transform: 'none', clipPath: 'inset(0 0 0 0 round 24px)' }], { duration: 700, easing: ease });
+    }
+  };
   document.addEventListener('submit', (e) => { if (e.target === form) reveal(); }, true);
   if (tags) tags.addEventListener('click', (e) => { if (e.target.closest('.tag')) reveal(); }, true);
   f.addEventListener('submit', (e) => {
