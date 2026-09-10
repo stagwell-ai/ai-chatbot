@@ -39,7 +39,7 @@ PRODUCTS = [
         title='Turn your marketing stack into an intelligent system.',
         description="The Machine is Stagwell's agentic operating system for marketing. It connects people, tools, data, and institutional knowledge across strategy, creative, production, and media - improving the systems teams already use rather than forcing a rip-and-replace.",
         url='https://machine.live/',
-        image=('/assets/img/companies/the-machine/hero.jpg', 1600, 900),
+        image=('/assets/img/products/the-machine.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
         sections=[
             ('Works with your existing stack', 'An intelligence and orchestration layer that plugs into the tools and processes you already have.'),
             ('Unifies the marketing workflow', 'Strategy, creative, production, media and performance work from shared context instead of disconnected handoffs.'),
@@ -63,7 +63,7 @@ PRODUCTS = [
         title='Turn fragmented data into audiences you can activate.',
         description="The Targeting Machine is an enterprise-grade, privacy-first audience intelligence platform that combines first-party data, third-party media data, Stagwell's proprietary consumer intelligence, and the Stagwell ID Graph to move from deeper audience understanding to activation.",
         url='https://www.themarketingcloud.com/marketplace/sats',
-        image=('/assets/img/companies/targeting-machine/ui-1.jpg', 1100, 692),
+        image=('/assets/img/products/targeting-machine.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
         sections=[
             ('Build high-intent audiences', 'Stagwell proprietary datasets and your first-party data identify audiences by both behavior and attitudes.'),
             ('Scale seed segments', 'Tightly defined segments expand into high-fidelity lookalike audiences.'),
@@ -105,7 +105,7 @@ PRODUCTS = [
         title='Give your marketing team one secure place to use the best AI.',
         description='Agent Cloud is a secure AI workspace for marketers that brings leading LLMs, pre-built marketing assistants, and build-your-own agent capabilities into one governed environment - reducing tool sprawl while making advanced AI easier to use across the organization.',
         url='https://www.themarketingcloud.com/marketplace/agent-cloud',
-        image=('/assets/img/companies/agent-cloud/ui-2.jpg', 1100, 692),
+        image=('/assets/img/products/agent-cloud.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
         sections=[
             ('Leading AI models in one place', 'Enterprise access to the major multimodal models, so teams choose the best model for each task without separate subscriptions.'),
             ('Purpose-built marketing agents', 'Research, brand audits, creative briefs, image and video generation, social listening and search discoverability.'),
