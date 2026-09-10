@@ -265,3 +265,31 @@ body.hb-page{--display:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;--u
 .hb-foot__so:hover{background:var(--hb-ink);color:#FFFFFF}
 .hb-foot__so svg{width:18px;height:18px}
 .hb-foot__so:focus-visible{outline:2px solid var(--hb-ink);outline-offset:3px}
+
+
+/* ═══ the light hero (client, 2026-09-10: "try the hero with the new image
+   that has a light background… the website the same background colour as
+   the image"). The picture is mats/images/"hero ligth home.png"; the page
+   ground is its own paper colour, sampled from its edges (#FEFDFC), so the
+   hero runs into the page with no seam. Type and bar go dark over it. ═══ */
+body.hb-page{--hb-bg:#FEFDFC;background:var(--hb-bg)}
+.hb-page .hero{background:var(--hb-bg);color:var(--hb-ink)}
+.hb-page .hero__bg::after{background:radial-gradient(ellipse 62% 58% at 50% 52%,rgba(254,253,252,.78) 0%,rgba(254,253,252,.42) 55%,rgba(254,253,252,0) 82%)}
+.hb-page .hero .hero__bg{animation-name:hbIntroL}
+@keyframes hbIntroL{from{transform:scale(1.32) rotate(-5deg);opacity:.15}to{transform:none;opacity:1}}
+.hb-page .hb-field{background-image:url("/assets/img/hero-light.jpg");mix-blend-mode:multiply;opacity:.32}
+.hb-page .hb-grain{opacity:.035;mix-blend-mode:multiply}
+.hb-page .display--hero,.hb-page .display--hero *{color:var(--hb-ink) !important;text-shadow:none !important}
+.hb-page .hero__lede{color:rgba(11,18,32,.68);text-shadow:none}
+.hb-page .hero__in > .hb-ask{box-shadow:inset 0 0 0 1px rgba(11,18,32,.14)}
+.hb-page .hb-pick__btn{box-shadow:inset 0 0 0 1px rgba(11,18,32,.14)}
+.hb-page .hb-pick.is-open .hb-pick__btn,.hb-page .hb-pick__btn:hover{box-shadow:none}
+.hb-page .hb-pick__btn:focus-visible{outline-color:var(--hb-ink)}
+/* the bar over the light picture: its dark state; solid, it takes the ground */
+.hb-page .nav:not(.is-stuck){color:var(--hb-ink)}
+.hb-page .nav:not(.is-stuck) .nav__links a,.hb-page .nav:not(.is-stuck) .nav__droptrig,
+.hb-page .nav:not(.is-stuck) .nav__brand,.hb-page .nav:not(.is-stuck) .nav__burger{color:var(--hb-ink)}
+.hb-page .nav:not(.is-stuck) .btn--ink{background:var(--hb-ink);color:#FFFFFF}
+.hb-page .nav:not(.is-stuck) .nav__search,.hb-page .nav:not(.is-stuck) .nav__search:hover{color:var(--hb-ink)}
+.hb-page .nav.is-stuck{background:var(--hb-bg)}
+.hb-page .ask-end{background:var(--hb-bg)}
