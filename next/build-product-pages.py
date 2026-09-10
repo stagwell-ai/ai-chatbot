@@ -83,7 +83,8 @@ PRODUCTS = [
         title='Hear why your customers act - at scale.',
         description='New Voices uses AI voice agents to interview real customers at scale, capturing the nuance, emotion, language, and context that written surveys and behavioral data often miss - then converting those conversations into decision-ready market intelligence.',
         url='https://newvoices.ai/',
-        image=('/assets/img/newvoices.jpg', 1400, 1680),
+        # Julian's product image (mats/from stagwell/product imaages/new voices.png, 2026-09-10)
+        image=('/assets/img/products/newvoices.jpg', 1122, 1402),
         sections=[
             ('Start with a business decision', 'Each campaign is framed around the decision you need to make; the questions, audience segments and interview flow are designed around it.'),
             ('Natural AI voice interviews', 'Scalable conversations that give respondents room to explain in their own words.'),

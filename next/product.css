@@ -47,9 +47,8 @@
    ask, and a second pill beside it competed for the eye (client). An up-right
    arrow says it leaves the page. */
 .pp-site{display:inline-flex;align-items:center;gap:6px;padding:6px 0;font-family:var(--ui);font-size:14px;font-weight:500;
-  color:rgba(255,255,255,.86);border-bottom:1px solid rgba(255,255,255,.34);
-  transition:color .25s ease,border-color .25s ease}
-.pp-site:hover{color:#FFFFFF;border-bottom-color:#FFFFFF}
+  color:rgba(255,255,255,.86);text-decoration:none;transition:color .25s ease}   /* no underline (client) */
+.pp-site:hover{color:#FFFFFF}
 .pp-site:focus-visible{outline:2px solid #FFFFFF;outline-offset:4px;border-radius:2px}
 .pp-site__ic{width:14px;height:14px;flex-shrink:0;transition:transform .3s var(--ease)}
 .pp-site:hover .pp-site__ic{transform:translate(1px,-1px)}
