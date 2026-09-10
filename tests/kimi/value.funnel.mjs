@@ -30,6 +30,9 @@ async function open(opts = {}) {
   await page.route('**/api/lead', r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, delivered: false, mode: 'mock' }) }));
   await page.goto(BASE + '/next/index.html', { waitUntil: 'load' });
   await page.waitForFunction(() => window.SAIKIMI && window.SAI && window.SAI.data && window.SAI.data.kimi);
+  /* the way-finding ships OFF (the client's order names products once, at
+     step 6); this suite turns it on to keep the variant working */
+  await page.evaluate(() => { window.SAI.data.kimi.flags.pointers = true; });
   /* listen to what the analytics layer is told, without sending anything anywhere */
   await page.evaluate(() => {
     const a = window.SAIANALYTICS; window.__tracked = [];

@@ -83,6 +83,7 @@ try {
     /* 2) their website */
     ok(s.question && s.question.id === 'website', '2) the website is asked next (' + (s.question && s.question.id) + ')');
     ok((await chips(page)).length === 0, '   with no "I\'d rather not say" chip');
+    ok((await page.$$('#agentThread .point, #agentThread .reco__card')).length === 0, '   and no product is named yet — "it jumped to 6" (client): recommendations come once, at step 6');
     ok(/yourcompany\.com/.test((await composer(page)).placeholder), '   and the composer asks for an address, not "pick one" ("' + (await composer(page)).placeholder + '")');
     await say(page, 'acme-brands.com');
     /* 3) insights, if any — none here */
@@ -102,6 +103,7 @@ try {
     await chip(page, "What they're doing right now");
     /* 6) the recommendation — before any details are asked */
     s = await st(page);
+    ok((await page.$$('#agentThread .point')).length === 0, '   no product was named before this point');
     ok((await page.$$('.reco__card--best')).length === 1, '6) the recommendation is shown');
     ok(await page.$eval('.reco__card--best .reco__name', e => /NewIntel/.test(e.textContent)), '   NewIntel, best fit');
     ok(await page.$eval('.turnb--reco .turnb__text', e => /where I'd start|fits best/.test(e.textContent)), '   under its own heading: "' + (await page.$eval('.turnb--reco .turnb__text', e => e.textContent.trim())) + '"');

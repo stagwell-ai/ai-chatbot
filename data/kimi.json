@@ -5,6 +5,8 @@
     "enabled": true,
     "llm": true,
     "contactGate": false,
+    "pointers": false,
+    "_pointersNote": "Way-finding under the questions (§4e in KIMI.md). Off at the client's request (2026-09-10): products are named once, at step 6 — the recommendation — and the fast-track form has no skip link. Turn on to show the running under each question and the skip link on the form.",
     "secondaryRecommendations": true,
     "analytics": true,
     "explainWithLlm": true

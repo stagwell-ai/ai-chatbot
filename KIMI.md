@@ -210,7 +210,13 @@ started before the press, and `kimi-flow.js` bumps an `epoch` on reset so a `sta
 fresh state (a lead that was mid-send still lands in HubSpot; its cards are simply not drawn). No
 page reload, so nothing else on the page moves. Tracked as `kimi_restarted`.
 
-## 4e. Value before the next question (way-finding)
+## 4e. Value before the next question (way-finding) — OFF
+
+**Switched off later the same day** (`flags.pointers: false`). The client, testing the nine-step
+order: "I answered #1 and instead of asking for my email, it jumped to 6 with giving
+recommendations, then went back to 2, asking for my website." Products are now named once, at
+step 6, and the fast-track form has no skip link. The code, copy and `test:value` suite stay (the
+suite turns the flag on in-page), so the variant is one flag away if the numbers argue for it.
 
 Amy (2026-09-10): "we're asking a lot of questions of the user without giving them any info …
 it feels very 'data miney' right now without giving them any value before asking for a ton of

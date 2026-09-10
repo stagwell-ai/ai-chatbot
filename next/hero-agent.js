@@ -77,6 +77,7 @@ function refocus() {
 
 const pause = ms => new Promise(r => setTimeout(r, Math.max(0, ms)));
 const copy = () => ((S.data || {}).kimi || {}).copy || {};
+const flags = () => ((S.data || {}).kimi || {}).flags || {};
 
 /* ── drawing what the flow says ─────────────────────────────────────────── */
 /* ── what the lookup found ──
@@ -137,7 +138,9 @@ function wirePointers(el, from) {
 function drawAsk(st) {
   const chips = st.suggestions.map(s => ({ label: s.label, value: s.value }));
   const onChip = chip => send(chip.value, chip.label);
-  const P = st.pointers, pk = pointerKeyOf(P);
+  /* flags.pointers is OFF: the client's order names products once, at step 6
+     ("it jumped to 6 with giving recommendations, then went back to 2") */
+  const P = flags().pointers ? st.pointers : null, pk = pointerKeyOf(P);
   if (!pk || pk === pointerKey) { H.ai(askText(st.message || ''), chips, null, onChip); return; }
   pointerKey = pk;
   /* ack → where to read → the question → its chips */
@@ -340,7 +343,7 @@ function drawForm(st) {
   formBubble = bubble;
   /* the form is the way to a tailored recommendation and a specialist — not
      the only way to the product. The page is one click away, no details asked. */
-  const P = st.pointers;
+  const P = flags().pointers ? st.pointers : null;
   if (P && P.items.length) {
     const p = P.items[0], pc = c.pointers || {};
     /* right under the button, before the small print — the small print reserves
