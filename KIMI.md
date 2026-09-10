@@ -228,6 +228,13 @@ mock, which is still nowhere durable — see §17.
 That is the whole switch: `hubspotMode()` returns `live` as soon as the token exists, so no code
 or flag changes. `HUBSPOT_MOCK=true` forces mock again if it ever needs turning off in a hurry.
 
+**Do not add `"type": "module"` to the root `package.json`.** Node suggests it in a warning when
+anything under `api/_lib/` is imported from a script; the script filters that warning for this
+reason. It would break `next/recommend.js` for the tests, the browser scripts, and both Vercel
+functions — they are compiled to CommonJS, so they would `require()` an ES module and 500 on
+every request. Tried on 2026-09-10 via an `api/_lib/package.json`; both endpoints went down and
+it was reverted within five minutes.
+
 Verified before handover by running the real script and the real lead service against a
 stand-in portal that rejects unknown properties, exactly as HubSpot does: 17 created + 1 already
 present, a wrong token fails fast, a missing scope stops at the first property with the fix

@@ -8,7 +8,19 @@
 
      HUBSPOT_ACCESS_TOKEN=pat-… node scripts/hubspot-setup.mjs [--dry-run]
    ═══════════════════════════════════════════════════════════════════════════ */
-import { PROPERTIES, GROUP } from '../api/_lib/leads/properties.js';
+/* Node reparses api/_lib/*.js as ES modules and warns about it, suggesting a
+   fix — adding "type":"module" to the root package.json — that would break
+   next/recommend.js for the tests, the browser scripts, AND both Vercel
+   functions (they are compiled to CommonJS, so they would then require() an
+   ES module and 500 on every request; tried on 2026-09-10, reverted).
+   Nothing is wrong: a DYNAMIC import lets the filter below be installed
+   first, so the reader sees the script's own output and no false alarm. */
+process.removeAllListeners('warning');
+process.on('warning', w => {
+  if (w && (w.name === 'ModuleTypelessPackageJsonWarning' || w.code === 'MODULE_TYPELESS_PACKAGE_JSON')) return;
+  console.warn(w && w.stack ? w.stack : w);
+});
+const { PROPERTIES, GROUP } = await import('../api/_lib/leads/properties.js');
 
 const token = (process.env.HUBSPOT_ACCESS_TOKEN || '').trim();
 const dry = process.argv.includes('--dry-run');
