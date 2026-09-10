@@ -591,3 +591,6 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 .mk.in :is(.mk-row,.mk-tr,.mk-f,.mk-ed,.mk-foot,.mk-hero,.mk-kv,.mk-btn):nth-child(5){transition-delay:.42s}
 @media (max-width:900px){ .hb-stack__media{aspect-ratio:4/3} }
 @media (prefers-reduced-motion:reduce){ .mk-wave i{animation:none;transform:scaleY(.7)} }
+
+/* desktop: the stacking pictures a little narrower so their panels can fill them edge to edge (client) */
+@media (min-width:901px){ .hb-stack__inner{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)} }

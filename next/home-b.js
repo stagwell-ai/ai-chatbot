@@ -331,14 +331,14 @@
   addEventListener('scroll', upd, { passive: true }); upd();
 })();
 
-/* the product panels: built at 400px, scaled to their picture (never past 1, never taller than
-   ~3/4 of it), set in from the corner; they rise in once, when first seen */
+/* the product panels: built at 400px, scaled to fill their picture's width less a small even margin
+   (client: "they fill all the width of the image"), never taller than ~7/8 of it; they rise in once, when first seen */
 (function () {
   const panels = [...document.querySelectorAll('.mk')];
   if (!panels.length) return;
   const fit = (p) => {
     const m = p.parentElement, w = m.clientWidth, h = m.clientHeight; if (!w || !h) return;
-    const inset = Math.round(Math.max(12, w * .045)), s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h * .76) / p.offsetHeight);
+    const inset = Math.round(Math.max(12, w * .045)), s = Math.min(1.5, (w - 2 * inset) / p.offsetWidth, (h * .88) / p.offsetHeight);   /* the full width of the picture, as in the references */
     p.style.transform = 'scale(' + s.toFixed(4) + ')'; p.style.left = inset + 'px'; p.style.bottom = inset + 'px';
   };
   if ('ResizeObserver' in window) {
