@@ -152,6 +152,36 @@ try {
     await ctx.close();
   }
 
+  console.log('\n▶ a long message wraps in the composer instead of bleeding off the frame');
+  {
+    const { ctx, page, state } = await open();
+    const box = () => page.$eval('#agentInput', el => ({ tag: el.tagName, h: el.clientHeight, sh: el.scrollHeight, w: el.clientWidth, sw: el.scrollWidth, line: parseFloat(getComputedStyle(el).lineHeight), rows: Math.round(el.clientHeight / parseFloat(getComputedStyle(el).lineHeight)), value: el.value }));
+    const empty = await box();
+    ok(empty.tag === 'TEXTAREA' && empty.rows === 1, 'the composer is a one-row textarea when empty (' + empty.rows + ' row)');
+    const long = 'The sizing of these big answers doesn\'t come in correctly, and it just comes in as like one enormous line that runs straight off the right-hand edge of the card so you cannot see what you are typing any more';
+    await page.type('#agentInput', long);
+    const full = await box();
+    ok(full.rows >= 2 && full.rows <= 6, 'it grows to the words (' + full.rows + ' rows)');
+    ok(full.sw <= full.w + 1, 'nothing runs off the right edge (scrollWidth ' + full.sw + ' ≤ ' + full.w + ')');
+    ok(full.sh <= full.h + 1, 'and nothing is hidden below (scrollHeight ' + full.sh + ' ≤ ' + full.h + ')');
+    const card = await page.$eval('#agentForm', f => { const r = f.getBoundingClientRect(); const i = f.querySelector('#agentInput').getBoundingClientRect(); return { inside: i.right <= r.right + 1 && i.left >= r.left - 1 }; });
+    ok(card.inside, 'the field stays inside the card');
+    /* Shift+Enter is a new line, not a send */
+    await page.keyboard.down('Shift'); await page.keyboard.press('Enter'); await page.keyboard.up('Shift');
+    await page.type('#agentInput', 'second paragraph');
+    const two = await box();
+    ok(/\nsecond paragraph$/.test(two.value) && (await page.$$('#agentThread .turnb')).length === 0, 'Shift+Enter breaks a line and sends nothing');
+    ok(two.rows > full.rows, 'the extra line adds a row (' + full.rows + ' → ' + two.rows + ')');
+    /* Enter sends, and the field is one row again */
+    await page.press('#agentInput', 'Enter');
+    await settle(page); await page.waitForTimeout(250);
+    const after = await box();
+    ok((await page.$$('#agentThread .turnb--me')).length === 1, 'Enter sends');
+    ok(after.value === '' && after.rows === 1, 'and the composer is back to one empty row (' + after.rows + ')');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
   console.log('\n▶ the contact form is not the only way to the product');
   {
     const { ctx, page, state } = await open();

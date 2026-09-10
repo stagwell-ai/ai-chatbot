@@ -343,7 +343,7 @@
       const v = (raw || '').trim();
       if (state.busy || state.done) return;
       agentSec.classList.add('is-chat');
-      state.busy = true; miniInput.value = '';
+      state.busy = true; miniInput.value = ''; grow();
       if (v) me(v);
       const d = v ? domainOf(v) : null;
       if (d) state.site = d;
@@ -408,6 +408,27 @@
             elsewhere first, and anything that steals focus later.
        Nothing is auto-focused on a touch screen: a keyboard sliding up over
        the page uninvited is worse than the caret it would explain. */
+    /* ── THE LINE GROWS WITH THE WORDS ──
+       "Spill-over text should create multiple lines on the text input, not
+       bleed off the frame of the window" (client, 2026-09-10). The field is a
+       one-row textarea; each keystroke sizes it to its text, up to six lines
+       (home.css max-height), after which it scrolls inside itself. Enter sends,
+       Shift+Enter breaks a line, as in every chat people already use. */
+    const grow = () => {
+      miniInput.style.height = 'auto';
+      const max = parseFloat(getComputedStyle(miniInput).maxHeight) || Infinity;
+      const h = miniInput.scrollHeight;
+      miniInput.style.height = Math.min(h, max) + 'px';
+      miniInput.classList.toggle('is-tall', h > max);
+    };
+    miniInput.addEventListener('input', grow);
+    miniInput.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || e.shiftKey || e.isComposing) return;
+      e.preventDefault();
+      if (!miniInput.disabled) mini.requestSubmit();
+    });
+    requestAnimationFrame(grow);
+
     if (FINE_POINTER) {
       const arrive = () => setTimeout(() => {
         const el = document.activeElement;
@@ -432,11 +453,13 @@
     window.SAIHERO = {
       me, ai, wait, esc, think,
       open() { agentSec.classList.add('is-chat'); },
-      placeholder(t) { miniInput.placeholder = t || ''; },
+      placeholder(t) { miniInput.placeholder = t || ''; grow(); },
+      /* the field is sized to its words again — after a send has emptied it */
+      grow,
       /* the chips of every earlier question stop taking taps */
       settleChips() { $$('.turnb__chips .tag', thread).forEach(o => { o.disabled = true; }); },
       /* the composer closes: the conversation ended on the form */
-      close(t) { miniInput.value = ''; miniInput.placeholder = t || ''; miniInput.disabled = true; miniInput.setAttribute('aria-disabled', 'true'); if (goBtn) goBtn.hidden = true; mini.classList.add('is-closed'); },
+      close(t) { miniInput.value = ''; miniInput.placeholder = t || ''; miniInput.disabled = true; miniInput.setAttribute('aria-disabled', 'true'); if (goBtn) goBtn.hidden = true; mini.classList.add('is-closed'); grow(); },
       focus() { miniInput.focus({ preventScroll: true }); },
       /* back to an empty box: the thread is emptied and the composer, which
          close() disabled when the conversation ended, takes typing again */
@@ -447,6 +470,7 @@
         miniInput.disabled = false;
         miniInput.removeAttribute('aria-disabled');
         miniInput.placeholder = placeholder || 'What do you need help solving?';
+        grow();
         if (goBtn) goBtn.hidden = false;
         mini.classList.remove('is-closed');
         agentSec.classList.remove('is-chat');

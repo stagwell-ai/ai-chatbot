@@ -873,8 +873,13 @@ body.chat-open{overflow:hidden}
 .askbox__line:focus-within .askbox__caret,
 .askbox__line:has(.askbox__input:not(:placeholder-shown)) .askbox__caret{opacity:0;animation:none}
 @media (prefers-reduced-motion:reduce){.askbox__caret{animation:none}}
-.askbox__input{width:100%;height:auto;border:0;background:none;outline:none;padding:0 0 0 4px;
+/* a textarea that reads as a line: no border, no resize handle, one row until
+   the words need more — home.js grows it to the text, up to six lines, then it
+   scrolls inside itself. Nothing ever runs off the frame. */
+.askbox__input{display:block;width:100%;height:auto;min-height:1.5em;max-height:calc(6 * 1.5em);margin:0;border:0;background:none;outline:none;padding:0 0 0 4px;
+  resize:none;overflow-y:hidden;overflow-wrap:anywhere;
   font-family:var(--ui);font-size:17px;font-weight:400;line-height:1.5;color:var(--ink);caret-color:var(--ink)}
+.askbox__input.is-tall{overflow-y:auto}
 .askbox__input::placeholder{color:var(--ink-4)}
 .askbox__bar{margin-top:auto;display:flex;align-items:center;justify-content:flex-end;padding-top:var(--s-6)}
 .askbox__restart{margin-right:auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px 0 10px;

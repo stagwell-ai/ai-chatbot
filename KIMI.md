@@ -240,6 +240,12 @@ short turns at the foot, and toggles `.is-more` on the thread, which fades the f
 more below (the scrollbar is hidden). The window is `min(52svh, 560px)` on a desktop so the usual
 answer fits whole; a phone keeps 38svh inside its 62svh stack. Asserted at 1360×640 and 400×860.
 
+**The composer wraps.** "Spill-over text should create multiple lines on the text input, not
+bleed off the frame of the window" (client). `#agentInput` is a one-row `<textarea>`, not an
+`<input>`; `home.js` sizes it to its text on every keystroke, up to six lines (then it scrolls
+inside itself), and back to one row after a send, on close and on Start over. Enter sends,
+Shift+Enter breaks a line; `enterkeyhint="send"` labels the phone key. Asserted in the value suite.
+
 **Every link in the thread opens a new tab.** "Anytime that we show a link in the chat history,
 it should open a new tab. Otherwise we're going to lose the whole conversation" (client). The
 pointers, the skip link, the cards' Learn more and primary CTA, and the privacy notice all carry

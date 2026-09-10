@@ -189,7 +189,10 @@ d.setAttribute('data-theme',t||sys);})();
              so the field reads as waiting to be typed in (client) -->
         <div class="askbox__line">
           <span class="askbox__caret" aria-hidden="true"></span>
-          <input class="askbox__input" id="agentInput" name="q" type="text" placeholder="What do you need help solving?" spellcheck="false">
+          <!-- a textarea, not an input: a long message wraps onto more lines
+               instead of scrolling sideways out of the frame (client). Enter
+               sends, Shift+Enter breaks a line; home.js grows it as you type -->
+          <textarea class="askbox__input" id="agentInput" name="q" rows="1" placeholder="What do you need help solving?" spellcheck="false" enterkeyhint="send"></textarea>
         </div>
         <div class="askbox__bar">
           <!-- a way back to an empty box, once there is a conversation to

@@ -393,6 +393,7 @@ form.addEventListener('submit', e => {
   const v = input.value.trim();
   if (!v) { input.focus(); return; }
   input.value = '';
+  if (H.grow) H.grow();      /* back to one line */
   send(v);
 });
 document.querySelectorAll('#agentTags .tag').forEach(b => b.addEventListener('click', () =>
