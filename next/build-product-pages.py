@@ -236,7 +236,7 @@ def page(p, home):
 
     head = home[:home.index('</head>')]
     for old, new in [
-        ('<title>Ask Stagwell</title>', f'<title>{t(name)} | Stagwell AI</title>'),
+        ('<title>Stagwell AI</title>', f'<title>{t(name)} | Stagwell AI</title>'),
         ('<meta name="description" content="Whatever the challenge, we deliver results">', f'<meta name="description" content="{a(p["title"])}">'),
         ('<link rel="canonical" href="https://stagwell.vercel.app/next">', f'<link rel="canonical" href="https://stagwell.vercel.app/next/{slug}">'),
         ('<meta property="og:title" content="Ask Stagwell">', f'<meta property="og:title" content="{a(name)} | Stagwell AI">'),
