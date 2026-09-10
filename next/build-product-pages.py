@@ -59,9 +59,14 @@ PRODUCTS = [
         slug='targeting-machine', name='The Targeting Machine',
         kind='Privacy-first audience intelligence and activation',
         hero_bg='/assets/img/products/hero-targeting-machine.jpg',   # Julian's hero picture, 2026-09-10
-        # the file shipped as its "logo.svg" is an architecture diagram, not a mark:
-        # the name is set in type until the official logo arrives
-        logo='<span class="pp-logo pp-logo--type">The Targeting Machine</span>',
+        # built 2026-09-10 to sit beside The Machine's as one family (client): the
+        # four-petal mark lifted from Julian's product image, in the brand's sky so
+        # it reads on the blue hero, and "THE TARGETING MACHINE" in Roobert — the
+        # face The Machine's logo is set in — at The Machine's own cap height, stem
+        # weight, tracking and mark-to-word spacing, on the same 100-unit canvas, so
+        # the same CSS height gives the same size. (The file shipped as its
+        # "logo.svg" is an architecture diagram, not a mark.)
+        logo='<img class="pp-logo" src="/assets/img/companies/targeting-machine/logo-lockup.png" alt="The Targeting Machine" width="963" height="100">',
         title='Turn fragmented data into audiences you can activate.',
         description="The Targeting Machine is an enterprise-grade, privacy-first audience intelligence platform that combines first-party data, third-party media data, Stagwell's proprietary consumer intelligence, and the Stagwell ID Graph to move from deeper audience understanding to activation.",
         url='https://www.themarketingcloud.com/marketplace/sats',
@@ -310,7 +315,7 @@ def page(p, home):
     <h2 class="pp-close__h">How can we help?</h2>
     <p class="pp-close__lede">Whatever the challenge, we deliver results</p>
 {chat}
-    <p class="pp-close__demo"><button type="button" class="btn btn--accent btn--lg" data-cta="session" data-where="close">Book a demo</button></p>
+    <p class="pp-close__demo"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="close">Book a demo</button></p>
   </div>
 </section>
 
