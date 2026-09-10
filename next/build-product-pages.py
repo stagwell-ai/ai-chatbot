@@ -176,7 +176,10 @@ def menu_block(current=None):
     rows = []
     for p in PRODUCTS:
         cur = ' aria-current="page"' if p['slug'] == current else ''
-        rows.append(f'          <li><a href="/next/{p["slug"]}"{cur}>{t(p["name"])}</a></li>')
+        # the same square picture and line as the bar's dropdown (client)
+        rows.append(f'          <li><a href="/next/{p["slug"]}"{cur}>'
+                    f'<img class="menu__thumb" src="/assets/img/products/thumb-{p["slug"]}.jpg" alt="" width="48" height="48" decoding="async" loading="lazy">'
+                    f'<span class="menu__ptext"><span class="menu__pname">{t(p["name"])}</span><span class="menu__pdesc">{t(p["kind"])}</span></span></a></li>')
     return ('      <!-- products:menu -->\n'
             '      <li><a href="/next/products">Products</a>\n'
             '        <ul class="menu__sub">\n' + '\n'.join(rows) + '\n        </ul>\n      </li>\n'
@@ -206,6 +209,21 @@ VIDEO_JS = '''<script>
   b.addEventListener('click', () => { v.controls = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); });
   v.addEventListener('play', () => f.classList.add('is-playing'));
   v.addEventListener('ended', () => { f.classList.remove('is-playing'); v.controls = false; v.load(); });
+})();
+</script>'''
+
+PP_CLOSE_JS = '''<script>
+/* the close's field on a product page: there is no hero chat to hand over to,
+   so the conversation opens right here, in place of the field */
+(function () {
+  const f = document.getElementById('ppAsk'), i = document.getElementById('ppAskInput'),
+        chat = document.getElementById('ask'), form = document.getElementById('agentForm'), input = document.getElementById('agentInput');
+  if (!f || !i || !chat || !form || !input) return;
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = i.value.trim(); if (!v) { i.focus(); return; }
+    f.hidden = true; chat.hidden = false; input.value = v; i.value = ''; form.requestSubmit();
+  });
 })();
 </script>'''
 
@@ -242,7 +260,34 @@ def page(p, home):
 
     i = home.index('<footer class="foot">'); footer = home[i:home.index('</footer>') + 9]
 
+    # the close: the homepage's own "How can we help?" section, duplicated as it
+    # is (client) — the bobbing dots, the turning hint, Book a demo and Call me.
+    # Its field hands over to the hero chat on the homepage (home.js scrolls up to
+    # it); these pages have no hero chat, so the form carries its own id and the
+    # conversation opens in place, in the chat hidden beside it (PP_CLOSE_JS).
+    i = home.index('<section class="ask-end" id="start">'); close = home[i:home.index('</section>', i) + 10]
+    for old, new in [('id="askEndInput"', 'id="ppAskInput"'), ('for="askEndInput"', 'for="ppAskInput"'), ('id="askEnd"', 'id="ppAsk"')]:
+        must(close, old); close = close.replace(old, new)
+    ways = '      <div class="ask-end__ways">'
+    must(close, ways)
+    # the thinking field comes out of the chat and lies under the whole section,
+    # so it moves across all of the white "How can we help?" band (client) instead
+    # of a 600x300 block pinned to the box, which looked cropped
+    canvas = '<canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>'
+    must(chat, canvas)
+    close = close.replace(ways, '      <div class="hero__in pp-ask" id="ask" hidden>\n' + chat.replace(canvas, '') + '\n      </div>\n' + ways)
+    close = close.replace('<section class="ask-end" id="start">', '<section class="ask-end" id="start">\n  ' + canvas, 1)
+
     src, w, h = p['image']
+    # a phone gets its own How it works picture where Julian made one — 16:9,
+    # the ratio the phone crops to anyway (client, 2026-09-10); the others keep
+    # the desktop picture, cropped
+    import os
+    mob = f'/assets/img/products/{p["slug"]}-mobile.jpg'
+    has_mob = os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', mob.lstrip('/')))
+    pic = f'<img src="{src}" alt="" width="{w}" height="{h}" loading="lazy" decoding="async">'
+    if has_mob:
+        pic = f'<picture><source media="(max-width:820px)" srcset="{mob}" width="1672" height="941">{pic}</picture>'
     steps = '\n'.join(
         f'        <li class="rv" style="--d:{0.06 * n:.2f}s"><b>{n + 1:02d}</b><div><h3>{t(hd)}</h3><p>{t(tx)}</p></div></li>'
         for n, (hd, tx) in enumerate(p['sections']))
@@ -286,7 +331,7 @@ def page(p, home):
       <h2 class="pp-h2 rv" style="--d:.1s">What <span>{t(name)}</span> does</h2>
     </div>
     <div class="pp-more__grid">
-      <div class="pp-more__media"><img src="{src}" alt="" width="{w}" height="{h}" loading="lazy" decoding="async"></div>
+      <div class="pp-more__media">{pic}</div>
       <ol class="pp-steps">
 {steps}
       </ol>
@@ -309,16 +354,7 @@ def page(p, home):
   </div>
 </section>
 
-<!-- the close: the homepage's own chat (home.js draws it, hero-agent.js runs the
-     conversation), then Book a demo once more -->
-<section class="pp-close">
-  <div class="hero__in pp-ask" id="ask">
-    <h2 class="pp-close__h">How can we help?</h2>
-    <p class="pp-close__lede">Whatever the challenge, we deliver results</p>
-{chat}
-    <p class="pp-close__demo"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="close">Book a demo</button></p>
-  </div>
-</section>
+{close}
 
 </main>
 '''
@@ -327,8 +363,8 @@ def page(p, home):
     out = (head + '</head>\n'
            '<!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta] click -->\n'
            f'<body class="home pp pp--{slug}{" pp--light-hero" if p.get("hero_tone") == "light" else ""}" data-lead-cta>\n\n' + symbol + '\n\n' + chrome + '\n' + body + '\n' +
-           footer + '\n\n' + scripts + '\n' + VIDEO_JS + '\n</body>\n</html>\n')
-    assert 'id="chatOver"' not in out and out.count('id="ask"') == 1 and out.count('id="agentForm"') == 1
+           footer + '\n\n' + scripts + '\n' + VIDEO_JS + '\n' + PP_CLOSE_JS + '\n</body>\n</html>\n')
+    assert 'id="chatOver"' not in out and out.count('id="ask"') == 1 and out.count('id="agentForm"') == 1 and 'id="askEnd"' not in out
     return out
 
 # ── run ─────────────────────────────────────────────────────────────────────

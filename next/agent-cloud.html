@@ -101,26 +101,26 @@ d.setAttribute('data-theme',t||sys);})();
 <!-- the menu, on a phone: under the bar, the pages then the two ways in -->
 <nav class="menu" id="navMenu" aria-label="Menu" hidden>
   <div class="menu__top">
-    <!-- on a phone the same chat-bubble button lives here; it opens the same chat -->
-    <a class="menu__search" href="#ask">
-      <svg class="ic-ask" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3.5h12A3.5 3.5 0 0 1 21.5 7v8a3.5 3.5 0 0 1-3.5 3.5h-6.6L7 21.8v-3.3H6A3.5 3.5 0 0 1 2.5 15V7A3.5 3.5 0 0 1 6 3.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10.5 6.6Q11 10.5 14.9 11Q11 11.5 10.5 15.4Q10 11.5 6.1 11Q10 10.5 10.5 6.6Z" fill="currentColor"/><path d="M16.3 6.1Q16.5 7.8 18.2 8Q16.5 8.2 16.3 9.9Q16.1 8.2 14.4 8Q16.1 7.8 16.3 6.1Z" fill="currentColor"/></svg>
-      <span>Ask Stagwell</span>
-    </a>
     <ul class="menu__links">
       <li><a href="/next/why">Why Stagwell AI</a></li>
       <!-- products:menu -->
       <li><a href="/next/products">Products</a>
         <ul class="menu__sub">
-          <li><a href="/next/the-machine">The Machine</a></li>
-          <li><a href="/next/targeting-machine">The Targeting Machine</a></li>
-          <li><a href="/next/newvoices">New Voices</a></li>
-          <li><a href="/next/agent-cloud" aria-current="page">Agent Cloud</a></li>
+          <li><a href="/next/the-machine"><img class="menu__thumb" src="/assets/img/products/thumb-the-machine.jpg" alt="" width="48" height="48" decoding="async" loading="lazy"><span class="menu__ptext"><span class="menu__pname">The Machine</span><span class="menu__pdesc">Enterprise agentic marketing operating system</span></span></a></li>
+          <li><a href="/next/targeting-machine"><img class="menu__thumb" src="/assets/img/products/thumb-targeting-machine.jpg" alt="" width="48" height="48" decoding="async" loading="lazy"><span class="menu__ptext"><span class="menu__pname">The Targeting Machine</span><span class="menu__pdesc">Privacy-first audience intelligence and activation</span></span></a></li>
+          <li><a href="/next/newvoices"><img class="menu__thumb" src="/assets/img/products/thumb-newvoices.jpg" alt="" width="48" height="48" decoding="async" loading="lazy"><span class="menu__ptext"><span class="menu__pname">New Voices</span><span class="menu__pdesc">AI voice agents and insight campaigns</span></span></a></li>
+          <li><a href="/next/agent-cloud" aria-current="page"><img class="menu__thumb" src="/assets/img/products/thumb-agent-cloud.jpg" alt="" width="48" height="48" decoding="async" loading="lazy"><span class="menu__ptext"><span class="menu__pname">Agent Cloud</span><span class="menu__pdesc">Secure AI workspace and marketing agent toolkit</span></span></a></li>
         </ul>
       </li>
       <!-- /products:menu -->
     </ul>
   </div>
   <div class="menu__acts">
+    <!-- the Ask field at the foot, over Book a demo: in reach of a thumb (client) -->
+    <a class="menu__search" href="#ask">
+      <svg class="ic-ask" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3.5h12A3.5 3.5 0 0 1 21.5 7v8a3.5 3.5 0 0 1-3.5 3.5h-6.6L7 21.8v-3.3H6A3.5 3.5 0 0 1 2.5 15V7A3.5 3.5 0 0 1 6 3.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10.5 6.6Q11 10.5 14.9 11Q11 11.5 10.5 15.4Q10 11.5 6.1 11Q10 10.5 10.5 6.6Z" fill="currentColor"/><path d="M16.3 6.1Q16.5 7.8 18.2 8Q16.5 8.2 16.3 9.9Q16.1 8.2 14.4 8Q16.1 7.8 16.3 6.1Z" fill="currentColor"/></svg>
+      <span>Ask Stagwell</span>
+    </a>
     <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
   </div>
 </nav>
@@ -186,14 +186,22 @@ d.setAttribute('data-theme',t||sys);})();
   </div>
 </section>
 
-<!-- the close: the homepage's own chat (home.js draws it, hero-agent.js runs the
-     conversation), then Book a demo once more -->
-<section class="pp-close">
-  <div class="hero__in pp-ask" id="ask">
-    <h2 class="pp-close__h">How can we help?</h2>
-    <p class="pp-close__lede">Whatever the challenge, we deliver results</p>
+<section class="ask-end" id="start">
+  <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
+  <div class="wrap ask-end__in">
+    <h2 class="display display--end rv"><span class="ln"><span class="ln__in"><span class="navy" style="font-weight:600;font-size:80px;color:#FF6D24">How can we help?</span></span></span></h2>
+    <p class="ask-end__lede rv" style="--d:.15s">Whatever the challenge, we deliver results</p>
+    <div class="ask-end__acts">
+      <form class="ask-mini rv" id="ppAsk" style="--d:.3s" autocomplete="off">
+        <label class="vh" for="ppAskInput">Ask Stagwell AI</label>
+        <span class="ask-mini__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="ask-mini__hint" aria-hidden="true"><span class="ask-mini__hint-w is-on">Maybe just start with your site.</span></span>
+        <input class="ask-mini__input" id="ppAskInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
+        <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
+      <div class="hero__in pp-ask" id="ask" hidden>
     <div class="chat">
-      <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
+      
       <!-- the field as a box, not a pill: the question sits at the top of it
            and the send disc waits on its floor -->
       <form class="askbox chat__form" id="agentForm" autocomplete="off">
@@ -226,7 +234,28 @@ d.setAttribute('data-theme',t||sys);})();
       <li><button type="button" class="tag" data-q="Measure brand impact" data-domain="business_impact"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 16V9M8.5 16V5M13.5 16v-4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.5 16H2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Measure brand impact</button></li>
       <li><button type="button" class="tag" data-q="Scale business operations" data-domain="marketing_ops"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="3" y="3" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="11.5" y="3" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11.5" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14.25 11.5v5.5M11.5 14.25h5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Scale business operations</button></li>
     </ul>
-    <p class="pp-close__demo"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="close">Book a demo</button></p>
+      </div>
+      <div class="ask-end__ways">
+        <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
+        <div class="call" id="callEnd" data-state="idle">
+          <button type="button" class="btn btn--line btn--lg btn--ic call__btn"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
+          <form class="call__form" autocomplete="off" novalidate aria-label="Call me">
+            <button type="button" class="call__x" data-close aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <label class="vh" for="callEndCode">Country code</label>
+            <select class="call__cc" id="callEndCode" aria-label="Country code"><option value="1" selected>United States / Canada (+1)</option><option value="44">United Kingdom (+44)</option><option value="972">Israel (+972)</option><option value="49">Germany (+49)</option><option value="33">France (+33)</option><option value="34">Spain (+34)</option><option value="39">Italy (+39)</option><option value="31">Netherlands (+31)</option><option value="61">Australia (+61)</option><option value="55">Brazil (+55)</option><option value="52">Mexico (+52)</option><option value="91">India (+91)</option><option value="81">Japan (+81)</option><option value="65">Singapore (+65)</option><option value="971">United Arab Emirates (+971)</option></select>
+            <span class="call__sep" aria-hidden="true"></span>
+            <label class="vh" for="callEndNum">Phone number</label>
+            <input class="call__num" id="callEndNum" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel-national" spellcheck="false">
+            <button type="submit" class="call__go" aria-label="Call me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </form>
+          <div class="call__done" role="status" aria-live="polite">
+            <button type="button" class="call__x" data-close aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <span class="call__wave" aria-hidden="true"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg></span>
+            <span class="call__status"><b class="call__line">Calling you now…</b><span class="call__to"></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -275,6 +304,20 @@ d.setAttribute('data-theme',t||sys);})();
   b.addEventListener('click', () => { v.controls = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); });
   v.addEventListener('play', () => f.classList.add('is-playing'));
   v.addEventListener('ended', () => { f.classList.remove('is-playing'); v.controls = false; v.load(); });
+})();
+</script>
+<script>
+/* the close's field on a product page: there is no hero chat to hand over to,
+   so the conversation opens right here, in place of the field */
+(function () {
+  const f = document.getElementById('ppAsk'), i = document.getElementById('ppAskInput'),
+        chat = document.getElementById('ask'), form = document.getElementById('agentForm'), input = document.getElementById('agentInput');
+  if (!f || !i || !chat || !form || !input) return;
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = i.value.trim(); if (!v) { i.focus(); return; }
+    f.hidden = true; chat.hidden = false; input.value = v; i.value = ''; form.requestSubmit();
+  });
 })();
 </script>
 </body>

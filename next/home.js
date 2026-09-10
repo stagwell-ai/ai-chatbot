@@ -216,7 +216,10 @@
       const stops = () => {
         if (stopsCache) return stopsCache;
         const c = cv.getBoundingClientRect();
-        const mid = (sel, fx, fy) => { const el = $(sel); if (!el) return { x: W * fx, y: H * fy }; const r = el.getBoundingClientRect(); return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
+        /* a hidden element counts as missing: its rect is all zeros, and a stop
+           there sent the blob off the canvas (the product pages keep the chat
+           hidden until someone types, with the field under the whole section) */
+        const mid = (sel, fx, fy) => { const el = $(sel); const r = el && el.getBoundingClientRect(); if (!r || !r.width) return { x: W * fx, y: H * fy }; return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
         stopsCache = [mid('#agentForm', .5, .9), mid('#agentTags', .4, .72), mid('#agentThread', .5, .38), { x: W * .5, y: H * .12 }];
         return stopsCache;
       };

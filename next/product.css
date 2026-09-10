@@ -95,6 +95,7 @@
 .pp-more__grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr);gap:clamp(40px,6vw,88px);align-items:start}
 .pp-more__media{border-radius:24px;overflow:hidden;background:var(--deep)}
 .pp-more__media img{width:100%;height:auto;display:block}
+.pp-more__media picture{display:block}
 .pp-steps{margin:0;padding:0;list-style:none}
 .pp-steps li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:0 16px;padding:22px 0;border-top:1px solid var(--line)}
 .pp-steps li:last-child{border-bottom:1px solid var(--line)}
@@ -132,19 +133,20 @@
 .pp-figs span{display:block;margin-top:14px;font-size:15px;line-height:1.5;color:var(--ink-2);max-width:26ch}
 .pp-proof__note{margin:clamp(44px,5vw,60px) auto 0;font-size:14px;line-height:1.55;color:var(--ink-3);max-width:62ch}
 
-/* ── the close: light, like the homepage's own close (client, 2026-09-10) —
-      white ground, the designer's orange "How can we help?", the chat box
-      with its hairline, and a dark Book a demo. It was dark while the white
-      glass starting points sat under the box; those are gone now. ──────── */
-.pp-close{position:relative;background:#FFFFFF;color:var(--ink);
-  padding:clamp(88px,11vw,150px) 0 clamp(96px,12vw,160px)}
-.pp-ask{margin-inline:auto;padding-inline:var(--gutter)}   /* .hero__in brings the centred column */
-.pp-close__h{margin:0;font-family:var(--display);font-weight:600;font-size:min(80px,8.4vw);line-height:1.02;
-  letter-spacing:-.03em;color:var(--orange)}
-.pp-close__lede{margin:20px 0 0;font-size:clamp(16px,1.25vw,19px);line-height:1.5;color:var(--ink)}
-.pp-close__demo{margin-top:clamp(36px,4vw,48px);display:flex;justify-content:center}
-
 @media (max-width:820px){
+  /* the How it works picture is 4:5 — at a phone's full width it ran ~410px
+     tall above the steps; square was still too tall (client: "HD proportion") */
+  .pp-more__media img{aspect-ratio:16/9;height:auto;object-fit:cover;object-position:center}
+  /* the hero on a phone: tighter to the bar, a title that holds three lines
+     where the words allow, the line at a reading size, and Book a demo the
+     column's width, as in the close */
+  .pp-hero{padding-top:calc(var(--nav-h) + 36px)}
+  .pp-logo,.pp-logo--mark{margin-bottom:22px}
+  .pp-eyebrow{max-width:300px;font-size:11px;letter-spacing:1.6px;line-height:1.6;text-wrap:balance}
+  .pp-title{font-size:clamp(26px,7.3vw,34px);line-height:1.12}   /* 27.4 at 375: Agent Cloud's 62 characters hold three lines */
+  .pp-lede{margin-top:18px;font-size:15px;line-height:1.6;text-wrap:pretty}
+  .pp-acts{width:100%;margin-top:28px;gap:14px}
+  .pp-acts .btn{width:100%}
   .pp-hero{padding-bottom:clamp(120px,34vw,200px)}
   .pp-film{margin-top:calc(-1 * clamp(96px,28vw,170px))}
   .pp-film__frame{border-radius:16px}
@@ -152,38 +154,12 @@
   .pp-film__play svg{width:31px;height:31px;margin-left:4px}
   .pp-more__grid{grid-template-columns:1fr}
   .pp-steps li{grid-template-columns:36px minmax(0,1fr)}
-  .pp-close__h{font-size:clamp(40px,11vw,64px)}
   .pp-figs,.pp-figs--n3,.pp-figs--n4{grid-template-columns:repeat(2,minmax(0,1fr))}
   .pp-figs--words{grid-template-columns:1fr}
   .pp-figs strong{font-size:clamp(44px,12vw,64px)}
   .pp-figs--n4 strong{font-size:clamp(34px,9vw,48px)}
   .pp-figs--words strong{font-size:clamp(22px,6vw,26px)}   /* words, not numbers: the 45px above was for figures */
 }
-
-/* ── the chat on a product page: a pill until you speak (client, 2026-09-10) ──
-   The homepage's box is tall because it is the hero. Here it closes the page,
-   so it starts as one line with fully round ends and opens into the box once
-   the conversation begins (home.js puts .is-chat on #ask). The send disc is
-   pinned to the box's floor in both states and the thread grows above the
-   line, so opening never shoves anything sideways — it only grows. */
-.pp-close .askbox{min-height:0;border-radius:32px;padding:15px 62px 15px 26px;
-  transition:border-radius .5s var(--ease),padding .5s var(--ease),box-shadow .25s ease}
-.pp-close .askbox__bar{position:absolute;right:8px;bottom:8px;margin:0;padding:0}
-.pp-close .askbox__thread{max-height:0;opacity:0;overflow:hidden;
-  transition:max-height .6s var(--ease),opacity .35s ease .12s,padding .45s var(--ease),margin .45s var(--ease)}
-.pp-close .askbox__thread:not(:empty){padding-bottom:0;margin-bottom:0;border-bottom-color:transparent}
-.pp-close #ask.is-chat .askbox{border-radius:26px;padding:22px 62px 15px 24px}
-.pp-close #ask.is-chat .askbox__thread{max-height:38svh;opacity:1;overflow-y:auto;margin-right:-38px}
-.pp-close #ask.is-chat .askbox__thread:not(:empty){padding-bottom:var(--s-7);margin-bottom:var(--s-6);border-bottom-color:var(--line)}
-@media (max-width:520px){
-  .pp-close .askbox__input{font-size:15px}
-  .pp-close .askbox{padding-left:18px;padding-right:58px}   /* the placeholder was 1px wider than its room at 375 */
-}
-
-/* the close keeps four things — the title, the line, the chat, Book a demo —
-   and the six starting points under the box come off here (client). They are
-   hidden rather than removed: home.js and hero-agent.js look for #agentTags. */
-.pp-close .chat__tags{display:none}
 
 /* ── a light hero (client, 2026-09-10) ────────────────────────────────────────
    Agent Cloud's picture is pale sky blue: white type and the transparent white
@@ -212,9 +188,26 @@ body.pp--light-hero .nav:not(.is-stuck) .nav__burger{color:var(--ink)}
 body.pp--light-hero .nav:not(.is-stuck) .btn--ink{background:var(--ink);color:#FFFFFF}
 body.pp--light-hero .nav:not(.is-stuck) .nav__search{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(11,18,32,.3)}
 body.pp--light-hero .nav:not(.is-stuck) .nav__search:hover{background:var(--ink);color:#FFFFFF}
-.pp-close .askbox{box-shadow:inset 0 0 0 1px rgba(11,18,32,.18)}
-.pp-close .askbox:focus-within{box-shadow:inset 0 0 0 1px var(--ink)}
-/* the chat's thinking field (home.js's dot grid) stays on the homepage, where it
-   plays over the dark photograph. On this white close it read as a moving block
-   of dots with hard edges — "cropped" (client) — so it is off here. */
-.pp-close .hero__think{display:none}
+
+/* ── the close: the homepage's own "How can we help?", duplicated as it is
+      (client) — the bobbing dots, the turning hint, Book a demo and Call me.
+      Everything about it is home.css's; this only seats the conversation that
+      opens in place of the field once someone types, and keeps the homepage
+      hero's extras (the thinking field, the starting points) out of it. ─── */
+body.pp .ask-end #ask{width:100%;max-width:none;margin:0;padding:0}
+body.pp .ask-end #ask .chat{width:100%;margin-top:0}
+body.pp .ask-end .chat__tags{display:none}
+/* the thinking field under the whole section (client: "I want it back… only on
+   the white section"): the section holds it, the content sits above it */
+body.pp .ask-end{position:relative;overflow:hidden}
+body.pp .ask-end > .hero__think{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+body.pp .ask-end > .ask-end__in{position:relative;z-index:1}
+
+/* The Targeting Machine: its picture runs light cyan in the top-left, right under
+   the bar's Stagwell AI mark, and the mark's teal middle bar disappeared into it
+   (1.4:1). A soft navy shade from that corner only (client) — ~.6 where the logo
+   sits, gone by the middle — lifts the teal to ~3:1 and the white to ~10:1. */
+body.pp--targeting-machine .pp-hero--photo::before{background:
+    radial-gradient(ellipse 45% 60% at 0% 0%,rgba(4,34,52,.66) 0%,rgba(4,34,52,.45) 30%,rgba(4,34,52,0) 100%),
+    linear-gradient(180deg,rgba(7,20,29,.32) 0%,rgba(7,20,29,.10) 38%,rgba(7,20,29,0) 70%),
+    var(--hero-bg) center / cover no-repeat}
