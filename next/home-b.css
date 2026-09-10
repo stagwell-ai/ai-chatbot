@@ -610,3 +610,9 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 .mk-big svg{width:26px;height:26px}
 .mk-hd{min-height:2.8em}
 @media (prefers-reduced-motion:reduce){ .mk-pop{animation:none} }
+
+/* the waveform keeps its bars side by side (the tile's grid rule had stacked them) */
+.mk-big > .mk-wave{display:flex;align-items:center;justify-content:center;gap:3px}
+.mk-big > .mk-wave.is-off{display:none !important}
+/* Agent Cloud: one row that keeps changing (client: "three columns, one row") */
+.mk-who{display:inline-flex;align-items:center;gap:9px}
