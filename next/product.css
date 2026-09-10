@@ -61,19 +61,17 @@
 .pp-site:hover .pp-site__ic{transform:translate(1px,-1px)}
 
 /* ── the film: rises out of the hero onto the white, 16:9, poster first; the
-      video only downloads when someone presses play (preload="none"). No .rv
-      on anything around it — a reveal animating opacity/transform on an
-      ancestor kills the play disc's backdrop-filter. ───────────────────── */
+      video only downloads when someone presses play (preload="none"). No
+      shadow and no blur on it or its play disc (client). ────────────────── */
 .pp-film{position:relative;padding:0 var(--gutter);margin-top:calc(-1 * clamp(160px,20vw,300px))}
 .pp-film__frame{position:relative;max-width:1160px;margin:0 auto;aspect-ratio:16/9;border-radius:24px;overflow:hidden;
-  background:#000000;box-shadow:0 40px 90px rgba(7,20,29,.32)}
+  background:#000000}   /* no drop shadow (client) */
 .pp-film video{width:100%;height:100%;display:block;object-fit:cover}
 .pp-film__play{position:absolute;inset:0;margin:auto;width:72px;height:72px;border-radius:50%;display:grid;place-items:center;
-  color:#FFFFFF;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.42);
-  -webkit-backdrop-filter:blur(16px) saturate(1.15);backdrop-filter:blur(16px) saturate(1.15);cursor:pointer;
+  color:#FFFFFF;background:rgba(7,20,29,.34);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);cursor:pointer;   /* no blur (client): a darker glass reads over bright frames without it */
   transition:transform .35s var(--ease),background-color .25s ease,opacity .25s ease}
 .pp-film__play svg{width:40px;height:40px;margin-left:5px}   /* a smaller disc, a bigger triangle (client); its weight sits left of its box */
-.pp-film__play:hover{transform:scale(1.06);background:rgba(255,255,255,.26)}
+.pp-film__play:hover{transform:scale(1.06);background:rgba(7,20,29,.52)}
 .pp-film__play:focus-visible{outline:2px solid #FFFFFF;outline-offset:4px}
 .pp-film.is-playing .pp-film__play{opacity:0;pointer-events:none;transform:scale(.9)}
 
@@ -132,9 +130,7 @@
   padding:clamp(88px,11vw,150px) 0 clamp(96px,12vw,160px)}
 .pp-close::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(60% 60% at 50% -10%,rgba(0,156,189,.34) 0%,rgba(0,156,189,0) 70%),
-    radial-gradient(40% 50% at 8% 110%,rgba(255,109,36,.20) 0%,rgba(255,109,36,0) 70%),
-    linear-gradient(180deg,#0A2230 0%,#07141D 100%)}
+    linear-gradient(180deg,#0A2230 0%,#07141D 100%)}   /* the soft teal and orange glows came off: "no background blur" (client) */
 .pp-ask{margin-inline:auto;padding-inline:var(--gutter)}   /* .hero__in brings the centred column */
 .pp-close__h{margin:0;font-family:var(--display);font-weight:600;font-size:min(80px,8.4vw);line-height:1.02;
   letter-spacing:-.03em;color:var(--orange)}
