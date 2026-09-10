@@ -503,3 +503,7 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
   .hb-page .ask-end{padding-bottom:56px}
   .hb-foot{padding-top:64px}
 }
+
+/* the chat overlay's title in B's voice — Roobert Regular like the hero, not bold (client: "too bold") */
+.hb-page .chat-over .chat-over__title,.hb-page .chat-over .chat-over__title *{font-weight:400;letter-spacing:-.04em}
+.hb-page .chat-over__title em{color:#009CBD}
