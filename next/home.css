@@ -1195,22 +1195,22 @@ body.chat-open{overflow:hidden}
 .nav__links > li{display:flex;align-items:center}
 .nav__links > li > a,.nav__droptrig{display:inline-flex;align-items:center;line-height:21px}
 
-/* ── Book a demo: the chat's send arrow slides in at its left on hover (client,
-   2026-09-10). The same drawing as the send buttons (24-grid, 1.8 stroke), as a
+/* ── Book a demo and Learn more (.btn--go): the chat's send arrow slides in at
+   the RIGHT of the words on hover (client, 2026-09-10; first set at the left). The same drawing as the send buttons (24-grid, 1.8 stroke), as a
    mask so it takes the button's colour. The button keeps its width: the arrow
    and its gap come out of the side padding (18 + 10 = 28 → 14 a side), so a
    centred row never jumps. Mouse only — a finger has no hover. */
 @media (hover:hover) and (pointer:fine){
-  .btn[data-cta="session"]{transition:background-color .25s ease,color .25s ease,transform .3s var(--ease),padding .38s var(--ease)}
-  .btn[data-cta="session"]::before{content:"";flex-shrink:0;width:0;height:18px;margin-right:-10px;opacity:0;background:currentColor;
+  .btn:is([data-cta="session"],.btn--go){transition:background-color .25s ease,color .25s ease,transform .3s var(--ease),padding .38s var(--ease)}
+  .btn:is([data-cta="session"],.btn--go)::before{content:"";order:2;flex-shrink:0;width:0;height:18px;margin-left:-10px;opacity:0;background:currentColor;
     -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") right center / 18px 18px no-repeat;
             mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") right center / 18px 18px no-repeat;
     transition:width .38s var(--ease),margin .38s var(--ease),opacity .25s ease}
-  .btn[data-cta="session"]:hover,.btn[data-cta="session"]:focus-visible{padding-left:14px;padding-right:14px}
-  .btn--lg[data-cta="session"]:hover,.btn--lg[data-cta="session"]:focus-visible{padding-left:20px;padding-right:20px}
-  .btn[data-cta="session"]:hover::before,.btn[data-cta="session"]:focus-visible::before{width:18px;margin-right:0;opacity:1}
+  .btn:is([data-cta="session"],.btn--go):hover,.btn:is([data-cta="session"],.btn--go):focus-visible{padding-left:14px;padding-right:14px}
+  .btn--lg:is([data-cta="session"],.btn--go):hover,.btn--lg:is([data-cta="session"],.btn--go):focus-visible{padding-left:20px;padding-right:20px}
+  .btn:is([data-cta="session"],.btn--go):hover::before,.btn:is([data-cta="session"],.btn--go):focus-visible::before{width:18px;margin-left:0;opacity:1}
 }
-@media (prefers-reduced-motion:reduce){.btn[data-cta="session"],.btn[data-cta="session"]::before{transition:none}}
+@media (prefers-reduced-motion:reduce){.btn:is([data-cta="session"],.btn--go),.btn:is([data-cta="session"],.btn--go)::before{transition:none}}
 
 /* ── the hero on a phone (client, 2026-09-10: "the title breaks into five
    lines"). Three lines, set by hand where the words part — "Agentic solutions /
@@ -1282,3 +1282,29 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .menu__group .menu__sub{margin:0}
 .menu__links > li > a.menu__all{justify-content:flex-start;gap:8px;padding:12px 0 16px;font-size:15px;font-weight:600}
 .menu__links > li > a.menu__all::after{width:16px;height:16px;background:var(--ink);-webkit-mask-size:16px 16px;mask-size:16px 16px}
+
+/* ── Why Stagwell AI: the four cards made one family (client, 2026-09-10) ─────
+   The designer's first card carried a text-shadow (the "drop shadow" on its
+   title), its own gap and position, and the first two titles ran 26px against
+   the others' 24 — all inline, all gone. One size and colour for the four
+   titles here, and each led by its own mark: a teal glyph in a pale teal
+   square, the 24-grid 1.8 stroke of the site's other icons. */
+.why .why__head{display:flex;align-items:center;gap:14px}
+.why .why__ic{width:48px;height:48px;flex-shrink:0;border-radius:14px;display:grid;place-items:center;
+  background:rgba(0,156,189,.10);color:#009CBD}
+.why .why__ic svg{width:24px;height:24px;display:block}
+.why .why__t{font-size:26px;color:#009CBD}
+@media (max-width:820px){
+  .why .why__ic{width:42px;height:42px;border-radius:12px}
+  .why .why__ic svg{width:22px;height:22px}
+  .why .why__t{font-size:22px}
+}
+
+/* ── the bar's chat button, made Book a demo's twin (client, 2026-09-10: "not
+   the same style"). It was a ghost ring beside a filled pill. Now it takes the
+   pill's fill in every state: white with an ink glyph over the picture, ink
+   with a white glyph once the bar is white — no ring in either. */
+.nav__search{background:var(--ink);color:#FFFFFF;box-shadow:none}
+.nav__search:hover{background:#000000;color:#FFFFFF}
+.nav:not(.is-stuck) .nav__search{background:#FFFFFF;color:var(--ink);box-shadow:none}
+.nav:not(.is-stuck) .nav__search:hover{background:#FFFFFF;color:var(--ink)}

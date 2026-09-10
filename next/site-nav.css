@@ -167,3 +167,13 @@ html[data-theme="dark"] body.vProducts #nav:not(.is-stuck) .btn--dark{
   background:#FFFFFF !important;color:#0B171E !important}
 html[data-theme="dark"] body.vProducts #nav:not(.is-stuck) .nav__search:hover{
   background:#FFFFFF !important;color:#0B171E !important}
+
+/* ── the chat button as Book a demo's twin (client, 2026-09-10): the pill's
+   fill in every state, no ring — ink with a white glyph on the white bar,
+   white with an ink glyph over the picture, the light pill in the dark theme */
+html[data-theme] body #nav .nav__search{background:var(--ink,#0B171E) !important;color:#FFFFFF !important;box-shadow:none !important}
+html[data-theme] body #nav .nav__search:hover{background:#000000 !important;color:#FFFFFF !important}
+html[data-theme="dark"] body #nav .nav__search,
+html[data-theme="dark"] body #nav .nav__search:hover{background:var(--ink,#E9EEF3) !important;color:var(--dk-ground,#070D14) !important;box-shadow:none !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search,
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search:hover{background:#FFFFFF !important;color:#0B171E !important;box-shadow:none !important}
