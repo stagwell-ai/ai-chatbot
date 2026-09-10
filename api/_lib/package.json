@@ -1,4 +1,0 @@
-{
-  "_comment": "Everything under api/_lib is ES modules. Node decides a .js file's module type from the NEAREST package.json, and the root one deliberately has no \"type\" (next/*.js are classic browser scripts, and next/recommend.js is require()d by the tests). Without this file Node reparses these as ESM with a warning that tells the reader to add \"type\":\"module\" to the ROOT package.json — which would break both of those. One line here, no dependencies, nothing to install.",
-  "type": "module"
-}
