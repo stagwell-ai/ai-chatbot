@@ -99,3 +99,7 @@
   .pl .ptoc__label,.pl .prodgroup__pic{transition:none;filter:none}
   .pl .ptoc__panel,.pl .ptoc__sheet{animation:none}
 }
+
+/* until products.js has drawn the list, it keeps a screen's height, so the
+   close and the footer never flash up under the hero and then jump away */
+.pl #productsRoot:empty{min-height:100vh}

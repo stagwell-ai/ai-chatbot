@@ -279,28 +279,9 @@
 
   function pageHTML(model) {
     return `
-      <!-- the product pages' hero, on the Stagwell gradient (client, 2026-09-10):
-           a short line under the title, Book a demo the one button, the
-           conversation a link to the chat at the foot; the long paragraph
-           moves under the hero, as on the product pages. No .rv here — this is
-           rendered after home.js starts watching, so it would never be shown. -->
-      <section class="pp-hero pl-hero">
-        <div class="pp-wrap pp-hero__in">
-          <p class="pp-eyebrow">The Stagwell Marketing Cloud</p>
-          <h1 class="pp-title">Every product in the suite, grouped by the problem it solves.</h1>
-          <p class="pp-lede">Start with the problem; the product follows.</p>
-          <div class="pp-acts">
-            <button type="button" class="btn btn--accent btn--lg" data-cta="demo">Book a demo</button>
-            <a class="pp-site" href="#start">Find my fit in a conversation<svg class="pp-site__ic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          </div>
-        </div>
-      </section>
-      <section class="pp-about pl-about">
-        <div class="pp-wrap">
-          <p class="pp-about__text">Brand tracking, competitive benchmarking, consumer research, creator programs, AI-search visibility, reputation monitoring, audience activation and voice agents, each built by a team that does this and nothing else.</p>
-        </div>
-      </section>
-
+      <!-- the hero and its paragraph are in the page's own HTML now
+           (build-product-pages.py), so they paint with the first frame instead
+           of after the data loads (the flash the client saw). -->
       ${model ? contentsHTML(model.ordered) : ''}
 
       <div class="prodbody">

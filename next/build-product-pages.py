@@ -254,7 +254,7 @@ def page(p, home):
         ('<title>Stagwell AI</title>', f'<title>{t(name)} | Stagwell AI</title>'),
         ('<meta name="description" content="Whatever the challenge, we deliver results">', f'<meta name="description" content="{a(p["title"])}">'),
         ('<link rel="canonical" href="https://stagwell.vercel.app/">', f'<link rel="canonical" href="https://stagwell.vercel.app/{slug}">'),
-        ('<meta property="og:title" content="Ask Stagwell">', f'<meta property="og:title" content="{a(name)} | Stagwell AI">'),
+        ('<meta property="og:title" content="Stagwell AI">', f'<meta property="og:title" content="{a(name)} | Stagwell AI">'),
         ('<meta property="og:description" content="Whatever the challenge, we deliver results">', f'<meta property="og:description" content="{a(p["title"])}">'),
         ('<meta property="og:url" content="https://stagwell.vercel.app/">', f'<meta property="og:url" content="https://stagwell.vercel.app/{slug}">'),
         ('<link rel="stylesheet" href="/next/home.css">', '<link rel="stylesheet" href="/next/home.css">\n<link rel="stylesheet" href="/next/product.css">'),
@@ -440,7 +440,7 @@ def book_page(home):
         ('<title>Stagwell AI</title>', '<title>Book a demo | Stagwell AI</title>'),
         ('<meta name="description" content="Whatever the challenge, we deliver results">', '<meta name="description" content="Book a demo: thirty minutes with the team who runs the product, walking through it against your brand.">'),
         ('<link rel="canonical" href="https://stagwell.vercel.app/">', '<link rel="canonical" href="https://stagwell.vercel.app/book">'),
-        ('<meta property="og:title" content="Ask Stagwell">', '<meta property="og:title" content="Book a demo | Stagwell AI">'),
+        ('<meta property="og:title" content="Stagwell AI">', '<meta property="og:title" content="Book a demo | Stagwell AI">'),
         ('<meta property="og:description" content="Whatever the challenge, we deliver results">', '<meta property="og:description" content="Book a demo: thirty minutes with the team who runs the product, walking through it against your brand.">'),
         ('<meta property="og:url" content="https://stagwell.vercel.app/">', '<meta property="og:url" content="https://stagwell.vercel.app/book">'),
         ('<link rel="stylesheet" href="/next/home.css">', '<link rel="stylesheet" href="/next/home.css">\n<link rel="stylesheet" href="/next/product.css">'),
@@ -454,6 +454,28 @@ def book_page(home):
     assert out.count('id="bookForm"') == 1 and out.count('id="navBurger"') == 1
     return out
 
+# the listing's hero and paragraph, in the page itself so they paint with the
+# first frame (they were drawn by products.js after the data loaded, and the
+# close and footer flashed up under the bar first: client, 2026-09-10)
+LISTING_HERO = '''
+      <section class="pp-hero pl-hero">
+        <div class="pp-wrap pp-hero__in">
+          <p class="pp-eyebrow">The Stagwell Marketing Cloud</p>
+          <h1 class="pp-title">Every product in the suite, grouped by the problem it solves.</h1>
+          <p class="pp-lede">Start with the problem; the product follows.</p>
+          <div class="pp-acts">
+            <button type="button" class="btn btn--accent btn--lg" data-cta="demo">Book a demo</button>
+            <a class="pp-site" href="#start">Find my fit in a conversation<svg class="pp-site__ic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+        </div>
+      </section>
+      <section class="pp-about pl-about">
+        <div class="pp-wrap">
+          <p class="pp-about__text rv">Brand tracking, competitive benchmarking, consumer research, creator programs, AI-search visibility, reputation monitoring, audience activation and voice agents, each built by a team that does this and nothing else.</p>
+        </div>
+      </section>
+'''
+
 def listing_page(home):
     """/products, built like a product page (client, 2026-09-10: "not the
     same footer as the home page… not the same final CTA… the background not the
@@ -466,7 +488,7 @@ def listing_page(home):
         ('<title>Stagwell AI</title>', '<title>Every product | Stagwell AI</title>'),
         ('<meta name="description" content="Whatever the challenge, we deliver results">', f'<meta name="description" content="{desc}">'),
         ('<link rel="canonical" href="https://stagwell.vercel.app/">', '<link rel="canonical" href="https://stagwell.vercel.app/products">'),
-        ('<meta property="og:title" content="Ask Stagwell">', '<meta property="og:title" content="Every product | Stagwell AI">'),
+        ('<meta property="og:title" content="Stagwell AI">', '<meta property="og:title" content="Every product | Stagwell AI">'),
         ('<meta property="og:description" content="Whatever the challenge, we deliver results">', f'<meta property="og:description" content="{desc}">'),
         ('<meta property="og:url" content="https://stagwell.vercel.app/">', '<meta property="og:url" content="https://stagwell.vercel.app/products">'),
         ('<link rel="stylesheet" href="/next/home.css">', '<link rel="stylesheet" href="/next/home.css">\n<link rel="stylesheet" href="/next/product.css">\n<link rel="stylesheet" href="/next/listing.css">'),
@@ -491,7 +513,7 @@ def listing_page(home):
     i = home.index('<footer class="foot">'); footer = home[i:home.index('</footer>') + 9]
     home_js = re.findall(r'<script src="/next/([^"]+)"></script>', home[home.index('<body'):])
     scripts = '\n'.join(f'<script src="/next/{f}"></script>' for f in home_js + ['products.js', 'prodtoc.js'])
-    body = ('<main id="top" class="pl">\n  <div id="productsRoot"><!-- products.js renders the list here --></div>\n</main>\n\n' + close)
+    body = ('<main id="top" class="pl">\n' + LISTING_HERO + '\n  <div id="productsRoot"><!-- products.js renders the list here --></div>\n</main>\n\n' + close)
     out = (head + '</head>\n<body class="home pp pl-page" data-lead-cta>\n\n' + symbol + '\n\n' + chrome + '\n' + body + '\n' +
            footer + '\n\n' + scripts + '\n' + PP_CLOSE_JS + '\n</body>\n</html>\n')
     assert out.count('id="productsRoot"') == 1 and out.count('id="ask"') == 1 and out.count('id="navBurger"') == 1 and 'endThink' not in out
@@ -534,7 +556,7 @@ def frame(home, *, title, desc, path, body_class, body, css=('product.css',), ex
         ('<title>Stagwell AI</title>', f'<title>{t(title)}</title>'),
         ('<meta name="description" content="Whatever the challenge, we deliver results">', f'<meta name="description" content="{a(desc)}">'),
         ('<link rel="canonical" href="https://stagwell.vercel.app/">', f'<link rel="canonical" href="https://stagwell.vercel.app{path}">'),
-        ('<meta property="og:title" content="Ask Stagwell">', f'<meta property="og:title" content="{a(title)}">'),
+        ('<meta property="og:title" content="Stagwell AI">', f'<meta property="og:title" content="{a(title)}">'),
         ('<meta property="og:description" content="Whatever the challenge, we deliver results">', f'<meta property="og:description" content="{a(desc)}">'),
         ('<meta property="og:url" content="https://stagwell.vercel.app/">', f'<meta property="og:url" content="https://stagwell.vercel.app{path}">'),
         ('<link rel="stylesheet" href="/next/home.css">', '<link rel="stylesheet" href="/next/home.css">' + ''.join(f'\n<link rel="stylesheet" href="/next/{c}">' for c in css)),
