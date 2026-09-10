@@ -157,3 +157,8 @@
   .pp-close .askbox__input{font-size:15px}
   .pp-close .askbox{padding-left:18px;padding-right:58px}   /* the placeholder was 1px wider than its room at 375 */
 }
+
+/* the close keeps four things — the title, the line, the chat, Book a demo —
+   and the six starting points under the box come off here (client). They are
+   hidden rather than removed: home.js and hero-agent.js look for #agentTags. */
+.pp-close .chat__tags{display:none}
