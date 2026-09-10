@@ -80,6 +80,28 @@
   /* whole word or phrase, plural-tolerant, never inside a longer word */
   const kwRe = kw => new RegExp('(?<![a-z0-9+])' + escRe(norm(kw)) + 's?(?![a-z0-9])');
 
+  /* ── ECLIPSE ──
+     Every intent that hits is returned, and two intents is what puts two
+     products neck and neck. So an intent whose ONLY evidence is a fragment of
+     another intent's longer phrase has not found a second need — it has found
+     part of the first. "answer engine optimisation" is the influence intent;
+     the measuring intent's "answer engine" inside it is not a second signal.
+
+     An intent is eclipsed only when EVERY term it matched sits, whole-word,
+     inside a strictly longer term another intent matched. One term of its own
+     anywhere and it survives, so a genuinely two-sided sentence still comes
+     back as two intents. Strictly-longer makes mutual eclipse impossible, so
+     the result can never come back empty. (engine.js carries the same rule for
+     the older router; this is the same idea in the scorer.) */
+  function containsPhrase(hay, needle) {
+    try { return new RegExp('(?<![a-z0-9])' + escRe(needle) + '(?![a-z0-9])').test(hay); }
+    catch (e) { return false; }
+  }
+  function eclipsed(entry, all) {
+    return all.some(other => other.id !== entry.id && entry.terms.every(kw =>
+      other.terms.some(t => t.length > kw.length && containsPhrase(t, kw))));
+  }
+
   /* every intent the text touches, strongest first — the longest keyword that
      hit, then how many hit, then taxonomy order. `explicit` is false: words
      the visitor typed are read, not chosen from a list. */
@@ -89,14 +111,17 @@
     const out = [];
     intentsOf(data).forEach((intent, order) => {
       let longest = 0, hits = 0, term = null;
+      const terms = [];
       list(intent.keywords).forEach(kw => {
         if (!kw) return;
+        const norm_kw = norm(kw);
         let re; try { re = kwRe(kw); } catch (e) { return; }
-        if (re.test(t)) { hits++; if (kw.length > longest) { longest = kw.length; term = kw; } }
+        if (re.test(t)) { hits++; terms.push(norm_kw); if (kw.length > longest) { longest = kw.length; term = kw; } }
       });
-      if (hits) out.push({ id: intent.id, explicit: false, term, longest, hits, order });
+      if (hits) out.push({ id: intent.id, explicit: false, term, longest, hits, order, terms });
     });
     return out
+      .filter(d => !eclipsed(d, out))
       .sort((a, b) => (b.longest - a.longest) || (b.hits - a.hits) || (a.order - b.order))
       .map(x => ({ id: x.id, explicit: false, term: x.term }));
   }

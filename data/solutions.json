@@ -510,6 +510,7 @@
           "competitive_ai_visibility"
         ],
         "secondary": [
+          "ai_search_influence",
           "competitive_benchmarking",
           "reputation_risk",
           "brand_health"
@@ -933,35 +934,35 @@
     {
       "id": "search_plus",
       "name": "Search+",
-      "positioning": "Stagwell Search+ is the enterprise OS for Brand Orchestration across Paid, Owned and Earned media. Its agentic architecture helps brands detect, predict, shape and prove performance across AI Search Experiences, including ChatGPT, Gemini, Claude, Grok, DeepSeek and emerging AI interfaces.",
+      "positioning": "Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.",
       "whoFor": null,
-      "shownWhen": "Listed on /products in the \"Newly added\" group. Positioning is the client's own, from the Stagwell Search+ ICP one-pager (2026-09-10); who-for and next step still to come.",
+      "shownWhen": "B: domain=ai_visibility, where it is the INFLUENCE half - GEOPulse measures how AI answers describe you, Search+ changes it. Listed on /products in the \"Newly added\" group.",
       "nextStep": "Demo",
       "companions": [],
       "url": null,
       "signupUrl": null,
       "valueProps": [
-        "Brand Orchestration across Paid, Owned and Earned",
-        "Detect, predict, shape and prove performance",
-        "AI Search Experiences",
-        "ChatGPT, Gemini, Claude, Grok, DeepSeek"
+        "AI search representation",
+        "Influence how AI recommends you",
+        "ChatGPT, Gemini, Perplexity, Grok"
       ],
       "lockup": null,
       "active": true,
-      "cardDescription": "The enterprise OS for brand orchestration across paid, owned and earned media, including AI search experiences.",
+      "cardDescription": "Influences how your brand is represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.",
       "capabilityTags": [
-        "Brand orchestration across paid, owned and earned",
-        "AI search visibility",
-        "Performance prediction and proof"
+        "AI search representation",
+        "Influence how AI recommends you",
+        "ChatGPT, Gemini, Perplexity, Grok"
       ],
       "intentTags": {
         "primary": [
+          "ai_search_influence",
           "brand_orchestration"
         ],
         "secondary": [
           "ai_search_visibility",
+          "competitive_ai_visibility",
           "media_planning",
-          "marketing_operations",
           "campaign_measurement"
         ]
       },
@@ -986,7 +987,8 @@
       "visual": {
         "logoKey": "search_plus",
         "lockup": null
-      }
+      },
+      "sourceNote": "Positioning is the client's own words, 2026-09-10: \"Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity, Grok, etc.\" It supersedes the Stagwell Search+ ICP one-pager line used earlier the same day, kept here so nothing is lost: \"Stagwell Search+ is the enterprise OS for Brand Orchestration across Paid, Owned and Earned media. Its agentic architecture helps brands detect, predict, shape and prove performance across AI Search Experiences, including ChatGPT, Gemini, Claude, Grok, DeepSeek and emerging AI interfaces.\" Who it is for and the next step are still to come. Confirm before client use. Routing keeps brand_orchestration as a lead signal so the paid/owned/earned path still reaches Search+: the new line does not mention it, but the one-pager it replaces did, and no one has said the capability is gone. Say so and it comes out."
     },
     {
       "id": "id_graph",

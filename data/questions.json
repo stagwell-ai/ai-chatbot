@@ -1162,14 +1162,14 @@
       },
       {
         "id": "ai_visibility_focus",
-        "purpose": "GEOPulse vs Search+",
+        "purpose": "GEOPulse (measure how AI answers describe you) vs Search+ (change it)",
         "field": "intent",
         "priority": 70,
         "prompt": "What about AI answers matters most?",
         "suggestions": [
           {
             "id": "recommends",
-            "label": "Whether AI recommends us",
+            "label": "Seeing how AI describes us today",
             "value": "ai_search_visibility"
           },
           {
@@ -1178,9 +1178,9 @@
             "value": "competitive_ai_visibility"
           },
           {
-            "id": "shape",
-            "label": "Shaping it across paid, owned and earned",
-            "value": "brand_orchestration"
+            "id": "influence",
+            "label": "Changing how AI represents us",
+            "value": "ai_search_influence"
           }
         ],
         "askWhen": {

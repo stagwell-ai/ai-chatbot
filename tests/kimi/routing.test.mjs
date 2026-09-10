@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { DATA, R, readText, walk } from './_data.mjs';
+import { DATA, R, Q, readText, walk } from './_data.mjs';
 
 const top = reco => reco.primary;
 
@@ -183,4 +183,53 @@ test('every contact request has copy for the form it opens', () => {
     assert.ok(b && b.message && b.title && b.submit && b.closed, 'missing fastTrack copy for ' + id);
     assert.ok(b.message.length > 30 && !/\{/.test(b.title), id);
   });
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GEOPULSE vs SEARCH+ — two products on the same ground, told apart by what
+   the visitor wants DONE about it. Client, 2026-09-10: "Stagwell Search+ helps
+   brands influence how they are represented and recommended inside AI search
+   tools like ChatGPT, Gemini, Perplexity, Grok, etc." GEOPulse measures how
+   AI answers describe you; Search+ changes it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+test('measuring AI answers is GEOPulse; changing them is Search+', () => {
+  const top = t => readText(t).primary;
+  ['is ChatGPT recommending us or our rivals', 'track how AI describes our brand',
+   'what does ChatGPT say about our brand', 'how do competitors appear in AI answers'
+  ].forEach(t => assert.equal(top(t), 'geopulse', t));
+  ['we need answer engine optimisation', 'can you help me improve my ai search results',
+   'how do we get recommended by AI', 'we want to rank in ChatGPT'
+  ].forEach(t => assert.equal(top(t), 'search_plus', t));
+});
+
+test('a sentence carrying both sides keeps both products in the running, and the question that separates them is asked', () => {
+  const r = readText('we want to influence what AI says about us');
+  assert.ok(r.candidates.includes('geopulse') && r.candidates.includes('search_plus'), r.candidates.join(','));
+  const st = { primaryGoal: null, intents: R.keywordIntents('we want to influence what AI says about us', DATA),
+    askedQuestionIds: ['website', 'role'], website: 'x.com', role: 'c_suite', companySize: 'enterprise' };
+  assert.equal(Q.selectQuestion(st, r, DATA).id, 'ai_visibility_focus');
+});
+
+test('eclipse: an intent whose only evidence sits inside another intent\'s longer phrase is a fragment, not a second need', () => {
+  /* "answer engine" is a keyword of the measuring intent and sits inside the
+     influence intent's "answer engine optimisation" — one need, not two */
+  const ids = R.keywordIntents('we need answer engine optimisation', DATA).map(i => i.id);
+  assert.deepEqual(ids, ['ai_search_influence']);
+  /* but a genuinely two-sided sentence still comes back as two */
+  const both = R.keywordIntents('we want to influence what AI says about us', DATA).map(i => i.id).sort();
+  assert.deepEqual(both, ['ai_search_influence', 'ai_search_visibility']);
+});
+
+test('the Search+ entry says what the client says it says', () => {
+  const p = R.productById('search_plus', DATA);
+  assert.match(p.positioning, /influence how they are represented and recommended inside AI search tools/);
+  assert.match(p.cardDescription, /ChatGPT, Gemini, Perplexity and Grok/);
+  /* AI-search influence leads; brand orchestration stays a lead signal so the
+     paid/owned/earned path still reaches it (the one-pager's claim, not
+     retracted) */
+  assert.equal(p.intentTags.primary[0], 'ai_search_influence');
+  assert.ok(p.intentTags.primary.includes('brand_orchestration'));
+  /* the line it replaced is kept, so nothing is lost */
+  assert.match(p.sourceNote, /supersedes the Stagwell Search\+ ICP one-pager/);
+  assert.ok(p.capabilityTags.every(t => t.length <= 40), 'card chips stay short: ' + p.capabilityTags.join(' | '));
 });

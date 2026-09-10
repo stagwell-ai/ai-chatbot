@@ -108,6 +108,19 @@ Goal → product coverage ("figure out a good way to map to everything"):
 A product outside a goal's list can still win on what the visitor says (intent points beat
 the goal bonus).
 
+**GEOPulse measures, Search+ influences.** Both live on AI search, so the taxonomy carries two
+intents rather than one: `ai_search_visibility` (seeing how AI answers describe you today) leads
+to GEOPulse, `ai_search_influence` (changing it) to Search+. Each holds the other as a secondary
+tag, so a sentence carrying both keeps both in the running and the `ai_visibility_focus` question
+settles it in one tap. Search+ keeps `brand_orchestration` as a second lead signal so the
+paid/owned/earned path still reaches it — the client's new definition does not mention it, but
+the ICP one-pager it replaces did and nobody has said the capability is gone.
+
+**Eclipse.** An intent whose every matched term sits inside another intent's longer phrase is a
+fragment, not a second need: "answer engine optimisation" is influence, and the measuring
+intent's "answer engine" inside it is not a second signal. `next/recommend.js`, mirroring the
+rule `engine.js` already carried for the older router.
+
 ## 4b. The conversational layer
 
 The engine decides *what* is asked; the model shapes *how it reads* (brief §13.3). The single
