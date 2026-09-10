@@ -167,7 +167,7 @@ def nav_block(current=None):
             '        <div class="nav__panel" id="navDrop">\n'
             '          <ul class="nav__plist">\n' + '\n'.join(rows) + '\n'
             '          </ul>\n'
-            '          <a class="nav__pall" href="/next/products">All products</a>\n'
+            '          <a class="nav__pall" href="/next/products">View all products</a>\n'
             '        </div>\n'
             '      </li>\n'
             '      <!-- /products:nav -->')
@@ -180,9 +180,13 @@ def menu_block(current=None):
         rows.append(f'          <li><a href="/next/{p["slug"]}"{cur}>'
                     f'<img class="menu__thumb" src="/assets/img/products/thumb-{p["slug"]}.jpg" alt="" width="48" height="48" decoding="async" loading="lazy">'
                     f'<span class="menu__ptext"><span class="menu__pname">{t(p["name"])}</span><span class="menu__pdesc">{t(p["kind"])}</span></span></a></li>')
+    # "Products" is the group's title, not a link (client: a link above four
+    # links read as confusing); the way to the listing closes the group, as
+    # "View all products" does in the bar's dropdown
     return ('      <!-- products:menu -->\n'
-            '      <li><a href="/next/products">Products</a>\n'
-            '        <ul class="menu__sub">\n' + '\n'.join(rows) + '\n        </ul>\n      </li>\n'
+            '      <li class="menu__group"><span class="menu__label">Products</span>\n'
+            '        <ul class="menu__sub">\n' + '\n'.join(rows) + '\n        </ul>\n'
+            '        <a class="menu__all" href="/next/products">View all products</a>\n      </li>\n'
             '      <!-- /products:menu -->')
 
 def put_blocks(s, current=None):

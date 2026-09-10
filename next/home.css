@@ -1273,3 +1273,12 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .menu__thumb{width:44px;height:44px}
 .menu__sub .menu__pname{font-size:15px}
 .menu__sub .menu__pdesc{font-size:13px}
+/* "Products" in the phone menu is the group's title, not a link (client): the
+   site's eyebrow — small, tracked, grey — then the four, then "View all
+   products" as the group's last line, like the bar's dropdown */
+.menu__group{padding-bottom:6px}
+.menu__label{display:block;padding:22px 0 8px;font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;color:var(--ink-3)}
+.menu__group .menu__sub{margin:0}
+.menu__links > li > a.menu__all{justify-content:flex-start;gap:8px;padding:12px 0 16px;font-size:15px;font-weight:600}
+.menu__links > li > a.menu__all::after{width:16px;height:16px;background:var(--ink);-webkit-mask-size:16px 16px;mask-size:16px 16px}
