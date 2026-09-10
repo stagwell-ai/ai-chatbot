@@ -950,10 +950,9 @@
       "active": true,
       "cardDescription": "The enterprise OS for brand orchestration across paid, owned and earned media, including AI search experiences.",
       "capabilityTags": [
-        "Brand Orchestration across Paid, Owned and Earned",
-        "Detect, predict, shape and prove performance",
-        "AI Search Experiences",
-        "ChatGPT, Gemini, Claude, Grok, DeepSeek"
+        "Brand orchestration across paid, owned and earned",
+        "AI search visibility",
+        "Performance prediction and proof"
       ],
       "intentTags": {
         "primary": [

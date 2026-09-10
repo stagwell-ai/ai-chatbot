@@ -33,6 +33,10 @@
   const solutionsOf = data => { const s = data && data.solutions; return Array.isArray(s) ? s : list(s && s.solutions); };
   const product = (id, data) => solutionsOf(data).find(p => p && p.id === id) || null;
   const intent = (id, data) => list(data && data.taxonomy && data.taxonomy.intents).find(i => i && i.id === id) || null;
+  /* "First-party data onboarding" → "first-party data onboarding"; "AI visibility"
+     and "ChatGPT, Gemini…" keep their capital (second letter is upper-case) */
+  const lowerFirst = s => { const t = String(s || '').trim(); return t.length > 1 && t.charAt(1) === t.charAt(1).toLowerCase() && /[A-Z]/.test(t.charAt(0)) ? t.charAt(0).toLowerCase() + t.slice(1) : t; };
+  const joinAnd = arr => arr.length < 2 ? (arr[0] || '') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
   const tpl = (s, vars) => String(s || '').replace(/\{(\w+)\}/g, (m, k) => (vars[k] == null ? '' : String(vars[k])));
   const CTA_KIND = { DEMO: 'demo', EXPERT_CALL: 'expert', SELF_SERVICE: null };
 
@@ -67,15 +71,14 @@
     const desc = p.cardDescription || p.positioning || '';
     const labels = (copy && copy.ctaLabels) || {};
     const override = opts && opts.why && opts.why[p.id];
+    /* the approved capability tags as a phrase: "brand tracking, competitive
+       benchmarking and campaign impact" — the card's one-liner is not repeated */
+    const caps = list(p.capabilityTags || p.valueProps).slice(0, 3).map(lowerFirst);
+    const capabilities = caps.length ? joinAnd(caps) : desc.replace(/[.!]\s*$/, '');
+    const vars = { product: p.name, need, capability: desc, capabilities };
     let why;
-    if (badge === 'BEST_FIT') {
-      why = override || (need ? tpl(copy.whyFits, { product: p.name, need, capability: desc })
-        : tpl(copy.whyFitsNoNeed, { product: p.name, capability: desc }));
-    } else {
-      const lower = desc.replace(/[.!]\s*$/, '');
-      why = override || (need ? tpl(copy.whyFits, { product: p.name, need, capability: desc })
-        : tpl(copy.whySecondary, { capability: lower.charAt(0).toLowerCase() + lower.slice(1) }));
-    }
+    if (badge === 'BEST_FIT') why = override || tpl(need ? copy.whyFits : copy.whyFitsNoNeed, vars);
+    else why = override || tpl(copy.whySecondary, vars);
     const learn = { type: 'LEARN_MORE', label: labels.LEARN_MORE || 'Learn more', url: (p.urls && p.urls.productPage) || '/next/s/' + encodeURIComponent(p.id) };
     return {
       productId: p.id,

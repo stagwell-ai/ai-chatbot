@@ -25,7 +25,12 @@
     "moreDetail": "Tell me a little more about what you're trying to do.",
     "contactTransition": "I've narrowed this down to a strong fit. Tell me where to send the recommendation and I'll connect you with the right Stagwell AI team.",
     "contactTitle": "See your recommendation",
-    "contactFields": { "name": "Full name", "email": "Business email", "phone": "Phone", "company": "Company (optional)" },
+    "contactFields": {
+      "name": "Full name",
+      "email": "Business email",
+      "phone": "Phone",
+      "company": "Company (optional)"
+    },
     "contactSubmit": "Show my recommendations",
     "contactNotice": "We use these details to send your recommendation and so the right Stagwell AI team can follow up. See our privacy notice.",
     "contactNoticeUrl": "https://www.stagwellglobal.com/privacy-policy/",
@@ -43,11 +48,16 @@
     "composerClosed": "Your recommendation is above — we'll be in touch.",
     "bestFit": "Best fit",
     "alsoConsider": "Also worth considering",
-    "whyFits": "{product} is the strongest fit because you want to {need}. {capability}",
-    "whyFitsNoNeed": "{product} is the closest fit for what you've described. {capability}",
-    "whySecondary": "Adds {capability} alongside your primary recommendation.",
+    "whyFits": "{product} is the strongest fit because you want to {need}. It covers {capabilities}.",
+    "whyFitsNoNeed": "{product} is the closest fit for what you've described. It covers {capabilities}.",
+    "whySecondary": "Adds {capabilities} alongside your primary recommendation.",
     "multiCta": "Talk to a Stagwell AI expert",
-    "ctaLabels": { "DEMO": "Book a demo", "SELF_SERVICE": "Start now", "EXPERT_CALL": "Talk to an expert", "LEARN_MORE": "Learn more" },
+    "ctaLabels": {
+      "DEMO": "Book a demo",
+      "SELF_SERVICE": "Start now",
+      "EXPERT_CALL": "Talk to an expert",
+      "LEARN_MORE": "Learn more"
+    },
     "hints": {
       "start": "What do you need help solving?",
       "question": "Pick one, or type your answer…",
