@@ -383,7 +383,7 @@ body.hb-page{--hb-bg:#FEFDFC;background:var(--hb-bg)}
 .hb-statement__grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:clamp(16px,2vw,32px);row-gap:0;align-items:start}
 .hb-statement__eb{grid-column:1/-1}
 .hb-statement__grid > .hb-statement__text{grid-column:1/12}
-.hb-statement__grid > .hb-statement__lede{grid-column:8/13;grid-row:3;margin-top:clamp(48px,6vw,104px);max-width:28em}
+.hb-statement__grid > .hb-statement__side{grid-column:8/13;grid-row:3;margin-top:clamp(48px,6vw,104px);max-width:28em}
 .hb-statement__grid > .hb-statement__media{grid-column:2/6;grid-row:3;margin-top:clamp(96px,11vw,200px)}
 
 /* the stacking cards: pictures pinned inside their frames (a tall one stretched New Voices past the
@@ -401,7 +401,7 @@ body.hb-page{--hb-bg:#FEFDFC;background:var(--hb-bg)}
 
 @media (max-width:900px){
   .hb-statement__grid > .hb-statement__text{grid-column:1/-1}
-  .hb-statement__grid > .hb-statement__lede{grid-column:3/-1;grid-row:3;margin-top:32px}
+  .hb-statement__grid > .hb-statement__side{grid-column:3/-1;grid-row:3;margin-top:32px}
   .hb-statement__grid > .hb-statement__media{grid-column:1/10;grid-row:4;margin-top:40px;aspect-ratio:4/5}
   .hb-stack__eb{margin-top:14px}
   .hb-stack__name{margin-top:0;padding-top:16px}
@@ -485,7 +485,7 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 
 /* the statement: the paragraph beside the poster, low, next to it — the poster does not move (client) */
 @media (min-width:901px){
-  .hb-statement__grid > .hb-statement__lede{grid-column:7/11;align-self:end;margin-top:0;margin-bottom:clamp(8px,1vw,16px)}
+  .hb-statement__grid > .hb-statement__side{grid-column:7/11;align-self:end;margin-top:0;margin-bottom:clamp(8px,1vw,16px)}
 }
 
 /* the stacking cards' eyebrow: just the number (client: "too much text… maybe just the number") */
@@ -493,3 +493,7 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 
 /* the footer in the close's own colour, so the two read as one ground (client: "they don't blend") */
 .hb-foot{background:var(--hb-bg);border-top:0}
+
+/* the statement's own Book a demo, under the paragraph (client) */
+.hb-statement__side .hb-statement__lede{max-width:28em}
+.hb-statement__cta{margin-top:clamp(24px,2.4vw,32px)}
