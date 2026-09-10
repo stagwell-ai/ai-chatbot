@@ -186,3 +186,31 @@
    and the six starting points under the box come off here (client). They are
    hidden rather than removed: home.js and hero-agent.js look for #agentTags. */
 .pp-close .chat__tags{display:none}
+
+/* ── a light hero (client, 2026-09-10) ────────────────────────────────────────
+   Agent Cloud's picture is pale sky blue: white type and the transparent white
+   bar would vanish on it, and a dark veil would kill the picture. So that page
+   turns its hero to ink — title, line, eyebrow, the mark's name, the site link
+   — keeps a thin white veil under the bar instead of a navy one, and draws the
+   bar in its dark state while it floats over the picture. Set per product with
+   hero_tone='light' in build-product-pages.py. */
+.pp-hero--photo.pp-hero--light::before{background:
+    linear-gradient(180deg,rgba(255,255,255,.40) 0%,rgba(255,255,255,.12) 40%,rgba(255,255,255,0) 70%),
+    var(--hero-bg) center / cover no-repeat}
+.pp-hero--light{color:var(--ink)}
+.pp-hero--light .pp-title{color:var(--ink)}
+.pp-hero--light .pp-lede{color:var(--ink-2)}
+.pp-hero--light .pp-eyebrow{color:var(--ink-3)}
+.pp-hero--light .pp-logo--mark,.pp-hero--light .pp-logo--type{color:var(--ink)}
+.pp-hero--light .pp-site{color:var(--ink-2)}
+.pp-hero--light .pp-site:hover{color:var(--ink)}
+.pp-hero--light .pp-site:focus-visible{outline-color:var(--ink)}
+/* the bar over a light hero: its own dark state, until it turns solid white anyway */
+body.pp--light-hero .nav:not(.is-stuck){color:var(--ink)}
+body.pp--light-hero .nav:not(.is-stuck) .nav__links a,
+body.pp--light-hero .nav:not(.is-stuck) .nav__droptrig{color:var(--ink)}
+body.pp--light-hero .nav:not(.is-stuck) .nav__brand,
+body.pp--light-hero .nav:not(.is-stuck) .nav__burger{color:var(--ink)}
+body.pp--light-hero .nav:not(.is-stuck) .btn--ink{background:var(--ink);color:#FFFFFF}
+body.pp--light-hero .nav:not(.is-stuck) .nav__search{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(11,18,32,.3)}
+body.pp--light-hero .nav:not(.is-stuck) .nav__search:hover{background:var(--ink);color:#FFFFFF}
