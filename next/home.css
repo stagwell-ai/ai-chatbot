@@ -1229,7 +1229,7 @@ body.chat-open{overflow:hidden}
   .is-ready .display--hero .ln--m:nth-child(5) .ln__in{transition-delay:.32s}
   .hero__lede{margin-top:var(--s-7);font-size:16px;text-wrap:balance}   /* "results" was alone on the second line */
   .chat__tags .tag__br{display:none}
-  .chat__tags{gap:var(--s-3) var(--s-4)}
+  .chat__tags{gap:var(--s-4)}   /* was var(--s-3), which does not exist: the whole gap was dropped and the pills touched */
   /* the About picture: 16:9 on a phone (client: "less than square, HD") */
   .intro__media{max-width:none;aspect-ratio:16/9}
 }
@@ -1340,3 +1340,22 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 /* the bar never slides away (client, 2026-09-10): a guard in case any script
    still sets the old hidden state */
 .nav.is-hidden{transform:none}
+
+/* ── the starting points on a phone (client, 2026-09-10: "no spacing… not
+   looking good… look what the competitors do"). ChatGPT lists its suggestions
+   under the field as plain rows — icon, words, left-aligned; Gemini drops them
+   on a phone. The same list here, held in one glass panel so the rows read on
+   the picture: six 48px rows, hairlines between, the chat box's width. */
+@media (max-width:640px){
+  .chat__tags{flex-direction:column;align-items:stretch;gap:0;margin-top:var(--s-6);padding:4px 0;border-radius:20px;
+    background:rgba(255,255,255,.10);-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+  .chat__tags li{display:block}
+  .chat__tags .tag{width:100%;height:48px;padding:0 18px;border-radius:0;justify-content:flex-start;gap:14px;
+    background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
+    font-size:15px;font-weight:500;color:#FFFFFF;text-align:left}
+  .chat__tags li:not(:first-child) .tag{box-shadow:inset 0 1px 0 rgba(255,255,255,.13)}
+  .chat__tags .tag__ic{width:18px;height:18px;opacity:.85}
+  .chat__tags .tag:hover,.chat__tags .tag:active{background:rgba(255,255,255,.10)}
+  .chat__tags .tag:focus-visible{outline-offset:-3px}
+}
