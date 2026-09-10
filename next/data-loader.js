@@ -9,7 +9,11 @@
    file degrades the surface that needed it instead of the whole page.
    ═══════════════════════════════════════════════════════════════════════════ */
 window.STAGDATA = (() => {
-  const FILES = ['questions', 'routing', 'solutions', 'campaigns', 'brand', 'messaging'];
+  /* goals, taxonomy, scoring and kimi (2026-09-10) feed the homepage's
+     product-discovery conversation — next/kimi-flow.js and the pure core it
+     runs on (recommend.js, select-question.js) */
+  const FILES = ['questions', 'routing', 'solutions', 'campaigns', 'brand', 'messaging',
+    'goals', 'taxonomy', 'scoring', 'kimi'];
   const grab = name => fetch(`/data/${name}.json`)
     .then(r => (r.ok ? r.json() : null))
     .catch(() => null);

@@ -206,3 +206,15 @@ When it is approved, merge to `main` (via a pull request on GitHub, or
   a confirmation and the function log records the miss. The model behind the questions
   needs `LLM_API_KEY` (plus optional `LLM_BASE_URL`, `LLM_MODEL`); without it the
   classifier falls back to keywords and the site read is skipped.
+
+
+---
+
+## Kimi — the homepage product-discovery conversation (2026-09-10)
+
+The hero chat now runs on a deterministic recommendation engine with a model broker in front of
+it and a (mocked) HubSpot lead service behind it. Everything about it — architecture, files,
+environment variables, the HubSpot property checklist, tests, known limitations and the admin
+actions still outstanding — is in **`KIMI.md`**. Run `npm test` for the 53 unit tests and
+`npm run test:funnel` (needs a local server on :8199 and Playwright) for the pills-only browser
+funnel.

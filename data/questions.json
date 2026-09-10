@@ -634,5 +634,583 @@
   },
   "humanAck": "Got it — I'll make sure a person picks this up; the route at the end books that. A couple more quick answers so they arrive already briefed.",
   "humanAckAfterDone": "Of course. Open your snapshot and take the “Book a demo” or “Talk to an AI expert” button, or leave a number and Stagwell.AI will call you — either way a person, not a script.",
-  "humanAckNote": "humanAck is spoken the moment the human-ask override fires (a human ask at any question). humanAckAfterDone is retired as of Sep 2: once the read is finished the composer closes and its button becomes 'Show my snapshot', so nothing can be typed after the reveal — the copy is kept for the record only."
+  "humanAckNote": "humanAck is spoken the moment the human-ask override fires (a human ask at any question). humanAckAfterDone is retired as of Sep 2: once the read is finished the composer closes and its button becomes 'Show my snapshot', so nothing can be typed after the reveal — the copy is kept for the record only.",
+  "discovery": {
+    "_comment": "Kimi's discriminating questions (brief §7). Not a sequence: next/select-question.js picks the one that best separates the products still in the running, and stops when scoring.json says the top candidate is clearly ahead. `field` is what an answer fills — 'intent' adds the suggestion's value to the visitor's signals as an EXPLICIT intent (taxonomy.json id); companySize / creatorProgramSize / geographicScope set that band. `askWhen` is declarative: goals (the visitor's primary goal is one of these), intentsAny (any of these intents already detected), candidatesAll (all these products currently in the top candidates), always. `separates` names the products the question exists to tell apart; the selector counts how many of them are in the running to value the question. `required:true` questions are asked once whenever the field is still unknown, after the discriminators. Suggestions: 3–5, visitor language, never mandatory — free text is always allowed.",
+    "questions": [
+      {
+        "id": "competition_type",
+        "purpose": "Separate NewIntel, QuestBrand, The Knowledge Machine / UNICEPTA and GEOPulse",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "What do you most want to understand about your competitors?",
+        "suggestions": [
+          {
+            "id": "current_activity",
+            "label": "What they're doing right now",
+            "value": "competitive_activity"
+          },
+          {
+            "id": "brand_compare",
+            "label": "How our brand compares",
+            "value": "competitive_benchmarking"
+          },
+          {
+            "id": "media",
+            "label": "What the media is saying about them",
+            "value": "competitive_media"
+          },
+          {
+            "id": "ai",
+            "label": "How they show up in AI answers",
+            "value": "competitive_ai_visibility"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "competition"
+          ],
+          "intentsAny": [
+            "competitive_activity",
+            "competitive_benchmarking",
+            "brand_benchmarking",
+            "competitive_media",
+            "competitive_ai_visibility"
+          ]
+        },
+        "separates": [
+          "newintel",
+          "questbrand",
+          "knowledge_machine",
+          "unicepta",
+          "geopulse"
+        ]
+      },
+      {
+        "id": "impact_type",
+        "purpose": "Separate QuestBrand, BERA.ai, Numetrix and QuestDIY",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "What kind of impact do you need to show?",
+        "suggestions": [
+          {
+            "id": "awareness",
+            "label": "Awareness and consideration moving",
+            "value": "campaign_measurement"
+          },
+          {
+            "id": "revenue",
+            "label": "Revenue, pricing power, business value",
+            "value": "business_impact"
+          },
+          {
+            "id": "behavior",
+            "label": "Real-world behaviour, like store visits",
+            "value": "behavioral_measurement"
+          },
+          {
+            "id": "research",
+            "label": "I need to run new research",
+            "value": "consumer_research"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "brand_impact"
+          ],
+          "intentsAny": [
+            "business_impact",
+            "campaign_measurement",
+            "behavioral_measurement"
+          ]
+        },
+        "separates": [
+          "questbrand",
+          "bera",
+          "numetrix",
+          "questdiy"
+        ]
+      },
+      {
+        "id": "awareness_lever",
+        "purpose": "Separate measurement (QuestBrand), media (The Media Machine), AI search (GEOPulse / Search+) and creators (IMAI / SMB)",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "Where do you want awareness to come from?",
+        "suggestions": [
+          {
+            "id": "measure",
+            "label": "First, measure where we stand",
+            "value": "brand_health"
+          },
+          {
+            "id": "media",
+            "label": "Smarter media planning and buying",
+            "value": "media_planning"
+          },
+          {
+            "id": "ai_search",
+            "label": "Showing up in AI answers and search",
+            "value": "ai_search_visibility"
+          },
+          {
+            "id": "creators",
+            "label": "Creators and influencers",
+            "value": "creator_discovery"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "brand_awareness"
+          ]
+        },
+        "separates": [
+          "questbrand",
+          "media_machine",
+          "geopulse",
+          "search_plus",
+          "imai",
+          "smb_platform"
+        ]
+      },
+      {
+        "id": "audience_type",
+        "purpose": "Separate The Targeting Machine, Stagwell ID Graph, The Media Machine, IMAI / SMB and NewVoices",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "What would help most with your audience?",
+        "suggestions": [
+          {
+            "id": "targeting",
+            "label": "Building and activating better audiences",
+            "value": "audience_targeting"
+          },
+          {
+            "id": "identity",
+            "label": "Connecting and enriching our customer data",
+            "value": "identity_graph"
+          },
+          {
+            "id": "media",
+            "label": "Planning and buying media",
+            "value": "media_planning"
+          },
+          {
+            "id": "creators",
+            "label": "Reaching people through creators",
+            "value": "creator_discovery"
+          },
+          {
+            "id": "leads",
+            "label": "Converting more of the leads we already get",
+            "value": "customer_voice_ai"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "audience_growth"
+          ]
+        },
+        "separates": [
+          "targeting_machine",
+          "id_graph",
+          "media_machine",
+          "imai",
+          "smb_platform",
+          "newvoices"
+        ]
+      },
+      {
+        "id": "reputation_scope",
+        "purpose": "Separate The Knowledge Machine, UNICEPTA and GEOPulse",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "What matters most for protecting your reputation?",
+        "suggestions": [
+          {
+            "id": "early",
+            "label": "Early warning before a story breaks",
+            "value": "reputation_risk"
+          },
+          {
+            "id": "monitor",
+            "label": "Monitoring everything said about us, globally",
+            "value": "media_monitoring"
+          },
+          {
+            "id": "ai",
+            "label": "How AI assistants describe us",
+            "value": "ai_search_visibility"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "reputation"
+          ],
+          "intentsAny": [
+            "reputation_risk",
+            "media_monitoring",
+            "narrative_intelligence"
+          ]
+        },
+        "separates": [
+          "knowledge_machine",
+          "unicepta",
+          "geopulse"
+        ]
+      },
+      {
+        "id": "operations_type",
+        "purpose": "Separate NewVoices, Agent Cloud, Stagwell’s Machines and Search+",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "Which part of the operation do you want to scale?",
+        "suggestions": [
+          {
+            "id": "conversations",
+            "label": "Customer calls and conversations",
+            "value": "customer_voice_ai"
+          },
+          {
+            "id": "ai_access",
+            "label": "Giving the team secure access to AI",
+            "value": "employee_ai_access"
+          },
+          {
+            "id": "ops",
+            "label": "Connecting marketing tools into one system",
+            "value": "marketing_operations"
+          },
+          {
+            "id": "orchestration",
+            "label": "Orchestrating paid, owned and earned media",
+            "value": "brand_orchestration"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "operations"
+          ],
+          "intentsAny": [
+            "marketing_operations",
+            "employee_ai_access",
+            "ai_governance",
+            "brand_orchestration",
+            "customer_chat_ai"
+          ]
+        },
+        "separates": [
+          "newvoices",
+          "agent_cloud",
+          "machines_family",
+          "search_plus"
+        ]
+      },
+      {
+        "id": "creator_scale",
+        "purpose": "SMB platform (under ~100 creators) vs IMAI (100+ / enterprise program)",
+        "field": "creatorProgramSize",
+        "priority": 95,
+        "prompt": "Roughly how many creators do you work with in a year?",
+        "suggestions": [
+          {
+            "id": "under_100",
+            "label": "Under 100",
+            "value": "under_100"
+          },
+          {
+            "id": "100_plus",
+            "label": "100 or more",
+            "value": "100_plus"
+          },
+          {
+            "id": "unknown",
+            "label": "Not sure yet",
+            "value": "unknown"
+          }
+        ],
+        "askWhen": {
+          "intentsAny": [
+            "creator_discovery",
+            "creator_management",
+            "creator_measurement"
+          ]
+        },
+        "separates": [
+          "smb_platform",
+          "imai"
+        ]
+      },
+      {
+        "id": "monitoring_scope",
+        "purpose": "The Knowledge Machine (one market, early warning) vs UNICEPTA (global, many languages)",
+        "field": "geographicScope",
+        "priority": 70,
+        "prompt": "Which markets do you need to cover?",
+        "suggestions": [
+          {
+            "id": "single",
+            "label": "One market, one language",
+            "value": "single_market"
+          },
+          {
+            "id": "global",
+            "label": "Many markets and languages",
+            "value": "global"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "knowledge_machine",
+            "unicepta"
+          ]
+        },
+        "separates": [
+          "knowledge_machine",
+          "unicepta"
+        ]
+      },
+      {
+        "id": "media_focus",
+        "purpose": "The Media Machine vs The Targeting Machine",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What do you want from media?",
+        "suggestions": [
+          {
+            "id": "planning",
+            "label": "Planning that ties spend to brand outcomes",
+            "value": "media_planning"
+          },
+          {
+            "id": "buying",
+            "label": "Buying and activation",
+            "value": "media_buying"
+          },
+          {
+            "id": "audiences",
+            "label": "Better audiences to buy against",
+            "value": "audience_targeting"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "media_machine",
+            "targeting_machine"
+          ]
+        },
+        "separates": [
+          "media_machine",
+          "targeting_machine"
+        ]
+      },
+      {
+        "id": "data_focus",
+        "purpose": "The Targeting Machine vs Stagwell ID Graph",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What's the data challenge?",
+        "suggestions": [
+          {
+            "id": "first_party",
+            "label": "Putting our first-party data to work",
+            "value": "first_party_data"
+          },
+          {
+            "id": "identity",
+            "label": "Resolving identities across households and devices",
+            "value": "identity_graph"
+          },
+          {
+            "id": "activate",
+            "label": "Activating audiences into our buying",
+            "value": "audience_targeting"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "targeting_machine",
+            "id_graph"
+          ]
+        },
+        "separates": [
+          "targeting_machine",
+          "id_graph"
+        ]
+      },
+      {
+        "id": "ai_access_type",
+        "purpose": "Agent Cloud vs Stagwell’s Machines",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What does the team need from AI?",
+        "suggestions": [
+          {
+            "id": "access",
+            "label": "Secure access to the leading models",
+            "value": "employee_ai_access"
+          },
+          {
+            "id": "governance",
+            "label": "Governance over how AI is used",
+            "value": "ai_governance"
+          },
+          {
+            "id": "os",
+            "label": "An operating system for marketing work",
+            "value": "marketing_operations"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "agent_cloud",
+            "machines_family"
+          ]
+        },
+        "separates": [
+          "agent_cloud",
+          "machines_family"
+        ]
+      },
+      {
+        "id": "research_need",
+        "purpose": "QuestDIY vs QuestBrand vs Numetrix",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What do you need from research?",
+        "suggestions": [
+          {
+            "id": "diy",
+            "label": "Run surveys and tests ourselves",
+            "value": "consumer_research"
+          },
+          {
+            "id": "tracking",
+            "label": "Always-on brand tracking",
+            "value": "brand_health"
+          },
+          {
+            "id": "behavior",
+            "label": "Observed behaviour, not surveys",
+            "value": "behavioral_measurement"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "questdiy",
+            "questbrand"
+          ]
+        },
+        "separates": [
+          "questdiy",
+          "questbrand",
+          "numetrix"
+        ]
+      },
+      {
+        "id": "ai_visibility_focus",
+        "purpose": "GEOPulse vs Search+",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What about AI answers matters most?",
+        "suggestions": [
+          {
+            "id": "recommends",
+            "label": "Whether AI recommends us",
+            "value": "ai_search_visibility"
+          },
+          {
+            "id": "competitors",
+            "label": "How competitors show up",
+            "value": "competitive_ai_visibility"
+          },
+          {
+            "id": "shape",
+            "label": "Shaping it across paid, owned and earned",
+            "value": "brand_orchestration"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "geopulse",
+            "search_plus"
+          ]
+        },
+        "separates": [
+          "geopulse",
+          "search_plus"
+        ]
+      },
+      {
+        "id": "conversation_channel",
+        "purpose": "NewVoices (conversations) vs QuestDIY (interviews as research)",
+        "field": "intent",
+        "priority": 60,
+        "prompt": "Where do those customer conversations happen?",
+        "suggestions": [
+          {
+            "id": "phone",
+            "label": "Phone calls",
+            "value": "customer_voice_ai"
+          },
+          {
+            "id": "chat",
+            "label": "Chat and messaging",
+            "value": "customer_chat_ai"
+          },
+          {
+            "id": "interviews",
+            "label": "We want to interview customers at scale",
+            "value": "consumer_research"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "newvoices",
+            "questdiy"
+          ]
+        },
+        "separates": [
+          "newvoices",
+          "questdiy"
+        ]
+      },
+      {
+        "id": "company_size",
+        "purpose": "Lead qualification and the SMB self-service path; also the routing tier",
+        "field": "companySize",
+        "priority": 40,
+        "required": true,
+        "prompt": "Roughly how big is your company?",
+        "suggestions": [
+          {
+            "id": "smb",
+            "label": "Under 250 people",
+            "value": "smb"
+          },
+          {
+            "id": "mid",
+            "label": "250 to 2,500",
+            "value": "mid_market"
+          },
+          {
+            "id": "ent",
+            "label": "2,500 or more",
+            "value": "enterprise"
+          }
+        ],
+        "askWhen": {
+          "always": true
+        },
+        "separates": [
+          "smb_platform",
+          "imai",
+          "bera",
+          "media_machine",
+          "search_plus",
+          "machines_family"
+        ]
+      }
+    ]
+  }
 }

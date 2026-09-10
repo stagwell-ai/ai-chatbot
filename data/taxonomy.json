@@ -1,0 +1,619 @@
+{
+  "_comment": "The normalised intent vocabulary (brief §10). Free text is turned into these ids — by the model through /api/ask mode:'interpret', or by the keyword lists below when no model answers — and the deterministic scorer maps ids to products through solutions.json intentTags. `need` is the phrase the 'Why this fits' line quotes back to the visitor ('you want to …'), so it is written in their language, not ours. Keywords are matched as whole words/phrases, case-insensitive, plural-tolerant; a phrase beats a word when both hit (the longest match orders the answer, as in engine.js).",
+  "version": "2026-09-10",
+  "intents": [
+    {
+      "id": "brand_health",
+      "need": "know how your brand is really doing",
+      "keywords": [
+        "brand health",
+        "brand tracking",
+        "brand tracker",
+        "awareness",
+        "consideration",
+        "brand equity",
+        "brand momentum",
+        "brand perception",
+        "how our brand is doing",
+        "brand metrics",
+        "brand strength"
+      ]
+    },
+    {
+      "id": "campaign_measurement",
+      "need": "see whether campaigns moved the numbers",
+      "keywords": [
+        "campaign impact",
+        "campaign lift",
+        "brand lift",
+        "did the campaign work",
+        "campaign effectiveness",
+        "measure the campaign",
+        "campaign performance",
+        "ad effectiveness",
+        "campaign tracking"
+      ]
+    },
+    {
+      "id": "brand_benchmarking",
+      "need": "see how your brand compares",
+      "keywords": [
+        "how we compare",
+        "how our brand compares",
+        "brand benchmarking",
+        "compare our brand",
+        "where we stand against",
+        "brand comparison"
+      ]
+    },
+    {
+      "id": "business_impact",
+      "need": "prove that brand investment drives business results",
+      "keywords": [
+        "revenue",
+        "pricing power",
+        "roi",
+        "return on investment",
+        "cfo",
+        "board",
+        "prove impact",
+        "prove the impact",
+        "business impact",
+        "market value",
+        "business value",
+        "justify the spend",
+        "justify our budget",
+        "brand spend",
+        "commercial impact",
+        "shareholder"
+      ]
+    },
+    {
+      "id": "consumer_research",
+      "need": "run your own research quickly",
+      "keywords": [
+        "survey",
+        "questionnaire",
+        "poll",
+        "polling",
+        "concept test",
+        "concept testing",
+        "message testing",
+        "test our messaging",
+        "test creative",
+        "focus group",
+        "consumer research",
+        "market research",
+        "research study",
+        "run research",
+        "respondents"
+      ]
+    },
+    {
+      "id": "behavioral_measurement",
+      "need": "measure what people actually do, not what they say",
+      "keywords": [
+        "foot traffic",
+        "footfall",
+        "store visits",
+        "real-world behavior",
+        "real world behaviour",
+        "real-world behaviour",
+        "location data",
+        "who actually visited",
+        "say do gap",
+        "say/do gap",
+        "in-store",
+        "visits to our stores",
+        "physical locations"
+      ]
+    },
+    {
+      "id": "audience_targeting",
+      "need": "build and activate better audiences",
+      "keywords": [
+        "audience",
+        "audiences",
+        "segments",
+        "segmentation",
+        "targeting",
+        "target the right people",
+        "activate audiences",
+        "lookalike",
+        "reach the right people",
+        "wasted spend",
+        "custom audiences",
+        "audience building"
+      ]
+    },
+    {
+      "id": "first_party_data",
+      "need": "put your first-party data to work",
+      "keywords": [
+        "first-party data",
+        "first party data",
+        "1p data",
+        "cdp",
+        "customer data",
+        "crm data",
+        "our own data",
+        "data onboarding",
+        "data clean room",
+        "warehouse data"
+      ]
+    },
+    {
+      "id": "identity_graph",
+      "need": "connect and enrich your customer data across identities",
+      "keywords": [
+        "identity",
+        "identity graph",
+        "id graph",
+        "identity resolution",
+        "match rate",
+        "households",
+        "household-level",
+        "enrich our data",
+        "data enrichment",
+        "resolve identities",
+        "device graph"
+      ]
+    },
+    {
+      "id": "media_planning",
+      "need": "plan media against brand outcomes",
+      "keywords": [
+        "media plan",
+        "media planning",
+        "media strategy",
+        "allocate budget",
+        "channel mix",
+        "media mix",
+        "where to spend",
+        "media investment",
+        "planning and buying"
+      ]
+    },
+    {
+      "id": "media_buying",
+      "need": "buy media more effectively",
+      "keywords": [
+        "media buying",
+        "buy media",
+        "programmatic",
+        "ad buying",
+        "media activation",
+        "buying and activation",
+        "dsp"
+      ]
+    },
+    {
+      "id": "creator_discovery",
+      "need": "find the right creators",
+      "keywords": [
+        "creator",
+        "creators",
+        "influencer",
+        "influencers",
+        "tiktok creator",
+        "ugc",
+        "find creators",
+        "creator discovery",
+        "influencer marketing",
+        "influencer discovery",
+        "micro-influencers"
+      ]
+    },
+    {
+      "id": "creator_management",
+      "need": "run creator programs end to end",
+      "keywords": [
+        "influencer campaign",
+        "creator campaign",
+        "creator contracts",
+        "manage creators",
+        "creator outreach",
+        "influencer program",
+        "creator program",
+        "influencer platform",
+        "briefs and approvals",
+        "creator payments"
+      ]
+    },
+    {
+      "id": "creator_measurement",
+      "need": "prove what creators deliver",
+      "keywords": [
+        "influencer roi",
+        "creator roi",
+        "creator performance",
+        "influencer performance",
+        "measure influencers",
+        "audience quality",
+        "fake followers",
+        "influencer fraud"
+      ]
+    },
+    {
+      "id": "reputation_risk",
+      "need": "see reputation risks before they become stories",
+      "keywords": [
+        "reputation",
+        "reputational risk",
+        "crisis",
+        "early warning",
+        "before it breaks",
+        "narrative risk",
+        "risk to the brand",
+        "issues management",
+        "protect our reputation",
+        "brand safety",
+        "backlash",
+        "controversy"
+      ]
+    },
+    {
+      "id": "media_monitoring",
+      "need": "monitor everything said about you",
+      "keywords": [
+        "media monitoring",
+        "monitoring",
+        "monitor coverage",
+        "press coverage",
+        "news coverage",
+        "mentions",
+        "social listening",
+        "listening",
+        "in every language",
+        "every market",
+        "global coverage",
+        "broadcast monitoring",
+        "daily briefing",
+        "media intelligence"
+      ]
+    },
+    {
+      "id": "narrative_intelligence",
+      "need": "understand the narratives forming around your brand",
+      "keywords": [
+        "narrative",
+        "narratives",
+        "sentiment",
+        "what people are saying about us",
+        "public perception",
+        "stakeholder perception",
+        "story forming",
+        "discourse"
+      ]
+    },
+    {
+      "id": "competitive_activity",
+      "need": "know what competitors are doing right now",
+      "keywords": [
+        "what competitors are doing",
+        "what our competitors are doing",
+        "competitor activity",
+        "competitor pricing",
+        "competitor hiring",
+        "competitor moves",
+        "competitor launches",
+        "this week",
+        "right now",
+        "competitive intelligence",
+        "competitor intelligence",
+        "competitor signals",
+        "competitor tracking",
+        "track competitors",
+        "competitor promotions"
+      ]
+    },
+    {
+      "id": "competitive_benchmarking",
+      "need": "benchmark your brand against competitors",
+      "keywords": [
+        "benchmark",
+        "benchmarking",
+        "share of voice",
+        "competitive benchmark",
+        "against competitors",
+        "versus competitors",
+        "vs competitors",
+        "competitive position",
+        "market share perception",
+        "compare against the category",
+        "category leader"
+      ]
+    },
+    {
+      "id": "competitive_media",
+      "need": "track the coverage and narratives around your competitors",
+      "keywords": [
+        "competitor coverage",
+        "what the media says about competitors",
+        "competitor press",
+        "competitor narratives",
+        "coverage of our competitors",
+        "competitor sentiment",
+        "what the media is saying"
+      ]
+    },
+    {
+      "id": "competitive_ai_visibility",
+      "need": "see how competitors show up in AI answers",
+      "keywords": [
+        "competitors in chatgpt",
+        "competitors in ai answers",
+        "how competitors appear in ai",
+        "ai recommends competitors",
+        "competitors show up in ai",
+        "rivals in ai search"
+      ]
+    },
+    {
+      "id": "ai_search_visibility",
+      "need": "show up when AI assistants answer",
+      "keywords": [
+        "chatgpt",
+        "gemini",
+        "perplexity",
+        "claude",
+        "copilot",
+        "ai search",
+        "ai answers",
+        "ai overview",
+        "ai overviews",
+        "llm visibility",
+        "recommends us",
+        "recommend us",
+        "ai visibility",
+        "generative search",
+        "geo",
+        "answer engine",
+        "show up in ai",
+        "ai assistants"
+      ]
+    },
+    {
+      "id": "customer_voice_ai",
+      "need": "answer every customer call and inbound lead",
+      "keywords": [
+        "call center",
+        "call centre",
+        "contact center",
+        "phone",
+        "calls",
+        "missed calls",
+        "voice agent",
+        "voice agents",
+        "voice ai",
+        "answer leads",
+        "inbound leads",
+        "callback",
+        "call back",
+        "overnight",
+        "after hours",
+        "after-hours",
+        "hold times",
+        "inbound calls",
+        "phone leads",
+        "qualify leads",
+        "book appointments",
+        "lapsed customers",
+        "win back"
+      ]
+    },
+    {
+      "id": "customer_chat_ai",
+      "need": "handle customer conversations with AI agents",
+      "keywords": [
+        "chatbot",
+        "chat agent",
+        "chat agents",
+        "live chat",
+        "support tickets",
+        "customer service",
+        "customer support",
+        "tier-1 support",
+        "tier 1 support",
+        "conversational ai",
+        "messaging",
+        "whatsapp",
+        "sms"
+      ]
+    },
+    {
+      "id": "employee_ai_access",
+      "need": "give your team secure access to the leading AI models",
+      "keywords": [
+        "access to ai",
+        "chatgpt for the team",
+        "ai for our team",
+        "enterprise llm",
+        "enterprise ai",
+        "secure ai",
+        "ai tools for employees",
+        "ai workspace",
+        "one login",
+        "ai subscriptions",
+        "copilot for staff",
+        "give the team ai",
+        "models under one contract",
+        "frontier models",
+        "ai assistants for the team",
+        "custom assistants"
+      ]
+    },
+    {
+      "id": "ai_governance",
+      "need": "govern how AI is used across the business",
+      "keywords": [
+        "governance",
+        "ai governance",
+        "shadow ai",
+        "unsanctioned ai",
+        "compliance",
+        "data never trains",
+        "training on our data",
+        "security standard",
+        "ai policy",
+        "responsible ai",
+        "data privacy with ai"
+      ]
+    },
+    {
+      "id": "marketing_operations",
+      "need": "connect marketing operations into one system",
+      "keywords": [
+        "marketing ops",
+        "marketing operations",
+        "workflows",
+        "workflow",
+        "operating system",
+        "one platform",
+        "connect our tools",
+        "scale operations",
+        "scale our operations",
+        "automate",
+        "automation",
+        "orchestration",
+        "agentic",
+        "tech stack",
+        "martech",
+        "too many tools",
+        "one system",
+        "operational efficiency",
+        "scale the business"
+      ]
+    },
+    {
+      "id": "brand_orchestration",
+      "need": "orchestrate paid, owned and earned media together",
+      "keywords": [
+        "paid owned earned",
+        "paid, owned and earned",
+        "paid owned and earned",
+        "orchestrate",
+        "search strategy",
+        "seo",
+        "search+",
+        "search plus",
+        "organic search",
+        "search visibility",
+        "content performance",
+        "earned media",
+        "owned media"
+      ]
+    }
+  ],
+  "bands": {
+    "companySize": [
+      {
+        "id": "smb",
+        "label": "Under 250 people",
+        "keywords": [
+          "small business",
+          "startup",
+          "start-up",
+          "small team",
+          "boutique",
+          "smb",
+          "small company",
+          "just me",
+          "solo",
+          "small brand",
+          "small agency",
+          "small ecommerce",
+          "small e-commerce",
+          "small online",
+          "small shop",
+          "local business",
+          "family business",
+          "single store"
+        ]
+      },
+      {
+        "id": "mid_market",
+        "label": "250 to 2,500 people",
+        "keywords": [
+          "mid-market",
+          "mid market",
+          "midsize",
+          "mid-size",
+          "medium-sized",
+          "growing company"
+        ]
+      },
+      {
+        "id": "enterprise",
+        "label": "2,500 or more",
+        "keywords": [
+          "enterprise",
+          "global brand",
+          "multinational",
+          "fortune 500",
+          "large company",
+          "multi-brand",
+          "holding company",
+          "public company"
+        ]
+      }
+    ],
+    "creatorVolume": [
+      {
+        "id": "under_100",
+        "label": "Under 100 creators a year",
+        "keywords": [
+          "a few creators",
+          "handful of creators",
+          "a dozen creators",
+          "small creator program"
+        ]
+      },
+      {
+        "id": "100_plus",
+        "label": "100 or more creators a year",
+        "keywords": [
+          "hundreds of creators",
+          "thousands of creators",
+          "creators at scale",
+          "large creator program",
+          "enterprise creator program"
+        ]
+      }
+    ],
+    "geographicScope": [
+      {
+        "id": "single_market",
+        "label": "One market",
+        "keywords": [
+          "one market",
+          "single market",
+          "domestic",
+          "just the us",
+          "uk only",
+          "one country",
+          "one language"
+        ]
+      },
+      {
+        "id": "global",
+        "label": "Many markets and languages",
+        "keywords": [
+          "global",
+          "worldwide",
+          "international",
+          "multi-market",
+          "many markets",
+          "every market",
+          "many languages",
+          "multi-language",
+          "multilingual",
+          "across regions",
+          "emea",
+          "apac",
+          "latam"
+        ]
+      }
+    ]
+  }
+}

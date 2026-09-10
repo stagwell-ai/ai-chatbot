@@ -1,0 +1,30 @@
+{
+  "_comment": "Weights and thresholds for the deterministic recommendation scorer (next/recommend.js; brief §11). Tunable without code. Points are added per product: an intent the visitor chose from a suggestion is 'explicit' and lands on `explicitPrimaryMatch` when it is one of the product's primary intentTags; an intent read out of free text (model or keywords) is 'inferred' and lands on `primaryMatch`. Any detected intent that sits in a product's secondary tags earns `secondaryMatch`. Being in the visitor's goal candidate list earns `goalAlignment`. Bands (company size, creator volume, geography) score a fit when the product declares the visitor's band, a mismatch when the product declares bands and the visitor's is not one of them. A product's `excludesIntents` in solutions.json is the 'use-case mismatch'. Confidence: HIGH needs the top score at or above `minTopScore` AND a lead of at least `highGap` over the runner-up; MEDIUM needs the top score at or above `minTopScore` and a lead of at least `mediumGap`; anything else is LOW. The conversation keeps asking while confidence is below `stopAt`, or until `maxQuestions` discriminating questions have been asked.",
+  "version": "2026-09-10",
+  "weights": {
+    "explicitPrimaryMatch": 8,
+    "primaryMatch": 5,
+    "secondaryMatch": 2,
+    "goalAlignment": 2,
+    "companySizeFit": 2,
+    "creatorVolumeFit": 4,
+    "geographyFit": 1,
+    "explicitContradiction": -8,
+    "audienceMismatch": -4,
+    "useCaseMismatch": -5
+  },
+  "confidence": {
+    "minTopScore": 7,
+    "highGap": 4,
+    "mediumGap": 2,
+    "stopAt": "high"
+  },
+  "conversation": {
+    "maxQuestions": 4,
+    "topCandidates": 4,
+    "closeGap": 4,
+    "secondaryMax": 2,
+    "secondaryMinScore": 4,
+    "alwaysAskCompanySize": true
+  }
+}

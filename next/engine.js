@@ -41,7 +41,13 @@ const EVENT_TYPES = [
   'question_asked', 'question_skipped', 'answer_given',
   'research_started', 'research_step', 'research_done',
   'snapshot_viewed', 'capture_email', 'capture_phone', 'capture_consent', 'capture_declined',
-  'route_decided', 'handoff_click', 'human_requested', 'journey_converted'
+  'route_decided', 'handoff_click', 'human_requested', 'journey_converted',
+  /* the Kimi conversation's own vocabulary (brief §45), routed here through
+     next/analytics.js so the console shows them beside the rest */
+  'kimi_started', 'kimi_goal_selected', 'kimi_free_text_submitted', 'kimi_question_answered',
+  'kimi_model_fallback', 'kimi_deterministic_mode', 'kimi_contact_viewed', 'kimi_contact_submitted',
+  'kimi_recommendation_generated', 'kimi_product_clicked', 'kimi_demo_clicked',
+  'kimi_self_service_clicked', 'kimi_external_site_clicked', 'kimi_lead_delivery'
 ];
 
 const TIERS = ['smb', 'mid_market', 'enterprise'];

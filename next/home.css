@@ -1433,3 +1433,47 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
   .why .why__ic{width:48px;height:48px;border-radius:14px}
   .why .why__ic svg{width:24px;height:24px}
 }
+/* ── Kimi: the contact form as "See your recommendation", and the
+      recommendation cards (brief §20–§25, 2026-09-10). Cards render from view
+      models (cards.js); this is only how they look. ───────────────────────── */
+.askform__title{margin:0 0 2px;font-size:17px;font-weight:600;color:var(--ink)}
+.askform__label{display:block;margin:0 0 5px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+.askform__row input{height:44px}
+.askform__fine{margin:0;font-size:12px;line-height:1.5;color:var(--ink-3)}
+.askform__fine a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.askform__go[disabled]{opacity:.6;cursor:progress}
+.askbox__thread .turnb--reco{padding-right:0}
+.reco{display:flex;flex-direction:column;gap:var(--s-5);margin-top:var(--s-6)}
+.reco__card{position:relative;background:#FFFFFF;border:1px solid var(--line);border-radius:18px;padding:18px 20px 18px;box-shadow:0 1px 0 rgba(11,18,32,.03)}
+.reco__card--best{border-color:var(--navy);box-shadow:0 12px 32px -18px rgba(0,51,73,.35)}
+.reco__card--also{padding:14px 18px;background:#F7F8F9}
+.reco__badge{margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
+.reco__card--also .reco__badge{color:var(--ink-3)}
+.reco__head{display:flex;align-items:flex-start;gap:14px}
+.reco__logo{flex:0 0 auto;width:44px;height:44px;object-fit:contain;border-radius:10px;background:#F1F2F4;padding:4px}
+.reco__mark{flex:0 0 auto;width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--teal) 0%,var(--navy) 100%)}
+.reco__card--also .reco__logo,.reco__card--also .reco__mark{width:32px;height:32px}
+.reco__title{min-width:0}
+.reco__name{margin:0;font-family:var(--sans);font-size:19px;font-weight:700;line-height:1.25;color:var(--ink);letter-spacing:-.01em}
+.reco__card--also .reco__name{font-size:16px}
+.reco__desc{margin:4px 0 0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+.reco__whylabel{margin:14px 0 4px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+.reco__why{margin:0;font-size:15px;line-height:1.55;color:var(--ink)}
+.reco__card--also .reco__why{margin-top:8px;font-size:14px;color:var(--ink-2)}
+.reco__caps{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;padding:0;list-style:none}
+.reco__caps li{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:#F1F2F4;color:var(--ink-2)}
+.reco__acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:14px}
+.reco__go{height:44px;padding:0 20px;font-size:14px}
+.reco__learn{height:44px;padding:0 18px;font-size:14px}
+.reco__learn--quiet{font-size:14px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.reco__learn--quiet:hover{color:var(--navy)}
+.reco__after{margin:var(--s-6) 0 0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+@media (max-width:640px){
+  .reco__card{padding:16px}
+  .reco__acts .btn{flex:1 1 100%;justify-content:center}
+  .reco__learn--quiet{flex:1 1 100%;text-align:center}
+}
+/* the chat box stays a light island in dark mode (the form fields and the
+   thread's ink are already re-scoped light there), so the cards keep their
+   light styles and only the thread's height rule changes */
+.askbox__thread:has(.turnb--reco){max-height:none}

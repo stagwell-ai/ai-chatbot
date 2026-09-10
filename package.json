@@ -1,0 +1,13 @@
+{
+  "name": "stagwell-ai",
+  "private": true,
+  "description": "Stagwell AI site: static pages under next/, Vercel functions under api/. No build step and no runtime dependencies — this file exists for the engine requirement and the test commands.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/kimi/*.test.mjs",
+    "test:funnel": "node tests/kimi/no-llm.funnel.mjs",
+    "hubspot:setup": "node scripts/hubspot-setup.mjs"
+  }
+}

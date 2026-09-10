@@ -1,29 +1,30 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   /api/lead — where the homepage contact form goes.
+   /api/lead — where the homepage contact form goes (brief §28, §35, §36).
 
-   The hero agent (next/hero-agent.js) asks for name, email and phone once its
-   questions are done, so a Stagwell AI specialist can call. The browser POSTs
-   that here; this forwards it, as JSON, to wherever LEAD_WEBHOOK_URL points
-   (a HubSpot form endpoint, a Zapier/Make hook, a Slack incoming webhook —
-   anything that takes a JSON POST).
+   The browser POSTs { lead:{name,email,phone,company?}, discovery:{…}, page, ts }
+   (kimi-flow.js). This validates and normalises every field, RECOMPUTES the
+   recommendation from the structured signals with the same deterministic
+   engine the page ran (a client cannot claim a product the signals do not
+   support), builds the sales summary, and hands the lead to the lead service:
+   HubSpot (live with HUBSPOT_ACCESS_TOKEN, MOCK without — "just fake hubspot
+   for now", client 2026-09-10) and, if configured, the LEAD_WEBHOOK_URL of
+   the earlier build.
 
-   With no LEAD_WEBHOOK_URL configured the lead is NOT stored anywhere: the
-   handler answers 202 {delivered:false} so the visitor still sees their
-   confirmation and the demo console still shows the capture events, and the
-   Vercel function log records that a lead arrived with nowhere to go. Set
-   the variable before this form is put in front of real prospects.
+   The recommendation is never held hostage to a CRM: any accepted lead is a
+   200, with delivered:true|false so the client can offer a retry when nothing
+   took it. Only a malformed lead is a 400; only a rate limit is a 429.
 
-   Config (Vercel environment variables):
-     LEAD_WEBHOOK_URL   required for delivery; https:// only
-     LEAD_WEBHOOK_AUTH  optional; sent verbatim as the Authorization header
+   Config (Vercel environment variables): see .env.example.
    ═══════════════════════════════════════════════════════════════════════════ */
+import SOLUTIONS from '../data/solutions.json' with { type: 'json' };
+import GOALS from '../data/goals.json' with { type: 'json' };
+import TAXONOMY from '../data/taxonomy.json' with { type: 'json' };
+import SCORING from '../data/scoring.json' with { type: 'json' };
+import { validateLeadBody } from './_lib/leads/schema.js';
+import { submitLead } from './_lib/leads/leadService.js';
+import { limited } from './_lib/ratelimit.js';
 
-const MAX = 400;   /* a field longer than this is not a name, an email or a phone */
-
-const str = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max || MAX) : '') || null;
-const list = v => (Array.isArray(v) ? v.filter(x => typeof x === 'string').map(x => x.slice(0, 64)).slice(0, 8) : []);
-
-const EMAIL_RE = /^[^\s@]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+const DATA = { solutions: SOLUTIONS, goals: GOALS, taxonomy: TAXONOMY, scoring: SCORING };
 
 export default async function handler(req, res) {
   res.setHeader('cache-control', 'no-store');
@@ -32,58 +33,23 @@ export default async function handler(req, res) {
     res.status(405).json({ ok: false, error: 'method_not_allowed' });
     return;
   }
+  if (limited(req, res, 10, 60000)) return;          /* ten leads a minute per address is plenty */
 
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
   if (!body || typeof body !== 'object') body = {};
 
-  const lead = {
-    name: str(body.name, 120),
-    email: str(body.email, 200),
-    phone: str(body.phone, 60),
-    company: str(body.company, 160),
-    website: str(body.website, 160),
-    role: str(body.role, 40),
-    size: str(body.size, 40),
-    timing: str(body.timing, 40),
-    problems: list(body.problems),
-    route: str(body.route, 40),
-    product: str(body.product, 160),
-    page: str(body.page, 300),
-    submittedAt: str(body.ts, 40),
-    receivedAt: new Date().toISOString(),
-    source: 'stagwell-ai · homepage agent'
-  };
+  const v = validateLeadBody(body, DATA);
+  if (!v.ok) { res.status(400).json({ ok: false, error: v.error, field: v.field || null }); return; }
 
-  if (!lead.name || !lead.email || !EMAIL_RE.test(lead.email)) {
-    res.status(400).json({ ok: false, error: 'name_and_email_required' });
-    return;
-  }
-
-  const url = process.env.LEAD_WEBHOOK_URL || '';
-  if (!/^https:\/\//i.test(url)) {
-    /* nowhere to send it — say so in the log, never to the visitor as a failure */
-    console.warn('[lead] received but LEAD_WEBHOOK_URL is not configured; not stored', { domain: lead.email.split('@')[1], product: lead.product });
-    res.status(202).json({ ok: true, delivered: false, reason: 'not_configured' });
-    return;
-  }
-
-  const headers = { 'content-type': 'application/json' };
-  if (process.env.LEAD_WEBHOOK_AUTH) headers.authorization = process.env.LEAD_WEBHOOK_AUTH;
-
-  try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
-    const r = await fetch(url, { method: 'POST', headers, body: JSON.stringify(lead), signal: ctrl.signal });
-    clearTimeout(timer);
-    if (!r.ok) {
-      console.error('[lead] webhook answered', r.status);
-      res.status(502).json({ ok: false, delivered: false, error: 'webhook_' + r.status });
-      return;
-    }
-    res.status(200).json({ ok: true, delivered: true });
-  } catch (e) {
-    console.error('[lead] webhook failed', e && e.message);
-    res.status(502).json({ ok: false, delivered: false, error: 'webhook_unreachable' });
-  }
+  const out = await submitLead(v.lead, DATA);
+  res.status(200).json({
+    ok: true,
+    delivered: out.delivered,
+    mode: out.mode,
+    destination: out.destination,
+    action: out.action,
+    retryable: out.retryable,
+    recommendation: { primary: v.lead.discovery.primary, secondary: v.lead.discovery.secondary, confidence: v.lead.discovery.confidence && v.lead.discovery.confidence.level }
+  });
 }

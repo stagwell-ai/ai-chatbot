@@ -29,7 +29,43 @@
         "Campaign impact",
         "Emotional drivers"
       ],
-      "lockup": "/assets/img/lockups/questbrand.png"
+      "lockup": "/assets/img/lockups/questbrand.png",
+      "active": true,
+      "cardDescription": "Always-on tracking of awareness, consideration and momentum, benchmarked against the competitors you name.",
+      "capabilityTags": [
+        "Brand tracking",
+        "Competitive benchmarking",
+        "Campaign impact",
+        "Emotional drivers"
+      ],
+      "intentTags": {
+        "primary": [
+          "brand_health",
+          "campaign_measurement",
+          "brand_benchmarking",
+          "competitive_benchmarking"
+        ],
+        "secondary": [
+          "narrative_intelligence"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/questbrand",
+        "externalWebsite": "https://www.harrisquest.com/suite/questbrand",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "questbrand",
+        "lockup": "/assets/img/lockups/questbrand.png"
+      }
     },
     {
       "id": "questdiy",
@@ -51,7 +87,41 @@
         "Same-day reads"
       ],
       "lockup": "/assets/img/lockups/questdiy.png",
-      "signupNote": "Client, Sep 2: QuestDIY has a free trial. The kit carries no separate signup URL, so the trial button points at the product page — swap in the exact trial link when Harris Quest supplies it."
+      "signupNote": "Client, Sep 2: QuestDIY has a free trial. The kit carries no separate signup URL, so the trial button points at the product page — swap in the exact trial link when Harris Quest supplies it.",
+      "active": true,
+      "cardDescription": "Run real consumer research yourself in days: AI drafts the questionnaire, fields it in 100+ countries and helps you read the results.",
+      "capabilityTags": [
+        "AI-drafted surveys",
+        "Respondents in 100+ countries",
+        "Concept & message testing",
+        "Same-day reads"
+      ],
+      "intentTags": {
+        "primary": [
+          "consumer_research"
+        ],
+        "secondary": [
+          "campaign_measurement",
+          "brand_health"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "SELF_SERVICE",
+        "primaryLabel": "Start now",
+        "secondaryLabel": "Talk to an expert"
+      },
+      "urls": {
+        "productPage": "/next/s/questdiy",
+        "externalWebsite": "https://www.harrisquest.com/suite/questdiy",
+        "demo": null,
+        "selfService": "https://www.harrisquest.com/suite/questdiy"
+      },
+      "visual": {
+        "logoKey": "questdiy",
+        "lockup": "/assets/img/lockups/questdiy.png"
+      }
     },
     {
       "id": "bera",
@@ -72,7 +142,48 @@
         "Competitive intelligence",
         "Media planning"
       ],
-      "lockup": "/assets/img/lockups/bera.png"
+      "lockup": "/assets/img/lockups/bera.png",
+      "active": true,
+      "cardDescription": "Continuous scoring of the drivers of brand strength, connected to pricing power, revenue and market value.",
+      "capabilityTags": [
+        "Brand ROI tracking",
+        "Audience prioritization",
+        "Competitive intelligence",
+        "Media planning"
+      ],
+      "intentTags": {
+        "primary": [
+          "business_impact"
+        ],
+        "secondary": [
+          "brand_health",
+          "competitive_benchmarking",
+          "media_planning",
+          "audience_targeting"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid_market",
+          "enterprise"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/bera",
+        "externalWebsite": "https://bera.ai",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "bera",
+        "lockup": "/assets/img/lockups/bera.png"
+      }
     },
     {
       "id": "unlock",
@@ -92,7 +203,37 @@
         "Respondent validation",
         "Trusted data quality"
       ],
-      "lockup": null
+      "lockup": null,
+      "active": false,
+      "cardDescription": "Verified consumer and B2B respondents, so research stands on sample you can trust.",
+      "capabilityTags": [
+        "Verified consumer & B2B sample",
+        "Respondent validation",
+        "Trusted data quality"
+      ],
+      "intentTags": {
+        "primary": [],
+        "secondary": [
+          "consumer_research"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/unlock",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/unlock",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "unlock",
+        "lockup": null
+      }
     },
     {
       "id": "knowledge_machine",
@@ -113,7 +254,43 @@
         "Competitive analysis",
         "Campaign tracking"
       ],
-      "lockup": "/assets/img/lockups/knowledge-machine.png"
+      "lockup": "/assets/img/lockups/knowledge-machine.png",
+      "active": true,
+      "cardDescription": "Reads narrative alignment and emotional intensity to flag the risks that are about to become headlines.",
+      "capabilityTags": [
+        "Signal detection",
+        "Reputation intelligence",
+        "Competitive analysis",
+        "Campaign tracking"
+      ],
+      "intentTags": {
+        "primary": [
+          "reputation_risk",
+          "narrative_intelligence",
+          "competitive_media"
+        ],
+        "secondary": [
+          "media_monitoring",
+          "campaign_measurement"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/knowledge_machine",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/pulse",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "knowledge_machine",
+        "lockup": "/assets/img/lockups/knowledge-machine.png"
+      }
     },
     {
       "id": "unicepta",
@@ -133,7 +310,46 @@
         "Narrative analysis",
         "Social listening"
       ],
-      "lockup": "/assets/img/lockups/unicepta.png"
+      "lockup": "/assets/img/lockups/unicepta.png",
+      "active": true,
+      "cardDescription": "Human-plus-AI monitoring of news, social and broadcast worldwide, in every language, with analysis of the narratives forming.",
+      "capabilityTags": [
+        "Global monitoring",
+        "Daily briefings & alerts",
+        "Narrative analysis",
+        "Social listening"
+      ],
+      "intentTags": {
+        "primary": [
+          "media_monitoring",
+          "competitive_media"
+        ],
+        "secondary": [
+          "narrative_intelligence",
+          "reputation_risk"
+        ]
+      },
+      "audiences": {
+        "geography": [
+          "global"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/unicepta",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/unicepta",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "unicepta",
+        "lockup": "/assets/img/lockups/unicepta.png"
+      }
     },
     {
       "id": "imai",
@@ -154,7 +370,50 @@
         "LLM visibility",
         "UGC video ads"
       ],
-      "lockup": "/assets/img/lockups/imai.png"
+      "lockup": "/assets/img/lockups/imai.png",
+      "active": true,
+      "cardDescription": "Influencer programs end to end: discovery and vetting across hundreds of millions of profiles, then outreach, contracts, approvals and ROI.",
+      "capabilityTags": [
+        "Creator discovery",
+        "Campaign management",
+        "LLM visibility",
+        "UGC video ads"
+      ],
+      "intentTags": {
+        "primary": [
+          "creator_management",
+          "creator_discovery",
+          "creator_measurement"
+        ],
+        "secondary": [
+          "ai_search_visibility"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid_market",
+          "enterprise"
+        ],
+        "creatorVolume": [
+          "100_plus"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/imai",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/imai",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "imai",
+        "lockup": "/assets/img/lockups/imai.png"
+      }
     },
     {
       "id": "smb_platform",
@@ -174,7 +433,49 @@
         "ROI tracking",
         "One dashboard"
       ],
-      "lockup": "/assets/img/lockups/smb-platform.png"
+      "lockup": "/assets/img/lockups/smb-platform.png",
+      "active": true,
+      "cardDescription": "Discover creators, validate audience quality and prove ROI from one dashboard, without a big team or budget.",
+      "capabilityTags": [
+        "Creator discovery",
+        "Audience validation",
+        "ROI tracking",
+        "One dashboard"
+      ],
+      "intentTags": {
+        "primary": [
+          "creator_discovery",
+          "creator_measurement"
+        ],
+        "secondary": [
+          "creator_management",
+          "audience_targeting"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "smb"
+        ],
+        "creatorVolume": [
+          "under_100"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "SELF_SERVICE",
+        "primaryLabel": "Start now",
+        "secondaryLabel": "Talk to an expert"
+      },
+      "urls": {
+        "productPage": "/next/s/smb_platform",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": "https://influencermarketing.ai"
+      },
+      "visual": {
+        "logoKey": "smb_platform",
+        "lockup": "/assets/img/lockups/smb-platform.png"
+      }
     },
     {
       "id": "geopulse",
@@ -194,7 +495,43 @@
         "Competitive benchmarking",
         "Content simulation"
       ],
-      "lockup": "/assets/img/lockups/geopulse.png"
+      "lockup": "/assets/img/lockups/geopulse.png",
+      "active": true,
+      "cardDescription": "Tracks how ChatGPT, Gemini and Perplexity mention, describe and recommend your brand versus rivals, and what to change.",
+      "capabilityTags": [
+        "AI visibility intelligence",
+        "Prompt optimization",
+        "Competitive benchmarking",
+        "Content simulation"
+      ],
+      "intentTags": {
+        "primary": [
+          "ai_search_visibility",
+          "competitive_ai_visibility"
+        ],
+        "secondary": [
+          "competitive_benchmarking",
+          "reputation_risk",
+          "brand_health"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/geopulse",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/geopulse",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "geopulse",
+        "lockup": "/assets/img/lockups/geopulse.png"
+      }
     },
     {
       "id": "targeting_machine",
@@ -215,7 +552,43 @@
         "Cross-channel activation",
         "Campaign measurement"
       ],
-      "lockup": "/assets/img/lockups/targeting-machine.png"
+      "lockup": "/assets/img/lockups/targeting-machine.png",
+      "active": true,
+      "cardDescription": "Fuse your first-party data with media and consumer intelligence, build custom audiences and activate them straight into your buying.",
+      "capabilityTags": [
+        "Audience exploration",
+        "1P onboarding & ID mapping",
+        "Cross-channel activation",
+        "Campaign measurement"
+      ],
+      "intentTags": {
+        "primary": [
+          "audience_targeting",
+          "first_party_data"
+        ],
+        "secondary": [
+          "identity_graph",
+          "media_buying",
+          "campaign_measurement"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/targeting-machine",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/sats",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "targeting_machine",
+        "lockup": "/assets/img/lockups/targeting-machine.png"
+      }
     },
     {
       "id": "numetrix",
@@ -235,7 +608,40 @@
         "Brand lift & ad impact",
         "Location intelligence"
       ],
-      "lockup": "/assets/img/lockups/numetrix.png"
+      "lockup": "/assets/img/lockups/numetrix.png",
+      "active": true,
+      "cardDescription": "Real-world behaviour measurement: who actually visited, how foot traffic moved, and whether advertising changed where people went.",
+      "capabilityTags": [
+        "Audience measurement",
+        "Brand lift & ad impact",
+        "Location intelligence"
+      ],
+      "intentTags": {
+        "primary": [
+          "behavioral_measurement"
+        ],
+        "secondary": [
+          "campaign_measurement",
+          "audience_targeting"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/numetrix",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/numetrix",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "numetrix",
+        "lockup": "/assets/img/lockups/numetrix.png"
+      }
     },
     {
       "id": "newvoices",
@@ -259,7 +665,41 @@
       ],
       "lockup": null,
       "lockupNote": "No normalised lockup plate exists for NewVoices in the deck — the only mark shipped is a white-on-gradient PNG, which would vanish on the plate's own field. Like Unlock, the name is set in type instead, which every surface already handles.",
-      "sourceNote": "positioning covers both jobs the product does — the conversion agents on NewVoices' own site and the insight campaigns on /next/newvoices. Both are its published lines; they were split across two surfaces and read as two products (client, 2026-09-10)."
+      "sourceNote": "positioning covers both jobs the product does — the conversion agents on NewVoices' own site and the insight campaigns on /next/newvoices. Both are its published lines; they were split across two surfaces and read as two products (client, 2026-09-10).",
+      "active": true,
+      "cardDescription": "Lifelike voice and chat agents that qualify and book leads, resolve tier-1 service, win back lapsing customers and interview customers at scale.",
+      "capabilityTags": [
+        "Lead qualification and booking",
+        "Tier-1 service resolution",
+        "Retention and payment recovery",
+        "Customer interviews at scale"
+      ],
+      "intentTags": {
+        "primary": [
+          "customer_voice_ai",
+          "customer_chat_ai"
+        ],
+        "secondary": [
+          "consumer_research"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/newvoices",
+        "externalWebsite": "https://newvoices.ai/",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "newvoices",
+        "lockup": null
+      }
     },
     {
       "id": "machines_family",
@@ -280,7 +720,47 @@
         "Audience targeting",
         "Continuous learning"
       ],
-      "lockup": "/assets/img/lockups/the-machine.png"
+      "lockup": "/assets/img/lockups/the-machine.png",
+      "active": true,
+      "cardDescription": "One operating system for marketing: tools, audiences, insights and campaigns connected into an agentic system that keeps learning.",
+      "capabilityTags": [
+        "Workflow orchestration",
+        "Strategic intelligence",
+        "Audience targeting",
+        "Continuous learning"
+      ],
+      "intentTags": {
+        "primary": [
+          "marketing_operations"
+        ],
+        "secondary": [
+          "audience_targeting",
+          "media_planning",
+          "brand_orchestration"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid_market",
+          "enterprise"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "EXPERT_CALL",
+        "primaryLabel": "Talk to a Stagwell AI expert",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/the-machine",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "machines_family",
+        "lockup": "/assets/img/lockups/the-machine.png"
+      }
     },
     {
       "id": "agent_cloud",
@@ -302,7 +782,41 @@
         "One annual contract"
       ],
       "lockup": "/assets/img/lockups/agent-cloud.png",
-      "sourceNote": "positioning and valueProps are Agent Cloud's own published lines, the same ones data/products.json carries for the /p/agent-cloud landing. Added Sep 2: until then the product had a landing and five chips but no domain and no solution entry, so a visitor from its own ad could never be routed to it."
+      "sourceNote": "positioning and valueProps are Agent Cloud's own published lines, the same ones data/products.json carries for the /p/agent-cloud landing. Added Sep 2: until then the product had a landing and five chips but no domain and no solution entry, so a visitor from its own ad could never be routed to it.",
+      "active": true,
+      "cardDescription": "One login, one contract and one security standard for the leading LLMs and purpose-built marketing assistants. Your data never trains the models.",
+      "capabilityTags": [
+        "Enterprise ChatGPT, Claude, Gemini and Grok",
+        "Data never trains the models",
+        "Custom assistants, deployed org-wide",
+        "One annual contract"
+      ],
+      "intentTags": {
+        "primary": [
+          "employee_ai_access",
+          "ai_governance"
+        ],
+        "secondary": [
+          "marketing_operations"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/agent-cloud",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/agent-cloud",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "agent_cloud",
+        "lockup": "/assets/img/lockups/agent-cloud.png"
+      }
     },
     {
       "id": "media_machine",
@@ -321,7 +835,48 @@
         "Enterprise media"
       ],
       "lockup": null,
-      "sourceNote": "copy approved by the client on 2026-09-10, drawn from this repo's earlier product catalogue (catalogue.js: 'Planning and buying that answers to the brand') and from routing.json, which pairs it with The Machine for marketing operations. Not vendor-published copy — confirm before client use."
+      "sourceNote": "copy approved by the client on 2026-09-10, drawn from this repo's earlier product catalogue (catalogue.js: 'Planning and buying that answers to the brand') and from routing.json, which pairs it with The Machine for marketing operations. Not vendor-published copy — confirm before client use.",
+      "active": true,
+      "cardDescription": "Planning and buying that answers to the brand: investment decisions connected to brand and business outcomes.",
+      "capabilityTags": [
+        "Media planning",
+        "Media buying and activation",
+        "Investment tied to brand outcomes",
+        "Enterprise media"
+      ],
+      "intentTags": {
+        "primary": [
+          "media_planning",
+          "media_buying"
+        ],
+        "secondary": [
+          "business_impact",
+          "brand_health",
+          "marketing_operations"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid_market",
+          "enterprise"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/media_machine",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "media_machine",
+        "lockup": null
+      }
     },
     {
       "id": "newintel",
@@ -340,7 +895,40 @@
         "Creator activity"
       ],
       "lockup": null,
-      "sourceNote": "copy approved by the client on 2026-09-10, drawn from this repo's earlier product catalogue (catalogue.js, where it is badged 'The Intelligence Machine') and from the competitive-intelligence role it already plays in the demo. Not vendor-published copy — confirm before client use."
+      "sourceNote": "copy approved by the client on 2026-09-10, drawn from this repo's earlier product catalogue (catalogue.js, where it is badged 'The Intelligence Machine') and from the competitive-intelligence role it already plays in the demo. Not vendor-published copy — confirm before client use.",
+      "active": true,
+      "cardDescription": "Live competitive signal across pricing, hiring, earned coverage and creator activity, instead of a quarterly deck.",
+      "capabilityTags": [
+        "Pricing moves",
+        "Hiring signals",
+        "Earned coverage",
+        "Creator activity"
+      ],
+      "intentTags": {
+        "primary": [
+          "competitive_activity"
+        ],
+        "secondary": [
+          "competitive_media"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/newintel",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "newintel",
+        "lockup": null
+      }
     },
     {
       "id": "search_plus",
@@ -358,7 +946,48 @@
         "AI Search Experiences",
         "ChatGPT, Gemini, Claude, Grok, DeepSeek"
       ],
-      "lockup": null
+      "lockup": null,
+      "active": true,
+      "cardDescription": "The enterprise OS for brand orchestration across paid, owned and earned media, including AI search experiences.",
+      "capabilityTags": [
+        "Brand Orchestration across Paid, Owned and Earned",
+        "Detect, predict, shape and prove performance",
+        "AI Search Experiences",
+        "ChatGPT, Gemini, Claude, Grok, DeepSeek"
+      ],
+      "intentTags": {
+        "primary": [
+          "brand_orchestration"
+        ],
+        "secondary": [
+          "ai_search_visibility",
+          "media_planning",
+          "marketing_operations",
+          "campaign_measurement"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid_market",
+          "enterprise"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/search_plus",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "search_plus",
+        "lockup": null
+      }
     },
     {
       "id": "id_graph",
@@ -377,7 +1006,42 @@
         "Privacy-safe activation"
       ],
       "lockup": null,
-      "sourceNote": "copy approved by the client on 2026-09-10. The figures are the ones reference/companies/README.md and catalog.json carry for SATS — 260M US consumers, 123M US households — and the same graph the Targeting Machine page names. Confirm the figures are current before client use. The two sentences were swapped on 2026-09-10 so the card, which shows only the opening, leads with the figures rather than with the framing."
+      "sourceNote": "copy approved by the client on 2026-09-10. The figures are the ones reference/companies/README.md and catalog.json carry for SATS — 260M US consumers, 123M US households — and the same graph the Targeting Machine page names. Confirm the figures are current before client use. The two sentences were swapped on 2026-09-10 so the card, which shows only the opening, leads with the figures rather than with the framing.",
+      "active": true,
+      "cardDescription": "Connects first-party data, third-party media data and consumer intelligence across 260 million US consumers, so audiences can be built and activated privacy-safely.",
+      "capabilityTags": [
+        "First-party data onboarding",
+        "Third-party media data",
+        "Proprietary consumer intelligence",
+        "Privacy-safe activation"
+      ],
+      "intentTags": {
+        "primary": [
+          "identity_graph",
+          "first_party_data"
+        ],
+        "secondary": [
+          "audience_targeting"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/next/s/id_graph",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "id_graph",
+        "lockup": null
+      }
     }
-  ]
+  ],
+  "_catalogNote": "Kimi fields (2026-09-10): active, cardDescription, capabilityTags, intentTags{primary,secondary} (taxonomy.json ids), audiences{companySize,creatorVolume,geography} (bands from taxonomy.json — a product that declares a band scores a fit on it and a mismatch outside it; one that declares none is neutral), excludesIntents (use-case mismatch), conversion{primaryType DEMO|SELF_SERVICE|EXPERT_CALL, primaryLabel, secondaryLabel}, urls{productPage,externalWebsite,demo,selfService}, visual. The recommendation cards render from these and from nothing else; the older fields (positioning, whoFor, valueProps, url, signupUrl, lockup) still drive /products and /s/{id}."
 }

@@ -1,0 +1,57 @@
+{
+  "_comment": "Kimi — the product-discovery conversation on the homepage. Flags and every visitor-facing string live here so marketing can change the words and the team can switch a piece off without touching next/kimi-flow.js. {name}, {first}, {email}, {product}, {need}, {capability} are filled at render time. The on-page persona stays 'Stagwell AI'; Kimi is the internal name of the conversation engine and the primary model behind it.",
+  "version": "2026-09-10",
+  "flags": {
+    "enabled": true,
+    "llm": true,
+    "contactGate": true,
+    "secondaryRecommendations": true,
+    "analytics": true,
+    "explainWithLlm": true
+  },
+  "copy": {
+    "intro": "What are you trying to solve?",
+    "goalAck": {
+      "brand_awareness": "Brand awareness — good. A couple of quick questions so I point you at the right thing.",
+      "audience_growth": "Growing the audience — got it. A couple of quick questions first.",
+      "reputation": "Protecting reputation — understood. Two quick questions so I can narrow this down.",
+      "competition": "Tracking the competition — good. Let me narrow down what you need most.",
+      "brand_impact": "Measuring brand impact — got it. A couple of quick questions first.",
+      "operations": "Scaling operations — understood. Let me find the right fit."
+    },
+    "freeTextAck": "Got it. A couple of quick questions so I recommend the right thing.",
+    "fallback": "I can still help. Which of these is closest to what you're trying to solve?",
+    "unclassified": "I didn't catch a marketing or business problem in that. Which of these is closest?",
+    "moreDetail": "Tell me a little more about what you're trying to do.",
+    "contactTransition": "I've narrowed this down to a strong fit. Tell me where to send the recommendation and I'll connect you with the right Stagwell AI team.",
+    "contactTitle": "See your recommendation",
+    "contactFields": { "name": "Full name", "email": "Business email", "phone": "Phone", "company": "Company (optional)" },
+    "contactSubmit": "Show my recommendations",
+    "contactNotice": "We use these details to send your recommendation and so the right Stagwell AI team can follow up. See our privacy notice.",
+    "contactNoticeUrl": "https://www.stagwellglobal.com/privacy-policy/",
+    "contactErrors": {
+      "name": "Your name, so we know who to ask for.",
+      "email": "That does not look like a business email — check the address.",
+      "phone": "That does not look like a phone number — check it.",
+      "failed": "That didn't go through. Try again in a moment."
+    },
+    "contactSubmitting": "Sending…",
+    "recommendationIntro": "Thanks, {first}. Here's what fits best:",
+    "recommendationIntroLow": "Thanks, {first}. From what you've told me, here's where I'd start:",
+    "afterCards": "A Stagwell AI specialist will also follow up at {email}.",
+    "afterCardsPhone": "A Stagwell AI specialist will also follow up at {email} or on {phone}.",
+    "composerClosed": "Your recommendation is above — we'll be in touch.",
+    "bestFit": "Best fit",
+    "alsoConsider": "Also worth considering",
+    "whyFits": "{product} is the strongest fit because you want to {need}. {capability}",
+    "whyFitsNoNeed": "{product} is the closest fit for what you've described. {capability}",
+    "whySecondary": "Adds {capability} alongside your primary recommendation.",
+    "multiCta": "Talk to a Stagwell AI expert",
+    "ctaLabels": { "DEMO": "Book a demo", "SELF_SERVICE": "Start now", "EXPERT_CALL": "Talk to an expert", "LEARN_MORE": "Learn more" },
+    "hints": {
+      "start": "What do you need help solving?",
+      "question": "Pick one, or type your answer…",
+      "size": "Roughly how many people?"
+    }
+  }
+}
