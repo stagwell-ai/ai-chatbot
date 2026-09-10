@@ -1484,3 +1484,29 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .nav__links a,.nav__droptrig{font-weight:600;border-bottom-color:transparent !important;transition:opacity .2s ease}
 .nav__links > li > a:hover,.nav__droptrig:hover,.nav__drop.is-open .nav__droptrig{opacity:.7}
 .nav .nav__panel a.nav__pitem:hover{opacity:1}
+
+/* ── the chat overlay, in the homepage chat's pattern (client, 2026-09-10: "if
+   I open the chat it needs to be designed like the home page chat… not
+   floating tags"). The field is a box like the hero's, and the six starting
+   points sit in one grouped panel tucked under it — two columns, hairlines
+   between the cells, each with its icon — one column on a phone. Light, since
+   the overlay is white; the hero's tray is the same shape in glass. ─────── */
+.chat-over .ask__form{position:relative;z-index:1}
+.chat-over .ask__field{border-radius:22px}
+.chat-over .ask__tags{position:relative;z-index:0;display:grid;grid-template-columns:repeat(2,1fr);gap:0;width:fit-content;max-width:min(100%,680px);
+  margin:-22px auto 0;padding:22px 0 0;list-style:none;border-radius:0 0 20px 20px;overflow:hidden;background:#F4F6F8;box-shadow:inset 0 0 0 1px var(--line)}
+.chat-over .ask__tags li{display:block;--r:0 0 0 0 transparent;--b:0 0 0 0 transparent;box-shadow:var(--r),var(--b)}
+.chat-over .ask__tags li:nth-child(odd){--r:inset -1px 0 0 rgba(11,18,32,.08)}
+.chat-over .ask__tags li:nth-child(-n+4){--b:inset 0 -1px 0 rgba(11,18,32,.08)}
+.chat-over .ask__tags .tag{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;height:50px;padding:0 24px;
+  border:0;border-radius:0;background:transparent;box-shadow:none;font-size:14px;font-weight:500;color:var(--ink-2);white-space:nowrap;text-align:left}
+.chat-over .ask__tags .tag__ic{width:18px;height:18px;opacity:.75}
+.chat-over .ask__tags .tag:hover{background:#ECEFF2;color:var(--ink)}
+.chat-over .ask__tags .tag[aria-pressed="true"]{background:#E4E8EC;color:var(--ink)}
+.chat-over .ask__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+@media (max-width:640px){
+  .chat-over .ask__tags{grid-template-columns:1fr;width:100%}
+  .chat-over .ask__tags li:nth-child(n){--r:0 0 0 0 transparent;--b:inset 0 -1px 0 rgba(11,18,32,.08)}
+  .chat-over .ask__tags li:last-child{--b:0 0 0 0 transparent}
+  .chat-over .ask__tags .tag{height:48px;padding:0 18px;font-size:15px}
+}

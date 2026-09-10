@@ -22,6 +22,7 @@ one the document marks "subject to approval" — the page flags them as
 candidates until the product owners sign them off.
 """
 import html
+import json
 import pathlib
 import re
 
@@ -264,13 +265,10 @@ def page(p, home):
 
     i = home.index('<header class="nav" id="nav">'); j = home.index('<!-- the chat, full screen over the page')
     chrome = put_blocks(home[i:j].rstrip(), current=slug)
-    # no chat overlay on these pages: the magnifiers jump to the page's own chat at the foot
-    chrome, n = re.subn(r'<button type="button" class="nav__search" id="navSearch"[^>]*>(.*?)</button>',
-                        r'<a class="nav__search" href="#ask" aria-label="Ask Stagwell AI">\1</a>', chrome, flags=re.S)
-    assert n == 1, 'nav search'
-    chrome, n = re.subn(r'<button type="button" class="menu__search" id="menuSearch"[^>]*>(.*?)</button>',
-                        r'<a class="menu__search" href="#ask">\1</a>', chrome, flags=re.S)
-    assert n == 1, 'menu search'
+    # the bar's chat button opens the homepage's chat overlay here too (client,
+    # 2026-09-10: "the chat button next to Book a demo doesn't open"); a question
+    # asked there opens the chat at the foot of the page (home.js)
+    chrome += '\n\n' + home[home.index('<!-- the chat, full screen over the page'):home.index('<main id="top">')].rstrip()
 
     # the homepage's chat, as it is: the box, the thinking canvas, the six pills
     i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
@@ -399,7 +397,7 @@ def page(p, home):
            '<!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta] click -->\n'
            f'<body class="home pp pp--{slug}{" pp--light-hero" if p.get("hero_tone") == "light" else ""}" data-lead-cta>\n\n' + symbol + '\n\n' + chrome + '\n' + body + '\n' +
            footer + '\n\n' + scripts + '\n' + VIDEO_JS + '\n' + PP_CLOSE_JS + '\n</body>\n</html>\n')
-    assert 'id="chatOver"' not in out and out.count('id="ask"') == 1 and out.count('id="agentForm"') == 1 and 'id="askEnd"' not in out and 'endThink' not in out
+    assert out.count('id="chatOver"') == 1 and out.count('id="ask"') == 1 and out.count('id="agentForm"') == 1 and 'id="askEnd"' not in out and 'endThink' not in out
     return out
 
 # ── run ─────────────────────────────────────────────────────────────────────
@@ -477,11 +475,7 @@ def listing_page(home):
     i = home.index('<svg width="0"'); symbol = home[i:home.index('</svg>', i) + 6]
     i = home.index('<header class="nav" id="nav">'); j = home.index('<!-- the chat, full screen over the page')
     chrome = put_blocks(home[i:j].rstrip())
-    chrome, n1 = re.subn(r'<button type="button" class="nav__search" id="navSearch"[^>]*>(.*?)</button>',
-                         r'<a class="nav__search" href="#start" aria-label="Ask Stagwell AI">\1</a>', chrome, flags=re.S)
-    chrome, n2 = re.subn(r'<button type="button" class="menu__search" id="menuSearch"[^>]*>(.*?)</button>',
-                         r'<a class="menu__search" href="#start">\1</a>', chrome, flags=re.S)
-    assert n1 == 1 and n2 == 1
+    chrome += '\n\n' + home[home.index('<!-- the chat, full screen over the page'):home.index('<main id="top">')].rstrip()   # the chat overlay, as on the homepage
     i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
     chat = home[i:home.index('</ul>', k) + 5]
     # the close, exactly as the product pages carry it (see page())
@@ -502,6 +496,144 @@ def listing_page(home):
            footer + '\n\n' + scripts + '\n' + PP_CLOSE_JS + '\n</body>\n</html>\n')
     assert out.count('id="productsRoot"') == 1 and out.count('id="ask"') == 1 and out.count('id="navBurger"') == 1 and 'endThink' not in out
     return out
+
+# ── the other products: /s/{id}, built like the four (client, 2026-09-10) ──────
+# "All these Explore pages need to look like the product pages we did today…
+# CTA, chat at the end, same footer, same hero treatment; we don't have images,
+# so do gradients in the brand's style." One page per active product from
+# data/solutions.json: the product pages' hero on a Stagwell gradient (three,
+# in turn), the product's own words (positioning, card line, who it's for,
+# capabilities), its picture from the listing, the products teams pair it with,
+# then the homepage's "How can we help?" with its chat, and its footer. No film
+# and no proof section: there are none for these, and nothing is invented.
+SOL_OWN = {'targeting_machine': '/targeting-machine', 'newvoices': '/newvoices',
+           'machines_family': '/the-machine', 'agent_cloud': '/agent-cloud'}
+# a first sentence too long to be a title (220 characters): its own second
+# sentence carries the title, the long one moves under the hero
+SOL_TITLE = {'id_graph': "The identity spine under Stagwell's audience work."}
+SOL_GRADS = ('g1', 'g2', 'g3')
+
+def sol_pictures():
+    """The listing's still for each product (products.js PICTURE), so a product
+    reads the same on both pages."""
+    src = (NEXT / 'products.js').read_text(); i = src.index('const PICTURE = {'); j = src.index('};', i)
+    return dict(re.findall(r"(\w+):\s*'([^']+)'", src[i:j]))
+
+def frame(home, *, title, desc, path, body_class, body, css=('product.css',), extra_js=()):
+    """A page on the homepage's head, bar, menu, "How can we help?" (chat and
+    thinking field) and footer, with `body` in between — the product pages'
+    recipe, for pages that carry no film."""
+    head = home[:home.index('</head>')]
+    for old, new in [
+        ('<title>Stagwell AI</title>', f'<title>{t(title)}</title>'),
+        ('<meta name="description" content="Whatever the challenge, we deliver results">', f'<meta name="description" content="{a(desc)}">'),
+        ('<link rel="canonical" href="https://stagwell.vercel.app/">', f'<link rel="canonical" href="https://stagwell.vercel.app{path}">'),
+        ('<meta property="og:title" content="Ask Stagwell">', f'<meta property="og:title" content="{a(title)}">'),
+        ('<meta property="og:description" content="Whatever the challenge, we deliver results">', f'<meta property="og:description" content="{a(desc)}">'),
+        ('<meta property="og:url" content="https://stagwell.vercel.app/">', f'<meta property="og:url" content="https://stagwell.vercel.app{path}">'),
+        ('<link rel="stylesheet" href="/next/home.css">', '<link rel="stylesheet" href="/next/home.css">' + ''.join(f'\n<link rel="stylesheet" href="/next/{c}">' for c in css)),
+    ]:
+        must(head, old); head = head.replace(old, new)
+    i = home.index('<svg width="0"'); symbol = home[i:home.index('</svg>', i) + 6]
+    i = home.index('<header class="nav" id="nav">'); j = home.index('<!-- the chat, full screen over the page')
+    chrome = put_blocks(home[i:j].rstrip())
+    chrome += '\n\n' + home[home.index('<!-- the chat, full screen over the page'):home.index('<main id="top">')].rstrip()   # the chat overlay, as on the homepage
+    i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
+    chat = home[i:home.index('</ul>', k) + 5]
+    i = home.index('<section class="ask-end" id="start">'); close = home[i:home.index('</section>', i) + 10]
+    close = close.replace('\n  <canvas class="hero__think" id="endThink" aria-hidden="true"></canvas>', '')
+    for old, new in [('id="askEndInput"', 'id="ppAskInput"'), ('for="askEndInput"', 'for="ppAskInput"'), ('id="askEnd"', 'id="ppAsk"')]:
+        must(close, old); close = close.replace(old, new)
+    ways = '      <div class="ask-end__ways">'
+    canvas = '<canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>'
+    must(close, ways); must(chat, canvas)
+    close = close.replace(ways, '      <div class="hero__in pp-ask" id="ask" hidden>\n' + chat.replace(canvas, '') + '\n      </div>\n' + ways)
+    close = close.replace('<section class="ask-end" id="start">', '<section class="ask-end" id="start">\n  ' + canvas, 1)
+    i = home.index('<footer class="foot">'); footer = home[i:home.index('</footer>') + 9]
+    home_js = re.findall(r'<script src="/next/([^"]+)"></script>', home[home.index('<body'):])
+    scripts = '\n'.join(f'<script src="/next/{f}"></script>' for f in list(home_js) + list(extra_js))
+    out = (head + '</head>\n<body class="' + body_class + '" data-lead-cta>\n\n' + symbol + '\n\n' + chrome + '\n' +
+           '<!-- Generated by next/build-product-pages.py — edit the content there, not here. -->\n<main id="top">\n' + body +
+           '\n' + close + '\n</main>\n\n' + footer + '\n\n' + scripts + '\n' + PP_CLOSE_JS + '\n</body>\n</html>\n')
+    assert out.count('id="ask"') == 1 and out.count('id="navBurger"') == 1 and 'endThink' not in out
+    return out
+
+ARROW = '<svg class="pp-site__ic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6.5 5H11v4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+GO = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+def solution_page(home, s, n, by_id, pics):
+    sid, name = s['id'], s['name']
+    sent = [x for x in re.split(r'(?<=[.!?])\s+', s['positioning'].strip()) if x]
+    title = SOL_TITLE.get(sid, sent[0])
+    card = s['cardDescription']
+    norm = lambda x: re.sub(r'\W+', '', x).lower()
+    rest = [sent[0]] if sid in SOL_TITLE else [x for x in sent[1:] if norm(x) != norm(card)]
+    about = ' '.join(rest)
+    eyebrow = s.get('whoFor') or 'The Stagwell Marketing Cloud'
+    if s.get('url'):
+        site = f'<a class="pp-site" href="{a(s["url"])}" target="_blank" rel="noopener" data-product-site>Visit {t(name)} website{ARROW}</a>'
+    elif s.get('signupUrl'):
+        site = f'<a class="pp-site" href="{a(s["signupUrl"])}" target="_blank" rel="noopener" data-product-site>Get started with {t(name)}{ARROW}</a>'
+    else:
+        site = ''
+    caps = s.get('capabilityTags') or s.get('valueProps') or []
+    steps = '\n'.join(f'        <li class="rv" style="--d:{0.06 * k:.2f}s"><b>{k + 1:02d}</b><div><h3>{t(c)}</h3></div></li>' for k, c in enumerate(caps))
+    pic = pics.get(sid)
+    media = (f'<img src="{a(pic)}" alt="" loading="lazy" decoding="async">' if pic else f'<span class="sp-tile">{t(name)}</span>')
+    also_ids = [c for c in s.get('companions', []) if c in by_id and by_id[c].get('active')]
+    also = ''
+    if also_ids:
+        rows = '\n'.join(f'        <li><a class="sp-also__item" href="{a(SOL_OWN.get(c, "/s/" + c))}"><span><b class="sp-also__n">{t(by_id[c]["name"])}</b>'
+                         f'<span class="sp-also__w">{t(by_id[c].get("whoFor") or by_id[c]["cardDescription"])}</span></span>{GO}</a></li>' for c in also_ids)
+        also = f"""
+<section class="sp-also">
+  <div class="pp-wrap">
+    <p class="pp-sign rv">Related</p>
+    <h2 class="pp-h2 sp-also__h rv" style="--d:.08s">Teams solving this also ask about</h2>
+    <ul class="sp-also__list">
+{rows}
+    </ul>
+  </div>
+</section>
+"""
+    about_html = f"""
+<section class="pp-about">
+  <div class="pp-wrap">
+    <p class="pp-about__text rv">{t(about)}</p>
+  </div>
+</section>
+""" if about else ''
+    body = f"""
+<section class="pp-hero sp-hero sp-hero--{SOL_GRADS[n % len(SOL_GRADS)]}">
+  <div class="pp-wrap pp-hero__in">
+    <p class="sp-mark">{t(name)}</p>
+    <p class="pp-eyebrow">{t(eyebrow)}</p>
+    <h1 class="pp-title">{t(title)}</h1>
+    <p class="pp-lede">{t(card)}</p>
+    <div class="pp-acts">
+      <button type="button" class="btn btn--accent btn--lg" data-cta="session" data-where="hero">Book a demo</button>
+      {site}
+    </div>
+  </div>
+</section>
+{about_html}
+<section class="pp-more">
+  <div class="pp-wrap">
+    <div class="pp-more__head">
+      <p class="pp-sign rv">How it works</p>
+      <h2 class="pp-h2 rv" style="--d:.1s">What <span>{t(name)}</span> does</h2>
+    </div>
+    <div class="pp-more__grid">
+      <div class="pp-more__media">{media}</div>
+      <ol class="pp-steps">
+{steps}
+      </ol>
+    </div>
+    <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
+  </div>
+</section>
+{also}"""
+    return frame(home, title=f'{name} | Stagwell AI', desc=card, path=f'/s/{sid}', body_class=f'home pp sp sp--{sid}', body=body)
 
 def sync_chrome(home):
     """The listing (/products) and the solution pages (/s/{id}) carry
@@ -544,6 +676,14 @@ def main():
     sync_chrome(home)
     (NEXT / 'book.html').write_text(book_page(home)); print('next/book.html    Book a demo page')
     (NEXT / 'products.html').write_text(listing_page(home)); print('next/products.html  the listing, built like a product page')
+    sols = json.loads((ROOT / 'data' / 'solutions.json').read_text())['solutions']
+    by_id = {x['id']: x for x in sols}
+    pics = sol_pictures()
+    (NEXT / 's').mkdir(exist_ok=True)
+    gen = [x for x in sols if x.get('active') and x['id'] not in SOL_OWN]
+    for n, x in enumerate(gen):
+        (NEXT / 's' / f"{x['id']}.html").write_text(solution_page(home, x, n, by_id, pics))
+    print(f'next/s/*.html   {len(gen)} product pages: ' + ', '.join(x['id'] for x in gen))
     for slug, out in pages.items():
         (NEXT / f'{slug}.html').write_text(out)
         print(f'next/{slug}.html  {len(out):>6} bytes')

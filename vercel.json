@@ -72,6 +72,26 @@
       "permanent": false
     },
     {
+      "source": "/s/agent_cloud",
+      "destination": "/agent-cloud",
+      "permanent": false
+    },
+    {
+      "source": "/s/machines_family",
+      "destination": "/the-machine",
+      "permanent": false
+    },
+    {
+      "source": "/s/newvoices",
+      "destination": "/newvoices",
+      "permanent": false
+    },
+    {
+      "source": "/s/targeting_machine",
+      "destination": "/targeting-machine",
+      "permanent": false
+    },
+    {
       "source": "/next/s/:solution",
       "destination": "/s/:solution",
       "permanent": false
@@ -148,7 +168,7 @@
     },
     {
       "source": "/s/:solution",
-      "destination": "/next/solution.html"
+      "destination": "/next/s/:solution.html"
     },
     {
       "source": "/next-v1",

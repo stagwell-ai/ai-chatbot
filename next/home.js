@@ -565,8 +565,17 @@
       if (over) { const c = $('#chatOverClose'); if (c) c.click(); }
       if (!agentInput || !agentForm) { location.href = '/agent?q=' + encodeURIComponent(v); return; }
       input.value = '';
+      /* on a page whose chat sits at the foot — the product pages, the listing,
+         /s/{id} — the conversation opens there, in place of its field, and the
+         page goes to it; on the homepage it is the hero's, at the top */
+      const foot = agentForm.closest('#start');
       setTimeout(() => {
-        scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+        if (foot) {
+          const pp = $('#ppAsk'), box = $('#ask');
+          if (pp) pp.hidden = true;
+          if (box) box.hidden = false;
+          foot.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+        } else scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
         /* the caret travels with the question: closeChat() has just handed
            focus back to the bar's bubble, and a visitor who carries on typing
            would otherwise type into nothing (client, 2026-09-10) */
