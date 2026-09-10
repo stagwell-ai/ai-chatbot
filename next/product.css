@@ -219,3 +219,13 @@ body.pp--the-machine .pp-more__media img{transform:scale(1.5);transform-origin:5
 @media (max-width:820px){
   body.pp--the-machine .pp-more__media img{transform:scale(1.7);transform-origin:50% 49%}
 }
+
+/* ── the hero keeps a short line; the whole description sits under the film
+   (client, 2026-09-10: "compress it to two lines… put the entire paragraph
+   after the video, centred, black, readable, the size of the How it works
+   titles"). Centred, it closes the film and opens How it works. ─────────── */
+.pp-lede{max-width:min(100%,640px);text-wrap:balance}
+.pp-about{padding:clamp(64px,8vw,112px) 0 0}
+.pp-about__text{margin:0 auto;max-width:820px;text-align:center;font-family:var(--display);
+  font-size:clamp(18px,1.4vw,21px);font-weight:500;line-height:1.6;letter-spacing:-.005em;color:var(--ink);text-wrap:pretty}
+.pp-about + .pp-more{padding-top:clamp(72px,9vw,120px)}

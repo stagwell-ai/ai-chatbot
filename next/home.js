@@ -503,12 +503,13 @@
   /* ── the phone's menu: the sheet under the bar. The button crosses, the
         page holds still, Escape closes, and any link inside closes it as it
         does its own work. ─────────────────────────────────────────────── */
-  const burger = $('#navBurger'), menu = $('#navMenu');
+  const burger = $('#navBurger'), menu = $('#navMenu'), lbl = $('#navBurger .nav__blbl');
   if (burger && menu) {
     const closeMenu = () => {
       if (menu.hidden) return;
       menu.classList.remove('is-in');
       burger.setAttribute('aria-expanded', 'false');
+      if (lbl) lbl.textContent = 'Menu';
       document.body.classList.remove('menu-open');
       const done = () => { menu.hidden = true; };
       REDUCED ? done() : setTimeout(done, 300);
@@ -516,6 +517,7 @@
     const openMenu = () => {
       menu.hidden = false;
       burger.setAttribute('aria-expanded', 'true');
+      if (lbl) lbl.textContent = 'Close';   /* the visible word is the button's name: it says what a tap does */
       document.body.classList.add('menu-open');
       requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-in')));
     };

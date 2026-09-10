@@ -39,6 +39,9 @@ PRODUCTS = [
         logo='<img class="pp-logo pp-logo--screen" src="/assets/img/companies/the-machine/logo-wide.png" alt="The Machine" width="570" height="100">',
         title='Turn your marketing stack into an intelligent system.',
         description="The Machine is Stagwell's agentic operating system for marketing. It connects people, tools, data, and institutional knowledge across strategy, creative, production, and media - improving the systems teams already use rather than forcing a rip-and-replace.",
+        # the line under the title, two lines at most (client); the definitions' own
+        # description moves under the film, whole
+        summary="Stagwell's agentic operating system for marketing, built on the tools you already use.",
         url='https://machine.live/',
         image=('/assets/img/products/the-machine.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
         sections=[
@@ -67,9 +70,14 @@ PRODUCTS = [
         # the same CSS height gives the same size. (The file shipped as its
         # "logo.svg" is an architecture diagram, not a mark.)
         # the mark takes the teal of the How it works image (client), not the sky it first had
-        logo='<img class="pp-logo" src="/assets/img/companies/targeting-machine/logo-lockup-teal.png" alt="The Targeting Machine" width="963" height="100">',
+        # on a phone the picture under the mark is mid-teal and the teal mark
+        # vanished (1.2:1): phones get the sky lockup (3.6:1), desktops keep teal
+        logo='<picture><source media="(max-width:820px)" srcset="/assets/img/companies/targeting-machine/logo-lockup.png" width="963" height="100"><img class="pp-logo" src="/assets/img/companies/targeting-machine/logo-lockup-teal.png" alt="The Targeting Machine" width="963" height="100"></picture>',
         title='Turn fragmented data into audiences you can activate.',
         description="The Targeting Machine is an enterprise-grade, privacy-first audience intelligence platform that combines first-party data, third-party media data, Stagwell's proprietary consumer intelligence, and the Stagwell ID Graph to move from deeper audience understanding to activation.",
+        # the line under the title, two lines at most (client); the definitions' own
+        # description moves under the film, whole
+        summary='Privacy-first audience intelligence, from first-party data to activation.',
         url='https://www.themarketingcloud.com/marketplace/sats',
         image=('/assets/img/products/targeting-machine.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
         sections=[
@@ -91,6 +99,9 @@ PRODUCTS = [
         logo='<img class="pp-logo" src="/assets/img/companies/newvoices/logo-white.png" alt="New Voices" width="2560" height="441">',
         title='Hear why your customers act - at scale.',
         description='New Voices puts lifelike AI voice agents on your customer conversations, 24/7 and in any language. The same agents that qualify and book leads, resolve service and win back lapsing customers also interview customers at scale - capturing the nuance, emotion, language and context that written surveys and behavioral data miss, and converting it into decision-ready market intelligence.',
+        # the line under the title, two lines at most (client); the definitions' own
+        # description moves under the film, whole
+        summary='AI voice agents that interview your customers at scale and turn it into insight.',
         url='https://newvoices.ai/',
         # Julian's product image (mats/from stagwell/product imaages/new voices.png, 2026-09-10)
         image=('/assets/img/products/newvoices.jpg', 1122, 1402),
@@ -115,6 +126,9 @@ PRODUCTS = [
         logo='<span class="pp-logo pp-logo--mark"><img src="/assets/img/companies/agent-cloud/logo.svg" alt="" width="40" height="40">Agent Cloud</span>',
         title='Give your marketing team one secure place to use the best AI.',
         description='Agent Cloud is a secure AI workspace for marketers that brings leading LLMs, pre-built marketing assistants, and build-your-own agent capabilities into one governed environment - reducing tool sprawl while making advanced AI easier to use across the organization.',
+        # the line under the title, two lines at most (client); the definitions' own
+        # description moves under the film, whole
+        summary='A secure AI workspace for marketers: leading LLMs and marketing agents in one place.',
         url='https://www.themarketingcloud.com/marketplace/agent-cloud',
         image=('/assets/img/products/agent-cloud.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
         sections=[
@@ -314,7 +328,7 @@ def page(p, home):
     {p['logo']}
     <p class="pp-eyebrow">{t(p['kind'])}</p>
     <h1 class="pp-title">{t(p['title'])}</h1>
-    <p class="pp-lede">{t(p['description'])}</p>
+    <p class="pp-lede">{t(p['summary'])}</p>
     <div class="pp-acts">
       <button type="button" class="btn btn--accent btn--lg" data-cta="session" data-where="hero">Book a demo</button>
       <a class="pp-site" href="{a(p['url'])}" target="_blank" rel="noopener" data-product-site>Visit {t(name)} website<svg class="pp-site__ic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6.5 5H11v4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -328,6 +342,13 @@ def page(p, home):
       <source src="/assets/video/{slug}-15s.mp4" type="video/mp4">
     </video>
     <button type="button" class="pp-film__play" aria-label="Play the film"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></button>
+  </div>
+</section>
+
+<!-- the definitions' description, whole: between the film and How it works (client) -->
+<section class="pp-about">
+  <div class="pp-wrap">
+    <p class="pp-about__text rv">{t(p['description'])}</p>
   </div>
 </section>
 
