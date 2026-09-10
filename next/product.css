@@ -26,6 +26,15 @@
   background:
     linear-gradient(180deg,rgba(0,34,49,.38) 0%,rgba(0,34,49,.12) 55%,rgba(0,34,49,0) 100%),
     linear-gradient(30deg,#003349 0%,#009CBD 55%,#FF6D24 100%)}
+/* a product's own hero picture, when it has one (client, 2026-09-10): it takes
+   the place of the gradient on that page only — the rest keep the footer's
+   gradient until their pictures arrive. The pictures are dark, designed
+   grounds (The Machine's mark glowing in a corner, New Voices' bars at the
+   edges), so the veil is only a light shade under the bar; a heavier one
+   muddied the glow. The picture is set from the page as --hero-bg. */
+.pp-hero--photo::before{background:
+    linear-gradient(180deg,rgba(7,20,29,.32) 0%,rgba(7,20,29,.10) 38%,rgba(7,20,29,0) 70%),
+    var(--hero-bg) center / cover no-repeat}
 .pp-hero__in{position:relative;display:flex;flex-direction:column;align-items:center}
 
 /* the product's own mark, above the title (the definitions ask for it there) */
