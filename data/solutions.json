@@ -307,28 +307,40 @@
     {
       "id": "media_machine",
       "name": "The Media Machine",
-      "positioning": "[POSITIONING — pending. The Media Machine was added to the page on 2026-09-09; its copy has not been written yet.]",
+      "positioning": "Planning and buying that answers to the brand. Connects investment decisions to brand and business outcomes, instead of channel metrics that flatter themselves.",
       "whoFor": null,
-      "shownWhen": "Listed on /products only, in the \"Newly added\" group, until its copy arrives.",
+      "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
       "nextStep": "Demo",
       "companions": [],
       "url": null,
       "signupUrl": null,
-      "valueProps": [],
-      "lockup": null
+      "valueProps": [
+        "Media planning",
+        "Media buying and activation",
+        "Investment tied to brand outcomes",
+        "Enterprise media"
+      ],
+      "lockup": null,
+      "sourceNote": "copy approved by the client on 2026-09-10, drawn from this repo's earlier product catalogue (catalogue.js: 'Planning and buying that answers to the brand') and from routing.json, which pairs it with The Machine for marketing operations. Not vendor-published copy — confirm before client use."
     },
     {
       "id": "newintel",
       "name": "NewIntel",
-      "positioning": "[POSITIONING — pending. NewIntel was added to the page on 2026-09-09; its copy has not been written yet.]",
+      "positioning": "What your competitors did this week. Live competitive signal across pricing, hiring, earned coverage and creator activity, rather than a quarterly deck that is already out of date.",
       "whoFor": null,
-      "shownWhen": "Listed on /products only, in the \"Newly added\" group, until its copy arrives.",
+      "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
       "nextStep": "Demo",
       "companions": [],
       "url": null,
       "signupUrl": null,
-      "valueProps": [],
-      "lockup": null
+      "valueProps": [
+        "Pricing moves",
+        "Hiring signals",
+        "Earned coverage",
+        "Creator activity"
+      ],
+      "lockup": null,
+      "sourceNote": "copy approved by the client on 2026-09-10, drawn from this repo's earlier product catalogue (catalogue.js, where it is badged 'The Intelligence Machine') and from the competitive-intelligence role it already plays in the demo. Not vendor-published copy — confirm before client use."
     },
     {
       "id": "search_plus",
@@ -351,15 +363,21 @@
     {
       "id": "id_graph",
       "name": "Stagwell ID Graph",
-      "positioning": "[POSITIONING — pending. Stagwell ID Graph was added to the page on 2026-09-09; its copy has not been written yet.]",
+      "positioning": "The identity spine under Stagwell's audience work. Covering 260 million US consumers and 123 million US households, it connects first-party data, third-party media data and proprietary consumer intelligence so audiences can be built and activated without exposing individual identities.",
       "whoFor": null,
-      "shownWhen": "Listed on /products only, in the \"Newly added\" group, until its copy arrives.",
+      "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
       "nextStep": "Demo",
       "companions": [],
       "url": null,
       "signupUrl": null,
-      "valueProps": [],
-      "lockup": null
+      "valueProps": [
+        "First-party data onboarding",
+        "Third-party media data",
+        "Proprietary consumer intelligence",
+        "Privacy-safe activation"
+      ],
+      "lockup": null,
+      "sourceNote": "copy approved by the client on 2026-09-10. The figures are the ones reference/companies/README.md and catalog.json carry for SATS — 260M US consumers, 123M US households — and the same graph the Targeting Machine page names. Confirm the figures are current before client use."
     }
   ]
 }
