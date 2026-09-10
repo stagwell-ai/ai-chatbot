@@ -396,20 +396,66 @@ def page(p, home):
     return out
 
 # ── run ─────────────────────────────────────────────────────────────────────
+def site_chrome(home):
+    """The homepage's bar and phone menu, for a page with no chat of its own:
+    the chat buttons go to the homepage's."""
+    i = home.index('<header class="nav" id="nav">'); j = home.index('<!-- the chat, full screen over the page')
+    ch = put_blocks(home[i:j].rstrip())
+    ch, n1 = re.subn(r'<button type="button" class="nav__search" id="navSearch"[^>]*>(.*?)</button>',
+                     r'<a class="nav__search" href="/next#ask" aria-label="Ask Stagwell AI">\1</a>', ch, flags=re.S)
+    ch, n2 = re.subn(r'<button type="button" class="menu__search" id="menuSearch"[^>]*>(.*?)</button>',
+                     r'<a class="menu__search" href="/next#ask">\1</a>', ch, flags=re.S)
+    assert n1 == 1 and n2 == 1
+    return ch
+
+# ── Book a demo: its own page (client, 2026-09-10) ──────────────────────────
+# Every "Book a demo" used to open lead.js's modal ("Book a strategy session")
+# over the page. It is a page now: the brand gradient, the demo's own title
+# and line (data/cta.json's "demo" copy — "a strategy session" read wrong
+# after a Book a demo button, client), and the same form — lead.js mounts it into
+# #bookForm with visible labels, the same work-email check and the same events.
+BOOK_BODY = """<main class="bk">
+  <section class="bk-hero">
+    <div class="pp-wrap bk__in">
+      <div class="bk__copy">
+        <h1 class="bk__title">Book a demo</h1>
+        <p class="bk__lede">Thirty minutes with the team who runs the product, walking through it against your brand. Not a generic reel.</p>
+      </div>
+      <div class="bk__card">
+        <div id="bookForm" data-kind="demo" aria-label="Book a demo"></div>
+      </div>
+    </div>
+  </section>
+</main>
+"""
+
+def book_page(home):
+    head = home[:home.index('</head>')]
+    for old, new in [
+        ('<title>Stagwell AI</title>', '<title>Book a demo | Stagwell AI</title>'),
+        ('<meta name="description" content="Whatever the challenge, we deliver results">', '<meta name="description" content="Book a demo: thirty minutes with the team who runs the product, walking through it against your brand.">'),
+        ('<link rel="canonical" href="https://stagwell.vercel.app/next">', '<link rel="canonical" href="https://stagwell.vercel.app/next/book">'),
+        ('<meta property="og:title" content="Ask Stagwell">', '<meta property="og:title" content="Book a demo | Stagwell AI">'),
+        ('<meta property="og:description" content="Whatever the challenge, we deliver results">', '<meta property="og:description" content="Book a demo: thirty minutes with the team who runs the product, walking through it against your brand.">'),
+        ('<meta property="og:url" content="https://stagwell.vercel.app/next">', '<meta property="og:url" content="https://stagwell.vercel.app/next/book">'),
+        ('<link rel="stylesheet" href="/next/home.css">', '<link rel="stylesheet" href="/next/home.css">\n<link rel="stylesheet" href="/next/product.css">'),
+    ]:
+        must(head, old); head = head.replace(old, new)
+    i = home.index('<svg width="0"'); symbol = home[i:home.index('</svg>', i) + 6]
+    i = home.index('<footer class="foot">'); footer = home[i:home.index('</footer>') + 9]
+    scripts = '\n'.join(f'<script src="/next/{f}"></script>' for f in ('lead.js', 'home.js', 'navdrop.js'))
+    out = (head + '</head>\n<body class="home pp bk-page" data-lead-cta>\n\n' + symbol + '\n\n' + site_chrome(home) + '\n' +
+           BOOK_BODY + '\n' + footer + '\n\n' + scripts + '\n</body>\n</html>\n')
+    assert out.count('id="bookForm"') == 1 and out.count('id="navBurger"') == 1
+    return out
+
 def sync_chrome(home):
     """The listing (/next/products) and the solution pages (/next/s/{id}) carry
     the homepage's bar and phone menu exactly (client, 2026-09-10: "the
     navigation is broken in the inner pages… it has to be consistent"). Their
     own header and old drawer are replaced between the site-chrome markers;
     nav.js drives the menu there and site-nav.css dresses it against ribbon.css."""
-    i = home.index('<header class="nav" id="nav">'); j = home.index('<!-- the chat, full screen over the page')
-    ch = put_blocks(home[i:j].rstrip())
-    # no chat on these pages: the chat buttons go to the homepage's
-    ch, n1 = re.subn(r'<button type="button" class="nav__search" id="navSearch"[^>]*>(.*?)</button>',
-                     r'<a class="nav__search" href="/next#ask" aria-label="Ask Stagwell AI">\1</a>', ch, flags=re.S)
-    ch, n2 = re.subn(r'<button type="button" class="menu__search" id="menuSearch"[^>]*>(.*?)</button>',
-                     r'<a class="menu__search" href="/next#ask">\1</a>', ch, flags=re.S)
-    assert n1 == 1 and n2 == 1
+    ch = site_chrome(home)
     for name in ('products.html', 'solution.html'):
         f = NEXT / name; s = f.read_text()
         START, END = '<!-- site-chrome: the homepage bar and phone menu, copied by build-product-pages.py -->', '<!-- /site-chrome -->'
@@ -420,6 +466,10 @@ def sync_chrome(home):
         s = s[:a] + START + '\n' + ch + '\n' + END + s[b:]
         s = s.replace('href="/next/why" style="color:#FFFFFF;font-size:20px', 'href="/next/products" style="color:#FFFFFF;font-size:20px')
         s = s.replace('href="/next/why"', 'href="/next#why"')
+        # the listing has no [data-cta] handler of its own (the solution pages
+        # do, in solution.js): lead.js's opt-in delegate takes Book a demo there
+        if name == 'products.html' and 'data-lead-cta' not in s[:s.index('>', s.index('<body'))]:
+            k = s.index('>', s.index('<body')); s = s[:k] + ' data-lead-cta' + s[k:]
         if 'src="/next/navdrop.js"' not in s:
             s = s.replace('</body>', '<script src="/next/navdrop.js" defer></script>\n</body>')
         assert s.count('id="navBurger"') == 1 and 'class="mnav"' not in s and 'id="navScrim"' not in s, name
@@ -438,6 +488,7 @@ def main():
     pages = {p['slug']: page(p, home) for p in PRODUCTS}
     ix.write_text(home)
     sync_chrome(home)
+    (NEXT / 'book.html').write_text(book_page(home)); print('next/book.html    Book a demo page')
     for slug, out in pages.items():
         (NEXT / f'{slug}.html').write_text(out)
         print(f'next/{slug}.html  {len(out):>6} bytes')

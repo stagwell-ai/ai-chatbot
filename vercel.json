@@ -57,6 +57,10 @@
       "destination": "/next/agent.html"
     },
     {
+      "source": "/next/book",
+      "destination": "/next/book.html"
+    },
+    {
       "source": "/next/products",
       "destination": "/next/products.html"
     },

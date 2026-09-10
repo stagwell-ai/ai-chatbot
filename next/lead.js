@@ -182,7 +182,7 @@
       : '';
   }
 
-  function formHtml(c, kind, prefill) {
+  function formHtml(c, kind, prefill, inline) {
     const s = slots();
     const p = prefill || {};
     const name = p.name || '';
@@ -190,33 +190,33 @@
     const role = p.role || s.role_seniority || '';
 
     return `
-      ${brandHtml()}
+      ${inline ? '' : `${brandHtml()}
       <h3 id="saiLeadTitle">${esc(c.kinds[kind].title)}</h3>
-      <p>${esc(c.kinds[kind].line)}</p>
+      <p>${esc(c.kinds[kind].line)}</p>`}
       <form class="modal__form lead__form" id="saiLeadForm" novalidate autocomplete="on">
         <label class="lead__row">
-          <span class="vh">${esc(c.fields.name)}</span>
+          <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(c.fields.name)}</span>
           <input type="text" name="name" autocomplete="name"
-                 placeholder="${esc(c.fields.name)}" aria-label="${esc(c.fields.name)}"
+                 placeholder="${inline ? '' : esc(c.fields.name)}" aria-label="${esc(c.fields.name)}"
                  value="${esc(name)}">
         </label>
         <label class="lead__row" id="saiLeadEmailRow">
-          <span class="vh">${esc(c.fields.email)}</span>
+          <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(c.fields.email)}</span>
           <input type="email" name="email" autocomplete="email" inputmode="email"
-                 placeholder="${esc(c.fields.email)}" aria-label="${esc(c.fields.email)}"
+                 placeholder="${inline ? '' : esc(c.fields.email)}" aria-label="${esc(c.fields.email)}"
                  aria-describedby="saiLeadHint" value="${esc(email)}">
         </label>
         <p class="lead__hint" id="saiLeadHint" role="alert" hidden>${esc(c.emailHint)}</p>
         <label class="lead__row">
-          <span class="vh">${esc(phoneLabel(c))}</span>
+          <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(phoneLabel(c))}</span>
           <input type="tel" name="phone" autocomplete="tel" inputmode="tel"
-                 placeholder="${esc(phoneLabel(c))}" aria-label="${esc(phoneLabel(c))}"
+                 placeholder="${inline ? '' : esc(phoneLabel(c))}" aria-label="${esc(phoneLabel(c))}"
                  value="${esc(p.phone || s.phone || '')}">
         </label>
         <label class="lead__row">
-          <span class="vh">${esc(c.fields.role)}</span>
+          <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(c.fields.role)}</span>
           <input type="text" name="role" autocomplete="organization-title"
-                 placeholder="${esc(c.fields.role)}" aria-label="${esc(c.fields.role)}"
+                 placeholder="${inline ? '' : esc(c.fields.role)}" aria-label="${esc(c.fields.role)}"
                  value="${esc(role)}">
         </label>
         <button class="btn btn--dark" type="submit">${esc(c.kinds[kind].submit)}</button>
@@ -224,14 +224,15 @@
       <p class="modal__fine">${esc(c.fine)}</p>`;
   }
 
-  function successHtml(c, brand) {
+  function successHtml(c, brand, inline) {
     const line = String(c.success.line).replace('{brand}', brand || 'brand');
     return `
       <div class="modal__ok">
         <span class="modal__tick"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         <h3 id="saiLeadTitle">${esc(c.success.title)}</h3>
         <p>${esc(line)}</p>
-        <button class="btn btn--dark" type="button" data-lead-close>${esc(c.success.close)}</button>
+        ${inline ? '<a class="btn btn--dark" href="/next">Back to Stagwell AI</a>'
+                 : `<button class="btn btn--dark" type="button" data-lead-close>${esc(c.success.close)}</button>`}
         <p class="modal__fine">${esc(c.fine)}</p>
       </div>`;
   }
@@ -246,12 +247,13 @@
     if (hint) hint.hidden = false;
   }
 
-  function wireForm(c, kind, prefill) {
-    const form = body.querySelector('#saiLeadForm');
+  function wireForm(c, kind, prefill, root, inline) {
+    root = root || body;
+    const form = root.querySelector('#saiLeadForm');
     if (!form) return;
-    const emailRow = body.querySelector('#saiLeadEmailRow');
+    const emailRow = root.querySelector('#saiLeadEmailRow');
     const emailInput = form.elements.email;
-    const hint = body.querySelector('#saiLeadHint');
+    const hint = root.querySelector('#saiLeadHint');
 
     /* the hint clears itself the moment the address becomes plausible — no
        second submit needed to find out you fixed it */
@@ -285,8 +287,8 @@
       emit('journey_converted', { kind });
 
       const brand = (prefill && prefill.brand) || slots().company || null;
-      body.innerHTML = successHtml(c, brand);
-      const back = body.querySelector('[data-lead-close]');
+      root.innerHTML = successHtml(c, brand, inline);
+      const back = root.querySelector('[data-lead-close]');
       if (back) back.focus();
     });
 
@@ -300,6 +302,7 @@
        landed in the name field, and a password manager filling the form does
        the same thing faster than any human). So the timer stands down the
        moment the visitor has put focus anywhere inside the form themselves. */
+    if (inline) return;   /* a page never grabs focus on load: a phone would throw its keyboard up */
     const first = Array.prototype.find.call(
       form.querySelectorAll('input'), i => !String(i.value || '').trim()) || form.elements.name;
     setTimeout(() => {
@@ -321,6 +324,20 @@
   }
 
   function open(kind, prefill) {
+    /* Book a demo and the strategy session have their own page now (client,
+       2026-09-10: "not a scroll-down something that appears suddenly"). On
+       that page the bar's Book a demo just takes you to the form. */
+    if (kind === 'session' || kind === 'demo') {
+      const here = document.getElementById('bookForm');
+      if (here) {
+        here.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const i = here.querySelector('input'); if (i) setTimeout(() => { try { i.focus({ preventScroll: true }); } catch (e) {} }, 450);
+        return;
+      }
+      emit('cta_clicked', { kind, to: 'book' });
+      location.href = '/next/book';
+      return;
+    }
     build();
     opener = (document.activeElement && document.activeElement !== document.body)
       ? document.activeElement : null;
@@ -358,8 +375,21 @@
     });
   }
 
+  /* ── the form in a page (/next/book) ─────────────────────────────────── */
+  function mount(root, kind) {
+    const go = c => {
+      const k = c.kinds[kind] ? kind : 'session';
+      root.innerHTML = formHtml(c, k, null, true);
+      wireForm(c, k, null, root, true);
+    };
+    if (COPY) go(COPY); else copy().then(go);
+  }
+  const bookRoot = document.getElementById('bookForm');
+  if (bookRoot) mount(bookRoot, bookRoot.dataset.kind || 'session');
+
   window.SAILEAD = {
     open,
+    mount,
     close,
     isOpen: () => !!(el && !el.hidden),
     kind: () => openKind,

@@ -302,3 +302,10 @@ html[data-theme] body #navMenu .menu__search svg{width:22px !important;height:22
 html[data-theme] body #navMenu .menu__acts .btn{display:flex !important;align-items:center !important;justify-content:center !important;width:100% !important;height:60px !important;
   padding:0 34px !important;border:0 !important;border-radius:999px !important;background:#0B1220 !important;color:#FFFFFF !important;box-shadow:none !important;
   font-family:'Montserrat',sans-serif !important;font-size:15px !important;font-weight:600 !important;letter-spacing:.06em !important;text-transform:uppercase !important}
+
+/* the bar's links: no underline on hover, a step bolder, a soft fade (client) */
+html[data-theme] body #nav .nav__links > li > a,
+html[data-theme] body #nav .nav__droptrig{font-weight:600 !important;border-bottom-color:transparent !important;transition:opacity .2s ease !important}
+html[data-theme] body #nav .nav__links > li > a:hover,
+html[data-theme] body #nav .nav__droptrig:hover,
+html[data-theme] body #nav .nav__drop.is-open .nav__droptrig{opacity:.7 !important;border-bottom-color:transparent !important}

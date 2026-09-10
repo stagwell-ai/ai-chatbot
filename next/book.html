@@ -2,69 +2,48 @@
 <html lang="en">
 <head>
 <script>
-/* theme, before first paint: a stored choice wins; otherwise the system
-   preference, so a phone set to dark lands in dark. */
-(function(){var d=document.documentElement,t=null;
-try{t=localStorage.getItem('sw-theme');}catch(e){}
-if(t!=='light'&&t!=='dark'){try{t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(e){t='light';}}
-d.setAttribute('data-theme',t);})();
+/* Theme, before first paint — carried over unchanged from the agent page. */
+(function(){var d=document.documentElement,sys='light',t=null;
+try{sys=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(e){}
+try{var raw=localStorage.getItem('sw-theme');
+  if(raw&&raw!=='light'&&raw!=='dark'){var o=JSON.parse(raw);
+    if(o&&(o.choice==='light'||o.choice==='dark')&&o.sys===sys)t=o.choice;}
+  else if(raw){localStorage.removeItem('sw-theme');}
+}catch(e){}
+d.setAttribute('data-theme',t||sys);})();
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- A reload lands at the top. /chat, /snapshot and /path are pushState views of
-     this one document, so the browser's restored scroll offset belongs to a view
-     that no longer exists — it drops the visitor into the middle of a page they
-     have not seen build. Set before first paint; a real #hash still wins. -->
 <script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
-<title>Stagwell AI — Every product</title>
-<meta name="description" content="Every product in the Stagwell Marketing Cloud, grouped by the problem it solves — what each one does, who it is for, and where to start.">
+<title>Book a demo | Stagwell AI</title>
+<meta name="description" content="Book a demo: thirty minutes with the team who runs the product, walking through it against your brand.">
 
-<!-- Share kit — crawlers need absolute URLs, so the production host is hardcoded -->
-<link rel="canonical" href="https://stagwell.vercel.app/next">
+<link rel="canonical" href="https://stagwell.vercel.app/next/book">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Stagwell AI">
-<meta property="og:image" content="https://stagwell.vercel.app/next/assets/share/og.png">
+<meta property="og:title" content="Book a demo | Stagwell AI">
+<meta property="og:description" content="Book a demo: thirty minutes with the team who runs the product, walking through it against your brand.">
+<meta property="og:url" content="https://stagwell.vercel.app/next/book">
+<!-- a new file name on purpose: WhatsApp and the rest cache the card by URL -->
+<meta property="og:image" content="https://stagwell.vercel.app/next/assets/share/og-v3.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ask Stagwell.">
+<meta name="twitter:image" content="https://stagwell.vercel.app/next/assets/share/og-v3.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#071A24">
+<meta name="theme-color" content="#F6F6F7">
 
 <link rel="icon" href="/next/assets/brand/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/next/assets/share/favicon-32.png" type="image/png" sizes="32x32">
-<link rel="icon" href="/next/assets/share/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/next/assets/share/apple-touch-icon.png">
 <link rel="stylesheet" href="/next/assets/fonts/fonts.css">
-<link rel="stylesheet" href="/next/styles.css">
-<!-- solution.css owns the nav/footer/corner chrome for this page the same way
-     campaign.css does for /p/{id}: b.css is NOT loaded here. -->
-<link rel="stylesheet" href="/next/solution.css">
-<link rel="stylesheet" href="/next/products.css">
-<!-- the conversation on this page ends in the SAME report the rest of the site
-     produces, so it needs the same two stylesheets the landing loads for them -->
-<link rel="stylesheet" href="/next/snapshot.css">
-<link rel="stylesheet" href="/next/path.css">
-<!-- the shared lead-capture modal: same panel on "/", /p/{id}, /ads and /s/{id} -->
 <link rel="stylesheet" href="/next/lead.css">
-<link rel="stylesheet" href="/next/directory.css">
-<link rel="stylesheet" href="/next/ribbon.css">
-<!-- the homepage's bar, last so it wins over styles.css/solution.css -->
-<link rel="stylesheet" href="/next/site-nav.css">
-<link rel="stylesheet" href="/next/page-match.css">
-<link rel="stylesheet" href="/next/tweaks.css">
+<link rel="stylesheet" href="/next/home.css">
+<link rel="stylesheet" href="/next/product.css">
 </head>
-<!-- vB joins the shared design system in ribbon.css; the page-specific
-     vSolution/vProducts rules still win where they are more specific -->
-<body class="vB vSolution vProducts" data-lead-cta>
+<body class="home pp bk-page" data-lead-cta>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="sw-mark" viewBox="0 0 158.2 153">
-    <path class="m-ink" d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z"/>
-    <path class="m-amber" d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z"/>
-    <path class="m-teal" d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z"/>
-  </symbol>
-  <!-- Stagwell AI logo, Concept Final V3.1 (For Jonathan/V3/StagwellAI - Logo - *.svg):
-       wordmark + mark bar take the page ink (.m-ink), the AI is orange (.m-orange) -->
   <symbol id="sw-logo" viewBox="0 0 1870 153">
     <path class="m-ink" d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z"/>
     <path class="m-amber" d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z"/>
@@ -82,8 +61,6 @@ d.setAttribute('data-theme',t);})();
   </symbol>
 </svg>
 
-<!-- ─────────────── HEADER ─────────────── -->
-<!-- site-chrome: the homepage bar and phone menu, copied by build-product-pages.py -->
 <header class="nav" id="nav">
   <nav class="nav__in" aria-label="Primary">
     <a class="nav__brand" href="/next" aria-label="Stagwell AI — home">
@@ -147,32 +124,30 @@ d.setAttribute('data-theme',t);})();
     <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
   </div>
 </nav>
-<!-- /site-chrome -->
-
-<main id="top">
-  <div id="productsRoot"><!-- products.js renders the whole page here --></div>
+<main class="bk">
+  <section class="bk-hero">
+    <div class="pp-wrap bk__in">
+      <div class="bk__copy">
+        <h1 class="bk__title">Book a demo</h1>
+        <p class="bk__lede">Thirty minutes with the team who runs the product, walking through it against your brand. Not a generic reel.</p>
+      </div>
+      <div class="bk__card">
+        <div id="bookForm" data-kind="demo" aria-label="Book a demo"></div>
+      </div>
+    </div>
+  </section>
 </main>
 
-<!-- the site footer, the homepage's (client, 2026-09-09) -->
 <footer class="foot">
-  <div class="wrap foot__in">
-    <div class="foot__lead">
-      <span class="foot__kicker">Keep exploring</span>
-      <!-- the mark, big, at the foot of the column: the favicon's three bars
-           in the icon's colours; the white bar becomes the ink on white -->
-      <svg class="foot__mark" viewBox="0 0 159 153" aria-hidden="true" focusable="false"><path d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z" fill="currentColor"/><path d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z" fill="#FFB81C"/><path d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z" fill="#009CBD"/></svg>
-    </div>
-    <ul class="foot__big">
-      <li><a href="/next/products">Products</a></li>
-      <li><a href="/next#why">Why Stagwell AI</a></li>
-      <li><a href="/next#ask">Ask Stagwell</a></li>
+  <div class="wrap foot__in" style="background:linear-gradient(30deg,#003349,#009CBD,#FF6D24);color:#FFFFFF;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px 47px;width:100%;padding-block:clamp(48px,7vw,88px)">
+    <ul class="foot__big" style="flex:1 1 260px;min-width:0">
+      <li><a href="/next/products" style="color:#FFFFFF;font-size:20px;line-height:1.15;display:inline-block">Products<br><br>About Stagwell AI<br></a></li>
     </ul>
-    <ul class="foot__small">
-      <li><a href="https://www.stagwellglobal.com" target="_blank" rel="noopener">A Stagwell company <span class="foot__disc" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
-      <li><button type="button" data-cta="session">Book a strategy session <span class="foot__disc" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></li>
-      <li><button type="button" data-cta="expert">Talk to an AI expert <span class="foot__disc" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></li>
-      <li><a href="https://www.stagwellglobal.com/privacy-policy/" target="_blank" rel="noopener">Privacy Notice <span class="foot__disc" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
-      <li><a href="https://www.stagwellglobal.com/wp-content/uploads/2021/11/Stagwell-Inc-Terms-of-Use_Oct-2021.pdf" target="_blank" rel="noopener">Terms of Use <span class="foot__disc" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+    <ul class="foot__small" style="flex:1 1 320px;min-width:0;display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:flex-start">
+      <li><button type="button" data-cta="session" style="color:#FFFFFF;text-align:left">Book a strategy session</button></li>
+      <li><a href="https://www.stagwellglobal.com/privacy-policy/" target="_blank" rel="noopener" style="color:#FFFFFF">Privacy Notice</a></li>
+      <li><button type="button" data-cta="expert" style="color:#FFFFFF">Talk to an AI expert</button></li>
+      <li><a href="https://www.stagwellglobal.com/wp-content/uploads/2021/11/Stagwell-Inc-Terms-of-Use_Oct-2021.pdf" target="_blank" rel="noopener" style="color:#FFFFFF">Terms of Use</a></li>
     </ul>
   </div>
   <div class="wrap foot__band">
@@ -189,34 +164,8 @@ d.setAttribute('data-theme',t);})();
   </div>
 </footer>
 
-
-<!-- The order mirrors machine/b.html's, for the same reasons: the engine owns
-     the session and the data promise, so it goes first; the flow and research
-     are pure logic with no DOM, so they only have to precede the shell that
-     drives them; the snapshot needs its data builder; path.js is what the
-     snapshot hands off to. product-chat.js is this page's conversation shell
-     (b.html's convo.js is the landing's — see the note at the top of that
-     file), and it is loaded BEFORE solution.js because solution.js mounts the
-     panel as soon as the JSON resolves. console.js observes and loads last. -->
-<script src="/next/data-loader.js"></script>
-<script src="/next/engine.js"></script>
-<!-- "arrived from {campaign} ad" — renders only for a campaign the JSON knows -->
-<script src="/next/flow.js"></script>
-<script src="/next/research.js"></script>
-<script src="/next/snapshot-data.js"></script>
-<script src="/next/snapshot.js"></script>
-<script src="/next/path.js"></script>
-<!-- lead.js before solution.js: the [data-cta] handler checks for SAILEAD -->
 <script src="/next/lead.js"></script>
-<script src="/next/products.js"></script>
-<!-- the section index, as a menu rather than a wall of links -->
-<script src="/next/prodtoc.js"></script>
-<script src="/next/directory.js"></script>
-<!-- S6 · the demo aid: observer only, loads last, never emits -->
-<script src="/next/tweaks.js"></script>
-<!-- the demo chrome, collected into one control in the header -->
-<script src="/next/chat-shape.js"></script>
-<script src="/next/nav.js"></script>
-<script src="/next/navdrop.js" defer></script>
+<script src="/next/home.js"></script>
+<script src="/next/navdrop.js"></script>
 </body>
 </html>
