@@ -456,8 +456,8 @@
       const v = askEndInput.value.trim();
       scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
       setTimeout(() => {
+        heroInput.focus({ preventScroll: true });   /* the caret follows the question up the page */
         if (v) { heroInput.value = v; askEndInput.value = ''; heroMini.requestSubmit(); }
-        else heroInput.focus({ preventScroll: true });
       }, REDUCED ? 0 : 650);
     });
   }
@@ -567,6 +567,10 @@
       input.value = '';
       setTimeout(() => {
         scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+        /* the caret travels with the question: closeChat() has just handed
+           focus back to the bar's bubble, and a visitor who carries on typing
+           would otherwise type into nothing (client, 2026-09-10) */
+        agentInput.focus({ preventScroll: true });
         agentInput.value = v; agentForm.requestSubmit();
       }, REDUCED ? 0 : 420);
     });

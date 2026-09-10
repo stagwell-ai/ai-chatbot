@@ -36,8 +36,37 @@ if (!H || !K || !S) return;
 const $ = (sel, root) => (root || document).querySelector(sel);
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MIN_BEAT = REDUCED ? 0 : 650;   /* the agent never answers faster than a person reads */
+/* a mouse, not a finger: on a touch screen an unasked-for focus raises the
+   keyboard over half the page, so a pill tap must not do it */
+const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 let started = false, busy = false, ended = false, lastKey = null, formBubble = null;
+let lastVia = 'type';                 /* how the visitor sent the last turn: 'type' | 'chip' */
+
+/* ── THE CARET LIVES IN THE FIELD ──
+   A conversation you cannot type into is not a conversation (client,
+   2026-09-10: "I need to click around the text input for my typing to be
+   recognized"). Two things drop focus on the floor:
+
+     · a chip that has just been answered is DISABLED, and a disabled element
+       loses focus — it lands on <body>, where keystrokes go nowhere;
+     · the bar's chat bubble opens the overlay, and closing it hands focus
+       back to the bubble (home.js closeChat) — the question travels to this
+       box but the caret does not follow it.
+
+   So the caret is put back at the start of every turn and again when the next
+   question is drawn. Two restraints: never take focus away from something the
+   visitor deliberately moved to OUTSIDE the chat (a nav link they tabbed to),
+   and on a touch screen only raise the keyboard again when they were already
+   typing. */
+function refocus() {
+  if (ended) return;
+  if (!FINE && lastVia !== 'type') return;
+  const el = document.activeElement;
+  const loose = !el || el === document.body || el.closest('#agentForm, #agentTags');
+  if (!loose) return;
+  try { H.focus(); } catch (e) { /* a closed composer cannot take the caret */ }
+}
 
 const pause = ms => new Promise(r => setTimeout(r, Math.max(0, ms)));
 const copy = () => ((S.data || {}).kimi || {}).copy || {};
@@ -51,6 +80,7 @@ function render(st) {
     lastKey = key;
     H.ai(H.esc(st.message || ''), st.suggestions.map(s => ({ label: s.label, value: s.value })), null, chip => send(chip.value, chip.label));
     H.placeholder(st.hint || 'Type your answer…');
+    refocus();
     return;
   }
   if (st.uiAction === 'CAPTURE_CONTACT') {
@@ -84,9 +114,11 @@ async function send(raw, label, seed) {
   let goal = seed && seed.goal, domain = seed && seed.domain;
   if (!started && !goal && !domain) { const b = pillFor(v); if (b) { goal = b.dataset.goal || null; domain = b.dataset.domain || null; } }
   busy = true;
+  lastVia = (label != null || (seed && (seed.goal || seed.domain))) ? 'chip' : 'type';
   H.open();
   H.me(label != null ? label : v);
   H.settleChips();
+  refocus();          /* the chip just answered is disabled now; the caret goes back to the field */
   const w = H.wait();
   const t0 = Date.now();
   try {

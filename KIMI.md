@@ -239,6 +239,11 @@ llm_fallback_count, utm_source, utm_campaign. Email is passed as its domain only
   property mapping, mock mode, live create / update / 409, undelivered logging, webhook,
   HubSpot-off flag.
 
+`npm run test:focus` — Playwright: after the agent answers, the visitor can keep typing without
+touching the mouse, whichever way they came in (the bar's chat bubble, the hero field, a
+starting point); plus the restraints — a phone keyboard is not summoned by a pill, focus moved
+elsewhere is left alone, the contact form takes the caret and the composer closes on the cards.
+
 `npm run test:funnel` — Playwright, `/api/ask` aborted: six goals (desktop, light), reputation
 (phone, dark), a typed sentence, nonsense-then-pill. All green on 2026-09-10; screenshots in
 `tests/artifacts/kimi/`.
