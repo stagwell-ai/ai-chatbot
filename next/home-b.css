@@ -1,0 +1,11 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOME-B.CSS — homepage option B (/home-b), loaded by next/home-b.html only.
+   Option A (/) never loads it: every rule for the new direction lives here.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* the hero's chat is the compact field of "How can we help?" (client,
+   2026-09-10) until the conversation starts; then the full chat takes over */
+#ask.hb-compact > .chat{display:none}
+#ask:not(.hb-compact) > .hb-ask{display:none}
+.hero__in > .hb-ask{width:min(100%,640px);margin-top:var(--s-11);background:#FFFFFF}
+@media (max-width:820px){ .hero__in > .hb-ask{width:100%;margin-top:var(--s-9)} }

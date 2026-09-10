@@ -41,6 +41,7 @@ d.setAttribute('data-theme',t||sys);})();
 <link rel="stylesheet" href="/next/assets/fonts/fonts.css">
 <link rel="stylesheet" href="/next/lead.css">
 <link rel="stylesheet" href="/next/home.css">
+<link rel="stylesheet" href="/next/home-b.css">
 </head>
 <!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta]
      click on this page — the same panel every other booking CTA on the site opens -->
@@ -173,11 +174,21 @@ d.setAttribute('data-theme',t||sys);})();
 
   <!-- one centred column, as in the reference: the title, the line, then the
        agent — its field, its starting points, and the ways to a person. -->
-  <div class="hero__in wrap" id="ask">
+  <div class="hero__in wrap hb-compact" id="ask">
     <h1 class="display display--hero" id="heroTitle">
       <span class="ln ln--d"><span class="ln__in">Agentic solutions built to</span></span><span class="ln ln--d"><span class="ln__in">transform your business</span></span><span class="ln ln--m"><span class="ln__in">Agentic solutions</span></span><span class="ln ln--m"><span class="ln__in">built to transform</span></span><span class="ln ln--m"><span class="ln__in">your business</span></span>
     </h1>
     <p class="hero__lede rv" style="--d:.35s">Whatever the challenge, we deliver results</p>
+
+    <!-- OPTION B: the compact chat of "How can we help?" in the hero (client,
+         2026-09-10); the full chat below stays hidden until the conversation starts -->
+    <form class="ask-mini hb-ask" id="hbAsk" autocomplete="off">
+        <label class="vh" for="hbAskInput">Ask Stagwell AI</label>
+        <span class="ask-mini__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="ask-mini__hint" aria-hidden="true"><span class="ask-mini__hint-w is-on">Maybe just start with your site.</span></span>
+        <input class="ask-mini__input" id="hbAskInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
+        <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
 
     <div class="chat">
       <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
@@ -391,5 +402,24 @@ d.setAttribute('data-theme',t||sys);})();
 <script src="/next/analytics.js"></script>
 <script src="/next/kimi-flow.js"></script>
 <script src="/next/hero-agent.js"></script>
+<script>
+/* OPTION B: the hero shows the compact field until the conversation starts;
+   then the full chat takes its place. Every way in opens it first — the
+   compact field, a starting point, the field in "How can we help?", the chat
+   over the page — by catching the chat form's submit before the agent does. */
+(function () {
+  const hero = document.getElementById('ask'), f = document.getElementById('hbAsk'), i = document.getElementById('hbAskInput'),
+        form = document.getElementById('agentForm'), input = document.getElementById('agentInput'), tags = document.getElementById('agentTags');
+  if (!hero || !f || !i || !form || !input) return;
+  const reveal = () => hero.classList.remove('hb-compact');
+  document.addEventListener('submit', (e) => { if (e.target === form) reveal(); }, true);
+  if (tags) tags.addEventListener('click', (e) => { if (e.target.closest('.tag')) reveal(); }, true);
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = i.value.trim(); if (!v) { i.focus(); return; }
+    reveal(); input.value = v; i.value = ''; form.requestSubmit();
+  });
+})();
+</script>
 </body>
 </html>
