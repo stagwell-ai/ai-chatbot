@@ -330,3 +330,24 @@
   const upd = () => cue.classList.toggle('is-gone', scrollY > 40);
   addEventListener('scroll', upd, { passive: true }); upd();
 })();
+
+/* the product panels: built at 400px, scaled to their picture (never past 1, never taller than
+   ~3/4 of it), set in from the corner; they rise in once, when first seen */
+(function () {
+  const panels = [...document.querySelectorAll('.mk')];
+  if (!panels.length) return;
+  const fit = (p) => {
+    const m = p.parentElement, w = m.clientWidth, h = m.clientHeight; if (!w || !h) return;
+    const inset = Math.round(Math.max(12, w * .045)), s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h * .76) / p.offsetHeight);
+    p.style.transform = 'scale(' + s.toFixed(4) + ')'; p.style.left = inset + 'px'; p.style.bottom = inset + 'px';
+  };
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver((es) => es.forEach((e) => { const p = e.target.classList.contains('mk') ? e.target : e.target.querySelector('.mk'); if (p) fit(p); }));
+    panels.forEach((p) => { ro.observe(p.parentElement); ro.observe(p); });
+  }
+  panels.forEach(fit);
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .2 });
+    panels.forEach((p) => { p.classList.add('mk-arm'); io.observe(p); });
+  }
+})();
