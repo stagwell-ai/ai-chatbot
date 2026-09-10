@@ -30,6 +30,14 @@ const ids = (arr, allowed) => {
 };
 const band = (v, allowed) => { const s = str(v, 40); return s && allowed.indexOf(s) !== -1 ? s : null; };
 
+const line = (v, n) => {
+  let s = str(v, n);
+  if (!s) return null;
+  s = s.replace(/\*\*|__|`+|^#+\s*/g, '').replace(/^["“]|["”]$/g, '').trim();
+  if (!s || /https?:\/\//i.test(s)) return null;
+  return s;
+};
+
 /* LlmInterpretationSchema — brief §14 */
 export function validateInterpretation(obj, vocab) {
   if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return null;
@@ -44,7 +52,12 @@ export function validateInterpretation(obj, vocab) {
       geographicScope: band(inf.geographicScope, vocab.geoBands)
     },
     userNeedSummary: str(obj.userNeedSummary, 300),
-    confidence: num01(obj.confidence)
+    confidence: num01(obj.confidence),
+    /* the conversational layer (brief §13.3): a short acknowledgement when a
+       need was detected, a reply when nothing was — both optional, both plain
+       text; a URL or markdown in either simply drops it */
+    ack: line(obj.ack, 200),
+    reply: line(obj.reply, 400)
   };
   /* the summary and the confidence are required by the contract; a model that
      returns neither has not answered the question */

@@ -1476,4 +1476,5 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 /* the chat box stays a light island in dark mode (the form fields and the
    thread's ink are already re-scoped light there), so the cards keep their
    light styles and only the thread's height rule changes */
-.askbox__thread:has(.turnb--reco){max-height:none}
+.askbox__thread:has(.turnb--reco),.askbox__thread:has(.turnb--form){max-height:none}
+.askform{max-width:520px}

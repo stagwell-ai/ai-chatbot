@@ -174,7 +174,12 @@ function drawForm(st) {
   go.addEventListener('click', submit);
   /* Enter in any field sends the details, and never the hero's own form */
   Object.values(inputs).forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); submit(); } }));
-  setTimeout(() => { try { inputs.name.focus({ preventScroll: true }); } catch (e) {} }, 80);
+  /* the thread no longer scrolls inside itself once the form is on it (home.css),
+     so the page is brought to the form's title rather than its last field */
+  setTimeout(() => {
+    try { $('.askform__title', form).scrollIntoView({ block: 'center', behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) {}
+    try { inputs.name.focus({ preventScroll: true }); } catch (e) {}
+  }, 80);
 }
 
 /* ── the recommendation (brief §20–§23): cards from view models ─────────── */

@@ -136,6 +136,15 @@ test('chain configuration comes from the environment, health never leaks a key',
   delete process.env.KIMI_PRIMARY_MODEL; delete process.env.KIMI_SECONDARY_MODEL; delete process.env.KIMI_TERTIARY_MODEL;
 });
 
+test('interpretation schema carries ack and reply, drops a URL or markdown in them, never fails on them', () => {
+  const v = validateInterpretation({ detectedIntents: ['competitive_activity'], inferred: {}, userNeedSummary: 'x', confidence: 0.8, ack: '**Live competitor signal** — got it.', reply: '' }, VOCAB);
+  assert.equal(v.ack, 'Live competitor signal — got it.');
+  assert.equal(v.reply, null);
+  const w = validateInterpretation({ detectedIntents: [], inferred: {}, userNeedSummary: '', confidence: 0, ack: '', reply: 'Hi! See https://evil.example for more.' }, VOCAB);
+  assert.equal(w.reply, null, 'a URL in the reply drops the reply, not the interpretation');
+  assert.equal(w.detectedIntents.length, 0);
+});
+
 test('explanation schema rejects figures, URLs and markdown', () => {
   assert.equal(validateExplanation({ why: 'NewIntel fits because you want live competitor signal; it tracks pricing, hiring and coverage as they change.' }).why.length > 20, true);
   assert.equal(validateExplanation({ why: 'It lifts sales by 40% for most clients.' }), null);

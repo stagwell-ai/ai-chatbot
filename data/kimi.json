@@ -62,6 +62,17 @@
       "start": "What do you need help solving?",
       "question": "Pick one, or type your answer…",
       "size": "Roughly how many people?"
-    }
+    },
+    "about": "Stagwell AI is a custom portfolio of agentic solutions built for businesses of any size. It combines technology with deep marketing expertise to help businesses make better decisions, execute faster and drive stronger performance. On this page, the assistant asks a few questions about what you are trying to solve and recommends the Stagwell AI product that fits, then connects you with the right team.",
+    "hold": [
+      "Happy to help. To point you at the right thing I need to know a little about what you're working on — pick one of these, or tell me in a sentence.",
+      "I'm here to find the right Stagwell AI product for a real problem you have. What are you trying to improve — awareness, audiences, reputation, competition, impact, or how the business runs?",
+      "No rush. Whenever you're ready, describe the challenge in your own words, or choose the closest starting point below."
+    ],
+    "holdQuestion": [
+      "I didn't quite catch an answer in that. Pick one of the options, or say it in your own words.",
+      "Take your time — any of these, or a sentence of your own, will do."
+    ],
+    "composerClosedForm": "Fill in the form above to see your recommendation."
   }
 }

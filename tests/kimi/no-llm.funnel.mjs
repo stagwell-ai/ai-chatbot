@@ -51,6 +51,24 @@ async function run(browser, opts) {
   if (text) { await page.fill('#agentInput', text); await page.press('#agentInput', 'Enter'); }
   else await page.click('#agentTags .tag[data-goal="' + goal + '"]');
 
+  /* small talk, before anything else: the agent answers and stays put — no
+     question is consumed, no form appears, the six goals stay on offer */
+  if (opts.smallTalk) {
+    for (const line of opts.smallTalk) {
+      await page.waitForFunction(() => document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])'), null, { timeout: 8000 });
+      await page.fill('#agentInput', line); await page.press('#agentInput', 'Enter');
+      await page.waitForFunction(n => document.querySelectorAll('#agentThread .turnb--me').length >= n, (opts.smallTalk.indexOf(line) + 2), { timeout: 8000 });
+      await page.waitForTimeout(150);
+    }
+    await page.waitForFunction(() => document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])'), null, { timeout: 8000 });
+    const st = await page.evaluate(() => window.SAIKIMI.state());
+    ok(!(await page.$('#heroLeadForm')), 'small talk never produced the form');
+    ok(st.askedQuestionIds.length === 0 && st.status === 'DISCOVERY', 'still in discovery, no question consumed (' + st.askedQuestionIds.length + ' asked)');
+    ok(st.suggestions.length === 6, 'the six goals are still on offer');
+    const lines = await page.$$eval('#agentThread .turnb--ai .turnb__text', els => els.map(e => e.textContent.trim()));
+    ok(new Set(lines).size === lines.length, 'each reply is different: ' + lines.map(l => l.slice(0, 30) + '…').join(' | '));
+  }
+
   /* answer until the form arrives */
   const trail = [];
   for (let i = 0; i < 8; i++) {
@@ -107,7 +125,7 @@ try {
   }
   await run(browser, { name: 'pill reputation (phone, dark)', goal: 'reputation', viewport: { width: 390, height: 844 }, dark: true, picks: PICKS.reputation, expect: EXPECT.reputation });
   await run(browser, { name: 'typed: call center misses leads overnight', text: 'Our call center misses leads overnight', viewport: { width: 1360, height: 900 }, dark: false, picks: ['phone', 'mid'], expect: 'NewVoices' });
-  await run(browser, { name: 'typed: nonsense then a pill', text: 'hello there', viewport: { width: 1360, height: 900 }, dark: false, picks: ['competition', 'current_activity'], expect: 'NewIntel' });
+  await run(browser, { name: 'typed: hello, hello, hello — then a pill', text: 'hello', smallTalk: ['hi there', 'what is this?'], viewport: { width: 1360, height: 900 }, dark: false, picks: ['competition', 'current_activity'], expect: 'NewIntel' });
 } finally {
   await browser.close();
 }

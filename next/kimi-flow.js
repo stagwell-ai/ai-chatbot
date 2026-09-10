@@ -83,6 +83,7 @@ function blank() {
     fallbacks: 0,
     summary: null,
     unclassifiedOnce: false,
+    holds: 0,                    /* consecutive turns that taught us nothing */
     error: null
   };
 }
@@ -109,7 +110,7 @@ function deterministicRead(text) {
   const bands = r ? r.bandsFromText(text, data()) : {};
   return { detectedGoals: [], detectedIntents: intents.map(i => i.id), inferred: {
     industry: null, companySize: bands.companySize || null, creatorProgramSize: bands.creatorProgramSize || null, geographicScope: bands.geographicScope || null
-  }, userNeedSummary: null, confidence: intents.length ? 0.5 : 0, live: false };
+  }, userNeedSummary: null, confidence: intents.length ? 0.5 : 0, ack: null, reply: null, live: false };
 }
 
 function withTimeout(p, ms) {
@@ -144,6 +145,8 @@ async function interpret(text) {
       inferred: Object.assign({}, off.inferred, Object.fromEntries(Object.entries(it.inferred || {}).filter(([, v]) => v != null && v !== ''))),
       userNeedSummary: it.userNeedSummary || null,
       confidence: typeof it.confidence === 'number' ? it.confidence : 0.5,
+      ack: it.ack || null,
+      reply: it.reply || null,
       live: true
     };
   } catch (e) {
@@ -184,6 +187,10 @@ function absorb(read, opts) {
   if (st.companySize) setSlot('size_tier', st.companySize, 'visitor');
 }
 
+/* what a turn can change; compared before and after absorb() */
+const knowledge = () => JSON.stringify([st.primaryGoal, st.intents.map(i => i.id + (i.explicit ? '!' : '')).sort(), st.companySize, st.creatorProgramSize, st.geographicScope]);
+const pick = (arr, n) => { const a = list(arr); return a.length ? a[Math.min(n, a.length - 1)] : null; };
+
 function setGoal(id, source) {
   const g = goals().find(x => x.id === id);
   if (!g) return false;
@@ -206,9 +213,12 @@ function goalSuggestions() {
   return goals().map(g => ({ id: g.id, label: g.label, value: g.id, kind: 'goal' }));
 }
 
-function askGoal() {
+function askGoal(reply) {
   const c = copy();
-  st.currentQuestion = { id: GOAL_Q, field: 'goal', prompt: st.unclassifiedOnce ? c.fallback : c.unclassified, suggestions: goalSuggestions() };
+  /* the model's own words when it answered (a greeting answered, a question
+     about the site answered); the hold lines rotate when it did not */
+  const prompt = reply || (st.holds ? (pick(c.hold, st.holds - 1) || c.fallback) : (st.unclassifiedOnce ? c.fallback : c.unclassified));
+  st.currentQuestion = { id: GOAL_Q, field: 'goal', prompt, suggestions: goalSuggestions() };
   st.message = st.currentQuestion.prompt;
   st.suggestions = st.currentQuestion.suggestions;
   st.uiAction = 'ASK';
@@ -218,12 +228,15 @@ function askGoal() {
   emit('question_asked', { id: GOAL_Q, slot: 'goal', copy: st.message, mode: null });
 }
 
-function present(q, first) {
+function present(q, first, modelAck) {
   const c = copy();
   st.currentQuestion = q;
   st.askedQuestionIds.push(q.id);
   st.step++;
-  const ack = first ? ((c.goalAck || {})[st.primaryGoal] || (st.rawProblemText ? c.freeTextAck : null)) : null;
+  st.holds = 0;
+  /* the model's acknowledgement of what was just said leads into the question;
+     without one, the goal's own line on the first question only */
+  const ack = modelAck || (first ? ((c.goalAck || {})[st.primaryGoal] || (st.rawProblemText ? c.freeTextAck : null)) : null);
   st.message = (ack ? ack + ' ' : '') + (q.prompt || '');
   st.suggestions = list(q.suggestions).map(s => ({ id: s.id, label: s.label, value: s.value }));
   st.uiAction = 'ASK';
@@ -231,6 +244,21 @@ function present(q, first) {
   st.status = st.status === 'DISCOVERY' && st.step > 1 ? 'QUALIFICATION' : (st.status === 'IDLE' ? 'DISCOVERY' : st.status);
   if (st.step > 1) st.status = 'QUALIFICATION';
   emit('question_asked', { id: q.id, slot: q.field || 'intent', copy: q.prompt, mode: null });
+}
+
+/* the visitor said something that taught us nothing (small talk, a question
+   about the site, an off-topic line). The conversation answers in kind and
+   stays where it is: the same question, the same suggestions. It never moves
+   toward the form on a turn that carried no signal. */
+function hold(reply) {
+  const c = copy();
+  st.holds++;
+  const q = st.currentQuestion;
+  if (!q || q.id === GOAL_Q) { askGoal(reply); return; }
+  st.message = reply || pick(c.holdQuestion, st.holds - 1) || q.prompt;
+  st.suggestions = list(q.suggestions).map(s => ({ id: s.id, label: s.label, value: s.value }));
+  st.uiAction = 'ASK';
+  emit('question_asked', { id: q.id, slot: q.field || 'intent', copy: st.message, mode: 'hold' });
 }
 
 function readyForContact() {
@@ -255,12 +283,12 @@ function recoProps() {
   return { primary_product: r.primary || null, secondary_products: list(r.secondary).join(','), recommendation_confidence: r.confidence ? r.confidence.level : null, steps: st.step };
 }
 
-function advance() {
+function advance(ack) {
   const first = st.askedQuestionIds.length === 0;
   if (!st.primaryGoal && !st.intents.length) { askGoal(); return; }
   const reco = recompute();
   const q = Qs() ? Qs().selectQuestion({ primaryGoal: st.primaryGoal, intents: st.intents, askedQuestionIds: st.askedQuestionIds, companySize: st.companySize, creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope }, reco, data()) : null;
-  if (q) { present(q, first); return; }
+  if (q) { present(q, first, ack); return; }
   if (!reco || !reco.primary) { askGoal(); return; }
   readyForContact();
 }
@@ -286,7 +314,20 @@ async function start(opts) {
     st.rawProblemText = text.slice(0, 600);
     track('kimi_free_text_submitted', { length: text.length });
     noteHuman(text);
-    absorb(await interpret(text), {});
+    const before = knowledge();
+    const read = await interpret(text);
+    absorb(read, {});
+    if (knowledge() === before && !goal) {
+      /* nothing to route on yet: reply in kind, offer the starting points */
+      st.rawProblemText = null;
+      st.holds = 1;
+      askGoal(read.reply);
+      notify();
+      return state();
+    }
+    advance(read.ack);
+    notify();
+    return state();
   }
   advance();
   notify();
@@ -311,10 +352,15 @@ async function answer(input) {
   if (q.id === GOAL_Q) {
     const g = goals().find(x => x.id === text || x.label.toLowerCase() === text.toLowerCase());
     emit('answer_given', { id: GOAL_Q, slot: 'goal', text, chip: g ? g.id : null });
-    if (g) setGoal(g.id, 'pill');
-    else { if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600); absorb(await interpret(text), {}); }
+    if (g) { setGoal(g.id, 'pill'); st.currentQuestion = null; advance(); notify(); return state(); }
+    const before = knowledge();
+    const read = await interpret(text);
+    absorb(read, {});
+    track('kimi_free_text_submitted', { length: text.length, understood: knowledge() !== before });
+    if (knowledge() === before) { hold(read.reply); notify(); return state(); }
+    if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600);
     st.currentQuestion = null;
-    advance(); notify(); return state();
+    advance(read.ack); notify(); return state();
   }
 
   const sel = Qs() ? Qs().matchSuggestion(q, text) : null;
@@ -324,6 +370,7 @@ async function answer(input) {
     if (q.field === 'companySize' && st.companySize) setSlot('size_tier', st.companySize, 'visitor');
     track('kimi_question_answered', { question_id: q.id, suggestion_id: sel.id, input_type: 'pill' });
   } else {
+    const before = knowledge();
     const read = await interpret(text);
     /* a typed answer to a band question is that band when the words carry one */
     if (q.field && q.field !== 'intent') {
@@ -334,7 +381,12 @@ async function answer(input) {
       if (q.field === 'companySize' && st.companySize) setSlot('size_tier', st.companySize, 'visitor');
     }
     absorb(read, { explicit: q.field === 'intent' || !q.field });
-    track('kimi_question_answered', { question_id: q.id, suggestion_id: null, input_type: 'free_text', understood: list(read.detectedIntents).length > 0 });
+    const understood = knowledge() !== before;
+    track('kimi_question_answered', { question_id: q.id, suggestion_id: null, input_type: 'free_text', understood });
+    /* nothing learned: answer in kind and stay on this question */
+    if (!understood) { hold(read.reply); notify(); return state(); }
+    st.currentQuestion = null;
+    advance(read.ack); notify(); return state();
   }
   st.currentQuestion = null;
   advance(); notify(); return state();
