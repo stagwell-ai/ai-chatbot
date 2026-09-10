@@ -358,6 +358,24 @@
           exchange below only runs when they are not (client, 2026-09-09:
           "the AI chatbot needs to actually work"). ─────────────────────── */
     const goBtn = $('.askbox__go', mini);
+
+    /* ── THE WHOLE CARD IS THE FIELD ──
+       The box is one white card, but the line you type on is 25px of its
+       148px: a click on the empty space below it landed on the form and the
+       caret never appeared (client, 2026-09-10: "if i click the bottom half
+       of this text area, i cannot type, because its technically below the
+       area of the text box"). So the card focuses the field, wherever it is
+       clicked — except on the things that are their own targets (the send
+       disc, a chip, a link, the contact form's own inputs), and except when
+       the click ends a text selection, which is someone copying a line the
+       agent wrote, not asking for the caret. */
+    mini.addEventListener('click', (e) => {
+      if (miniInput.disabled) return;
+      if (e.target.closest('button, a, input, textarea, select, label, [data-cta]')) return;
+      try { if (String(getSelection() || '').trim()) return; } catch (err) { /* no selection API, carry on */ }
+      miniInput.focus({ preventScroll: true });
+    });
+
     window.SAIHERO = {
       me, ai, wait, esc, think,
       open() { agentSec.classList.add('is-chat'); },

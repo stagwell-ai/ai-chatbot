@@ -135,6 +135,51 @@ try {
     ok(await page.$eval('#agentInput', e => e.disabled), 'the composer is closed once the cards are up');
     await ctx.close();
   }
+  console.log('\n▶ the whole card is the field, not just the line at the top');
+  {
+    const ctx = await browser.newContext(desktop);
+    const page = await prepare(ctx);
+    const box = await page.$eval('#agentForm', e => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+    const at = async (fx, fy) => { await page.mouse.click(box.x + box.w * fx, box.y + box.h * fy); return active(page); };
+    for (const [name, fx, fy] of [['the middle', .5, .5], ['the bottom left', .25, .82], ['beside the send disc', .8, .82]]) {
+      /* click away first, so each probe starts from nothing */
+      await page.evaluate(() => document.activeElement && document.activeElement.blur());
+      const where = await at(fx, fy);
+      ok(where === 'agentInput', 'clicking ' + name + ' of the card focuses the field (' + where + ')');
+    }
+    /* typing after one of those clicks must land */
+    await page.keyboard.type('hello there');
+    ok((await page.$eval('#agentInput', e => e.value)) === 'hello there', 'and the typing lands');
+
+    /* the things that are their own targets still are */
+    await page.fill('#agentInput', 'we need to track competitors');
+    await page.click('.askbox__go');
+    await answered(page);
+    ok((await page.$$eval('#agentThread .turnb--me', els => els.length)) === 1, 'the send disc still sends rather than only focusing');
+    const chips = await page.$$('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');
+    if (chips.length) {
+      await chips[0].click();
+      await answered(page);
+      ok((await page.$$eval('#agentThread .turnb--me', els => els.length)) === 2, 'a chip in the thread still answers');
+    }
+    /* selecting a line the agent wrote must not yank the caret away mid-drag */
+    /* the LAST answer, scrolled into view: the thread is a clipped, scrolling
+       column, so the first line may sit outside it by now */
+    const line = (await page.$$('#agentThread .turnb--ai .turnb__text')).pop();
+    await line.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(150);
+    const lb = await line.boundingBox();
+    /* along the FIRST line, in small steps: a coarse drag across a two-line
+       block lands between the lines and selects nothing */
+    await page.mouse.move(lb.x + 6, lb.y + 8);
+    await page.mouse.down();
+    for (let i = 1; i <= 12; i++) { await page.mouse.move(lb.x + 6 + i * 12, lb.y + 8); await page.waitForTimeout(15); }
+    await page.mouse.up();
+    const selected = await page.evaluate(() => String(getSelection() || '').trim());
+    ok(selected.length > 0, 'a line of the answer can still be selected (' + JSON.stringify(selected.slice(0, 24)) + ')');
+    ok((await active(page)) !== 'agentInput', 'and selecting it did not steal the caret');
+    await ctx.close();
+  }
 } finally {
   await browser.close();
 }

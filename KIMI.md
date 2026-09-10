@@ -270,8 +270,11 @@ marketing talk still goes to discovery.
 
 `npm run test:focus` — Playwright: after the agent answers, the visitor can keep typing without
 touching the mouse, whichever way they came in (the bar's chat bubble, the hero field, a
-starting point); plus the restraints — a phone keyboard is not summoned by a pill, focus moved
-elsewhere is left alone, the contact form takes the caret and the composer closes on the cards.
+starting point); the whole white card is the field's hit area, not the 25px line at the top of
+it; plus the restraints — a phone keyboard is not summoned by a pill, focus moved elsewhere is
+left alone, the send disc and the thread's chips are still their own targets, a line of the
+answer can still be selected without the caret being yanked away, the contact form takes the
+caret and the composer closes on the cards.
 
 `npm run test:funnel` — Playwright, `/api/ask` aborted: six goals (desktop, light), reputation
 (phone, dark), a typed sentence, nonsense-then-pill. All green on 2026-09-10; screenshots in
