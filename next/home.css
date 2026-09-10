@@ -411,7 +411,7 @@ body.chat-open{overflow:hidden}
    side, so the picture is still a picture. A flat 56% turned the dark stills
    into a black rectangle. */
 .hero__bg::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(100deg,rgba(7,20,29,.68) 0%,rgba(7,20,29,.46) 52%,rgba(7,20,29,.24) 100%)}   /* a stop lighter (client) */
+  background:linear-gradient(100deg,rgba(7,20,29,.44) 0%,rgba(7,20,29,.26) 52%,rgba(7,20,29,.08) 100%)}   /* a stop lighter again (client) */
 
 /* the film is gone (client, 2026-09-09): the strip is a picture, not a control */
 .hero__media{
