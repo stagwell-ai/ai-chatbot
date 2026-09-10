@@ -116,4 +116,51 @@
     }
   }
 
+  /* ── the statement: its words light up as it passes the middle of the screen */
+  const st = document.querySelector('[data-words]');
+  if (st) {
+    const HL = new Set(['agentic', 'solutions']);
+    st.innerHTML = st.textContent.trim().split(/\s+/).map((w) => `<span class="w${HL.has(w.toLowerCase().replace(/[^a-z]/g, '')) ? ' hl' : ''}">${w}</span>`).join(' ');
+    const ws = [...st.querySelectorAll('.w')];
+    if (RM) ws.forEach((w) => w.classList.add('on'));
+    else {
+      let near = false, tk = false;
+      const lit = () => {
+        tk = false; if (!near) return;
+        const r = st.getBoundingClientRect(), p = Math.max(0, Math.min(1, (innerHeight * 0.82 - r.top) / (r.height + innerHeight * 0.35)));
+        const n = Math.round(p * ws.length);
+        ws.forEach((w, i) => w.classList.toggle('on', i < n));
+      };
+      new IntersectionObserver((es) => { near = es[0].isIntersecting; lit(); }, { rootMargin: '10% 0px' }).observe(st);
+      addEventListener('scroll', () => { if (near && !tk) { tk = true; requestAnimationFrame(lit); } }, { passive: true });
+    }
+  }
+
+  /* ── the flagships: pointing at a name, or scrolling to it, makes it the one */
+  const flag = document.querySelector('.hb-flag');
+  if (flag) {
+    const items = [...flag.querySelectorAll('.hb-flag__item')], imgs = [...flag.querySelectorAll('.hb-flag__media img')];
+    const set = (i) => {
+      items.forEach((it, k) => it.classList.toggle('is-active', k === i));
+      imgs.forEach((im, k) => im.classList.toggle('is-on', k === i));
+    };
+    items.forEach((it, k) => {
+      it.addEventListener('pointerenter', () => { if (fine.matches) set(k); });
+      it.addEventListener('focusin', () => set(k));
+    });
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => {
+        es.forEach((e) => { if (e.isIntersecting && (!fine.matches || innerWidth <= 900)) set(items.indexOf(e.target)); });
+      }, { rootMargin: '-45% 0px -45% 0px' });
+      items.forEach((it) => io.observe(it));
+    }
+  }
+
+  /* ── the suite rail: the arrows move it by a card */
+  const rail = document.querySelector('.hb-rail');
+  if (rail) document.querySelectorAll('[data-rail]').forEach((b) => b.addEventListener('click', () => {
+    const card = rail.querySelector('li'); const step = card ? card.getBoundingClientRect().width + 24 : 400;
+    rail.scrollBy({ left: step * Number(b.dataset.rail), behavior: RM ? 'auto' : 'smooth' });
+  }));
+
 })();
