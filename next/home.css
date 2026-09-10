@@ -1341,25 +1341,6 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
    still sets the old hidden state */
 .nav.is-hidden{transform:none}
 
-/* ── the starting points on a phone (client, 2026-09-10: "no spacing… not
-   looking good… look what the competitors do"). ChatGPT lists its suggestions
-   under the field as plain rows — icon, words, left-aligned; Gemini drops them
-   on a phone. The same list here, held in one glass panel so the rows read on
-   the picture: six 48px rows, hairlines between, the chat box's width. */
-@media (max-width:640px){
-  .chat__tags{flex-direction:column;align-items:stretch;gap:0;margin-top:var(--s-6);padding:4px 0;border-radius:20px;
-    background:rgba(255,255,255,.10);-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
-  .chat__tags li{display:block}
-  .chat__tags .tag{width:100%;height:48px;padding:0 18px;border-radius:0;justify-content:flex-start;gap:14px;
-    background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
-    font-size:15px;font-weight:500;color:#FFFFFF;text-align:left}
-  .chat__tags li:not(:first-child) .tag{box-shadow:inset 0 1px 0 rgba(255,255,255,.13)}
-  .chat__tags .tag__ic{width:18px;height:18px;opacity:.85}
-  .chat__tags .tag:hover,.chat__tags .tag:active{background:rgba(255,255,255,.10)}
-  .chat__tags .tag:focus-visible{outline-offset:-3px}
-}
-
 /* ── the phone's menu button (client, 2026-09-10): a small "Menu" at the left
    of three lines; open, the word reads "Close", the middle line fades and the
    other two cross. The word is the button's accessible name, so a screen
@@ -1377,52 +1358,11 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .nav__burger[aria-expanded="true"] .nav__bl:nth-child(3){opacity:0}
 .nav__burger[aria-expanded="true"] .nav__bl:nth-child(4){transform:rotate(-45deg)}
 @media (max-width:820px){ .nav__burger{display:inline-flex} }
-
-/* ── the starting points on a desktop and a tablet: a tray under the chat box
-   (client, 2026-09-10, with a sketch: the chat, and tucked under it a narrower
-   panel holding all the starting points, "like a table"). 79% of the box's
-   width, its top slipped 20px under the box's rounded floor so only its own
-   bottom corners show; two columns by three rows (a third of the tray is
-   narrower than the longest label), hairlines between the cells. The lines
-   live on the cells (li), so a hover's fill never erases them. Phones keep
-   the list above. */
-@media (min-width:641px){
-  .chat{z-index:1}
-  .chat__tags{position:relative;z-index:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;
-    width:calc(min(100%, 760px) * .79);margin:-20px auto 0;padding:20px 0 0;border-radius:0 0 20px 20px;overflow:hidden;
-    background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
-  .chat__tags li{display:block;--r:0 0 0 0 transparent;--b:0 0 0 0 transparent;box-shadow:var(--r),var(--b)}
-  .chat__tags .tag__br{display:none}   /* the old pills' line break: a grid would give it a cell */
-  .chat__tags li:is(:nth-child(1),:nth-child(3),:nth-child(6)){--r:inset -1px 0 0 rgba(255,255,255,.13)}
-  .chat__tags li:is(:nth-child(1),:nth-child(2),:nth-child(3),:nth-child(5)){--b:inset 0 -1px 0 rgba(255,255,255,.13)}
-  .chat__tags .tag{width:100%;height:46px;padding:0 18px;border-radius:0;justify-content:flex-start;gap:12px;
-    background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
-    font-size:14px;font-weight:500;color:#FFFFFF;white-space:nowrap}
-  .chat__tags .tag__ic{width:18px;height:18px;opacity:.85}
-  .chat__tags .tag:hover{background:rgba(255,255,255,.10);box-shadow:none;color:#FFFFFF}
-  .chat__tags .tag:focus-visible{outline-offset:-3px}
-}
 /* the old two-line rules (.nav__burger span:nth-child(1) → translateY(-4px),
    and rotate(45deg) when open) also match the word, which is the first span
    now: it sat 4px high and would have tipped over on opening */
 .nav__burger span.nav__blbl,
 .nav__burger[aria-expanded] span.nav__blbl{transform:none}
-
-/* the tray, balanced (client, 2026-09-10: "the right column has too much
-   padding on the right… unbalanced… more background"). At 79% of the box the
-   cells were 300px for ~240px of label, so the slack piled up on the right.
-   The tray now takes its content's width: two equal columns as wide as the
-   longest label, 24px each side, centred under the box. And a fuller glass,
-   on the phone list too. */
-@media (min-width:641px){
-  .chat__tags{width:fit-content;max-width:min(100%, 760px);grid-template-columns:repeat(2,1fr);
-    background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
-  .chat__tags .tag{padding:0 24px}
-}
-@media (max-width:640px){
-  .chat__tags{background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
-}
 
 /* the Why icons a size up (client, 2026-09-10); Experience is a briefcase now —
    the history clock read as "time going back" */
@@ -1485,28 +1425,7 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .nav__links > li > a:hover,.nav__droptrig:hover,.nav__drop.is-open .nav__droptrig{opacity:.7}
 .nav .nav__panel a.nav__pitem:hover{opacity:1}
 
-/* ── the chat overlay, in the homepage chat's pattern (client, 2026-09-10: "if
-   I open the chat it needs to be designed like the home page chat… not
-   floating tags"). The field is a box like the hero's, and the six starting
-   points sit in one grouped panel tucked under it — two columns, hairlines
-   between the cells, each with its icon — one column on a phone. Light, since
-   the overlay is white; the hero's tray is the same shape in glass. ─────── */
-.chat-over .ask__form{position:relative;z-index:1}
-.chat-over .ask__field{border-radius:22px}
-.chat-over .ask__tags{position:relative;z-index:0;display:grid;grid-template-columns:repeat(2,1fr);gap:0;width:fit-content;max-width:min(100%,680px);
-  margin:-22px auto 0;padding:22px 0 0;list-style:none;border-radius:0 0 20px 20px;overflow:hidden;background:#F4F6F8;box-shadow:inset 0 0 0 1px var(--line)}
-.chat-over .ask__tags li{display:block;--r:0 0 0 0 transparent;--b:0 0 0 0 transparent;box-shadow:var(--r),var(--b)}
-.chat-over .ask__tags li:nth-child(odd){--r:inset -1px 0 0 rgba(11,18,32,.08)}
-.chat-over .ask__tags li:nth-child(-n+4){--b:inset 0 -1px 0 rgba(11,18,32,.08)}
-.chat-over .ask__tags .tag{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;height:50px;padding:0 24px;
-  border:0;border-radius:0;background:transparent;box-shadow:none;font-size:14px;font-weight:500;color:var(--ink-2);white-space:nowrap;text-align:left}
-.chat-over .ask__tags .tag__ic{width:18px;height:18px;opacity:.75}
-.chat-over .ask__tags .tag:hover{background:#ECEFF2;color:var(--ink)}
-.chat-over .ask__tags .tag[aria-pressed="true"]{background:#E4E8EC;color:var(--ink)}
-.chat-over .ask__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
-@media (max-width:640px){
-  .chat-over .ask__tags{grid-template-columns:1fr;width:100%}
-  .chat-over .ask__tags li:nth-child(n){--r:0 0 0 0 transparent;--b:inset 0 -1px 0 rgba(11,18,32,.08)}
-  .chat-over .ask__tags li:last-child{--b:0 0 0 0 transparent}
-  .chat-over .ask__tags .tag{height:48px;padding:0 18px;font-size:15px}
-}
+/* the chat's starting points are rounded pills again, on every screen and in
+   the chat overlay (client, 2026-09-10: his boss preferred them) — the glass
+   tray (desktop), the glass list (phone) and the grouped overlay panel that
+   stood here for a day were taken out; the pills' own rules above apply */
