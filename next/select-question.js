@@ -73,7 +73,7 @@
     const asked = list(state && state.askedQuestionIds);
     const cands = list(reco && reco.candidates);
     return bank(data)
-      .filter(q => q && q.id && !q.required)
+      .filter(q => q && q.id && !q.required && !q.first)
       .filter(q => asked.indexOf(q.id) === -1)
       .filter(q => !fieldKnown(state, q.field))
       .filter(q => !exhausted(q, state))
@@ -92,7 +92,19 @@
     const C = confOf(data), V = convOf(data);
     const st = state || {};
     const asked = list(st.askedQuestionIds);
-    const discriminatorsAsked = asked.filter(id => { const q = bank(data).find(x => x && x.id === id); return q && !q.required; }).length;
+
+    /* `first` — asked before anything else, while its field is unknown. Today
+       that is the website: reading the visitor's own site is what makes every
+       question after it about them rather than about marketing in general
+       (client, 2026-09-10: "it should have asked me about my website, and then
+       it should do a quick search … and then keep talking to me with added
+       relevance"). It does not spend the discriminator budget. */
+    const first = bank(data)
+      .filter(q => q && q.first && asked.indexOf(q.id) === -1 && !fieldKnown(st, q.field))
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0))[0];
+    if (first) return first;
+
+    const discriminatorsAsked = asked.filter(id => { const q = bank(data).find(x => x && x.id === id); return q && !q.required && !q.first; }).length;
     const level = (reco && reco.confidence && reco.confidence.level) || 'low';
     const settled = LEVEL[level] >= (LEVEL[C.stopAt] == null ? 2 : LEVEL[C.stopAt]);
 
@@ -102,7 +114,7 @@
     }
 
     /* required qualification, once each, only while still unknown */
-    const req = bank(data).filter(q => q && q.required && asked.indexOf(q.id) === -1 && !fieldKnown(st, q.field));
+    const req = bank(data).filter(q => q && q.required && !q.first && asked.indexOf(q.id) === -1 && !fieldKnown(st, q.field));
     if (req.length) {
       if (req[0].field === 'companySize' && V.alwaysAskCompanySize === false) return null;
       return req[0];

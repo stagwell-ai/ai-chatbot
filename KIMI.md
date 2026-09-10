@@ -119,6 +119,33 @@ agent replies, keeps the same question and the same pills, and never advances to
 With no model, the hold lines in `kimi.json` (`hold`, `holdQuestion`) rotate instead. Pill
 taps stay templated, so they answer instantly.
 
+## 4b2. Reading their site, and who they are
+
+Every conversation now opens with two questions before any discriminator
+(client, 2026-09-10: "it should have asked me about my website, and then it should do a quick
+search to see what info it can pull up and show me the info and then keep talking to me with
+added relevance", and "at this point it should ask for my domain name, and then what is my role
+in the company"):
+
+1. **the website** — `/api/ask mode:'research'` asks the model what it already knows about that
+   domain. It is built to answer `known:false` rather than guess, so what comes back is real or
+   nothing. What it returns is shown as a short fact list (industry, size band, comparison set)
+   and, more usefully, **used**: the size band means the company-size question is never asked,
+   the industry rides to the CRM. A domain it does not recognise gets one plain sentence and the
+   conversation carries on. Declining ("I'd rather not say") looks nothing up.
+2. **their role** — founder / marketing manager / director-VP / C-suite, or typed in their own
+   words and matched to one of those bands. It does not move the product recommendation; it
+   qualifies the lead, and it is the vocabulary `routing.json`'s seniority override and
+   `engine.js`'s ICP boosts already speak.
+
+A website inside their own opening sentence answers question 1 before it is asked, and is read
+straight away. Either question can be cut short by asking to be contacted (§4c).
+
+**Nothing invented, ever.** `next/research.js`, which the older agent page uses, falls back to
+seeded fiction so the demo always has a chart to draw. That is why this calls the endpoint
+directly instead of reusing it, and why `tests/kimi/site.funnel.mjs` asserts that an
+unrecognised domain puts no fact on the page.
+
 ## 4c. The fast track
 
 "If the person just ever cuts the chase that they want to be contacted, or they want to book a
@@ -243,14 +270,15 @@ named, and a lead creates once then updates on the same email without duplicatin
 Creates group `stagwell_ai` and:
 
 `stagwell_ai_primary_goal` (select) · `stagwell_ai_contact_request` (select: call / demo /
-trial / expert / pricing) · `stagwell_ai_industry` · `stagwell_ai_company_size`
+trial / expert / pricing) · `stagwell_ai_role` (select) · `stagwell_ai_site_known` ·
+`stagwell_ai_industry` · `stagwell_ai_company_size`
 (select) · `stagwell_ai_use_case` (textarea) · `stagwell_ai_primary_product` ·
 `stagwell_ai_secondary_products` · `stagwell_ai_recommendation_confidence` (number) ·
 `stagwell_ai_conversation_summary` (textarea) · `stagwell_ai_conversation_steps` (number) ·
 `stagwell_ai_session_id` · `stagwell_ai_landing_page` · `stagwell_ai_utm_source` ·
 `stagwell_ai_utm_medium` · `stagwell_ai_utm_campaign` · `stagwell_ai_utm_content` ·
 `stagwell_ai_llm_mode` · `stagwell_ai_last_submitted`. Standard: `email firstname lastname
-phone company`. Private-app scopes: `crm.objects.contacts.read`, `crm.objects.contacts.write`
+phone company website jobtitle`. Private-app scopes: `crm.objects.contacts.read`, `crm.objects.contacts.write`
 (+ `crm.schemas.contacts.write` for the setup script only).
 
 ## 12. Environment variables
@@ -290,6 +318,12 @@ llm_fallback_count, utm_source, utm_campaign. Email is passed as its domain only
 - `lead.test.mjs` — normalisation, recompute vs. client claim, rejection cases, legacy payload,
   property mapping, mock mode, live create / update / 409, undelivered logging, webhook,
   HubSpot-off flag.
+
+`npm run test:site` — Playwright: the opening two questions, the lookup and what it does with
+what it finds; a recognised site (fact list shown, size question never asked, everything on the
+lead), an unrecognised one (one honest line, nothing invented), the lookup being down entirely,
+declining, a typed job title landing on a band, and a website inside the first message skipping
+the question.
 
 `npm run test:fasttrack` — Playwright, every model off: each way of cutting to the chase opens
 the right form with no discovery question asked, the lead carries the request, a need plus a

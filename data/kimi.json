@@ -61,7 +61,8 @@
     "hints": {
       "start": "What do you need help solving?",
       "question": "Pick one, or type your answer…",
-      "size": "Roughly how many people?"
+      "size": "Roughly how many people?",
+      "website": "yourcompany.com"
     },
     "about": "Stagwell AI is a custom portfolio of agentic solutions built for businesses of any size. It combines technology with deep marketing expertise to help businesses make better decisions, execute faster and drive stronger performance. On this page, the assistant asks a few questions about what you are trying to solve and recommends the Stagwell AI product that fits, then connects you with the right team.",
     "hold": [
@@ -110,6 +111,24 @@
     "fastTrackDonePhone": "Thanks, {first}. A Stagwell AI specialist will be in touch at {email} or on {phone}.",
     "recommendationIntroFast": "Thanks, {first} — a specialist will be in touch. From what you've told me, this is where I'd start:",
     "fastTrackExplore": "In the meantime, have a look at the products.",
-    "contactNoticeFast": "We use these details so the right Stagwell AI team can get in touch. See our privacy notice."
+    "contactNoticeFast": "We use these details so the right Stagwell AI team can get in touch. See our privacy notice.",
+    "research": {
+      "reading": "Reading {domain}…",
+      "foundHeader": "Here's what I can see about {name}:",
+      "foundHeaderNoName": "Here's what I can see about {domain}:",
+      "notFound": "I couldn't find much on {domain} from here — no matter, let's carry on.",
+      "skipped": "No problem.",
+      "labels": {
+        "industry": "Industry",
+        "size": "Size",
+        "competitors": "Compared with"
+      },
+      "sizeBands": {
+        "smb": "Under 250 people",
+        "mid_market": "250 to 2,500 people",
+        "enterprise": "2,500+ people"
+      },
+      "sizeKnown": "I'll take it from there on size, so I won't ask."
+    }
   }
 }

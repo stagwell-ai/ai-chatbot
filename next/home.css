@@ -1429,3 +1429,16 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
    the chat overlay (client, 2026-09-10: his boss preferred them) — the glass
    tray (desktop), the glass list (phone) and the grouped overlay panel that
    stood here for a day were taken out; the pills' own rules above apply */
+
+/* ── what the lookup found: a short fact list, only ever what came back real
+      (kimi-flow.js reads the site through /api/ask mode:'research', which
+      answers "not recognised" rather than guessing) ─────────────────────── */
+.found{margin:10px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#F7F8F9;
+  display:flex;flex-direction:column;gap:6px}
+.found__row{display:flex;gap:10px;align-items:baseline;margin:0}
+.found__row dt{flex:0 0 118px;margin:0;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+.found__row dd{margin:0;font-size:15px;line-height:1.45;color:var(--ink)}
+@media (max-width:640px){
+  .found__row{flex-direction:column;gap:1px}
+  .found__row dt{flex:none}
+}

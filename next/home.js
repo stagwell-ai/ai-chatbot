@@ -9,6 +9,8 @@
   const $  = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* a mouse, not a finger — the one place we may take focus unasked */
+  const FINE_POINTER = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   /* ── the headline comes in once the fonts are ready, not before ────────── */
   const ready = () => document.documentElement.classList.add('is-ready');
@@ -373,6 +375,44 @@
       if (miniInput.disabled) return;
       if (e.target.closest('button, a, input, textarea, select, label, [data-cta]')) return;
       try { if (String(getSelection() || '').trim()) return; } catch (err) { /* no selection API, carry on */ }
+      miniInput.focus({ preventScroll: true });
+    });
+
+    /* ── THE DRAWN CARET HAS TO BE TRUE ──
+       The empty box draws its own blinking caret (.askbox__caret) so it reads
+       as ready to type in. On a fresh load it was the only caret there: the
+       field was not focused, so the visitor saw it blinking, typed, and lost
+       every keystroke (client, 2026-09-10: "there is a cursor blinking on the
+       text, but when i type nothing happens because im not really focused on
+       that … refresh the page and then try and type").
+
+       Two ways to make the drawing true, rather than removing it:
+         1. on a pointer device the field really does take the caret on
+            arrival — the drawn one hides itself the moment the real one is
+            there (:focus-within, home.css);
+         2. whatever else has focus, the first letter typed goes INTO the
+            field. That is what covers a touch keyboard, a visitor who clicked
+            elsewhere first, and anything that steals focus later.
+       Nothing is auto-focused on a touch screen: a keyboard sliding up over
+       the page uninvited is worse than the caret it would explain. */
+    if (FINE_POINTER) {
+      const arrive = () => setTimeout(() => {
+        const el = document.activeElement;
+        if (miniInput.disabled || (el && el !== document.body)) return;
+        try { miniInput.focus({ preventScroll: true }); } catch (e) {}
+      }, 160);
+      if (document.readyState === 'complete') arrive();
+      else addEventListener('load', arrive, { once: true });
+    }
+
+    addEventListener('keydown', (e) => {
+      if (miniInput.disabled || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (!e.key || e.key.length !== 1) return;       /* a letter, not Tab / Escape / an arrow */
+      const el = document.activeElement;
+      /* somewhere real already has it — a field, the overlay, something the
+         visitor chose. Leave it alone. */
+      if (el && el !== document.body &&
+          (el.isContentEditable || el.closest('input, textarea, select, [contenteditable], .chat-over'))) return;
       miniInput.focus({ preventScroll: true });
     });
 

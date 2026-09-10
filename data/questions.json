@@ -636,8 +636,61 @@
   "humanAckAfterDone": "Of course. Open your snapshot and take the “Book a demo” or “Talk to an AI expert” button, or leave a number and Stagwell.AI will call you — either way a person, not a script.",
   "humanAckNote": "humanAck is spoken the moment the human-ask override fires (a human ask at any question). humanAckAfterDone is retired as of Sep 2: once the read is finished the composer closes and its button becomes 'Show my snapshot', so nothing can be typed after the reveal — the copy is kept for the record only.",
   "discovery": {
-    "_comment": "Kimi's discriminating questions (brief §7). Not a sequence: next/select-question.js picks the one that best separates the products still in the running, and stops when scoring.json says the top candidate is clearly ahead. `field` is what an answer fills — 'intent' adds the suggestion's value to the visitor's signals as an EXPLICIT intent (taxonomy.json id); companySize / creatorProgramSize / geographicScope set that band. `askWhen` is declarative: goals (the visitor's primary goal is one of these), intentsAny (any of these intents already detected), candidatesAll (all these products currently in the top candidates), always. `separates` names the products the question exists to tell apart; the selector counts how many of them are in the running to value the question. `required:true` questions are asked once whenever the field is still unknown, after the discriminators. Suggestions: 3–5, visitor language, never mandatory — free text is always allowed.",
+    "_comment": "Kimi's discriminating questions (brief §7). Not a sequence: next/select-question.js picks the one that best separates the products still in the running, and stops when scoring.json says the top candidate is clearly ahead. `field` is what an answer fills — 'intent' adds the suggestion's value to the visitor's signals as an EXPLICIT intent (taxonomy.json id); companySize / creatorProgramSize / geographicScope set that band. `askWhen` is declarative: goals (the visitor's primary goal is one of these), intentsAny (any of these intents already detected), candidatesAll (all these products currently in the top candidates), always. `separates` names the products the question exists to tell apart; the selector counts how many of them are in the running to value the question. `required:true` questions are asked once whenever the field is still unknown, after the discriminators; `first:true` is asked BEFORE them (the website, so the lookup can colour everything after it). Suggestions: 3–5, visitor language, never mandatory — free text is always allowed.",
     "questions": [
+      {
+        "id": "website",
+        "purpose": "Read the visitor's own site so everything after this is about them, not about marketing in general",
+        "field": "website",
+        "priority": 100,
+        "first": true,
+        "prompt": "What's your website? I'll take a quick look so the rest of this is about you.",
+        "suggestions": [
+          {
+            "id": "skip",
+            "label": "I'd rather not say",
+            "value": "__skip__"
+          }
+        ],
+        "askWhen": {
+          "always": true
+        },
+        "separates": []
+      },
+      {
+        "id": "role",
+        "purpose": "Who we are talking to — lead qualification, and the routing overrides that turn on seniority",
+        "field": "role",
+        "priority": 99,
+        "first": true,
+        "prompt": "And what's your role there?",
+        "suggestions": [
+          {
+            "id": "founder",
+            "label": "Founder / owner",
+            "value": "founder"
+          },
+          {
+            "id": "manager",
+            "label": "Marketing manager",
+            "value": "manager"
+          },
+          {
+            "id": "director_vp",
+            "label": "Director / VP",
+            "value": "director_vp"
+          },
+          {
+            "id": "c_suite",
+            "label": "C-suite",
+            "value": "c_suite"
+          }
+        ],
+        "askWhen": {
+          "always": true
+        },
+        "separates": []
+      },
       {
         "id": "competition_type",
         "purpose": "Separate NewIntel, QuestBrand, The Knowledge Machine / UNICEPTA and GEOPulse",

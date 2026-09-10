@@ -180,6 +180,43 @@ try {
     ok((await active(page)) !== 'agentInput', 'and selecting it did not steal the caret');
     await ctx.close();
   }
+  console.log('\n▶ a fresh load: the drawn caret has to be a real one');
+  {
+    /* the box draws its own blinking caret so an empty field reads as ready.
+       On arrival it used to be the ONLY caret — the field was not focused, so
+       typing went nowhere (client, 2026-09-10: "there is a cursor blinking on
+       the text, but when i type nothing happens … refresh the page and then
+       try and type"). */
+    const ctx = await browser.newContext(desktop);
+    const page = await prepare(ctx);
+    await page.waitForTimeout(500);
+    ok((await active(page)) === 'agentInput', 'the field has the caret on arrival');
+    ok((await page.$eval('.askbox__caret', e => getComputedStyle(e).opacity)) === '0', 'so the drawn one steps aside');
+    await page.keyboard.type('we need to track competitors');
+    ok((await page.$eval('#agentInput', e => e.value)) === 'we need to track competitors', 'typing lands with nothing clicked');
+
+    /* and wherever focus ends up later, a letter still goes to the field */
+    await page.evaluate(() => document.activeElement.blur());
+    await page.keyboard.type('hello');
+    ok((await page.$eval('#agentInput', e => e.value)).endsWith('hello'), 'a stray keystroke is routed back into the field');
+
+    /* but Tab is navigation, not typing */
+    await page.evaluate(() => document.activeElement.blur());
+    await page.keyboard.press('Tab');
+    ok((await active(page)) !== 'agentInput', 'Tab still moves focus normally');
+    await ctx.close();
+  }
+
+  console.log('\n▶ restraint: a phone gets no keyboard it did not ask for');
+  {
+    const ctx = await browser.newContext(Object.assign({}, devices['iPhone 13'], { reducedMotion: 'reduce' }));
+    const page = await prepare(ctx);
+    await page.waitForTimeout(500);
+    ok((await active(page)) !== 'agentInput', 'nothing is focused on arrival');
+    await page.tap('#agentForm');
+    ok((await active(page)) === 'agentInput', 'and a tap anywhere on the card focuses it');
+    await ctx.close();
+  }
 } finally {
   await browser.close();
 }

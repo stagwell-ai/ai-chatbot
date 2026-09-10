@@ -56,7 +56,7 @@ test('field mapping: every custom property written exists in the definitions; th
   const v = validateLeadBody(BODY(), DATA);
   const summary = salesSummary(v.lead, DATA);
   const props = toHubSpotProperties(v.lead, summary);
-  const defined = new Set(PROPERTIES.map(p => p.name).concat(['email', 'firstname', 'lastname', 'phone', 'company']));
+  const defined = new Set(PROPERTIES.map(p => p.name).concat(['email', 'firstname', 'lastname', 'phone', 'company', 'website', 'jobtitle']));
   Object.keys(props).forEach(k => assert.ok(defined.has(k), 'undefined property ' + k));
   assert.equal(props.stagwell_ai_primary_product, 'newintel');
   assert.equal(props.stagwell_ai_company_size, 'enterprise');
@@ -169,7 +169,7 @@ import { PROPERTIES as DEFS, GROUP } from '../../api/_lib/leads/properties.js';
 function portal(known) {
   const contacts = new Map();
   let nextId = 100;
-  const STANDARD = ['email', 'firstname', 'lastname', 'phone', 'company'];
+  const STANDARD = ['email', 'firstname', 'lastname', 'phone', 'company', 'website', 'jobtitle'];
   const server = http.createServer((req, res) => {
     let raw = '';
     req.on('data', c => (raw += c));

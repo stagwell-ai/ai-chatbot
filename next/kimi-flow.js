@@ -83,6 +83,11 @@ function blank() {
     fallbacks: 0,
     summary: null,
     unclassifiedOnce: false,
+    researched: false,           /* the lookup has run — not recognised is not the same as never asked */
+    role: null,                  /* founder | manager | director_vp | c_suite */
+    roleText: null,              /* their own words, when they typed a title instead */
+    website: null,               /* the domain they gave, or '__skip__' if they declined */
+    findings: null,              /* what the lookup actually knew — never anything it did not */
     contactRequest: null,        /* 'call'|'demo'|'trial'|'expert'|'pricing' — they asked to be contacted */
     contact: null,               /* the resolved copy for the form they are about to see */
     holds: 0,                    /* consecutive turns that taught us nothing */
@@ -113,7 +118,8 @@ function deterministicRead(text) {
   return { detectedGoals: [], detectedIntents: intents.map(i => i.id), inferred: {
     industry: null, companySize: bands.companySize || null, creatorProgramSize: bands.creatorProgramSize || null, geographicScope: bands.geographicScope || null
   }, userNeedSummary: null, confidence: intents.length ? 0.5 : 0, ack: null, reply: null,
-    contactRequest: r ? r.contactRequest(text, data()) : null, live: false };
+    contactRequest: r ? r.contactRequest(text, data()) : null,
+    website: S_extractDomain(text), live: false };
 }
 
 function withTimeout(p, ms) {
@@ -151,6 +157,7 @@ async function interpret(text) {
       ack: it.ack || null,
       reply: it.reply || null,
       contactRequest: it.contactRequest || null,
+      website: off.website,
       live: true
     };
   } catch (e) {
@@ -182,6 +189,10 @@ function absorb(read, opts) {
     const g = list(read.detectedGoals).find(id => goals().some(x => x.id === id));
     if (g) setGoal(g, 'inferred');
   }
+  /* a site typed in their own words answers the website question before it is
+     asked — the lookup runs from advance() */
+  if (!st.website && read.website) { st.website = read.website; setSlot('company_domain', read.website, 'visitor'); }
+
   const inf = read.inferred || {};
   ['companySize', 'creatorProgramSize', 'geographicScope'].forEach(k => {
     if (inf[k] && (!st[k] || o.overwrite)) st[k] = String(inf[k]);
@@ -192,7 +203,7 @@ function absorb(read, opts) {
 }
 
 /* what a turn can change; compared before and after absorb() */
-const knowledge = () => JSON.stringify([st.primaryGoal, st.intents.map(i => i.id + (i.explicit ? '!' : '')).sort(), st.companySize, st.creatorProgramSize, st.geographicScope]);
+const knowledge = () => JSON.stringify([st.primaryGoal, st.intents.map(i => i.id + (i.explicit ? '!' : '')).sort(), st.companySize, st.creatorProgramSize, st.geographicScope, st.website]);
 const pick = (arr, n) => { const a = list(arr); return a.length ? a[Math.min(n, a.length - 1)] : null; };
 
 function setGoal(id, source) {
@@ -204,6 +215,22 @@ function setGoal(id, source) {
   if (g.domain) setSlot('problem_domains', [g.domain], source === 'inferred' ? 'inferred' : 'visitor');
   track('kimi_goal_selected', { goal: g.id, source: source || 'pill' });
   return true;
+}
+
+/* A site the visitor named in their own words gets read exactly as one given
+   at the question does — it is the same offer, made a beat earlier. */
+async function readSiteIfNew() {
+  if (!st.website || st.website === '__skip__' || st.researched) return;
+  const domain = st.website;
+  st.researching = domain;
+  st.uiAction = 'READING';
+  st.message = tpl((copy().research || {}).reading, { domain });
+  notify();
+  const found = await research(domain);
+  st.researching = null;
+  st.researched = true;
+  absorbFindings(found);
+  if (!found) track('kimi_site_read', { domain, known: false });
 }
 
 /* ── the machine ─────────────────────────────────────────────────────────── */
@@ -263,6 +290,73 @@ function hold(reply) {
   st.suggestions = list(q.suggestions).map(s => ({ id: s.id, label: s.label, value: s.value }));
   st.uiAction = 'ASK';
   emit('question_asked', { id: q.id, slot: q.field || 'intent', copy: st.message, mode: 'hold' });
+}
+
+/* a typed title lands on one of the four bands the routing overrides and the
+   ICP boosts already speak (engine.js ROLE_AFFINITY, routing.json override 2),
+   and the words themselves are kept for the CRM */
+const ROLE_PATTERNS = [
+  ['c_suite', /(c-?suite|\bcmo\b|\bceo\b|\bcoo\b|\bcfo\b|\bcto\b|\bcdo\b|\bcco\b|chief|president|partner)/],
+  ['founder', /(founder|co-?founder|owner|proprietor|i started|my own (company|business|agency))/],
+  ['director_vp', /(director|\bvp\b|v\.p\.|vice president|\bsvp\b|\bevp\b|head of|\bmd\b|managing director)/],
+  ['manager', /(manager|marketing lead|team lead|specialist|coordinator|analyst|associate|consultant)/]
+];
+function roleFromText(text) {
+  const t = String(text || '').toLowerCase().replace(/[’']/g, '').replace(/\s+/g, ' ').trim();
+  if (!t) return null;
+  for (let i = 0; i < ROLE_PATTERNS.length; i++) if (ROLE_PATTERNS[i][1].test(t)) return ROLE_PATTERNS[i][0];
+  return null;
+}
+
+/* ── READING THEIR SITE ──
+   The visitor gives a website and the conversation stops being about marketing
+   in general (client, 2026-09-10: "it should have asked me about my website,
+   and then it should do a quick search to see what info it can pull up and
+   show me the info and then keep talking to me with added relevance").
+
+   /api/ask mode:'research' asks the model what it ALREADY knows about that
+   domain and is built to answer known:false rather than guess — so what comes
+   back is either real or nothing. Nothing invented is ever shown: research.js,
+   which the older agent page uses, falls back to seeded fiction for the demo's
+   sake, and that is exactly why this calls the endpoint directly instead.
+
+   What it buys the rest of the conversation: the size band (so the size
+   question is never asked), the industry (carried to the CRM), and the
+   competitor set. What it never buys: a claim we cannot stand behind. */
+const RESEARCH_MS = 9000;
+
+function bandFromEmployees(n) {
+  if (typeof n !== 'number' || !isFinite(n) || n <= 0) return null;
+  return n < 250 ? 'smb' : n < 2500 ? 'mid_market' : 'enterprise';
+}
+
+async function research(domain) {
+  const S = eng();
+  if (!flags().llm || !S || typeof S._ask !== 'function' || !domain) return null;
+  try {
+    const j = await withTimeout(S._ask({ mode: 'research', domain }, RESEARCH_MS), RESEARCH_MS + 500);
+    if (!j || j.ok !== true || j.known !== true) return null;
+    const size = bandFromEmployees(j.employees);
+    return {
+      domain: j.domain || domain,
+      name: typeof j.name === 'string' && j.name.trim() ? j.name.trim().slice(0, 80) : null,
+      industry: typeof j.industry === 'string' && j.industry.trim() ? j.industry.trim().slice(0, 60) : null,
+      employees: typeof j.employees === 'number' ? j.employees : null,
+      companySize: size,
+      competitors: list(j.competitors).map(x => String(x).trim()).filter(Boolean).slice(0, 3)
+    };
+  } catch (e) { return null; }
+}
+
+/* what it learned becomes what we know — but never over something the visitor
+   said themselves */
+function absorbFindings(f) {
+  if (!f) return;
+  st.findings = f;
+  if (f.companySize && !st.companySize) { st.companySize = f.companySize; setSlot('size_tier', f.companySize, 'research'); }
+  if (f.industry && !st.industry) st.industry = f.industry;
+  if (f.name) setSlot('company', f.name, 'research');
+  track('kimi_site_read', { domain: f.domain, known: true, industry: f.industry || null, size: f.companySize || null, competitors: (f.competitors || []).length });
 }
 
 /* ── THE FAST TRACK ──
@@ -342,7 +436,11 @@ function advance(ack) {
   const first = st.askedQuestionIds.length === 0;
   if (!st.primaryGoal && !st.intents.length) { askGoal(); return; }
   const reco = recompute();
-  const q = Qs() ? Qs().selectQuestion({ primaryGoal: st.primaryGoal, intents: st.intents, askedQuestionIds: st.askedQuestionIds, companySize: st.companySize, creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope }, reco, data()) : null;
+  const q = Qs() ? Qs().selectQuestion({
+    primaryGoal: st.primaryGoal, intents: st.intents, askedQuestionIds: st.askedQuestionIds,
+    companySize: st.companySize, creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope,
+    website: st.website, role: st.role
+  }, reco, data()) : null;
   if (q) { present(q, first, ack); return; }
   if (!reco || !reco.primary) { askGoal(); return; }
   readyForContact();
@@ -374,6 +472,7 @@ async function start(opts) {
     absorb(read, {});
     const asked = contactRequestIn(text, read);
     if (asked) { fastTrack(asked); notify(); return state(); }
+    await readSiteIfNew();
     if (knowledge() === before && !goal) {
       /* nothing to route on yet: reply in kind, offer the starting points */
       st.rawProblemText = null;
@@ -389,6 +488,12 @@ async function start(opts) {
   advance();
   notify();
   return state();
+}
+
+/* a website anywhere in a sentence — the engine's own reader, so the two
+   agree on what a domain is */
+function S_extractDomain(text) {
+  try { return eng().extractDomain(text); } catch (e) { return null; }
 }
 
 function noteHuman(text) {
@@ -422,6 +527,63 @@ async function answer(input) {
     advance(read.ack); notify(); return state();
   }
 
+  /* the opening two questions are still a conversation: someone who answers
+     either of them with "just call me" is cutting to the chase, not naming a
+     website or a job title. Read deterministically, so it costs no round trip. */
+  if (q.field === 'website' || q.field === 'role') {
+    const cut = R() ? R().contactRequest(text, data()) : null;
+    if (cut) { if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600); fastTrack(cut); notify(); return state(); }
+  }
+
+  /* the website question: take the domain, look it up, show what came back */
+  if (q.field === 'website') {
+    const skipped = /^(__skip__|skip|no|nope|rather not|prefer not|n\/a)$/i.test(text.trim());
+    const domain = skipped ? null : (S_extractDomain(text) || null);
+    emit('answer_given', { id: q.id, slot: 'website', text: skipped ? '__skip__' : text, chip: skipped ? '__skip__' : null });
+    if (skipped || !domain) {
+      st.website = '__skip__';
+      track('kimi_question_answered', { question_id: q.id, input_type: skipped ? 'pill' : 'free_text', understood: false });
+      st.currentQuestion = null;
+      advance(skipped ? (copy().research || {}).skipped : null);
+      notify(); return state();
+    }
+    st.website = domain;
+    setSlot('company_domain', domain, 'visitor');
+    /* "we're acme.com and we need help with competitors" — the domain answers
+       the question, and the rest is not thrown away. The keyword read costs
+       nothing; the model is not worth a round trip on top of the lookup. */
+    if (text.trim().split(/\s+/).length > 2) absorb(deterministicRead(text), {});
+    track('kimi_question_answered', { question_id: q.id, input_type: 'free_text', understood: true });
+    /* the UI shows "Reading acme.com…" while this runs */
+    st.researching = domain;
+    st.uiAction = 'READING';
+    st.message = tpl((copy().research || {}).reading, { domain });
+    notify();
+    const found = await research(domain);
+    st.researching = null;
+    st.researched = true;
+    absorbFindings(found);
+    if (!found) track('kimi_site_read', { domain, known: false });
+    st.currentQuestion = null;
+    advance(null);
+    notify(); return state();
+  }
+
+  /* the role question: a chip is a band, typed words are matched to one and
+     kept verbatim either way */
+  if (q.field === 'role') {
+    const chip = Qs() ? Qs().matchSuggestion(q, text) : null;
+    const band = chip ? chip.value : roleFromText(text);
+    emit('answer_given', { id: q.id, slot: 'role_seniority', text, chip: chip ? chip.value : null });
+    st.role = band || 'other';
+    if (!chip) st.roleText = text.slice(0, 80);
+    setSlot('role_seniority', band || text.slice(0, 80), 'visitor');
+    track('kimi_question_answered', { question_id: q.id, suggestion_id: chip ? chip.id : null, input_type: chip ? 'pill' : 'free_text', understood: !!band });
+    st.currentQuestion = null;
+    advance(null);
+    notify(); return state();
+  }
+
   const sel = Qs() ? Qs().matchSuggestion(q, text) : null;
   emit('answer_given', { id: q.id, slot: q.field || 'intent', text, chip: sel ? sel.value : null });
   if (sel) {
@@ -447,6 +609,7 @@ async function answer(input) {
     track('kimi_question_answered', { question_id: q.id, suggestion_id: null, input_type: 'free_text', understood });
     /* nothing learned: answer in kind and stay on this question */
     if (!understood) { hold(read.reply); notify(); return state(); }
+    await readSiteIfNew();
     st.currentQuestion = null;
     advance(read.ack); notify(); return state();
   }
@@ -493,6 +656,10 @@ function discoveryPayload() {
     llmStatus: st.llmStatus,
     llmProvider: st.llmProvider,
     contactRequest: st.contactRequest,
+    role: st.role,
+    roleText: st.roleText,
+    website: st.website && st.website !== '__skip__' ? st.website : null,
+    siteKnown: !!st.findings,
     attribution: {
       utmSource: a.utm_source || null, utmMedium: a.utm_medium || null, utmCampaign: a.utm_campaign || null, utmContent: a.utm_content || null,
       landingPage: location.pathname + location.search, referrer: a.referrer || null
@@ -611,6 +778,10 @@ function state() {
     suggestions: st.suggestions.slice(),
     hint: st.hint,
     question: st.currentQuestion ? { id: st.currentQuestion.id, field: st.currentQuestion.field || 'intent' } : null,
+    website: st.website,
+    role: st.role,
+    researched: !!st.researched,
+    findings: st.findings ? Object.assign({}, st.findings) : null,
     contact: st.contact ? Object.assign({}, st.contact) : null,
     contactRequest: st.contactRequest,
     primaryGoal: st.primaryGoal,

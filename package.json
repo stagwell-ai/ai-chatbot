@@ -10,6 +10,7 @@
     "test:funnel": "node tests/kimi/no-llm.funnel.mjs",
     "hubspot:setup": "node scripts/hubspot-setup.mjs",
     "test:focus": "node tests/kimi/focus.funnel.mjs",
-    "test:fasttrack": "node tests/kimi/fast-track.funnel.mjs"
+    "test:fasttrack": "node tests/kimi/fast-track.funnel.mjs",
+    "test:site": "node tests/kimi/site.funnel.mjs"
   }
 }

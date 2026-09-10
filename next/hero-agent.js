@@ -41,6 +41,7 @@ const MIN_BEAT = REDUCED ? 0 : 650;   /* the agent never answers faster than a p
 const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 let started = false, busy = false, ended = false, lastKey = null, formBubble = null;
+let waitEl = null, shownFindings = false;
 let lastVia = 'type';                 /* how the visitor sent the last turn: 'type' | 'chip' */
 
 /* ── THE CARET LIVES IN THE FIELD ──
@@ -72,20 +73,50 @@ const pause = ms => new Promise(r => setTimeout(r, Math.max(0, ms)));
 const copy = () => ((S.data || {}).kimi || {}).copy || {};
 
 /* ── drawing what the flow says ─────────────────────────────────────────── */
+/* ── what the lookup found ──
+   Only ever what came back real: the endpoint answers known:false rather than
+   guess, and nothing here fills a gap. A domain it did not recognise gets one
+   honest line and the conversation moves on. */
+function drawFindings(st) {
+  if (shownFindings || !st.researched) return;
+  shownFindings = true;
+  const c = copy(), r = c.research || {}, L = r.labels || {};
+  const f = st.findings;
+  if (!f) {
+    if (st.website && st.website !== '__skip__') H.ai(H.esc(tpl(r.notFound, { domain: st.website })), null, null, null);
+    return;
+  }
+  const rows = [];
+  if (f.industry) rows.push([L.industry || 'Industry', f.industry]);
+  if (f.companySize) rows.push([L.size || 'Size', (r.sizeBands || {})[f.companySize] || f.companySize]);
+  if (f.competitors && f.competitors.length) rows.push([L.competitors || 'Compared with', f.competitors.join(', ')]);
+  const head = f.name ? tpl(r.foundHeader, { name: f.name }) : tpl(r.foundHeaderNoName, { domain: f.domain });
+  const bubble = H.ai(H.esc(head), null, null, null);
+  if (rows.length) {
+    bubble.insertAdjacentHTML('beforeend',
+      '<dl class="found">' + rows.map(([k, v]) =>
+        '<div class="found__row"><dt>' + H.esc(k) + '</dt><dd>' + H.esc(v) + '</dd></div>').join('') + '</dl>');
+  }
+}
+
+const tpl = (s, vars) => String(s || '').replace(/\{(\w+)\}/g, (m, k) => (vars[k] == null ? '' : String(vars[k])));
+
 function render(st) {
   if (!st || ended) return;
   if (st.uiAction === 'ASK') {
+    drawFindings(st);
     const key = 'ask|' + (st.question ? st.question.id : '') + '|' + st.message;
     if (key === lastKey) return;
     lastKey = key;
     H.ai(H.esc(st.message || ''), st.suggestions.map(s => ({ label: s.label, value: s.value })), null, chip => send(chip.value, chip.label));
-    H.placeholder(st.hint || 'Type your answer…');
+    H.placeholder(st.hint || (st.question && st.question.field === 'website' ? ((copy().hints || {}).website || 'yourcompany.com') : 'Type your answer…'));
     refocus();
     return;
   }
   if (st.uiAction === 'CAPTURE_CONTACT') {
     if (lastKey === 'contact') return;
     lastKey = 'contact';
+    drawFindings(st);
     drawForm(st);
     return;
   }
@@ -96,7 +127,19 @@ function render(st) {
   }
 }
 
-K.onChange(st => { if (!busy) render(st); });
+K.onChange(st => {
+  /* mid-turn the thread is showing the thinking dots; the only thing worth
+     saying over them is which site is being read */
+  if (busy) {
+    if (st && st.uiAction === 'READING' && waitEl && st.message) {
+      const label = waitEl.querySelector('.turnb__waitlabel');
+      if (label) label.textContent = st.message;
+      else waitEl.insertAdjacentHTML('beforeend', '<span class="turnb__waitlabel">' + H.esc(st.message) + '</span>');
+    }
+    return;
+  }
+  render(st);
+});
 
 /* ── one turn ───────────────────────────────────────────────────────────── */
 /* a pill's words → the goal/domain it carries, so the same words typed into
@@ -120,6 +163,7 @@ async function send(raw, label, seed) {
   H.settleChips();
   refocus();          /* the chip just answered is disabled now; the caret goes back to the field */
   const w = H.wait();
+  waitEl = w;
   const t0 = Date.now();
   try {
     if (!started) {
@@ -131,6 +175,7 @@ async function send(raw, label, seed) {
   } catch (e) { /* the flow owns its error copy; whatever state it left is drawn below */ }
   await pause(MIN_BEAT - (Date.now() - t0));
   w.remove(); H.think.off();
+  waitEl = null;
   busy = false;
   render(K.state());
 }

@@ -69,6 +69,8 @@ export function validateLeadBody(body, data) {
   /* what they asked for when they cut to the chase — an id from taxonomy.json */
   const requests = (data.taxonomy && data.taxonomy.contactRequests) || [];
   const contactRequest = (() => { const v = str(D.contactRequest, 40); return v && requests.some(r => r.id === v) ? v : null; })();
+  const ROLES = ['founder', 'manager', 'director_vp', 'c_suite', 'other'];
+  const role = (() => { const v = str(D.role, 40); return v && ROLES.indexOf(v) !== -1 ? v : null; })();
 
   /* recompute; the client's claim is kept only as a note when it disagrees */
   const reco = RECOMMEND.recommend({ goal: RECOMMEND.goalById(goal, data) ? goal : null, intents, companySize, creatorProgramSize, geographicScope }, data);
@@ -78,7 +80,7 @@ export function validateLeadBody(body, data) {
     name, email, phone,
     firstname: splitName(name).firstname, lastname: splitName(name).lastname,
     company: str(L.company, 160) || str(b.company, 160),
-    website: str(b.website, 160),
+    website: str((D && D.website), 160) || str(b.website, 160),
     discovery: {
       sessionId: str(D.sessionId, 64),
       primaryGoal: RECOMMEND.goalById(goal, data) ? goal : null,
@@ -92,6 +94,10 @@ export function validateLeadBody(body, data) {
       llmStatus: str(D.llmStatus, 20),
       llmProvider: str(D.llmProvider, 60),
       contactRequest,
+      role,
+      roleText: str(D.roleText, 80),
+      website: str(D.website, 160),
+      siteKnown: D.siteKnown === true,
       /* server-side truth */
       primary: reco.primary,
       secondary: reco.secondary,
@@ -122,8 +128,12 @@ export function salesSummary(lead, data) {
   /* the lead's own words come first when they asked to be contacted: it is the
      one thing the person picking this up needs to see before anything else */
   if (asked) parts.push('ASKED FOR ' + String(asked).toUpperCase() + '.');
-  if (who) parts.push('Visitor at a ' + who + '.');
-  if (lead.company) parts.push('Company: ' + lead.company + '.');
+  const ROLE_WORDS = { founder: 'Founder / owner', manager: 'Marketing manager', director_vp: 'Director / VP', c_suite: 'C-suite', other: null };
+  const role = d.roleText || ROLE_WORDS[d.role] || null;
+  if (who) parts.push((role ? role + ' at a ' : 'Visitor at a ') + who + '.');
+  else if (role) parts.push(role + '.');
+  if (lead.company) parts.push('Company: ' + lead.company + (d.website ? ' (' + d.website + ')' : '') + '.');
+  else if (d.website) parts.push('Site: ' + d.website + '.');
   if (d.rawProblemText) parts.push('Said: “' + d.rawProblemText.slice(0, 160) + '”.');
   if (need.length) parts.push('Wants to ' + need.join('; ') + '.');
   if (d.primary) parts.push('Primary recommendation: ' + P(d.primary) + (d.confidence ? ' (' + d.confidence.level + ' confidence)' : '') + '.');
