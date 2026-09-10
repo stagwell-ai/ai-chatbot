@@ -169,10 +169,10 @@ d.setAttribute('data-theme',t||sys);})();
   <!-- the ground: ONE still, not a turning strip (client, 2026-09-09). The
        other two stills are still in /assets/img if the rotation comes back. -->
   <div class="hero__bg" id="heroSlides" aria-hidden="true">
-    <img class="hero__pic is-on" src="/assets/img/hero-light.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+    <img class="hero__pic is-on" src="/assets/img/hero-home-b.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
   </div>
   <!-- the chat's thinking field, behind the whole hero (client: "the small dots, like when ChatGPT is thinking") -->
-  <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
+  <canvas class="hero__think" id="hbThink" aria-hidden="true"></canvas>
 
   <!-- one centred column, as in the reference: the title, the line, then the
        agent — its field, its starting points, and the ways to a person. -->
@@ -243,13 +243,9 @@ d.setAttribute('data-theme',t||sys);})();
      site's own (the homepage, the product pages, data/solutions.json). -->
 <section class="hb-statement" id="about">
   <div class="hb-wrap hb-statement__grid">
-    <div class="hb-statement__body">
-    <p class="hb-eyebrow rv">Introducing Stagwell AI</p>
-    <h2 class="hb-statement__text" data-words>Stagwell AI is a custom portfolio of agentic solutions built for businesses of any size.</h2>
-    <div class="hb-statement__foot rv">
-      <p class="hb-statement__lede">We combine technology with deep marketing expertise to help your business make better decisions, execute faster, and drive stronger performance.</p>
-    </div>
-    </div>
+    <p class="hb-eyebrow hb-statement__eb rv">Introducing Stagwell AI</p>
+    <h2 class="hb-statement__text" data-words="agentic solutions">Stagwell AI is a custom portfolio of agentic solutions built for businesses of any size.</h2>
+    <p class="hb-statement__lede rv">We combine technology with deep marketing expertise to help your business make better decisions, execute faster, and drive stronger performance.</p>
     <figure class="hb-statement__media rv" style="--d:.1s"><img src="/assets/img/hero-slide-1.jpg" alt="" width="1024" height="1536" loading="lazy" decoding="async"></figure>
   </div>
 </section>
@@ -258,59 +254,55 @@ d.setAttribute('data-theme',t||sys);})();
   <div class="hb-wrap">
     <div class="hb-head">
       <p class="hb-eyebrow rv">Products</p>
-      <h2 class="hb-h2 rv" style="--d:.08s">How we put agentic AI to work</h2>
+      <h2 class="hb-h2" data-words="agentic AI" data-hl="blue">How we put agentic AI to work</h2>
     </div>
     <div class="hb-stack__cards">
     <article class="hb-stack__card" style="--i:0">
       <div class="hb-stack__inner">
         <div class="hb-stack__copy">
-          <span class="hb-stack__n">01</span>
-          <p class="hb-stack__kind">Enterprise agentic marketing operating system</p>
+          <div class="hb-stack__eb"><span class="hb-stack__n">01</span><span class="hb-stack__line" aria-hidden="true"></span><p class="hb-stack__kind">Enterprise agentic marketing operating system</p></div>
           <h3 class="hb-stack__name">The Machine</h3>
           <p class="hb-stack__title">Turn your marketing stack into an intelligent system.</p>
           <p class="hb-stack__sum">Stagwell&#x27;s agentic operating system for marketing, built on the tools you already use.</p>
           <a class="hb-stack__go" href="/the-machine">Explore The Machine<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/products/card-the-machine.jpg" alt="" width="1600" height="900" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/hero-slide-3.jpg" alt="" width="1122" height="1402" loading="lazy" decoding="async"></div>
       </div>
     </article>
     <article class="hb-stack__card" style="--i:1">
       <div class="hb-stack__inner">
         <div class="hb-stack__copy">
-          <span class="hb-stack__n">02</span>
-          <p class="hb-stack__kind">Privacy-first audience intelligence and activation</p>
+          <div class="hb-stack__eb"><span class="hb-stack__n">02</span><span class="hb-stack__line" aria-hidden="true"></span><p class="hb-stack__kind">Privacy-first audience intelligence and activation</p></div>
           <h3 class="hb-stack__name">The Targeting Machine</h3>
           <p class="hb-stack__title">Turn fragmented data into audiences you can activate.</p>
           <p class="hb-stack__sum">Privacy-first audience intelligence, from first-party data to activation.</p>
           <a class="hb-stack__go" href="/targeting-machine">Explore The Targeting Machine<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/products/hero-targeting-machine.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/products/card-audience.jpg" alt="" width="1122" height="1402" loading="lazy" decoding="async"></div>
       </div>
     </article>
     <article class="hb-stack__card" style="--i:2">
       <div class="hb-stack__inner">
         <div class="hb-stack__copy">
-          <span class="hb-stack__n">03</span>
-          <p class="hb-stack__kind">AI voice agents and insight campaigns</p>
+          <div class="hb-stack__eb"><span class="hb-stack__n">03</span><span class="hb-stack__line" aria-hidden="true"></span><p class="hb-stack__kind">AI voice agents and insight campaigns</p></div>
           <h3 class="hb-stack__name">New Voices</h3>
           <p class="hb-stack__title">Hear why your customers act – at scale.</p>
           <p class="hb-stack__sum">AI voice agents that interview your customers at scale and turn it into insight.</p>
           <a class="hb-stack__go" href="/newvoices">Explore New Voices<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/products/card-newvoices.jpg" alt="" width="1145" height="1374" style="object-position:50% 30%" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/hero-slide-2.jpg" alt="" width="1122" height="1402" loading="lazy" decoding="async"></div>
       </div>
     </article>
     <article class="hb-stack__card" style="--i:3">
       <div class="hb-stack__inner">
         <div class="hb-stack__copy">
-          <span class="hb-stack__n">04</span>
-          <p class="hb-stack__kind">Secure AI workspace and marketing agent toolkit</p>
+          <div class="hb-stack__eb"><span class="hb-stack__n">04</span><span class="hb-stack__line" aria-hidden="true"></span><p class="hb-stack__kind">Secure AI workspace and marketing agent toolkit</p></div>
           <h3 class="hb-stack__name">Agent Cloud</h3>
           <p class="hb-stack__title">Give your marketing team one secure place to use the best AI.</p>
           <p class="hb-stack__sum">A secure AI workspace for marketers: leading LLMs and marketing agents in one place.</p>
           <a class="hb-stack__go" href="/agent-cloud">Explore Agent Cloud<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/products/agent-cloud-mobile.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/products/card-workspace.jpg" alt="" width="1536" height="1024" loading="lazy" decoding="async"></div>
       </div>
     </article>
     </div>
@@ -323,7 +315,7 @@ d.setAttribute('data-theme',t||sys);})();
   <div class="hb-wrap hb-suite__head">
     <div>
       <p class="hb-eyebrow rv">The Stagwell AI suite</p>
-      <h2 class="hb-h2 rv" style="--d:.08s">The Stagwell AI suite.</h2>
+      <h2 class="hb-h2" data-words="Stagwell AI">The Stagwell AI suite.</h2>
     </div>
     <div class="hb-suite__acts rv" style="--d:.16s">
       <a class="hb-btn" href="/products">See every product<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -424,9 +416,9 @@ d.setAttribute('data-theme',t||sys);})();
 </section>
 
 <section class="ask-end" id="start">
-  <canvas class="hero__think" id="endThink" aria-hidden="true"></canvas>
+  <canvas class="hero__think" id="hbEndThink" aria-hidden="true"></canvas>
   <div class="wrap ask-end__in">
-    <h2 class="display display--end rv"><span class="ln"><span class="ln__in"><span class="navy" style="font-weight:600;font-size:80px;color:#FF6D24">How can we help?</span></span></span></h2>
+    <h2 class="display display--end" data-words="help?" data-hl="blue">How can we help?</h2>
     <p class="ask-end__lede rv" style="--d:.15s">Whatever the challenge, we deliver results</p>
     <div class="ask-end__acts">
       <form class="ask-mini rv" id="askEnd" style="--d:.3s" autocomplete="off">

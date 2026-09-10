@@ -277,7 +277,7 @@ body.hb-page{--hb-bg:#FEFDFC;background:var(--hb-bg)}
 .hb-page .hero__bg::after{background:radial-gradient(ellipse 62% 58% at 50% 52%,rgba(254,253,252,.78) 0%,rgba(254,253,252,.42) 55%,rgba(254,253,252,0) 82%)}
 .hb-page .hero .hero__bg{animation-name:hbIntroL}
 @keyframes hbIntroL{from{transform:scale(1.32) rotate(-5deg);opacity:.15}to{transform:none;opacity:1}}
-.hb-page .hb-field{background-image:url("/assets/img/hero-light.jpg");mix-blend-mode:multiply;opacity:.32}
+.hb-page .hb-field{background-image:url("/assets/img/hero-home-b.jpg");mix-blend-mode:multiply;opacity:.32}
 .hb-page .hb-grain{opacity:.035;mix-blend-mode:multiply}
 .hb-page .display--hero,.hb-page .display--hero *{color:var(--hb-ink) !important;text-shadow:none !important}
 .hb-page .hero__lede{color:rgba(11,18,32,.68);text-shadow:none}
@@ -365,3 +365,44 @@ body.hb-page{--hb-bg:#FEFDFC;background:var(--hb-bg)}
 .hb-page .nav__drop.is-open .nav__plist li:nth-child(3){transition-delay:.08s}
 .hb-page .nav__drop.is-open .nav__plist li:nth-child(4){transition-delay:.12s}
 @media (prefers-reduced-motion:reduce){ .hb-page .nav__plist li{opacity:1;transform:none;transition:none} }
+
+/* the hero's own thinking field (home-b.js) — its dots take this colour: ink on the light
+   picture now; white once the darker picture arrives (client, 2026-09-10) */
+.hb-page #hbThink,.hb-page #hbEndThink{color:rgb(11,18,32)}
+.hb-page #hbThink.is-on,.hb-page #hbEndThink.is-on{opacity:1}
+
+/* every big title builds itself word by word, as the statement does; the named words in colour */
+.hb-page [data-words] .w{opacity:.14;transition:opacity .35s ease,color .35s ease}
+.hb-page [data-words] .w.on{opacity:1}
+.hb-page [data-words] .w.hl.on{color:var(--orange)}
+.hb-page [data-words][data-hl="blue"] .w.hl.on{color:#009CBD}   /* the mark's blue */
+.hb-page #start .display--end{font-size:clamp(48px,1rem + 4.4vw,80px);font-weight:600;line-height:1;color:var(--hb-ink)}
+
+/* the statement, off the grid (client: "too predictable"): the title across, the paragraph on the
+   right — not under the title — and the picture lower, in from the left, not on the title's line */
+.hb-statement__grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:clamp(16px,2vw,32px);row-gap:0;align-items:start}
+.hb-statement__eb{grid-column:1/-1}
+.hb-statement__grid > .hb-statement__text{grid-column:1/12}
+.hb-statement__grid > .hb-statement__lede{grid-column:8/13;grid-row:3;margin-top:clamp(48px,6vw,104px);max-width:28em}
+.hb-statement__grid > .hb-statement__media{grid-column:2/6;grid-row:3;margin-top:clamp(96px,11vw,200px)}
+
+/* the stacking cards: pictures pinned inside their frames (a tall one stretched New Voices past the
+   screen, so the next card covered its paragraph and button), bigger; the eyebrow a number chip,
+   a line and the product's kind, at the top */
+.hb-stack__inner{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+.hb-stack__media{position:relative}
+.hb-stack__media img{position:absolute;inset:0}
+.hb-stack__eb{display:flex;align-items:center;gap:14px}
+.hb-stack__n{display:grid;place-items:center;min-width:46px;height:46px;padding:0 12px;border-radius:999px;background:#FFFFFF;
+  font-size:14px;font-weight:600;letter-spacing:.02em;color:var(--hb-ink)}
+.hb-stack__line{width:28px;height:1px;background:rgba(11,18,32,.28);flex-shrink:0}
+.hb-stack__kind{margin:0;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(11,18,32,.66)}
+.hb-stack__name{margin-top:auto;padding-top:24px}
+
+@media (max-width:900px){
+  .hb-statement__grid > .hb-statement__text{grid-column:1/-1}
+  .hb-statement__grid > .hb-statement__lede{grid-column:3/-1;grid-row:3;margin-top:32px}
+  .hb-statement__grid > .hb-statement__media{grid-column:1/10;grid-row:4;margin-top:40px;aspect-ratio:4/5}
+  .hb-stack__eb{margin-top:14px}
+  .hb-stack__name{margin-top:0;padding-top:16px}
+}

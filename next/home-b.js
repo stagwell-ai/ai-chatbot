@@ -116,25 +116,26 @@
     }
   }
 
-  /* ── the statement: its words light up as it passes the middle of the screen */
-  const st = document.querySelector('[data-words]');
-  if (st) {
-    const HL = new Set(['agentic', 'solutions']);
-    st.innerHTML = st.textContent.trim().split(/\s+/).map((w) => `<span class="w${HL.has(w.toLowerCase().replace(/[^a-z]/g, '')) ? ' hl' : ''}">${w}</span>`).join(' ');
+  /* ── the big titles: their words light up as they pass up the screen, the words named
+     in data-words in colour (orange; data-hl="blue" for the mark's blue) — the statement's
+     treatment on every big title (client, 2026-09-10) */
+  document.querySelectorAll('[data-words]').forEach((st) => {
+    const key = (w) => w.toLowerCase().replace(/[^a-z]/g, '');
+    const HL = new Set((st.dataset.words || '').split(/\s+/).map(key).filter(Boolean));
+    st.setAttribute('aria-label', st.textContent.trim());
+    st.innerHTML = st.textContent.trim().split(/\s+/).map((w) => `<span class="w${HL.has(key(w)) ? ' hl' : ''}" aria-hidden="true">${w}</span>`).join(' ');
     const ws = [...st.querySelectorAll('.w')];
-    if (RM) ws.forEach((w) => w.classList.add('on'));
-    else {
-      let near = false, tk = false;
-      const lit = () => {
-        tk = false; if (!near) return;
-        const r = st.getBoundingClientRect(), p = Math.max(0, Math.min(1, (innerHeight * 0.82 - r.top) / (r.height + innerHeight * 0.35)));
-        const n = Math.round(p * ws.length);
-        ws.forEach((w, i) => w.classList.toggle('on', i < n));
-      };
-      new IntersectionObserver((es) => { near = es[0].isIntersecting; lit(); }, { rootMargin: '10% 0px' }).observe(st);
-      addEventListener('scroll', () => { if (near && !tk) { tk = true; requestAnimationFrame(lit); } }, { passive: true });
-    }
-  }
+    if (RM) { ws.forEach((w) => w.classList.add('on')); return; }
+    let near = false, tk = false;
+    const lit = () => {
+      tk = false; if (!near) return;
+      const r = st.getBoundingClientRect(), p = Math.max(0, Math.min(1, (innerHeight * 0.86 - r.top) / (r.height + innerHeight * 0.3)));
+      const n = Math.round(p * ws.length);
+      ws.forEach((w, i) => w.classList.toggle('on', i < n));
+    };
+    new IntersectionObserver((es) => { near = es[0].isIntersecting; lit(); }, { rootMargin: '10% 0px' }).observe(st);
+    addEventListener('scroll', () => { if (near && !tk) { tk = true; requestAnimationFrame(lit); } }, { passive: true });
+  });
 
   /* ── the flagships: pointing at a name, or scrolling to it, makes it the one */
   const flag = document.querySelector('.hb-flag');
@@ -220,4 +221,53 @@
     bar.addEventListener('focusin', () => bar.classList.remove('hb-hide'));
   }
 
+})();
+
+/* option B's thinking field, behind the hero and behind the close: the homepage's effect — a soft
+   light travelling slowly with a short trail — only the dots it lights show (client: "just the
+   dots, more visible, not all the pattern"); rings while a reply is on its way. */
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const field = (cv, busySel) => {
+  if (!cv || !cv.getContext) return;
+  const ctx = cv.getContext('2d'), GAP = 12, TAU = Math.PI * 2;
+  let W = 0, H = 0, pts = [], raf = 0, t0 = 0, last = 0, lift = 0, RGB = '11,18,32';
+  const size = () => {
+    const d = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * d); cv.height = Math.round(H * d); ctx.setTransform(d, 0, 0, d, 0, 0);
+    pts = []; for (let y = GAP / 2; y < H; y += GAP) for (let x = GAP / 2; x < W; x += GAP) pts.push(x, y);
+    RGB = (getComputedStyle(cv).color.match(/\d+/g) || [11, 18, 32]).slice(0, 3).join(',');   /* the dots' colour comes from the CSS */
+  };
+  const frame = (t) => {
+    if (!t0) t0 = t; const dt = Math.min(.05, (t - (last || t)) / 1000); last = t; const s = (t - t0) / 1000;
+    lift += ((busySel && document.querySelector(busySel) ? 1 : 0) - lift) * Math.min(1, dt * 3);
+    ctx.clearRect(0, 0, W, H);
+    /* the light's way: a slow loop over the whole field; the trail is the same way, a moment behind */
+    const way = (tt) => ({ x: W * (.5 + .36 * Math.sin(tt * .21) + .06 * Math.sin(tt * .83)), y: H * (.5 + .30 * Math.sin(tt * .29 + 1.2) + .05 * Math.cos(tt * .71)) });
+    const R = Math.max(90, Math.min(W, H) * .16) * (1 + .1 * Math.sin(s * .9)), K = 1 / (2 * R * R), K2 = 1 / (2 * R * R * .72);
+    const c = way(s), c2 = way(s - .9);
+    const ox = W * .5, oy = H * .56, ringA = lift * .4;
+    for (let i = 0; i < pts.length; i += 2) {
+      const x = pts[i], y = pts[i + 1];
+      let dx = x - c.x, dy = y - c.y, a = .46 * Math.exp(-(dx * dx + dy * dy) * K);
+      dx = x - c2.x; dy = y - c2.y; a += .2 * Math.exp(-(dx * dx + dy * dy) * K2);
+      if (lift > .01) {
+        const r = Math.hypot(x - ox, y - oy);
+        for (let k = 0; k < 2; k++) { const ph = (s * 160 + k * 320) % 640; a += ringA * Math.exp(-Math.pow((r - ph) / 28, 2)) * (1 - ph / 640); }
+      }
+      if (a < .03) continue;   /* nothing where the light is not: no lattice */
+      ctx.fillStyle = 'rgba(' + RGB + ',' + Math.min(.62, a).toFixed(3) + ')';
+      ctx.fillRect(x - 1, y - 1, 2, 2);
+    }
+    raf = requestAnimationFrame(frame);
+  };
+  const start = () => { if (!pts.length) size(); cv.classList.add('is-on'); if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
+  addEventListener('resize', () => { if (raf) size(); });
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => {
+    if (es[0].isIntersecting) start(); else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+  }, { threshold: 0 }).observe(cv);
+  else start();
+  };
+  field(document.getElementById('hbThink'), '#agentThread .turnb--wait');
+  field(document.getElementById('hbEndThink'), null);   /* the close: B's field, not the homepage's */
 })();
