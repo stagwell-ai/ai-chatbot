@@ -83,6 +83,8 @@ function blank() {
     fallbacks: 0,
     summary: null,
     unclassifiedOnce: false,
+    contactRequest: null,        /* 'call'|'demo'|'trial'|'expert'|'pricing' — they asked to be contacted */
+    contact: null,               /* the resolved copy for the form they are about to see */
     holds: 0,                    /* consecutive turns that taught us nothing */
     error: null
   };
@@ -110,7 +112,8 @@ function deterministicRead(text) {
   const bands = r ? r.bandsFromText(text, data()) : {};
   return { detectedGoals: [], detectedIntents: intents.map(i => i.id), inferred: {
     industry: null, companySize: bands.companySize || null, creatorProgramSize: bands.creatorProgramSize || null, geographicScope: bands.geographicScope || null
-  }, userNeedSummary: null, confidence: intents.length ? 0.5 : 0, ack: null, reply: null, live: false };
+  }, userNeedSummary: null, confidence: intents.length ? 0.5 : 0, ack: null, reply: null,
+    contactRequest: r ? r.contactRequest(text, data()) : null, live: false };
 }
 
 function withTimeout(p, ms) {
@@ -147,6 +150,7 @@ async function interpret(text) {
       confidence: typeof it.confidence === 'number' ? it.confidence : 0.5,
       ack: it.ack || null,
       reply: it.reply || null,
+      contactRequest: it.contactRequest || null,
       live: true
     };
   } catch (e) {
@@ -261,6 +265,56 @@ function hold(reply) {
   emit('question_asked', { id: q.id, slot: q.field || 'intent', copy: st.message, mode: 'hold' });
 }
 
+/* ── THE FAST TRACK ──
+   "If the person just ever cuts the chase that they want to be contacted, or
+   they want to book a demo, or they want to try out something, we should just
+   fast-track them to filling out the form. That's it, we're gold. Let's get
+   their contact info and get a sales agent to reach out to them." (client,
+   2026-09-10.)
+
+   So a contact request ends the questions wherever it lands: on the opening
+   message, mid-conversation, or in place of an answer. Whatever the turn also
+   taught us is kept — a visitor who says "we need to track competitors, can
+   you call me" still gets NewIntel on the card and in the CRM — but nothing
+   more is asked. The words on the form follow what they asked for: a call, a
+   demo, a trial, a specialist, or pricing.
+
+   The request is read two ways, like everything else here: the phrases in
+   taxonomy.json (which work with no model at all) and the model's own reading
+   of the sentence, which catches the phrasings the list misses. */
+function contactRequestIn(text, read) {
+  const r = R();
+  const byWord = r ? r.contactRequest(text, data()) : null;
+  if (byWord) return byWord;
+  const ids = r ? r.contactRequestIds(data()) : [];
+  const byModel = read && read.contactRequest;
+  return byModel && ids.indexOf(byModel) !== -1 ? byModel : null;
+}
+
+function fastTrack(kind) {
+  const c = copy();
+  const block = (c.fastTrack || {})[kind] || {};
+  st.contactRequest = kind;
+  st.contact = {
+    title: block.title || c.contactTitle,
+    submit: block.submit || c.contactSubmit,
+    closed: block.closed || null,
+    /* nothing was recommended yet, so the small print does not promise one */
+    notice: c.contactNoticeFast || c.contactNotice
+  };
+  recompute();
+  st.currentQuestion = null;
+  st.suggestions = [];
+  st.holds = 0;
+  st.status = 'CONTACT_CAPTURE';
+  st.message = block.message || c.contactTransition;
+  st.uiAction = 'CAPTURE_CONTACT';
+  st.hint = null;
+  try { const S = eng(); if (S.session.humanAsk !== true) { S.session.humanAsk = true; emit('human_requested', { kind }); } } catch (e) {}
+  track('kimi_fast_track', Object.assign({ request: kind, at_step: st.step }, recoProps()));
+  track('kimi_contact_viewed', Object.assign({ fast_track: kind }, recoProps()));
+}
+
 function readyForContact() {
   const c = copy();
   st.currentQuestion = null;
@@ -269,6 +323,7 @@ function readyForContact() {
   try { eng().route(); } catch (e) { /* the old console's route_decided; not needed here */ }
   if (flags().contactGate) {
     st.status = 'CONTACT_CAPTURE';
+    st.contact = { title: c.contactTitle, submit: c.contactSubmit, closed: null, notice: c.contactNotice };
     st.message = c.contactTransition;
     st.uiAction = 'CAPTURE_CONTACT';
     st.hint = null;
@@ -317,6 +372,8 @@ async function start(opts) {
     const before = knowledge();
     const read = await interpret(text);
     absorb(read, {});
+    const asked = contactRequestIn(text, read);
+    if (asked) { fastTrack(asked); notify(); return state(); }
     if (knowledge() === before && !goal) {
       /* nothing to route on yet: reply in kind, offer the starting points */
       st.rawProblemText = null;
@@ -357,6 +414,8 @@ async function answer(input) {
     const read = await interpret(text);
     absorb(read, {});
     track('kimi_free_text_submitted', { length: text.length, understood: knowledge() !== before });
+    const asked = contactRequestIn(text, read);
+    if (asked) { if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600); fastTrack(asked); notify(); return state(); }
     if (knowledge() === before) { hold(read.reply); notify(); return state(); }
     if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600);
     st.currentQuestion = null;
@@ -372,6 +431,9 @@ async function answer(input) {
   } else {
     const before = knowledge();
     const read = await interpret(text);
+    /* asked to be contacted instead of answering: the questions stop here */
+    const asked = contactRequestIn(text, read);
+    if (asked) { absorb(read, {}); fastTrack(asked); notify(); return state(); }
     /* a typed answer to a band question is that band when the words carry one */
     if (q.field && q.field !== 'intent') {
       const bands = R() ? R().bandsFromText(text, data()) : {};
@@ -430,6 +492,7 @@ function discoveryPayload() {
     summary: st.summary,
     llmStatus: st.llmStatus,
     llmProvider: st.llmProvider,
+    contactRequest: st.contactRequest,
     attribution: {
       utmSource: a.utm_source || null, utmMedium: a.utm_medium || null, utmCampaign: a.utm_campaign || null, utmContent: a.utm_content || null,
       landingPage: location.pathname + location.search, referrer: a.referrer || null
@@ -507,10 +570,19 @@ function showRecommendation(why) {
   const c = copy();
   const r = st.reco || recompute();
   const first = st.lead ? String(st.lead.name).split(/\s+/)[0] : '';
+  const vars = { first: first || 'there', name: st.lead ? st.lead.name : '', email: st.lead ? st.lead.email : '', phone: st.lead ? st.lead.phone : '' };
   st.cards = C() ? C().buildCards(r, signals(), data(), c, { why: why || {}, secondary: flags().secondaryRecommendations !== false }) : [];
   const low = !r || !r.confidence || r.confidence.level === 'low';
-  st.message = tpl(low ? c.recommendationIntroLow : c.recommendationIntro, { first: first || 'there', name: st.lead ? st.lead.name : '' });
-  st.after = st.lead ? tpl(st.lead.phone ? c.afterCardsPhone : c.afterCards, { email: st.lead.email, phone: st.lead.phone }) : null;
+  /* someone who cut to the chase may have told us nothing to recommend from.
+     They are still a lead — say a specialist is coming and leave it there,
+     rather than dressing up an empty card. */
+  if (!st.cards.length) {
+    st.message = tpl(st.lead && st.lead.phone ? c.fastTrackDonePhone : c.fastTrackDone, vars);
+    st.after = c.fastTrackExplore || null;
+  } else {
+    st.message = tpl(st.contactRequest ? c.recommendationIntroFast : (low ? c.recommendationIntroLow : c.recommendationIntro), vars);
+    st.after = st.lead ? tpl(st.lead.phone ? c.afterCardsPhone : c.afterCards, vars) : null;
+  }
   st.status = 'RECOMMENDATION';
   st.uiAction = 'SHOW_RECOMMENDATIONS';
   st.suggestions = [];
@@ -539,6 +611,8 @@ function state() {
     suggestions: st.suggestions.slice(),
     hint: st.hint,
     question: st.currentQuestion ? { id: st.currentQuestion.id, field: st.currentQuestion.field || 'intent' } : null,
+    contact: st.contact ? Object.assign({}, st.contact) : null,
+    contactRequest: st.contactRequest,
     primaryGoal: st.primaryGoal,
     intents: st.intents.slice(),
     companySize: st.companySize,

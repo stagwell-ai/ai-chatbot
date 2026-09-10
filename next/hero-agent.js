@@ -139,20 +139,25 @@ async function send(raw, label, seed) {
 function formHtml(st) {
   const c = copy();
   const f = c.contactFields || {};
-  const notice = H.esc(c.contactNotice || '');
+  /* the words follow what they asked for: "Book a demo" for a demo, "Request
+     a call" for a call, the recommendation wording for the ordinary path */
+  const k = st.contact || {};
+  const title = k.title || c.contactTitle || 'See your recommendation';
+  const submit = k.submit || c.contactSubmit || 'Show my recommendations';
+  const notice = H.esc(k.notice || c.contactNotice || '');
   const noticeHtml = c.contactNoticeUrl
     ? notice.replace(/privacy notice/i, m => '<a href="' + H.esc(c.contactNoticeUrl) + '" target="_blank" rel="noopener">' + m + '</a>')
     : notice;
   return '<div class="turnb__text">' + H.esc(st.message || '') + '</div>' +
     /* a <div>, not a <form>: the thread sits inside #agentForm and a nested
        form tag is dropped by the parser, so the fields are wired by hand */
-    '<div class="askform" id="heroLeadForm" role="form" aria-label="' + H.esc(c.contactTitle || 'See your recommendation') + '">' +
-      '<p class="askform__title">' + H.esc(c.contactTitle || 'See your recommendation') + '</p>' +
+    '<div class="askform" id="heroLeadForm" role="form" aria-label="' + H.esc(title) + '">' +
+      '<p class="askform__title">' + H.esc(title) + '</p>' +
       '<label class="askform__row" data-field="name"><span class="askform__label">' + H.esc(f.name || 'Full name') + '</span><input name="name" type="text" autocomplete="name" required></label>' +
       '<label class="askform__row" data-field="email"><span class="askform__label">' + H.esc(f.email || 'Business email') + '</span><input name="email" type="email" autocomplete="email" inputmode="email" required></label>' +
       '<label class="askform__row" data-field="phone"><span class="askform__label">' + H.esc(f.phone || 'Phone') + '</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>' +
       '<p class="askform__hint" id="heroLeadHint" hidden></p>' +
-      '<div class="askform__bar"><button class="btn btn--ink askform__go" type="button">' + H.esc(c.contactSubmit || 'Show my recommendations') + '</button></div>' +
+      '<div class="askform__bar"><button class="btn btn--ink askform__go" type="button">' + H.esc(submit) + '</button></div>' +
       '<p class="askform__fine">' + noticeHtml + '</p>' +
     '</div>';
 }
@@ -171,7 +176,7 @@ function drawForm(st) {
   bubble.classList.add('turnb--form');
   bubble.innerHTML = formHtml(st);
   formBubble = bubble;
-  H.close(c.composerClosedForm || 'Leave your details above to see your recommendation.');
+  H.close((st.contact && st.contact.closed) || c.composerClosedForm || 'Leave your details above to see your recommendation.');
 
   const form = $('#heroLeadForm', bubble);
   const hint = $('#heroLeadHint', bubble);
@@ -218,7 +223,7 @@ function drawForm(st) {
 function drawCards(st) {
   const c = copy();
   const CARDS = window.SAICARDS;
-  const html = CARDS ? CARDS.renderCards(st.cards, c, H.esc) : '';
+  const html = (CARDS && st.cards.length) ? CARDS.renderCards(st.cards, c, H.esc) : '';
   const target = formBubble || H.ai(null, null, null, null);
   target.classList.remove('turnb--form');
   target.classList.add('turnb--reco');

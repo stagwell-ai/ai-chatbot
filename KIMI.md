@@ -119,6 +119,29 @@ agent replies, keeps the same question and the same pills, and never advances to
 With no model, the hold lines in `kimi.json` (`hold`, `holdQuestion`) rotate instead. Pill
 taps stay templated, so they answer instantly.
 
+## 4c. The fast track
+
+"If the person just ever cuts the chase that they want to be contacted, or they want to book a
+demo, or they want to try out something, we should just fast-track them to filling out the form"
+(client, 2026-09-10). A **contact request** — `call`, `demo`, `trial`, `expert`, `pricing` — ends
+the questions wherever it lands: on the first message, in place of an answer, or alongside a real
+need. Read two ways, like everything else: the request-shaped phrases in `taxonomy.json`
+(`contactRequests`, which work with no model) and the model's own `contactRequest` field.
+
+The phrases are deliberately request-shaped, never bare nouns: "prove pricing power", "our
+sign-up rates" and "we ran a demo last year" are ordinary marketing vocabulary and must never
+open a form nobody asked for — covered by a unit test.
+
+What the visitor asked for chooses the words on the form (`kimi.json` `fastTrack`): "Request a
+call", "Book a demo", "Get started", "Talk to a specialist". Whatever the same message also
+taught the engine is kept, so "we need to track competitors, can you call me" still routes to
+NewIntel, shows the card after the details, and puts both on the lead. When they told us nothing
+to route from, the close is a plain "a specialist will be in touch" rather than an empty card.
+
+The lead carries `contactRequest` into HubSpot as `stagwell_ai_contact_request` (a select, so
+sales can route on it) and the summary opens with `ASKED FOR A CALL.` — the first thing the
+person picking it up needs to see.
+
 ## 5. No-LLM fallback
 
 Launch requirement, tested in a browser with `/api/ask` aborted: pills → questions → form →
@@ -191,7 +214,8 @@ mock, which is still nowhere durable — see §17.
 Run once by an admin: `HUBSPOT_ACCESS_TOKEN=pat-… node scripts/hubspot-setup.mjs`
 (`--dry-run` prints the plan). Creates group `stagwell_ai` and:
 
-`stagwell_ai_primary_goal` (select) · `stagwell_ai_industry` · `stagwell_ai_company_size`
+`stagwell_ai_primary_goal` (select) · `stagwell_ai_contact_request` (select: call / demo /
+trial / expert / pricing) · `stagwell_ai_industry` · `stagwell_ai_company_size`
 (select) · `stagwell_ai_use_case` (textarea) · `stagwell_ai_primary_product` ·
 `stagwell_ai_secondary_products` · `stagwell_ai_recommendation_confidence` (number) ·
 `stagwell_ai_conversation_summary` (textarea) · `stagwell_ai_conversation_steps` (number) ·
@@ -238,6 +262,11 @@ llm_fallback_count, utm_source, utm_campaign. Email is passed as its domain only
 - `lead.test.mjs` — normalisation, recompute vs. client claim, rejection cases, legacy payload,
   property mapping, mock mode, live create / update / 409, undelivered logging, webhook,
   HubSpot-off flag.
+
+`npm run test:fasttrack` — Playwright, every model off: each way of cutting to the chase opens
+the right form with no discovery question asked, the lead carries the request, a need plus a
+request keeps both, cutting to the chase mid-conversation stops the questions, and ordinary
+marketing talk still goes to discovery.
 
 `npm run test:focus` — Playwright: after the agent answers, the visitor can keep typing without
 touching the mouse, whichever way they came in (the bar's chat bubble, the hero field, a

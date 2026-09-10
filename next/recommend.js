@@ -20,6 +20,7 @@
 
      recommend(signals, data)      → { ranked, primary, secondary, confidence, candidates }
      keywordIntents(text, data)    → [{ id, explicit:false, term }]  the no-model reader
+     contactRequest(text, data)    → 'call'|'demo'|'trial'|'expert'|'pricing'|null
      bandsFromText(text, data)     → { companySize, creatorProgramSize, geographicScope }
      goalForDomain(domain, data)   → goal id | null   (a routing.json domain → a goal)
      goalById(id, data)            → goal | null
@@ -99,6 +100,30 @@
       .sort((a, b) => (b.longest - a.longest) || (b.hits - a.hits) || (a.order - b.order))
       .map(x => ({ id: x.id, explicit: false, term: x.term }));
   }
+
+  /* ── "just call me" ──
+     The visitor asking to be CONTACTED rather than advised. It is not an
+     intent — it says nothing about which product fits — so it is read
+     separately and it ends the questions rather than answering one (client,
+     2026-09-10: "if the person just ever cuts the chase … fast-track them to
+     filling out the form"). The phrases live in taxonomy.json; the longest
+     match wins, so "book a demo" beats "a demo" and a message that asks for
+     two things at once resolves to the more specific one. */
+  function contactRequest(text, data) {
+    const t = norm(text);
+    if (!t) return null;
+    let best = null, longest = 0;
+    list(data && data.taxonomy && data.taxonomy.contactRequests).forEach(r => {
+      list(r.keywords).forEach(kw => {
+        if (!kw || kw.length <= longest) return;
+        let re; try { re = kwRe(kw); } catch (e) { return; }
+        if (re.test(t)) { longest = kw.length; best = r.id; }
+      });
+    });
+    return best;
+  }
+
+  const contactRequestIds = data => list(data && data.taxonomy && data.taxonomy.contactRequests).map(r => r.id);
 
   /* "3,000 people", "500 employees", "a 40-person team" → a size band */
   const NUM_WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, twenty: 20, thirty: 30, forty: 40, fifty: 50, hundred: 100, thousand: 1000, dozen: 12, 'a few': 3, several: 5, handful: 5 };
@@ -246,7 +271,8 @@
   }
 
   return {
-    recommend, keywordIntents, bandsFromText, goalForDomain, goalById, productById, intentById,
+    recommend, keywordIntents, bandsFromText, contactRequest, contactRequestIds,
+    goalForDomain, goalById, productById, intentById,
     activeProducts, dedupeIntents, norm,
     _config: { weightsOf, confOf, convOf }
   };

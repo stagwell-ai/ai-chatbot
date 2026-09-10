@@ -66,6 +66,9 @@ export function validateLeadBody(body, data) {
   const companySize = bandOk(D.companySize, 'companySize');
   const creatorProgramSize = bandOk(D.creatorProgramSize, 'creatorVolume') || (str(D.creatorProgramSize, 40) === 'unknown' ? 'unknown' : null);
   const geographicScope = bandOk(D.geographicScope, 'geographicScope');
+  /* what they asked for when they cut to the chase — an id from taxonomy.json */
+  const requests = (data.taxonomy && data.taxonomy.contactRequests) || [];
+  const contactRequest = (() => { const v = str(D.contactRequest, 40); return v && requests.some(r => r.id === v) ? v : null; })();
 
   /* recompute; the client's claim is kept only as a note when it disagrees */
   const reco = RECOMMEND.recommend({ goal: RECOMMEND.goalById(goal, data) ? goal : null, intents, companySize, creatorProgramSize, geographicScope }, data);
@@ -88,6 +91,7 @@ export function validateLeadBody(body, data) {
       summary: str(D.summary, 300),
       llmStatus: str(D.llmStatus, 20),
       llmProvider: str(D.llmProvider, 60),
+      contactRequest,
       /* server-side truth */
       primary: reco.primary,
       secondary: reco.secondary,
@@ -112,7 +116,12 @@ export function salesSummary(lead, data) {
   const need = (d.intents || []).map(i => (RECOMMEND.intentById(i.id, data) || {}).need).filter(Boolean).slice(0, 3);
   const size = { smb: 'under 250 people', mid_market: '250–2,500 people', enterprise: '2,500+ people' }[d.companySize];
   const who = d.industry ? d.industry + ' company' + (size ? ', ' + size : '') : (size ? 'company with ' + size : null);
+  const requests = (data.taxonomy && data.taxonomy.contactRequests) || [];
+  const asked = d.contactRequest ? (requests.find(r => r.id === d.contactRequest) || {}).label || d.contactRequest : null;
   const parts = [];
+  /* the lead's own words come first when they asked to be contacted: it is the
+     one thing the person picking this up needs to see before anything else */
+  if (asked) parts.push('ASKED FOR ' + String(asked).toUpperCase() + '.');
   if (who) parts.push('Visitor at a ' + who + '.');
   if (lead.company) parts.push('Company: ' + lead.company + '.');
   if (d.rawProblemText) parts.push('Said: “' + d.rawProblemText.slice(0, 160) + '”.');

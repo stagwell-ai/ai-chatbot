@@ -73,6 +73,43 @@
       "I didn't quite catch an answer in that. Pick one of the options, or say it in your own words.",
       "Take your time — any of these, or a sentence of your own, will do."
     ],
-    "composerClosedForm": "Fill in the form above to see your recommendation."
+    "composerClosedForm": "Fill in the form above to see your recommendation.",
+    "fastTrack": {
+      "call": {
+        "message": "Of course. Leave your name, email and number and a Stagwell AI specialist will call you.",
+        "title": "Request a call",
+        "submit": "Request a call",
+        "closed": "Leave your details above and we'll call you."
+      },
+      "demo": {
+        "message": "Happy to set that up. Leave your details and a Stagwell AI specialist will book the demo with you.",
+        "title": "Book a demo",
+        "submit": "Book a demo",
+        "closed": "Leave your details above and we'll set up your demo."
+      },
+      "trial": {
+        "message": "Good — let's get you started. Leave your details and a Stagwell AI specialist will set you up with the right product to try.",
+        "title": "Get started",
+        "submit": "Get me started",
+        "closed": "Leave your details above and we'll get you started."
+      },
+      "expert": {
+        "message": "Absolutely. Leave your details and a Stagwell AI specialist will get in touch.",
+        "title": "Talk to a specialist",
+        "submit": "Have someone contact me",
+        "closed": "Leave your details above and we'll be in touch."
+      },
+      "pricing": {
+        "message": "Pricing depends on which products you use and the scale you need, so a specialist will walk you through it. Leave your details and they'll be in touch.",
+        "title": "Talk to a specialist",
+        "submit": "Send me pricing",
+        "closed": "Leave your details above and we'll be in touch."
+      }
+    },
+    "fastTrackDone": "Thanks, {first}. A Stagwell AI specialist will be in touch at {email}.",
+    "fastTrackDonePhone": "Thanks, {first}. A Stagwell AI specialist will be in touch at {email} or on {phone}.",
+    "recommendationIntroFast": "Thanks, {first} — a specialist will be in touch. From what you've told me, this is where I'd start:",
+    "fastTrackExplore": "In the meantime, have a look at the products.",
+    "contactNoticeFast": "We use these details so the right Stagwell AI team can get in touch. See our privacy notice."
   }
 }

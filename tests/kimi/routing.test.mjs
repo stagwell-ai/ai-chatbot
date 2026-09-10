@@ -139,3 +139,48 @@ test('keyword reader: the brief\'s §18 examples', () => {
   assert.ok(ids('how do we show up in ChatGPT and Gemini answers').includes('ai_search_visibility'));
   assert.deepEqual(ids('hello there'), []);
 });
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE FAST TRACK — "if the person just ever cuts the chase that they want to
+   be contacted … we should just fast-track them to filling out the form"
+   (client, 2026-09-10). The reader is deterministic, so it works with no model
+   at all; these are the phrasings it must and must not catch.
+   ═══════════════════════════════════════════════════════════════════════════ */
+test('a request to be contacted is read, with the kind they asked for', () => {
+  const req = t => R.contactRequest(t, DATA);
+  assert.equal(req('can you call me'), 'call');
+  assert.equal(req('call me back tomorrow'), 'call');
+  assert.equal(req('how do i book a demo'), 'demo');
+  assert.equal(req("I'd like a demo please"), 'demo');
+  assert.equal(req('can I see a demo of the targeting machine'), 'demo');
+  assert.equal(req('walk me through it'), 'demo');
+  assert.equal(req('I want to try it out'), 'trial');
+  assert.equal(req('is there a free trial'), 'trial');
+  assert.equal(req('can I talk to someone'), 'expert');
+  assert.equal(req('just get in touch'), 'expert');
+  assert.equal(req('have someone reach out to me'), 'expert');
+  assert.equal(req('how much does it cost'), 'pricing');
+  assert.equal(req('can you send me a quote'), 'pricing');
+});
+
+test('ordinary marketing talk is never mistaken for a request to be contacted', () => {
+  const req = t => R.contactRequest(t, DATA);
+  ['we need to track competitors', 'prove our pricing power', 'our sign-up rates are dropping',
+   'we ran a demo of our own product last week', 'we need competitor pricing signals this week',
+   'measure brand awareness', 'our call center misses leads overnight', 'we want to grow our audience'
+  ].forEach(t => assert.equal(req(t), null, t));
+});
+
+test('the longest phrase wins, so a specific ask beats a general one', () => {
+  assert.equal(R.contactRequest('can you book a demo and call me', DATA), 'demo');
+  assert.equal(R.contactRequest('we need competitor tracking — can you call me', DATA), 'call');
+});
+
+test('every contact request has copy for the form it opens', () => {
+  const copy = DATA.kimi.copy.fastTrack;
+  R.contactRequestIds(DATA).forEach(id => {
+    const b = copy[id];
+    assert.ok(b && b.message && b.title && b.submit && b.closed, 'missing fastTrack copy for ' + id);
+    assert.ok(b.message.length > 30 && !/\{/.test(b.title), id);
+  });
+});

@@ -57,7 +57,11 @@ export function validateInterpretation(obj, vocab) {
        need was detected, a reply when nothing was — both optional, both plain
        text; a URL or markdown in either simply drops it */
     ack: line(obj.ack, 200),
-    reply: line(obj.reply, 400)
+    reply: line(obj.reply, 400),
+    /* the visitor asking to be CONTACTED rather than advised — one of the ids
+       in taxonomy.json, or null. It ends the questions, so it is validated
+       against the list and never taken as free text. */
+    contactRequest: band(obj.contactRequest, vocab.contactRequestIds || [])
   };
   /* the summary and the confidence are required by the contract; a model that
      returns neither has not answered the question */

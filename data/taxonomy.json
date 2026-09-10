@@ -615,5 +615,138 @@
         ]
       }
     ]
-  }
+  },
+  "_contactNote": "contactRequests: the visitor asking to be CONTACTED rather than advised — the fast track (client, 2026-09-10: \"if the person just ever cuts the chase that they want to be contacted, or they want to book a demo, or they want to try out something, we should just fast-track them to filling out the form\"). Phrases are request-shaped on purpose: a bare \"pricing\" or \"sign up\" is ordinary marketing vocabulary (\"prove pricing power\", \"our sign-up rates\") and must never send a visitor to a form they did not ask for.",
+  "contactRequests": [
+    {
+      "id": "call",
+      "label": "a call",
+      "keywords": [
+        "call me",
+        "call me back",
+        "give me a call",
+        "give us a call",
+        "can you call",
+        "could you call",
+        "would you call",
+        "ring me",
+        "phone me",
+        "call us",
+        "get a call",
+        "someone call me",
+        "have someone call"
+      ]
+    },
+    {
+      "id": "demo",
+      "label": "a demo",
+      "keywords": [
+        "book a demo",
+        "get a demo",
+        "see a demo",
+        "schedule a demo",
+        "set up a demo",
+        "arrange a demo",
+        "demo please",
+        "request a demo",
+        "walk me through",
+        "book a meeting",
+        "schedule a meeting",
+        "set up a meeting",
+        "book a call",
+        "schedule a call",
+        "set up a call",
+        "hop on a call",
+        "jump on a call",
+        "get on a call",
+        "book time",
+        "book some time",
+        "set up a time",
+        "want a demo",
+        "wants a demo",
+        "id like a demo",
+        "i would like a demo",
+        "looking for a demo",
+        "after a demo",
+        "interested in a demo",
+        "can i get a demo",
+        "have a demo"
+      ]
+    },
+    {
+      "id": "trial",
+      "label": "a trial",
+      "keywords": [
+        "free trial",
+        "start a trial",
+        "start the trial",
+        "try it",
+        "try it out",
+        "try this out",
+        "try your",
+        "try for free",
+        "sign me up",
+        "get started",
+        "start now",
+        "test it out",
+        "give it a go",
+        "have a go"
+      ]
+    },
+    {
+      "id": "expert",
+      "label": "a specialist",
+      "keywords": [
+        "talk to someone",
+        "speak to someone",
+        "talk to a person",
+        "speak to a person",
+        "talk to a human",
+        "speak to a human",
+        "talk to sales",
+        "contact sales",
+        "speak to sales",
+        "talk to an expert",
+        "speak to an expert",
+        "speak with an expert",
+        "talk to a rep",
+        "speak to a rep",
+        "contact me",
+        "email me",
+        "reach me",
+        "get in touch",
+        "put me in touch",
+        "connect me",
+        "have someone contact me",
+        "someone reach out",
+        "reach out to me",
+        "have someone reach out",
+        "real person",
+        "human being",
+        "can i talk to",
+        "i want to be contacted",
+        "want to be contacted"
+      ]
+    },
+    {
+      "id": "pricing",
+      "label": "pricing",
+      "keywords": [
+        "how much does it cost",
+        "how much does this cost",
+        "what does it cost",
+        "how much is it",
+        "how much would it cost",
+        "your pricing",
+        "pricing for",
+        "pricing plans",
+        "pricing options",
+        "get a quote",
+        "request a quote",
+        "send me a quote",
+        "what are your rates",
+        "how much do you charge"
+      ]
+    }
+  ]
 }
