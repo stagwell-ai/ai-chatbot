@@ -261,7 +261,7 @@
       .map(sol => ({ solution: sol, fit: null, line: null, repeatOf: null }));
     if (extra.length) {
       ordered.push({
-        domain: { id: 'newly_added', label: 'Newly added — copy pending' },
+        domain: { id: 'newly_added', label: 'Newly added' },
         entries: extra, allRepeats: false
       });
     }

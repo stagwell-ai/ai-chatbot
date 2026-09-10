@@ -86,9 +86,20 @@ function render(st) {
 FLOW.onChange(st => { if (!busy) render(st); });
 
 /* ── one turn ───────────────────────────────────────────────────────────── */
-async function send(raw, label) {
+/* a pill's words → the domain it carries, so the same words typed into the
+   overlay and handed to this box start the flow the same deterministic way */
+function domainForPill(text) {
+  const t = String(text || '').trim().toLowerCase();
+  if (!t) return null;
+  const b = [...document.querySelectorAll('#agentTags .tag[data-domain]')]
+    .find(x => String(x.dataset.q || x.textContent).trim().toLowerCase() === t);
+  return b ? b.dataset.domain : null;
+}
+
+async function send(raw, label, domain) {
   const v = String(raw == null ? '' : raw).trim();
   if (!v || busy || finished) return;
+  if (!domain && !started) domain = domainForPill(v);
   busy = true;
   H.open();
   H.me(label != null ? label : v);
@@ -96,7 +107,12 @@ async function send(raw, label) {
   const w = H.wait();
   const t0 = Date.now();
   try {
-    if (!started) { started = true; await FLOW.start({ initialText: v }); }
+    if (!started) {
+      started = true;
+      /* a pill is an answer to q1, not a sentence to classify: the flow takes
+         the domain it carries and skips straight to the next question */
+      await FLOW.start(domain ? { chipLabel: v, domain } : { initialText: v });
+    }
     else await FLOW.answer(v);
   } catch (e) { /* the flow owns its error copy; whatever state it left is drawn below */ }
   await pause(MIN_BEAT - (Date.now() - t0));
@@ -221,7 +237,7 @@ form.addEventListener('submit', e => {
   input.value = '';
   send(v);
 });
-document.querySelectorAll('#agentTags .tag').forEach(b => b.addEventListener('click', () => send(b.dataset.q || b.textContent.trim())));
+document.querySelectorAll('#agentTags .tag').forEach(b => b.addEventListener('click', () => send(b.dataset.q || b.textContent.trim(), null, b.dataset.domain || null)));
 
 /* a prefilled question in the URL starts the conversation the way the agent
    page does: /next?q=… */

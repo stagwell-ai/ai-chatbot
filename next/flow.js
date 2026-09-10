@@ -9,7 +9,7 @@
    JSON, the conversation changes here, the chat window changes over there.
 
    window.SAIFLOW:
-     .start({initialText, chipLabel})  → Promise<state>
+     .start({initialText, chipLabel, domain})  → Promise<state>
      .state()                          → what to render right now
      .answer(text | chipValue)         → Promise<state>
      .onChange(cb)                     → unsubscribe fn; fires on every change
@@ -981,7 +981,9 @@ async function start(opts) {
     S.events.emit('answer_given', {
       id: 'q1', slot: 'problem_domains', text: chipLabel, chip: null, source: 'chip'
     });
-    const domain = domainFromLabel(chipLabel);
+    /* a pill carries its domain (data-domain, hero-agent.js); a label alone is
+       looked up, and only then read by the classifier */
+    const domain = (o.domain && S.domainIds().indexOf(String(o.domain)) !== -1) ? String(o.domain) : domainFromLabel(chipLabel);
     if (domain) mergeDomains([domain], true);
     else applySide(await read(chipLabel), { domains: true });
   }

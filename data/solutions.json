@@ -332,14 +332,19 @@
     {
       "id": "search_plus",
       "name": "Search+",
-      "positioning": "[POSITIONING — pending. Search+ was added to the page on 2026-09-09; its copy has not been written yet.]",
+      "positioning": "Stagwell Search+ is the enterprise OS for Brand Orchestration across Paid, Owned and Earned media. Its agentic architecture helps brands detect, predict, shape and prove performance across AI Search Experiences, including ChatGPT, Gemini, Claude, Grok, DeepSeek and emerging AI interfaces.",
       "whoFor": null,
-      "shownWhen": "Listed on /products only, in the \"Newly added\" group, until its copy arrives.",
+      "shownWhen": "Listed on /products in the \"Newly added\" group. Positioning is the client's own, from the Stagwell Search+ ICP one-pager (2026-09-10); who-for and next step still to come.",
       "nextStep": "Demo",
       "companions": [],
       "url": null,
       "signupUrl": null,
-      "valueProps": [],
+      "valueProps": [
+        "Brand Orchestration across Paid, Owned and Earned",
+        "Detect, predict, shape and prove performance",
+        "AI Search Experiences",
+        "ChatGPT, Gemini, Claude, Grok, DeepSeek"
+      ],
       "lockup": null
     },
     {
