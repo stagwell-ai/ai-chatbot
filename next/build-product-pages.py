@@ -424,7 +424,14 @@ BOOK_BODY = """<main class="bk">
     <div class="pp-wrap bk__in">
       <div class="bk__copy">
         <h1 class="bk__title">Book a demo</h1>
-        <p class="bk__lede">Thirty minutes with the team who runs the product, walking through it against your brand. Not a generic reel.</p>
+        <!-- the demo's own line, set as three points with icons so the side has
+             something to hold (client, 2026-09-10: "too simple… add an icon
+             something more interesting"); the words are the line's, nothing added -->
+        <ul class="bk__points">
+          <li><span class="bk__ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>Thirty minutes</li>
+          <li><span class="bk__ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3.1 2.8-5 5.5-5s4.9 1.9 5.5 5"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M15.5 14.2c2.4-.2 4.4 1.4 5 4.3"/></svg></span>With the team who runs the product</li>
+          <li><span class="bk__ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span>Walked through against your brand, not a generic reel</li>
+        </ul>
       </div>
       <div class="bk__card">
         <div id="bookForm" data-kind="demo" aria-label="Book a demo"></div>
