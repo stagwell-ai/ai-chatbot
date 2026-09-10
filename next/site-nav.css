@@ -189,3 +189,7 @@ html[data-theme="dark"] body #nav .nav__search,
 html[data-theme="dark"] body #nav .nav__search:hover{background:transparent !important;color:var(--ink,#E9EEF3) !important}
 html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search,
 html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search:hover{background:transparent !important;color:#FFFFFF !important}
+
+/* the bar never slides away (client, 2026-09-10): /products and the solution
+   pages keep it on screen at every scroll position, as the homepage does */
+html[data-theme] body #nav.is-hidden{transform:none !important}

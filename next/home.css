@@ -1325,3 +1325,18 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .nav__search svg{width:30px;height:30px}
 .nav__search:hover{background:transparent;color:var(--ink);opacity:.78;transform:translateY(-1px)}
 .nav:not(.is-stuck) .nav__search,.nav:not(.is-stuck) .nav__search:hover{background:transparent;color:#FFFFFF;box-shadow:none}
+
+/* ── the homepage hero: a shade under the bar's logo (client, 2026-09-10) ──────
+   The still runs orange-brown in its top-left, right where the transparent
+   bar's wordmark sits: the orange "AI" measured 1.2–1.6:1 on it at 1440 and
+   1855 ("orange on orange"). A navy shade from the top-left, ~.5 at the logo
+   and gone by the middle of the screen, lifts it to ~3:1 and the white to ~9:1
+   until the solid bar arrives. Added to the veil's own layer (the ::after is
+   the veil's), so nothing else moves. */
+.hero__bg::after{background:
+    radial-gradient(ellipse 55% 42% at 12% 0%,rgba(4,34,52,.55) 0%,rgba(4,34,52,.35) 40%,rgba(4,34,52,0) 100%),
+    linear-gradient(100deg,rgba(7,20,29,.44) 0%,rgba(7,20,29,.26) 52%,rgba(7,20,29,.08) 100%)}
+
+/* the bar never slides away (client, 2026-09-10): a guard in case any script
+   still sets the old hidden state */
+.nav.is-hidden{transform:none}

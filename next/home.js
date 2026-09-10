@@ -66,20 +66,12 @@
     const onScroll = () => {
       ticking = false;
       const y = scrollY, d = y - lastY; lastY = y;
-      /* hide after 14px of downward travel past the bar's own height; show on
-         ANY upward movement, and always at the top. Only hiding accumulates —
-         accumulating both ways is what strands a bar off-screen. */
-      if (d > 0) { down += d; if (y > 72 && down > 14) nav.classList.add('is-hidden'); }
-      else if (d < 0) { down = 0; nav.classList.remove('is-hidden'); }
-      if (y <= 8) { down = 0; nav.classList.remove('is-hidden'); }
-      /* the white only comes on for a bar that is actually there, and never
-         while you are on your way down the first screen: turning it white and
-         sliding it away in the same breath is the flash the client saw the
-         moment he started scrolling. Past the hero a visible bar is always
-         solid, so it can never go white-on-white further down the page. */
-      const heroEnd = hero ? hero.offsetHeight - 80 : 0;
-      const solid = y > 8 && !nav.classList.contains('is-hidden') && (y > heroEnd || d <= 0);
-      nav.classList.toggle('is-stuck', solid);
+      /* the bar never hides any more (client, 2026-09-10: "they will say the
+         navigation doesn't appear when you're scrolling… accessibility"). It
+         is transparent over the very top of the hero only; from the first
+         scroll it is the solid white bar, and it stays — down or up. */
+      nav.classList.remove('is-hidden');
+      nav.classList.toggle('is-stuck', y > 8);
     };
     syncNav = onScroll;
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
