@@ -110,6 +110,8 @@
      same on both pages (client, 2026-09-09). Keyed by solutions.json's id;
      the three that have no company card of their own take a neutral brand
      still rather than nothing, which would leave a ragged grid. */
+  /* the four with their own landing pages show that page's cover (client,
+     2026-09-10); the rest keep their stills for now */
   const PICTURE = {
     questbrand: '/assets/img/questbrand.jpg',
     /* not hero-slide-4: that is the same photograph as targeting.jpg, and the
@@ -121,12 +123,12 @@
     unicepta: '/assets/img/newspaper.jpg',
     imai: '/assets/img/imai.jpg',
     geopulse: '/assets/img/geopulse.jpg',
-    targeting_machine: '/assets/img/targeting.jpg',
+    targeting_machine: '/assets/img/products/hero-targeting-machine.jpg',
     numetrix: '/assets/img/numetrix.jpg',
-    newvoices: '/assets/img/newvoices.jpg',
+    newvoices: '/assets/img/products/hero-newvoices-2.jpg',
     smb_platform: '/assets/img/crosswalk.jpg',
-    machines_family: '/assets/img/solutions-guided.jpg',
-    agent_cloud: '/assets/img/hero-slide-5.jpg',
+    machines_family: '/assets/img/products/hero-the-machine.jpg',
+    agent_cloud: '/assets/img/products/hero-agent-cloud.jpg',
     /* the four added on 2026-09-09 share the neutral brand still until each
        has a picture of its own */
     media_machine: '/assets/img/products-hero.jpg',
