@@ -512,6 +512,12 @@ SOL_OWN = {'targeting_machine': '/targeting-machine', 'newvoices': '/newvoices',
 # sentence carries the title, the long one moves under the hero
 SOL_TITLE = {'id_graph': "The identity spine under Stagwell's audience work."}
 SOL_GRADS = ('g1', 'g2', 'g3')
+# a product's own hero ground where Julian set one (the rest keep the Stagwell
+# gradients until the final backgrounds pass). 'light' grounds take the
+# light-hero rules: ink type, the bar in its dark state over them.
+# IMAI (influencermarketing.ai), 2026-09-10: pastel turquoise, green and purple
+# UNICEPTA, 2026-09-10: pastel peach and pastel green
+SOL_HERO = {'imai': 'light', 'unicepta': 'light'}
 
 def sol_pictures():
     """The listing's still for each product (products.js PICTURE), so a product
@@ -577,6 +583,7 @@ def solution_page(home, s, n, by_id, pics):
     else:
         site = ''
     caps = s.get('capabilityTags') or s.get('valueProps') or []
+    hero_cls = (f'sp-hero--{sid}' + (' pp-hero--light' if SOL_HERO[sid] == 'light' else '')) if sid in SOL_HERO else f'sp-hero--{SOL_GRADS[n % len(SOL_GRADS)]}'
     steps = '\n'.join(f'        <li class="rv" style="--d:{0.06 * k:.2f}s"><b>{k + 1:02d}</b><div><h3>{t(c)}</h3></div></li>' for k, c in enumerate(caps))
     pic = pics.get(sid)
     media = (f'<img src="{a(pic)}" alt="" loading="lazy" decoding="async">' if pic else f'<span class="sp-tile">{t(name)}</span>')
@@ -604,7 +611,7 @@ def solution_page(home, s, n, by_id, pics):
 </section>
 """ if about else ''
     body = f"""
-<section class="pp-hero sp-hero sp-hero--{SOL_GRADS[n % len(SOL_GRADS)]}">
+<section class="pp-hero sp-hero {hero_cls}">
   <div class="pp-wrap pp-hero__in">
     <p class="sp-mark">{t(name)}</p>
     <p class="pp-eyebrow">{t(eyebrow)}</p>
@@ -633,7 +640,7 @@ def solution_page(home, s, n, by_id, pics):
   </div>
 </section>
 {also}"""
-    return frame(home, title=f'{name} | Stagwell AI', desc=card, path=f'/s/{sid}', body_class=f'home pp sp sp--{sid}', body=body)
+    return frame(home, title=f'{name} | Stagwell AI', desc=card, path=f'/s/{sid}', body_class=f'home pp sp sp--{sid}' + (' pp--light-hero' if SOL_HERO.get(sid) == 'light' else ''), body=body)
 
 def sync_chrome(home):
     """The listing (/products) and the solution pages (/s/{id}) carry

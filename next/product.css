@@ -302,3 +302,20 @@ body.pp--the-machine .pp-more__media img{transform:scale(1.5);transform-origin:5
 .sp-also__item svg{width:18px;height:18px;flex-shrink:0;color:var(--ink-3);transition:transform .3s var(--ease)}
 .sp-also__item:hover svg{transform:translateX(2px);color:var(--ink)}
 @media (max-width:820px){ .sp-hero{padding-bottom:clamp(56px,14vw,88px)} }
+
+/* IMAI (influencermarketing.ai), client 2026-09-10: its own ground — pastel
+   turquoise, green and purple, soft corners of the first and last over a wash
+   of all three. The hero reads in ink on it (the light-hero rules) and the bar
+   takes its dark state. The listing keeps IMAI's photograph: here the tile and
+   the hero are meant to differ (client). */
+.sp-hero--imai::before{background:
+    radial-gradient(55% 75% at 0% 0%,rgba(150,228,220,.95) 0%,rgba(150,228,220,0) 70%),
+    radial-gradient(55% 80% at 100% 100%,rgba(206,190,247,.95) 0%,rgba(206,190,247,0) 70%),
+    linear-gradient(120deg,#B4EBE4 0%,#C9F0D3 48%,#D8CCF8 100%)}
+.pp-hero--light .sp-mark{color:var(--ink)}
+/* UNICEPTA, client 2026-09-10: pastel peach and pastel green — peach from the
+   top-left, green from the bottom-right, over a wash of both; ink type */
+.sp-hero--unicepta::before{background:
+    radial-gradient(55% 75% at 0% 0%,rgba(255,206,178,.95) 0%,rgba(255,206,178,0) 70%),
+    radial-gradient(55% 80% at 100% 100%,rgba(184,234,196,.95) 0%,rgba(184,234,196,0) 70%),
+    linear-gradient(120deg,#FFDCC8 0%,#F3E6D2 45%,#CDEFD6 100%)}
