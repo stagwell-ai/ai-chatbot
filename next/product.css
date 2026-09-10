@@ -186,8 +186,8 @@ body.pp--light-hero .nav:not(.is-stuck) .nav__droptrig{color:var(--ink)}
 body.pp--light-hero .nav:not(.is-stuck) .nav__brand,
 body.pp--light-hero .nav:not(.is-stuck) .nav__burger{color:var(--ink)}
 body.pp--light-hero .nav:not(.is-stuck) .btn--ink{background:var(--ink);color:#FFFFFF}
-body.pp--light-hero .nav:not(.is-stuck) .nav__search{background:var(--ink);color:#FFFFFF;box-shadow:none}   /* Book a demo's ink, beside it */
-body.pp--light-hero .nav:not(.is-stuck) .nav__search:hover{background:#000000;color:#FFFFFF}
+body.pp--light-hero .nav:not(.is-stuck) .nav__search,
+body.pp--light-hero .nav:not(.is-stuck) .nav__search:hover{background:transparent;color:var(--ink);box-shadow:none}   /* the solid bubble in ink over the pale picture */
 
 /* ── the close: the homepage's own "How can we help?", duplicated as it is
       (client) — the bobbing dots, the turning hint, Book a demo and Call me.

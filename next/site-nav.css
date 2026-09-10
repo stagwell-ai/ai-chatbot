@@ -177,3 +177,15 @@ html[data-theme="dark"] body #nav .nav__search,
 html[data-theme="dark"] body #nav .nav__search:hover{background:var(--ink,#E9EEF3) !important;color:var(--dk-ground,#070D14) !important;box-shadow:none !important}
 html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search,
 html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search:hover{background:#FFFFFF !important;color:#0B171E !important;box-shadow:none !important}
+
+/* the chat button redrawn as a solid bubble with one spark, no disc (client,
+   2026-09-10) — replaces the filled-disc rules above */
+html[data-theme] body #nav .nav__search,
+html[data-theme] body #nav .nav__search:hover{width:44px !important;height:44px !important;border-radius:12px !important;
+  background:transparent !important;color:var(--ink,#0B171E) !important;box-shadow:none !important}
+html[data-theme] body #nav .nav__search:hover{opacity:.78 !important}
+html[data-theme] body #nav .nav__search svg{width:30px !important;height:30px !important}
+html[data-theme="dark"] body #nav .nav__search,
+html[data-theme="dark"] body #nav .nav__search:hover{background:transparent !important;color:var(--ink,#E9EEF3) !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search,
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search:hover{background:transparent !important;color:#FFFFFF !important}

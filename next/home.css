@@ -1314,3 +1314,14 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
    (the canvas is its first child), the content sits above */
 .ask-end{position:relative;overflow:hidden}
 .ask-end > .ask-end__in{position:relative;z-index:1}
+
+/* ── the bar's chat button, redrawn (client, 2026-09-10: "a full icon, not a
+   border icon… without the round circle… one star of AI in the centre"): a
+   solid bubble with a single spark cut out of its middle, no disc — white
+   over the picture, ink on the white bar. Replaces the filled-disc rules
+   above. */
+.nav__search{width:44px;height:44px;border-radius:12px;background:transparent;color:var(--ink);box-shadow:none;
+  transition:color .25s ease,opacity .25s ease,transform .3s var(--ease)}
+.nav__search svg{width:30px;height:30px}
+.nav__search:hover{background:transparent;color:var(--ink);opacity:.78;transform:translateY(-1px)}
+.nav:not(.is-stuck) .nav__search,.nav:not(.is-stuck) .nav__search:hover{background:transparent;color:#FFFFFF;box-shadow:none}
