@@ -215,7 +215,9 @@ function finish() {
     let done = 'Thanks, ' + H.esc(first) + '. A Stagwell AI specialist will contact you at <b>' + H.esc(email) + '</b>' +
       (phone ? ' or on <b>' + H.esc(phone) + '</b>' : '') + ' to walk you through the products that fit.';
     let more = '';
-    if (fit.id && fit.name) more = '<a class="turnb__more" href="/next/s/' + encodeURIComponent(fit.id) + '">Meanwhile, read about ' + H.esc(fit.name) + '</a>';
+    /* the four with their own landing pages go there, not to the old solution page */
+    const PAGES = { targeting_machine: '/next/targeting-machine', machines_family: '/next/the-machine', newvoices: '/next/newvoices', agent_cloud: '/next/agent-cloud' };
+    if (fit.id && fit.name) more = '<a class="turnb__more" href="' + (PAGES[fit.id] || '/next/s/' + encodeURIComponent(fit.id)) + '">Meanwhile, read about ' + H.esc(fit.name) + '</a>';
     bubble.innerHTML = '<div class="turnb__text">' + done + '</div>' + more;
     bubble.classList.remove('turnb--form');
     H.close('We’ll be in touch shortly.');

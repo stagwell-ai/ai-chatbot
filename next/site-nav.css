@@ -193,3 +193,112 @@ html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__search:hover{backgroun
 /* the bar never slides away (client, 2026-09-10): /products and the solution
    pages keep it on screen at every scroll position, as the homepage does */
 html[data-theme] body #nav.is-hidden{transform:none !important}
+
+/* ═══ the homepage's bar and phone menu, exactly (client, 2026-09-10) ═════════
+   build-product-pages.py now copies the homepage's header and menu into
+   /products and /s/{id}: the Products dropdown, the "Menu"/"Close" button with
+   three lines, the phone sheet with its rows and product pictures. home.css
+   styles them on the homepage; this is the same design for these pages,
+   written to beat ribbon.css (prefix + !important, literal values). The old
+   two-line button rules above no longer match anything but are kept inert. */
+html[data-theme] body #nav .nav__links{align-items:center !important}
+html[data-theme] body #nav .nav__links > li{display:flex !important;align-items:center !important;list-style:none !important;margin:0 !important}
+html[data-theme] body #nav .nav__links > li > a{display:inline-flex !important;align-items:center !important;line-height:21px !important}
+/* the dropdown */
+html[data-theme] body #nav .nav__drop{position:relative !important}
+html[data-theme] body #nav .nav__droptrig{display:inline-flex !important;align-items:center !important;gap:6px !important;margin:0 !important;
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;font-size:14px !important;font-weight:500 !important;
+  line-height:21px !important;letter-spacing:0 !important;text-transform:none !important;color:var(--ink,#0B171E) !important;
+  padding:6px 0 !important;background:none !important;border:0 !important;border-bottom:1px solid transparent !important;border-radius:0 !important;
+  box-shadow:none !important;cursor:pointer !important;transition:border-color .25s ease !important}
+html[data-theme] body #nav .nav__droptrig:hover,
+html[data-theme] body #nav .nav__drop.is-open .nav__droptrig{border-bottom-color:currentColor !important}
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__droptrig{color:rgba(255,255,255,.86) !important}
+html[data-theme] body #nav .nav__chev{width:10px !important;height:10px !important;flex-shrink:0 !important;transition:transform .3s cubic-bezier(.16,.72,.24,1) !important}
+html[data-theme] body #nav .nav__drop.is-open .nav__chev{transform:rotate(180deg) !important}
+html[data-theme] body #nav .nav__panel{position:absolute !important;top:calc(100% + 16px) !important;left:-18px !important;width:max-content !important;
+  min-width:360px !important;max-width:calc(100vw - 48px) !important;margin:0 !important;padding:8px !important;border-radius:18px !important;
+  background:#FFFFFF !important;color:#0B1220 !important;box-shadow:0 22px 60px rgba(11,18,32,.16),inset 0 0 0 1px rgba(11,18,32,.14) !important;
+  opacity:0 !important;visibility:hidden !important;transform:translateY(-6px) !important;z-index:60 !important;
+  transition:opacity .22s ease,transform .3s cubic-bezier(.16,.72,.24,1),visibility 0s linear .3s !important}
+html[data-theme] body #nav .nav__panel::before{content:"" !important;position:absolute !important;left:0 !important;right:0 !important;top:-18px !important;height:18px !important}
+html[data-theme] body #nav .nav__drop.is-open .nav__panel{opacity:1 !important;visibility:visible !important;transform:none !important;
+  transition:opacity .22s ease,transform .3s cubic-bezier(.16,.72,.24,1),visibility 0s !important}
+html[data-theme] body #nav .nav__plist{display:flex !important;flex-direction:column !important;margin:0 !important;padding:0 !important;list-style:none !important}
+html[data-theme] body #nav.nav .nav__links .nav__panel a.nav__pitem{display:flex !important;align-items:center !important;gap:14px !important;
+  padding:10px 12px !important;border:0 !important;border-radius:12px !important;background:transparent !important;color:#0B1220 !important;
+  text-decoration:none !important;line-height:normal !important;transition:background-color .2s ease !important}
+html[data-theme] body #nav.nav .nav__links .nav__panel a.nav__pitem:hover,
+html[data-theme] body #nav.nav .nav__links .nav__panel a.nav__pitem:focus-visible,
+html[data-theme] body #nav.nav .nav__links .nav__panel a.nav__pitem[aria-current="page"]{background:#F4F6F8 !important}
+html[data-theme] body #nav .nav__pthumb{width:48px !important;height:48px !important;flex-shrink:0 !important;border-radius:10px !important;object-fit:cover !important;display:block !important;background:#F1F2F4 !important}
+html[data-theme] body #nav .nav__ptext{display:flex !important;flex-direction:column !important;gap:3px !important;min-width:0 !important}
+html[data-theme] body #nav .nav__pname{font-family:'Montserrat',sans-serif !important;font-size:15px !important;font-weight:600 !important;line-height:1.25 !important;color:#0B1220 !important}
+html[data-theme] body #nav .nav__pdesc{font-family:'Montserrat',sans-serif !important;font-size:13px !important;font-weight:400 !important;line-height:1.35 !important;color:rgba(11,18,32,.52) !important;white-space:nowrap !important}
+html[data-theme] body #nav.nav .nav__links .nav__panel a.nav__pall{display:block !important;margin:6px 6px 2px !important;padding:12px 8px 6px !important;
+  border:0 !important;border-top:1px solid rgba(11,18,32,.14) !important;border-radius:0 !important;background:none !important;
+  font-family:'Montserrat',sans-serif !important;font-size:14px !important;font-weight:600 !important;color:#0B1220 !important}
+/* the button: a small "Menu" / "Close" and three lines */
+html[data-theme] body #nav .nav__burger{width:auto !important;height:40px !important;border-radius:0 !important;padding:0 40px 0 0 !important;
+  align-items:center !important;gap:0 !important;margin-right:-11px !important}
+@media (max-width:1080px){ html[data-theme] body #nav .nav__burger{display:inline-flex !important} }
+html[data-theme] body #nav .nav__burger span.nav__blbl,
+html[data-theme] body #nav .nav__burger span.nav__blbl:nth-child(1){position:static !important;left:auto !important;width:auto !important;height:auto !important;
+  background:none !important;border-radius:0 !important;transform:none !important;
+  font-family:'Montserrat',sans-serif !important;font-size:12px !important;font-weight:600 !important;letter-spacing:.08em !important;
+  text-transform:uppercase !important;line-height:1 !important;color:currentColor !important}
+html[data-theme] body #nav .nav__burger span.nav__bl{position:absolute !important;left:auto !important;right:11px !important;top:50% !important;
+  width:18px !important;height:1.6px !important;margin-top:-.8px !important;border-radius:2px !important;background:currentColor !important;
+  transition:transform .32s cubic-bezier(.16,.72,.24,1),opacity .2s ease !important}
+html[data-theme] body #nav .nav__burger span.nav__bl:nth-child(2){transform:translateY(-6px) !important;opacity:1 !important}
+html[data-theme] body #nav .nav__burger span.nav__bl:nth-child(3){transform:none !important;opacity:1 !important}
+html[data-theme] body #nav .nav__burger span.nav__bl:nth-child(4){transform:translateY(6px) !important;opacity:1 !important}
+html[data-theme] body #nav .nav__burger[aria-expanded="true"] span.nav__bl:nth-child(2){transform:rotate(45deg) !important}
+html[data-theme] body #nav .nav__burger[aria-expanded="true"] span.nav__bl:nth-child(3){opacity:0 !important}
+html[data-theme] body #nav .nav__burger[aria-expanded="true"] span.nav__bl:nth-child(4){transform:rotate(-45deg) !important}
+/* on a phone Book a demo lives in the sheet, as on the homepage */
+@media (max-width:820px){ html[data-theme] body #nav .btn--ink{display:none !important} }
+/* the sheet open: the bar is white and its marks ink, whatever the page's hero */
+html[data-theme] body.menu-open{overflow:hidden !important}
+html[data-theme] body.menu-open #nav.nav{background:#FFFFFF !important;transform:none !important;box-shadow:0 1px 0 rgba(11,18,32,.14) !important}
+html[data-theme] body.menu-open #nav.nav .nav__brand,
+html[data-theme] body.menu-open #nav.nav .nav__burger{color:#0B1220 !important;--ink:#0B1220}
+/* the sheet */
+html[data-theme] body #navMenu.menu:not([hidden]){position:fixed !important;inset:0 !important;z-index:40 !important;display:flex !important;
+  flex-direction:column !important;justify-content:space-between !important;gap:48px !important;width:auto !important;height:auto !important;
+  min-width:0 !important;min-height:0 !important;margin:0 !important;padding:88px clamp(16px,4vw,32px) 48px !important;border:0 !important;border-radius:0 !important;
+  background:#FFFFFF !important;box-shadow:none !important;transform:none !important;opacity:0 !important;overflow-y:auto !important;
+  overscroll-behavior:contain !important;transition:opacity .28s cubic-bezier(.16,.72,.24,1) !important}
+html[data-theme] body #navMenu.menu[hidden]{display:none !important}
+html[data-theme] body #navMenu.menu.is-in{opacity:1 !important}
+html[data-theme] body #navMenu .menu__top{display:flex !important;flex-direction:column !important;gap:0 !important}
+html[data-theme] body #navMenu .menu__links{display:flex !important;flex-direction:column !important;gap:0 !important;margin:0 !important;padding:0 !important;list-style:none !important}
+html[data-theme] body #navMenu .menu__links > li{margin:0 !important;padding:0 !important;list-style:none !important;border-bottom:1px solid rgba(11,18,32,.14) !important}
+html[data-theme] body #navMenu .menu__links > li > a{display:flex !important;align-items:center !important;justify-content:space-between !important;gap:16px !important;
+  padding:18px 0 !important;border:0 !important;background:none !important;text-decoration:none !important;
+  font-family:'Montserrat',sans-serif !important;font-size:20px !important;font-weight:600 !important;letter-spacing:-.01em !important;line-height:1.2 !important;color:#0B1220 !important}
+html[data-theme] body #navMenu .menu__links > li > a::after{content:"" !important;width:18px !important;height:18px !important;flex-shrink:0 !important;background:rgba(11,18,32,.52) !important;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 18px 18px no-repeat !important;
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 18px 18px no-repeat !important}
+html[data-theme] body #navMenu .menu__group{padding-bottom:6px !important}
+html[data-theme] body #navMenu .menu__label{display:block !important;padding:22px 0 8px !important;font-family:'Montserrat',sans-serif !important;font-size:12px !important;
+  font-weight:600 !important;letter-spacing:2px !important;text-transform:uppercase !important;color:rgba(11,18,32,.52) !important}
+html[data-theme] body #navMenu .menu__sub{display:flex !important;flex-direction:column !important;gap:2px !important;margin:0 !important;padding:0 !important;list-style:none !important}
+html[data-theme] body #navMenu .menu__sub li{margin:0 !important;padding:0 !important;list-style:none !important;border:0 !important}
+html[data-theme] body #navMenu .menu__links .menu__sub a{display:flex !important;align-items:center !important;gap:14px !important;padding:8px 0 !important;min-width:0 !important;
+  text-align:left !important;text-decoration:none !important;border:0 !important;background:none !important;color:#0B1220 !important}
+html[data-theme] body #navMenu .menu__thumb{width:44px !important;height:44px !important;border-radius:10px !important;object-fit:cover !important;flex-shrink:0 !important;display:block !important}
+html[data-theme] body #navMenu .menu__sub .menu__ptext{display:flex !important;flex-direction:column !important;align-items:flex-start !important;gap:2px !important;flex:1 !important;min-width:0 !important}
+html[data-theme] body #navMenu .menu__sub .menu__pname{display:block !important;font-family:'Montserrat',sans-serif !important;font-size:15px !important;font-weight:600 !important;line-height:1.3 !important;color:#0B1220 !important}
+html[data-theme] body #navMenu .menu__sub .menu__pdesc{display:block !important;max-width:100% !important;font-family:'Montserrat',sans-serif !important;font-size:13px !important;font-weight:400 !important;
+  line-height:1.35 !important;color:rgba(11,18,32,.52) !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important}
+html[data-theme] body #navMenu .menu__links > li > a.menu__all{justify-content:flex-start !important;gap:8px !important;padding:12px 0 16px !important;font-size:15px !important}
+html[data-theme] body #navMenu .menu__links > li > a.menu__all::after{width:16px !important;height:16px !important;background:#0B1220 !important;-webkit-mask-size:16px 16px !important;mask-size:16px 16px !important}
+html[data-theme] body #navMenu .menu__acts{display:flex !important;flex-direction:column !important;gap:8px !important}
+html[data-theme] body #navMenu .menu__search{display:flex !important;align-items:center !important;gap:12px !important;width:100% !important;height:60px !important;padding:0 20px !important;
+  border-radius:999px !important;background:#F1F2F4 !important;box-shadow:inset 0 0 0 1px rgba(11,18,32,.14) !important;text-decoration:none !important;
+  font-family:'Montserrat',sans-serif !important;font-size:15px !important;color:rgba(11,18,32,.52) !important}
+html[data-theme] body #navMenu .menu__search svg{width:22px !important;height:22px !important;color:#0B1220 !important;flex-shrink:0 !important}
+html[data-theme] body #navMenu .menu__acts .btn{display:flex !important;align-items:center !important;justify-content:center !important;width:100% !important;height:60px !important;
+  padding:0 34px !important;border:0 !important;border-radius:999px !important;background:#0B1220 !important;color:#FFFFFF !important;box-shadow:none !important;
+  font-family:'Montserrat',sans-serif !important;font-size:15px !important;font-weight:600 !important;letter-spacing:.06em !important;text-transform:uppercase !important}

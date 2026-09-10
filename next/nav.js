@@ -48,6 +48,34 @@
     onScroll();
   }
 
+  /* ── the homepage's phone menu, where the page carries it ─────────────────
+     The listing and the solution pages now have the homepage's bar and sheet
+     (build-product-pages.py copies them). Same behaviour as home.js: the sheet
+     under the bar, the button's word turning to "Close", Escape and a link
+     closing it. The old drawer's wiring below does not apply to them. */
+  const burger = $('#navBurger'), sheet = $('nav.menu#navMenu');
+  if (burger && sheet) {
+    const lbl = $('.nav__blbl', burger);
+    const close = () => {
+      if (sheet.hidden) return;
+      sheet.classList.remove('is-in'); burger.setAttribute('aria-expanded', 'false');
+      if (lbl) lbl.textContent = 'Menu';
+      document.body.classList.remove('menu-open');
+      setTimeout(() => { sheet.hidden = true; }, 300);
+    };
+    const open = () => {
+      sheet.hidden = false; burger.setAttribute('aria-expanded', 'true');
+      if (lbl) lbl.textContent = 'Close';
+      document.body.classList.add('menu-open');
+      requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('is-in')));
+    };
+    burger.addEventListener('click', () => (sheet.hidden ? open() : close()));
+    sheet.addEventListener('click', (e) => { if (e.target.closest('a,button')) close(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' || e.key === 'Esc') close(); });
+    addEventListener('resize', () => { if (innerWidth > 1080) close(); });   /* these pages keep the burger to 1080 */
+    return;
+  }
+
   /* ── the drawer ───────────────────────────────────────────────────────── */
   if (drawerOwned) return;
   const closeNav = () => document.body.classList.remove('nav-open');

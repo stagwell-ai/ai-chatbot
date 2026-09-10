@@ -298,7 +298,7 @@
     root.innerHTML = `
       <section class="sol">
         <div class="sol__in">
-          <a class="sol__back" href="/#solutions">&larr; All solutions</a>
+          <a class="sol__back" href="/next/products">&larr; All products</a>
           ${bandHtml(s)}
           <p class="eyebrow sol__kicker"><i class="pulse"></i>The Stagwell Marketing Cloud</p>
           <h1 class="sol__h1">${esc(s.name)}</h1>
@@ -401,7 +401,7 @@
         window.SAILEAD.open(b.dataset.cta || 'expert');
         return;
       }
-      window.location.href = '/next#cta';
+      window.location.href = '/next#start';
     });
   }
 
