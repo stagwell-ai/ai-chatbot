@@ -108,6 +108,17 @@ Goal → product coverage ("figure out a good way to map to everything"):
 A product outside a goal's list can still win on what the visitor says (intent points beat
 the goal bonus).
 
+## 4b. The conversational layer
+
+The engine decides *what* is asked; the model shapes *how it reads* (brief §13.3). The single
+`interpret` call also returns `ack` (one sentence reflecting a detected need, which leads into
+the next question) and `reply` (when nothing was detected: a natural answer to a greeting, an
+off-topic line or a question about Stagwell AI, written only from the approved `about` text in
+`kimi.json` and the product names). A turn that teaches the engine nothing is a **hold**: the
+agent replies, keeps the same question and the same pills, and never advances toward the form.
+With no model, the hold lines in `kimi.json` (`hold`, `holdQuestion`) rotate instead. Pill
+taps stay templated, so they answer instantly.
+
 ## 5. No-LLM fallback
 
 Launch requirement, tested in a browser with `/api/ask` aborted: pills → questions → form →
