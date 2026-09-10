@@ -83,6 +83,7 @@ try {
     /* 2) their website */
     ok(s.question && s.question.id === 'website', '2) the website is asked next (' + (s.question && s.question.id) + ')');
     ok((await chips(page)).length === 0, '   with no "I\'d rather not say" chip');
+    ok(/yourcompany\.com/.test((await composer(page)).placeholder), '   and the composer asks for an address, not "pick one" ("' + (await composer(page)).placeholder + '")');
     await say(page, 'acme-brands.com');
     /* 3) insights, if any — none here */
     ok(state.researched.includes('acme-brands.com'), '3) the site was looked up');

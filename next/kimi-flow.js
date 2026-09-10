@@ -289,7 +289,13 @@ function present(q, first, modelAck) {
   st.ack = ack || null; st.prompt = q.prompt || '';
   st.suggestions = list(q.suggestions).map(s => ({ id: s.id, label: s.label, value: s.value }));
   st.uiAction = 'ASK';
-  st.hint = q.field === 'companySize' ? (c.hints || {}).size : (c.hints || {}).question;
+  /* the placeholder says what kind of answer this is: an address for the
+     website (it has no chips — "Pick one" would be a lie), a headcount for
+     the size, otherwise "pick one, or type" */
+  const hints = c.hints || {};
+  st.hint = q.field === 'website' ? (hints.website || 'yourcompany.com')
+    : q.field === 'companySize' ? hints.size
+    : (list(q.suggestions).length ? hints.question : (hints.typed || 'Type your answer…'));
   st.status = st.status === 'DISCOVERY' && st.step > 1 ? 'QUALIFICATION' : (st.status === 'IDLE' ? 'DISCOVERY' : st.status);
   if (st.step > 1) st.status = 'QUALIFICATION';
   emit('question_asked', { id: q.id, slot: q.field || 'intent', copy: q.prompt, mode: null });
