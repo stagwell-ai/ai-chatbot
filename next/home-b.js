@@ -163,4 +163,61 @@
     rail.scrollBy({ left: step * Number(b.dataset.rail), behavior: RM ? 'auto' : 'smooth' });
   }));
 
+  /* ── the starting points' chip: its label turns every 2.6s; it opens the six
+        as a list — choosing one is the real starting point (hero-agent.js) ── */
+  const pick = document.getElementById('hbPick');
+  if (pick) {
+    const btn = pick.querySelector('.hb-pick__btn'), lab = pick.querySelector('.hb-pick__label'), icb = pick.querySelector('.hb-pick__ic');
+    const tags = [...pick.querySelectorAll('.tag')];
+    let k = 0, cur = lab.querySelector('.hb-pick__w');
+    const open = (on) => { pick.classList.toggle('is-open', on); btn.setAttribute('aria-expanded', String(on)); };
+    btn.addEventListener('click', (e) => { e.stopPropagation(); open(!pick.classList.contains('is-open')); if (pick.classList.contains('is-open') && tags[0]) setTimeout(() => tags[0].focus({ preventScroll: true }), 60); });
+    document.addEventListener('click', (e) => { if (!pick.contains(e.target)) open(false); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && pick.classList.contains('is-open')) { open(false); btn.focus(); } });
+    tags.forEach((t) => t.addEventListener('click', () => open(false)));
+    if (!RM && tags.length > 1) setInterval(() => {
+      if (document.hidden || pick.classList.contains('is-open') || pick.matches(':hover')) return;
+      k = (k + 1) % tags.length;
+      const w = document.createElement('span'); w.className = 'hb-pick__w is-under'; w.textContent = tags[k].textContent.trim();
+      lab.appendChild(w); void w.offsetWidth; w.classList.remove('is-under');
+      const old = cur; cur = w; old.classList.add('is-out'); setTimeout(() => old.remove(), 500);
+      const ic = tags[k].querySelector('svg'); if (ic && icb) icb.innerHTML = ic.outerHTML.replace('class="tag__ic"', 'class="hb-pick__svg"');
+    }, 2600);
+  }
+
+  /* ── the product cards stack: as the next one comes up, the one it covers
+        eases back a little (scale 1 → .94) ── */
+  const stackCards = [...document.querySelectorAll('.hb-stack__card')];
+  if (stackCards.length && !RM) {
+    const inners = stackCards.map((c) => c.querySelector('.hb-stack__inner'));
+    let near = false, tk = false;
+    const upd = () => {
+      tk = false; if (!near) return;
+      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      stackCards.forEach((c, i) => {
+        const nx = stackCards[i + 1]; if (!nx) { inners[i].style.transform = ''; return; }
+        const stick = navH + 20 + (i + 1) * 18, r = nx.getBoundingClientRect();
+        const p = Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight - stick)));
+        inners[i].style.transform = `scale(${(1 - 0.06 * p).toFixed(4)})`;
+      });
+    };
+    new IntersectionObserver((es) => { near = es[0].isIntersecting; upd(); }, { rootMargin: '20% 0px' }).observe(document.querySelector('.hb-stack'));
+    addEventListener('scroll', () => { if (near && !tk) { tk = true; requestAnimationFrame(upd); } }, { passive: true });
+  }
+
+  /* ── the bar follows the scroll: it leaves after 14px of travel down and is
+        back on any way up; always there at the top, with the menu open, and
+        when the keyboard reaches it. Only hiding accumulates distance. ── */
+  const bar = document.getElementById('nav');
+  if (bar) {
+    let lastY = scrollY, down = 0;
+    addEventListener('scroll', () => {
+      const y = scrollY, d = y - lastY; lastY = y;
+      if (y <= 80 || document.body.classList.contains('menu-open')) { down = 0; bar.classList.remove('hb-hide'); return; }
+      if (d > 0) { down += d; if (down > 14) bar.classList.add('hb-hide'); }
+      else if (d < 0) { down = 0; bar.classList.remove('hb-hide'); }
+    }, { passive: true });
+    bar.addEventListener('focusin', () => bar.classList.remove('hb-hide'));
+  }
+
 })();
