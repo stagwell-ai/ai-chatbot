@@ -170,7 +170,10 @@ d.setAttribute('data-theme',t||sys);})();
        other two stills are still in /assets/img if the rotation comes back. -->
   <div class="hero__bg" id="heroSlides" aria-hidden="true">
     <img class="hero__pic is-on" src="/assets/img/products-hero.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+    <!-- OPTION B depth: the same picture again, blurred and drifting very slowly -->
+    <div class="hb-field"></div>
   </div>
+  <div class="hb-grain" aria-hidden="true"></div>
 
   <!-- one centred column, as in the reference: the title, the line, then the
        agent — its field, its starting points, and the ways to a person. -->
@@ -228,6 +231,31 @@ d.setAttribute('data-theme',t||sys);})();
 </section>
 
 <!-- ═══════════════════════ 3 · WHAT IS STAGWELL AI ═══════════════════════ -->
+<!-- ═══════════ OPTION B · THE FILM (brief 2026-09-10) ═══════════
+     Stagwell AI's own 30-second spot (StagwellAI_30_20260901_V01, from the
+     client's "brands videos"). On a desktop the section pins while its frame
+     grows from a small landscape picture to nearly the whole window, then
+     plays muted; the ground turns white before it lets go into the next
+     section. Phones and reduced motion get a plain large frame (home-b.js). -->
+<section class="hb-film" id="film" aria-label="The Stagwell AI film">
+  <div class="hb-film__pin">
+    <div class="hb-film__frame">
+      <video class="hb-film__video" muted playsinline loop preload="none" poster="/assets/video/stagwell-ai-30-poster.jpg"
+             data-src="/assets/video/stagwell-ai-30.mp4" data-src-small="/assets/video/stagwell-ai-30-720.mp4" aria-label="Stagwell AI, a 30-second film"></video>
+      <div class="hb-film__ctrl">
+        <button type="button" class="hb-film__btn" data-act="play" aria-pressed="false" aria-label="Play the film">
+          <svg class="ic-a" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+          <svg class="ic-b" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5h3v14h-3zM13.5 5h3v14h-3z" fill="currentColor"/></svg>
+        </button>
+        <button type="button" class="hb-film__btn" data-act="mute" aria-pressed="false" aria-label="Unmute the film">
+          <svg class="ic-a" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor" stroke="none"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+          <svg class="ic-b" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor" stroke="none"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="intro" id="about">
   <div class="intro__media" style="width:518px;height:587px">
     <img class="intro__pic" src="/assets/img/intro-about.jpg" alt="" width="1100" height="1374" loading="lazy" decoding="async" style="width:527px;object-fit:cover;height:629px;left:-1px">
@@ -402,6 +430,7 @@ d.setAttribute('data-theme',t||sys);})();
 <script src="/next/analytics.js"></script>
 <script src="/next/kimi-flow.js"></script>
 <script src="/next/hero-agent.js"></script>
+<script src="/next/home-b.js"></script>
 <script>
 /* OPTION B: the hero shows the compact field until the conversation starts;
    then the full chat takes its place. Every way in opens it first — the
