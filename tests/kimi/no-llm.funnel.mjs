@@ -99,7 +99,7 @@ async function run(browser, opts) {
   const card = await page.$eval('.reco__card--best', e => ({ name: e.querySelector('.reco__name').textContent.trim(), why: e.querySelector('.reco__why').textContent.trim(), cta: e.querySelector('.reco__go') && e.querySelector('.reco__go').textContent.trim(), learn: e.querySelector('.reco__learn') && e.querySelector('.reco__learn').getAttribute('href') }));
   ok(card.name === expect, 'best fit is ' + card.name + (card.name === expect ? '' : ' (expected ' + expect + ')'));
   ok(card.why.length > 20 && card.cta, 'card has a why (' + card.why.length + ' chars) and a CTA "' + card.cta + '"');
-  ok(card.learn && /^\/next\//.test(card.learn), 'Learn more points into the site: ' + card.learn);
+  ok(card.learn && /^\/(s\/|newvoices|the-machine|targeting-machine|agent-cloud)/.test(card.learn), 'Learn more points into the site: ' + card.learn);
   const also = await page.$$eval('.reco__card--also', els => els.length);
   ok(also <= 2, also + ' secondary card(s)');
 

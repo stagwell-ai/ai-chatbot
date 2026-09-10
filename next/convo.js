@@ -747,7 +747,7 @@ function matchingChip(text) {
 
 async function bootstrap(raw) {
   mountLayout();
-  try { history.pushState({}, '', '/next/chat'); } catch (e) { /* fine, still works without a real route */ }
+  try { history.pushState({}, '', '/chat'); } catch (e) { /* fine, still works without a real route */ }
 
   try { if (window.SAI && window.SAI.ready) await window.SAI.ready; } catch (e) { /* degrade gracefully */ }
 
@@ -894,10 +894,10 @@ async function autostart() {
 
 document.addEventListener('sai:event', onSaiEvent);
 window.addEventListener('popstate', () => {
-  if (location.pathname === '/next/chat') return;
+  if (location.pathname === '/chat') return;
   if ($('#convoWrap')) teardown();
   if (typeof window.resetLanding === 'function') window.resetLanding();
-  else location.href = '/next';
+  else location.href = '/';
 });
 
 window.SAICONVO = {
@@ -933,7 +933,7 @@ window.SAICONVO = {
 function truthfulUrl() {
   try {
     if (/^\/next\/(chat|snapshot|path)$/.test(location.pathname) && !autostartRequest() && !active) {
-      history.replaceState(history.state || {}, '', '/next' + (location.hash || ''));
+      history.replaceState(history.state || {}, '', '/' + (location.hash || ''));
     }
   } catch (e) { /* no history API */ }
 }

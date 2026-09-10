@@ -79,7 +79,7 @@
     let why;
     if (badge === 'BEST_FIT') why = override || tpl(need ? copy.whyFits : copy.whyFitsNoNeed, vars);
     else why = override || tpl(copy.whySecondary, vars);
-    const learn = { type: 'LEARN_MORE', label: labels.LEARN_MORE || 'Learn more', url: (p.urls && p.urls.productPage) || '/next/s/' + encodeURIComponent(p.id) };
+    const learn = { type: 'LEARN_MORE', label: labels.LEARN_MORE || 'Learn more', url: (p.urls && p.urls.productPage) || '/s/' + encodeURIComponent(p.id) };
     return {
       productId: p.id,
       productName: p.name,

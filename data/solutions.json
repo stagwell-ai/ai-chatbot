@@ -57,7 +57,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/questbrand",
+        "productPage": "/s/questbrand",
         "externalWebsite": "https://www.harrisquest.com/suite/questbrand",
         "demo": null,
         "selfService": null
@@ -113,7 +113,7 @@
         "secondaryLabel": "Talk to an expert"
       },
       "urls": {
-        "productPage": "/next/s/questdiy",
+        "productPage": "/s/questdiy",
         "externalWebsite": "https://www.harrisquest.com/suite/questdiy",
         "demo": null,
         "selfService": "https://www.harrisquest.com/suite/questdiy"
@@ -175,7 +175,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/bera",
+        "productPage": "/s/bera",
         "externalWebsite": "https://bera.ai",
         "demo": null,
         "selfService": null
@@ -225,7 +225,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/unlock",
+        "productPage": "/s/unlock",
         "externalWebsite": "https://www.themarketingcloud.com/marketplace/unlock",
         "demo": null,
         "selfService": null
@@ -282,7 +282,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/knowledge_machine",
+        "productPage": "/s/knowledge_machine",
         "externalWebsite": "https://www.themarketingcloud.com/marketplace/pulse",
         "demo": null,
         "selfService": null
@@ -341,7 +341,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/unicepta",
+        "productPage": "/s/unicepta",
         "externalWebsite": "https://www.themarketingcloud.com/marketplace/unicepta",
         "demo": null,
         "selfService": null
@@ -405,7 +405,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/imai",
+        "productPage": "/s/imai",
         "externalWebsite": "https://www.themarketingcloud.com/marketplace/imai",
         "demo": null,
         "selfService": null
@@ -467,7 +467,7 @@
         "secondaryLabel": "Talk to an expert"
       },
       "urls": {
-        "productPage": "/next/s/smb_platform",
+        "productPage": "/s/smb_platform",
         "externalWebsite": null,
         "demo": null,
         "selfService": "https://influencermarketing.ai"
@@ -523,7 +523,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/geopulse",
+        "productPage": "/s/geopulse",
         "externalWebsite": "https://www.themarketingcloud.com/marketplace/geopulse",
         "demo": null,
         "selfService": null
@@ -580,7 +580,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/targeting-machine",
+        "productPage": "/targeting-machine",
         "externalWebsite": "https://www.themarketingcloud.com/marketplace/sats",
         "demo": null,
         "selfService": null
@@ -633,7 +633,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/numetrix",
+        "productPage": "/s/numetrix",
         "externalWebsite": "https://www.themarketingcloud.com/marketplace/numetrix",
         "demo": null,
         "selfService": null
@@ -691,7 +691,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/newvoices",
+        "productPage": "/newvoices",
         "externalWebsite": "https://newvoices.ai/",
         "demo": null,
         "selfService": null
@@ -752,7 +752,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/the-machine",
+        "productPage": "/the-machine",
         "externalWebsite": null,
         "demo": null,
         "selfService": null
@@ -808,7 +808,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/agent-cloud",
+        "productPage": "/agent-cloud",
         "externalWebsite": "https://www.themarketingcloud.com/marketplace/agent-cloud",
         "demo": null,
         "selfService": null
@@ -868,7 +868,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/media_machine",
+        "productPage": "/s/media_machine",
         "externalWebsite": null,
         "demo": null,
         "selfService": null
@@ -920,7 +920,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/newintel",
+        "productPage": "/s/newintel",
         "externalWebsite": null,
         "demo": null,
         "selfService": null
@@ -978,7 +978,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/search_plus",
+        "productPage": "/s/search_plus",
         "externalWebsite": null,
         "demo": null,
         "selfService": null
@@ -1031,7 +1031,7 @@
         "secondaryLabel": "Learn more"
       },
       "urls": {
-        "productPage": "/next/s/id_graph",
+        "productPage": "/s/id_graph",
         "externalWebsite": null,
         "demo": null,
         "selfService": null

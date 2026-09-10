@@ -107,12 +107,12 @@
      machine/solution.js — that file's header block is the source of truth
      for what belongs in it and why. */
   const CAMPAIGN_PAGES = {
-    targeting_machine: '/next/targeting-machine',
-    machines_family: '/next/the-machine'
+    targeting_machine: '/targeting-machine',
+    machines_family: '/the-machine'
   };
 
   function internalHref(id) {
-    return CAMPAIGN_PAGES[id] || '/next/s/' + encodeURIComponent(id);
+    return CAMPAIGN_PAGES[id] || '/s/' + encodeURIComponent(id);
   }
 
   function pendingCardHTML() {
@@ -362,7 +362,7 @@
      still resolves, by going to the page rather than sliding the panel over
      the one behind it. window.SAIDIR keeps its shape so nothing that calls
      it breaks; open() navigates. ─────────────────────────────────────── */
-  const PAGE = '/next/products';
+  const PAGE = '/products';
   const goPage = () => { try { window.location.href = PAGE; } catch (e) { /* nothing else to try */ } };
 
   document.addEventListener('click', e => {

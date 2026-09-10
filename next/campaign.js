@@ -144,7 +144,7 @@
     /* case-insensitive, lower-cased: /p/MASTER used to miss the match and
        fall through to the dev fallback, rendering The Targeting Machine
        under a URL that named something else (QA, Sep 2) */
-    try { m = /^\/next\/p\/([a-z0-9-]+)/i.exec(path); }
+    try { m = /^(?:\/next)?\/p\/([a-z0-9-]+)/i.exec(path); }
     catch (e) { m = null; }
     if (m) return m[1].toLowerCase();
 
@@ -234,7 +234,7 @@
         <p class="eyebrow"><i class="pulse"></i>Stagwell AI</p>
         <h1 class="display">Campaign not found</h1>
         <p class="campNF__sub">We don't have a product landing for &ldquo;${esc(id)}&rdquo;. Head back to the main site and tell the agent what you're trying to solve instead.</p>
-        <a class="btn btn--dark" href="/next">Go to Stagwell AI &rarr;</a>
+        <a class="btn btn--dark" href="/">Go to Stagwell AI &rarr;</a>
       </section>`;
   }
 
@@ -654,7 +654,7 @@
         window.SAILEAD.open(b.dataset.cta || 'expert');
         return;
       }
-      window.location.href = '/next#cta';
+      window.location.href = '/#cta';
     });
   }
 
@@ -674,7 +674,7 @@
     /* the brand campaign's landing IS the front door: /p/master goes there
        rather than to a not-found page whose own ribbon says it knows the
        campaign (QA, Sep 2) */
-    if (campaign && campaign.id === 'master') { window.location.replace('/next'); return; }
+    if (campaign && campaign.id === 'master') { window.location.replace('/'); return; }
 
     if (!campaign || PRODUCT_IDS.indexOf(campaign.id) === -1) {
       renderNotFound(id);

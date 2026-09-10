@@ -627,7 +627,7 @@ function followUpHTML() {
       <p class="pathquiet__eyebrow">${captured ? "WE'LL TAKE IT FROM HERE" : 'NOTHING TO DO'}</p>
       <h3>${esc(title)}</h3>
       <p>${esc(line)}</p>
-      <a class="pathquiet__link" href="/next">Ask something else</a>
+      <a class="pathquiet__link" href="/">Ask something else</a>
     </div>
     <!-- The ONE state where the demo is deliberately not a loud ask. This
          visitor said they are just exploring, and routing.json's follow_up
@@ -793,13 +793,13 @@ function show(session) {
 
   wireLinks(el, session);
 
-  try { history.pushState({}, '', '/next/path'); } catch (e) { /* fine, still works without a real route */ }
+  try { history.pushState({}, '', '/path'); } catch (e) { /* fine, still works without a real route */ }
 
   requestAnimationFrame(() => el.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' }));
 }
 
 window.addEventListener('popstate', () => {
-  if (location.pathname === '/next/path') return;
+  if (location.pathname === '/path') return;
   if (!mounted) return;
   teardown();
 });

@@ -86,12 +86,12 @@
   /* Mirrors CAMPAIGN_PAGES in machine/solution.js — that file's header is the
      source of truth for what belongs here and why. */
   const CAMPAIGN_PAGES = {
-    targeting_machine: '/next/targeting-machine',
-    machines_family: '/next/the-machine',
-    newvoices: '/next/newvoices',
-    agent_cloud: '/next/agent-cloud'
+    targeting_machine: '/targeting-machine',
+    machines_family: '/the-machine',
+    newvoices: '/newvoices',
+    agent_cloud: '/agent-cloud'
   };
-  const internalHref = id => CAMPAIGN_PAGES[id] || '/next/s/' + encodeURIComponent(id);
+  const internalHref = id => CAMPAIGN_PAGES[id] || '/s/' + encodeURIComponent(id);
 
   /* The lockup plate is gone (client, 2026-09-09): the marks were a 36px navy
      tile with a contained PNG inside it, and at that size none of them could
@@ -285,7 +285,7 @@
             AI-search visibility, reputation monitoring, audience activation and voice agents — each built by a team
             that does this and nothing else. Start with the problem; the product follows.</p>
           <div class="prodhero__acts">
-            <a class="btn btn--gold prodhero__cta" href="/next">Find my fit in a conversation</a>
+            <a class="btn btn--gold prodhero__cta" href="/">Find my fit in a conversation</a>
             <button class="btn btn--ghost prodhero__alt" type="button" data-cta="demo">Book a demo</button>
           </div>
         </div>
@@ -306,7 +306,7 @@
             actually fit, and the people who run them.</p>
           <div class="prodband__acts">
             <button class="btn btn--gold prodband__demo" type="button" data-cta="demo">Book a demo</button>
-            <a class="btn btn--light" href="/next">Start with the agent</a>
+            <a class="btn btn--light" href="/">Start with the agent</a>
           </div>
         </div>
       </section>

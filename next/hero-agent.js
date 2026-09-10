@@ -216,7 +216,7 @@ form.addEventListener('submit', e => {
 document.querySelectorAll('#agentTags .tag').forEach(b => b.addEventListener('click', () =>
   send(b.dataset.q || b.textContent.trim(), null, { goal: b.dataset.goal || null, domain: b.dataset.domain || null })));
 
-/* a prefilled question in the URL starts the conversation: /next?q=… */
+/* a prefilled question in the URL starts the conversation: /?q=… */
 try {
   const q = new URLSearchParams(location.search).get('q');
   if (q && q.trim()) setTimeout(() => send(q.trim()), REDUCED ? 0 : 500);

@@ -117,7 +117,7 @@
       link: (() => {
         const a = t.querySelector('a[href]');
         if (a) return { text: a.textContent.trim(), href: a.getAttribute('href') };
-        return { text: 'Explore ' + txt(t, '.tier__name'), href: '/next/products' };
+        return { text: 'Explore ' + txt(t, '.tier__name'), href: '/products' };
       })(),
       accent: getComputedStyle(t).getPropertyValue('--tier-stroke').trim() || '#FF6D24',
       icon: ICON_ORDER[i],

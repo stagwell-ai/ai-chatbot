@@ -98,7 +98,7 @@ function render(m) {
           <div class="about__cta">
             <button type="button" class="btn btn--gold" id="aboutAsk">${esc(cta.label || 'Ask the agent')}</button>
             <span>${esc(cta.line || '')}</span>
-            ${FULL ? '' : `<a class="about__more" href="/next/why">Read why Stagwell AI →</a>`}
+            ${FULL ? '' : `<a class="about__more" href="/why">Read why Stagwell AI →</a>`}
           </div>
         </div>
         <dl class="about__stats">
@@ -124,7 +124,7 @@ function render(m) {
     /* back to the chooser at the top — it is the front door, and the first
        row is where the answer starts */
     const pick = document.getElementById('heroPick') || document.getElementById('hero2');
-    if (!pick) { location.href = '/next'; return; }   /* on /why the chooser is a page away */
+    if (!pick) { location.href = '/'; return; }   /* on /why the chooser is a page away */
     pick.scrollIntoView({ behavior: 'smooth', block: 'start' });
     const row = document.querySelector('#heroPick .pick__row');
     if (row) { try { row.focus({ preventScroll: true }); } catch (e) { /* fine */ } }

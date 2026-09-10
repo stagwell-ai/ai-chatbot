@@ -482,7 +482,7 @@ function show(session) {
   wireBottom(el, session);
   animateIn(el);
 
-  try { history.pushState({}, '', '/next/snapshot'); } catch (e) { /* fine, still works without a real route */ }
+  try { history.pushState({}, '', '/snapshot'); } catch (e) { /* fine, still works without a real route */ }
   try { if (window.SAISNAPDATA && typeof window.SAISNAPDATA.viewed === 'function') window.SAISNAPDATA.viewed(); }
   catch (e) { /* the view still renders without the event */ }
 
@@ -490,11 +490,11 @@ function show(session) {
 }
 
 window.addEventListener('popstate', () => {
-  if (location.pathname === '/next/snapshot') return;
+  if (location.pathname === '/snapshot') return;
   if (!mounted) return;
   teardown();
   if (typeof window.resetLanding === 'function') window.resetLanding();
-  else location.href = '/next';
+  else location.href = '/';
 });
 
 window.SAISNAP = { show };

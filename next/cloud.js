@@ -99,14 +99,14 @@ const P = id => PRODUCTS.find(p => p.id === id);
    Everything else is the solution page, /s/{id}. The product's `url` stays on
    the record — the solution page carries it as "Visit the … site →". */
 const CAMPAIGN_PAGES = {
-  targeting_machine: '/next/targeting-machine',
-  machines_family: '/next/the-machine',
-  newvoices: '/next/newvoices',
-  agent_cloud: '/next/agent-cloud'
+  targeting_machine: '/targeting-machine',
+  machines_family: '/the-machine',
+  newvoices: '/newvoices',
+  agent_cloud: '/agent-cloud'
 };
 function ourPage(p) {
   const id = p.sol || p.id;
-  return CAMPAIGN_PAGES[id] || ('/next/s/' + encodeURIComponent(id));
+  return CAMPAIGN_PAGES[id] || ('/s/' + encodeURIComponent(id));
 }
 
 const bigCard = p => `<a class="fcard fcard--dark fcard--video" href="${esc(ourPage(p))}">

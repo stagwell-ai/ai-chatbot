@@ -1307,7 +1307,7 @@ document.addEventListener('click', e => {
   const d = e.target.closest('[data-dir]');
   if (!d) return;
   e.preventDefault();
-  location.href = '/next/products';
+  location.href = '/products';
 });
 
 /* the landing chips render from data/questions.json q1.chips (SPEC S1 —

@@ -2,8 +2,78 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "source": "/next",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/next/products",
+      "destination": "/products",
+      "permanent": false
+    },
+    {
       "source": "/next/why",
-      "destination": "/next#why",
+      "destination": "/#why",
+      "permanent": false
+    },
+    {
+      "source": "/why",
+      "destination": "/#why",
+      "permanent": false
+    },
+    {
+      "source": "/next/book",
+      "destination": "/book",
+      "permanent": false
+    },
+    {
+      "source": "/next/agent",
+      "destination": "/agent",
+      "permanent": false
+    },
+    {
+      "source": "/next/chat",
+      "destination": "/chat",
+      "permanent": false
+    },
+    {
+      "source": "/next/snapshot",
+      "destination": "/snapshot",
+      "permanent": false
+    },
+    {
+      "source": "/next/path",
+      "destination": "/path",
+      "permanent": false
+    },
+    {
+      "source": "/next/newvoices",
+      "destination": "/newvoices",
+      "permanent": false
+    },
+    {
+      "source": "/next/the-machine",
+      "destination": "/the-machine",
+      "permanent": false
+    },
+    {
+      "source": "/next/targeting-machine",
+      "destination": "/targeting-machine",
+      "permanent": false
+    },
+    {
+      "source": "/next/agent-cloud",
+      "destination": "/agent-cloud",
+      "permanent": false
+    },
+    {
+      "source": "/next/p/:campaign",
+      "destination": "/p/:campaign",
+      "permanent": false
+    },
+    {
+      "source": "/next/s/:solution",
+      "destination": "/s/:solution",
       "permanent": false
     },
     {
@@ -29,6 +99,58 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/next/index.html"
+    },
+    {
+      "source": "/book",
+      "destination": "/next/book.html"
+    },
+    {
+      "source": "/agent",
+      "destination": "/next/agent.html"
+    },
+    {
+      "source": "/chat",
+      "destination": "/next/agent.html"
+    },
+    {
+      "source": "/snapshot",
+      "destination": "/next/agent.html"
+    },
+    {
+      "source": "/path",
+      "destination": "/next/agent.html"
+    },
+    {
+      "source": "/products",
+      "destination": "/next/products.html"
+    },
+    {
+      "source": "/newvoices",
+      "destination": "/next/newvoices.html"
+    },
+    {
+      "source": "/the-machine",
+      "destination": "/next/the-machine.html"
+    },
+    {
+      "source": "/targeting-machine",
+      "destination": "/next/targeting-machine.html"
+    },
+    {
+      "source": "/agent-cloud",
+      "destination": "/next/agent-cloud.html"
+    },
+    {
+      "source": "/p/:campaign",
+      "destination": "/next/campaign.html"
+    },
+    {
+      "source": "/s/:solution",
+      "destination": "/next/solution.html"
+    },
+    {
       "source": "/next-v1",
       "destination": "/next-v1/index.html"
     },
@@ -37,96 +159,12 @@
       "destination": "/next-jk/index.html"
     },
     {
-      "source": "/next",
-      "destination": "/next/index.html"
-    },
-    {
-      "source": "/next/agent",
-      "destination": "/next/agent.html"
-    },
-    {
-      "source": "/next/chat",
-      "destination": "/next/agent.html"
-    },
-    {
-      "source": "/next/snapshot",
-      "destination": "/next/agent.html"
-    },
-    {
-      "source": "/next/path",
-      "destination": "/next/agent.html"
-    },
-    {
-      "source": "/next/book",
-      "destination": "/next/book.html"
-    },
-    {
-      "source": "/next/products",
-      "destination": "/next/products.html"
-    },
-    {
-      "source": "/next/why",
-      "destination": "/next/why.html"
-    },
-    {
-      "source": "/next/newvoices",
-      "destination": "/next/newvoices.html"
-    },
-    {
-      "source": "/next/the-machine",
-      "destination": "/next/the-machine.html"
-    },
-    {
-      "source": "/next/targeting-machine",
-      "destination": "/next/targeting-machine.html"
-    },
-    {
-      "source": "/next/agent-cloud",
-      "destination": "/next/agent-cloud.html"
-    },
-    {
-      "source": "/next/p/:campaign",
-      "destination": "/next/campaign.html"
-    },
-    {
-      "source": "/next/s/:solution",
-      "destination": "/next/solution.html"
-    },
-    {
-      "source": "/",
+      "source": "/machine",
       "destination": "/machine/b.html"
-    },
-    {
-      "source": "/chat",
-      "destination": "/machine/b.html"
-    },
-    {
-      "source": "/snapshot",
-      "destination": "/machine/b.html"
-    },
-    {
-      "source": "/path",
-      "destination": "/machine/b.html"
-    },
-    {
-      "source": "/p/:campaign",
-      "destination": "/machine/campaign.html"
-    },
-    {
-      "source": "/s/:solution",
-      "destination": "/machine/solution.html"
     },
     {
       "source": "/ads",
       "destination": "/machine/ads.html"
-    },
-    {
-      "source": "/products",
-      "destination": "/machine/products.html"
-    },
-    {
-      "source": "/why",
-      "destination": "/machine/why.html"
     },
     {
       "source": "/versions",
@@ -139,10 +177,6 @@
     {
       "source": "/platform",
       "destination": "/d.html"
-    },
-    {
-      "source": "/agent",
-      "destination": "/e.html"
     }
   ]
 }

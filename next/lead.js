@@ -231,7 +231,7 @@
         <span class="modal__tick"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         <h3 id="saiLeadTitle">${esc(c.success.title)}</h3>
         <p>${esc(line)}</p>
-        ${inline ? '<a class="btn btn--dark" href="/next">Back to Stagwell AI</a>'
+        ${inline ? '<a class="btn btn--dark" href="/">Back to Stagwell AI</a>'
                  : `<button class="btn btn--dark" type="button" data-lead-close>${esc(c.success.close)}</button>`}
         <p class="modal__fine">${esc(c.fine)}</p>
       </div>`;
@@ -335,7 +335,7 @@
         return;
       }
       emit('cta_clicked', { kind, to: 'book' });
-      location.href = '/next/book';
+      location.href = '/book';
       return;
     }
     build();
@@ -375,7 +375,7 @@
     });
   }
 
-  /* ── the form in a page (/next/book) ─────────────────────────────────── */
+  /* ── the form in a page (/book) ─────────────────────────────────── */
   function mount(root, kind) {
     const go = c => {
       const k = c.kinds[kind] ? kind : 'session';

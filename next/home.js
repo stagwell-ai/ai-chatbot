@@ -563,7 +563,7 @@
       const agentInput = $('#agentInput'), agentForm = $('#agentForm');
       const over = form.closest('.chat-over');
       if (over) { const c = $('#chatOverClose'); if (c) c.click(); }
-      if (!agentInput || !agentForm) { location.href = '/next/agent?q=' + encodeURIComponent(v); return; }
+      if (!agentInput || !agentForm) { location.href = '/agent?q=' + encodeURIComponent(v); return; }
       input.value = '';
       setTimeout(() => {
         scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });

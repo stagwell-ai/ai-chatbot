@@ -77,10 +77,10 @@
   if (!root) return;
 
   const CAMPAIGN_PAGES = {
-    targeting_machine: '/next/targeting-machine',
-    machines_family: '/next/the-machine',
-    newvoices: '/next/newvoices',
-    agent_cloud: '/next/agent-cloud'
+    targeting_machine: '/targeting-machine',
+    machines_family: '/the-machine',
+    newvoices: '/newvoices',
+    agent_cloud: '/agent-cloud'
   };
 
   /* GEOPulse carries companions:["all"] — "D: universal companion" in its own
@@ -113,7 +113,7 @@
 
   function resolveSolutionId() {
     let m;
-    try { m = /^\/next\/s\/([a-z0-9_-]+)/i.exec(window.location.pathname || ''); }
+    try { m = /^(?:\/next)?\/s\/([a-z0-9_-]+)/i.exec(window.location.pathname || ''); }
     catch (e) { m = null; }
     if (m) return m[1];
 
@@ -285,7 +285,7 @@
         <p class="eyebrow"><i class="pulse"></i>Stagwell AI</p>
         <h1 class="display">Solution not found</h1>
         <p class="solNF__sub">We don't have a solution page for &ldquo;${esc(id || '')}&rdquo;. Head back to the main site and tell the agent what you're trying to solve instead.</p>
-        <a class="btn btn--dark" href="/next">Go to Stagwell AI &rarr;</a>
+        <a class="btn btn--dark" href="/">Go to Stagwell AI &rarr;</a>
       </section>`;
   }
 
@@ -298,7 +298,7 @@
     root.innerHTML = `
       <section class="sol">
         <div class="sol__in">
-          <a class="sol__back" href="/next/products">&larr; All products</a>
+          <a class="sol__back" href="/products">&larr; All products</a>
           ${bandHtml(s)}
           <p class="eyebrow sol__kicker"><i class="pulse"></i>The Stagwell Marketing Cloud</p>
           <h1 class="sol__h1">${esc(s.name)}</h1>
@@ -358,7 +358,7 @@
       const P = window.SAIPRODUCT;
       if (P && typeof P.startFlow === 'function') { P.startFlow(seed); return; }
       /* no panel — the pre-panel behaviour, so this never dead-ends */
-      window.location.href = `/next?autostart=1${seed ? `&q=${encodeURIComponent(seed)}` : ''}`;
+      window.location.href = `/?autostart=1${seed ? `&q=${encodeURIComponent(seed)}` : ''}`;
     });
   }
 
@@ -401,7 +401,7 @@
         window.SAILEAD.open(b.dataset.cta || 'expert');
         return;
       }
-      window.location.href = '/next#start';
+      window.location.href = '/#start';
     });
   }
 
