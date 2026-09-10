@@ -684,3 +684,8 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 .hb-page .hero.hb-chatting #agentThread{max-height:var(--hb-thread-max, min(52svh, 560px));overscroll-behavior:contain}
 /* the tags aligned left again, with the typing line (client) — the hairline stays */
 .hb-page #hbAsk .hb-ask__tags{justify-content:flex-start}
+
+/* a soft dark gradient across the top of the hero, so the logo and the bar read on the picture (client) —
+   not a shadow: it only darkens the picture and fades out a fifth of the way down */
+.hb-page .hero::after{content:"";position:absolute;left:0;right:0;top:0;height:clamp(140px,24vh,240px);z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,10,24,.62) 0%,rgba(0,10,24,.3) 45%,rgba(0,10,24,0) 100%)}
