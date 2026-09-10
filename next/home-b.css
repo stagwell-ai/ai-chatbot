@@ -411,19 +411,21 @@ body.hb-page{--hb-bg:#FEFDFC;background:var(--hb-bg)}
 html.hb-intro body{overflow:hidden}
 html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important}   /* the hero's own entrance waits for the curtain */
 .hb-in{position:fixed;inset:0;z-index:300;display:grid;place-items:center;background:#FEFDFC;color:#0B1220;will-change:transform}
-.hb-in__frame{grid-area:1/1;position:relative;width:min(30vw,300px,46vh);aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:#F1F2F4;transform:scale(.9)}
-.hb-in__frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transform:translate3d(0,101%,0) scale(1.18)}
+.hb-in__frame{grid-area:1/1;position:relative;width:min(30vw,300px,46vh);aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:#F1F2F4}
+.hb-in:not(.go) .hb-in__frame{visibility:hidden}
+.hb-in__frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0}
 .hb-in__end{grid-area:1/1;display:flex;flex-direction:column;align-items:center;gap:clamp(20px,2.4vw,32px)}
 .hb-in__mark{display:block;width:min(46vw,330px);height:auto;opacity:0;transform:translate3d(0,14px,0)}
 .hb-in__hi{margin:0;font-family:var(--ui);font-size:clamp(22px,2vw,30px);font-weight:400;letter-spacing:-.01em;color:rgba(11,18,32,.72);opacity:0;transform:translate3d(0,10px,0)}
-/* the timeline, fast (client: "much faster"): pictures 0–0.8s, the logo from 0.8s, Welcome from 1.05s, the curtain lifts at 1.6s */
-.hb-in.go .hb-in__frame{animation:hbInFrame .9s cubic-bezier(.16,.72,.24,1) both}
-.hb-in.go .hb-in__frame img{animation:hbInImg .28s cubic-bezier(.22,.8,.26,1) both;animation-delay:calc(30ms + var(--k) * 58ms)}
+/* the timeline, fast: the pictures as stop motion (client) — same size, same place, hard cuts every 95ms, 0–0.76s;
+   the frame cuts away, the logo from 0.8s, Welcome from 1.05s, the curtain lifts at 1.6s */
+.hb-in.go .hb-in__frame{animation:hbInCutOut 1ms steps(1,end) .78s both}
+.hb-in.go .hb-in__frame img{animation:hbInCut 1ms steps(1,end) both;animation-delay:calc(var(--k) * 95ms)}
 .hb-in.go .hb-in__mark{animation:hbInUp .5s cubic-bezier(.16,.72,.24,1) .8s both}
 .hb-in.go .hb-in__hi{animation:hbInUp .45s cubic-bezier(.16,.72,.24,1) 1.05s both}
 .hb-in.go{animation:hbInOut .75s cubic-bezier(.76,0,.24,1) 1.6s both}
-@keyframes hbInFrame{0%{transform:scale(.9)}80%{transform:scale(1);opacity:1}100%{transform:scale(1.04);opacity:0}}
-@keyframes hbInImg{from{transform:translate3d(0,101%,0) scale(1.18)}to{transform:translate3d(0,0,0) scale(1)}}
+@keyframes hbInCut{from{opacity:0}to{opacity:1}}
+@keyframes hbInCutOut{from{opacity:1}to{opacity:0}}
 @keyframes hbInUp{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
 @keyframes hbInOut{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-100%,0)}}
 
