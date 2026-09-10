@@ -197,8 +197,10 @@
        move, whose brightness travels through the grid as slow coherent
        waves (a processor, not dust). At rest one faint wave passes; while a
        reply is on its way, rings spread from where the answer will land. */
-    const think = (() => {
-      const cv = $('#agentThink'); if (!cv || !cv.getContext || REDUCED) return { ambient() {}, on() {}, off() {}, at() {} };
+    /* one field per canvas: the hero chat's, and (homepage) the close's own —
+       SEL lists the loop's stops as [selector, fallback x, fallback y] */
+    const makeThink = (cv, SEL) => {
+      if (!cv || !cv.getContext || REDUCED) return { ambient() {}, on() {}, off() {}, at() {} };
       const ctx = cv.getContext('2d'); let pts = [], raf = 0, W = 0, H = 0, t0 = 0, last = 0;
       let lift = 0, liftTarget = 0, ox = 0, oy = 0;
       const GAP = 12;   /* 22 read as too separated, then 16 still did: the closer the dots, the more the wave through them reads as movement (client) */
@@ -219,8 +221,8 @@
         /* a hidden element counts as missing: its rect is all zeros, and a stop
            there sent the blob off the canvas (the product pages keep the chat
            hidden until someone types, with the field under the whole section) */
-        const mid = (sel, fx, fy) => { const el = $(sel); const r = el && el.getBoundingClientRect(); if (!r || !r.width) return { x: W * fx, y: H * fy }; return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
-        stopsCache = [mid('#agentForm', .5, .9), mid('#agentTags', .4, .72), mid('#agentThread', .5, .38), { x: W * .5, y: H * .12 }];
+        const mid = (sel, fx, fy) => { const el = sel && $(sel); const r = el && el.getBoundingClientRect(); if (!r || !r.width) return { x: W * fx, y: H * fy }; return { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 }; };
+        stopsCache = SEL.map(([sel, fx, fy]) => mid(sel, fx, fy));
         return stopsCache;
       };
       const frame = (t) => {
@@ -286,8 +288,13 @@
         /* where the rings come from: the spot the reply will land */
         at(el) { const r = el.getBoundingClientRect(), c = cv.getBoundingClientRect(); ox = r.left - c.left + 40; oy = r.top - c.top + r.height / 2; }
       };
-    })();
+    };
+    const think = makeThink($('#agentThink'), [['#agentForm', .5, .9], ['#agentTags', .4, .72], ['#agentThread', .5, .38], [null, .5, .12]]);
     think.ambient();   /* on from landing: the column is quietly alive */
+    /* the homepage's "How can we help?" gets the same field behind it, resting
+       (client, 2026-09-10: movement at the foot of the page too). Its loop
+       walks the title, the field, Book a demo and Call me. */
+    makeThink($('#endThink'), [['#start .display--end', .5, .25], ['#askEnd', .5, .55], ['#start .ask-end__ways .btn', .4, .8], ['#callEnd', .6, .8]]).ambient();
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     const wait = (label) => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>' + (label ? '<span class="turnb__waitlabel">' + esc(String(label)) + '</span>' : ''); add(t); think.at(t); think.on(); return t; };
     const ai = (html, chips, go, onChip) => {

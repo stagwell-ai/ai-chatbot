@@ -1308,3 +1308,9 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .nav__search:hover{background:#000000;color:#FFFFFF}
 .nav:not(.is-stuck) .nav__search{background:#FFFFFF;color:var(--ink);box-shadow:none}
 .nav:not(.is-stuck) .nav__search:hover{background:#FFFFFF;color:var(--ink)}
+
+/* ── the close's thinking field (client, 2026-09-10): the hero chat's dot
+   lattice, resting, under the whole "How can we help?" — the section holds it
+   (the canvas is its first child), the content sits above */
+.ask-end{position:relative;overflow:hidden}
+.ask-end > .ask-end__in{position:relative;z-index:1}

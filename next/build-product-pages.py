@@ -270,6 +270,9 @@ def page(p, home):
     # it); these pages have no hero chat, so the form carries its own id and the
     # conversation opens in place, in the chat hidden beside it (PP_CLOSE_JS).
     i = home.index('<section class="ask-end" id="start">'); close = home[i:home.index('</section>', i) + 10]
+    # the homepage close's own resting field stays on the homepage: here the
+    # chat's canvas moves under the section instead (below)
+    close = close.replace('\n  <canvas class="hero__think" id="endThink" aria-hidden="true"></canvas>', '')
     for old, new in [('id="askEndInput"', 'id="ppAskInput"'), ('for="askEndInput"', 'for="ppAskInput"'), ('id="askEnd"', 'id="ppAsk"')]:
         must(close, old); close = close.replace(old, new)
     ways = '      <div class="ask-end__ways">'
@@ -368,7 +371,7 @@ def page(p, home):
            '<!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta] click -->\n'
            f'<body class="home pp pp--{slug}{" pp--light-hero" if p.get("hero_tone") == "light" else ""}" data-lead-cta>\n\n' + symbol + '\n\n' + chrome + '\n' + body + '\n' +
            footer + '\n\n' + scripts + '\n' + VIDEO_JS + '\n' + PP_CLOSE_JS + '\n</body>\n</html>\n')
-    assert 'id="chatOver"' not in out and out.count('id="ask"') == 1 and out.count('id="agentForm"') == 1 and 'id="askEnd"' not in out
+    assert 'id="chatOver"' not in out and out.count('id="ask"') == 1 and out.count('id="agentForm"') == 1 and 'id="askEnd"' not in out and 'endThink' not in out
     return out
 
 # ── run ─────────────────────────────────────────────────────────────────────
