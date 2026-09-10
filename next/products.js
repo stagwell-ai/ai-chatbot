@@ -86,10 +86,10 @@
   /* Mirrors CAMPAIGN_PAGES in machine/solution.js — that file's header is the
      source of truth for what belongs here and why. */
   const CAMPAIGN_PAGES = {
-    targeting_machine: '/next/p/targeting-machine',
-    machines_family: '/next/p/the-machine',
-    newvoices: '/next/p/newvoices',
-    agent_cloud: '/next/p/agent-cloud'
+    targeting_machine: '/next/targeting-machine',
+    machines_family: '/next/the-machine',
+    newvoices: '/next/newvoices',
+    agent_cloud: '/next/agent-cloud'
   };
   const internalHref = id => CAMPAIGN_PAGES[id] || '/next/s/' + encodeURIComponent(id);
 

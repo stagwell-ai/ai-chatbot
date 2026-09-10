@@ -240,8 +240,8 @@
     {
       "id": "newvoices",
       "name": "NewVoices",
-      "positioning": "Qualify and book leads the moment someone raises a hand — instant response, any hour, any language. Lifelike voice and chat agents for sales, service, retention and feedback, that hand anything they can't finish to a person with the context already gathered.",
-      "whoFor": "Teams losing demand between the hand-raise and the callback",
+      "positioning": "Lifelike voice and chat agents that hold real conversations with your customers — any hour, in any language. The same agents qualify and book inbound leads, resolve tier-1 service and win back lapsing customers, and interview customers at scale when you need to understand why they act — turning what they say into decision-ready insight. Anything an agent can't finish goes to a person with the context already gathered.",
+      "whoFor": "Teams losing demand between the hand-raise and the callback — and teams who need to hear the why, at scale",
       "shownWhen": "B: domain=leads · campaign product — its ad traffic lands on the product-branded page",
       "nextStep": "Demo [packaging to confirm with NewVoices]",
       "companions": [
@@ -254,11 +254,12 @@
         "Lead qualification and booking",
         "Tier-1 service resolution",
         "Retention and payment recovery",
-        "Post-conversation feedback"
+        "Customer interviews at scale",
+        "Decision-ready insight"
       ],
       "lockup": null,
       "lockupNote": "No normalised lockup plate exists for NewVoices in the deck — the only mark shipped is a white-on-gradient PNG, which would vanish on the plate's own field. Like Unlock, the name is set in type instead, which every surface already handles.",
-      "sourceNote": "positioning and valueProps are NewVoices' own published lines, the same ones data/products.json carries for the /p/newvoices landing."
+      "sourceNote": "positioning covers both jobs the product does — the conversion agents on NewVoices' own site and the insight campaigns on /next/newvoices. Both are its published lines; they were split across two surfaces and read as two products (client, 2026-09-10)."
     },
     {
       "id": "machines_family",

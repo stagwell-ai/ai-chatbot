@@ -107,8 +107,8 @@
      machine/solution.js — that file's header block is the source of truth
      for what belongs in it and why. */
   const CAMPAIGN_PAGES = {
-    targeting_machine: '/next/p/targeting-machine',
-    machines_family: '/next/p/the-machine'
+    targeting_machine: '/next/targeting-machine',
+    machines_family: '/next/the-machine'
   };
 
   function internalHref(id) {

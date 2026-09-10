@@ -80,11 +80,11 @@ PRODUCTS = [
     ),
     dict(
         slug='newvoices', name='New Voices',
-        kind='AI voice insight campaigns',
+        kind='AI voice agents and insight campaigns',
         hero_bg='/assets/img/products/hero-newvoices.jpg',   # Julian's "new voices cover", 2026-09-10
         logo='<img class="pp-logo" src="/assets/img/companies/newvoices/logo-white.png" alt="New Voices" width="2560" height="441">',
         title='Hear why your customers act - at scale.',
-        description='New Voices uses AI voice agents to interview real customers at scale, capturing the nuance, emotion, language, and context that written surveys and behavioral data often miss - then converting those conversations into decision-ready market intelligence.',
+        description='New Voices puts lifelike AI voice agents on your customer conversations, 24/7 and in any language. The same agents that qualify and book leads, resolve service and win back lapsing customers also interview customers at scale - capturing the nuance, emotion, language and context that written surveys and behavioral data miss, and converting it into decision-ready market intelligence.',
         url='https://newvoices.ai/',
         # Julian's product image (mats/from stagwell/product imaages/new voices.png, 2026-09-10)
         image=('/assets/img/products/newvoices.jpg', 1122, 1402),

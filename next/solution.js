@@ -77,10 +77,10 @@
   if (!root) return;
 
   const CAMPAIGN_PAGES = {
-    targeting_machine: '/next/p/targeting-machine',
-    machines_family: '/next/p/the-machine',
-    newvoices: '/next/p/newvoices',
-    agent_cloud: '/next/p/agent-cloud'
+    targeting_machine: '/next/targeting-machine',
+    machines_family: '/next/the-machine',
+    newvoices: '/next/newvoices',
+    agent_cloud: '/next/agent-cloud'
   };
 
   /* GEOPulse carries companions:["all"] — "D: universal companion" in its own
