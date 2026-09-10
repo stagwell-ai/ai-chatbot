@@ -28,6 +28,10 @@
       "destination": "/next-v1/index.html"
     },
     {
+      "source": "/next-jk",
+      "destination": "/next-jk/index.html"
+    },
+    {
       "source": "/next",
       "destination": "/next/index.html"
     },

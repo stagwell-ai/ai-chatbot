@@ -1,0 +1,118 @@
+{
+  "sharedRules": "Attribution captured silently on entry · a website in the first message skips the company question · snapshot revealed free after the last question · email + permission checkbox at the reveal · routing per routing.json overrides in order",
+  "campaigns": [
+    {
+      "id": "master",
+      "name": "Master campaign (Stagwell.AI brand ad)",
+      "landing": "S1 master pattern — no product branding",
+      "opener": "What do you need help solving today?",
+      "chips": [
+        "Competitive analysis",
+        "Awareness",
+        "Leads",
+        "Sales"
+      ],
+      "chipsNote": "Mirrors questions.json q1.chips — Meta's objective words. Keep the two lists identical: flow.js resolves a chip to its domain by matching the q1 label, so a label that drifts here falls back to the classifier.",
+      "prefill": {
+        "attribution": true
+      },
+      "routeBias": "none — the matrix decides",
+      "status": "confirmed"
+    },
+    {
+      "id": "the-machine",
+      "name": "The Machine",
+      "landing": "S2 product-branded pattern",
+      "opener": "Most marketing stacks work fine on their own and badly together. Where does yours feel most fragmented — planning, creation, media, or measurement?",
+      "openerNote": "fuses Q1 + adaptive Q6 — one less question",
+      "chips": [
+        "Planning & strategy",
+        "Content creation",
+        "Media",
+        "Measurement",
+        "What else fits my problem?"
+      ],
+      "prefill": {
+        "attribution": true,
+        "product_interest": "the_machine",
+        "problem_domains": [
+          "marketing_ops"
+        ]
+      },
+      "routeBias": "consultative — core ICP is CMO/CCO/CDO at $1B+ enterprises; mid-market gets consultative scoping; SMB gets redirected to the concrete need the answers surface",
+      "status": "confirmed",
+      "chipsNote": "The last chip is the site-wide cross-discovery chip, verbatim: it drops the product bias and asks q1 for real. Its predecessor 'Something else entirely' looked like an escape hatch but was stored as an answer and kept marketing_ops (QA, Sep 2)."
+    },
+    {
+      "id": "agent-cloud",
+      "name": "Agent Cloud",
+      "landing": "S2 product-branded pattern",
+      "opener": "Every team has one job they'd hand to an AI tomorrow if they trusted it. What's yours?",
+      "chips": [
+        "Drafting and sharpening our copy",
+        "Making images and video from a brief",
+        "Running research and competitive digests",
+        "Building assistants the whole team can use",
+        "Getting our AI use secure and sanctioned",
+        "What else fits my problem?"
+      ],
+      "prefill": {
+        "attribution": true,
+        "product_interest": "agent_cloud",
+        "problem_domains": [
+          "ai_workspace"
+        ]
+      },
+      "routeBias": "[to confirm with TMC] — self-serve trial if Agent Cloud ships one, otherwise demo",
+      "status": "chips_drafted",
+      "chipsNote": "One chip per service Agent Cloud actually sells, in the visitor's words: the toolkit's copy and messaging teammates; the image and video models on the platform (Veo3, Gemini 2.5, GPT-5); the research and social-listening integrations; the custom assistants its own testimonial calls the differentiator (500+ built); and the governance pillar — data never trains the LLMs, role-based access, one contract in place of unsanctioned tools. Sources: data/products.json valueProps and reference/companies/README.md.",
+      "prefillNote": "The ad names the product, so the routing domain it owns is pre-filled and q1 is skipped (product_ad_prefill) — the same treatment the-machine and targeting-machine get. Before this, Agent Cloud had no domain at all and a visitor from its own ad could never be routed to it (QA, Sep 2)."
+    },
+    {
+      "id": "targeting-machine",
+      "name": "The Targeting Machine",
+      "landing": "S2 product-branded pattern (reference wireframe W2)",
+      "opener": "Your first-party data is almost certainly worth more than it's returning. What would you want to do with it?",
+      "chips": [
+        "Build audiences from my first-party data",
+        "Activate straight into my channels",
+        "Find high-value niche audiences",
+        "What else fits my problem?"
+      ],
+      "q6Override": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?",
+      "prefill": {
+        "attribution": true,
+        "product_interest": "targeting_machine",
+        "problem_domains": [
+          "audiences"
+        ]
+      },
+      "routeBias": "demo for mid-market/enterprise; data scattered in platforms → consultative scoping; SMB → demo (follow_up retired Sep 2)",
+      "status": "confirmed"
+    },
+    {
+      "id": "newvoices",
+      "name": "NewVoices",
+      "landing": "S2 product-branded pattern",
+      "opener": "Every call that goes unanswered is a customer deciding something. What would you want a voice agent handling first?",
+      "chips": [
+        "Qualifying and booking leads",
+        "Front-line support tickets",
+        "Winning back lapsing customers",
+        "Collecting feedback after the call",
+        "What else fits my problem?"
+      ],
+      "prefill": {
+        "attribution": true,
+        "product_interest": "newvoices",
+        "problem_domains": [
+          "leads"
+        ]
+      },
+      "routeBias": "[to confirm — NewVoices to supply positioning, chips, self-serve vs. demo packaging]; the 'Let the machine call you' callback CTA is a natural fit",
+      "status": "chips_drafted",
+      "chipsNote": "The four use cases NewVoices publishes — sales, service, retention, feedback — the same four its landing page value cards carry.",
+      "prefillNote": "Pre-filled so every one of NewVoices' four chips lands on its own domain. Before this only the leads chip classified; support, retention and feedback fell to follow_up with no product named (QA, Sep 2)."
+    }
+  ]
+}

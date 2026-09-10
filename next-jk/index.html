@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- /next-jk: JK's edit of the homepage, sent back from Stagwell (Claude Design) on
+     2026-09-10 and frozen here as received. Own JS, CSS, data and images; the only
+     changes are paths, so it runs at this route. See mats/from stagwell/CHANGELOG.md. -->
+<script>
+/* Theme, before first paint — carried over unchanged from the agent page. */
+(function(){var d=document.documentElement,sys='light',t=null;
+try{sys=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(e){}
+try{var raw=localStorage.getItem('sw-theme');
+  if(raw&&raw!=='light'&&raw!=='dark'){var o=JSON.parse(raw);
+    if(o&&(o.choice==='light'||o.choice==='dark')&&o.sys===sys)t=o.choice;}
+  else if(raw){localStorage.removeItem('sw-theme');}
+}catch(e){}
+d.setAttribute('data-theme',t||sys);})();
+</script>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
+<title>Ask Stagwell</title>
+<meta name="description" content="Whatever your marketing challenge, we have the right solution">
+
+<link rel="canonical" href="https://stagwell.vercel.app/next">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stagwell AI">
+<meta property="og:title" content="Ask Stagwell">
+<meta property="og:description" content="Whatever your marketing challenge, we have the right solution">
+<meta property="og:url" content="https://stagwell.vercel.app/next">
+<!-- a new file name on purpose: WhatsApp and the rest cache the card by URL -->
+<meta property="og:image" content="https://stagwell.vercel.app/next/assets/share/og-v3.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ask Stagwell.">
+<meta name="twitter:image" content="https://stagwell.vercel.app/next/assets/share/og-v3.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F6F6F7">
+
+<link rel="icon" href="/next-jk/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/next-jk/assets/share/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/next-jk/assets/share/apple-touch-icon.png">
+<link rel="stylesheet" href="/next-jk/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/next-jk/lead.css">
+<link rel="stylesheet" href="/next-jk/home.css">
+</head>
+<!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta]
+     click on this page — the same panel every other booking CTA on the site opens -->
+<body class="home" data-lead-cta>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="sw-logo" viewBox="0 0 1870 153">
+    <path class="m-ink" d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z"/>
+    <path class="m-amber" d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z"/>
+    <path class="m-teal" d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z"/>
+    <path class="m-ink" d="M308.166 60.8018H261.261C251.788 60.8018 245.742 54.5706 245.742 44.8919C245.742 35.2123 251.788 29.0018 261.261 29.0018H344.997V22.9575C345.065 19.9247 344.517 16.9097 343.388 14.0942C342.258 11.2788 340.57 8.72141 338.425 6.57636C336.28 4.4314 333.722 2.74325 330.906 1.61393C328.091 0.484608 325.075 -0.0624364 322.042 0.00565917H261.261C233.674 0.00565917 215.56 17.7232 215.56 44.7048C215.56 71.6857 233.674 89.3829 261.261 89.3829H308.145C318.428 89.3829 324.867 95.8221 324.867 105.999C324.867 116.177 318.428 122.616 308.145 122.616H218.821V128.661C218.767 131.685 219.325 134.688 220.461 137.491C221.596 140.295 223.286 142.839 225.43 144.973C227.574 147.107 230.127 148.787 232.936 149.909C235.744 151.032 238.751 151.576 241.775 151.508H308.249C336.646 151.508 355.362 133.188 355.362 105.812C355.362 78.4363 336.438 60.532 308.249 60.532"/>
+    <path class="m-ink" d="M378.113 28.9962H433.474V151.772H463.656V28.9962H518.809V0H378.113V28.9962Z"/>
+    <path class="m-ink" d="M659.706 76.2919H581.807V53.1527C581.807 38.6131 591.258 29.2039 605.758 29.2039H635.734C650.275 29.2039 659.706 38.6546 659.706 53.1527V76.2919ZM635.734 0H605.758C573.144 0 551.603 21.1448 551.603 53.1527V151.772H581.807V104.872H659.706V151.772H689.89V53.1527C689.89 21.1448 668.347 0 635.734 0Z"/>
+    <path class="m-ink" d="M808.447 83.8816V88.3064H856.223V98.6917C856.223 113.231 846.773 122.827 832.269 122.827H797.188C782.646 122.827 773.236 113.168 773.236 98.6917V53.2035C773.236 38.6637 782.688 29.0467 797.188 29.0467H875.685V23.0024C875.761 19.9697 875.21 16.9546 874.08 14.1392C872.95 11.3238 871.259 8.76634 869.122 6.62137C866.975 4.47641 864.411 2.78827 861.599 1.65895C858.778 0.529625 855.767 -0.0175153 852.737 0.0505802H797.188C764.573 0.0505802 743.032 21.1953 743.032 53.2035V98.6917C743.032 130.679 764.573 151.823 797.188 151.823H832.212C864.829 151.823 886.342 130.679 886.342 98.6917V61.0549H831.404C828.384 60.9979 825.392 61.5506 822.59 62.6789C819.788 63.8072 817.252 65.4882 815.115 67.6213C812.987 69.7544 811.306 72.2949 810.176 75.0928C809.045 77.8907 808.494 80.8871 808.551 83.9025"/>
+    <path class="m-ink" d="M1088.87 100.859C1088.87 114.942 1079.81 123.997 1065.53 123.997C1051.23 123.997 1042.38 114.942 1042.38 100.859V1.63672H1012.2V100.859C1012.2 114.942 1003.14 123.997 988.848 123.997C974.563 123.997 965.691 114.942 965.691 100.859V1.63672H935.506V100.859C935.506 132.452 956.63 152.994 988.848 152.994C996.238 153.091 1003.54 151.49 1010.2 148.313C1016.87 145.137 1022.71 140.47 1027.28 134.674C1031.88 140.396 1037.7 145.014 1044.32 148.184C1050.94 151.355 1058.19 152.999 1065.53 152.994C1097.94 152.994 1119.08 132.223 1119.08 100.859V1.63672H1088.87V100.859Z"/>
+    <path class="m-ink" d="M1269.81 1.63672H1218.77C1189.97 1.63672 1170.66 20.5589 1170.66 48.7239V104.805C1170.66 132.971 1189.78 151.706 1218.77 151.706H1269.89C1272.9 151.763 1275.91 151.21 1278.71 150.082C1281.5 148.953 1284.05 147.272 1286.17 145.139C1288.31 143.007 1289.99 140.466 1291.12 137.668C1292.24 134.871 1292.8 131.874 1292.75 128.858V122.814H1218.77C1207.89 122.814 1200.84 115.773 1200.84 104.91V90.2242H1282.17V61.8311H1200.76V48.5577C1200.76 37.6741 1207.8 30.6328 1218.69 30.6328H1292.75V24.6092C1292.81 21.5846 1292.27 18.577 1291.15 15.7673C1290.03 12.9577 1288.35 10.4039 1286.21 8.25984C1284.08 6.11573 1281.53 4.4255 1278.73 3.29086C1275.92 2.15622 1272.91 1.60063 1269.89 1.65742"/>
+    <path class="m-ink" d="M1371.67 104.889V1.63672H1341.46V105.283C1341.46 133.262 1360.8 151.789 1389.57 151.789H1429.64C1432.65 151.845 1435.66 151.294 1438.45 150.165C1441.25 149.037 1443.8 147.356 1445.92 145.223C1448.06 143.09 1449.74 140.548 1450.87 137.751C1451.99 134.953 1452.55 131.957 1452.5 128.941V122.897H1389.49C1378.62 122.897 1371.58 115.855 1371.58 104.992"/>
+    <path class="m-ink" d="M1538.97 122.793C1528.1 122.793 1521.07 115.752 1521.07 104.889V1.63672H1490.95V105.283C1490.95 133.262 1510.27 151.789 1539.06 151.789H1579.1C1582.12 151.843 1585.11 151.288 1587.91 150.159C1590.71 149.029 1593.25 147.348 1595.38 145.216C1597.52 143.084 1599.2 140.544 1600.33 137.748C1601.45 134.952 1602.01 131.956 1601.95 128.942V122.897L1538.97 122.793Z"/>
+    <path class="m-orange" d="M1767.44 76.2919H1689.54V53.1527C1689.54 38.6131 1698.99 29.2039 1713.49 29.2039H1743.46C1758.01 29.2039 1767.44 38.6546 1767.44 53.1527V76.2919ZM1743.46 0H1713.49C1680.87 0 1659.33 21.1448 1659.33 53.1527V151.772H1689.54V104.872H1767.44V151.772H1797.62V53.1527C1797.62 21.1448 1776.08 0 1743.46 0Z"/>
+    <path class="m-orange" d="M1840.53 1.30078H1855.59C1863.11 1.30078 1869.21 7.39451 1869.21 14.9115V151.209H1840.53V1.30078Z"/>
+  </symbol>
+</svg>
+
+<!-- ═══════════════════════ NAV ═══════════════════════ -->
+<header class="nav" id="nav">
+  <nav class="nav__in" aria-label="Primary">
+    <a class="nav__brand" href="/next" aria-label="Stagwell AI — home">
+      <svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg>
+    </a>
+    <ul class="nav__links">
+      <li><a href="/next/why">Why Stagwell AI</a></li>
+      <li><a href="/next/products">Products</a></li>
+    </ul>
+    <div class="nav__acts">
+      <!-- the magnifier opens the chat over the page, full screen, in light -->
+      <button type="button" class="nav__search" id="navSearch" aria-label="Search — ask Stagwell" aria-haspopup="dialog" aria-expanded="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12.8 12.8L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
+      <!-- the phone's way in: the links and both buttons live in the sheet -->
+      <button type="button" class="nav__burger" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navMenu"><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<!-- the menu, on a phone: under the bar, the pages then the two ways in -->
+<nav class="menu" id="navMenu" aria-label="Menu" hidden>
+  <div class="menu__top">
+    <!-- the magnifier lives here on a phone; it opens the same chat -->
+    <button type="button" class="menu__search" id="menuSearch" aria-haspopup="dialog">
+      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12.8 12.8L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Ask Stagwell</span>
+    </button>
+    <ul class="menu__links">
+      <li><a href="/next/why">Why Stagwell AI</a></li>
+      <li><a href="/next/products">Products</a></li>
+    </ul>
+  </div>
+  <div class="menu__acts">
+    <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
+  </div>
+</nav>
+
+<!-- the chat, full screen over the page: the Ask Stagwell block itself,
+     in light. The magnifier opens it; the arrow or Enter sends to the agent. -->
+<div class="chat-over" id="chatOver" role="dialog" aria-modal="true" aria-label="Ask Stagwell" hidden>
+  <a class="chat-over__brand" href="/next" aria-label="Stagwell AI — home"><svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg></a>
+  <button type="button" class="hero__disc chat-over__close" id="chatOverClose" aria-label="Close"><svg class="ic ic-x" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <div class="wrap ask__in chat-over__in">
+    <h2 class="display display--ask chat-over__title">How can we <em>help<span class="q">?</span></em></h2>
+    <p class="ask__lede">Ask anything. Stagwell AI finds the right expertise, <br>technology and people to solve it.</p>
+    <form class="ask__form" id="askFormOver" autocomplete="off">
+      <label class="vh" for="askInputOver">Ask Stagwell</label>
+      <div class="ask__field">
+        <input class="ask__input" id="askInputOver" name="q" type="text"
+               placeholder="Ask Stagwell" spellcheck="false">
+        <button class="ask__go" type="submit" aria-label="Ask Stagwell">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </form>
+    <ul class="ask__tags" role="group" aria-label="Pick a starting point">
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Increase brand awareness">Increase brand awareness</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Reach Gen Z">Reach Gen Z</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Improve sales">Improve sales</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Analyze competitors">Analyze competitors</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Explore new markets">Explore new markets</button></li>
+    </ul>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- ═══════════════════════ 1 · HERO ═══════════════════════
+     Half and half: the words on the left, the agent on the right. The chat
+     is the hero's other half, not a section under it — the visitor can start
+     talking without scrolling. -->
+<section class="hero" id="hero">
+  <!-- the ground: ONE still, not a turning strip (client, 2026-09-09). The
+       other two stills are still in /assets/img if the rotation comes back. -->
+  <div class="hero__bg" id="heroSlides" aria-hidden="true">
+    <img class="hero__pic is-on" src="/next-jk/assets/img/products-hero.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+  </div>
+
+  <!-- one centred column, as in the reference: the title, the line, then the
+       agent — its field, its starting points, and the ways to a person. -->
+  <div class="hero__in wrap" id="ask">
+    <h1 class="display display--hero" id="heroTitle">
+      <span class="ln"><span class="ln__in">Agentic solutions built to</span></span><span class="ln"><span class="ln__in">transform your business</span></span>
+    </h1>
+    <p class="hero__lede rv" style="--d:.35s">Whatever your marketing challenge, we deliver results</p>
+
+    <div class="chat">
+      <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
+      <!-- the field as a box, not a pill: the question sits at the top of it
+           and the send disc waits on its floor -->
+      <form class="askbox chat__form" id="agentForm" autocomplete="off">
+        <label class="vh" for="agentInput">Ask Stagwell AI</label>
+        <!-- the conversation happens in here, above the line you type on -->
+        <div class="askbox__thread" id="agentThread" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <!-- a caret blinks at the head of the line, tight to the first letter,
+             so the field reads as waiting to be typed in (client) -->
+        <div class="askbox__line">
+          <span class="askbox__caret" aria-hidden="true"></span>
+          <input class="askbox__input" id="agentInput" name="q" type="text" placeholder="What do you need help solving?" spellcheck="false">
+        </div>
+        <div class="askbox__bar">
+          <button class="askbox__go" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </form>
+
+    </div>
+
+    <!-- the starting points are the only thing under the box now: three on the
+         first line, two on the second (client) -->
+    <ul class="chat__tags chat__tags--split" id="agentTags" aria-label="Pick a starting point">
+      <li><button type="button" class="tag" data-q="Increase brand awareness"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 13.5 7.5 9l3.5 3.5L17 6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 6.5h4v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Increase brand awareness</button></li>
+      <li><button type="button" class="tag" data-q="Reach Gen Z"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="13.6" cy="8.4" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 15.4c.6-2.2 2.3-3.4 4.5-3.4s3.9 1.2 4.5 3.4M13.2 12.2c1.9 0 3.2 1 3.8 2.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Reach Gen Z</button></li>
+      <li><button type="button" class="tag" data-q="Improve sales"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 16V9M8.5 16V5M13.5 16v-4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.5 16H2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Improve sales</button></li>
+      <li class="tag__br" aria-hidden="true"></li>
+      <li><button type="button" class="tag" data-q="Analyze competitors"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.6" cy="8.6" r="4.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12.4 12.4 16.5 16.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Analyze competitors</button></li>
+      <li><button type="button" class="tag" data-q="Explore new markets"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 10h14M10 3c1.9 2 2.9 4.4 2.9 7s-1 5-2.9 7c-1.9-2-2.9-4.4-2.9-7s1-5 2.9-7Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Explore new markets</button></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 3 · WHAT IS STAGWELL AI ═══════════════════════ -->
+<section class="intro" id="about">
+  <div class="intro__media" style="width:518px;height:587px">
+    <img class="intro__pic" src="/next-jk/assets/img/about.jpg" alt="" width="1100" height="1374" loading="lazy" decoding="async" style="width:527px;object-fit:cover;height:629px;left:-1px">
+  </div>
+  <div class="intro__body">
+    <p class="hero__sign rv" style="letter-spacing:2px">INTRODUCING STAGWELL AI</p>
+    <h2 class="display display--intro rv" style="--d:.1s;font-weight:600"><span style="font-weight:600">Stagwell AI is a custom portfolio of <span style="color:#009CBD">agentic solutions built for businesses of any size.</span></span></h2>
+    <p class="intro__lede rv" style="--d:.2s">We combine technology with deep marketing expertise to help your business make better decisions, execute faster, and drive stronger performance.</p>
+    <p class="intro__act rv" style="--d:.3s"><a class="btn btn--line btn--lg" href="#ask" data-ask>LEARN MORE</a></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 4 · WHY STAGWELL AI ═══════════════════════ -->
+<section class="why" id="why" style="background:linear-gradient(20deg,#009CBD,#035173,#003349)">
+  <div class="wrap">
+    <h2 class="display display--cos rv"><span class="ln"><span class="ln__in" style="font-weight:600;color:#FFFFFF">Why <em>Stagwell AI.</em></span></span></h2>
+    <ul class="why__grid why__grid--four">
+      <li class="why__item rv" style="--d:.0s;background-color:#FFFFFF;text-shadow:0px 4px 12px rgba(0,0,0,.15);position:static;display:flex;gap:12px"><h3 class="why__t" style="font-size:26px;color:#009CBD">Expertise</h3><p class="why__d why__d--lead">Built by practitioners for practitioners.</p><p class="why__d">Built by the leading marketers, strategists, creatives, data scientists and engineers across Stagwell’s network of agencies, including Code and Theory, the most-awarded digital agency of the agentic era.</p></li>
+      <li class="why__item rv" style="--d:.1s;background-color:#FFFFFF"><h3 class="why__t" style="font-size:26px;color:#009CBD">Experience</h3><p class="why__d why__d--lead">Proven success over 10+ years with 5,000 of the world’s most ambitious brands.</p><p class="why__d">Every challenge solved sharpens the next – a decade of experience, delivered with the agility and measurable impact to prove it.</p></li>
+      <li class="why__item rv" style="--d:.2s;background-color:#FFFFFF"><h3 class="why__t" style="color:#009CBD">Edge</h3><p class="why__d why__d--lead">Powered by leading technology partners, models and infrastructure.</p><p class="why__d">Built with best-in-class technology partners, including Palantir and Adobe, and connected to cutting-edge models and infrastructure.</p></li>
+      <li class="why__item rv" style="--d:.3s;background-color:#FFFFFF"><h3 class="why__t" style="color:#009CBD">Extension</h3><p class="why__d why__d--lead">Built to fit your business, not the other way around.</p><p class="why__d">From full service to self-service capabilities, our solutions can stand alone, integrate with existing technology stacks, or work together as an orchestrated system to meet evolving business needs.</p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 5 · AGENTIC SOLUTIONS ═══════════════════════
+     The portfolio in overview, not four landing pages: what it is, who it
+     fits, how it joins what you run, and the agent as the way through. -->
+<section class="port" id="solutions" style="display:none">
+  <div class="wrap">
+    <p class="port__eyebrow rv">Agentic solutions</p>
+    <h2 class="display display--port rv" style="--d:.1s"><span class="ln"><span class="ln__in">How we put agentic AI</span></span><span class="ln"><span class="ln__in"><em>to work</em></span></span></h2>
+    <ul class="port__rows">
+      <li class="port__row rv">
+        <div class="port__body">
+          <h3 class="port__title">For businesses of every size</h3>
+          <p class="port__head">A portfolio of agentic solutions: adopt the ones you need, when you need them.</p>
+          <a class="btn btn--ink btn--lg port__go" href="/next/products">Learn more</a>
+        </div>
+        <div class="port__media"><img class="port__pic" src="/next-jk/assets/img/crosswalk.jpg" alt="" loading="lazy" decoding="async"></div>
+      </li>
+      <li class="port__row rv">
+        <div class="port__body">
+          <h3 class="port__title">Fits the technology you use</h3>
+          <p class="port__head">The solutions integrate with the stack your business already runs.</p>
+          <a class="btn btn--ink btn--lg port__go" href="/next/products">Learn more</a>
+        </div>
+        <div class="port__media"><img class="port__pic port__pic--in" src="/next-jk/assets/img/glass.jpg" alt="" loading="lazy" decoding="async"></div>
+      </li>
+      <li class="port__row rv">
+        <div class="port__body">
+          <h3 class="port__title">Guided by Ask Stagwell</h3>
+          <p class="port__head">Tell the agent what you are up against; it points you to the solution that fits.</p>
+          <a class="btn btn--ink btn--lg port__go" href="#ask" data-ask>Ask Stagwell</a>
+        </div>
+        <div class="port__media"><img class="port__pic" src="/next-jk/assets/img/solutions-guided.jpg" alt="" loading="lazy" decoding="async"></div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 8 · FROM INSIGHT TO IMPACT ═══════════════════════
+     The journey, named in the client's brief — five steps, nothing more. -->
+<section class="impact" id="impact" style="display:none">
+  <div class="wrap">
+    <h2 class="display display--cos rv"><span class="ln"><span class="ln__in" style="font-weight:600">From insight <em style="color:#FFB81C">to impact.</em></span></span></h2>
+    <ol class="impact__steps">
+      <li class="impact__step rv" style="--d:.0s"><span class="impact__n">01</span><span class="impact__t">Business problem</span></li>
+      <li class="impact__step rv" style="--d:.1s"><span class="impact__n">02</span><span class="impact__t">Solution discovery</span></li>
+      <li class="impact__step rv" style="--d:.2s"><span class="impact__n">03</span><span class="impact__t">Integration or activation</span></li>
+      <li class="impact__step rv" style="--d:.3s"><span class="impact__n">04</span><span class="impact__t">Execution</span></li>
+      <li class="impact__step rv" style="--d:.4s"><span class="impact__n">05</span><span class="impact__t">Measurable impact</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 9 · TRUST AND METRICS ═══════════════════════
+     The numbers as bordered cards — the project's own approved values. -->
+<section class="metrics" id="trust" style="display:none">
+  <div class="wrap">
+    <ul class="stats" aria-label="Stagwell at scale">
+      <li class="stat rv"><span class="stat__n">70<i>+</i></span><span class="stat__d">Stagwell agencies contributing expertise</span></li>
+      <li class="stat rv" style="--d:.1s"><span class="stat__n">5,000</span><span class="stat__d">of the world’s most ambitious brands</span></li>
+      <li class="stat rv" style="--d:.2s"><span class="stat__n">10<i>+</i></span><span class="stat__d">agentic solutions across research, communications, media and data</span></li>
+      <li class="stat rv" style="--d:.3s"><span class="stat__n stat__n--words"><span>Palantir</span><span>Adobe</span><span>Google</span></span><span class="stat__d">strategic technology partnerships</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════ 10 · FINAL CONVERSION ═══════════════════════
+     The page ends where it turned: the agent's field again, a demo, and a
+     call. No report. -->
+<section class="ask-end" id="start">
+  <div class="wrap ask-end__in">
+    <h2 class="display display--end rv"><span class="ln"><span class="ln__in"><span class="navy" style="font-weight:600;font-size:80px;color:#FF6D24">How can we help?</span></span></span></h2>
+    <p class="ask-end__lede rv" style="--d:.15s">Whatever your marketing challenge, we have the right solution</p>
+    <div class="ask-end__acts">
+      <form class="ask-mini rv" id="askEnd" style="--d:.3s" autocomplete="off">
+        <label class="vh" for="askEndInput">Ask Stagwell AI</label>
+        <span class="ask-mini__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="ask-mini__hint" aria-hidden="true"><span class="ask-mini__hint-w is-on">Maybe just start with your site.</span></span>
+        <input class="ask-mini__input" id="askEndInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
+        <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
+      <div class="ask-end__ways">
+        <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
+        <div class="call" id="callEnd" data-state="idle">
+          <button type="button" class="btn btn--line btn--lg btn--ic call__btn"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
+          <form class="call__form" autocomplete="off" novalidate aria-label="Call me">
+            <button type="button" class="call__x" data-close aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <label class="vh" for="callEndCode">Country code</label>
+            <select class="call__cc" id="callEndCode" aria-label="Country code"><option value="1" selected>United States / Canada (+1)</option><option value="44">United Kingdom (+44)</option><option value="972">Israel (+972)</option><option value="49">Germany (+49)</option><option value="33">France (+33)</option><option value="34">Spain (+34)</option><option value="39">Italy (+39)</option><option value="31">Netherlands (+31)</option><option value="61">Australia (+61)</option><option value="55">Brazil (+55)</option><option value="52">Mexico (+52)</option><option value="91">India (+91)</option><option value="81">Japan (+81)</option><option value="65">Singapore (+65)</option><option value="971">United Arab Emirates (+971)</option></select>
+            <span class="call__sep" aria-hidden="true"></span>
+            <label class="vh" for="callEndNum">Phone number</label>
+            <input class="call__num" id="callEndNum" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel-national" spellcheck="false">
+            <button type="submit" class="call__go" aria-label="Call me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </form>
+          <div class="call__done" role="status" aria-live="polite">
+            <button type="button" class="call__x" data-close aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <span class="call__wave" aria-hidden="true"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg></span>
+            <span class="call__status"><b class="call__line">Calling you now…</b><span class="call__to"></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="foot">
+  <div class="wrap foot__in" style="background:linear-gradient(30deg,#003349,#009CBD,#FF6D24);color:#FFFFFF;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px 47px;width:100%;padding-block:clamp(48px,7vw,88px)">
+    <ul class="foot__big" style="flex:1 1 260px;min-width:0">
+      <li><a href="/next/why" style="color:#FFFFFF;font-size:20px;line-height:1.15;display:inline-block">Products<br><br>About Stagwell AI<br></a></li>
+    </ul>
+    <ul class="foot__small" style="flex:1 1 320px;min-width:0;display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:flex-start">
+      <li><button type="button" data-cta="session" style="color:#FFFFFF;text-align:left">Book a strategy session</button></li>
+      <li><a href="https://www.stagwellglobal.com/privacy-policy/" target="_blank" rel="noopener" style="color:#FFFFFF">Privacy Notice</a></li>
+      <li><button type="button" data-cta="expert" style="color:#FFFFFF">Talk to an AI expert</button></li>
+      <li><a href="https://www.stagwellglobal.com/wp-content/uploads/2021/11/Stagwell-Inc-Terms-of-Use_Oct-2021.pdf" target="_blank" rel="noopener" style="color:#FFFFFF">Terms of Use</a></li>
+    </ul>
+  </div>
+  <div class="wrap foot__band">
+    <div class="foot__social">
+      <a class="foot__so" href="https://www.linkedin.com/company/stagwell" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.4 7.6h2.4V16H4.4zM5.6 3.8a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8zM8.4 7.6h2.3v1.2c.4-.7 1.3-1.4 2.7-1.4 2.8 0 3.3 1.8 3.3 4.2V16h-2.4v-3.9c0-.9 0-2.1-1.3-2.1s-1.5 1-1.5 2V16H8.4z" fill="currentColor"/></svg></a>
+      <a class="foot__so" href="https://x.com/stagwell" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a>
+      <a class="foot__so" href="https://www.instagram.com/stagwell" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="13" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="14" cy="6" r=".9" fill="currentColor"/></svg></a>
+      <span class="foot__follow">Follow us</span>
+    </div>
+    <div class="foot__legal">
+      <span class="foot__copy">Copyright 2026</span>
+      <a class="foot__brand" href="/next" aria-label="Stagwell AI"><svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<!-- the machine behind the box: the data contract, the session and routing
+     matrix, the six-question flow, and the background site read — the same
+     files the full agent page runs on (client, 2026-09-09: the chatbot works) -->
+<script src="/next-jk/data-loader.js"></script>
+<script src="/next-jk/engine.js"></script>
+<script src="/next-jk/flow.js"></script>
+<script src="/next-jk/research.js"></script>
+<script src="/next-jk/lead.js"></script>
+<script src="/next-jk/home.js"></script>
+<script src="/next-jk/hero-agent.js"></script>
+</body>
+</html>
