@@ -689,3 +689,27 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
    not a shadow: it only darkens the picture and fades out a fifth of the way down */
 .hb-page .hero::after{content:"";position:absolute;left:0;right:0;top:0;height:clamp(140px,24vh,240px);z-index:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(0,10,24,.62) 0%,rgba(0,10,24,.3) 45%,rgba(0,10,24,0) 100%)}
+
+/* phones (client: "the chat looks too small, everything is cropped") */
+@media (max-width:600px){
+  /* the field: the tags wrap in full rows (no half-cut tag at the edge), the line to type on at 16px
+     (which also stops iOS zooming into the field) */
+  .hb-page #hbAsk .hb-ask__tags{flex-wrap:wrap;overflow:visible;margin:0 -14px 0 -18px;padding:2px 14px 14px 18px;gap:6px}
+  .hb-page #hbAsk .hb-ask__tags::after{content:none}
+  .hb-page #hbAsk .hb-ask__tags .tag{height:30px;padding:0 10px;font-size:12px}
+  .hb-page .hero__in > #hbAsk.hb-ask--box{padding:14px 12px 12px 18px;border-radius:22px}
+  .hb-page #hbAsk .ask-mini__input{font-size:16px;height:40px}
+  /* while talking: a smaller title and no subtitle, so the chat gets most of the screen */
+  .hb-page .hero.hb-chatting{padding-top:calc(var(--nav-h, 64px) + 16px)}
+  .hb-page .hero.hb-chatting .display--hero{font-size:30px !important;line-height:1.08}
+  .hb-page .hero.hb-chatting .hero__lede{display:none}
+  .hb-page .hero.hb-chatting #ask > .chat{margin-top:18px}
+}
+/* phones: the six starting points as a tidy two-column grid of suggestion cards (three rows, not six);
+   a long label wraps inside its card — nothing is cut */
+@media (max-width:600px){
+  .hb-page #hbAsk .hb-ask__tags{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  .hb-page #hbAsk .hb-ask__tags li{min-width:0}
+  .hb-page #hbAsk .hb-ask__tags .tag{width:100%;height:auto;min-height:40px;padding:7px 10px;border-radius:12px;align-items:center;justify-content:flex-start;
+    white-space:normal;text-align:left;line-height:1.2;font-size:12.5px}
+}
