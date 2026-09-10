@@ -170,10 +170,9 @@ d.setAttribute('data-theme',t||sys);})();
        other two stills are still in /assets/img if the rotation comes back. -->
   <div class="hero__bg" id="heroSlides" aria-hidden="true">
     <img class="hero__pic is-on" src="/assets/img/hero-light.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
-    <!-- OPTION B depth: the same picture again, blurred and drifting very slowly -->
-    <div class="hb-field"></div>
   </div>
-  <div class="hb-grain" aria-hidden="true"></div>
+  <!-- the chat's thinking field, behind the whole hero (client: "the small dots, like when ChatGPT is thinking") -->
+  <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
 
   <!-- one centred column, as in the reference: the title, the line, then the
        agent — its field, its starting points, and the ways to a person. -->
@@ -188,13 +187,11 @@ d.setAttribute('data-theme',t||sys);})();
     <form class="ask-mini hb-ask" id="hbAsk" autocomplete="off">
         <label class="vh" for="hbAskInput">Ask Stagwell AI</label>
         <span class="ask-mini__dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="ask-mini__hint" aria-hidden="true"><span class="ask-mini__hint-w is-on">Maybe just start with your site.</span></span>
-        <input class="ask-mini__input" id="hbAskInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
+        <input class="ask-mini__input" id="hbAskInput" name="q" type="text" placeholder="Maybe just start with your site." spellcheck="false">
         <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </form>
 
     <div class="chat">
-      <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
       <!-- the field as a box, not a pill: the question sits at the top of it
            and the send disc waits on its floor -->
       <form class="askbox chat__form" id="agentForm" autocomplete="off">
@@ -245,12 +242,15 @@ d.setAttribute('data-theme',t||sys);})();
      White, Roobert, big type; the product images we made; every word is the
      site's own (the homepage, the product pages, data/solutions.json). -->
 <section class="hb-statement" id="about">
-  <div class="hb-wrap">
+  <div class="hb-wrap hb-statement__grid">
+    <div class="hb-statement__body">
     <p class="hb-eyebrow rv">Introducing Stagwell AI</p>
     <h2 class="hb-statement__text" data-words>Stagwell AI is a custom portfolio of agentic solutions built for businesses of any size.</h2>
     <div class="hb-statement__foot rv">
       <p class="hb-statement__lede">We combine technology with deep marketing expertise to help your business make better decisions, execute faster, and drive stronger performance.</p>
     </div>
+    </div>
+    <figure class="hb-statement__media rv" style="--d:.1s"><img src="/assets/img/hero-slide-1.jpg" alt="" width="1024" height="1536" loading="lazy" decoding="async"></figure>
   </div>
 </section>
 
@@ -271,7 +271,7 @@ d.setAttribute('data-theme',t||sys);})();
           <p class="hb-stack__sum">Stagwell&#x27;s agentic operating system for marketing, built on the tools you already use.</p>
           <a class="hb-stack__go" href="/the-machine">Explore The Machine<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/products/hero-the-machine.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/products/card-the-machine.jpg" alt="" width="1600" height="900" loading="lazy" decoding="async"></div>
       </div>
     </article>
     <article class="hb-stack__card" style="--i:1">
@@ -297,7 +297,7 @@ d.setAttribute('data-theme',t||sys);})();
           <p class="hb-stack__sum">AI voice agents that interview your customers at scale and turn it into insight.</p>
           <a class="hb-stack__go" href="/newvoices">Explore New Voices<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/products/hero-newvoices-2.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/products/card-newvoices.jpg" alt="" width="1145" height="1374" style="object-position:50% 30%" loading="lazy" decoding="async"></div>
       </div>
     </article>
     <article class="hb-stack__card" style="--i:3">
@@ -310,7 +310,7 @@ d.setAttribute('data-theme',t||sys);})();
           <p class="hb-stack__sum">A secure AI workspace for marketers: leading LLMs and marketing agents in one place.</p>
           <a class="hb-stack__go" href="/agent-cloud">Explore Agent Cloud<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/products/hero-agent-cloud.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/products/agent-cloud-mobile.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async"></div>
       </div>
     </article>
     </div>
@@ -326,58 +326,69 @@ d.setAttribute('data-theme',t||sys);})();
       <h2 class="hb-h2 rv" style="--d:.08s">The Stagwell AI suite.</h2>
     </div>
     <div class="hb-suite__acts rv" style="--d:.16s">
-      <button type="button" class="hb-round" data-rail="-1" aria-label="Previous products"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <button type="button" class="hb-round" data-rail="1" aria-label="Next products"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <a class="hb-link" href="/products">See every product<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="hb-btn" href="/products">See every product<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
   </div>
   <ul class="hb-rail" aria-label="The Stagwell AI suite">
+      <li><a class="hb-card" href="/s/imai">
+        <span class="hb-card__media"><img src="/assets/img/imai.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="hb-card__name">IMAI</span>
+        <span class="hb-card__desc">Influencer programs end to end: discovery and vetting across hundreds of millions of profiles, then outreach, contracts, approvals and ROI.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a></li>
       <li><a class="hb-card" href="/s/questbrand">
         <span class="hb-card__media"><img src="/assets/img/questbrand.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="hb-card__name">QuestBrand</span>
         <span class="hb-card__desc">Always-on tracking of awareness, consideration and momentum, benchmarked against the competitors you name.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a></li>
       <li><a class="hb-card" href="/s/questdiy">
         <span class="hb-card__media"><img src="/assets/img/glass.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="hb-card__name">QuestDIY</span>
         <span class="hb-card__desc">Run real consumer research yourself in days: AI drafts the questionnaire, fields it in 100+ countries and helps you read the results.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a></li>
       <li><a class="hb-card" href="/s/bera">
         <span class="hb-card__media"><img src="/assets/img/brand-growth.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="hb-card__name">BERA.ai</span>
         <span class="hb-card__desc">Continuous scoring of the drivers of brand strength, connected to pricing power, revenue and market value.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a></li>
       <li><a class="hb-card" href="/s/knowledge_machine">
-        <span class="hb-card__media"><img src="/assets/img/hero-slide-1.jpg" alt="" loading="lazy" decoding="async"></span>
+        <span class="hb-card__media"><img src="/assets/img/pulse.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="hb-card__name">The Knowledge Machine</span>
         <span class="hb-card__desc">Reads narrative alignment and emotional intensity to flag the risks that are about to become headlines.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a></li>
       <li><a class="hb-card" href="/s/unicepta">
         <span class="hb-card__media"><img src="/assets/img/newspaper.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="hb-card__name">UNICEPTA</span>
         <span class="hb-card__desc">Human-plus-AI monitoring of news, social and broadcast worldwide, in every language, with analysis of the narratives forming.</span>
-      </a></li>
-      <li><a class="hb-card" href="/s/imai">
-        <span class="hb-card__media"><img src="/assets/img/imai.jpg" alt="" loading="lazy" decoding="async"></span>
-        <span class="hb-card__name">IMAI</span>
-        <span class="hb-card__desc">Influencer programs end to end: discovery and vetting across hundreds of millions of profiles, then outreach, contracts, approvals and ROI.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a></li>
       <li><a class="hb-card" href="/s/smb_platform">
         <span class="hb-card__media"><img src="/assets/img/crosswalk.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="hb-card__name">Stagwell AI for SMBs</span>
         <span class="hb-card__desc">Discover creators, validate audience quality and prove ROI from one dashboard, without a big team or budget.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a></li>
       <li><a class="hb-card" href="/s/geopulse">
         <span class="hb-card__media"><img src="/assets/img/geopulse.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="hb-card__name">GEOPulse</span>
         <span class="hb-card__desc">Tracks how ChatGPT, Gemini and Perplexity mention, describe and recommend your brand versus rivals, and what to change.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a></li>
       <li><a class="hb-card" href="/s/numetrix">
         <span class="hb-card__media"><img src="/assets/img/numetrix.jpg" alt="" loading="lazy" decoding="async"></span>
         <span class="hb-card__name">Numetrix</span>
         <span class="hb-card__desc">Real-world behaviour measurement: who actually visited, how foot traffic moved, and whether advertising changed where people went.</span>
+        <span class="hb-card__go">Explore<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a></li>
   </ul>
+  <div class="hb-wrap hb-suite__nav">
+      <button type="button" class="hb-round" data-rail="-1" aria-label="Previous products"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button type="button" class="hb-round" data-rail="1" aria-label="Next products"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
 </section>
 
 <section class="hb-why" id="why">
@@ -413,6 +424,7 @@ d.setAttribute('data-theme',t||sys);})();
 </section>
 
 <section class="ask-end" id="start">
+  <canvas class="hero__think" id="endThink" aria-hidden="true"></canvas>
   <div class="wrap ask-end__in">
     <h2 class="display display--end rv"><span class="ln"><span class="ln__in"><span class="navy" style="font-weight:600;font-size:80px;color:#FF6D24">How can we help?</span></span></span></h2>
     <p class="ask-end__lede rv" style="--d:.15s">Whatever the challenge, we deliver results</p>
