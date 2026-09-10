@@ -211,3 +211,11 @@ body.pp--targeting-machine .pp-hero--photo::before{background:
     radial-gradient(ellipse 45% 60% at 0% 0%,rgba(4,34,52,.66) 0%,rgba(4,34,52,.45) 30%,rgba(4,34,52,0) 100%),
     linear-gradient(180deg,rgba(7,20,29,.32) 0%,rgba(7,20,29,.10) 38%,rgba(7,20,29,0) 70%),
     var(--hero-bg) center / cover no-repeat}
+
+/* The Machine's How it works picture: the mark sat small in a big dark field
+   (client: "zoom it a bit, the symbol is too small" — this page only). Scaled
+   from the mark's own centre; the rounded frame clips the edges. */
+body.pp--the-machine .pp-more__media img{transform:scale(1.5);transform-origin:50% 48%}
+@media (max-width:820px){
+  body.pp--the-machine .pp-more__media img{transform:scale(1.7);transform-origin:50% 49%}
+}
