@@ -1153,7 +1153,7 @@ body.chat-open{overflow:hidden}
 .nav:not(.is-stuck) .nav__droptrig{color:rgba(255,255,255,.86)}
 .nav__chev{width:10px;height:10px;flex-shrink:0;transition:transform .3s var(--ease)}
 .nav__drop.is-open .nav__chev{transform:rotate(180deg)}
-.nav__panel{position:absolute;top:calc(100% + 16px);left:-18px;width:340px;padding:8px;border-radius:18px;
+.nav__panel{position:absolute;top:calc(100% + 16px);left:-18px;width:384px;padding:8px;border-radius:18px;
   background:#FFFFFF;color:var(--ink);box-shadow:0 22px 60px rgba(11,18,32,.16),inset 0 0 0 1px var(--line);
   opacity:0;visibility:hidden;transform:translateY(-6px);z-index:60;
   transition:opacity .22s ease,transform .3s var(--ease),visibility 0s linear .3s}
@@ -1161,8 +1161,11 @@ body.chat-open{overflow:hidden}
 .nav__drop.is-open .nav__panel{opacity:1;visibility:visible;transform:none;
   transition:opacity .22s ease,transform .3s var(--ease),visibility 0s}
 .nav__plist{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
-.nav__pitem{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border-radius:12px;color:var(--ink)}
-.nav .nav__panel a.nav__pitem{font-size:inherit;font-weight:inherit;color:var(--ink);padding:12px 14px;border-bottom:0;
+.nav__pitem{display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:12px;color:var(--ink)}
+/* the product's own image, cropped square, on the left of its row (client) */
+.nav__pthumb{width:48px;height:48px;flex-shrink:0;border-radius:10px;object-fit:cover;display:block;background:#F1F2F4}
+.nav__ptext{display:flex;flex-direction:column;gap:3px;min-width:0}
+.nav .nav__panel a.nav__pitem{font-size:inherit;font-weight:inherit;color:var(--ink);padding:10px 12px;border-bottom:0;
   transition:background-color .2s ease}
 .nav .nav__panel a.nav__pitem:hover,.nav .nav__panel a.nav__pitem:focus-visible,
 .nav .nav__panel a.nav__pitem[aria-current="page"]{background:#F4F6F8;outline:0}

@@ -75,10 +75,10 @@ d.setAttribute('data-theme',t||sys);})();
         <button type="button" class="nav__droptrig" aria-expanded="false" aria-controls="navDrop">Products<svg class="nav__chev" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="nav__panel" id="navDrop">
           <ul class="nav__plist">
-            <li><a class="nav__pitem" href="/next/the-machine" aria-current="page"><span class="nav__pname">The Machine</span><span class="nav__pdesc">Enterprise agentic marketing operating system</span></a></li>
-            <li><a class="nav__pitem" href="/next/targeting-machine"><span class="nav__pname">The Targeting Machine</span><span class="nav__pdesc">Privacy-first audience intelligence and activation</span></a></li>
-            <li><a class="nav__pitem" href="/next/newvoices"><span class="nav__pname">New Voices</span><span class="nav__pdesc">AI voice insight campaigns</span></a></li>
-            <li><a class="nav__pitem" href="/next/agent-cloud"><span class="nav__pname">Agent Cloud</span><span class="nav__pdesc">Secure AI workspace and marketing agent toolkit</span></a></li>
+            <li><a class="nav__pitem" href="/next/the-machine" aria-current="page"><img class="nav__pthumb" src="/assets/img/products/thumb-the-machine.jpg" alt="" width="48" height="48" decoding="async"><span class="nav__ptext"><span class="nav__pname">The Machine</span><span class="nav__pdesc">Enterprise agentic marketing operating system</span></span></a></li>
+            <li><a class="nav__pitem" href="/next/targeting-machine"><img class="nav__pthumb" src="/assets/img/products/thumb-targeting-machine.jpg" alt="" width="48" height="48" decoding="async"><span class="nav__ptext"><span class="nav__pname">The Targeting Machine</span><span class="nav__pdesc">Privacy-first audience intelligence and activation</span></span></a></li>
+            <li><a class="nav__pitem" href="/next/newvoices"><img class="nav__pthumb" src="/assets/img/products/thumb-newvoices.jpg" alt="" width="48" height="48" decoding="async"><span class="nav__ptext"><span class="nav__pname">New Voices</span><span class="nav__pdesc">AI voice insight campaigns</span></span></a></li>
+            <li><a class="nav__pitem" href="/next/agent-cloud"><img class="nav__pthumb" src="/assets/img/products/thumb-agent-cloud.jpg" alt="" width="48" height="48" decoding="async"><span class="nav__ptext"><span class="nav__pname">Agent Cloud</span><span class="nav__pdesc">Secure AI workspace and marketing agent toolkit</span></span></a></li>
           </ul>
           <a class="nav__pall" href="/next/products">All products</a>
         </div>
@@ -86,9 +86,10 @@ d.setAttribute('data-theme',t||sys);})();
       <!-- /products:nav -->
     </ul>
     <div class="nav__acts">
-      <!-- the magnifier opens the chat over the page, full screen, in light -->
-      <a class="nav__search" href="#ask" aria-label="Ask Stagwell">
-        <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12.8 12.8L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <!-- a chat bubble with the AI spark, not a magnifier: it opens the chat over the
+           page, it is not a search (client, 2026-09-10) -->
+      <a class="nav__search" href="#ask" aria-label="Ask Stagwell AI">
+        <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.5 3.5h11a2 2 0 0 1 2 2V13a2 2 0 0 1-2 2H9.2L5.5 18v-3h-1a2 2 0 0 1-2-2V5.5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 6.2l.85 2.05 2.05.85-2.05.85L10 12l-.85-2.05L7.1 9.1l2.05-.85z" fill="currentColor"/></svg>
       </a>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
       <!-- the phone's way in: the links and both buttons live in the sheet -->
@@ -100,9 +101,9 @@ d.setAttribute('data-theme',t||sys);})();
 <!-- the menu, on a phone: under the bar, the pages then the two ways in -->
 <nav class="menu" id="navMenu" aria-label="Menu" hidden>
   <div class="menu__top">
-    <!-- the magnifier lives here on a phone; it opens the same chat -->
+    <!-- on a phone the same chat-bubble button lives here; it opens the same chat -->
     <a class="menu__search" href="#ask">
-      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12.8 12.8L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.5 3.5h11a2 2 0 0 1 2 2V13a2 2 0 0 1-2 2H9.2L5.5 18v-3h-1a2 2 0 0 1-2-2V5.5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 6.2l.85 2.05 2.05.85-2.05.85L10 12l-.85-2.05L7.1 9.1l2.05-.85z" fill="currentColor"/></svg>
       <span>Ask Stagwell</span>
     </a>
     <ul class="menu__links">
