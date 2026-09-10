@@ -211,8 +211,29 @@ mock, which is still nowhere durable — see §17.
 
 ## 11. HubSpot property setup checklist
 
-Run once by an admin: `HUBSPOT_ACCESS_TOKEN=pat-… node scripts/hubspot-setup.mjs`
-(`--dry-run` prints the plan). Creates group `stagwell_ai` and:
+**Turning HubSpot on, start to finish** (2026-09-10; the sandbox this was built in cannot reach
+`api.hubapi.com`, so the one-time property creation is run from a machine that can):
+
+1. HubSpot → Settings → Integrations → Private apps → **Create a private app**, name it
+   "Stagwell AI website". Scopes: `crm.objects.contacts.read`, `crm.objects.contacts.write`,
+   `crm.schemas.contacts.write` (the last one only for step 2; it can be removed afterwards).
+   Copy the access token.
+2. From a clone of this repo, Node 22+, **once**:
+   `HUBSPOT_ACCESS_TOKEN=pat-… node scripts/hubspot-setup.mjs`
+   It checks the token first, creates the group and the properties, skips any that already
+   exist, and is safe to run again. `--dry-run` prints the plan without a token.
+3. Vercel → the project → Settings → Environment Variables → add `HUBSPOT_ACCESS_TOKEN`,
+   marked **Sensitive**, for Production, Preview and Development. Redeploy.
+
+That is the whole switch: `hubspotMode()` returns `live` as soon as the token exists, so no code
+or flag changes. `HUBSPOT_MOCK=true` forces mock again if it ever needs turning off in a hurry.
+
+Verified before handover by running the real script and the real lead service against a
+stand-in portal that rejects unknown properties, exactly as HubSpot does: 17 created + 1 already
+present, a wrong token fails fast, a missing scope stops at the first property with the fix
+named, and a lead creates once then updates on the same email without duplicating.
+
+Creates group `stagwell_ai` and:
 
 `stagwell_ai_primary_goal` (select) · `stagwell_ai_contact_request` (select: call / demo /
 trial / expert / pricing) · `stagwell_ai_industry` · `stagwell_ai_company_size`

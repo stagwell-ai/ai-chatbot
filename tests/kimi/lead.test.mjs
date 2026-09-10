@@ -154,3 +154,99 @@ test('lead service: KIMI_HUBSPOT_ENABLED=false skips HubSpot entirely', async ()
   assert.equal(out.mode, 'off');
   assert.equal(out.results.length, 0);
 });
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AGAINST A REAL SERVER — the fake-fetch tests above prove the shapes; this
+   one runs the whole lead service over HTTP against a stand-in portal that
+   REJECTS any property it was not told about, exactly as HubSpot does. It is
+   the regression guard for the one mistake that would be invisible in
+   production: a property written by properties.js that the setup script never
+   creates, which HubSpot 400s, losing the lead.
+   ═══════════════════════════════════════════════════════════════════════════ */
+import http from 'node:http';
+import { PROPERTIES as DEFS, GROUP } from '../../api/_lib/leads/properties.js';
+
+function portal(known) {
+  const contacts = new Map();
+  let nextId = 100;
+  const STANDARD = ['email', 'firstname', 'lastname', 'phone', 'company'];
+  const server = http.createServer((req, res) => {
+    let raw = '';
+    req.on('data', c => (raw += c));
+    req.on('end', () => {
+      const body = raw ? JSON.parse(raw) : null;
+      const send = (code, out) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(out)); };
+      if (!/^Bearer pat-/.test(req.headers.authorization || '')) return send(401, { message: 'unauthorized' });
+      const reject = p => Object.keys(p).filter(k => !known.has(k) && !STANDARD.includes(k));
+      if (req.url.endsWith('/contacts/search')) {
+        const email = body.filterGroups[0].filters[0].value;
+        const hit = [...contacts.values()].find(c => c.properties.email === email);
+        return send(200, { results: hit ? [{ id: hit.id }] : [] });
+      }
+      if (req.method === 'POST' && req.url.endsWith('/objects/contacts')) {
+        const bad = reject(body.properties);
+        if (bad.length) return send(400, { message: 'Property values were not valid: ' + bad.join(', ') });
+        const id = String(nextId++); contacts.set(id, { id, properties: body.properties });
+        return send(201, { id });
+      }
+      const m = req.url.match(/\/objects\/contacts\/(\d+)$/);
+      if (m && req.method === 'PATCH') {
+        const bad = reject(body.properties);
+        if (bad.length) return send(400, { message: 'Property values were not valid: ' + bad.join(', ') });
+        Object.assign(contacts.get(m[1]).properties, body.properties);
+        return send(200, { id: m[1] });
+      }
+      send(404, {});
+    });
+  });
+  return { server, contacts };
+}
+
+test('over HTTP against a portal that knows only the properties the setup script creates: create, then update, never duplicate', async () => {
+  /* the portal is told about exactly what scripts/hubspot-setup.mjs would make */
+  const known = new Set(DEFS.map(p => p.name));
+  const { server, contacts } = portal(known);
+  await new Promise(r => server.listen(0, r));
+  const base = 'http://127.0.0.1:' + server.address().port;
+  const prev = { t: process.env.HUBSPOT_ACCESS_TOKEN, b: process.env.HUBSPOT_BASE_URL, m: process.env.HUBSPOT_MOCK };
+  process.env.HUBSPOT_ACCESS_TOKEN = 'pat-test'; process.env.HUBSPOT_BASE_URL = base; delete process.env.HUBSPOT_MOCK;
+  try {
+    const lead = validateLeadBody(BODY(), DATA).lead;
+    const first = await submitLead(lead, DATA);
+    assert.equal(first.delivered, true, 'delivered live');
+    assert.equal(first.action, 'created');
+    assert.equal(first.mode, 'live');
+    assert.equal(contacts.size, 1);
+
+    /* every property the service writes was accepted — i.e. the definitions
+       and the mapping agree. A mismatch would have been a 400 above. */
+    const written = [...contacts.values()][0].properties;
+    assert.ok(Object.keys(written).some(k => k.startsWith('stagwell_ai_')), 'discovery fields were written');
+    assert.equal(written.stagwell_ai_primary_product, 'newintel');
+    assert.match(written.stagwell_ai_conversation_summary, /NewIntel/);
+
+    const again = await submitLead(validateLeadBody(BODY(), DATA).lead, DATA);
+    assert.equal(again.action, 'updated', 'the same email updates');
+    assert.equal(contacts.size, 1, 'no duplicate contact');
+
+    const other = BODY(); other.lead.email = 'someone-else@example.com';
+    await submitLead(validateLeadBody(other, DATA).lead, DATA);
+    assert.equal(contacts.size, 2, 'a different email is a new contact');
+  } finally {
+    process.env.HUBSPOT_ACCESS_TOKEN = prev.t || ''; if (prev.b) process.env.HUBSPOT_BASE_URL = prev.b; else delete process.env.HUBSPOT_BASE_URL;
+    if (prev.m) process.env.HUBSPOT_MOCK = prev.m;
+    await new Promise(r => server.close(r));
+  }
+});
+
+test('the group and every property definition is well formed for the HubSpot API', () => {
+  assert.match(GROUP.name, /^[a-z_]+$/);
+  const seen = new Set();
+  DEFS.forEach(p => {
+    assert.match(p.name, /^stagwell_ai_[a-z_]+$/, p.name + ' internal name');
+    assert.ok(!seen.has(p.name), 'duplicate ' + p.name); seen.add(p.name);
+    assert.ok(['string', 'number', 'enumeration', 'bool', 'datetime'].includes(p.type), p.name + ' type');
+    assert.ok(['text', 'textarea', 'number', 'select', 'checkbox', 'date'].includes(p.fieldType), p.name + ' fieldType');
+    if (p.type === 'enumeration') assert.ok(p.options && p.options.length, p.name + ' needs options');
+  });
+});
