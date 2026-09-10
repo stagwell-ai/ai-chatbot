@@ -195,11 +195,17 @@
     const upd = () => {
       tk = false; if (!near) return;
       const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      /* depth: every card that has arrived on top of a card pushes it a step back — a little smaller,
+         a little darker — so the stack reads in depth; the last card stays as it is (client) */
+      const arrived = stackCards.map((c, i) => {
+        if (!i) return 0;
+        const stick = navH + 20 + i * 18, r = c.getBoundingClientRect();
+        return Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight - stick)));
+      });
       stackCards.forEach((c, i) => {
-        const nx = stackCards[i + 1]; if (!nx) { inners[i].style.transform = ''; return; }
-        const stick = navH + 20 + (i + 1) * 18, r = nx.getBoundingClientRect();
-        const p = Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight - stick)));
-        inners[i].style.transform = `scale(${(1 - 0.06 * p).toFixed(4)})`;
+        let depth = 0; for (let k = i + 1; k < stackCards.length; k++) depth += arrived[k];
+        inners[i].style.transform = depth ? `scale(${(1 - 0.045 * depth).toFixed(4)})` : '';
+        inners[i].style.filter = depth ? `brightness(${Math.max(.72, 1 - 0.09 * depth).toFixed(3)})` : '';
       });
     };
     new IntersectionObserver((es) => { near = es[0].isIntersecting; upd(); }, { rootMargin: '20% 0px' }).observe(document.querySelector('.hb-stack'));
@@ -315,4 +321,12 @@
   };
   field(document.getElementById('hbThink'), '#agentThread .turnb--wait', [['.nav .btn--ink', .85, .05], ['#hbAsk', .5, .6], ['.nav__brand', .1, .05]], document.querySelector('.hero .hero__pic'));
   field(document.getElementById('hbEndThink'), null, [['#start .display--end', .5, .25], ['#askEnd', .5, .55], ['#start .ask-end__ways .btn', .4, .8], ['#callEnd', .6, .8]], null, .45);   /* subtle on the white (client) */   /* the close: B's field, not the homepage's */
+})();
+
+/* the scroll cue leaves as soon as the page moves, and comes back at the top */
+(function () {
+  const cue = document.querySelector('.hb-scrollcue');
+  if (!cue) return;
+  const upd = () => cue.classList.toggle('is-gone', scrollY > 40);
+  addEventListener('scroll', upd, { passive: true }); upd();
 })();

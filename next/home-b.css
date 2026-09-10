@@ -462,3 +462,28 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 .hb-page .nav .nav__panel a.nav__pall:hover{background:none;color:var(--hb-ink);opacity:.7}
 .hb-page .nav .nav__panel a.nav__pall::after{width:16px;height:16px;-webkit-mask-size:16px 16px;mask-size:16px 16px}
 @media (prefers-reduced-motion:reduce){ .hb-page .nav .nav__panel a.nav__pitem::after{transition:none} }
+
+/* the scroll cue: desktop only, bottom right of the hero, no text — a hairline with a bright
+   segment travelling down it; inverts against the picture like the dots; leaves once you scroll */
+.hb-scrollcue{display:none}
+@media (min-width:901px){
+  .hb-scrollcue{display:block;position:absolute;right:clamp(28px,3.2vw,56px);bottom:clamp(32px,5vh,56px);z-index:2;width:1px;height:84px;
+    background:rgba(255,255,255,.28);overflow:hidden;mix-blend-mode:difference;pointer-events:none;
+    opacity:0;animation:hbCueIn .8s ease 1.4s forwards;transition:opacity .4s ease}
+  .hb-scrollcue span{position:absolute;left:0;top:0;width:100%;height:40%;background:#FFFFFF;transform:translateY(-100%);
+    animation:hbCue 1.8s cubic-bezier(.65,0,.35,1) infinite}
+  .hb-scrollcue.is-gone{opacity:0 !important}   /* keeps its entrance, so it comes straight back at the top */
+}
+@keyframes hbCueIn{to{opacity:1}}
+@keyframes hbCue{0%{transform:translateY(-100%)}100%{transform:translateY(250%)}}
+@media (prefers-reduced-motion:reduce){ .hb-scrollcue{animation:none;opacity:1} .hb-scrollcue span{animation:none;transform:translateY(60%)} }
+
+/* the stack in depth: a hairline border on every card, the pushed-back ones shrink toward the top,
+   and more scroll between cards so each one sits readable for a while (client: New Voices was hard to read) */
+.hb-stack__cards{gap:22vh}
+.hb-stack__inner{transform-origin:50% 0;box-shadow:0 0 0 1px rgba(11,18,32,.09),0 -18px 50px -30px rgba(11,18,32,.25);will-change:transform,filter}
+
+/* the statement: the paragraph beside the poster, low, next to it — the poster does not move (client) */
+@media (min-width:901px){
+  .hb-statement__grid > .hb-statement__lede{grid-column:7/11;align-self:end;margin-top:0;margin-bottom:clamp(8px,1vw,16px)}
+}
