@@ -432,7 +432,10 @@ function interpretUser(body) {
 async function interpretMode(body, res) {
   const { text, user } = interpretUser(body);
   if (!text) { res.status(400).json({ ok: false, error: 'no_text' }); return; }
-  const r = await structured({ system: INTERPRET_SYSTEM, user, maxTokens: 700, json: true, validate: parsed => validateInterpretation(parsed, VOCAB) });
+  /* 1,400: the JSON is ~150 tokens, but the Kimi gateway is a reasoning model
+     that thinks for several hundred first and returns an empty string when the
+     budget runs out mid-thought; OpenAI simply stops when the object is closed */
+  const r = await structured({ system: INTERPRET_SYSTEM, user, maxTokens: 1400, json: true, validate: parsed => validateInterpretation(parsed, VOCAB) });
   logTelemetry('interpret', r);
   if (!r.ok) { res.status(200).json({ ok: false, error: r.reason || 'unavailable', llm: publicTelemetry(r.telemetry) }); return; }
   res.status(200).json({ ok: true, interpretation: r.value, llm: publicTelemetry(r.telemetry) });
@@ -470,7 +473,7 @@ async function explainMode(body, res) {
   const solution = findSolution(body.productId);
   if (!solution) { res.status(400).json({ ok: false, error: 'unknown_product' }); return; }
   const { system, user } = explainPrompts(solution, body);
-  const r = await structured({ system, user, maxTokens: 300, json: true, validate: parsed => {
+  const r = await structured({ system, user, maxTokens: 900, json: true, validate: parsed => {
     const v = validateExplanation(parsed);
     /* a claim about a competitor product, or a product name that is not this one, is a schema failure too */
     if (v && SOLUTIONS.some(s => s.id !== solution.id && s.name && new RegExp('(?<![a-z])' + s.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![a-z])', 'i').test(v.why))) return null;
@@ -491,7 +494,7 @@ function publicTelemetry(t) {
 async function probeChain() {
   const out = [];
   for (const { provider, name } of buildChain(chainConfig())) {
-    const r = await provider.complete({ system: 'Reply with the JSON {"ok":true} and nothing else.', user: 'ping', maxTokens: 20, json: true, timeoutMs: 6000 });
+    const r = await provider.complete({ system: 'Reply with the JSON {"ok":true} and nothing else.', user: 'ping', maxTokens: 600, json: true, timeoutMs: 9000 });
     out.push({ name, id: provider.id, ok: !!r.ok, error: r.ok ? null : r.error, status: r.status || null, ms: r.ms || 0, detail: r.ok ? null : (r.detail || null) });
   }
   return out;

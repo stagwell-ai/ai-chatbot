@@ -47,7 +47,7 @@ test('primary answers → used; unknown ids dropped by the schema', async () => 
 });
 
 for (const [name, first, retried] of [
-  ['timeout', { signal: 'timeout' }, true],
+  ['timeout', { signal: 'timeout' }, false],
   ['429', { status: 429, body: '{"error":"rate"}' }, true],
   ['500', { status: 500, body: 'boom' }, true],
   ['malformed JSON', { status: 200, body: openaiBody('this is not json at all') }, false],

@@ -7,9 +7,10 @@
 
    validateLeadBody(body, data) → { ok:true, lead } | { ok:false, error, field }
    ═══════════════════════════════════════════════════════════════════════════ */
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const RECOMMEND = require('../../../next/recommend.js');
+/* the browser's scorer, imported as-is: recommend.js is a plain script with a
+   module.exports tail, so a static import gives us the same object the page
+   runs — and a static import is what Vercel's bundler can trace */
+import RECOMMEND from '../../../next/recommend.js';
 
 const MAX = 400;
 const str = (v, n) => { if (v == null) return null; const s = String(v).replace(/\s+/g, ' ').trim(); return s ? s.slice(0, n || MAX) : null; };

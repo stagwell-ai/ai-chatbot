@@ -38,8 +38,8 @@ const Qs = () => window.SAISELECT || null;
 const C = () => window.SAICARDS || null;
 const A = () => window.SAIANALYTICS || null;
 
-const INTERPRET_MS = 9000;      /* the server's own deadline is 8s; this is the outer fence */
-const EXPLAIN_MS = 5000;
+const INTERPRET_MS = 13000;     /* the server's own deadline is 12s; this is the outer fence */
+const EXPLAIN_MS = 8000;        /* runs beside the lead POST; the template stands in if it is late */
 const GOAL_Q = '__goal__';
 
 const data = () => (eng() && eng().data) || {};

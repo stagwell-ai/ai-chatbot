@@ -119,8 +119,9 @@ technical error.
 
 ## 6. LLM broker and fallback chain
 
-`api/_lib/llm/broker.js`. Chain from env (§7). Per attempt 4 s; whole chain 8 s; one retry
-only for network/timeout/429/5xx with time in hand; empty, unparseable or off-schema output
+`api/_lib/llm/broker.js`. Chain from env (§7). Per attempt 7 s for the Kimi gateway (a
+reasoning model; measured 4 s+ on the interpret prompt) and 4 s for the others; whole chain
+12 s; one retry only for network/429/5xx with time in hand, never for a timeout; empty, unparseable or off-schema output
 fails over immediately; exhausted → `ok:false` and the client runs deterministically. Every
 response carries `{provider, model, chainIndex, fallbacks, failed[]}` for the
 `kimi_model_fallback` / `kimi_deterministic_mode` events; `[llm]` log lines carry the rates for
@@ -132,7 +133,7 @@ response carries `{provider, model, chainIndex, fallbacks, failed[]}` for the
 KIMI_PRIMARY_MODEL=kimi/kimi-for-coding-highspeed      # default when LLM_API_KEY is set
 KIMI_SECONDARY_MODEL=openai/gpt-4o-mini                # default when OPENAI_API_KEY is set
 KIMI_TERTIARY_MODEL=anthropic/claude-haiku-4-5-20251001 # default when ANTHROPIC_API_KEY is set; 'off' to disable
-KIMI_MODEL_TIMEOUT_MS=4000  KIMI_TOTAL_DEADLINE_MS=8000  KIMI_LLM_ENABLED=true
+KIMI_PRIMARY_TIMEOUT_MS=7000 KIMI_SECONDARY_TIMEOUT_MS=4000 KIMI_TOTAL_DEADLINE_MS=12000 KIMI_LLM_ENABLED=true
 ```
 Vendors: `kimi/`, `openai/`, `xai/`, `anthropic/`. Changing a model is an env change and a
 redeploy. `GET /api/ask?health=1` shows the chain as configured (never a key);
@@ -251,9 +252,7 @@ llm_fallback_count, utm_source, utm_campaign. Email is passed as its domain only
 - `mode:'interpret'` is only as good as the taxonomy prompt; the 30-scenario model eval set
   (§51 Phase 6) is not yet written — the deterministic set above is the regression suite.
 - Kimi's coding gateway does not support JSON mode; the loose parser copes, and OpenAI does.
-- `gpt-4o-mini` as the OpenAI default is unverified from this sandbox (api.openai.com is
-  blocked here); verify with the production health probe after deploy and change
-  `KIMI_SECONDARY_MODEL` if it 404s.
+- `gpt-4o-mini` verified from production on 2026-09-10 (health probe: ok, ~1.9 s).
 - No Anthropic/xAI key is set, so the chain is two deep today (Kimi → OpenAI → deterministic).
 - The older `/next/agent` page still runs the six-question flow, not Kimi.
 - The mock HubSpot stores nothing; a real lead today lands only in the function log.
