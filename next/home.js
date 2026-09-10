@@ -299,7 +299,7 @@
            person — lead.js listens for [data-cta] on the document */
         let a;
         if (go.cta) { a = document.createElement('button'); a.type = 'button'; a.setAttribute('data-cta', go.cta); }
-        else { a = document.createElement('a'); a.href = go.href; }
+        else { a = document.createElement('a'); a.href = go.href; a.target = '_blank'; a.rel = 'noopener'; }   /* the conversation stays put */
         a.className = 'btn btn--ink turnb__go'; a.textContent = go.label;
         a.addEventListener('click', () => { if (state.site) { try { sessionStorage.setItem('sai-lead-site', state.site); } catch (e) {} } });
         t.appendChild(a);

@@ -97,6 +97,10 @@ try {
     await fill(page);
     ok(state.lead.discovery.contactRequest === 'call' && state.lead.discovery.primary === 'newintel', 'the lead carries both the request and the product');
     ok(await page.$('.reco__card--best'), 'the recommendation is still shown after the details');
+    /* every link in the thread opens a new tab — the conversation is not lost (client) */
+    const links = await page.$$eval('#agentThread a[href]', els => els.map(a => ({ href: a.getAttribute('href'), target: a.target, rel: a.rel })));
+    const bad = links.filter(l => !/^#/.test(l.href) && (l.target !== '_blank' || !/\bnoopener\b/.test(l.rel)));
+    ok(links.length > 0 && bad.length === 0, 'all ' + links.length + ' links on the cards open a new tab' + (bad.length ? ' — NOT: ' + bad.map(l => l.href).join(', ') : ''));
     await ctx.close();
   }
 

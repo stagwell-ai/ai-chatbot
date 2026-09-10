@@ -57,6 +57,13 @@ const last = page => page.evaluate(() => {
   };
 });
 const pointerBubbles = page => page.$$eval('#agentThread .turnb--ai .point', els => els.length);
+/* "anytime that we show a link in the chat history, it should open a new tab.
+   Otherwise we're going to lose the whole conversation" (client) */
+const linksKeepTheChat = async (page, label) => {
+  const links = await page.$$eval('#agentThread a[href]', els => els.map(a => ({ href: a.getAttribute('href'), target: a.target, rel: a.rel })));
+  const bad = links.filter(l => !/^#/.test(l.href) && (l.target !== '_blank' || !/\bnoopener\b/.test(l.rel)));
+  ok(links.length > 0 && bad.length === 0, label + ': all ' + links.length + ' links in the thread open a new tab' + (bad.length ? ' — NOT: ' + bad.map(l => l.href).join(', ') : ''));
+};
 
 try {
   console.log('\n▶ a real need, typed: the product is named before anything is asked');
@@ -73,6 +80,7 @@ try {
     ok(/\?/.test(q), 'then the question still follows: "' + q + '"');
     ok(b.order.indexOf('pointers') < b.order.lastIndexOf('text') && b.order.lastIndexOf('text') < b.order.indexOf('chips'), 'in reading order: where to look → the question → its chips (' + b.order.join(' → ') + ')');
     ok(!/couple of quick questions/i.test(b.texts.join(' ')), 'no "a couple of quick questions" preamble');
+    await linksKeepTheChat(page, 'pointers');
     const st = await page.evaluate(() => window.SAIKIMI.state());
     ok(st.pointers && st.pointers.kind === 'reco', 'the flow carries the pointers as the running (' + (st.pointers && st.pointers.kind) + ')');
     const shown = await page.evaluate(() => window.__tracked.filter(t => t[0] === 'kimi_pointer_shown'));
@@ -121,6 +129,7 @@ try {
     const skip = await page.$eval('#agentThread .turnb--form .askform__skip', a => ({ href: a.getAttribute('href'), text: a.textContent.trim(), id: a.getAttribute('data-kimi-pointer') }));
     ok(skip.href === '/s/newintel' && skip.id === 'newintel', 'a skip link to the NewIntel page sits under the form (' + skip.href + ')');
     ok(/skip this and read about NewIntel/.test(skip.text), 'in plain words: "' + skip.text + '"');
+    await linksKeepTheChat(page, 'the form (skip link and privacy notice)');
     /* the click is recorded as a hand-off from the form, without leaving the page here */
     await page.evaluate(() => document.querySelector('.askform__skip').addEventListener('click', e => e.preventDefault(), { once: true }));
     await page.click('.askform__skip');

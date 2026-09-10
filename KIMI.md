@@ -232,6 +232,13 @@ longer the only door: under it sits "Or skip this and read about {product} →" 
 (absent on a bare fast track, where nothing was matched). Clicks are `kimi_product_clicked` with
 `from: chat | form | card`; the list itself is `kimi_pointer_shown {kind, products, at_step}`.
 
+**Every link in the thread opens a new tab.** "Anytime that we show a link in the chat history,
+it should open a new tab. Otherwise we're going to lose the whole conversation" (client). The
+pointers, the skip link, the cards' Learn more and primary CTA, and the privacy notice all carry
+`target="_blank" rel="noopener"`; a capturing click listener on `#agentThread` is the net under
+them for any anchor that arrives another way. Same-page `#` anchors and `mailto:`/`tel:` are left
+alone. Asserted in the value and fast-track suites.
+
 Left as a decision for the client: `flags.contactGate` still gates the *tailored* cards behind
 the form. Amy's note reads as an argument to drop it; the flag exists, and switching it off shows
 the cards straight after the questions with the form offered after.

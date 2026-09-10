@@ -122,7 +122,7 @@ function pointersHtml(P) {
   const intro = P.kind === 'goal' ? pc.introGoal : pc.introReco;
   return (intro ? '<p class="point__intro">' + H.esc(intro) + '</p>' : '') +
     '<div class="point">' + P.items.map(p =>
-      '<a class="point__item" href="' + H.esc(p.url) + '" data-kimi-pointer="' + H.esc(p.id) + '">' +
+      '<a class="point__item" href="' + H.esc(p.url) + '" target="_blank" rel="noopener" data-kimi-pointer="' + H.esc(p.id) + '">' +
         '<span class="point__name">' + H.esc(p.name) + '</span>' +
         (p.line ? '<span class="point__line">' + H.esc(p.line) + '</span>' : '') +
         '<span class="point__go">' + H.esc(tpl(pc.read || 'Read about {product}', { product: p.name })) + ' →</span>' +
@@ -299,7 +299,7 @@ function drawForm(st) {
     /* right under the button, before the small print — the small print reserves
        room at the foot of the form, and the way out belongs next to the way in */
     const bar = bubble.querySelector('.askform__bar');
-    (bar || bubble).insertAdjacentHTML(bar ? 'afterend' : 'beforeend', '<a class="askform__skip" href="' + H.esc(p.url) + '" data-kimi-pointer="' + H.esc(p.id) + '">' +
+    (bar || bubble).insertAdjacentHTML(bar ? 'afterend' : 'beforeend', '<a class="askform__skip" href="' + H.esc(p.url) + '" target="_blank" rel="noopener" data-kimi-pointer="' + H.esc(p.id) + '">' +
       H.esc(tpl(pc.skipForm || 'Or skip this and read about {product}', { product: p.name })) + ' →</a>');
     wirePointers(bubble, 'form');
   }
@@ -370,6 +370,23 @@ function drawCards(st) {
 /* ── wiring: the field, the starting points, the overlay's hand-offs ───── */
 const form = $('#agentForm'), input = $('#agentInput'), restartBtn = $('#agentRestart');
 if (restartBtn) restartBtn.addEventListener('click', restart);
+
+/* ── EVERY LINK IN THE THREAD OPENS A NEW TAB ──
+   "Anytime that we show a link in the chat history, it should open a new tab.
+   Otherwise we're going to lose the whole conversation" (client, 2026-09-10).
+   The links this file and cards.js write already carry target="_blank"; this
+   is the net under them, for any anchor that reaches the thread another way
+   (the small print's privacy link, a model-free fallback bubble, whatever
+   comes next). Same-page anchors are left alone. */
+const threadEl = $('#agentThread');
+if (threadEl) threadEl.addEventListener('click', e => {
+  const a = e.target && e.target.closest && e.target.closest('a[href]');
+  if (!a || !threadEl.contains(a)) return;
+  const href = a.getAttribute('href') || '';
+  if (href.startsWith('#') || /^(javascript|mailto|tel):/i.test(href)) return;
+  a.target = '_blank';
+  a.rel = a.rel ? (/\bnoopener\b/.test(a.rel) ? a.rel : a.rel + ' noopener') : 'noopener';
+}, true);
 form.addEventListener('submit', e => {
   e.preventDefault();
   if (ended) return;

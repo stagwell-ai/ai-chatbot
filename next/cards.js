@@ -132,7 +132,7 @@
           : '<button type="button" class="btn btn--ink reco__go" data-cta="' + e(a.cta || 'demo') + '"' + attrs + '>' + e(a.label) + '</button>';
       }
       const secondary = learn
-        ? '<a class="' + (best ? 'btn btn--line reco__learn' : 'reco__learn reco__learn--quiet') + '" href="' + e(learn) + '" data-kimi-cta="LEARN_MORE" data-kimi-product="' + e(vm.productId) + '">' + e(vm.secondaryAction.label) + '</a>' : '';
+        ? '<a class="' + (best ? 'btn btn--line reco__learn' : 'reco__learn reco__learn--quiet') + '" href="' + e(learn) + '" target="_blank" rel="noopener" data-kimi-cta="LEARN_MORE" data-kimi-product="' + e(vm.productId) + '">' + e(vm.secondaryAction.label) + '</a>' : '';
       return '<article class="reco__card' + (best ? ' reco__card--best' : ' reco__card--also') + '" data-product="' + e(vm.productId) + '">' +
         '<p class="reco__badge">' + e(best ? (c.bestFit || 'Best fit') : (c.alsoConsider || 'Also worth considering')) + '</p>' +
         '<div class="reco__head">' +
