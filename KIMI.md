@@ -246,6 +246,20 @@ llm_fallback_count, utm_source, utm_campaign. Email is passed as its domain only
 | "Enterprise program with 500 creators" | 0–1 | IMAI |
 | "hello there" → fallback pills → competition → … | 3 | NewIntel |
 
+## 15b. Verified in production (stagwell-ai-prototypes, 2026-09-10)
+
+- `GET /api/ask?health=1&probe=1` — chain Kimi (7 s) → OpenAI gpt-4o-mini (4 s); both probes ok
+  (Kimi 1.2 s, OpenAI 0.8 s).
+- `mode:'interpret'` on "Our call center misses leads overnight and we run about 40 TikTok
+  creators a year" → Kimi, 2.3 s: intents `customer_voice_ai`, `creator_management`;
+  creatorProgramSize `under_100`; confidence 0.85.
+- `mode:'explain'` for NewIntel → Kimi, 3.2 s, one sentence built from the catalog facts.
+- `POST /api/lead` → 200, `mode:"mock"`, recommendation recomputed server-side (NewIntel, also
+  BERA.ai); malformed lead → 400.
+- Every changed file byte-identical on stagwell-ai-prototypes.vercel.app and stagwell.vercel.app.
+- Forced failover is covered by the broker unit tests; in production the OpenAI slot has only
+  been exercised by the probe, since Kimi answered every live call.
+
 ## 16. Known limitations
 
 - Rate limiting is per serverless instance (no shared store); an edge/WAF rule is the real one.
