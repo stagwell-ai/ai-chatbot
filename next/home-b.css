@@ -713,3 +713,7 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
   .hb-page #hbAsk .hb-ask__tags .tag{width:100%;height:auto;min-height:40px;padding:7px 10px;border-radius:12px;align-items:center;justify-content:flex-start;
     white-space:normal;text-align:left;line-height:1.2;font-size:12.5px}
 }
+
+/* the suite cards: no product names, only their paragraph (client) — which now leads the card, in ink */
+.hb-card__desc{margin-top:20px;max-width:34ch;font-size:17px;line-height:1.42;letter-spacing:-.01em;color:var(--hb-ink);-webkit-line-clamp:3}
+@media (max-width:600px){ .hb-card__desc{font-size:16px} }
