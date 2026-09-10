@@ -95,7 +95,7 @@ PRODUCTS = [
     dict(
         slug='newvoices', name='New Voices',
         kind='AI voice agents and insight campaigns',
-        hero_bg='/assets/img/products/hero-newvoices.jpg',   # Julian's "new voices cover", 2026-09-10
+        hero_bg='/assets/img/products/hero-newvoices-2.jpg',   # Julian's "new voices hero 2", 2026-09-10 13:35 (new name: no stale cache)
         logo='<img class="pp-logo" src="/assets/img/companies/newvoices/logo-white.png" alt="New Voices" width="2560" height="441">',
         title='Hear why your customers act - at scale.',
         description='New Voices puts lifelike AI voice agents on your customer conversations, 24/7 and in any language. The same agents that qualify and book leads, resolve service and win back lapsing customers also interview customers at scale - capturing the nuance, emotion, language and context that written surveys and behavioral data miss, and converting it into decision-ready market intelligence.',
@@ -456,6 +456,53 @@ def book_page(home):
     assert out.count('id="bookForm"') == 1 and out.count('id="navBurger"') == 1
     return out
 
+def listing_page(home):
+    """/products, built like a product page (client, 2026-09-10: "not the
+    same footer as the home page… not the same final CTA… the background not the
+    visual language"): the homepage's head, bar, menu, "How can we help?" (with
+    the chat and the thinking field) and footer, and products.js rendering the
+    list into #productsRoot. listing.css styles the list on home.css's tokens."""
+    head = home[:home.index('</head>')]
+    desc = 'Every product in the Stagwell Marketing Cloud, grouped by the problem it solves.'
+    for old, new in [
+        ('<title>Stagwell AI</title>', '<title>Every product | Stagwell AI</title>'),
+        ('<meta name="description" content="Whatever the challenge, we deliver results">', f'<meta name="description" content="{desc}">'),
+        ('<link rel="canonical" href="https://stagwell.vercel.app/">', '<link rel="canonical" href="https://stagwell.vercel.app/products">'),
+        ('<meta property="og:title" content="Ask Stagwell">', '<meta property="og:title" content="Every product | Stagwell AI">'),
+        ('<meta property="og:description" content="Whatever the challenge, we deliver results">', f'<meta property="og:description" content="{desc}">'),
+        ('<meta property="og:url" content="https://stagwell.vercel.app/">', '<meta property="og:url" content="https://stagwell.vercel.app/products">'),
+        ('<link rel="stylesheet" href="/next/home.css">', '<link rel="stylesheet" href="/next/home.css">\n<link rel="stylesheet" href="/next/product.css">\n<link rel="stylesheet" href="/next/listing.css">'),
+    ]:
+        must(head, old); head = head.replace(old, new)
+    i = home.index('<svg width="0"'); symbol = home[i:home.index('</svg>', i) + 6]
+    i = home.index('<header class="nav" id="nav">'); j = home.index('<!-- the chat, full screen over the page')
+    chrome = put_blocks(home[i:j].rstrip())
+    chrome, n1 = re.subn(r'<button type="button" class="nav__search" id="navSearch"[^>]*>(.*?)</button>',
+                         r'<a class="nav__search" href="#start" aria-label="Ask Stagwell AI">\1</a>', chrome, flags=re.S)
+    chrome, n2 = re.subn(r'<button type="button" class="menu__search" id="menuSearch"[^>]*>(.*?)</button>',
+                         r'<a class="menu__search" href="#start">\1</a>', chrome, flags=re.S)
+    assert n1 == 1 and n2 == 1
+    i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
+    chat = home[i:home.index('</ul>', k) + 5]
+    # the close, exactly as the product pages carry it (see page())
+    i = home.index('<section class="ask-end" id="start">'); close = home[i:home.index('</section>', i) + 10]
+    close = close.replace('\n  <canvas class="hero__think" id="endThink" aria-hidden="true"></canvas>', '')
+    for old, new in [('id="askEndInput"', 'id="ppAskInput"'), ('for="askEndInput"', 'for="ppAskInput"'), ('id="askEnd"', 'id="ppAsk"')]:
+        must(close, old); close = close.replace(old, new)
+    ways = '      <div class="ask-end__ways">'
+    canvas = '<canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>'
+    must(close, ways); must(chat, canvas)
+    close = close.replace(ways, '      <div class="hero__in pp-ask" id="ask" hidden>\n' + chat.replace(canvas, '') + '\n      </div>\n' + ways)
+    close = close.replace('<section class="ask-end" id="start">', '<section class="ask-end" id="start">\n  ' + canvas, 1)
+    i = home.index('<footer class="foot">'); footer = home[i:home.index('</footer>') + 9]
+    home_js = re.findall(r'<script src="/next/([^"]+)"></script>', home[home.index('<body'):])
+    scripts = '\n'.join(f'<script src="/next/{f}"></script>' for f in home_js + ['products.js', 'prodtoc.js'])
+    body = ('<main id="top" class="pl">\n  <div id="productsRoot"><!-- products.js renders the list here --></div>\n</main>\n\n' + close)
+    out = (head + '</head>\n<body class="home pp pl-page" data-lead-cta>\n\n' + symbol + '\n\n' + chrome + '\n' + body + '\n' +
+           footer + '\n\n' + scripts + '\n' + PP_CLOSE_JS + '\n</body>\n</html>\n')
+    assert out.count('id="productsRoot"') == 1 and out.count('id="ask"') == 1 and out.count('id="navBurger"') == 1 and 'endThink' not in out
+    return out
+
 def sync_chrome(home):
     """The listing (/products) and the solution pages (/s/{id}) carry
     the homepage's bar and phone menu exactly (client, 2026-09-10: "the
@@ -463,7 +510,7 @@ def sync_chrome(home):
     own header and old drawer are replaced between the site-chrome markers;
     nav.js drives the menu there and site-nav.css dresses it against ribbon.css."""
     ch = site_chrome(home)
-    for name in ('products.html', 'solution.html'):
+    for name in ('solution.html',):   # products.html is built by listing_page() now
         f = NEXT / name; s = f.read_text()
         START, END = '<!-- site-chrome: the homepage bar and phone menu, copied by build-product-pages.py -->', '<!-- /site-chrome -->'
         if START in s:
@@ -496,6 +543,7 @@ def main():
     ix.write_text(home)
     sync_chrome(home)
     (NEXT / 'book.html').write_text(book_page(home)); print('next/book.html    Book a demo page')
+    (NEXT / 'products.html').write_text(listing_page(home)); print('next/products.html  the listing, built like a product page')
     for slug, out in pages.items():
         (NEXT / f'{slug}.html').write_text(out)
         print(f'next/{slug}.html  {len(out):>6} bytes')

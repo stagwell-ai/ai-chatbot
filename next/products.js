@@ -277,17 +277,25 @@
 
   function pageHTML(model) {
     return `
-      <section class="prodhero">
-        <div class="prodhero__in">
-          <p class="eyebrow prodhero__eyebrow"><i class="pulse"></i>THE STAGWELL MARKETING CLOUD</p>
-          <h1 class="display prodhero__title">Every product in the suite, <span class="accent">grouped by the problem it solves.</span></h1>
-          <p class="prodhero__sub">Brand tracking, competitive benchmarking, consumer research, creator programs,
-            AI-search visibility, reputation monitoring, audience activation and voice agents — each built by a team
-            that does this and nothing else. Start with the problem; the product follows.</p>
-          <div class="prodhero__acts">
-            <a class="btn btn--gold prodhero__cta" href="/">Find my fit in a conversation</a>
-            <button class="btn btn--ghost prodhero__alt" type="button" data-cta="demo">Book a demo</button>
+      <!-- the product pages' hero, on the Stagwell gradient (client, 2026-09-10):
+           a short line under the title, Book a demo the one button, the
+           conversation a link to the chat at the foot; the long paragraph
+           moves under the hero, as on the product pages. No .rv here — this is
+           rendered after home.js starts watching, so it would never be shown. -->
+      <section class="pp-hero pl-hero">
+        <div class="pp-wrap pp-hero__in">
+          <p class="pp-eyebrow">The Stagwell Marketing Cloud</p>
+          <h1 class="pp-title">Every product in the suite, grouped by the problem it solves.</h1>
+          <p class="pp-lede">Start with the problem; the product follows.</p>
+          <div class="pp-acts">
+            <button type="button" class="btn btn--accent btn--lg" data-cta="demo">Book a demo</button>
+            <a class="pp-site" href="#start">Find my fit in a conversation<svg class="pp-site__ic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
           </div>
+        </div>
+      </section>
+      <section class="pp-about pl-about">
+        <div class="pp-wrap">
+          <p class="pp-about__text">Brand tracking, competitive benchmarking, consumer research, creator programs, AI-search visibility, reputation monitoring, audience activation and voice agents, each built by a team that does this and nothing else.</p>
         </div>
       </section>
 
@@ -298,18 +306,6 @@
           ? model.ordered.map((g, i) => groupHTML(g.domain, g.entries, i)).join('')
           : `<p class="prodbody__note">[DIRECTORY — pending]</p>`}
       </div>
-
-      <section class="prodband">
-        <div class="prodband__in">
-          <h2>Not sure which one you need? <span class="accent">That is the normal case.</span></h2>
-          <p>Tell the agent what you are up against and it reads your brand first — then names the products that
-            actually fit, and the people who run them.</p>
-          <div class="prodband__acts">
-            <button class="btn btn--gold prodband__demo" type="button" data-cta="demo">Book a demo</button>
-            <a class="btn btn--light" href="/">Start with the agent</a>
-          </div>
-        </div>
-      </section>
 
       <p class="prodfoot">This is a working prototype of Stagwell AI, not a live product page. Every product named
         here is a third-party product: its name, marks and positioning belong to its owners and are reproduced
