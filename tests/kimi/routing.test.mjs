@@ -233,3 +233,46 @@ test('the Search+ entry says what the client says it says', () => {
   assert.match(p.sourceNote, /supersedes the Stagwell Search\+ ICP one-pager/);
   assert.ok(p.capabilityTags.every(t => t.length <= 40), 'card chips stay short: ' + p.capabilityTags.join(' | '));
 });
+
+/* ── way-finding (Amy, 2026-09-10: value before profiling; a way to the product page from the chat) ── */
+test('way-finding: a real need points at the product page before any question is answered', () => {
+  const r = readText('I want to create my own surveys');
+  const p = R.pointers(r, null, DATA);
+  assert.equal(p.kind, 'reco');
+  assert.equal(p.items[0].id, 'questdiy');
+  assert.equal(p.items[0].url, '/s/questdiy');
+  assert.ok(p.items[0].line.length > 20, 'the catalog line comes with it');
+  /* a +2 side-match (NewVoices "interviews customers at scale") is not a second
+     place to send someone who asked for DIY surveys */
+  assert.deepEqual(p.items.map(i => i.id), ['questdiy']);
+});
+
+test('way-finding: a goal alone offers its own shortlist, never a false recommendation', () => {
+  const r = R.recommend({ goal: 'competition', intents: [] }, DATA);
+  assert.ok(r.primary, 'the scorer still has a top candidate on a bare goal');
+  const p = R.pointers(r, 'competition', DATA);
+  assert.equal(p.kind, 'goal');
+  assert.deepEqual(p.items.map(i => i.id), ['newintel', 'questbrand']);
+  assert.ok(p.items.every(i => i.url && i.name && i.line), 'every item has a name, a line and a page');
+});
+
+test('way-finding: once the goal has an intent behind it the shortlist becomes the running', () => {
+  const r = readText('what are our competitors doing this week', 'competition');
+  const p = R.pointers(r, 'competition', DATA);
+  assert.equal(p.kind, 'reco');
+  assert.equal(p.items[0].id, 'newintel');
+});
+
+test('way-finding: nothing to go on, nothing pointed at', () => {
+  const p = R.pointers(R.recommend({ goal: null, intents: [] }, DATA), null, DATA);
+  assert.equal(p.kind, null);
+  assert.deepEqual(p.items, []);
+});
+
+test('way-finding: every product it can name has a page to send people to', () => {
+  for (const p of R.activeProducts(DATA)) {
+    const url = (p.urls && p.urls.productPage) || null;
+    assert.ok(url && url.startsWith('/'), p.id + ' has no productPage');
+    assert.ok((p.cardDescription || p.positioning || '').length > 20, p.id + ' has no one-liner');
+  }
+});

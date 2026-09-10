@@ -70,6 +70,9 @@ function blank() {
     askedQuestionIds: [],
     currentQuestion: null,
     message: null,
+    ack: null,                   /* the two halves of message, so the way-finding can sit between them */
+    prompt: null,
+    pointers: null,              /* { kind: 'reco'|'goal', items: [{ id, name, line, url }] } — where to read, before the next question */
     suggestions: [],
     uiAction: 'ASK',
     hint: null,
@@ -243,6 +246,7 @@ async function readSiteIfNew() {
 function recompute() {
   const r = R();
   st.reco = r ? r.recommend(signals(), data()) : null;
+  st.pointers = (r && r.pointers) ? r.pointers(st.reco, st.primaryGoal, data()) : null;
   return st.reco;
 }
 
@@ -257,6 +261,7 @@ function askGoal(reply) {
   const prompt = reply || (st.holds ? (pick(c.hold, st.holds - 1) || c.fallback) : (st.unclassifiedOnce ? c.fallback : c.unclassified));
   st.currentQuestion = { id: GOAL_Q, field: 'goal', prompt, suggestions: goalSuggestions() };
   st.message = st.currentQuestion.prompt;
+  st.ack = null; st.prompt = st.message;
   st.suggestions = st.currentQuestion.suggestions;
   st.uiAction = 'ASK';
   st.hint = (c.hints || {}).start || null;
@@ -275,6 +280,7 @@ function present(q, first, modelAck) {
      without one, the goal's own line on the first question only */
   const ack = modelAck || (first ? ((c.goalAck || {})[st.primaryGoal] || (st.rawProblemText ? c.freeTextAck : null)) : null);
   st.message = (ack ? ack + ' ' : '') + (q.prompt || '');
+  st.ack = ack || null; st.prompt = q.prompt || '';
   st.suggestions = list(q.suggestions).map(s => ({ id: s.id, label: s.label, value: s.value }));
   st.uiAction = 'ASK';
   st.hint = q.field === 'companySize' ? (c.hints || {}).size : (c.hints || {}).question;
@@ -293,6 +299,7 @@ function hold(reply) {
   const q = st.currentQuestion;
   if (!q || q.id === GOAL_Q) { askGoal(reply); return; }
   st.message = reply || pick(c.holdQuestion, st.holds - 1) || q.prompt;
+  st.ack = null; st.prompt = st.message;
   st.suggestions = list(q.suggestions).map(s => ({ id: s.id, label: s.label, value: s.value }));
   st.uiAction = 'ASK';
   emit('question_asked', { id: q.id, slot: q.field || 'intent', copy: st.message, mode: 'hold' });
@@ -776,10 +783,11 @@ function showRecommendation(why) {
   track('kimi_recommendation_generated', Object.assign({ cards: st.cards.length, why_from_llm: !!(why && Object.keys(why).length) }, recoProps()));
 }
 
-function clicked(type, productId, url) {
+function clicked(type, productId, url, from) {
   const map = { DEMO: 'kimi_demo_clicked', SELF_SERVICE: 'kimi_self_service_clicked', EXPERT_CALL: 'kimi_demo_clicked', LEARN_MORE: 'kimi_product_clicked' };
   const external = url && /^https?:\/\//i.test(url) && !/^https?:\/\/[^/]*stagwell/i.test(url);
-  track(map[type] || 'kimi_product_clicked', { product: productId || null, cta: type, url: url || null });
+  /* from: 'card' (the recommendation), 'chat' (a way-finding pointer mid-conversation), 'form' (the skip link on the contact form) */
+  track(map[type] || 'kimi_product_clicked', { product: productId || null, cta: type, url: url || null, from: from || 'card', at_step: st.step });
   if (external) track('kimi_external_site_clicked', { product: productId || null, url });
   emit('handoff_click', { product: productId || null, cta: type, url: url || null });
   if (st.status === 'RECOMMENDATION') { st.status = 'COMPLETE'; st.uiAction = 'COMPLETE'; notify(); }
@@ -799,6 +807,9 @@ function state() {
     question: st.currentQuestion ? { id: st.currentQuestion.id, field: st.currentQuestion.field || 'intent' } : null,
     website: st.website,
     role: st.role,
+    ack: st.ack,
+    prompt: st.prompt,
+    pointers: st.pointers ? { kind: st.pointers.kind, items: st.pointers.items.slice() } : null,
     researched: !!st.researched,
     findings: st.findings ? Object.assign({}, st.findings) : null,
     contact: st.contact ? Object.assign({}, st.contact) : null,

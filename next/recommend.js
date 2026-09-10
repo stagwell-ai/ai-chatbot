@@ -295,8 +295,37 @@
     return { ranked, primary, secondary, confidence: conf, candidates, signals: sig };
   }
 
+  /* ── WAY-FINDING ──
+     Amy (2026-09-10): "it feels very 'data miney' right now without giving them
+     any value before asking for a ton of info", and "there should be an option
+     for the user to visit the relevant product page from this chat". The
+     products worth reading about NOW, before another question is asked: the
+     running when the engine has real evidence (an intent, not just a goal),
+     the goal's own shortlist when a goal is all it has. Names, lines and URLs
+     come from the catalog and nowhere else. */
+  function pointers(reco, goalId, data) {
+    const P = Object.assign({ minTopScore: 4, fromReco: 2, fromGoal: 3 }, (data && data.scoring && data.scoring.pointers) || {});
+    let kind = null, ids = [];
+    if (reco && reco.primary && reco.confidence && reco.confidence.top >= P.minTopScore) {
+      kind = 'reco';
+      /* the primary and a real secondary (secondaryMinScore) — not everything
+         merely within closeGap, which would put a +2 side-match next to the
+         product they actually described */
+      ids = [reco.primary].concat(list(reco.secondary))
+        .filter((id, i, a) => a.indexOf(id) === i).slice(0, P.fromReco);
+    } else if (goalId) {
+      const g = goalById(goalId, data);
+      if (g) { kind = 'goal'; ids = list(g.candidates).slice(0, P.fromGoal); }
+    }
+    const items = ids.map(id => productById(id, data)).filter(p => p && p.active !== false).map(p => ({
+      id: p.id, name: p.name, line: p.cardDescription || p.positioning || '',
+      url: (p.urls && p.urls.productPage) || '/s/' + encodeURIComponent(p.id)
+    }));
+    return { kind: items.length ? kind : null, items };
+  }
+
   return {
-    recommend, keywordIntents, bandsFromText, contactRequest, contactRequestIds,
+    recommend, pointers, keywordIntents, bandsFromText, contactRequest, contactRequestIds,
     goalForDomain, goalById, productById, intentById,
     activeProducts, dedupeIntents, norm,
     _config: { weightsOf, confOf, convOf }

@@ -1386,7 +1386,10 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .askform__title{margin:0 0 2px;font-size:17px;font-weight:600;color:var(--ink)}
 .askform__label{display:block;margin:0 0 5px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
 .askform__row input{height:44px}
-.askform__fine{margin:0;font-size:12px;line-height:1.5;color:var(--ink-3)}
+/* flex:none — the earlier rule's 180px flex-basis was written for a row and, in
+   this column, became 180px of empty height under the small print */
+.askform__fine{margin:0;font-size:12px;line-height:1.5;color:var(--ink-3);flex:none}
+.askform>.askform__skip{margin-top:0}
 .askform__fine a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 .askform__go[disabled]{opacity:.6;cursor:progress}
 .askbox__thread .turnb--reco{padding-right:0}
@@ -1440,6 +1443,23 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 /* ── what the lookup found: a short fact list, only ever what came back real
       (kimi-flow.js reads the site through /api/ask mode:'research', which
       answers "not recognised" rather than guessing) ─────────────────────── */
+/* ── WAY-FINDING: the products worth reading about, before the next question
+   (Amy, 2026-09-10). Each is the catalog's own line and a door to its page. ── */
+.point__intro{margin:0 0 8px;font-size:15px;line-height:1.5;color:var(--ink)}
+.turnb__text+.point__intro{margin-top:8px}
+.point{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
+.point__item{display:flex;flex-direction:column;gap:2px;padding:11px 14px;border:1px solid var(--line);border-radius:14px;
+  background:#FFFFFF;color:var(--ink);text-decoration:none;transition:border-color .15s,background .15s}
+.point__item:hover{border-color:var(--ink);background:#FBFBFC}
+.point__item:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.point__name{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.point__line{font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.point__go{margin-top:4px;font-size:13px;font-weight:600;color:var(--ink-3)}
+.point__item:hover .point__go{color:var(--ink)}
+.askbox__thread .turnb__text--after{margin-top:0}
+.askform__skip{display:inline-block;margin-top:12px;font-size:13.5px;font-weight:600;color:var(--ink-3);text-decoration:none}
+.askform__skip:hover,.askform__skip:focus-visible{color:var(--ink);text-decoration:underline}
+
 .found{margin:10px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#F7F8F9;
   display:flex;flex-direction:column;gap:6px}
 .found__row{display:flex;gap:10px;align-items:baseline;margin:0}

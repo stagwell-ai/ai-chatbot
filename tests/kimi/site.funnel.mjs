@@ -57,7 +57,9 @@ async function open(research, interpretation) {
 }
 const settle = page => page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait'), null, { timeout: 15000 });
 const say = async (page, text) => { await page.fill('#agentInput', text); await page.press('#agentInput', 'Enter'); await settle(page); await page.waitForTimeout(250); };
-const lastAsk = page => page.$eval('#agentThread .turnb--ai:last-child .turnb__text', e => e.textContent.trim());
+/* the question is the LAST text in the bubble: since the way-finding went in,
+   a bubble can open with the ack, then the products to read about, then ask */
+const lastAsk = page => page.$$eval('#agentThread .turnb--ai:last-child .turnb__text', els => els.map(e => e.textContent.trim()).filter(Boolean).pop() || '');
 const thread = page => page.$eval('#agentThread', e => e.textContent);
 
 try {

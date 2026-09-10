@@ -199,6 +199,43 @@ started before the press, and `kimi-flow.js` bumps an `epoch` on reset so a `sta
 fresh state (a lead that was mid-send still lands in HubSpot; its cards are simply not drawn). No
 page reload, so nothing else on the page moves. Tracked as `kimi_restarted`.
 
+## 4e. Value before the next question (way-finding)
+
+Amy (2026-09-10): "we're asking a lot of questions of the user without giving them any info …
+it feels very 'data miney' right now without giving them any value before asking for a ton of
+info", and "there should be an option for the user to visit the relevant product page from this
+chat". The reference she gave was Adobe's assistant: name the products, one line each, linked,
+then a follow-up question.
+
+So the moment what the visitor said points somewhere, the answer says where, and only then asks.
+`recommend.js` `pointers(reco, goalId, data)` is pure and unit-tested:
+
+- with real evidence — the top score at or above `scoring.pointers.minTopScore` (4; an intent
+  read, not just a goal, since a bare goal scores `goalAlignment` = 2) — it is **the running**:
+  the primary plus a real secondary if there is one (`secondaryMinScore`, capped by `fromReco`;
+  a +2 side-match is not a second place to send someone), led in with "Here's where I'd point you
+  so far:";
+- with only a goal (a pill) it is **the goal's own shortlist**: the first two of `goals.json`
+  `candidates` (`fromGoal`), led in with "For that, these are the Stagwell AI products to know:" —
+  a list to read, deliberately not called a recommendation;
+- with nothing to go on ("hello"), nothing.
+
+Every item is the catalog's `cardDescription` (or `positioning`) and its `urls.productPage` —
+nothing written by a model, nothing invented. The bubble reads ack → where to look → the question
+→ its chips, and the list is drawn when the set changes (a goal's shortlist on the pill, the
+running once an intent lands), never repeated under every question or on a hold turn. The
+`goalAck` lines and `freeTextAck` were cut to a few words each; "a couple of quick questions so I
+point you at the right thing" is exactly the preamble Amy heard as profiling.
+
+The contact form keeps its purpose — a tailored recommendation and a specialist — but is no
+longer the only door: under it sits "Or skip this and read about {product} →" for the top product
+(absent on a bare fast track, where nothing was matched). Clicks are `kimi_product_clicked` with
+`from: chat | form | card`; the list itself is `kimi_pointer_shown {kind, products, at_step}`.
+
+Left as a decision for the client: `flags.contactGate` still gates the *tailored* cards behind
+the form. Amy's note reads as an argument to drop it; the flag exists, and switching it off shows
+the cards straight after the questions with the form offered after.
+
 ## 5. No-LLM fallback
 
 Launch requirement, tested in a browser with `/api/ask` aborted: pills → questions → form →
@@ -374,6 +411,13 @@ a generated product page, the card returns to its opening state — empty thread
 with the opening hint, pills enabled, blank flow state, focus in the field — and takes a fresh
 first message; pressed while an answer is still in flight, the abandoned answer never repopulates
 the box or re-locks the composer.
+
+`npm run test:value` — Playwright, every model off: a typed need names the product (page link,
+catalog line, "Read about …") before any question is answered, in reading order ack → products →
+question → chips, with no "couple of quick questions" preamble; a pill draws the goal's shortlist
+once and not again under the website, role or hold turns, then the running once an intent lands;
+the contact form carries the skip link to the product page and its click is recorded `from: form`;
+a bare fast track has no skip link; "hello" earns no list; a mid-chat click is `from: chat`.
 
 `npm run test:funnel` — Playwright, `/api/ask` aborted: six goals (desktop, light), reputation
 (phone, dark), a typed sentence, nonsense-then-pill. All green on 2026-09-10; screenshots in

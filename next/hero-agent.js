@@ -43,6 +43,7 @@ const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
 let started = false, busy = false, ended = false, lastKey = null, formBubble = null;
 let waitEl = null, shownFindings = false;
 let lastVia = 'type';                 /* how the visitor sent the last turn: 'type' | 'chip' */
+let pointerKey = null;                /* the way-finding last drawn, so the same products are not listed twice in a row */
 /* bumped by Start over. A turn already in flight when it is pressed carries the
    old number, so its answer is dropped on the floor instead of landing in the
    box the visitor has just emptied. */
@@ -105,6 +106,49 @@ function drawFindings(st) {
 
 const tpl = (s, vars) => String(s || '').replace(/\{(\w+)\}/g, (m, k) => (vars[k] == null ? '' : String(vars[k])));
 
+/* ── VALUE BEFORE THE NEXT QUESTION ──
+   Amy (2026-09-10): "we're asking a lot of questions of the user without giving
+   them any info … it feels very 'data miney' right now without giving them any
+   value before asking for a ton of info", and "there should be an option for
+   the user to visit the relevant product page from this chat". So the moment
+   what they said points somewhere, the answer says where — the product's own
+   line and a door to its page — and only then asks the next question. The list
+   is drawn when it changes, not repeated under every question. */
+const pointerKeyOf = P => (P && P.items.length) ? P.kind + ':' + P.items.map(p => p.id).join(',') : null;
+const askText = s => H.esc(s).replace(/\?/g, '<span class="q">?</span>');
+
+function pointersHtml(P) {
+  const pc = copy().pointers || {};
+  const intro = P.kind === 'goal' ? pc.introGoal : pc.introReco;
+  return (intro ? '<p class="point__intro">' + H.esc(intro) + '</p>' : '') +
+    '<div class="point">' + P.items.map(p =>
+      '<a class="point__item" href="' + H.esc(p.url) + '" data-kimi-pointer="' + H.esc(p.id) + '">' +
+        '<span class="point__name">' + H.esc(p.name) + '</span>' +
+        (p.line ? '<span class="point__line">' + H.esc(p.line) + '</span>' : '') +
+        '<span class="point__go">' + H.esc(tpl(pc.read || 'Read about {product}', { product: p.name })) + ' →</span>' +
+      '</a>').join('') + '</div>';
+}
+function wirePointers(el, from) {
+  el.querySelectorAll('[data-kimi-pointer]').forEach(a => a.addEventListener('click', () => {
+    try { K.clicked('LEARN_MORE', a.getAttribute('data-kimi-pointer'), a.getAttribute('href'), from); } catch (e) {}
+  }));
+}
+function drawAsk(st) {
+  const chips = st.suggestions.map(s => ({ label: s.label, value: s.value }));
+  const onChip = chip => send(chip.value, chip.label);
+  const P = st.pointers, pk = pointerKeyOf(P);
+  if (!pk || pk === pointerKey) { H.ai(askText(st.message || ''), chips, null, onChip); return; }
+  pointerKey = pk;
+  /* ack → where to read → the question → its chips */
+  const bubble = H.ai(st.ack ? askText(st.ack) : null, chips, null, onChip);
+  const row = bubble.querySelector('.turnb__chips');
+  const block = document.createElement('div');
+  block.innerHTML = pointersHtml(P) + '<div class="turnb__text turnb__text--after">' + askText(st.prompt || st.message || '') + '</div>';
+  while (block.firstChild) bubble.insertBefore(block.firstChild, row || null);
+  wirePointers(bubble, 'chat');
+  try { const a = window.SAIANALYTICS; if (a) a.track('kimi_pointer_shown', { kind: P.kind, products: P.items.map(p => p.id).join(','), at_step: (K.state() || {}).step }); } catch (e) {}
+}
+
 function render(st) {
   if (!st || ended) return;
   if (st.uiAction === 'ASK') {
@@ -112,7 +156,7 @@ function render(st) {
     const key = 'ask|' + (st.question ? st.question.id : '') + '|' + st.message;
     if (key === lastKey) return;
     lastKey = key;
-    H.ai(H.esc(st.message || ''), st.suggestions.map(s => ({ label: s.label, value: s.value })), null, chip => send(chip.value, chip.label));
+    drawAsk(st);
     H.placeholder(st.hint || (st.question && st.question.field === 'website' ? ((copy().hints || {}).website || 'yourcompany.com') : 'Type your answer…'));
     refocus();
     return;
@@ -195,7 +239,7 @@ async function send(raw, label, seed) {
 function restart() {
   generation++;
   started = false; busy = false; ended = false; lastKey = null;
-  formBubble = null; waitEl = null; shownFindings = false; lastVia = 'type';
+  formBubble = null; waitEl = null; shownFindings = false; lastVia = 'type'; pointerKey = null;
   try { K.reset(); } catch (e) {}
   H.think.off();
   H.clear((copy().hints || {}).start);
@@ -247,6 +291,18 @@ function drawForm(st) {
   bubble.classList.add('turnb--form');
   bubble.innerHTML = formHtml(st);
   formBubble = bubble;
+  /* the form is the way to a tailored recommendation and a specialist — not
+     the only way to the product. The page is one click away, no details asked. */
+  const P = st.pointers;
+  if (P && P.items.length) {
+    const p = P.items[0], pc = c.pointers || {};
+    /* right under the button, before the small print — the small print reserves
+       room at the foot of the form, and the way out belongs next to the way in */
+    const bar = bubble.querySelector('.askform__bar');
+    (bar || bubble).insertAdjacentHTML(bar ? 'afterend' : 'beforeend', '<a class="askform__skip" href="' + H.esc(p.url) + '" data-kimi-pointer="' + H.esc(p.id) + '">' +
+      H.esc(tpl(pc.skipForm || 'Or skip this and read about {product}', { product: p.name })) + ' →</a>');
+    wirePointers(bubble, 'form');
+  }
   H.close((st.contact && st.contact.closed) || c.composerClosedForm || 'Leave your details above to see your recommendation.');
 
   const form = $('#heroLeadForm', bubble);

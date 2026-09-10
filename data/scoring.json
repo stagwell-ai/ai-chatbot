@@ -19,6 +19,12 @@
     "mediumGap": 2,
     "stopAt": "high"
   },
+  "pointers": {
+    "_note": "Way-finding shown before the next question (Amy, 2026-09-10). With a top score at or above minTopScore the running is pointed at (up to fromReco products); with only a goal, the goal's first fromGoal candidates are named instead. A goal alone scores goalAlignment, so minTopScore above that keeps a bare goal from reading as a recommendation.",
+    "minTopScore": 4,
+    "fromReco": 2,
+    "fromGoal": 2
+  },
   "conversation": {
     "maxQuestions": 4,
     "topCandidates": 4,

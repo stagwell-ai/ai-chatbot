@@ -12,14 +12,14 @@
   "copy": {
     "intro": "What are you trying to solve?",
     "goalAck": {
-      "brand_awareness": "Brand awareness — good. A couple of quick questions so I point you at the right thing.",
-      "audience_growth": "Growing the audience — got it. A couple of quick questions first.",
-      "reputation": "Protecting reputation — understood. Two quick questions so I can narrow this down.",
-      "competition": "Tracking the competition — good. Let me narrow down what you need most.",
-      "brand_impact": "Measuring brand impact — got it. A couple of quick questions first.",
-      "operations": "Scaling operations — understood. Let me find the right fit."
+      "brand_awareness": "Brand awareness — good.",
+      "audience_growth": "Growing the audience — got it.",
+      "reputation": "Protecting reputation — understood.",
+      "competition": "Tracking the competition — good.",
+      "brand_impact": "Measuring brand impact — got it.",
+      "operations": "Scaling operations — understood."
     },
-    "freeTextAck": "Got it. A couple of quick questions so I recommend the right thing.",
+    "freeTextAck": "Got it.",
     "fallback": "I can still help. Which of these is closest to what you're trying to solve?",
     "unclassified": "I didn't catch a marketing or business problem in that. Which of these is closest?",
     "moreDetail": "Tell me a little more about what you're trying to do.",
@@ -75,6 +75,13 @@
       "Take your time — any of these, or a sentence of your own, will do."
     ],
     "composerClosedForm": "Fill in the form above to see your recommendation.",
+    "pointers": {
+      "_note": "Way-finding before the next question (Amy, 2026-09-10: value before profiling; a way to the product page from the chat). introReco leads the running once there is real evidence; introGoal leads a goal's own shortlist. Each item is the catalog's own one-liner and a link to the product page.",
+      "introReco": "Here's where I'd point you so far:",
+      "introGoal": "For that, these are the Stagwell AI products to know:",
+      "read": "Read about {product}",
+      "skipForm": "Or skip this and read about {product}"
+    },
     "fastTrack": {
       "call": {
         "message": "Of course. Leave your name, email and number and a Stagwell AI specialist will call you.",
