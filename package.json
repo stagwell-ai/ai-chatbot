@@ -11,6 +11,7 @@
     "hubspot:setup": "node scripts/hubspot-setup.mjs",
     "test:focus": "node tests/kimi/focus.funnel.mjs",
     "test:fasttrack": "node tests/kimi/fast-track.funnel.mjs",
-    "test:site": "node tests/kimi/site.funnel.mjs"
+    "test:site": "node tests/kimi/site.funnel.mjs",
+    "test:restart": "node tests/kimi/restart.funnel.mjs"
   }
 }

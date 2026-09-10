@@ -43,6 +43,10 @@ const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
 let started = false, busy = false, ended = false, lastKey = null, formBubble = null;
 let waitEl = null, shownFindings = false;
 let lastVia = 'type';                 /* how the visitor sent the last turn: 'type' | 'chip' */
+/* bumped by Start over. A turn already in flight when it is pressed carries the
+   old number, so its answer is dropped on the floor instead of landing in the
+   box the visitor has just emptied. */
+let generation = 0;
 
 /* ── THE CARET LIVES IN THE FIELD ──
    A conversation you cannot type into is not a conversation (client,
@@ -154,10 +158,12 @@ function pillFor(text) {
 async function send(raw, label, seed) {
   const v = String(raw == null ? '' : raw).trim();
   if (!v || busy || ended) return;
+  const mine = generation;
   let goal = seed && seed.goal, domain = seed && seed.domain;
   if (!started && !goal && !domain) { const b = pillFor(v); if (b) { goal = b.dataset.goal || null; domain = b.dataset.domain || null; } }
   busy = true;
   lastVia = (label != null || (seed && (seed.goal || seed.domain))) ? 'chip' : 'type';
+  if (restartBtn) restartBtn.hidden = false;
   H.open();
   H.me(label != null ? label : v);
   H.settleChips();
@@ -174,10 +180,30 @@ async function send(raw, label, seed) {
     } else await K.answer(v);
   } catch (e) { /* the flow owns its error copy; whatever state it left is drawn below */ }
   await pause(MIN_BEAT - (Date.now() - t0));
+  if (mine !== generation) return;     /* started over while this was in the air */
   w.remove(); H.think.off();
   waitEl = null;
   busy = false;
   render(K.state());
+}
+
+/* ── START OVER ──
+   An empty box again, without a page reload (client, 2026-09-10). It is the
+   one control that has to work at every point of the conversation: mid-answer,
+   sitting on the contact form, and after the cards when the composer has been
+   closed — which is exactly when someone most wants to ask a second thing. */
+function restart() {
+  generation++;
+  started = false; busy = false; ended = false; lastKey = null;
+  formBubble = null; waitEl = null; shownFindings = false; lastVia = 'type';
+  try { K.reset(); } catch (e) {}
+  H.think.off();
+  H.clear((copy().hints || {}).start);
+  /* the starting points come back: they were answered, not spent */
+  document.querySelectorAll('#agentTags .tag').forEach(b => { b.disabled = false; b.setAttribute('aria-pressed', 'false'); });
+  if (restartBtn) restartBtn.hidden = true;
+  try { const a = window.SAIANALYTICS; if (a) a.track('kimi_restarted', {}); } catch (e) {}
+  if (FINE) { try { H.focus(); } catch (e) {} }
 }
 
 /* ── the contact form (brief §24–§26): one compact form, not three turns ── */
@@ -286,7 +312,8 @@ function drawCards(st) {
 }
 
 /* ── wiring: the field, the starting points, the overlay's hand-offs ───── */
-const form = $('#agentForm'), input = $('#agentInput');
+const form = $('#agentForm'), input = $('#agentInput'), restartBtn = $('#agentRestart');
+if (restartBtn) restartBtn.addEventListener('click', restart);
 form.addEventListener('submit', e => {
   e.preventDefault();
   if (ended) return;

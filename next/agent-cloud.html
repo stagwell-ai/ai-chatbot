@@ -252,6 +252,12 @@ d.setAttribute('data-theme',t||sys);})();
           <input class="askbox__input" id="agentInput" name="q" type="text" placeholder="What do you need help solving?" spellcheck="false">
         </div>
         <div class="askbox__bar">
+          <!-- a way back to an empty box, once there is a conversation to
+               leave (client, 2026-09-10). Hidden until the first turn. -->
+          <button type="button" class="askbox__restart" id="agentRestart" hidden>
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.8 3.2v3.4h-3.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Start over
+          </button>
           <button class="askbox__go" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
       </form>

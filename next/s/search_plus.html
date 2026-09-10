@@ -16,13 +16,13 @@ d.setAttribute('data-theme',t||sys);})();
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
 <title>Search+ | Stagwell AI</title>
-<meta name="description" content="The enterprise OS for brand orchestration across paid, owned and earned media, including AI search experiences.">
+<meta name="description" content="Influences how your brand is represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.">
 
 <link rel="canonical" href="https://stagwell.vercel.app/s/search_plus">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Stagwell AI">
 <meta property="og:title" content="Search+ | Stagwell AI">
-<meta property="og:description" content="The enterprise OS for brand orchestration across paid, owned and earned media, including AI search experiences.">
+<meta property="og:description" content="Influences how your brand is represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.">
 <meta property="og:url" content="https://stagwell.vercel.app/s/search_plus">
 <!-- a new file name on purpose: WhatsApp and the rest cache the card by URL -->
 <meta property="og:image" content="https://stagwell.vercel.app/next/assets/share/og-v4.jpg">
@@ -160,18 +160,12 @@ d.setAttribute('data-theme',t||sys);})();
   <div class="pp-wrap pp-hero__in">
     <p class="sp-mark">Search+</p>
     <p class="pp-eyebrow">The Stagwell Marketing Cloud</p>
-    <h1 class="pp-title">Stagwell Search+ is the enterprise OS for Brand Orchestration across Paid, Owned and Earned media.</h1>
-    <p class="pp-lede">The enterprise OS for brand orchestration across paid, owned and earned media, including AI search experiences.</p>
+    <h1 class="pp-title">Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.</h1>
+    <p class="pp-lede">Influences how your brand is represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.</p>
     <div class="pp-acts">
       <button type="button" class="btn btn--accent btn--lg" data-cta="session" data-where="hero">Book a demo</button>
       
     </div>
-  </div>
-</section>
-
-<section class="pp-about">
-  <div class="pp-wrap">
-    <p class="pp-about__text rv">Its agentic architecture helps brands detect, predict, shape and prove performance across AI Search Experiences, including ChatGPT, Gemini, Claude, Grok, DeepSeek and emerging AI interfaces.</p>
   </div>
 </section>
 
@@ -184,9 +178,9 @@ d.setAttribute('data-theme',t||sys);})();
     <div class="pp-more__grid">
       <div class="pp-more__media"><img src="/assets/img/products-hero.jpg" alt="" loading="lazy" decoding="async"></div>
       <ol class="pp-steps">
-        <li class="rv" style="--d:0.00s"><b>01</b><div><h3>Brand orchestration across paid, owned and earned</h3></div></li>
-        <li class="rv" style="--d:0.06s"><b>02</b><div><h3>AI search visibility</h3></div></li>
-        <li class="rv" style="--d:0.12s"><b>03</b><div><h3>Performance prediction and proof</h3></div></li>
+        <li class="rv" style="--d:0.00s"><b>01</b><div><h3>AI search representation</h3></div></li>
+        <li class="rv" style="--d:0.06s"><b>02</b><div><h3>Influence how AI recommends you</h3></div></li>
+        <li class="rv" style="--d:0.12s"><b>03</b><div><h3>ChatGPT, Gemini, Perplexity, Grok</h3></div></li>
       </ol>
     </div>
     <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
@@ -222,6 +216,12 @@ d.setAttribute('data-theme',t||sys);})();
           <input class="askbox__input" id="agentInput" name="q" type="text" placeholder="What do you need help solving?" spellcheck="false">
         </div>
         <div class="askbox__bar">
+          <!-- a way back to an empty box, once there is a conversation to
+               leave (client, 2026-09-10). Hidden until the first turn. -->
+          <button type="button" class="askbox__restart" id="agentRestart" hidden>
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.8 3.2v3.4h-3.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Start over
+          </button>
           <button class="askbox__go" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
       </form>

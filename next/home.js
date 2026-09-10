@@ -424,7 +424,19 @@
       settleChips() { $$('.turnb__chips .tag', thread).forEach(o => { o.disabled = true; }); },
       /* the composer closes: the conversation ended on the form */
       close(t) { miniInput.value = ''; miniInput.placeholder = t || ''; miniInput.disabled = true; miniInput.setAttribute('aria-disabled', 'true'); if (goBtn) goBtn.hidden = true; mini.classList.add('is-closed'); },
-      focus() { miniInput.focus({ preventScroll: true }); }
+      focus() { miniInput.focus({ preventScroll: true }); },
+      /* back to an empty box: the thread is emptied and the composer, which
+         close() disabled when the conversation ended, takes typing again */
+      clear(placeholder) {
+        thread.innerHTML = '';
+        miniInput.value = '';
+        miniInput.disabled = false;
+        miniInput.removeAttribute('aria-disabled');
+        miniInput.placeholder = placeholder || 'What do you need help solving?';
+        if (goBtn) goBtn.hidden = false;
+        mini.classList.remove('is-closed');
+        agentSec.classList.remove('is-chat');
+      }
     };
     const REAL = !!window.SAIFLOW;
 

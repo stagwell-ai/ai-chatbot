@@ -96,6 +96,10 @@ function blank() {
 }
 let st = blank();
 let listeners = [];
+/* bumped by reset(): a turn that was waiting on the network when the visitor
+   started over must not write its answer into the fresh conversation */
+let epoch = 0;
+const stale = e => e !== epoch;
 let deterministicNoted = false;
 
 const signals = () => ({
@@ -226,7 +230,9 @@ async function readSiteIfNew() {
   st.uiAction = 'READING';
   st.message = tpl((copy().research || {}).reading, { domain });
   notify();
+  const e = epoch;
   const found = await research(domain);
+  if (stale(e)) return;
   st.researching = null;
   st.researched = true;
   absorbFindings(found);
@@ -450,7 +456,9 @@ function advance(ack) {
 async function start(opts) {
   const o = opts || {};
   const S = eng();
+  const e = epoch;
   await S.ready;
+  if (stale(e)) return state();
   st = blank();
   st.status = 'DISCOVERY';
   const chip = o.chipLabel == null ? null : String(o.chipLabel);
@@ -469,10 +477,12 @@ async function start(opts) {
     noteHuman(text);
     const before = knowledge();
     const read = await interpret(text);
+    if (stale(e)) return state();
     absorb(read, {});
     const asked = contactRequestIn(text, read);
     if (asked) { fastTrack(asked); notify(); return state(); }
     await readSiteIfNew();
+    if (stale(e)) return state();
     if (knowledge() === before && !goal) {
       /* nothing to route on yet: reply in kind, offer the starting points */
       st.rawProblemText = null;
@@ -509,6 +519,7 @@ async function answer(input) {
   const text = String(input == null ? '' : input).trim();
   if (!text) return state();
   const q = st.currentQuestion;
+  const e = epoch;
   noteHuman(text);
 
   if (q.id === GOAL_Q) {
@@ -517,6 +528,7 @@ async function answer(input) {
     if (g) { setGoal(g.id, 'pill'); st.currentQuestion = null; advance(); notify(); return state(); }
     const before = knowledge();
     const read = await interpret(text);
+    if (stale(e)) return state();
     absorb(read, {});
     track('kimi_free_text_submitted', { length: text.length, understood: knowledge() !== before });
     const asked = contactRequestIn(text, read);
@@ -560,6 +572,7 @@ async function answer(input) {
     st.message = tpl((copy().research || {}).reading, { domain });
     notify();
     const found = await research(domain);
+    if (stale(e)) return state();
     st.researching = null;
     st.researched = true;
     absorbFindings(found);
@@ -593,6 +606,7 @@ async function answer(input) {
   } else {
     const before = knowledge();
     const read = await interpret(text);
+    if (stale(e)) return state();
     /* asked to be contacted instead of answering: the questions stop here */
     const asked = contactRequestIn(text, read);
     if (asked) { absorb(read, {}); fastTrack(asked); notify(); return state(); }
@@ -610,6 +624,7 @@ async function answer(input) {
     /* nothing learned: answer in kind and stay on this question */
     if (!understood) { hold(read.reply); notify(); return state(); }
     await readSiteIfNew();
+    if (stale(e)) return state();
     st.currentQuestion = null;
     advance(read.ack); notify(); return state();
   }
@@ -697,7 +712,11 @@ async function contact(lead) {
   if (v.lead.company) setSlot('company', v.lead.company, 'visitor');
 
   const payload = { lead: v.lead, discovery: discoveryPayload(), page: location.pathname + location.search, ts: new Date().toISOString(), source: 'stagwell-ai · kimi' };
+  const e = epoch;
   const [delivery, why] = await Promise.all([submitLead(payload), explain()]);
+  /* started over while the lead was being sent: the lead is in HubSpot, the
+     cards are not drawn over the empty box */
+  if (stale(e)) return { ok: true, stale: true, state: state() };
 
   if (!delivery.ok && delivery.retry) {
     st.error = (copy().contactErrors || {}).failed || 'That did not go through.';
@@ -807,7 +826,7 @@ window.SAIKIMI = {
   validate: lead => { const v = validate(lead || {}); return v.error ? { ok: false, error: v.error, message: v.message } : { ok: true, lead: v.lead }; },
   recommendation: () => st.reco,
   result: () => ({ state: state(), reco: st.reco, discovery: discoveryPayload() }),
-  reset() { st = blank(); deterministicNoted = false; return state(); },
+  reset() { epoch++; st = blank(); deterministicNoted = false; return state(); },
   _interpret: interpret,     /* seams for tests */
   _absorb: absorb
 };

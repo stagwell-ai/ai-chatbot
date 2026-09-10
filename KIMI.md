@@ -182,6 +182,23 @@ The lead carries `contactRequest` into HubSpot as `stagwell_ai_contact_request` 
 sales can route on it) and the summary opens with `ASKED FOR A CALL.` — the first thing the
 person picking it up needs to see.
 
+## 4d. Start over
+
+"When you are chatting with the AI chat, there should be a button that lets you start over"
+(client, 2026-09-10; Amy: "we should allow them to start over / ask a new question — right now
+there is no way to do that"). `#agentRestart` sits at the left of the composer bar, hidden until
+the first turn, and is the one control that has to work at every point of the conversation:
+mid-questions, sitting on the contact form, and after the cards when the composer has been closed
+— which is exactly when someone most wants to ask a second thing.
+
+Pressing it empties the thread, reopens the composer with the opening hint, re-enables the
+starting-point pills and blanks the flow (`SAIKIMI.reset()`). Two generation counters make it
+safe while an answer is still in the air: `hero-agent.js` drops the render of a turn that was
+started before the press, and `kimi-flow.js` bumps an `epoch` on reset so a `start`, `answer`,
+`readSiteIfNew` or `contact` that was waiting on the network returns without writing into the
+fresh state (a lead that was mid-send still lands in HubSpot; its cards are simply not drawn). No
+page reload, so nothing else on the page moves. Tracked as `kimi_restarted`.
+
 ## 5. No-LLM fallback
 
 Launch requirement, tested in a browser with `/api/ask` aborted: pills → questions → form →
@@ -350,6 +367,13 @@ it; plus the restraints — a phone keyboard is not summoned by a pill, focus mo
 left alone, the send disc and the thread's chips are still their own targets, a line of the
 answer can still be selected without the caret being yanked away, the contact form takes the
 caret and the composer closes on the cards.
+
+`npm run test:restart` — Playwright, every model off: the Start over button is hidden until the
+first turn; pressed mid-questions, on the contact form, after the cards (closed composer) and on
+a generated product page, the card returns to its opening state — empty thread, typable composer
+with the opening hint, pills enabled, blank flow state, focus in the field — and takes a fresh
+first message; pressed while an answer is still in flight, the abandoned answer never repopulates
+the box or re-locks the composer.
 
 `npm run test:funnel` — Playwright, `/api/ask` aborted: six goals (desktop, light), reputation
 (phone, dark), a typed sentence, nonsense-then-pill. All green on 2026-09-10; screenshots in

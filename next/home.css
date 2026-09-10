@@ -873,6 +873,13 @@ body.chat-open{overflow:hidden}
   font-family:var(--ui);font-size:17px;font-weight:400;line-height:1.5;color:var(--ink);caret-color:var(--ink)}
 .askbox__input::placeholder{color:var(--ink-4)}
 .askbox__bar{margin-top:auto;display:flex;align-items:center;justify-content:flex-end;padding-top:var(--s-6)}
+.askbox__restart{margin-right:auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px 0 10px;
+  border-radius:999px;font-family:var(--ui);font-size:13px;font-weight:500;color:var(--ink-3);
+  background:transparent;border:1px solid transparent;transition:color .2s ease,background-color .2s ease,border-color .2s ease}
+.askbox__restart svg{width:15px;height:15px}
+.askbox__restart:hover{color:var(--ink);background:#F1F2F4;border-color:var(--line)}
+.askbox__restart:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.askbox__restart[hidden]{display:none}
 .askbox__go{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
   background:#F1F2F4;color:var(--ink-3);transition:background-color .25s ease,color .25s ease,transform .3s var(--ease)}
 .askbox__go svg{width:18px;height:18px}
