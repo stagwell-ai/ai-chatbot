@@ -363,7 +363,7 @@
     {
       "id": "id_graph",
       "name": "Stagwell ID Graph",
-      "positioning": "The identity spine under Stagwell's audience work. Covering 260 million US consumers and 123 million US households, it connects first-party data, third-party media data and proprietary consumer intelligence so audiences can be built and activated without exposing individual identities.",
+      "positioning": "Covering 260 million US consumers and 123 million US households, the Stagwell ID Graph connects first-party data, third-party media data and proprietary consumer intelligence so audiences can be built and activated without exposing individual identities. It is the identity spine under Stagwell's audience work.",
       "whoFor": null,
       "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
       "nextStep": "Demo",
@@ -377,7 +377,7 @@
         "Privacy-safe activation"
       ],
       "lockup": null,
-      "sourceNote": "copy approved by the client on 2026-09-10. The figures are the ones reference/companies/README.md and catalog.json carry for SATS — 260M US consumers, 123M US households — and the same graph the Targeting Machine page names. Confirm the figures are current before client use."
+      "sourceNote": "copy approved by the client on 2026-09-10. The figures are the ones reference/companies/README.md and catalog.json carry for SATS — 260M US consumers, 123M US households — and the same graph the Targeting Machine page names. Confirm the figures are current before client use. The two sentences were swapped on 2026-09-10 so the card, which shows only the opening, leads with the figures rather than with the framing."
     }
   ]
 }
