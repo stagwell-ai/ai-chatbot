@@ -490,3 +490,6 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 
 /* the stacking cards' eyebrow: just the number (client: "too much text… maybe just the number") */
 .hb-stack__line,.hb-stack__kind{display:none}
+
+/* the footer in the close's own colour, so the two read as one ground (client: "they don't blend") */
+.hb-foot{background:var(--hb-bg);border-top:0}
