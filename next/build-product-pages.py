@@ -66,7 +66,8 @@ PRODUCTS = [
         # weight, tracking and mark-to-word spacing, on the same 100-unit canvas, so
         # the same CSS height gives the same size. (The file shipped as its
         # "logo.svg" is an architecture diagram, not a mark.)
-        logo='<img class="pp-logo" src="/assets/img/companies/targeting-machine/logo-lockup.png" alt="The Targeting Machine" width="963" height="100">',
+        # the mark takes the teal of the How it works image (client), not the sky it first had
+        logo='<img class="pp-logo" src="/assets/img/companies/targeting-machine/logo-lockup-teal.png" alt="The Targeting Machine" width="963" height="100">',
         title='Turn fragmented data into audiences you can activate.',
         description="The Targeting Machine is an enterprise-grade, privacy-first audience intelligence platform that combines first-party data, third-party media data, Stagwell's proprietary consumer intelligence, and the Stagwell ID Graph to move from deeper audience understanding to activation.",
         url='https://www.themarketingcloud.com/marketplace/sats',
