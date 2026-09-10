@@ -69,32 +69,42 @@ async function run(browser, opts) {
     ok(new Set(lines).size === lines.length, 'each reply is different: ' + lines.map(l => l.slice(0, 30) + '…').join(' | '));
   }
 
-  /* answer until the form arrives */
+  /* answer until the recommendation arrives (the client's order: website, size,
+     role, the goal's opener when there is no intent yet, then the cards) */
   const trail = [];
+  const settled = () => page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && (document.querySelector('.reco__card--best') || document.querySelector('#agentThread .turnb--ai:last-child .turnb__text')), null, { timeout: 12000 });
   for (let i = 0; i < 8; i++) {
-    await page.waitForFunction(() => document.querySelector('#heroLeadForm') || document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])'), null, { timeout: 8000 });
-    if (await page.$('#heroLeadForm')) break;
-    const chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])', els => els.map(e => e.textContent.trim()));
+    await settled(); await page.waitForTimeout(150);
+    if (await page.$('.reco__card--best')) break;
     const st = await page.evaluate(() => window.SAIKIMI.state());
+    if (st.question && st.question.id === 'website') {
+      trail.push('website→example-brand.com');
+      await page.fill('#agentInput', 'example-brand.com'); await page.press('#agentInput', 'Enter');
+      continue;
+    }
+    await page.waitForFunction(() => document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])'), null, { timeout: 8000 });
+    const chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])', els => els.map(e => e.textContent.trim()));
     const want = (st.suggestions || []).find(s => picks.includes(s.id) || picks.includes(s.value));
     const label = want ? want.label : (st.question && st.question.id === 'company_size' ? chips[1] : chips[0]);
     trail.push((st.question ? st.question.id : '?') + '→' + label);
     await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled]):has-text("' + label.replace(/"/g, '') + '")');
   }
-  ok(await page.$('#heroLeadForm'), 'reached the contact form after: ' + trail.join(' · '));
-  ok(trail.length >= 1 && trail.length <= 5, 'asked ' + trail.length + ' question(s)');
+  await settled(); await page.waitForTimeout(200);
+  ok(await page.$('.reco__card--best'), 'reached the recommendation after: ' + trail.join(' · '));
+  ok(trail.length >= 3 && trail.length <= 5, 'asked ' + trail.length + ' question(s)');
+  ok(!(await page.$('#heroLeadForm')), 'no form: the details are asked in the conversation, after the cards');
+  ok((await page.evaluate(() => window.SAIKIMI.state().status)) === 'CAPTURE_EMAIL', 'the email is asked next');
 
-  /* validation: empty submit shakes, bad email hints, then a good submit */
-  await page.click('#heroLeadForm .askform__go');
-  ok(!(await page.$('.reco__card')), 'empty form does not submit');
-  await page.fill('#heroLeadForm [name=name]', 'Test Visitor');
-  await page.fill('#heroLeadForm [name=email]', 'not-an-email');
-  await page.fill('#heroLeadForm [name=phone]', '+1 212 555 0100');
-  await page.click('#heroLeadForm .askform__go');
-  ok(await page.$eval('#heroLeadHint', e => !e.hidden && e.textContent.length > 0), 'bad email shows the hint');
-  await page.fill('#heroLeadForm [name=email]', 'visitor@example-brand.com');
-  await page.click('#heroLeadForm .askform__go');
-  await page.waitForSelector('.reco__card--best', { timeout: 8000 });
+  /* the email: a bad one is asked again, a good one creates the lead; then the phone */
+  await page.fill('#agentInput', 'not-an-email'); await page.press('#agentInput', 'Enter');
+  await settled(); await page.waitForTimeout(150);
+  ok((await page.evaluate(() => window.SAIKIMI.state().status)) === 'CAPTURE_EMAIL' && leadBody === null, 'bad email is asked again, nothing sent');
+  await page.fill('#agentInput', 'visitor@example-brand.com'); await page.press('#agentInput', 'Enter');
+  await page.waitForFunction(() => window.SAIKIMI.state().status === 'CAPTURE_PHONE', null, { timeout: 12000 });
+  await page.fill('#agentInput', '+1 212 555 0100'); await page.press('#agentInput', 'Enter');
+  await page.waitForFunction(() => window.SAIKIMI.state().status === 'BOOK', null, { timeout: 12000 });
+  await page.waitForTimeout(200);
+  ok(await page.$('.turnb--book [data-kimi-cta="BOOK"]'), 'ends on "Book a call"');
 
   const card = await page.$eval('.reco__card--best', e => ({ name: e.querySelector('.reco__name').textContent.trim(), why: e.querySelector('.reco__why').textContent.trim(), cta: e.querySelector('.reco__go') && e.querySelector('.reco__go').textContent.trim(), learn: e.querySelector('.reco__learn') && e.querySelector('.reco__learn').getAttribute('href') }));
   ok(card.name === expect, 'best fit is ' + card.name + (card.name === expect ? '' : ' (expected ' + expect + ')'));
@@ -104,11 +114,11 @@ async function run(browser, opts) {
   ok(also <= 2, also + ' secondary card(s)');
 
   const events = await page.evaluate(() => window.SAI.events.list().map(e => e.type));
-  ['kimi_started', 'kimi_contact_viewed', 'kimi_contact_submitted', 'kimi_recommendation_generated'].forEach(t => ok(events.includes(t), 'event ' + t));
+  ['kimi_started', 'kimi_recommendation_generated', 'kimi_contact_viewed', 'kimi_email_captured', 'kimi_phone_captured', 'kimi_book_offered'].forEach(t => ok(events.includes(t), 'event ' + t));
   ok(askCalls === 0 || events.includes('kimi_deterministic_mode'), askCalls ? 'event kimi_deterministic_mode after a failed model call' : 'no model call was needed');
   const leak = await page.evaluate(() => JSON.stringify(window.SAI.events.list()).includes('visitor@example-brand.com'));
   ok(!leak, 'no full email address on the event bus');
-  ok(leadBody && leadBody.lead && leadBody.lead.email === 'visitor@example-brand.com' && leadBody.discovery && leadBody.discovery.primary, 'lead payload carries the contact and the structured discovery (primary=' + (leadBody && leadBody.discovery && leadBody.discovery.primary) + ')');
+  ok(leadBody && leadBody.lead && leadBody.lead.email === 'visitor@example-brand.com' && leadBody.lead.phone === '+1 212 555 0100' && leadBody.discovery && leadBody.discovery.primary, 'the last lead write carries email, phone and the structured discovery (primary=' + (leadBody && leadBody.discovery && leadBody.discovery.primary) + ')');
   ok(askCalls >= 0 && (await page.evaluate(() => window.SAIKIMI.state().llmStatus)) === 'DETERMINISTIC', 'ran in DETERMINISTIC mode (' + askCalls + ' blocked /api/ask call(s))');
   ok(errors.length === 0, errors.length ? 'page errors: ' + errors.join(' | ') : 'no page errors');
 

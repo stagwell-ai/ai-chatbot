@@ -109,23 +109,23 @@ try {
     ok(b.items.every(i => /^\/(s\/|[a-z-]+$)/.test(i.href)), 'every item links to a page on this site');
     ok(b.texts[0] && /Tracking the competition/.test(b.texts[0]) && !/narrow down/.test(b.texts[0]), 'the ack is one short line: "' + b.texts[0] + '"');
     ok((await pointerBubbles(page)) === 1, 'one pointer block so far');
-    await chip(page, "I'd rather not say");
-    ok((await pointerBubbles(page)) === 1, 'the role question does not repeat the same two');
+    await say(page, 'acme-brands.com');
+    ok((await pointerBubbles(page)) === 1, 'the size question does not repeat the same two');
+    await chip(page, '250 to 2,500');
+    ok((await pointerBubbles(page)) === 1, 'nor does the role question');
     await chip(page, 'Marketing manager');
     ok((await pointerBubbles(page)) === 1, 'nor does the goal\'s own first question');
     /* small talk in place of an answer holds the question — and adds no list */
     await say(page, 'hello');
     ok((await pointerBubbles(page)) === 1, 'nor does a hold turn');
-    /* the discriminator turns the shortlist into the running */
-    const before = await pointerBubbles(page);
+    /* the discriminator turns the shortlist into the recommendation itself */
     const chips = (await last(page)).chips;
-    const pick = chips.find(c => /competitor|pricing|week|move|live/i.test(c)) || chips[0];
+    const pick = chips.find(c => /competitor|pricing|week|move|live|right now/i.test(c)) || chips[0];
     await chip(page, pick);
-    const after = await pointerBubbles(page);
     const st = await page.evaluate(() => window.SAIKIMI.state());
-    const form = await page.$('#heroLeadForm');
-    ok(after === before + 1 || !!form, 'once there is evidence the running is drawn again (' + before + ' → ' + after + (form ? ', straight to the form' : '') + ')');
-    ok(st.pointers && st.pointers.kind === 'reco', 'and it is the running now (' + (st.pointers && st.pointers.kind) + ')');
+    ok(!!(await page.$('.reco__card--best')), 'once there is evidence the recommendation itself is drawn');
+    ok(st.pointers && st.pointers.kind === 'reco', 'and the running is real now (' + (st.pointers && st.pointers.kind) + ')');
+    ok(!(await page.$('#heroLeadForm')), 'no form — the email is asked in the conversation');
     ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
     await ctx.close();
   }

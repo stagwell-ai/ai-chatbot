@@ -99,7 +99,8 @@ try {
   {
     const { ctx, page, state } = await open();
     await page.click('#agentTags .tag[data-goal="competition"]');
-    await page.waitForFunction(() => document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])'), null, { timeout: 12000 });
+    await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && document.querySelector('#agentThread .turnb--ai .turnb__text'), null, { timeout: 12000 });
+    await page.waitForTimeout(250);
     await say(page, 'acme-brands.com');
     const before = await snap(page);
     ok(before.turns >= 3 && before.goal === 'competition' && before.chat, 'a real conversation is under way (' + before.turns + ' bubbles, goal ' + before.goal + ')');

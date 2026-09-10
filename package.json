@@ -13,6 +13,7 @@
     "test:fasttrack": "node tests/kimi/fast-track.funnel.mjs",
     "test:site": "node tests/kimi/site.funnel.mjs",
     "test:restart": "node tests/kimi/restart.funnel.mjs",
-    "test:value": "node tests/kimi/value.funnel.mjs"
+    "test:value": "node tests/kimi/value.funnel.mjs",
+    "test:order": "node tests/kimi/order.funnel.mjs"
   }
 }

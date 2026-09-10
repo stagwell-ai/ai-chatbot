@@ -132,27 +132,38 @@ agent replies, keeps the same question and the same pills, and never advances to
 With no model, the hold lines in `kimi.json` (`hold`, `holdQuestion`) rotate instead. Pill
 taps stay templated, so they answer instantly.
 
-## 4b2. Reading their site, and who they are
+## 4b2. The order of the conversation
 
-Every conversation now opens with two questions before any discriminator
-(client, 2026-09-10: "it should have asked me about my website, and then it should do a quick
-search to see what info it can pull up and show me the info and then keep talking to me with
-added relevance", and "at this point it should ask for my domain name, and then what is my role
-in the company"):
+The client's order (2026-09-10), verbatim:
+
+> 1) what do they want to solve 2) what's their website 3) here is some insights we have about
+> your website (if any) 4) how large is your org 5) what's your role 6) here are some
+> recommendations we have 7) give us your email 8) give us your phone number 9) book a call
+
+Steps 1–5 are `questions.json`: the website (`first`, priority 100), company size (99) and role
+(98) are asked in that order while their field is unknown; `select-question.js` then asks a
+discriminating question **only when there is no intent to recommend from** — a bare goal pill —
+and only once (`scoring.conversation.maxQuestions: 1`, `discriminateOnlyWithoutIntent`). A typed
+need goes website → size → role → cards. Steps 6–9 are §9.
 
 1. **the website** — `/api/ask mode:'research'` asks the model what it already knows about that
    domain. It is built to answer `known:false` rather than guess, so what comes back is real or
    nothing. What it returns is shown as a short fact list (industry, size band, comparison set)
    and, more usefully, **used**: the size band means the company-size question is never asked,
    the industry rides to the CRM. A domain it does not recognise gets one plain sentence and the
-   conversation carries on. Declining ("I'd rather not say") looks nothing up.
-2. **their role** — founder / marketing manager / director-VP / C-suite, or typed in their own
+   conversation carries on. **There is no "I'd rather not say" chip** ("we really want to get their
+   company"): an answer that is not an address is asked once more, for the address itself; a
+   second non-address is accepted — kept as the company's name on the lead (`lead.company`) if it
+   was a name, dropped if it was a decline — and the conversation moves on rather than trapping
+   anyone. A failed lookup puts the flow in DETERMINISTIC mode like any other model failure.
+2. **company size** — under 250 / 250–2,500 / 2,500+; skipped when the lookup already knows.
+3. **their role** — founder / marketing manager / director-VP / C-suite, or typed in their own
    words and matched to one of those bands. It does not move the product recommendation; it
    qualifies the lead, and it is the vocabulary `routing.json`'s seniority override and
    `engine.js`'s ICP boosts already speak.
 
 A website inside their own opening sentence answers question 1 before it is asked, and is read
-straight away. Either question can be cut short by asking to be contacted (§4c).
+straight away. Any question can be cut short by asking to be contacted (§4c).
 
 **Nothing invented, ever.** `next/research.js`, which the older agent page uses, falls back to
 seeded fiction so the demo always has a chart to draw. That is why this calls the endpoint
@@ -253,9 +264,8 @@ pointers, the skip link, the cards' Learn more and primary CTA, and the privacy 
 them for any anchor that arrives another way. Same-page `#` anchors and `mailto:`/`tel:` are left
 alone. Asserted in the value and fast-track suites.
 
-Left as a decision for the client: `flags.contactGate` still gates the *tailored* cards behind
-the form. Amy's note reads as an argument to drop it; the flag exists, and switching it off shows
-the cards straight after the questions with the form offered after.
+Decided the same afternoon: `flags.contactGate` is off — the cards come before the email is
+asked (§9). The skip link on the form now applies to the fast track's form only.
 
 ## 5. No-LLM fallback
 
@@ -304,13 +314,35 @@ product's card copy); when the broker answers `mode:'explain'` within 5 s the se
 replaced by the model's — built from the same catalog facts, rejected if it names another
 product, a figure or a URL.
 
-## 9. Contact capture
+## 9. Recommendation, then contact — steps 6 to 9
 
-In the thread, after the questions, before any card: "See your recommendation" — name,
-business email, phone (all required; phone shape-checked), consent notice with the privacy
-link, one button "Show my recommendations". Client validation is immediate; server
-revalidates, normalises and rate-limits (10 leads/min/IP). A delivery failure keeps the form
-and offers a retry; a delivered-or-mocked lead shows the cards at once (§36).
+`flags.contactGate` is **off** (client's order, 2026-09-10): the cards come before any detail is
+asked. `readyForContact()` → `showRecommendation()` → `askEmail()`, and the composer stays open
+under the cards:
+
+6. **the recommendation** — the cards (§8) under "Here's what fits best:" (`recommendationIntroOpen`,
+   `…Low` when confidence is low). "Why this fits" is the deterministic template on this path;
+   the model's `explain` is used only where a lead already exists (the fast track).
+7. **email** — one line in the conversation, keyboard set to `inputmode=email`. A bad address is
+   asked again. A good one **creates the lead in HubSpot at once** (`POST /api/lead` with
+   `lead.email` and no name — `schema.js` no longer requires one), so nothing is lost if they
+   leave. A delivery failure is said in the thread and the same line is asked again.
+8. **phone** — `inputmode=tel`; a bad number is asked once more, a second bad one (or "no") moves
+   on. A good one **updates the same contact** (leadService upserts by email).
+9. **book a call** — one button, `data-cta="demo"`, which lead.js takes to the booking page
+   (`/book`); the line under it says we follow up at the email (and phone) either way. The
+   composer closes.
+
+Events: `kimi_contact_viewed {mode:'open', ask}`, `kimi_email_captured`, `kimi_phone_captured` /
+`kimi_phone_declined`, `kimi_book_offered`, `kimi_book_clicked`. The full email address never
+reaches the event bus (only its domain).
+
+**The fast track keeps its form** (§4c): someone who asked to be called has already told us what
+they want; name, business email and phone in one compact form, then the cards, then done. Server
+revalidation, normalisation and the 10 leads/min/IP limit are unchanged for both paths.
+
+Turning `flags.contactGate` back on restores the old order (form before cards) without a code
+change.
 
 ## 10. HubSpot integration
 
@@ -432,6 +464,15 @@ a generated product page, the card returns to its opening state — empty thread
 with the opening hint, pills enabled, blank flow state, focus in the field — and takes a fresh
 first message; pressed while an answer is still in flight, the abandoned answer never repopulates
 the box or re-locks the composer.
+
+`npm run test:order` — Playwright, every model off, the site lookup mocked known/unknown: the
+client's nine steps asserted in order from a pill (website with no skip chip → "couldn't find
+much" → size → role → the goal's opener → cards under their own heading → email, a bad one
+re-asked, the lead created on the email alone → phone, a bad one asked once more, the same lead
+updated → "Book a call" to `/book`, the click recorded before leaving); from a typed need with a
+known site (insights shown, size not asked, no discriminator, phone declined twice → the call
+offered anyway, one lead write); the website nudge (a decline asked once more, a name kept as the
+company on the lead); a domain given on the second ask still looked up; the fast track unchanged.
 
 `npm run test:value` — Playwright, every model off: a typed need names the product (page link,
 catalog line, "Read about …") before any question is answered, in reading order ack → products →

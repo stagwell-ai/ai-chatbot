@@ -36,7 +36,10 @@ test('validation: normalises email and phone, splits the name, drops unknown int
 
 test('validation: rejects a missing name, a bad email, a bad phone, an oversized payload', () => {
   const noName = BODY(); noName.lead.name = '  ';
-  assert.equal(validateLeadBody(noName, DATA).error, 'name_required');
+  /* the open path creates the contact on the email alone (client's order, 2026-09-10) */
+  const anon = validateLeadBody(noName, DATA);
+  assert.equal(anon.ok, true, 'a lead without a name is accepted');
+  assert.equal(anon.lead.firstname, null);
   const badMail = BODY(); badMail.lead.email = 'ada at example';
   assert.equal(validateLeadBody(badMail, DATA).error, 'email_invalid');
   const badPhone = BODY(); badPhone.lead.phone = '12';

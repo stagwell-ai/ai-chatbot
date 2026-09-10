@@ -44,6 +44,7 @@ let started = false, busy = false, ended = false, lastKey = null, formBubble = n
 let waitEl = null, shownFindings = false;
 let lastVia = 'type';                 /* how the visitor sent the last turn: 'type' | 'chip' */
 let pointerKey = null;                /* the way-finding last drawn, so the same products are not listed twice in a row */
+let cardsDrawn = false;               /* the recommendation is drawn once; on the open path the composer stays open under it */
 /* bumped by Start over. A turn already in flight when it is pressed carries the
    old number, so its answer is dropped on the floor instead of landing in the
    box the visitor has just emptied. */
@@ -157,6 +158,7 @@ function render(st) {
     if (key === lastKey) return;
     lastKey = key;
     drawAsk(st);
+    inputMode('text');
     H.placeholder(st.hint || (st.question && st.question.field === 'website' ? ((copy().hints || {}).website || 'yourcompany.com') : 'Type your answer…'));
     refocus();
     return;
@@ -168,11 +170,55 @@ function render(st) {
     drawForm(st);
     return;
   }
-  if (st.uiAction === 'SHOW_RECOMMENDATIONS' || st.uiAction === 'COMPLETE') {
-    if (lastKey === 'cards') return;
-    lastKey = 'cards';
-    drawCards(st);
+  /* the open path (client's order, 2026-09-10): the cards are drawn first, then
+     the composer asks for the email, then the phone — a wrong answer re-asks */
+  if (st.uiAction === 'CAPTURE_EMAIL' || st.uiAction === 'CAPTURE_PHONE') {
+    if (st.cards.length && !cardsDrawn) drawCards(st, { open: true });
+    const key = st.uiAction + '|' + st.message + '|' + (st.holds || 0);
+    if (key === lastKey) return;
+    lastKey = key;
+    H.ai(askText(st.message || ''), null, null, null);
+    inputMode(st.uiAction === 'CAPTURE_EMAIL' ? 'email' : 'tel');
+    H.placeholder(st.hint || '');
+    refocus();
+    return;
   }
+  if (st.uiAction === 'BOOK') {
+    if (lastKey === 'book') return;
+    lastKey = 'book';
+    drawBook(st);
+    return;
+  }
+  if (st.uiAction === 'SHOW_RECOMMENDATIONS' || st.uiAction === 'COMPLETE') {
+    if (cardsDrawn) return;
+    drawCards(st, { open: false });
+  }
+}
+
+/* what the phone keyboard offers: letters for an answer, @ for the email,
+   digits for the number */
+function inputMode(m) {
+  if (!input) return;
+  input.setAttribute('inputmode', m);
+  input.setAttribute('autocomplete', m === 'email' ? 'email' : m === 'tel' ? 'tel' : 'off');
+}
+
+/* the last step: a call, one button, the composer closes */
+function drawBook(st) {
+  const c = copy();
+  const a = st.action || {};
+  const bubble = H.ai(askText(st.message || ''), null, null, null);
+  bubble.classList.add('turnb--book');
+  bubble.insertAdjacentHTML('beforeend',
+    '<button type="button" class="btn btn--ink turnb__go" data-cta="' + H.esc(a.cta || 'demo') + '" data-kimi-cta="BOOK">' + H.esc(a.label || 'Book a call') + '</button>' +
+    (st.after ? '<p class="reco__after">' + H.esc(st.after) + '</p>' : ''));
+  /* lead.js opens the booking on [data-cta]; the flow only records the click */
+  bubble.querySelector('[data-kimi-cta="BOOK"]').addEventListener('click', () => {
+    try { K.clicked('BOOK', (st.recommendation || {}).primary || null, null, 'book'); } catch (e) {}
+  });
+  inputMode('text');
+  H.close(c.composerClosedBook || c.composerClosed || 'We\'ll be in touch.');
+  ended = true;
 }
 
 K.onChange(st => {
@@ -239,7 +285,8 @@ async function send(raw, label, seed) {
 function restart() {
   generation++;
   started = false; busy = false; ended = false; lastKey = null;
-  formBubble = null; waitEl = null; shownFindings = false; lastVia = 'type'; pointerKey = null;
+  formBubble = null; waitEl = null; shownFindings = false; lastVia = 'type'; pointerKey = null; cardsDrawn = false;
+  inputMode('text');
   try { K.reset(); } catch (e) {}
   H.think.off();
   H.clear((copy().hints || {}).start);
@@ -347,17 +394,20 @@ function drawForm(st) {
 }
 
 /* ── the recommendation (brief §20–§23): cards from view models ─────────── */
-function drawCards(st) {
+function drawCards(st, opts) {
+  const o = opts || {};
   const c = copy();
   const CARDS = window.SAICARDS;
   const html = (CARDS && st.cards.length) ? CARDS.renderCards(st.cards, c, H.esc) : '';
   const target = formBubble || H.ai(null, null, null, null);
   target.classList.remove('turnb--form');
   target.classList.add('turnb--reco');
-  target.innerHTML = '<div class="turnb__text">' + H.esc(st.message || '') + '</div>' + html +
+  target.innerHTML = '<div class="turnb__text">' + H.esc(st.cardsIntro || st.message || '') + '</div>' + html +
     (st.after ? '<p class="reco__after">' + H.esc(st.after) + '</p>' : '');
-  H.close(c.composerClosed || 'Your recommendation is above.');
-  ended = true;
+  cardsDrawn = true;
+  /* open: the conversation goes on under the cards (email, phone, a call);
+     closed: the fast track's end, details already given */
+  if (!o.open) { H.close(c.composerClosed || 'Your recommendation is above.'); ended = true; }
 
   /* every CTA is recorded; the booking modal (lead.js, [data-cta]) or the
      catalog URL does the rest */

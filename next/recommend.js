@@ -306,7 +306,10 @@
   function pointers(reco, goalId, data) {
     const P = Object.assign({ minTopScore: 4, fromReco: 2, fromGoal: 3 }, (data && data.scoring && data.scoring.pointers) || {});
     let kind = null, ids = [];
-    if (reco && reco.primary && reco.confidence && reco.confidence.top >= P.minTopScore) {
+    /* real evidence means an intent — a goal plus a size fit adds up to the
+       same score and is still just a goal */
+    const hasIntent = !!(reco && reco.signals && list(reco.signals.intents).length);
+    if (reco && reco.primary && hasIntent && reco.confidence && reco.confidence.top >= P.minTopScore) {
       kind = 'reco';
       /* the primary and a real secondary (secondaryMinScore) — not everything
          merely within closeGap, which would put a +2 side-match next to the

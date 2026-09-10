@@ -56,8 +56,14 @@ test('"Need awareness and consideration tracking" → QuestBrand', () => {
 test('competition: current activity → NewIntel; compare → QuestBrand; media → Knowledge Machine; AI → GEOPulse', () => {
   assert.equal(top(walk('competition', ['current_activity', 'mid']).reco), 'newintel');
   assert.equal(top(walk('competition', ['brand_compare', 'mid']).reco), 'questbrand');
-  assert.equal(top(walk('competition', ['media', 'single', 'mid']).reco), 'knowledge_machine');
-  assert.equal(top(walk('competition', ['media', 'global', 'mid']).reco), 'unicepta');
+  /* media: the two monitoring products tie; the scope question is no longer
+     asked (the client's order stops at the role), so the first by the goal's
+     own order leads and the other rides as secondary — and a known global
+     footprint still tips it to Unicepta */
+  const media = walk('competition', ['media', 'mid']).reco;
+  assert.equal(top(media), 'knowledge_machine');
+  assert.ok(media.secondary.includes('unicepta'), 'Unicepta rides as secondary: ' + media.secondary.join(','));
+  assert.equal(R.recommend({ goal: 'competition', intents: [{ id: 'competitive_media', explicit: true }], geographicScope: 'global' }, DATA).primary, 'unicepta');
   assert.equal(top(walk('competition', ['ai', 'mid']).reco), 'geopulse');
 });
 test('brand impact: awareness → QuestBrand; revenue → BERA; behaviour → Numetrix; new research → QuestDIY', () => {
@@ -90,14 +96,17 @@ test('brand awareness: measure → QuestBrand; media → Media Machine; AI searc
   assert.equal(top(walk('brand_awareness', ['creators', '100_plus', 'ent']).reco), 'imai');
 });
 test('creators: small + under 100 → SMB; 100+ → IMAI; ambiguous → one primary and the other as secondary', () => {
-  const small = walk('audience_growth', ['creators', 'under_100', 'smb']);
-  assert.equal(top(small.reco), 'smb_platform');
-  assert.ok(small.trail.some(t => t.id === 'creator_scale'), 'creator scale is asked when creator intent is present');
-  const big = walk('audience_growth', ['creators', '100_plus', 'ent']);
-  assert.equal(top(big.reco), 'imai');
-  const unsure = walk('audience_growth', ['creators', 'unknown', 'mid']);
-  assert.ok(['smb_platform', 'imai'].includes(top(unsure.reco)));
-  assert.ok(unsure.reco.secondary.some(id => id === 'smb_platform' || id === 'imai'), 'the other creator product rides as secondary');
+  /* the creator-volume question is no longer asked once an intent is known
+     (the client's order stops at the role); the band still decides when it is
+     known — read from the sentence or the site */
+  const creators = [{ id: 'creator_discovery', explicit: true }];
+  assert.equal(R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: 'under_100', companySize: 'smb' }, DATA).primary, 'smb_platform');
+  assert.equal(R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: '100_plus', companySize: 'enterprise' }, DATA).primary, 'imai');
+  const unsure = R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: 'unknown', companySize: 'mid_market' }, DATA);
+  assert.ok(['smb_platform', 'imai'].includes(unsure.primary));
+  assert.ok(unsure.secondary.some(id => id === 'smb_platform' || id === 'imai'), 'the other creator product rides as secondary');
+  const w = walk('audience_growth', ['creators', 'under_100', 'smb']);
+  assert.ok(!w.trail.some(t => t.id === 'creator_scale'), 'no creator-volume question after the opener: ' + w.trail.map(t => t.id).join(' → '));
 });
 
 /* confidence + every conversation ends */
@@ -105,12 +114,14 @@ test('every goal ends in a recommendation within the question budget, and the pi
   DATA.goals.goals.forEach(g => {
     const bare = R.recommend({ goal: g.id, intents: [] }, DATA);
     assert.equal(bare.confidence.level, 'low', g.id + ': a bare goal is low confidence');
-    /* pick the first suggestion of every question the selector puts up */
-    const firsts = DATA.questions.discovery.questions.map(q => q.suggestions[0].id);
+    /* pick the first suggestion of every question the selector puts up (the
+       website has none: the walk marks it asked and moves on) */
+    const firsts = DATA.questions.discovery.questions.filter(q => q.suggestions.length).map(q => q.suggestions[0].id);
     const r = walk(g.id, firsts);
     assert.ok(r.reco.primary, g.id + ' ends on a primary');
-    assert.ok(r.trail.length <= DATA.scoring.conversation.maxQuestions + 1, g.id + ' asked ' + r.trail.length);
-    assert.ok(r.trail.some(t => t.id === 'company_size'), g.id + ' asked company size once');
+    /* the client's order: website, size, role, then at most maxQuestions discriminators */
+    assert.ok(r.trail.length <= DATA.scoring.conversation.maxQuestions + 3, g.id + ' asked ' + r.trail.length);
+    assert.deepEqual(r.trail.slice(0, 3).map(t => t.id), ['website', 'company_size', 'role'], g.id + ' opens in the client\'s order');
   });
 });
 
@@ -202,12 +213,15 @@ test('measuring AI answers is GEOPulse; changing them is Search+', () => {
   ].forEach(t => assert.equal(top(t), 'search_plus', t));
 });
 
-test('a sentence carrying both sides keeps both products in the running, and the question that separates them is asked', () => {
+test('a sentence carrying both sides keeps both products in the running — and both are shown, rather than another question asked', () => {
   const r = readText('we want to influence what AI says about us');
   assert.ok(r.candidates.includes('geopulse') && r.candidates.includes('search_plus'), r.candidates.join(','));
   const st = { primaryGoal: null, intents: R.keywordIntents('we want to influence what AI says about us', DATA),
-    askedQuestionIds: ['website', 'role'], website: 'x.com', role: 'c_suite', companySize: 'enterprise' };
-  assert.equal(Q.selectQuestion(st, r, DATA).id, 'ai_visibility_focus');
+    askedQuestionIds: ['website', 'company_size', 'role'], website: 'x.com', role: 'c_suite', companySize: 'enterprise' };
+  /* the client's order (2026-09-10): after the role, the recommendation */
+  assert.equal(Q.selectQuestion(st, r, DATA), null);
+  const shown = R.pointers(r, null, DATA).items.map(i => i.id).sort();
+  assert.deepEqual(shown, ['geopulse', 'search_plus'], 'both are pointed at');
 });
 
 test('eclipse: an intent whose only evidence sits inside another intent\'s longer phrase is a fragment, not a second need', () => {

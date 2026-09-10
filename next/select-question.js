@@ -108,7 +108,11 @@
     const level = (reco && reco.confidence && reco.confidence.level) || 'low';
     const settled = LEVEL[level] >= (LEVEL[C.stopAt] == null ? 2 : LEVEL[C.stopAt]);
 
-    if (!settled && discriminatorsAsked < V.maxQuestions) {
+    /* the client's order (2026-09-10): website, size, role, then the
+       recommendation. A discriminator is asked only when there is nothing to
+       recommend from — a bare goal with no intent behind it — and then once. */
+    const noIntent = knownIntentIds(st).length === 0;
+    if (!settled && discriminatorsAsked < V.maxQuestions && (!V.discriminateOnlyWithoutIntent || noIntent)) {
       const next = eligible(st, reco, data)[0];
       if (next) return next.question;
     }

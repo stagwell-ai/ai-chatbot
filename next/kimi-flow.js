@@ -94,6 +94,12 @@ function blank() {
     contactRequest: null,        /* 'call'|'demo'|'trial'|'expert'|'pricing' — they asked to be contacted */
     contact: null,               /* the resolved copy for the form they are about to see */
     holds: 0,                    /* consecutive turns that taught us nothing */
+    company: null,               /* a company name typed where a web address was asked for */
+    websiteNudged: false,        /* asked once more for the address itself */
+    phoneNudged: false,          /* asked once more for a number that looked wrong */
+    action: null,                /* the BOOK step's button: { label, cta } */
+    after: null,
+    cardsIntro: null,            /* the line above the cards, safe from the asks that follow */
     error: null
   };
 }
@@ -358,7 +364,7 @@ async function research(domain) {
       companySize: size,
       competitors: list(j.competitors).map(x => String(x).trim()).filter(Boolean).slice(0, 3)
     };
-  } catch (e) { return null; }
+  } catch (e) { noteDeterministic('research_unavailable'); return null; }   /* the lookup is the model's knowledge too */
 }
 
 /* what it learned becomes what we know — but never over something the visitor
@@ -436,7 +442,11 @@ function readyForContact() {
     st.hint = null;
     track('kimi_contact_viewed', recoProps());
   } else {
+    /* the client's order (2026-09-10): "6) here are some recommendations we
+       have 7) give us your email 8) give us your phone number 9) book a call" —
+       the value first, then the ask */
     showRecommendation();
+    askEmail();
   }
 }
 
@@ -522,6 +532,9 @@ function noteHuman(text) {
 
 /* ── one answer ──────────────────────────────────────────────────────────── */
 async function answer(input) {
+  /* after the recommendation the composer asks for the email, then the phone */
+  if (st.status === 'CAPTURE_EMAIL') return captureEmail(String(input == null ? '' : input).trim());
+  if (st.status === 'CAPTURE_PHONE') return capturePhone(String(input == null ? '' : input).trim());
   if (st.status === 'IDLE' || st.uiAction !== 'ASK' || !st.currentQuestion) return state();
   const text = String(input == null ? '' : input).trim();
   if (!text) return state();
@@ -556,16 +569,33 @@ async function answer(input) {
 
   /* the website question: take the domain, look it up, show what came back */
   if (q.field === 'website') {
-    const skipped = /^(__skip__|skip|no|nope|rather not|prefer not|n\/a)$/i.test(text.trim());
-    const domain = skipped ? null : (S_extractDomain(text) || null);
-    emit('answer_given', { id: q.id, slot: 'website', text: skipped ? '__skip__' : text, chip: skipped ? '__skip__' : null });
-    if (skipped || !domain) {
+    const domain = S_extractDomain(text) || null;
+    if (!domain) {
+      const declined = /^(__skip__|skip|no|nope|none|rather not|i'd rather not|prefer not|n\/a|pass)\b/i.test(text);
+      if (!st.websiteNudged) {
+        /* no chip out of this question — "we really want to get their company"
+           (client, 2026-09-10). Asked once more, for the address itself. */
+        st.websiteNudged = true;
+        st.holds++;
+        st.message = (copy().research || {}).needDomain || q.prompt;
+        st.ack = null; st.prompt = st.message;
+        st.suggestions = [];
+        st.uiAction = 'ASK';
+        emit('question_asked', { id: q.id, slot: 'website', copy: st.message, mode: 'nudge' });
+        track('kimi_website_nudged', { declined });
+        notify(); return state();
+      }
+      /* twice is an answer: what they typed is kept as the company's name, and
+         the conversation moves on rather than trapping them here */
       st.website = '__skip__';
-      track('kimi_question_answered', { question_id: q.id, input_type: skipped ? 'pill' : 'free_text', understood: false });
+      if (!declined) { st.company = text.slice(0, 120); setSlot('company', st.company, 'visitor'); }
+      emit('answer_given', { id: q.id, slot: 'website', text: declined ? '__skip__' : text, chip: null });
+      track('kimi_question_answered', { question_id: q.id, input_type: 'free_text', understood: false, company_named: !declined });
       st.currentQuestion = null;
-      advance(skipped ? (copy().research || {}).skipped : null);
+      advance((copy().research || {}).noDomain || (copy().research || {}).skipped);
       notify(); return state();
     }
+    emit('answer_given', { id: q.id, slot: 'website', text, chip: null });
     st.website = domain;
     setSlot('company_domain', domain, 'visitor');
     /* "we're acme.com and we need help with competitors" — the domain answers
@@ -773,8 +803,15 @@ function showRecommendation(why) {
     st.message = tpl(st.lead && st.lead.phone ? c.fastTrackDonePhone : c.fastTrackDone, vars);
     st.after = c.fastTrackExplore || null;
   } else {
-    st.message = tpl(st.contactRequest ? c.recommendationIntroFast : (low ? c.recommendationIntroLow : c.recommendationIntro), vars);
+    /* no lead yet = the open path: the cards come before any details are asked */
+    const intro = st.contactRequest ? c.recommendationIntroFast
+      : !st.lead ? (low ? c.recommendationIntroOpenLow : c.recommendationIntroOpen)
+      : (low ? c.recommendationIntroLow : c.recommendationIntro);
+    st.message = tpl(intro, vars);
     st.after = st.lead ? tpl(st.lead.phone ? c.afterCardsPhone : c.afterCards, vars) : null;
+    /* kept apart from message: on the open path the email ask follows at once
+       and would otherwise be written over the cards' own heading */
+    st.cardsIntro = st.message;
   }
   st.status = 'RECOMMENDATION';
   st.uiAction = 'SHOW_RECOMMENDATIONS';
@@ -783,14 +820,106 @@ function showRecommendation(why) {
   track('kimi_recommendation_generated', Object.assign({ cards: st.cards.length, why_from_llm: !!(why && Object.keys(why).length) }, recoProps()));
 }
 
+/* ── the open path: recommendation shown, then email → phone → a call ──
+   The client's order (2026-09-10). The lead is created in HubSpot the moment
+   the email lands and updated when the phone does (leadService upserts by
+   email), so nothing is lost if they leave halfway. A wrong email is asked
+   again; a wrong phone is asked once more, then the call is offered anyway. */
+const leadPayload = () => ({ lead: st.lead, discovery: discoveryPayload(), page: location.pathname + location.search, ts: new Date().toISOString(), source: 'stagwell-ai · kimi' });
+
+function askEmail() {
+  const c = copy();
+  st.status = 'CAPTURE_EMAIL'; st.uiAction = 'CAPTURE_EMAIL';
+  st.message = c.askEmail || 'Where should I send this? Your work email:';
+  st.ack = null; st.prompt = st.message;
+  st.hint = (c.hints || {}).email || 'you@company.com';
+  st.suggestions = []; st.currentQuestion = null; st.holds = 0;
+  track('kimi_contact_viewed', Object.assign({ mode: 'open', ask: 'email' }, recoProps()));
+}
+
+async function captureEmail(text) {
+  const c = copy();
+  if (!emailDomain(text)) {
+    st.holds++;
+    st.message = (c.contactErrors || {}).email || 'That does not look like an email address.'; st.prompt = st.message;
+    notify(); return state();
+  }
+  const email = text.trim();
+  st.lead = { name: null, email, phone: null, company: st.company || null };
+  st.error = null;
+  setSlot('work_email', email, 'visitor');
+  setSlot('contact_consent', true, 'visitor');
+  if (st.company) setSlot('company', st.company, 'visitor');
+  const e = epoch;
+  const delivery = await submitLead(leadPayload());
+  if (stale(e)) return state();
+  if (!delivery.ok && delivery.retry) {
+    st.holds++;
+    st.message = (c.contactErrors || {}).failed || 'That did not go through.'; st.prompt = st.message;
+    notify(); return state();
+  }
+  st.contactCaptured = true;
+  emit('capture_email', { domain: emailDomain(email), kind: 'kimi' });
+  emit('capture_consent', { consent: true });
+  emit('journey_converted', { kind: 'kimi', product: (st.reco || {}).primary || null });
+  track('kimi_email_captured', Object.assign({ email_domain: emailDomain(email), delivered: !!delivery.delivered, destination: delivery.destination || null }, recoProps()));
+  askPhone();
+  notify(); return state();
+}
+
+function askPhone() {
+  const c = copy();
+  st.status = 'CAPTURE_PHONE'; st.uiAction = 'CAPTURE_PHONE';
+  st.message = tpl(c.askPhone || 'Thanks — I\'ll send it to {email}. And a number, if you\'d rather we call?', { email: st.lead ? st.lead.email : '' });
+  st.ack = null; st.prompt = st.message;
+  st.hint = (c.hints || {}).phone || '+1 555 000 0000';
+  st.suggestions = []; st.holds = 0;
+  track('kimi_contact_viewed', Object.assign({ mode: 'open', ask: 'phone' }, recoProps()));
+}
+
+async function capturePhone(text) {
+  const c = copy();
+  const good = PHONE_RE.test(text) && text.replace(/\D/g, '').length >= 7;
+  if (!good) {
+    if (!st.phoneNudged) {
+      st.phoneNudged = true; st.holds++;
+      st.message = (c.contactErrors || {}).phoneNudge || (c.contactErrors || {}).phone || 'That does not look like a phone number.'; st.prompt = st.message;
+      notify(); return state();
+    }
+    track('kimi_phone_declined', recoProps());
+    book(); notify(); return state();
+  }
+  st.lead.phone = text.trim();
+  setSlot('phone', st.lead.phone, 'visitor');
+  const e = epoch;
+  const delivery = await submitLead(leadPayload());        /* the same contact, updated */
+  if (stale(e)) return state();
+  emit('capture_phone', { given: true, kind: 'kimi' });
+  track('kimi_phone_captured', Object.assign({ delivered: !!delivery.delivered }, recoProps()));
+  book(); notify(); return state();
+}
+
+function book() {
+  const c = copy();
+  const r = st.reco || {};
+  const p = r.primary && R() ? R().productById(r.primary, data()) : null;
+  const vars = { email: st.lead ? st.lead.email : '', phone: st.lead && st.lead.phone ? st.lead.phone : '', product: p ? p.name : 'the right product' };
+  st.status = 'BOOK'; st.uiAction = 'BOOK';
+  st.message = tpl(c.bookIntro || 'Last thing — pick a time and a Stagwell AI specialist will walk you through {product}.', vars);
+  st.action = { label: c.bookCta || 'Book a call', cta: 'demo' };
+  st.after = tpl(st.lead && st.lead.phone ? (c.bookAfterPhone || c.afterCardsPhone) : (c.bookAfter || c.afterCards), vars);
+  st.suggestions = []; st.hint = null; st.currentQuestion = null;
+  track('kimi_book_offered', recoProps());
+}
+
 function clicked(type, productId, url, from) {
-  const map = { DEMO: 'kimi_demo_clicked', SELF_SERVICE: 'kimi_self_service_clicked', EXPERT_CALL: 'kimi_demo_clicked', LEARN_MORE: 'kimi_product_clicked' };
+  const map = { DEMO: 'kimi_demo_clicked', SELF_SERVICE: 'kimi_self_service_clicked', EXPERT_CALL: 'kimi_demo_clicked', LEARN_MORE: 'kimi_product_clicked', BOOK: 'kimi_book_clicked' };
   const external = url && /^https?:\/\//i.test(url) && !/^https?:\/\/[^/]*stagwell/i.test(url);
   /* from: 'card' (the recommendation), 'chat' (a way-finding pointer mid-conversation), 'form' (the skip link on the contact form) */
   track(map[type] || 'kimi_product_clicked', { product: productId || null, cta: type, url: url || null, from: from || 'card', at_step: st.step });
   if (external) track('kimi_external_site_clicked', { product: productId || null, url });
   emit('handoff_click', { product: productId || null, cta: type, url: url || null });
-  if (st.status === 'RECOMMENDATION') { st.status = 'COMPLETE'; st.uiAction = 'COMPLETE'; notify(); }
+  if (st.status === 'RECOMMENDATION' || st.status === 'BOOK') { st.status = 'COMPLETE'; st.uiAction = 'COMPLETE'; notify(); }
 }
 
 /* ── public surface ──────────────────────────────────────────────────────── */
@@ -802,6 +931,10 @@ function state() {
     uiAction: st.uiAction,
     message: st.message,
     after: st.after || null,
+    cardsIntro: st.cardsIntro || null,
+    action: st.action ? Object.assign({}, st.action) : null,
+    company: st.company,
+    holds: st.holds,
     suggestions: st.suggestions.slice(),
     hint: st.hint,
     question: st.currentQuestion ? { id: st.currentQuestion.id, field: st.currentQuestion.field || 'intent' } : null,

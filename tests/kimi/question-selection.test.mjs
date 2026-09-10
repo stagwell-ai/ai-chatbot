@@ -1,18 +1,22 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   QUESTION SELECTION — brief §49B: inferred fields are not asked again, the
-   highest-value discriminator is chosen, asking stops when confidence is high.
+   QUESTION SELECTION — the client's order (2026-09-10):
+     1) what they want to solve  2) their website  3) what was found about it
+     4) how large the org is  5) their role  6) the recommendation
+   The opening questions carry `first` and are asked in that order while their
+   field is unknown; a discriminating question is asked only when there is no
+   intent to recommend from (a bare goal), and then once. Inferred fields are
+   never asked again.
    ═══════════════════════════════════════════════════════════════════════════ */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DATA, R, Q, walk } from './_data.mjs';
 
 const reco = st => R.recommend({ goal: st.primaryGoal, intents: st.intents, companySize: st.companySize, creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope }, DATA);
-/* past the website step by default: these are tests about which DISCRIMINATOR
-   is chosen, and the website is asked before all of them (see the test above) */
-const fresh = (goal, extra) => Object.assign({ primaryGoal: goal, intents: [], askedQuestionIds: ['website', 'role'], website: 'acme.com', role: 'director_vp', companySize: null, creatorProgramSize: null, geographicScope: null }, extra || {});
-const beforeWebsite = (goal, extra) => Object.assign({ primaryGoal: goal, intents: [], askedQuestionIds: [], website: null, companySize: null, creatorProgramSize: null, geographicScope: null }, extra || {});
+const blank = (goal, extra) => Object.assign({ primaryGoal: goal, intents: [], askedQuestionIds: [], website: null, role: null, companySize: null, creatorProgramSize: null, geographicScope: null }, extra || {});
+/* past the three opening questions: these are tests about what comes AFTER them */
+const opened = (goal, extra) => blank(goal, Object.assign({ askedQuestionIds: ['website', 'company_size', 'role'], website: 'acme.com', companySize: 'mid_market', role: 'director_vp' }, extra || {}));
 
-test('bank shape: every discovery question has 2–5 suggestions, a purpose and a valid field; intent values exist in the taxonomy', () => {
+test('bank shape: every discovery question has a purpose, a prompt and a valid field; intent values exist in the taxonomy', () => {
   const intents = DATA.taxonomy.intents.map(i => i.id);
   const bands = DATA.taxonomy.bands;
   const bank = DATA.questions.discovery.questions;
@@ -20,13 +24,11 @@ test('bank shape: every discovery question has 2–5 suggestions, a purpose and 
   assert.ok(discriminators.length >= 10 && discriminators.length <= 15, 'MVP asks for 10–15 discriminating questions');
   bank.forEach(q => {
     assert.ok(q.purpose && q.prompt, q.id);
-    /* a `first` question (the website) is a free-text ask with one way out of
-       it, not a set of discriminating pills */
     if (q.first) {
-      /* asked before the discriminators: either a free-text ask with one way
-         out of it (the website) or a plain set of choices (the role) */
-      const skip = q.suggestions.length === 1 && q.suggestions[0].value === '__skip__';
-      assert.ok(skip || (q.suggestions.length >= 2 && q.suggestions.length <= 5), q.id + ' suggestions');
+      /* the website is a free-text ask with NO chip out of it — "we really want
+         to get their company" (client); size and role are plain sets of choices */
+      if (q.field === 'website') assert.equal(q.suggestions.length, 0, 'no skip chip on the website');
+      else assert.ok(q.suggestions.length >= 2 && q.suggestions.length <= 5, q.id + ' suggestions');
       return;
     }
     assert.ok(q.suggestions.length >= 2 && q.suggestions.length <= 5, q.id + ' pill count');
@@ -40,69 +42,64 @@ test('bank shape: every discovery question has 2–5 suggestions, a purpose and 
   });
 });
 
-test('every conversation opens by asking for the website, then the goal\'s own discriminator', () => {
+test('the opening order is website → company size → role, for every goal', () => {
   DATA.goals.goals.forEach(g => {
-    const bare = beforeWebsite(g.id);
-    assert.equal(Q.selectQuestion(bare, reco(bare), DATA).id, 'website', g.id + ' asks for the website first');
-    const afterSite = beforeWebsite(g.id, { website: 'acme.com', askedQuestionIds: ['website'] });
-    assert.equal(Q.selectQuestion(afterSite, reco(afterSite), DATA).id, 'role', g.id + ' then asks the role');
+    const s0 = blank(g.id);
+    assert.equal(Q.selectQuestion(s0, reco(s0), DATA).id, 'website', g.id + ': the website first');
+    const s1 = blank(g.id, { website: 'acme.com', askedQuestionIds: ['website'] });
+    assert.equal(Q.selectQuestion(s1, reco(s1), DATA).id, 'company_size', g.id + ': then how large the org is');
+    const s2 = blank(g.id, { website: 'acme.com', companySize: 'smb', askedQuestionIds: ['website', 'company_size'] });
+    assert.equal(Q.selectQuestion(s2, reco(s2), DATA).id, 'role', g.id + ': then the role');
   });
 });
 
-test('a goal pill is followed by that goal\'s own discriminator', () => {
-  DATA.goals.goals.forEach(g => {
-    const st = fresh(g.id);
-    const q = Q.selectQuestion(st, reco(st), DATA);
-    assert.equal(q && q.id, g.firstQuestion, g.id);
-  });
+test('what the site lookup already found is not asked again: size known → straight to the role', () => {
+  const s = blank('operations', { website: 'acmehotels.com', companySize: 'enterprise', askedQuestionIds: ['website'] });
+  assert.equal(Q.selectQuestion(s, reco(s), DATA).id, 'role');
 });
 
-test('a field already inferred from free text is not asked again', () => {
-  const st = fresh('audience_growth', { companySize: 'enterprise', creatorProgramSize: '100_plus', intents: [{ id: 'creator_management', explicit: false }] });
-  const asked = [];
-  for (let i = 0; i < 6; i++) {
+test('a declined website ("__skip__") still counts as answered — the order carries on', () => {
+  const s = blank('competition', { website: '__skip__', askedQuestionIds: ['website'] });
+  assert.equal(Q.selectQuestion(s, reco(s), DATA).id, 'company_size');
+});
+
+test('a bare goal — no intent to recommend from — gets that goal\'s own opener once, then the recommendation', () => {
+  DATA.goals.goals.forEach(g => {
+    const st = opened(g.id);
     const q = Q.selectQuestion(st, reco(st), DATA);
-    if (!q) break;
-    asked.push(q.id); st.askedQuestionIds.push(q.id);
+    assert.equal(q && q.id, g.firstQuestion, g.id + ' asks its own opener');
+    st.askedQuestionIds.push(q.id);
     Q.applySuggestion(st, q, q.suggestions[0]);
-  }
-  assert.ok(!asked.includes('company_size'), 'company size known → not asked');
-  assert.ok(!asked.includes('creator_scale'), 'creator scale known → not asked');
+    assert.equal(Q.selectQuestion(st, reco(st), DATA), null, g.id + ': one discriminator, then the recommendation');
+  });
 });
 
-test('the highest-value discriminator is selected: with two monitoring products in the running, the scope question wins', () => {
-  const st = fresh('reputation', { intents: [{ id: 'media_monitoring', explicit: false }, { id: 'reputation_risk', explicit: false }], askedQuestionIds: ['website', 'role', 'reputation_scope'] });
+test('with an intent known the recommendation follows the role directly — no discriminator, whatever the confidence', () => {
+  /* two AI-search intents tie GEOPulse and Search+: low confidence, and the
+     client still wants the recommendation now, not another question */
+  const st = opened(null, { intents: [{ id: 'ai_search_visibility', explicit: false }, { id: 'ai_search_influence', explicit: false }] });
   const r = reco(st);
-  assert.ok(r.candidates.includes('knowledge_machine') && r.candidates.includes('unicepta'));
-  const q = Q.selectQuestion(st, r, DATA);
-  assert.equal(q.id, 'monitoring_scope');
+  assert.notEqual(r.confidence.level, 'high');
+  assert.equal(Q.selectQuestion(st, r, DATA), null);
+  /* and an obvious one, the same */
+  const st2 = opened('competition', { intents: [{ id: 'competitive_activity', explicit: true }] });
+  assert.equal(Q.selectQuestion(st2, reco(st2), DATA), null);
 });
 
-test('asking stops when confidence is high; only the required size question remains, then nothing', () => {
-  const st = fresh('competition', { intents: [{ id: 'competitive_activity', explicit: true }], askedQuestionIds: ['website', 'role', 'competition_type'] });
-  const r = reco(st);
-  assert.equal(r.confidence.level, 'high');
-  const q = Q.selectQuestion(st, r, DATA);
-  assert.equal(q.id, 'company_size', 'high confidence → straight to the one required question');
-  st.askedQuestionIds.push(q.id); Q.applySuggestion(st, q, q.suggestions[1]);
-  assert.equal(Q.selectQuestion(st, reco(st), DATA), null);
+test('the whole walk, from a bare goal: three openers, one discriminator, done', () => {
+  const r = walk('competition', ['smb', 'manager', 'current_activity']);
+  assert.deepEqual(r.trail.map(t => t.id), ['website', 'company_size', 'role', 'competition_type']);
+  assert.equal(r.reco.primary, 'newintel');
 });
 
-test('obvious intent spends no DISCRIMINATOR — only the opening qualification (brief §5)', () => {
-  const r = walk(null, ['mid'], { intents: [{ id: 'customer_voice_ai', explicit: false }, { id: 'customer_chat_ai', explicit: false }] });
+test('the whole walk, from a typed need: three openers and straight to the recommendation', () => {
+  const r = walk(null, ['mid', 'director_vp'], { intents: [{ id: 'customer_voice_ai', explicit: false }, { id: 'customer_chat_ai', explicit: false }] });
+  assert.deepEqual(r.trail.map(t => t.id), ['website', 'company_size', 'role']);
   assert.equal(r.reco.primary, 'newvoices');
-  /* the website and the role are asked of everyone — they are what makes the
-     rest of the conversation about this visitor — and company size only while
-     it is still unknown. None of them is a discriminating question. */
-  const bank = DATA.questions.discovery.questions;
-  const kind = id => { const q = bank.find(x => x.id === id); return q.first ? 'opening' : q.required ? 'qualification' : 'discriminator'; };
-  const asked = r.trail.map(t => t.id);
-  assert.deepEqual(asked.filter(id => kind(id) === 'discriminator'), [], 'asked ' + asked.join(','));
-  assert.ok(asked.length <= 3, 'asked ' + asked.join(','));
 });
 
 test('the question budget holds even when every answer is unhelpful', () => {
-  const st = fresh('brand_awareness');
+  const st = blank('brand_awareness');
   let n = 0;
   for (;;) {
     const q = Q.selectQuestion(st, reco(st), DATA);
@@ -112,7 +109,7 @@ test('the question budget holds even when every answer is unhelpful', () => {
     /* answer nothing: the question is marked asked and no signal is added */
   }
   const max = DATA.scoring.conversation.maxQuestions;
-  assert.ok(n <= max + 1, 'asked ' + n + ' with a budget of ' + max + ' + 1 required');
+  assert.ok(n <= max + 3, 'asked ' + n + ' with a budget of ' + max + ' + 3 openers');
 });
 
 test('free text on a question matches a suggestion loosely', () => {

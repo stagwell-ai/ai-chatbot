@@ -85,20 +85,17 @@ try {
     ok(st.role === 'director_vp', 'the role is kept (' + st.role + ')');
 
     /* the size question must never be asked now — the lookup answered it */
-    for (let i = 0; i < 5 && !(await page.$('#heroLeadForm')); i++) {
+    for (let i = 0; i < 5 && !(await page.$('.reco__card--best')); i++) {
       const chip = await page.$('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');
       if (!chip) break;
       await chip.click(); await settle(page); await page.waitForTimeout(250);
     }
     const asked = (await page.evaluate(() => window.SAIKIMI.state())).askedQuestionIds;
     ok(!asked.includes('company_size'), 'the size question is never asked: ' + asked.join(' → '));
-    ok(!!(await page.$('#heroLeadForm')), 'the conversation still reaches the form');
+    ok(!!(await page.$('.reco__card--best')), 'the conversation reaches the recommendation');
+    ok((await page.evaluate(() => window.SAIKIMI.state().status)) === 'CAPTURE_EMAIL', 'and then asks for the email');
 
-    await page.fill('#heroLeadForm [name=name]', 'Ada Lovelace');
-    await page.fill('#heroLeadForm [name=email]', 'ada@acmehotels.com');
-    await page.fill('#heroLeadForm [name=phone]', '+1 212 555 0100');
-    await page.click('#heroLeadForm .askform__go');
-    await page.waitForFunction(() => !document.querySelector('#heroLeadForm'), null, { timeout: 12000 });
+    await say(page, 'ada@acmehotels.com');
     const d = state.lead.discovery;
     ok(d.website === 'acmehotels.com', 'the lead carries the website');
     ok(d.role === 'director_vp', 'the lead carries the role');
@@ -119,7 +116,7 @@ try {
     ok((await page.$$('.found__row')).length === 0, 'no fact list is drawn');
     const st = await page.evaluate(() => window.SAIKIMI.state());
     ok(st.companySize === null && !st.findings, 'nothing was invented into the state');
-    ok(/role/i.test(await lastAsk(page)), 'and it carries on to the role');
+    ok(/how big/i.test(await lastAsk(page)), 'and it carries on to the size — unknown site, so it has to ask');
     await ctx.close();
   }
 
@@ -129,7 +126,7 @@ try {
     await page.click('#agentTags .tag[data-goal="competition"]');
     await settle(page); await page.waitForTimeout(250);
     await say(page, 'acmehotels.com');
-    ok(/role/i.test(await lastAsk(page)), 'the conversation carries on regardless');
+    ok(/how big/i.test(await lastAsk(page)), 'the conversation carries on regardless (to the size)');
     const st = await page.evaluate(() => window.SAIKIMI.state());
     ok(st.website === 'acmehotels.com', 'the website is still captured for the lead');
     ok(state.errors.length === 0, 'no page errors');
@@ -141,10 +138,17 @@ try {
     const { ctx, page, state } = await open(KNOWN);
     await page.click('#agentTags .tag[data-goal="competition"]');
     await settle(page); await page.waitForTimeout(250);
-    await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');   /* I'd rather not say */
-    await settle(page); await page.waitForTimeout(250);
+    /* no chip out of the website question any more (client): a decline is asked
+       once more for the address, and a second decline is accepted */
+    ok((await page.$$('#agentThread .turnb--ai:last-child .turnb__chips .tag')).length === 0, 'no "I\'d rather not say" chip');
+    await say(page, "I'd rather not say");
+    ok(/web address itself/i.test(await lastAsk(page)), 'declining is met with one more ask for the address');
+    await say(page, 'no');
     ok(state.researched.length === 0, 'declining looks nothing up');
-    ok(/role/i.test(await lastAsk(page)), 'and it moves straight to the role');
+    ok(/how big/i.test(await lastAsk(page)), 'and it moves on to the size');
+    await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');
+    await settle(page); await page.waitForTimeout(250);
+    ok(/role/i.test(await lastAsk(page)), 'then the role');
     await say(page, "I'm the CMO");
     const st = await page.evaluate(() => window.SAIKIMI.state());
     ok(st.role === 'c_suite', 'a typed title lands on a band (' + st.role + ')');

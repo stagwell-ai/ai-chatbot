@@ -52,7 +52,8 @@ export function validateLeadBody(body, data) {
   const name = str(L.name, 120);
   const email = normalizeEmail(L.email);
   const phone = normalizePhone(L.phone);
-  if (!name) return { ok: false, error: 'name_required', field: 'name' };
+  /* the name is optional: the open path (client's order, 2026-09-10) creates
+     the contact on the email alone and adds the phone on the next turn */
   if (!email) return { ok: false, error: 'email_invalid', field: 'email' };
   if (L.phone != null && String(L.phone).trim() && !phone) return { ok: false, error: 'phone_invalid', field: 'phone' };
 

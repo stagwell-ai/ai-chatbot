@@ -640,18 +640,12 @@
     "questions": [
       {
         "id": "website",
-        "purpose": "Read the visitor's own site so everything after this is about them, not about marketing in general",
+        "purpose": "Read the visitor's own site so everything after this is about them, not about marketing in general No way out of it on a chip: the client wants the company (2026-09-10) — a non-address answer is asked once more for the address itself, then accepted as the company's name.",
         "field": "website",
         "priority": 100,
         "first": true,
         "prompt": "What's your website? I'll take a quick look so the rest of this is about you.",
-        "suggestions": [
-          {
-            "id": "skip",
-            "label": "I'd rather not say",
-            "value": "__skip__"
-          }
-        ],
+        "suggestions": [],
         "askWhen": {
           "always": true
         },
@@ -659,9 +653,9 @@
       },
       {
         "id": "role",
-        "purpose": "Who we are talking to — lead qualification, and the routing overrides that turn on seniority",
+        "purpose": "Who we are talking to — lead qualification, and the routing overrides that turn on seniority Fifth, after the size (client's order, 2026-09-10).",
         "field": "role",
-        "priority": 99,
+        "priority": 98,
         "first": true,
         "prompt": "And what's your role there?",
         "suggestions": [
@@ -1230,10 +1224,9 @@
       },
       {
         "id": "company_size",
-        "purpose": "Lead qualification and the SMB self-service path; also the routing tier",
+        "purpose": "Lead qualification and the SMB self-service path; also the routing tier Asked fourth, right after the site has been read (client's order, 2026-09-10) — and not at all when the lookup already found the size.",
         "field": "companySize",
-        "priority": 40,
-        "required": true,
+        "priority": 99,
         "prompt": "Roughly how big is your company?",
         "suggestions": [
           {
@@ -1262,7 +1255,8 @@
           "media_machine",
           "search_plus",
           "machines_family"
-        ]
+        ],
+        "first": true
       }
     ]
   }

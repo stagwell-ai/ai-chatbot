@@ -4,7 +4,7 @@
   "flags": {
     "enabled": true,
     "llm": true,
-    "contactGate": true,
+    "contactGate": false,
     "secondaryRecommendations": true,
     "analytics": true,
     "explainWithLlm": true
@@ -38,9 +38,20 @@
       "name": "Your name, so we know who to ask for.",
       "email": "That does not look like a business email — check the address.",
       "phone": "That does not look like a phone number — check it.",
-      "failed": "That didn't go through. Try again in a moment."
+      "failed": "That didn't go through. Try again in a moment.",
+      "phoneNudge": "That doesn't look like a phone number — check it, or say no and we'll stick to email."
     },
     "contactSubmitting": "Sending…",
+    "_openPathNote": "The client's order (2026-09-10): the recommendation is shown first, then the email is asked for, then the phone, then a call is offered. The lead is created in HubSpot on the email and updated on the phone.",
+    "recommendationIntroOpen": "Here's what fits best:",
+    "recommendationIntroOpenLow": "From what you've told me, here's where I'd start:",
+    "askEmail": "Want this written up for you, with a specialist who has read this conversation? Your work email:",
+    "askPhone": "Thanks — I'll send it to {email}. And a number, if you'd rather we call?",
+    "bookIntro": "Last thing — pick a time and a Stagwell AI specialist will walk you through {product} against your brand.",
+    "bookCta": "Book a call",
+    "bookAfter": "We'll also follow up at {email}.",
+    "bookAfterPhone": "We'll also follow up at {email} or on {phone}.",
+    "composerClosedBook": "Pick a time above — we'll be in touch either way.",
     "recommendationIntro": "Thanks, {first}. Here's what fits best:",
     "recommendationIntroLow": "Thanks, {first}. From what you've told me, here's where I'd start:",
     "afterCards": "A Stagwell AI specialist will also follow up at {email}.",
@@ -62,7 +73,9 @@
       "start": "What do you need help solving?",
       "question": "Pick one, or type your answer…",
       "size": "Roughly how many people?",
-      "website": "yourcompany.com"
+      "website": "yourcompany.com",
+      "email": "you@company.com",
+      "phone": "+1 555 000 0000"
     },
     "about": "Stagwell AI is a custom portfolio of agentic solutions built for businesses of any size. It combines technology with deep marketing expertise to help businesses make better decisions, execute faster and drive stronger performance. On this page, the assistant asks a few questions about what you are trying to solve and recommends the Stagwell AI product that fits, then connects you with the right team.",
     "hold": [
@@ -125,6 +138,8 @@
       "foundHeaderNoName": "Here's what I can see about {domain}:",
       "notFound": "I couldn't find much on {domain} from here — no matter, let's carry on.",
       "skipped": "No problem.",
+      "needDomain": "I need the web address itself — like acme.com — so I can look it up.",
+      "noDomain": "No problem — let's carry on.",
       "labels": {
         "industry": "Industry",
         "size": "Size",

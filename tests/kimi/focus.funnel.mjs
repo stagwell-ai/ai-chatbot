@@ -118,21 +118,36 @@ try {
     await page.waitForTimeout(400);
     ok((await active(page)) !== 'agentInput', 'the button they focused kept the caret');
 
-    for (let i = 0; i < 6 && !(await page.$('#heroLeadForm')); i++) {
+    /* the client's order: the website is typed, then chips (size, role, the
+       goal's opener), then the cards with the composer still open for the email */
+    await page.fill('#agentInput', 'example-brand.com'); await page.press('#agentInput', 'Enter');
+    await answered(page); await page.waitForTimeout(250);
+    for (let i = 0; i < 6 && !(await page.$('.reco__card--best')); i++) {
       await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');
-      await page.waitForFunction(() => document.querySelector('#heroLeadForm') || document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])'), null, { timeout: 15000 });
+      await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && (document.querySelector('.reco__card--best') || document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])')), null, { timeout: 15000 });
       await page.waitForTimeout(250);
     }
+    await page.waitForSelector('.reco__card--best', { timeout: 15000 });
+    await page.waitForTimeout(400);
+    ok(!(await page.$eval('#agentInput', e => e.disabled)) && (await active(page)) === 'agentInput', 'the cards are up and the composer keeps the caret for the email');
+    await page.fill('#agentInput', 'visitor@example-brand.com'); await page.press('#agentInput', 'Enter');
+    await page.waitForFunction(() => window.SAIKIMI.state().status === 'CAPTURE_PHONE', null, { timeout: 15000 });
+    await page.waitForTimeout(300);
+    ok((await active(page)) === 'agentInput', 'and for the phone');
+    await page.fill('#agentInput', '+1 212 555 0100'); await page.press('#agentInput', 'Enter');
+    await page.waitForFunction(() => window.SAIKIMI.state().status === 'BOOK', null, { timeout: 15000 });
+    await page.waitForTimeout(300);
+    ok(await page.$eval('#agentInput', e => e.disabled), 'the composer is closed once the call is offered');
+    await ctx.close();
+  }
+  console.log('\n▶ the fast track\'s form takes the caret at Full name');
+  {
+    const ctx = await browser.newContext(desktop);
+    const page = await prepare(ctx);
+    await page.fill('#agentInput', 'can you call me'); await page.press('#agentInput', 'Enter');
     await page.waitForSelector('#heroLeadForm', { timeout: 15000 });
     await page.waitForTimeout(400);
     ok((await active(page)) === 'name', 'the contact form takes the caret at Full name');
-    await page.fill('#heroLeadForm [name=name]', 'Test Visitor');
-    await page.fill('#heroLeadForm [name=email]', 'visitor@example-brand.com');
-    await page.fill('#heroLeadForm [name=phone]', '+1 212 555 0100');
-    await page.click('#heroLeadForm .askform__go');
-    await page.waitForSelector('.reco__card--best', { timeout: 15000 });
-    await page.waitForTimeout(300);
-    ok(await page.$eval('#agentInput', e => e.disabled), 'the composer is closed once the cards are up');
     await ctx.close();
   }
   console.log('\n▶ the whole card is the field, not just the line at the top');
