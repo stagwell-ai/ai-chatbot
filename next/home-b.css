@@ -487,3 +487,6 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 @media (min-width:901px){
   .hb-statement__grid > .hb-statement__lede{grid-column:7/11;align-self:end;margin-top:0;margin-bottom:clamp(8px,1vw,16px)}
 }
+
+/* the stacking cards' eyebrow: just the number (client: "too much text… maybe just the number") */
+.hb-stack__line,.hb-stack__kind{display:none}
