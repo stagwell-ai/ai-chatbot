@@ -60,6 +60,22 @@
       "destination": "/next/why.html"
     },
     {
+      "source": "/next/newvoices",
+      "destination": "/next/newvoices.html"
+    },
+    {
+      "source": "/next/the-machine",
+      "destination": "/next/the-machine.html"
+    },
+    {
+      "source": "/next/targeting-machine",
+      "destination": "/next/targeting-machine.html"
+    },
+    {
+      "source": "/next/agent-cloud",
+      "destination": "/next/agent-cloud.html"
+    },
+    {
       "source": "/next/p/:campaign",
       "destination": "/next/campaign.html"
     },

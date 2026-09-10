@@ -1137,3 +1137,52 @@ body.chat-open{overflow:hidden}
 }
 .display--end .navy{font-size:min(80px, 8.4vw) !important}
 @media (max-width:820px){ .display--end .ln__in{white-space:normal} }
+
+/* ── the Products dropdown (2026-09-10) ───────────────────────────────────────
+   Temporary: a way to reach the product pages while they are built. The whole
+   feature is this block, the <li class="nav__drop"> in the bar, the .menu__sub
+   list in the phone menu and navdrop.js. The panel's links are written as
+   `.nav .nav__panel a…` so they outrank `.nav:not(.is-stuck) .nav__links a`,
+   which would otherwise turn them white on the panel's white. */
+.nav__drop{position:relative}
+.nav__droptrig{display:inline-flex;align-items:center;gap:6px;font-family:var(--ui);font-size:14px;font-weight:500;
+  color:var(--ink);padding:6px 0;background:none;border:0;border-bottom:1px solid transparent;cursor:pointer;
+  transition:border-color .25s ease}
+.nav__droptrig:hover,.nav__drop.is-open .nav__droptrig{border-bottom-color:currentColor}
+.nav__droptrig:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:2px}
+.nav:not(.is-stuck) .nav__droptrig{color:rgba(255,255,255,.86)}
+.nav__chev{width:10px;height:10px;flex-shrink:0;transition:transform .3s var(--ease)}
+.nav__drop.is-open .nav__chev{transform:rotate(180deg)}
+.nav__panel{position:absolute;top:calc(100% + 16px);left:-18px;width:340px;padding:8px;border-radius:18px;
+  background:#FFFFFF;color:var(--ink);box-shadow:0 22px 60px rgba(11,18,32,.16),inset 0 0 0 1px var(--line);
+  opacity:0;visibility:hidden;transform:translateY(-6px);z-index:60;
+  transition:opacity .22s ease,transform .3s var(--ease),visibility 0s linear .3s}
+.nav__panel::before{content:"";position:absolute;left:0;right:0;top:-18px;height:18px}   /* the hover bridge over the gap */
+.nav__drop.is-open .nav__panel{opacity:1;visibility:visible;transform:none;
+  transition:opacity .22s ease,transform .3s var(--ease),visibility 0s}
+.nav__plist{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
+.nav__pitem{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border-radius:12px;color:var(--ink)}
+.nav .nav__panel a.nav__pitem{font-size:inherit;font-weight:inherit;color:var(--ink);padding:12px 14px;border-bottom:0;
+  transition:background-color .2s ease}
+.nav .nav__panel a.nav__pitem:hover,.nav .nav__panel a.nav__pitem:focus-visible,
+.nav .nav__panel a.nav__pitem[aria-current="page"]{background:#F4F6F8;outline:0}
+.nav__pname{font-family:var(--ui);font-size:15px;font-weight:600;line-height:1.25;display:flex;align-items:center;gap:8px}
+.nav__pdesc{font-family:var(--ui);font-size:13px;font-weight:400;line-height:1.35;color:var(--ink-3)}
+.nav__pitem.is-soon{cursor:default}
+.nav__pitem.is-soon .nav__pname{color:var(--ink-3)}
+.nav__soon{font-style:normal;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);background:#F1F2F4;border-radius:999px;padding:3px 8px}
+.nav .nav__panel a.nav__pall{display:block;margin:6px 6px 2px;padding:12px 8px 6px;border-top:1px solid var(--line);
+  border-bottom:0;font-family:var(--ui);font-size:14px;font-weight:600;color:var(--ink)}
+.nav .nav__panel a.nav__pall:hover{color:var(--ink-3)}
+/* the phone menu: the product pages under "Products" */
+.menu__sub{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.menu__links .menu__sub a,.menu__sub span{font-family:var(--ui);font-size:17px;font-weight:500;letter-spacing:0;
+  line-height:1.3;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px}
+.menu__sub .is-soon{color:var(--ink-3)}
+/* "Products" and "Why Stagwell AI" on one line: the link is an inline box and
+   the trigger an inline-flex button, which put their words 3px apart (client:
+   "doesn't look aligned"). Both are the same box now — 21px of line, 6px above
+   and below, centred in their item — so the text lands on the same line. */
+.nav__links > li{display:flex;align-items:center}
+.nav__links > li > a,.nav__droptrig{display:inline-flex;align-items:center;line-height:21px}
