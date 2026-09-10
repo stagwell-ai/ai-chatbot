@@ -386,8 +386,15 @@ def page(p, home):
 
 </main>
 '''
-    scripts = '\n'.join(f'<script src="/next/{f}"></script>' for f in
-                        ['data-loader.js', 'engine.js', 'flow.js', 'research.js', 'lead.js', 'home.js', 'hero-agent.js', 'navdrop.js'])
+    # the homepage's own scripts, in its order: the chat at the foot is the
+    # homepage's chat, and whatever it needs (the Kimi flow, 2026-09-10:
+    # recommend, select-question, cards, analytics, kimi-flow before
+    # hero-agent) it gets here too, so a change on the homepage can't leave
+    # these pages behind
+    home_js = re.findall(r'<script src="/next/([^"]+)"></script>', home[home.index('<body'):])
+    assert 'hero-agent.js' in home_js and 'home.js' in home_js, home_js
+    for f in home_js: assert (NEXT / f).exists(), f'missing next/{f}'
+    scripts = '\n'.join(f'<script src="/next/{f}"></script>' for f in home_js)
     out = (head + '</head>\n'
            '<!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta] click -->\n'
            f'<body class="home pp pp--{slug}{" pp--light-hero" if p.get("hero_tone") == "light" else ""}" data-lead-cta>\n\n' + symbol + '\n\n' + chrome + '\n' + body + '\n' +
