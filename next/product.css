@@ -39,10 +39,15 @@
 
 .pp-eyebrow{margin:0 0 18px;font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:2px;
   text-transform:uppercase;color:rgba(255,255,255,.66)}
-.pp-title{margin:0;max-width:20ch;font-family:var(--display);font-weight:500;
-  font-size:clamp(34px,min(1rem + 3.6vw,9vh),64px);line-height:1.08;letter-spacing:-.02em;text-wrap:balance;color:#FFFFFF}
-.pp-lede{margin:24px 0 0;max-width:62ch;font-size:clamp(15px,1.15vw,18px);line-height:1.6;color:rgba(255,255,255,.84)}
-.pp-acts{margin-top:36px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:16px 32px}
+/* two lines on a desktop where the words allow it (client): a wider measure
+   and a step down in size — the longest title is 62 characters */
+.pp-title{margin:0;max-width:min(100%,1020px);font-family:var(--display);font-weight:500;
+  font-size:clamp(32px,min(1rem + 3vw,8.4vh),56px);line-height:1.1;letter-spacing:-.02em;text-wrap:balance;color:#FFFFFF}
+/* three lines at most on a desktop (client): the descriptions are the
+   definitions' own 1-2 sentences, so the measure widens rather than the copy
+   being cut */
+.pp-lede{margin:22px 0 0;max-width:min(100%,940px);font-size:clamp(15px,1.1vw,17px);line-height:1.6;color:rgba(255,255,255,.84)}
+.pp-acts{margin-top:34px;display:flex;flex-direction:column;align-items:center;gap:18px}   /* the site link under the button (client) */
 /* the product's own site is a link, not a button: Book a demo is the page's one
    ask, and a second pill beside it competed for the eye (client). An up-right
    arrow says it leaves the page. */
