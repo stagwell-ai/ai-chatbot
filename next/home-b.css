@@ -481,7 +481,7 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
 /* the stack in depth: a hairline border on every card, the pushed-back ones shrink toward the top,
    and more scroll between cards so each one sits readable for a while (client: New Voices was hard to read) */
 .hb-stack__cards{gap:22vh}
-.hb-stack__inner{transform-origin:50% 0;box-shadow:0 0 0 1px rgba(11,18,32,.09),0 -18px 50px -30px rgba(11,18,32,.25);will-change:transform,filter}
+.hb-stack__inner{transform-origin:50% 0;box-shadow:0 0 0 1px rgba(11,18,32,.09);will-change:transform,filter}   /* a hairline, no drop shadow (client) */
 
 /* the statement: the paragraph beside the poster, low, next to it — the poster does not move (client) */
 @media (min-width:901px){
