@@ -1123,3 +1123,17 @@ body.chat-open{overflow:hidden}
   .askform{max-width:none}
   .askbox__thread .turnb--form .turnb__text{font-size:15px}
 }
+
+/* ── the designer's edit, made to hold on a phone (2026-09-10) ────────────────
+   Her About frame and closing title carry fixed inline sizes (518x587 and
+   80px), which beat every responsive rule above: on a phone the frame widened
+   the page to 542px and the title ran off the edge. Her own changelog lists the
+   frame as "to settle before this ships". These rules only engage where her
+   fixed sizes stop fitting — at desktop widths both compute to exactly what she
+   set. */
+@media (max-width:1100px){
+  .intro__media{width:auto !important;max-width:518px;height:auto !important;aspect-ratio:518/587}
+  .intro__pic{width:100% !important;height:100% !important;left:0 !important}
+}
+.display--end .navy{font-size:min(80px, 8.4vw) !important}
+@media (max-width:820px){ .display--end .ln__in{white-space:normal} }
