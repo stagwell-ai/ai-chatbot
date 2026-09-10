@@ -840,7 +840,11 @@ body.chat-open{overflow:hidden}
    Inside a white box a black bubble reads as a foreign object, so the agent
    simply speaks in ink on the box's own white and only YOUR words are given a
    quiet grey pill — the difference is enough, and the panel stays clean. */
-.askbox__thread{display:flex;flex-direction:column;gap:var(--s-6);max-height:38svh;overflow-y:auto;scrollbar-width:none}
+/* tall enough that an answer — ack, two products, the question, its chips —
+   usually fits without scrolling on a desktop; a phone keeps 38svh below */
+.askbox__thread{position:relative;display:flex;flex-direction:column;gap:var(--s-6);max-height:min(52svh,560px);overflow-y:auto;scrollbar-width:none}   /* positioned: a turn's offsetTop is measured from here */
+/* there is more below: the foot fades, since the scrollbar is hidden */
+.askbox__thread.is-more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 36px),transparent)}
 .askbox__thread::-webkit-scrollbar{display:none}
 .askbox__thread:not(:empty){padding-bottom:var(--s-7);margin-bottom:var(--s-7);border-bottom:1px solid var(--line)}
 .askbox__thread .turnb{max-width:100%;font-size:16px;line-height:1.55;border-radius:0;padding:0;background:none;color:var(--ink)}
@@ -979,6 +983,7 @@ body.chat-open{overflow:hidden}
     .hero__stack{flex:none;overflow:visible}
   .hero__stack > :first-child{margin-top:0}
   .hero__l.is-chat .hero__stack{max-height:62svh;overflow-y:auto}
+  .askbox__thread{max-height:38svh}   /* inside a 62svh stack: the thread must not out-grow it into nested scrolling */
   /* the tagline is three nowrap lines on a desktop; on a phone that made
      fitDisplays shrink it to 35px. Let it wrap instead and keep it big. */
   .display--hero{font-size:clamp(38px, 11.5vw, 48px)}

@@ -232,6 +232,14 @@ longer the only door: under it sits "Or skip this and read about {product} →" 
 (absent on a bare fast track, where nothing was matched). Clicks are `kimi_product_clicked` with
 `from: chat | form | card`; the list itself is `kimi_pointer_shown {kind, products, at_step}`.
 
+**A tall answer opens at its first line.** "Try it out and you will see how it jumps" (client):
+the thread used to scroll to its foot on every turn, so an answer taller than the window opened on
+the question with the ack and the first product hidden above. `home.js` `settle(el)` now aligns a
+tall AI turn's top with the window (by `offsetTop` — a client rect mid `turnIn` is 22px off), keeps
+short turns at the foot, and toggles `.is-more` on the thread, which fades the foot to say there is
+more below (the scrollbar is hidden). The window is `min(52svh, 560px)` on a desktop so the usual
+answer fits whole; a phone keeps 38svh inside its 62svh stack. Asserted at 1360×640 and 400×860.
+
 **Every link in the thread opens a new tab.** "Anytime that we show a link in the chat history,
 it should open a new tab. Otherwise we're going to lose the whole conversation" (client). The
 pointers, the skip link, the cards' Learn more and primary CTA, and the privacy notice all carry

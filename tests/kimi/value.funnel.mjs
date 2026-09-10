@@ -21,8 +21,8 @@ const ok = (cond, msg) => { if (cond) console.log('  ok   ' + msg); else { failu
 
 const browser = await chromium.launch({ args: ['--no-sandbox'] });
 
-async function open() {
-  const ctx = await browser.newContext({ viewport: { width: 1360, height: 900 }, reducedMotion: 'reduce' });
+async function open(opts = {}) {
+  const ctx = await browser.newContext({ viewport: opts.viewport || { width: 1360, height: 900 }, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
   const state = { errors: [], tracked: [] };
   page.on('pageerror', e => state.errors.push(String(e.message)));
@@ -81,6 +81,15 @@ try {
     ok(b.order.indexOf('pointers') < b.order.lastIndexOf('text') && b.order.lastIndexOf('text') < b.order.indexOf('chips'), 'in reading order: where to look → the question → its chips (' + b.order.join(' → ') + ')');
     ok(!/couple of quick questions/i.test(b.texts.join(' ')), 'no "a couple of quick questions" preamble');
     await linksKeepTheChat(page, 'pointers');
+    /* "try it out and you will see how it jumps": a tall answer must open at
+       its first line, not scrolled to its last */
+    const view = await page.evaluate(() => {
+      const t = document.querySelector('#agentThread'), b = [...t.querySelectorAll('.turnb--ai')].pop();
+      const tr = t.getBoundingClientRect(), br = b.getBoundingClientRect();
+      return { top: Math.round(br.top - tr.top), tall: br.height > t.clientHeight, more: t.classList.contains('is-more'), room: t.clientHeight, height: Math.round(br.height) };
+    });
+    ok(view.top >= -2 && view.top + view.height <= view.room + 2, 'the whole answer is in view (bubble ' + view.height + 'px at ' + view.top + 'px in a ' + view.room + 'px window)');
+    ok(!view.more, 'nothing hidden below, no fade');
     const st = await page.evaluate(() => window.SAIKIMI.state());
     ok(st.pointers && st.pointers.kind === 'reco', 'the flow carries the pointers as the running (' + (st.pointers && st.pointers.kind) + ')');
     const shown = await page.evaluate(() => window.__tracked.filter(t => t[0] === 'kimi_pointer_shown'));
@@ -117,6 +126,28 @@ try {
     const form = await page.$('#heroLeadForm');
     ok(after === before + 1 || !!form, 'once there is evidence the running is drawn again (' + before + ' → ' + after + (form ? ', straight to the form' : '') + ')');
     ok(st.pointers && st.pointers.kind === 'reco', 'and it is the running now (' + (st.pointers && st.pointers.kind) + ')');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ a short window: the tall answer opens at its first line, not its last ("you will see how it jumps")');
+  for (const vp of [{ width: 1360, height: 640 }, { width: 400, height: 860 }]) {
+    const { ctx, page, state } = await open({ viewport: vp });
+    await page.click('#agentTags .tag[data-goal="audience_growth"]');
+    await settle(page); await page.waitForTimeout(400);
+    const v = await page.evaluate(() => {
+      const t = document.querySelector('#agentThread'), b = [...t.querySelectorAll('.turnb--ai')].pop(), ack = b.querySelector('.turnb__text');
+      const tr = t.getBoundingClientRect(), br = b.getBoundingClientRect(), ar = ack.getBoundingClientRect();
+      return { top: Math.round(br.top - tr.top), ackTop: Math.round(ar.top - tr.top), tall: br.height > t.clientHeight, more: t.classList.contains('is-more'), room: t.clientHeight, height: Math.round(br.height) };
+    });
+    const label = vp.width + '×' + vp.height;
+    ok(v.tall, label + ': the answer is taller than the window (' + v.height + ' > ' + v.room + ')');
+    ok(v.top >= -2 && v.top <= 4, label + ': it opens at its first line (bubble top ' + v.top + 'px)');
+    ok(v.ackTop >= -2, label + ': the ack is the first thing read ("…top ' + v.ackTop + 'px")');
+    ok(v.more, label + ': the foot fades to say there is more below');
+    await page.evaluate(() => { const t = document.querySelector('#agentThread'); t.scrollTop = t.scrollHeight; t.dispatchEvent(new Event('scroll')); });
+    await page.waitForTimeout(50);
+    ok(!(await page.$eval('#agentThread', t => t.classList.contains('is-more'))), label + ': scrolled to the end, the fade goes');
     ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
     await ctx.close();
   }

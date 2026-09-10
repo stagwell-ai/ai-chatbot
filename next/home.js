@@ -183,9 +183,22 @@
       const m = v.match(/^(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,})(?:[\/?#].*)?$/i);
       return m && !/\s/.test(v) ? m[1].toLowerCase() : null;
     };
-    /* the thread scrolls inside the panel; the newest turn sits at its foot */
-    const settle = () => { thread.scrollTop = thread.scrollHeight; };
-    const add = (el) => { thread.appendChild(el); requestAnimationFrame(settle); return el; };
+    /* the thread scrolls inside the panel. A short turn sits at its foot; an
+       answer taller than the window opens at its FIRST line — the ack and the
+       first product — not its last, which left the reader on the question
+       with no idea there was anything above it ("try it out and you will see
+       how it jumps", client, 2026-09-10). A fade at the foot says there is more. */
+    const more = () => thread.classList.toggle('is-more', thread.scrollTop + thread.clientHeight < thread.scrollHeight - 4);
+    const settle = (el) => {
+      const tall = el && el.classList.contains('turnb--ai') && !el.classList.contains('turnb--wait') && el.offsetHeight > thread.clientHeight - 8;
+      /* offsetTop, not a client rect: a bubble still sliding in reports a rect
+         that is mid-animation, and the thread would settle 16px off */
+      if (tall) thread.scrollTop = el.offsetTop;
+      else thread.scrollTop = thread.scrollHeight;
+      more();
+    };
+    const add = (el) => { thread.appendChild(el); requestAnimationFrame(() => settle(el)); return el; };
+    thread.addEventListener('scroll', more, { passive: true });
     const me = (text) => { const t = document.createElement('div'); t.className = 'turnb turnb--me'; t.textContent = text; return add(t); };
     /* the thinking field: not particles — a fine lattice of dots that never
        move, whose brightness travels through the grid as slow coherent
@@ -428,6 +441,7 @@
       /* back to an empty box: the thread is emptied and the composer, which
          close() disabled when the conversation ended, takes typing again */
       clear(placeholder) {
+        thread.classList.remove('is-more');
         thread.innerHTML = '';
         miniInput.value = '';
         miniInput.disabled = false;
