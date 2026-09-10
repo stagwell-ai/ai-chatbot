@@ -58,8 +58,10 @@
       bMute.setAttribute('aria-label', video.muted ? 'Unmute the film' : 'Mute the film');
       if (!video.muted && video.paused) { userPaused = false; play(); }
     });
-    /* the file only loads once the section is within a screen of view */
-    if ('IntersectionObserver' in window) new IntersectionObserver((es) => { if (es[0].isIntersecting) load(); }, { rootMargin: '100% 0px' }).observe(film);
+    /* the file loads on the first scroll that brings the section into view —
+       not with the page, where 36 MB would compete with the hero — and still
+       a screen of scrolling before the frame is open */
+    if ('IntersectionObserver' in window) new IntersectionObserver((es, io) => { if (es[0].isIntersecting) { load(); io.disconnect(); } }, { rootMargin: '0px' }).observe(film);
     else load();
 
     const clamp = (v) => Math.max(0, Math.min(1, v)), lerp = (a, b, t) => a + (b - a) * t;
@@ -91,6 +93,27 @@
       if (!en.isIntersecting) { if (!video.paused) { video.pause(); auto = true; } return; }
       if (small() && !RM && en.intersectionRatio > 0.6 && !userPaused && video.paused) { auto = true; play(); }
     }, { threshold: [0, 0.2, 0.6] }).observe(frame);
+  }
+
+  /* ── "Introducing Stagwell AI": the picture opens (mask) as the section
+        arrives, then drifts a little against the scroll (±36px). Desktop only;
+        asleep when the section is out of view; none with reduced motion. ── */
+  const mask = document.querySelector('.hb-mask');
+  if (mask) {
+    const pic = mask.querySelector('.intro__pic');
+    if (RM || !('IntersectionObserver' in window)) mask.classList.add('in');
+    else {
+      new IntersectionObserver((es, io) => { if (es[0].isIntersecting) { mask.classList.add('in'); io.disconnect(); } }, { threshold: 0.25 }).observe(mask);
+      let near = false, tk = false;
+      const drift = () => {
+        tk = false;
+        if (!near || innerWidth <= 1100) { pic.style.removeProperty('--hb-py'); return; }
+        const r = mask.getBoundingClientRect(), mid = r.top + r.height / 2 - innerHeight / 2;
+        pic.style.setProperty('--hb-py', (Math.max(-1, Math.min(1, mid / innerHeight)) * -36).toFixed(1) + 'px');
+      };
+      new IntersectionObserver((es) => { near = es[0].isIntersecting; if (near) drift(); }, { rootMargin: '20% 0px' }).observe(mask);
+      addEventListener('scroll', () => { if (near && !tk) { tk = true; requestAnimationFrame(drift); } }, { passive: true });
+    }
   }
 
 })();

@@ -86,3 +86,45 @@
   .hb-film__ctrl{opacity:1;transform:none;pointer-events:auto}
   .hb-film__frame::after{opacity:1}
 }
+
+/* ═══ the sections after the film (brief 2026-09-10) ══════════════════════════
+   One language with the hero: large editorial type, generous space, and a few
+   motion moments — a masked picture reveal with a gentle scroll drift in
+   "Introducing Stagwell AI", staggered cards in "Why Stagwell AI". The close
+   and the footer stay quiet: the page slows down at its end and the footer's
+   navy → teal → orange closes on the hero's palette. */
+
+/* Introducing Stagwell AI: a bigger statement and a bigger picture */
+@media (min-width:1101px){
+  .intro{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:clamp(56px,6vw,120px);padding-block:clamp(96px,12vh,160px)}
+  .intro__media{width:100% !important;height:min(84vh,860px) !important;max-width:none;border-radius:28px}
+  .intro__pic{width:100% !important;height:112% !important;left:0 !important;top:-6%}
+}
+.display--intro{font-size:clamp(40px,1rem + 3.6vw,76px);line-height:1.02;max-width:13em}
+.intro__lede{font-size:clamp(18px,.9rem + .7vw,24px)}
+/* the mask reveal: the picture opens from the foot as the section arrives */
+.hb-mask{clip-path:inset(22% 0 0 0 round 28px);transition:clip-path 1.4s cubic-bezier(.16,.72,.24,1)}
+.hb-mask.in{clip-path:inset(0 0 0 0 round 28px)}
+.hb-mask .intro__pic{transform:translateY(var(--hb-py,0px)) scale(1.08);transition:scale 1.6s cubic-bezier(.16,.72,.24,1)}
+.hb-mask.in .intro__pic{scale:.926}   /* 1.08 × .926 ≈ 1: it settles as it opens */
+
+/* Why Stagwell AI: the heading at editorial scale, the four with room */
+.why{padding:clamp(112px,14vh,180px) 0 clamp(104px,13vh,168px)}
+.why .display--cos{font-size:clamp(48px,1rem + 5vw,104px);line-height:.98;letter-spacing:-.035em}
+.why__grid{margin-top:clamp(56px,7vw,104px);gap:clamp(16px,1.6vw,24px)}
+.why__item{padding:clamp(32px,3vw,48px) clamp(28px,2.8vw,44px);border-radius:28px;transition:transform .5s var(--ease)}
+.why .why__t{font-size:clamp(24px,1.1rem + .8vw,32px)}
+.why .why__ic{transition:background-color .3s ease,color .3s ease}
+.why__item:hover .why__ic,.why__item:focus-within .why__ic{background:#009CBD;color:#FFFFFF}
+
+@media (max-width:820px){
+  .display--intro{font-size:clamp(34px,9vw,44px)}
+  .why .display--cos{font-size:clamp(40px,11vw,56px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .hb-mask,.hb-mask .intro__pic{transition:none;clip-path:none}
+  .hb-mask .intro__pic{transform:none;scale:1}
+}
+/* keyboard: the film's controls are only faded before the frame opens, so a
+   visitor tabbing onto one gets them shown, not an invisible button */
+.hb-film__ctrl:focus-within{opacity:1;transform:none;pointer-events:auto}
