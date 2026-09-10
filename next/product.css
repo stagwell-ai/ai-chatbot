@@ -97,19 +97,33 @@
 .pp-mid{margin:clamp(48px,6vw,72px) 0 0;display:flex;justify-content:center}
 
 /* ── proof: the candidate figures the definitions list, flagged as such until
-      the product owners approve them (the house honesty rule) ─────────── */
-.pp-proof{background:#F5F7F8;padding:clamp(72px,9vw,120px) 0}
-.pp-proof__head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-bottom:clamp(32px,4vw,48px)}
-.pp-proof__head .pp-sign{margin:0}
-.pp-flag{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7A5200;
-  background:#FFF1D2;border-radius:999px;padding:5px 10px}
-.pp-figs{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(24px,3vw,40px)}
-.pp-figs li{border-top:2px solid var(--ink);padding-top:20px}
-.pp-figs strong{display:block;font-family:var(--display);font-weight:600;font-size:clamp(40px,4.4vw,64px);
-  line-height:1;letter-spacing:-.03em;color:var(--ink)}
-.pp-figs--words strong{font-size:clamp(22px,2vw,28px);line-height:1.2;letter-spacing:-.01em}
-.pp-figs span{display:block;margin-top:12px;font-size:15px;line-height:1.5;color:var(--ink-2);max-width:30ch}
-.pp-proof__note{margin:clamp(28px,3vw,40px) 0 0;font-size:14px;line-height:1.55;color:var(--ink-3);max-width:70ch}
+      the product owners approve them (the house honesty rule).
+      Centred, one column per figure and capped so two figures don't sprawl
+      across the page, a short bar in a brand colour over each number, the
+      numbers large (client: "too simple… lines with colour, less wide, the
+      numbers bigger, the alignment off"). ───────────────────────────── */
+.pp-proof{background:#F5F7F8;padding:clamp(80px,10vw,128px) 0;text-align:center}
+.pp-proof__head{display:flex;flex-direction:column;align-items:center;margin-bottom:clamp(44px,5vw,64px)}
+.pp-proof__head .pp-sign{margin:0 0 14px}
+.pp-proof__head .pp-h2{max-width:22ch}
+.pp-flag{margin-top:18px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7A5200;
+  background:#FFF1D2;border-radius:999px;padding:6px 12px}
+.pp-figs{margin:0 auto;padding:0;list-style:none;display:grid;justify-content:center;
+  grid-template-columns:repeat(var(--n,2),minmax(0,var(--col,300px)));gap:clamp(28px,4vw,56px)}
+.pp-figs--n2{--n:2;--col:320px}
+.pp-figs--n3{--n:3;--col:300px}
+.pp-figs--n4{--n:4;--col:250px;gap:clamp(24px,3vw,40px)}   /* four to a row: a tighter gap buys the numbers room */
+.pp-figs li{display:flex;flex-direction:column;align-items:center;min-width:0}
+.pp-figs li::before{content:"";width:40px;height:4px;border-radius:2px;background:var(--teal);margin-bottom:24px}
+.pp-figs li:nth-child(4n+2)::before{background:var(--orange)}
+.pp-figs li:nth-child(4n+3)::before{background:var(--amber)}
+.pp-figs li:nth-child(4n+4)::before{background:var(--blue)}
+.pp-figs strong{display:block;font-family:var(--display);font-weight:600;line-height:1;letter-spacing:-.035em;
+  color:var(--ink);white-space:nowrap;font-size:clamp(56px,6.4vw,96px)}
+.pp-figs--n4 strong{font-size:clamp(38px,3.8vw,56px)}   /* "20–40%" is ~4x its size wide; at 64px it overran a 229px column */
+.pp-figs--words strong{font-size:clamp(24px,2.2vw,30px);line-height:1.2;letter-spacing:-.01em;white-space:normal}
+.pp-figs span{display:block;margin-top:14px;font-size:15px;line-height:1.5;color:var(--ink-2);max-width:26ch}
+.pp-proof__note{margin:clamp(44px,5vw,60px) auto 0;font-size:14px;line-height:1.55;color:var(--ink-3);max-width:62ch}
 
 /* ── the close: dark like the homepage hero, because the chat below is the
       homepage's own component and its pills are white glass made for a dark
@@ -136,6 +150,11 @@
   .pp-more__grid{grid-template-columns:1fr}
   .pp-steps li{grid-template-columns:36px minmax(0,1fr)}
   .pp-close__h{font-size:clamp(40px,11vw,64px)}
+  .pp-figs,.pp-figs--n3,.pp-figs--n4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pp-figs--words{grid-template-columns:1fr}
+  .pp-figs strong{font-size:clamp(44px,12vw,64px)}
+  .pp-figs--n4 strong{font-size:clamp(34px,9vw,48px)}
+  .pp-figs--words strong{font-size:clamp(22px,6vw,26px)}   /* words, not numbers: the 45px above was for figures */
 }
 
 /* ── the chat on a product page: a pill until you speak (client, 2026-09-10) ──
