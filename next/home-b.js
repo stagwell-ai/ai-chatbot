@@ -351,3 +351,31 @@
     panels.forEach((p) => { p.classList.add('mk-arm'); io.observe(p); });
   }
 })();
+
+/* the panels' states: each shows its moment, then the next, while it is on screen — a campaign moving
+   on, audiences ticked, an interview finishing, agents' statuses advancing (client: "states changing").
+   [data-in="0 1"] is shown in those states; [data-on] gets .is-on. Reduced motion: the last state, still. */
+(function () {
+  const RMs = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.mk[data-states]').forEach((p) => {
+    const n = +p.dataset.states, els = [...p.querySelectorAll('[data-in],[data-on]')];
+    let s = 0, t = 0;
+    const set = (k, first) => {
+      s = k; const K = String(k);
+      els.forEach((e) => {
+        if (e.dataset.in !== undefined) {
+          const on = e.dataset.in.split(' ').includes(K), was = !e.classList.contains('is-off');
+          e.classList.toggle('is-off', !on);
+          if (on && !was && !first) { e.classList.remove('mk-pop'); void e.offsetWidth; e.classList.add('mk-pop'); }
+        }
+        if (e.dataset.on !== undefined) e.classList.toggle('is-on', e.dataset.on.split(' ').includes(K));
+      });
+    };
+    set(RMs ? n - 1 : 0, true);
+    if (RMs || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver((es) => {
+      if (es[0].isIntersecting) { if (!t) t = setInterval(() => set((s + 1) % n), 2600); }
+      else if (t) { clearInterval(t); t = 0; }
+    }, { threshold: .3 }).observe(p);
+  });
+})();
