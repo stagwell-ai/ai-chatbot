@@ -228,8 +228,42 @@
    dots, more visible, not all the pattern"); rings while a reply is on its way. */
 (function () {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const field = (cv, busySel) => {
+  const field = (cv, busySel, STOPS, pic, GAIN = 1) => {
   if (!cv || !cv.getContext) return;
+  /* over a picture, each dot reads how bright the picture is under it: on the white the blended
+     dot turns near-black, so there it is drawn softer; on the colour it stays full (client) */
+  let lum = null, LW = 0, LH = 0, geo = null, geoAt = -9;
+  const readPic = () => {
+    try {
+      LW = 160; LH = Math.max(1, Math.round(LW * pic.naturalHeight / pic.naturalWidth));
+      const oc = document.createElement('canvas'); oc.width = LW; oc.height = LH;
+      const ox = oc.getContext('2d'); ox.drawImage(pic, 0, 0, LW, LH);
+      const px = ox.getImageData(0, 0, LW, LH).data; lum = new Float32Array(LW * LH);
+      for (let i = 0; i < LW * LH; i++) lum[i] = (.2126 * px[i * 4] + .7152 * px[i * 4 + 1] + .0722 * px[i * 4 + 2]) / 255;
+    } catch (e) { lum = null; }
+  };
+  if (pic) { if (pic.complete && pic.naturalWidth) readPic(); else pic.addEventListener('load', readPic, { once: true }); }
+  const place = () => {                                  /* where the picture's pixels land on the canvas (object-fit: cover) */
+    const r = pic.getBoundingClientRect(), c = cv.getBoundingClientRect(), nw = pic.naturalWidth, nh = pic.naturalHeight;
+    const k = Math.max(r.width / nw, r.height / nh), dw = nw * k, dh = nh * k;
+    const op = getComputedStyle(pic).objectPosition.split(' ').map(v => parseFloat(v) / 100);
+    geo = { x: r.left - c.left + (r.width - dw) * (isNaN(op[0]) ? .5 : op[0]), y: r.top - c.top + (r.height - dh) * (isNaN(op[1]) ? .5 : op[1]), w: dw, h: dh };
+  };
+  const soft = (x, y) => {                               /* 1 on the colour, .45 on the white */
+    const u = Math.floor((x - geo.x) / geo.w * LW), v = Math.floor((y - geo.y) / geo.h * LH);
+    if (u < 0 || v < 0 || u >= LW || v >= LH) return .45;
+    return .45 + .55 * Math.max(0, Math.min(1, (.86 - lum[v * LW + u]) / .2));
+  };
+  /* the light travels between the page's key things (client: Book a demo → the chat → the
+     Stagwell AI logo), easing into each and pausing a beat; their places are re-read every second */
+  let P = null, pAt = -9;
+  const stops = () => {
+    const c = cv.getBoundingClientRect();
+    return STOPS.map(([sel, fx, fy]) => {
+      const el = sel && document.querySelector(sel), r = el && el.getBoundingClientRect();
+      return (!r || !r.width) ? { x: W * fx, y: H * fy } : { x: r.left - c.left + r.width / 2, y: r.top - c.top + r.height / 2 };
+    });
+  };
   const ctx = cv.getContext('2d'), GAP = 12, TAU = Math.PI * 2;
   let W = 0, H = 0, pts = [], raf = 0, t0 = 0, last = 0, lift = 0, RGB = '11,18,32';
   const size = () => {
@@ -242,8 +276,17 @@
     if (!t0) t0 = t; const dt = Math.min(.05, (t - (last || t)) / 1000); last = t; const s = (t - t0) / 1000;
     lift += ((busySel && document.querySelector(busySel) ? 1 : 0) - lift) * Math.min(1, dt * 3);
     ctx.clearRect(0, 0, W, H);
-    /* the light's way: a slow loop over the whole field; the trail is the same way, a moment behind */
-    const way = (tt) => ({ x: W * (.5 + .36 * Math.sin(tt * .21) + .06 * Math.sin(tt * .83)), y: H * (.5 + .30 * Math.sin(tt * .29 + 1.2) + .05 * Math.cos(tt * .71)) });
+    /* the light's way, stop to stop; the trail is the same way, a moment behind */
+    if (s - pAt > 1) { P = stops(); pAt = s; }
+    const over = !!(lum && pic);
+    if (over && s - geoAt > .4) { place(); geoAt = s; }
+    const SEG = 2.2, DWELL = .75, L = P.length, cyc = (SEG + DWELL) * L;
+    const way = (tt) => {
+      const t2 = ((tt % cyc) + cyc) % cyc, i = Math.floor(t2 / (SEG + DWELL)), f = t2 - i * (SEG + DWELL);
+      const u0 = Math.min(1, f / SEG), u = u0 * u0 * (3 - 2 * u0), A = P[i], B = P[(i + 1) % L];
+      const wob = Math.sin(tt * 1.3 + i) * 14;                              /* a little organic wander */
+      return { x: A.x + (B.x - A.x) * u + wob, y: A.y + (B.y - A.y) * u - wob * .6 };
+    };
     const R = Math.max(90, Math.min(W, H) * .16) * (1 + .1 * Math.sin(s * .9)), K = 1 / (2 * R * R), K2 = 1 / (2 * R * R * .72);
     const c = way(s), c2 = way(s - .9);
     const ox = W * .5, oy = H * .56, ringA = lift * .4;
@@ -255,6 +298,8 @@
         const r = Math.hypot(x - ox, y - oy);
         for (let k = 0; k < 2; k++) { const ph = (s * 160 + k * 320) % 640; a += ringA * Math.exp(-Math.pow((r - ph) / 28, 2)) * (1 - ph / 640); }
       }
+      if (over) a *= soft(x, y);
+      a *= GAIN;
       if (a < .03) continue;   /* nothing where the light is not: no lattice */
       ctx.fillStyle = 'rgba(' + RGB + ',' + Math.min(.62, a).toFixed(3) + ')';
       ctx.fillRect(x - 1, y - 1, 2, 2);
@@ -268,6 +313,6 @@
   }, { threshold: 0 }).observe(cv);
   else start();
   };
-  field(document.getElementById('hbThink'), '#agentThread .turnb--wait');
-  field(document.getElementById('hbEndThink'), null);   /* the close: B's field, not the homepage's */
+  field(document.getElementById('hbThink'), '#agentThread .turnb--wait', [['.nav .btn--ink', .85, .05], ['#hbAsk', .5, .6], ['.nav__brand', .1, .05]], document.querySelector('.hero .hero__pic'));
+  field(document.getElementById('hbEndThink'), null, [['#start .display--end', .5, .25], ['#askEnd', .5, .55], ['#start .ask-end__ways .btn', .4, .8], ['#callEnd', .6, .8]], null, .45);   /* subtle on the white (client) */   /* the close: B's field, not the homepage's */
 })();

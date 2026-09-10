@@ -63,14 +63,14 @@ d.setAttribute('data-theme',t||sys);})();
   var go = function () {
     if (el.classList.contains('go')) return;
     el.classList.add('go');
-    setTimeout(finish, 1600);                                   /* the page is revealed as the curtain lifts */
-    setTimeout(function () { el.remove(); }, 2450);
+    setTimeout(finish, 1150);                                   /* the page is revealed as the curtain lifts */
+    setTimeout(function () { el.remove(); }, 1900);
   };
-  /* start once the first pictures are in, never later than 450ms */
+  /* start once the first pictures are in, never later than 300ms */
   var imgs = el.querySelectorAll('img'), ready = 0;
   for (var i = 0; i < 3; i++) { if (imgs[i].complete) ready++; else imgs[i].addEventListener('load', function () { if (++ready >= 3) go(); }); }
   if (ready >= 3) go();
-  setTimeout(go, 450);
+  setTimeout(go, 300);
   setTimeout(function () { finish(); if (el.isConnected) el.remove(); }, 6000);   /* whatever happens */
 })();
 </script>
@@ -197,7 +197,7 @@ d.setAttribute('data-theme',t||sys);})();
   <!-- the ground: ONE still, not a turning strip (client, 2026-09-09). The
        other two stills are still in /assets/img if the rotation comes back. -->
   <div class="hero__bg" id="heroSlides" aria-hidden="true">
-    <img class="hero__pic is-on" src="/assets/img/hero-home-b.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+    <img class="hero__pic is-on" src="/assets/img/hero-home-b2.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
   </div>
   <!-- the chat's thinking field, behind the whole hero (client: "the small dots, like when ChatGPT is thinking") -->
   <canvas class="hero__think" id="hbThink" aria-hidden="true"></canvas>
@@ -330,7 +330,7 @@ d.setAttribute('data-theme',t||sys);})();
           <p class="hb-stack__sum">A secure AI workspace for marketers: leading LLMs and marketing agents in one place.</p>
           <a class="hb-stack__go" href="/agent-cloud">Explore Agent Cloud<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="hb-stack__media"><img src="/assets/img/products/card-workspace.jpg" alt="" width="1536" height="1024" loading="lazy" decoding="async"></div>
+        <div class="hb-stack__media"><img src="/assets/img/products/card-team.jpg" alt="" width="1920" height="972" loading="lazy" decoding="async"></div>
       </div>
     </article>
     </div>
