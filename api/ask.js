@@ -518,6 +518,42 @@ async function probeChain() {
   return out;
 }
 
+/* &models=1 (token-gated): what the OpenAI key can reach — the model ids that
+   matter for a live voice conversation (Realtime / audio), and whether a
+   Realtime session can be minted. Never returns a key or a client secret. */
+async function probeModels() {
+  const key = process.env.OPENAI_API_KEY || '';
+  const base = (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/+$/, '');
+  if (!key) return { openaiKeyConfigured: false };
+  const out = { openaiKeyConfigured: true, keyKind: key.startsWith('sk-proj-') ? 'project' : key.startsWith('sk-svcacct-') ? 'service_account' : 'user' };
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 9000);
+  try {
+    const r = await fetch(base + '/models', { headers: { authorization: 'Bearer ' + key }, signal: ctl.signal });
+    const j = await r.json().catch(() => ({}));
+    out.modelsStatus = r.status;
+    if (r.ok && Array.isArray(j.data)) {
+      const ids = j.data.map(m => m.id).sort();
+      out.modelsTotal = ids.length;
+      out.realtime = ids.filter(id => /realtime/i.test(id));
+      out.audio = ids.filter(id => /audio|transcribe|tts|whisper/i.test(id) && !/realtime/i.test(id));
+    } else out.modelsError = (j.error && j.error.message) || ('HTTP ' + r.status);
+  } catch (e) { out.modelsError = e && e.name === 'AbortError' ? 'timeout' : String(e && e.message || e); }
+  clearTimeout(t);
+  /* mint a Realtime client secret with the current GA model; the value is
+     discarded — only whether OpenAI let us is reported */
+  for (const model of ['gpt-realtime', 'gpt-realtime-mini', 'gpt-4o-realtime-preview']) {
+    const c2 = new AbortController(); const t2 = setTimeout(() => c2.abort(), 9000);
+    try {
+      const r = await fetch(base + '/realtime/client_secrets', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' }, body: JSON.stringify({ session: { type: 'realtime', model } }), signal: c2.signal });
+      const j = await r.json().catch(() => ({}));
+      out.sessionProbe = out.sessionProbe || [];
+      out.sessionProbe.push({ model, status: r.status, ok: r.ok, expiresIn: r.ok && j.expires_at ? 'issued' : null, error: r.ok ? null : ((j.error && (j.error.message || j.error.code)) || ('HTTP ' + r.status)) });
+    } catch (e) { (out.sessionProbe = out.sessionProbe || []).push({ model, ok: false, error: e && e.name === 'AbortError' ? 'timeout' : String(e && e.message || e) }); }
+    clearTimeout(t2);
+  }
+  return out;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
@@ -531,6 +567,8 @@ export default async function handler(req, res) {
     const want = process.env.KIMI_HEALTH_TOKEN || '';
     if (q.probe && want && String(q.token || '') === want) info.probe = await probeChain();
     else if (q.probe) info.probe = 'token_required';
+    if (q.models && want && String(q.token || '') === want) info.models = await probeModels();
+    else if (q.models) info.models = 'token_required';
     res.status(200).json(Object.assign({ ok: true }, info));
     return;
   }
