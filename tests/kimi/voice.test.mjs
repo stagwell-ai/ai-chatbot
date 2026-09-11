@@ -72,7 +72,7 @@ test('the story: the interruption line → flagship → each showcased product i
   assert.ok(s.startsWith(sc.interrupt) && /interrupt me any time/i.test(sc.interrupt), 'opens by saying they may interrupt ("' + sc.interrupt.slice(0, 40) + '…")');
   let at = s.indexOf(sc.flagship); assert.ok(at > 0, 'then the flagship line');
   assert.ok(sc.flagship.toLowerCase().includes(sc.openOn.toLowerCase()), 'the flagship line carries the word that raises the stage when asked aloud: ' + sc.openOn);
-  assert.ok(sc.products.length >= 4 && sc.products.length <= 6, sc.products.length + ' products — about 20 s');
+  assert.ok(sc.products.length >= 4 && sc.products.length <= 6, sc.products.length + ' products — about 25 s');
   sc.products.forEach(p => {
     const P = R.productById(p.id, DATA);
     assert.ok(P && P.active !== false, p.id + ' is an active product');
@@ -89,10 +89,16 @@ test('the story: the interruption line → flagship → each showcased product i
   assert.equal(new Set(sc.products.map(p => p.icon)).size, sc.products.length, 'each member its own emblem');
   assert.ok(STAGE.icons.indexOf(sc.self.icon) !== -1, 'NewVoices has one too');
   assert.ok(sc.teamLabel && sc.teamLabel.length <= 40, 'a short label for the assembled team');
+  /* Agent Cloud is on the team, and the family is bigger than the team (client, 2026-09-11) */
+  assert.ok(sc.products.some(p => p.id === 'agent_cloud'), 'Agent Cloud is one of the six');
+  const jm = s.indexOf(sc.more); assert.ok(jm > at, 'then "…and that\'s just six of them"'); at = jm;
+  assert.ok(/more than ten products/.test(sc.more) && /growing/.test(sc.more), 'more than ten, a growing family: "' + sc.more + '"');
+  assert.ok(R.activeProducts ? true : DATA.solutions.solutions.filter(p => p.active !== false).length > 10, 'and that is true of the catalog');
+  assert.ok(/^\d+\+ /.test(sc.moreLabel), 'a badge for the rest: ' + sc.moreLabel);
   assert.ok(s.indexOf(sc.pivot) > at, 'the pivot last');
   assert.ok(/marketing genius/.test(sc.pivot) && sc.pivot.toLowerCase().includes(sc.closeOn.toLowerCase()), 'the pivot carries the words that close the stage');
   const words = s.split(/\s+/).length;
-  assert.ok(words >= 90 && words <= 180, 'about 45–60 s of unhurried speech: ' + words + ' words');
+  assert.ok(words >= 100 && words <= 215, 'about 60–75 s of unhurried speech: ' + words + ' words');
   [].concat(sc.burst, [sc.self.img, sc.self.logo]).forEach(img => assert.ok(fs.existsSync(path.join(ROOT, img.replace(/^\//, ''))), img + ' exists'));
   assert.ok(!/https?:\/\//.test(s) && !/\$\s?\d/.test(s), 'no URL, no price in the script');
 });

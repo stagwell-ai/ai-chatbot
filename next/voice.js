@@ -35,6 +35,19 @@ const flags = () => ((S.data || {}).kimi || {}).flags || {};
 const esc = s => H.esc(String(s == null ? '' : s));
 const track = (name, props) => { try { const a = window.SAIANALYTICS; if (a) a.track(name, props || {}); else S.events.emit(name, props || {}); } catch (e) {} };
 
+/* ── REHEARSAL (?voicerehearse=1) ──
+   The story's pacing, without a model or a microphone: voice-rehearsal.js
+   installs a peer that speaks the greeting and the story at a real speaking
+   pace (word by word, breaths between products), so anyone — a test, a
+   reviewer, the client — can watch the pictures land against the words. */
+const REHEARSE = (() => { try { return /[?&]voicerehearse=1/.test(location.search); } catch (e) { return false; } })();
+if (REHEARSE && !window.__SAIVOICE_TRANSPORT) {
+  const me = document.currentScript && document.currentScript.src;
+  const s = document.createElement('script');
+  s.src = me ? me.replace(/voice\.js(\?.*)?$/, 'voice-rehearsal.js') : '/next/voice-rehearsal.js';
+  document.head.appendChild(s);
+}
+
 /* ── can this browser do it at all? ── */
 const fakeTransport = () => window.__SAIVOICE_TRANSPORT || null;
 const secure = location.protocol === 'https:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
@@ -119,6 +132,14 @@ function offerStarters() {
     if (chip.hero) explain('pill', chip.value); else sendText(chip.value);
   }, { fallback: false, cls: 'turnb__chips--starters' });
 }
+/* is this the question that asks for the story, in some form? */
+function isStoryQuestion(text) {
+  const t = squash(text);
+  if (!t) return false;
+  const hero = squash((c().starters || {}).hero || 'What is Stagwell AI?');
+  /* "Dagwell", "Stagwall": the transcription of a name it has never heard */
+  return t === hero || /^(so|ok|okay|um)?(what|whats|who|tellmeabout|explain)(is|are)?(st|d)agw[ae]ll(ai)?(exactly|actually|about|then)?$/.test(t);
+}
 /* the story, asked for: the pictures rise at once and the agent is asked, in
    the visitor's words, what Stagwell AI is — its brief carries the script */
 function explain(via, words) {
@@ -145,11 +166,18 @@ function showcaseCfg() {
     burst: sc.burst || [],
     self: sc.self || { name: 'NewVoices', sub: '', img: '' },
     teamLabel: sc.teamLabel || 'The Stagwell AI team',
+    moreLabel: sc.moreLabel || '',
+    moreOn: sc.moreOn || 'more than ten',
     /* each member of the team carries its emblem (an icon key the stage
        draws) and its own mark — the catalog's lockup, when it has one
        ("when each of them is named, display the logo, or some kind of SVG
        icon … like introducing a team of superheroes", client 2026-09-11) */
-    products: (sc.products || []).map(p => { const P = byId(p.id); return P ? { id: p.id, name: P.name, line: p.line, img: p.img, icon: p.icon || null, lockup: P.lockup || null } : null; }).filter(Boolean),
+    products: (sc.products || []).map(p => { const P = byId(p.id); return P ? { id: p.id, name: P.name, line: p.line, img: p.img, icon: p.icon || null, lockup: P.lockup || null, url: (P.urls && P.urls.productPage) || '/s/' + encodeURIComponent(p.id) } : null; }).filter(Boolean),
+    selfUrl: sc.selfUrl || '/newvoices',
+    moreUrl: sc.moreUrl || '/products',
+    peekHint: sc.peekHint || 'Hover a member to meet them — tap to read more.',
+    moreLine: sc.moreLine || '', moreGo: sc.moreGo || '',
+    readLabel: ((c().pointers || {}).read) || 'Read about {product}',
     openOn: sc.openOn || 'flagship',
     closeOn: sc.closeOn || 'get to know each other'
   };
@@ -162,6 +190,7 @@ function openStage(via) {
   storyShown = true;
   stage = STAGE.create(host, cfg);
   stage.open();
+  dbg('stage.open', via || 'voice');
   intro = { responseId: null, text: '', cfg, fallback: null, started: Date.now() };
   /* a clock only as the net under the transcript: if the words never name a
      product, the tiles still come — slowly, the story is paced for a listener
@@ -173,9 +202,15 @@ function openStage(via) {
 }
 function revealByClock() {
   if (!intro || !stage) return;
+  /* words are flowing: trust them — the clock is only for a model that has
+     gone quiet (the rehearsal QA caught the clock landing every card 4–8 s
+     before its name was spoken) */
+  if (intro.lastDeltaAt && Date.now() - intro.lastDeltaAt < 8000) { intro.fallback = setTimeout(revealByClock, 4000); timers.push(intro.fallback); return; }
   const next = intro.cfg.products.find(p => stage.state().revealed.indexOf(p.id) === -1);
   if (!next) return;
   stage.reveal(next.id);
+  dbg('stage.reveal', next.id + ' by the clock @' + (Date.now() - intro.started) + 'ms');
+  track('voice_showcase_reveal', { id: next.id, atMs: Date.now() - intro.started, via: 'clock' });
   intro.fallback = setTimeout(revealByClock, 5000);
   timers.push(intro.fallback);
 }
@@ -187,12 +222,23 @@ function maybeOpenStage(text) {
   if (cfg.openOn && String(text).toLowerCase().indexOf(String(cfg.openOn).toLowerCase()) !== -1) openStage('voice');
 }
 /* the agent's words so far → the tiles they name, in order; the pivot closes */
+const squash = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '');   /* "GEO Pulse" = "GEOPulse" = "geopulse" */
 function followTranscript(text) {
   if (!intro || !stage) return;
-  intro.text = text;
+  intro.text = text; intro.lastDeltaAt = Date.now();
   stage.caption(text);
-  const low = text.toLowerCase();
-  intro.cfg.products.forEach(p => { if (low.indexOf(p.name.toLowerCase()) !== -1) { if (stage.reveal(p.id) && intro.fallback) { clearTimeout(intro.fallback); intro.fallback = null; } } });
+  const low = text.toLowerCase(), flat = squash(text);
+  intro.cfg.products.forEach(p => {
+    if (flat.indexOf(squash(p.name)) === -1) return;
+    if (stage.reveal(p.id)) {
+      if (intro.fallback) { clearTimeout(intro.fallback); intro.fallback = null; }
+      const at = Date.now() - intro.started;
+      dbg('stage.reveal', p.id + ' @' + at + 'ms');
+      track('voice_showcase_reveal', { id: p.id, atMs: at, via: 'words' });
+    }
+  });
+  /* "…more than ten products in total": the rest of the family joins the roster */
+  if (intro.cfg.moreOn && stage.revealMore && flat.indexOf(squash(intro.cfg.moreOn)) !== -1) { if (stage.revealMore()) dbg('stage.more', '@' + (Date.now() - intro.started) + 'ms'); }
   /* the pivot: the whole team assembles for a beat, then the stage lifts away */
   if (intro.cfg.closeOn && low.indexOf(String(intro.cfg.closeOn).toLowerCase()) !== -1) { if (stage.assemble) stage.assemble(); closeStage('pivot', 2400); }
 }
@@ -200,11 +246,34 @@ function closeStage(why, delay) {
   if (!stage) return;
   const s = stage; stage = null;
   const seconds = intro ? Math.round((Date.now() - intro.started) / 1000) : 0;
-  const revealed = s.state().revealed.length;
+  dbg('stage.close', why + ' after ' + seconds + 's, ' + s.state().revealed.length + ' revealed');
+  /* closed before a single member was named (an interruption, a drop): the
+     story was not told — asking again may raise the pictures again */
+  if (!s.state().revealed.length && why !== 'pivot' && why !== 'end') storyShown = false;
+  const revealed = s.state().revealed.slice();
+  const cfg = intro ? intro.cfg : showcaseCfg();
   intro = null;
-  const go = () => s.close(why);
+  const go = () => {
+    s.close(why);
+    /* the team stays: not gone, but a card in the conversation — each member a
+       door to its page, a hover shows who they are (client, 2026-09-11:
+       "instead of having it disappear … have it be part of the chat history") */
+    if (revealed.length && STAGE.teamCard) dockTeam(cfg, revealed);
+  };
   if (delay) timers.push(setTimeout(go, delay)); else go();
-  track('voice_showcase_ended', { why, seconds, revealed });
+  track('voice_showcase_ended', { why, seconds, revealed: revealed.length });
+}
+function dockTeam(cfg, revealed) {
+  if (document.querySelector('#agentThread .turnb--team')) return;      /* once */
+  const bubble = H.ai(null, null, null, null);
+  bubble.classList.add('turnb--team');
+  const card = STAGE.teamCard(cfg, revealed, {
+    onOpen: (id, url) => { try { K.clicked('LEARN_MORE', id, url, 'team'); } catch (e) {} track('voice_team_open', { id }); },
+    onPeek: id => track('voice_team_peek', { id })
+  });
+  bubble.appendChild(card);
+  requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('is-in')));
+  if (H.follow) H.follow();
 }
 
 /* ── the strip ── */
@@ -382,7 +451,11 @@ async function start() {
   try {
     /* the showcase plays on a fresh start only; a conversation begun in text
        gets a one-line greeting and picks up */
-    const m = await mint(resumeSummary('join'), { showcase: !startedFromText });
+    const T = fakeTransport();
+    /* a rehearsal (?voicerehearse=1): no secret, no model — the built-in peer
+       speaks the greeting and the story at a real speaking pace, so the
+       timing of the pictures can be watched and measured */
+    const m = (T && T.rehearsal) ? T.mint() : await mint(resumeSummary('join'), { showcase: !startedFromText });
     caps = m.caps || {}; model = m.model || null; accepted = m.accepted || null;
     dbg('minted', accepted || 'no echo');
     phase = 'connecting'; paint();
@@ -591,7 +664,9 @@ function apply(op) {
   switch (op.op) {
     case 'user.speaking':
       lastActivity = Date.now();
-      if (stage) closeStage('barge');          /* they have started talking: the show is over */
+      /* NOT the end of the show by itself: speech_started also fires on echo
+         and noise. The story stops when the server actually cuts the agent
+         off (ai.cutoff) or when real words arrive (me.final) */
       if (sub !== 'speaking') setSub('listening');
       reserveMe();                             /* their bubble takes its place NOW, above whatever the agent answers */
       break;
@@ -614,7 +689,7 @@ function apply(op) {
       el.classList.remove('turnb--interim', 'turnb--hearing');
       el.textContent = op.text;
       if (!op.text) el.remove();
-      else { turns++; lastActivity = Date.now(); H.settleChips(); }
+      else { turns++; lastActivity = Date.now(); H.settleChips(); if (stage) closeStage('barge'); }
       break;
     }
     case 'ai.start':
@@ -643,12 +718,15 @@ function apply(op) {
     case 'ai.cutoff': {
       const el = bubbles[op.itemId];
       if (el && !el.classList.contains('turnb--cutoff')) { el.classList.add('turnb--cutoff'); track('voice_barge_in', {}); }
+      if (stage) closeStage('barge');          /* the story was cut off: the show is over */
       break;
     }
     case 'ai.end':
       lastActivity = Date.now();
-      /* the opening response is over: whatever the words did, the stage goes */
-      if (stage && intro && (!intro.responseId || intro.responseId === op.responseId)) closeStage('end', 900);
+      /* the STORY's response is over: whatever the words did, the stage goes.
+         Only that response — a wordless one before it (a tool call, an empty
+         turn) used to close the stage before the first product was named. */
+      if (stage && intro && intro.responseId && intro.responseId === op.responseId) closeStage('end', 900);
       if (!rstate.speaking) setSub(muted ? 'muted' : 'listening');
       break;
     case 'agent.speaking':
@@ -686,6 +764,11 @@ async function runTool(op) {
       track('voice_tool_call', { name: op.name, status: 'IDLE' });
       restartSession('tool');
       return;                                  /* no result to send — that session is gone */
+    } else if (op.name === 'submit_answer' && isStoryQuestion((op.args || {}).text)) {
+      /* "What is Stagwell AI?" is not what they want to solve: the flow is not
+         started on it; the model is pointed back at the story instead */
+      out = { status: 'IDLE', step: 'what they want to solve', say: 'That was a question about Stagwell AI, not a problem to solve. Tell the Stagwell AI story now, exactly as your brief describes — slowly — and do not call submit_answer for it.', question: null, shown: 'the story is on screen' };
+      if (!stage && !storyShown) openStage('voice');
     } else out = fn ? await fn(op.args || {}) : { error: 'unknown_tool', known: Object.keys(K.tools || {}) };
   } catch (e) { out = { error: 'tool_failed' }; }
   toolBusy--;

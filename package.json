@@ -1,7 +1,7 @@
 {
   "name": "stagwell-ai",
   "private": true,
-  "description": "Stagwell AI site: static pages under next/, Vercel functions under api/. No build step and no runtime dependencies \u2014 this file exists for the engine requirement and the test commands.",
+  "description": "Stagwell AI site: static pages under next/, Vercel functions under api/. No build step and no runtime dependencies — this file exists for the engine requirement and the test commands.",
   "engines": {
     "node": ">=22"
   },
@@ -15,6 +15,7 @@
     "test:restart": "node tests/kimi/restart.funnel.mjs",
     "test:value": "node tests/kimi/value.funnel.mjs",
     "test:order": "node tests/kimi/order.funnel.mjs",
-    "test:voice": "node tests/kimi/voice.funnel.mjs"
+    "test:voice": "node tests/kimi/voice.funnel.mjs",
+    "test:rehearsal": "node tests/kimi/voice.rehearsal.mjs"
   }
 }

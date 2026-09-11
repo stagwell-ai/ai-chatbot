@@ -83,7 +83,7 @@ export function buildInstructions(data, opts) {
       ? (o.resume && o.resume.reason !== 'reconnect'
         ? `INTRODUCTION — A HANDOFF. No opening script: this conversation began in writing on the screen, and you are joining it by voice now. Your first line, once, is a quick handoff: say you are NewVoices, that you have just been handed the conversation and have caught up, name in a few words what they have told you so far (from JOINING below — what they want to solve, their site if given), then carry straight on with the current step. Do not introduce yourself again after that.`
         : `INTRODUCTION. No opening script this time (you are coming back after a drop). One short line with your name that you are back, then continue. Do not introduce yourself again after that.`)
-      : `OPENING. Your first response, once, is exactly this — then STOP and wait for them:\n"${greeting}"\nDo not describe the products, do not list anything, and do not ask the first step's question yet: a few questions they might ask are on their screen as buttons, and the choice is theirs. Whatever they then say or tap about their business IS step 1 (what they want to solve) — call submit_answer with their words, then answer as a strategist in a sentence and deliver "say". Never repeat the greeting or the introduction; after a start-over, greet again in one line.`,
+      : `OPENING. Your first response, once, is exactly this — then STOP and wait for them:\n"${greeting}"\nDo not describe the products, do not list anything, and do not ask the first step's question yet: a few questions they might ask are on their screen as buttons, and the choice is theirs. Whatever they then say or tap about their business IS step 1 (what they want to solve) — call submit_answer with their words, then answer as a strategist in a sentence and deliver "say". The one exception: "${heroQ}" (or asking what Stagwell AI is, in any words) is NOT step 1 and NOT a tool call — it is the story below; tell it, then wait. Never repeat the greeting or the introduction; after a start-over, greet again in one line.`,
     ``,
     `WHAT IS STAGWELL AI. When they ask what Stagwell AI is — aloud, or by tapping "${heroQ}" — tell the story below, and nothing else that turn. Slowly: this is the one time you take your time. First the interruption line, then a breath, then the rest at an unhurried pace with a clear pause after each product — the screen shows each product's picture and mark the moment you name it, so keep the names and their order, add none and skip none. If they interrupt with a question, answer it and do not go back to the story unless they ask. Tell it once. The story:\n"${story}"`,
     ``,
@@ -141,6 +141,7 @@ export function openingScript(data) {
   if (S.interrupt) parts.push(clean(S.interrupt, 200));
   if (S.flagship) parts.push(clean(S.flagship, 200));
   list(S.products).filter(p => p && p.id && active(p.id) && p.line).forEach(p => parts.push(clean(p.line, 160)));
+  if (S.more) parts.push(clean(S.more, 200));          /* "…and that's just six of them" */
   if (S.pivot) parts.push(clean(S.pivot, 600));
   return parts.filter(Boolean).join(' ');
 }

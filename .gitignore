@@ -5,3 +5,4 @@
 .claude/
 
 !.env.example
+tests/kimi/.rehearsal/

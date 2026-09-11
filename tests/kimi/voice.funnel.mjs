@@ -628,6 +628,9 @@ try {
     ok(badges.length === sc.products.length && badges.every((b, i) => b.id === sc.products[i].id && b.icon && b.on), 'the roster: ' + badges.map(b => b.name).join(' · '));
     ok(await page.evaluate(() => { const K = window.SAIVOICESTAGE.icons; return window.SAI.data.kimi.copy.voice.showcase.products.every(p => K.indexOf(p.icon) !== -1); }), 'every member has an emblem the stage can draw');
     ok(await page.$eval('.vstage.is-deck .vstage__hero', e => e.getBoundingClientRect().width < 400), 'NewVoices has stepped into the corner');
+    ok(!(await page.$('.vstage__badge--more')), 'the rest of the family is not on the roster yet');
+    await S.speak(sc.more);
+    ok(await page.$eval('.vstage__roster .vstage__badge--more.is-in .vstage__badgename', (e, l) => e.textContent === l, sc.moreLabel), '"' + sc.moreOn + '…" → the family badge joins the roster: ' + sc.moreLabel);
     await S.speak(sc.pivot);
     await emit(page, { type: 'response.output_audio_transcript.done', item_id: 'a_story', transcript: S.said() });
     await emit(page, { type: 'output_audio_buffer.stopped' });
@@ -637,8 +640,31 @@ try {
     await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 6000 });
     ok(true, 'then the stage lifts away');
     ok(await page.$eval('#agentThread', t => getComputedStyle(t).display !== 'none'), 'and the thread is there underneath');
-    const bubble = await page.$eval('#agentThread .turnb--ai:last-child .turnb__text', e => ({ text: e.textContent, logos: [...e.querySelectorAll('.t-brand--logo .t-logo')].map(i => i.getAttribute('src')) }));
+    /* …and the team stays, as a card in the conversation */
+    await page.waitForSelector('#agentThread .turnb--team .teamcard.is-in', { timeout: 3000 });
+    const tc = await page.$eval('#agentThread .turnb--team .teamcard', e => ({
+      badges: [...e.querySelectorAll('.teamcard__badge')].map(b => ({ id: b.dataset.id, name: b.querySelector('.teamcard__badgename').textContent, href: b.getAttribute('href'), blank: b.target === '_blank' && /noopener/.test(b.rel), icon: !!b.querySelector('svg') })),
+      name: e.querySelector('.teamcard__name').textContent, line: e.querySelector('.teamcard__line').textContent, eyebrow: e.querySelector('.teamcard__eyebrow').textContent
+    }));
+    ok(tc.badges.length === sc.products.length + 2 && tc.badges[0].id === 'newvoices' && tc.badges[tc.badges.length - 1].id === 'more', 'the team card: NewVoices, the ' + sc.products.length + ' members, and the rest of the family (' + tc.badges.map(b => b.name).join(' · ') + ')');
+    ok(tc.badges.every(b => b.blank && b.icon), 'every badge is a link that opens a new tab — the conversation is never lost — with its emblem');
+    ok(tc.badges.find(b => b.id === 'questbrand').href === '/s/questbrand' && tc.badges.find(b => b.id === 'more').href === '/products' && tc.badges[0].href === '/newvoices', 'each to its own page: /s/questbrand, /products, /newvoices');
+    ok(tc.eyebrow === sc.teamLabel && tc.name === 'NewVoices' && /Hover a member/.test(tc.line), 'at rest: the team label, NewVoices, and the hint');
+    await page.hover('#agentThread .teamcard__badge[data-id="imai"]');
+    await page.waitForTimeout(150);
+    const peek = await page.$eval('#agentThread .teamcard', e => ({ name: e.querySelector('.teamcard__name').textContent, line: e.querySelector('.teamcard__line').textContent, go: e.querySelector('.teamcard__go').textContent, img: e.querySelector('.teamcard__img.is-on').getAttribute('src'), current: (e.querySelector('.teamcard__badge.is-current') || {}).dataset && e.querySelector('.teamcard__badge.is-current').dataset.id }));
+    ok(peek.name === 'IMAI' && /influencer/.test(peek.line) && /imai/.test(peek.img) && peek.go === 'Read about IMAI →' && peek.current === 'imai', 'hover IMAI: its picture, its name, its line, "' + peek.go + '"');
+    await page.hover('#agentThread .teamcard__badge[data-id="geopulse"]');
+    await page.waitForTimeout(150);
+    ok(await page.$eval('#agentThread .teamcard', e => e.querySelector('.teamcard__name').textContent === 'GEOPulse' && /geopulse/.test(e.querySelector('.teamcard__img.is-on').getAttribute('src'))), 'hover GEOPulse: the picture crossfades, the name follows');
+    ok((await tracked(page, 'voice_team_peek')).length === 2, 'voice_team_peek ×2');
+    await page.$eval('#agentThread .teamcard__badge[data-id="questbrand"]', a => { a.addEventListener('click', ev => ev.preventDefault(), { once: true }); a.click(); });
+    await page.waitForTimeout(100);
+    ok((await tracked(page, 'voice_team_open')).some(e => e[1].id === 'questbrand'), 'a tap on a member is recorded (voice_team_open)');
+    /* the story bubble sits just above the team card */
+    const bubble = await page.$$eval('#agentThread .turnb--ai .turnb__text', els => { const e = els[els.length - 1]; return { text: e.textContent, logos: [...e.querySelectorAll('.t-brand--logo .t-logo')].map(i => i.getAttribute('src')), next: e.closest('.turnb').nextElementSibling && e.closest('.turnb').nextElementSibling.classList.contains('turnb--team') }; });
     ok(bubble.text.includes(sc.interrupt) && bubble.text.includes(sc.pivot.slice(0, 40)), 'with the whole story as one bubble, in sync with what was said');
+    ok(bubble.next, 'and the team card right under it, in the history');
     ok(bubble.logos.length >= 3 && bubble.logos.some(s => /questbrand/.test(s)) && bubble.logos.some(s => /imai/.test(s)), 'the names in the transcript carry their marks (' + bubble.logos.length + ')');
     const st = await tracked(page, 'voice_showcase_started'), en = await tracked(page, 'voice_showcase_ended'), tp = await tracked(page, 'voice_starter_tapped');
     ok(st.length === 1 && st[0][1].via === 'pill', 'voice_showcase_started {via:pill}');
@@ -679,9 +705,31 @@ try {
     await startVoice(a.page); await greet(a.page);
     await a.page.click('#agentThread .turnb__chips--starters .tag--hero');
     await a.page.waitForSelector('.vstage');
+    /* what used to end the show too early on production: a wordless response
+       (the model calling a tool first) and speech_started from echo or noise */
+    await emit(a.page, { type: 'response.created', response: { id: 'r_tool' } });
+    await emit(a.page, { type: 'response.function_call_arguments.done', call_id: 'c_x', name: 'submit_answer', arguments: JSON.stringify({ text: 'What is Stagwell AI?' }) });
+    await emit(a.page, { type: 'response.done', response: { id: 'r_tool', status: 'completed' } });
+    await a.page.waitForTimeout(200);
+    ok(!!(await a.page.$('.vstage')), 'a wordless response ending (a tool call first) does NOT close the stage');
+    const toolOut = await a.page.evaluate(() => { const e = window.__voiceFake.sent.find(x => x.type === 'conversation.item.create' && x.item && x.item.call_id === 'c_x'); return e ? JSON.parse(e.item.output) : null; });
+    ok(toolOut && toolOut.status === 'IDLE' && /Tell the Stagwell AI story/.test(toolOut.say) && (await kstate(a.page)).status === 'IDLE', 'and "What is Stagwell AI?" handed to submit_answer is refused: the flow is not started on it, the model is pointed back at the story');
+    await emit(a.page, { type: 'input_audio_buffer.speech_started' });
+    await emit(a.page, { type: 'input_audio_buffer.speech_stopped' });
+    await a.page.waitForTimeout(200);
+    ok(!!(await a.page.$('.vstage')), 'speech_started with no active response (echo, a cough) does NOT close the stage');
+    /* a real interruption: the story is playing and the server cuts it off */
+    const Sa = await speakStory(a.page, (await a.page.evaluate(() => window.SAI.data.kimi.copy.voice)).showcase);
+    await Sa.speak('Before I go into it — interrupt me any time.');
     await emit(a.page, { type: 'input_audio_buffer.speech_started' });
     await a.page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 3000 });
-    ok((await tracked(a.page, 'voice_showcase_ended'))[0][1].why === 'barge', 'speaking over it: gone, recorded as a barge');
+    ok((await tracked(a.page, 'voice_showcase_ended'))[0][1].why === 'barge', 'speaking over the story itself: gone, recorded as a barge');
+    ok(!(await a.page.$('#agentThread .turnb--team')), 'nobody was introduced, so no team card is left behind');
+    /* nothing was shown, so asking again can raise it again */
+    await a.page.waitForTimeout(800);
+    await emit(a.page, { type: 'response.done', response: { id: 'r_story', status: 'cancelled' } });
+    await agentSays(a.page, 'Sure — what is Stagwell AI? You are talking to one of the flagship AI products from Stagwell AI.', 'a_retry');
+    ok(!!(await a.page.$('.vstage')), 'told nothing yet → asked again, the pictures rise again');
     await a.ctx.close();
     const b = await open();
     await startVoice(b.page); await greet(b.page);

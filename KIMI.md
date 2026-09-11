@@ -318,11 +318,36 @@ team of superheroes being introduced (client, 2026-09-11): burst, NewVoices' car
 emblem), then as each product is named its card slams in **emblem first** — an SVG icon in a
 glowing ring, one per product (`showcase.products[].icon`, drawn from a fixed set in the stage,
 never markup from the copy) — then its lockup on the navy plate, its name and its power line; the
-ones already named line up as badges on the roster at the foot; at the pivot the whole team
-assembles centre stage under `showcase.teamLabel` (NewVoices joins the line-up), then everything
-lifts away. In the thread, product names carry their mark too (`home.js rich()`, `.t-logo`). Told
-once per session; a barge or a typed line closes it. Never plays unasked, and never on a
-conversation begun in text.
+ones already named line up as badges on the roster at the foot; after the six comes "…and that's
+just six of them — more than ten products in total" (`showcase.more`); at the pivot the whole team
+assembles centre stage under `showcase.teamLabel` (NewVoices joins the line-up, plus a "10+
+products" badge), and then — instead of vanishing — **the team stays as a card in the thread**
+(`SAIVOICESTAGE.teamCard`): a picture with the member's name and line over it, the roster of
+emblems beneath; hover or focus a badge to meet that member (the picture crossfades, the words
+change), tap to open its page in a new tab (`urls.productPage` or `/s/{id}`; NewVoices →
+`/newvoices`; the family → `/products`); recorded as `voice_team_peek` / `voice_team_open` and
+`kimi_handoff_click` via `SAIKIMI.clicked('LEARN_MORE', …, 'team')`. In the thread, product names
+carry their mark too (`home.js rich()`, `.t-logo`). Told once per session (again if it was cut
+before a single member was named). Never plays unasked, never on a conversation begun in text.
+
+**What ends the story — and what does not.** Only the STORY's own response ending, the pivot, a
+real cut-off (`ai.cutoff`, the server truncating the agent) or the visitor's real words
+(`me.final`) close the stage. A wordless response ending first (the model calling a tool), or
+`speech_started` from echo or a cough, does not — both used to close it on production before the
+first member was named. `submit_answer("What is Stagwell AI?")` is refused client-side (the flow
+is not started on it; the model is pointed back at the story), and the brief says so too. Product
+names are matched with spaces and case squashed ("GEO Pulse" = GEOPulse).
+
+**Rehearsal — QA the pacing without a model.** Open any page with `?voicerehearse=1`:
+`voice-rehearsal.js` installs a peer that speaks the greeting and the story on the wire the way
+the model does, at ~2.7 words/s with breaths (`&wps= &breath= &stop=` to tune), no secret minted.
+`npm run test:rehearsal` drives it headless, takes a frame a second, prints when each name was
+said against when its card landed, checks every card lands on its words within 600 ms (none by
+the clock), in order, 2 s apart, the team assembles, 45–90 s in all, and writes a contact sheet.
+This is what caught the clock fallback landing every card 4–8 s early: the clock now yields
+whenever words are flowing (`intro.lastDeltaAt`), and `voice_showcase_reveal {id, atMs, via}` plus
+`?voicedebug=1`'s `stage.open/reveal/close` lines make a live session's timing readable off a
+screenshot.
 
 **Start over while the voice is open starts the voice agent over** (client, 2026-09-11): the flow
 and thread clear as always, and the session is replaced — the old connection closed, a fresh
@@ -605,7 +630,16 @@ drawn by hero-agent; typing over voice; barge-in by voice and by typing; mute/en
 Start over from the button and from the model; text-first priming; microphone refused; mint
 503/429; drop → reconnect primed; soft and hard caps; silence mute and the tap back; tab hidden;
 Safari's tap-to-hear; the fast track by voice; an API session error → reconnect; three drops →
-give up honestly; a phone viewport; a browser without a microphone hides the button.
+give up honestly; a phone viewport; a browser without a microphone hides the button. Also: the
+opening in two beats and the starter pills; the story on request (emblems, lockups, roster, the
+family badge, the assembled team, the team card with hover and links); asked aloud; what does and
+does not end the story; Start over replacing the session; the thread's order; pills under every
+question; join vs reconnect.
+
+`npm run test:rehearsal` — Playwright against `?voicerehearse=1`: the greeting and the story at a
+real speaking pace, a frame a second, when each name was said vs when its card landed (every card
+on its words, within 600 ms, in order, 2 s apart; the team assembles; 45–90 s), and a contact
+sheet in `tests/kimi/.rehearsal/` — the way to SEE the pacing without a model.
 
 `npm run test:order` — Playwright, every model off, the site lookup mocked known/unknown: the
 client's nine steps asserted in order from a pill (website with no skip chip → "couldn't find

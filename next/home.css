@@ -1044,6 +1044,38 @@ body.chat-open{overflow:hidden}
   .vstage__caption{font-size:12.5px}
 }
 
+/* ── THE TEAM CARD: the story's trace in the thread — a picture with the
+   member's name over it, the roster of emblems beneath; hover or focus a
+   badge to meet that member, tap to open its page in a new tab ── */
+.askbox__thread .turnb--team{padding-left:26px}
+.teamcard{border-radius:16px;overflow:hidden;background:var(--deep,#0B1220);color:#FFFFFF;box-shadow:0 18px 44px rgba(11,18,32,.18);
+  opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease,ease),transform .55s var(--ease,ease)}
+.teamcard.is-in{opacity:1;transform:none}
+.teamcard__stage{position:relative;aspect-ratio:16/7;min-height:170px;overflow:hidden}
+.teamcard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .55s ease,transform 1.2s ease}
+.teamcard__img.is-on{opacity:1;transform:none}
+.teamcard__text{position:absolute;left:0;right:0;bottom:0;padding:44px 20px 16px;background:linear-gradient(to top,rgba(11,18,32,.92) 30%,rgba(11,18,32,0));display:flex;flex-direction:column;gap:3px}
+.teamcard__eyebrow{font-family:var(--ui);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.teamcard__name{font-family:var(--display,var(--ui));font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.teamcard__line{font-family:var(--ui);font-size:14px;line-height:1.4;color:rgba(255,255,255,.92);max-width:56ch}
+.teamcard__go{font-family:var(--ui);font-size:13px;font-weight:600;color:var(--teal);margin-top:4px}
+.teamcard__go[hidden]{display:none}
+.teamcard__roster{display:flex;flex-wrap:wrap;gap:6px 4px;padding:12px 10px 12px;background:#0A1430}
+.teamcard__badge{flex:1 1 84px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px 6px;border-radius:12px;text-decoration:none;color:rgba(255,255,255,.88);
+  transition:background-color .25s ease,transform .25s ease}
+.teamcard__badge .vstage__emblem{position:static;width:38px;height:38px;box-shadow:0 0 0 3px rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.45);transition:transform .3s cubic-bezier(.2,1.2,.3,1),box-shadow .3s ease}
+.teamcard__badge:hover,.teamcard__badge:focus-visible,.teamcard__badge.is-current{background:rgba(255,255,255,.07);color:#FFFFFF;outline:none}
+.teamcard__badge:hover .vstage__emblem,.teamcard__badge:focus-visible .vstage__emblem,.teamcard__badge.is-current .vstage__emblem{transform:translateY(-3px) scale(1.08);box-shadow:0 0 0 4px rgba(255,255,255,.18),0 12px 26px rgba(0,0,0,.5),0 0 34px rgba(0,156,189,.6)}
+.teamcard__badge--more .vstage__emblem,.vstage__badge--more .vstage__emblem{background:radial-gradient(circle at 32% 30%,#FFE28A 0%,#F2A93B 55%,#7A4B0B 100%);box-shadow:0 0 0 3px rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.45),0 0 30px rgba(242,169,59,.45)}
+.teamcard__badgename{font-family:var(--ui);font-size:11.5px;font-weight:600;text-align:center;line-height:1.15;text-wrap:balance;max-width:84px}
+@media (prefers-reduced-motion:reduce){.teamcard,.teamcard__img,.teamcard__badge .vstage__emblem{transition:none}}
+@media (max-width:640px){
+  .teamcard__stage{aspect-ratio:4/3;min-height:0}
+  .teamcard__badge{flex:1 1 30%;padding:6px 2px}
+  .teamcard__badge .vstage__emblem{width:32px;height:32px}
+  .teamcard__badgename{font-size:10.5px}
+}
+
 /* ?voicedebug=1: the wire, readable off a screenshot */
 .voice__debug{margin:0 0 8px;padding:8px 10px;border-radius:10px;background:#0B1220;color:#B9E5EF;font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto}
 
