@@ -78,6 +78,12 @@ function refocus() {
 const pause = ms => new Promise(r => setTimeout(r, Math.max(0, ms)));
 const copy = () => ((S.data || {}).kimi || {}).copy || {};
 const flags = () => ((S.data || {}).kimi || {}).flags || {};
+/* ── VOICE MODE (voice.js, KIMI-VOICE-PLAN.md) ──
+   While a voice session is open the agent SAYS the questions and the answers
+   land as transcripts, drawn by voice.js. This file then draws only the
+   structures — the fact list, the cards, the form, the Book-a-call button —
+   and never a question's text, or the visitor would read it twice. */
+const voiceLive = () => !!(window.SAIVOICE && window.SAIVOICE.live && window.SAIVOICE.live());
 
 /* ── drawing what the flow says ─────────────────────────────────────────── */
 /* ── what the lookup found ──
@@ -155,12 +161,13 @@ function drawAsk(st) {
 
 function render(st) {
   if (!st || ended) return;
+  const quiet = voiceLive();           /* the agent is saying it: structures only */
   if (st.uiAction === 'ASK') {
     drawFindings(st);
     const key = 'ask|' + (st.question ? st.question.id : '') + '|' + st.message;
     if (key === lastKey) return;
     lastKey = key;
-    drawAsk(st);
+    if (!quiet) drawAsk(st);
     inputMode('text');
     H.placeholder(st.hint || (st.question && st.question.field === 'website' ? ((copy().hints || {}).website || 'yourcompany.com') : 'Type your answer…'));
     refocus();
@@ -170,7 +177,7 @@ function render(st) {
     if (lastKey === 'contact') return;
     lastKey = 'contact';
     drawFindings(st);
-    drawForm(st);
+    drawForm(quiet ? Object.assign({}, st, { message: '' }) : st);
     return;
   }
   /* the open path (client's order, 2026-09-10): the cards are drawn first, then
@@ -180,7 +187,7 @@ function render(st) {
     const key = st.uiAction + '|' + st.message + '|' + (st.holds || 0);
     if (key === lastKey) return;
     lastKey = key;
-    H.ai(askText(st.message || ''), null, null, null);
+    if (!quiet) H.ai(askText(st.message || ''), null, null, null);
     inputMode(st.uiAction === 'CAPTURE_EMAIL' ? 'email' : 'tel');
     H.placeholder(st.hint || '');
     refocus();
@@ -189,7 +196,7 @@ function render(st) {
   if (st.uiAction === 'BOOK') {
     if (lastKey === 'book') return;
     lastKey = 'book';
-    drawBook(st);
+    drawBook(quiet ? Object.assign({}, st, { message: '' }) : st);
     return;
   }
   if (st.uiAction === 'SHOW_RECOMMENDATIONS' || st.uiAction === 'COMPLETE') {
@@ -254,9 +261,12 @@ async function send(raw, label, seed) {
   const mine = generation;
   let goal = seed && seed.goal, domain = seed && seed.domain;
   if (!started && !goal && !domain) { const b = pillFor(v); if (b) { goal = b.dataset.goal || null; domain = b.dataset.domain || null; } }
-  busy = true;
   lastVia = (label != null || (seed && (seed.goal || seed.domain))) ? 'chip' : 'type';
   if (restartBtn) restartBtn.hidden = false;
+  /* a voice session is open: the words go to the agent, which answers by
+     voice and moves the flow through its tools (voice.js) */
+  if (voiceLive() && window.SAIVOICE.sendText(label != null ? label : v)) { started = true; return; }
+  busy = true;
   H.open();
   H.me(label != null ? label : v);
   H.settleChips();
@@ -285,7 +295,8 @@ async function send(raw, label, seed) {
    one control that has to work at every point of the conversation: mid-answer,
    sitting on the contact form, and after the cards when the composer has been
    closed — which is exactly when someone most wants to ask a second thing. */
-function restart() {
+function restart(opts) {
+  const o = opts || {};
   generation++;
   started = false; busy = false; ended = false; lastKey = null;
   formBubble = null; waitEl = null; shownFindings = false; lastVia = 'type'; pointerKey = null; cardsDrawn = false;
@@ -295,9 +306,12 @@ function restart() {
   H.clear((copy().hints || {}).start);
   /* the starting points come back: they were answered, not spent */
   document.querySelectorAll('#agentTags .tag').forEach(b => { b.disabled = false; b.setAttribute('aria-pressed', 'false'); });
-  if (restartBtn) restartBtn.hidden = true;
-  try { const a = window.SAIANALYTICS; if (a) a.track('kimi_restarted', {}); } catch (e) {}
-  if (FINE) { try { H.focus(); } catch (e) {} }
+  /* the voice, if open, stays open — the agent is told and greets again;
+     when the agent itself asked (start_over tool) it is already answering */
+  if (voiceLive()) { restartBtn.hidden = false; if (!o.fromVoice) window.SAIVOICE.onRestart(); }
+  else if (restartBtn) restartBtn.hidden = true;
+  try { const a = window.SAIANALYTICS; if (a) a.track('kimi_restarted', { via: o.fromVoice ? 'voice' : 'button' }); } catch (e) {}
+  if (FINE && !voiceLive()) { try { H.focus(); } catch (e) {} }
 }
 
 /* ── the contact form (brief §24–§26): one compact form, not three turns ── */
@@ -422,7 +436,7 @@ function drawCards(st, opts) {
 
 /* ── wiring: the field, the starting points, the overlay's hand-offs ───── */
 const form = $('#agentForm'), input = $('#agentInput'), restartBtn = $('#agentRestart');
-if (restartBtn) restartBtn.addEventListener('click', restart);
+if (restartBtn) restartBtn.addEventListener('click', () => restart());
 
 /* ── EVERY LINK IN THE THREAD OPENS A NEW TAB ──
    "Anytime that we show a link in the chat history, it should open a new tab.
@@ -458,5 +472,5 @@ try {
   if (q && q.trim()) setTimeout(() => send(q.trim()), REDUCED ? 0 : 500);
 } catch (e) { /* no URL, no start */ }
 
-window.SAIHEROAGENT = { send, state: () => ({ started, busy, finished: ended }) };
+window.SAIHEROAGENT = { send, restart, state: () => ({ started, busy, finished: ended }) };
 })();

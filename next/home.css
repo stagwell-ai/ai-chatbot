@@ -889,6 +889,45 @@ body.chat-open{overflow:hidden}
 .askbox__restart:hover{color:var(--ink);background:#F1F2F4;border-color:var(--line)}
 .askbox__restart:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .askbox__restart[hidden]{display:none}
+/* ── VOICE: "Chat with me" and the sound bubble (voice.js) ── */
+.askbox__voice{margin-right:auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px 0 10px;
+  border-radius:999px;font-family:var(--ui);font-size:13px;font-weight:600;color:var(--ink);
+  background:var(--teal-1);border:1px solid var(--teal-2);cursor:pointer;transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.askbox__voice svg{width:15px;height:15px;flex:none}
+.askbox__voice:hover{background:var(--teal-2)}
+.askbox__voice:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.askbox__voice.is-live{background:var(--ink);border-color:var(--ink);color:#FFFFFF}
+.askbox__voice.is-live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);animation:voiceLive 1.4s ease-in-out infinite}
+.askbox__voice.is-live svg{display:none}
+.askbox__voice[hidden]{display:none}
+.askbox__restart:not([hidden])+.askbox__voice{margin-right:auto}
+.askbox__restart:not([hidden]){margin-right:8px}
+@keyframes voiceLive{0%,100%{opacity:1}50%{opacity:.35}}
+
+.voice{display:flex;align-items:center;gap:10px;min-height:44px;margin:0 0 6px;padding:2px 0}
+.voice[hidden]{display:none}
+.voice__wave{flex:1 1 auto;min-width:0;height:36px;display:block}
+.voice__status{flex:none;max-width:52%;font-family:var(--ui);font-size:12.5px;line-height:1.35;color:var(--ink-3)}
+.voice[data-tone="error"] .voice__status{color:#A6231B}
+.voice[data-tone="warn"] .voice__status{color:var(--ink)}
+.voice__ctl{flex:none;height:32px;min-width:44px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:#FFFFFF;
+  font-family:var(--ui);font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.voice__ctl:hover{border-color:var(--ink);color:var(--ink)}
+.voice__ctl[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#FFFFFF}
+.voice__ctl--end{border-color:transparent;color:var(--ink-3)}
+.voice__ctl[hidden]{display:none}
+.voice[data-state="speaking"] .voice__status{color:var(--teal)}
+.voice[data-state="muted"] .voice__wave{opacity:.5}
+/* transcripts: the visitor's words still arriving, and an answer cut short */
+.askbox__thread .turnb--interim{opacity:.55;font-style:italic}
+.askbox__thread .turnb--cutoff .turnb__text::after{content:" —";color:var(--ink-3)}
+@media (max-width:640px){
+  .voice__status{max-width:40%;font-size:12px}
+  .askbox__voice span{display:none}          /* the mic glyph alone on a phone */
+  .askbox__voice{padding:0 10px}
+  .askbox__voice.is-live span{display:inline}
+}
+
 .askbox__go{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
   background:#F1F2F4;color:var(--ink-3);transition:background-color .25s ease,color .25s ease,transform .3s var(--ease)}
 .askbox__go svg{width:18px;height:18px}

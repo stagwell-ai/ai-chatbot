@@ -209,6 +209,15 @@ d.setAttribute('data-theme',t||sys);})();
         <label class="vh" for="agentInput">Ask Stagwell AI</label>
         <!-- the conversation happens in here, above the line you type on -->
         <div class="askbox__thread" id="agentThread" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <!-- the sound bubble (voice.js, voice-wave.js): who is talking, drawn
+             as waves — ink for the visitor, teal for the agent. Shown only
+             while a voice session is open. -->
+        <div class="voice" id="voiceStrip" data-state="ended" hidden>
+          <canvas class="voice__wave" id="voiceWave" aria-hidden="true"></canvas>
+          <span class="voice__status" id="voiceStatus" role="status" aria-live="polite"></span>
+          <button type="button" class="voice__ctl" id="voiceMute" aria-pressed="false" hidden>Mute</button>
+          <button type="button" class="voice__ctl voice__ctl--end" id="voiceEnd" hidden>End</button>
+        </div>
         <!-- a caret blinks at the head of the line, tight to the first letter,
              so the field reads as waiting to be typed in (client) -->
         <div class="askbox__line">
@@ -225,6 +234,9 @@ d.setAttribute('data-theme',t||sys);})();
             <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.8 3.2v3.4h-3.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Start over
           </button>
+          <!-- "Chat with me": a spoken conversation in the same thread (client,
+               2026-09-11). voice.js hides it where the browser cannot do it. -->
+          <button type="button" class="askbox__voice" id="voiceStart" aria-pressed="false">Chat with me</button>
           <button class="askbox__go" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
       </form>
@@ -308,6 +320,9 @@ d.setAttribute('data-theme',t||sys);})();
 <script src="/next/cards.js"></script>
 <script src="/next/analytics.js"></script>
 <script src="/next/kimi-flow.js"></script>
+<script src="/next/voice-reducer.js"></script>
+<script src="/next/voice-wave.js"></script>
+<script src="/next/voice.js"></script>
 <script src="/next/hero-agent.js"></script>
 <script>
 /* the close's field on a product page: there is no hero chat to hand over to,

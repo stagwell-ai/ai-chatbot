@@ -938,6 +938,7 @@ function state() {
     message: st.message,
     after: st.after || null,
     cardsIntro: st.cardsIntro || null,
+    rawProblemText: st.rawProblemText || null,
     action: st.action ? Object.assign({}, st.action) : null,
     company: st.company,
     holds: st.holds,

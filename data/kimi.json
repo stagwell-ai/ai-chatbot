@@ -6,6 +6,7 @@
     "llm": true,
     "contactGate": false,
     "pointers": false,
+    "voice": true,
     "_pointersNote": "Way-finding under the questions (§4e in KIMI.md). Off at the client's request (2026-09-10): products are named once, at step 6 — the recommendation — and the fast-track form has no skip link. Turn on to show the running under each question and the skip link on the form.",
     "secondaryRecommendations": true,
     "analytics": true,
@@ -91,6 +92,34 @@
       "Take your time — any of these, or a sentence of your own, will do."
     ],
     "composerClosedForm": "Fill in the form above to see your recommendation.",
+    "voice": {
+      "_note": "Chat with me (client, 2026-09-11; KIMI-VOICE-PLAN.md). Every visible string of the voice session, and the three lines the model is handed out-of-band (timeUp, restarted, back). The agent's own brief is api/_lib/voice/instructions.js.",
+      "start": "Chat with me",
+      "connecting": "Connecting…",
+      "consent": "Voice is transcribed on screen so you can read it and so the right team can follow up.",
+      "listening": "Listening",
+      "speaking": "Speaking",
+      "thinking": "Thinking",
+      "muted": "Muted",
+      "mutedSilence": "Muted after a quiet spell — tap to carry on",
+      "reconnecting": "Reconnecting…",
+      "ended": "Voice ended — carry on typing, or start it again.",
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "end": "End",
+      "tap": "Tap to hear",
+      "unavailable": {
+        "denied": "The microphone was not allowed — carry on typing, or allow it and try again.",
+        "nomic": "No microphone was found — carry on typing.",
+        "busy": "Voice is busy right now — carry on typing.",
+        "unconfigured": "Voice is not available here yet — carry on typing.",
+        "network": "Voice could not connect — carry on typing, or try again.",
+        "dropped": "Voice dropped — carry on typing, or tap Chat with me to reconnect."
+      },
+      "timeUp": "Time is nearly up: say in one line that the rest is quicker to type, then stop.",
+      "restarted": "The visitor started over. Greet them again in one short line and ask what they want to solve.",
+      "back": "You are reconnected. Say one short line that you are back, then continue with the current step."
+    },
     "pointers": {
       "_note": "Way-finding before the next question (Amy, 2026-09-10: value before profiling; a way to the product page from the chat). introReco leads the running once there is real evidence; introGoal leads a goal's own shortlist. Each item is the catalog's own one-liner and a link to the product page.",
       "introReco": "Here's where I'd point you so far:",
