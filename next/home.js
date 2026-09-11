@@ -324,11 +324,15 @@
        the click goes to onChip when there is one, else to the placeholder
        conversation. Voice mode (voice.js) hangs a row under the agent's spoken
        question with H.chips(bubble, …). */
-    function chipsRow(chips, onChip) {
-      const row = document.createElement('div'); row.className = 'turnb__chips';
-      chips.forEach(cp => {
+    function chipsRow(chips, onChip, cls) {
+      const row = document.createElement('div'); row.className = 'turnb__chips' + (cls ? ' ' + cls : '');
+      chips.forEach((cp, i) => {
         const c = typeof cp === 'string' ? { label: cp, value: cp } : cp;
-        const b = document.createElement('button'); b.type = 'button'; b.className = 'tag'; b.textContent = c.label;
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = c.label;
+        /* the pills rise one after another (home.css pillIn); a hero chip is
+           the focused one — "What is Stagwell AI?" — set apart and pulsing */
+        b.className = 'tag' + (c.hero ? ' tag--hero' : '');
+        b.style.setProperty('--i', String(i));
         b.addEventListener('click', () => {
           if (b.disabled) return;
           row.querySelectorAll('.tag').forEach(o => { o.disabled = true; o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
@@ -352,11 +356,25 @@
       const S = window.SAI, list = ((S && S.data && S.data.solutions && S.data.solutions.solutions) || []).filter(p => p && p.active !== false).map(p => p.name);
       return ['Stagwell AI', 'NewVoices', 'Stagwell'].concat(list).filter(Boolean).sort((a, b) => b.length - a.length);
     };
+    /* a product's mark, when the catalog has one, so a name in the thread
+       carries its icon ("when you mention company names, show their icons",
+       client 2026-09-11). NewVoices' own mark comes from the voice copy. */
+    const brandLogos = () => {
+      const S = window.SAI, out = {};
+      (((S && S.data && S.data.solutions && S.data.solutions.solutions) || [])).forEach(p => { if (p && p.active !== false && p.lockup) out[p.name] = p.lockup; });
+      const self = (((((S && S.data) || {}).kimi || {}).copy || {}).voice || {}).showcase;
+      if (self && self.self && self.self.logo) out['NewVoices'] = self.self.logo;
+      return out;
+    };
     const rich = (text, opts) => {
       const o = opts || {};
       let s = esc(String(text == null ? '' : text));
       const names = brandNames().map(n => esc(n).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-      if (names.length) s = s.replace(new RegExp('(^|[^\\w>])(' + names.join('|') + ')(?![\\w<])', 'g'), (m, pre, name) => pre + '<strong class="t-brand">' + name + '</strong>');
+      const logos = o.logos === false ? {} : brandLogos();
+      if (names.length) s = s.replace(new RegExp('(^|[^\\w>])(' + names.join('|') + ')(?![\\w<])', 'g'), (m, pre, name) => {
+        const logo = logos[name];
+        return pre + '<strong class="t-brand' + (logo ? ' t-brand--logo' : '') + '">' + (logo ? '<img class="t-logo" src="' + esc(logo) + '" alt="" decoding="async">' : '') + name + '</strong>';
+      });
       s = s.replace(/(^|[\s(])(\d[\d,.]*\+?%?)(?=[\s,.;:)]|$)/g, (m, pre, num) => pre + '<span class="t-num">' + num + '</span>');
       /* the sentence that asks carries the weight */
       s = s.replace(/([^.!?]*\?)/g, m => (/t-ask/.test(m) ? m : '<span class="t-ask">' + m.replace(/\?/g, '<span class="q">?</span>') + '</span>'));
@@ -499,7 +517,7 @@
 
     window.SAIHERO = {
       me, ai, wait, esc, think, follow, rich,
-      chips(bubble, chips, onChip) { if (!bubble || !chips || !chips.length) return null; const row = chipsRow(chips, onChip); bubble.appendChild(row); follow(); return row; },
+      chips(bubble, chips, onChip, cls) { if (!bubble || !chips || !chips.length) return null; const row = chipsRow(chips, onChip, cls); bubble.appendChild(row); follow(); return row; },
       open() { agentSec.classList.add('is-chat'); },
       placeholder(t) { miniInput.placeholder = t || ''; grow(); },
       /* the field is sized to its words again — after a send has emptied it */

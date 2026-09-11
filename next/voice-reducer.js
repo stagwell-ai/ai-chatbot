@@ -68,9 +68,27 @@
         }
         break;
       case 'input_audio_buffer.speech_stopped':
-      case 'input_audio_buffer.committed':
         if (st.listening) { st.listening = false; ops.push({ op: 'user.silent' }); }
         break;
+      /* the visitor's turn is committed — its item id is known BEFORE the
+         transcript, which arrives after the model has often begun to answer.
+         The thread reserves their bubble here so it stays above the reply. */
+      case 'input_audio_buffer.committed': {
+        if (st.listening) { st.listening = false; ops.push({ op: 'user.silent' }); }
+        const id = str(e.item_id);
+        if (id) { const it = item(id, 'user'); if (!it.placed) { it.placed = true; ops.push({ op: 'me.committed', itemId: id }); } }
+        break;
+      }
+      case 'conversation.item.created':
+      case 'conversation.item.added': {
+        const it = e.item || {};
+        const audio = Array.isArray(it.content) && it.content.some(c => c && c.type === 'input_audio');
+        if (it.type === 'message' && it.role === 'user' && audio && str(it.id)) {
+          const rec = item(str(it.id), 'user');
+          if (!rec.placed) { rec.placed = true; ops.push({ op: 'me.committed', itemId: str(it.id) }); }
+        }
+        break;
+      }
 
       case 'conversation.item.input_audio_transcription.delta': {
         const it = item(str(e.item_id), 'user');

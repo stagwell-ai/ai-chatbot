@@ -51,6 +51,7 @@
         '<div class="vstage__burst"></div>' +
         '<div class="vstage__hero">' +
           '<img class="vstage__heroimg" alt="" decoding="async" src="' + esc(c.self && c.self.img) + '">' +
+          (c.self && c.self.logo ? '<img class="vstage__herologo" alt="" decoding="async" src="' + esc(c.self.logo) + '">' : '') +
           '<div class="vstage__herotext"><span class="vstage__heroname">' + esc(c.self && c.self.name || 'NewVoices') + '</span><span class="vstage__herosub">' + esc(c.self && c.self.sub || '') + '</span></div>' +
         '</div>' +
         '<div class="vstage__deck"></div>' +
@@ -96,7 +97,11 @@
       const tile = document.createElement('div');
       tile.className = 'vstage__tile is-current' + (revealed.length % 2 ? ' from-left' : ' from-right');
       tile.setAttribute('data-product', p.id);
-      tile.innerHTML = '<img alt="" decoding="async" src="' + esc(p.img) + '"><div class="vstage__tiletext"><span class="vstage__tilename">' + esc(p.name) + '</span><span class="vstage__tileline">' + esc(p.line) + '</span></div>';
+      /* the product's own mark on a plate in the corner, when the catalog has
+         one ("when you mention company names, show their icons") */
+      tile.innerHTML = '<img alt="" decoding="async" src="' + esc(p.img) + '">' +
+        (p.lockup ? '<span class="vstage__tilelogo"><img alt="" decoding="async" src="' + esc(p.lockup) + '"></span>' : '') +
+        '<div class="vstage__tiletext"><span class="vstage__tilename">' + esc(p.name) + '</span><span class="vstage__tileline">' + esc(p.line) + '</span></div>';
       deck.appendChild(tile);
       requestAnimationFrame(() => requestAnimationFrame(() => tile.classList.add('is-in')));
       return true;

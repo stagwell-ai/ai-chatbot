@@ -11,7 +11,7 @@ import { DATA, R, ROOT } from './_data.mjs';
 
 const require = createRequire(import.meta.url);
 const VR = require(path.join(ROOT, 'next', 'voice-reducer.js'));
-const { buildInstructions, buildTools, buildSession, openingScript, STEPS } = await import(path.join(ROOT, 'api', '_lib', 'voice', 'instructions.js'));
+const { buildInstructions, buildTools, buildSession, openingScript, greetingLine, STEPS } = await import(path.join(ROOT, 'api', '_lib', 'voice', 'instructions.js'));
 const { mintSession, voiceConfig, default: voiceHandler } = await import(path.join(ROOT, 'api', 'voice', 'session.js'));
 
 const active = R.activeProducts(DATA);
@@ -38,25 +38,40 @@ test('the brief names every active product with its catalog line, and no URL, pr
 
 test('the brief states the house rules: never invent, tools move the steps, typed answers for websites/emails/phones, say what is shown', () => {
   const s = buildInstructions(DATA);
-  ['NEVER INVENT', 'submit_answer', 'request_contact', 'start_over', 'TYPED ANSWERS', 'input:"typed"', 'on screen rather than reading it out', 'Speak the language the visitor speaks', 'transcribed'].forEach(k => assert.ok(s.includes(k), k));
+  ['NEVER INVENT', 'submit_answer', 'request_contact', 'start_over', 'TYPED ANSWERS', 'input:"typed"', 'on screen rather than reading it out', 'Speak English', 'transcribed'].forEach(k => assert.ok(s.includes(k), k));
   assert.ok(!/repeat it back exactly as you understood/.test(s), 'no spelling by ear');
   assert.ok(/do not offer to take it aloud/.test(s), 'typed, not offered aloud');
 });
 
-test('the brief opens as NewVoices, from the copy, once', () => {
+test('the brief opens as NewVoices, from the copy, once — and then STOPS and waits (the opening in two beats)', () => {
   const s = buildInstructions(DATA);
+  const V = DATA.kimi.copy.voice;
   assert.ok(s.includes('You are NewVoices'), 'named NewVoices');
-  assert.ok(s.includes(DATA.kimi.copy.voice.introduction), 'the introduction is the copy\'s line');
+  assert.ok(s.includes(V.introduction), 'the introduction is the copy\'s line');
   assert.ok(/revolutionary AI voice agent/.test(s));
-  assert.ok(/Never repeat the script or the introduction/.test(s));
+  assert.ok(s.includes(greetingLine(DATA)) && greetingLine(DATA) === V.introduction + ' ' + V.invite, 'the greeting is the introduction and the invitation, word for word');
+  assert.ok(/then STOP and wait/.test(s), 'and then it waits — the visitor speaks first');
+  assert.ok(/Do not describe the products/.test(s) && /do not ask the first step's question yet/.test(s), 'no product list, no first question, unasked');
+  assert.ok(/on their screen as buttons/.test(s), 'it knows the questions are pills on screen');
+  assert.ok(/IS step 1/.test(s) && /call submit_answer with their words/.test(s), 'what they then say or tap is step 1');
+  assert.ok(/Never repeat the greeting or the introduction/.test(s));
+  /* the starters themselves: real questions, the hero one named in the brief */
+  const st = V.starters;
+  assert.ok(Array.isArray(st.questions) && st.questions.length >= 3 && st.questions.length <= 5, st.questions.length + ' starter questions');
+  st.questions.forEach(q => assert.ok(/\?$/.test(q) && q.length <= 70, 'a short question: ' + q));
+  assert.ok(/competitors/i.test(st.questions.join(' ')) && /influencer/i.test(st.questions.join(' ')) && /AI search/i.test(st.questions.join(' ')), 'competitors, influencers, AI search — the client\'s examples');
+  assert.equal(st.hero, 'What is Stagwell AI?');
+  assert.ok(s.includes('by tapping "' + st.hero + '"'), 'the hero pill is named in the brief');
 });
 
-/* ── the opening showcase ──────────────────────────────────────────────────── */
-test('the opening script: introduction → flagship → each showcased product in order → the pivot; real products, real pictures, about 45 s of speech', () => {
+/* ── the story: the showcase, told when asked ───────────────────────────────── */
+test('the story: the interruption line → flagship → each showcased product in order → the pivot; real products, real pictures, told slowly', () => {
   const V = DATA.kimi.copy.voice, sc = V.showcase;
   const s = openingScript(DATA);
-  assert.ok(s.startsWith(V.introduction), 'opens with the introduction');
+  assert.ok(!s.includes(V.introduction), 'the introduction is NOT in the story — it was said at the greeting');
+  assert.ok(s.startsWith(sc.interrupt) && /interrupt me any time/i.test(sc.interrupt), 'opens by saying they may interrupt ("' + sc.interrupt.slice(0, 40) + '…")');
   let at = s.indexOf(sc.flagship); assert.ok(at > 0, 'then the flagship line');
+  assert.ok(sc.flagship.toLowerCase().includes(sc.openOn.toLowerCase()), 'the flagship line carries the word that raises the stage when asked aloud: ' + sc.openOn);
   assert.ok(sc.products.length >= 4 && sc.products.length <= 6, sc.products.length + ' products — about 20 s');
   sc.products.forEach(p => {
     const P = R.productById(p.id, DATA);
@@ -64,33 +79,43 @@ test('the opening script: introduction → flagship → each showcased product i
     assert.ok(p.line.includes(P.name), p.id + ' names itself as the catalog does');
     const j = s.indexOf(p.line); assert.ok(j > at, p.id + ' in order'); at = j;
     assert.ok(fs.existsSync(path.join(ROOT, p.img.replace(/^\//, ''))), p.img + ' exists');
+    /* its mark, when the catalog has one, is a real file — the tile shows it */
+    if (P.lockup) assert.ok(fs.existsSync(path.join(ROOT, P.lockup.replace(/^\//, ''))), P.lockup + ' exists');
   });
+  assert.ok(sc.products.filter(p => (R.productById(p.id, DATA) || {}).lockup).length >= 3, 'most showcased products carry a lockup for their tile');
   assert.ok(s.indexOf(sc.pivot) > at, 'the pivot last');
   assert.ok(/marketing genius/.test(sc.pivot) && sc.pivot.toLowerCase().includes(sc.closeOn.toLowerCase()), 'the pivot carries the words that close the stage');
   const words = s.split(/\s+/).length;
-  assert.ok(words >= 90 && words <= 170, 'about 45 s of speech in all: ' + words + ' words');
-  [].concat(sc.burst, [sc.self.img]).forEach(img => assert.ok(fs.existsSync(path.join(ROOT, img.replace(/^\//, ''))), img + ' exists'));
+  assert.ok(words >= 90 && words <= 180, 'about 45–60 s of unhurried speech: ' + words + ' words');
+  [].concat(sc.burst, [sc.self.img, sc.self.logo]).forEach(img => assert.ok(fs.existsSync(path.join(ROOT, img.replace(/^\//, ''))), img + ' exists'));
   assert.ok(!/https?:\/\//.test(s) && !/\$\s?\d/.test(s), 'no URL, no price in the script');
 });
 
-test('the brief carries the script on a fresh start, and only a one-line greeting when resuming or told not to', () => {
+test('the brief: the greeting on a fresh start, a one-line hello when resuming — and the story is always there to be asked for, slowly, once', () => {
   const fresh = buildInstructions(DATA);
-  assert.ok(fresh.includes('OPENING SCRIPT') && fresh.includes(openingScript(DATA)), 'the script, word for word');
+  assert.ok(fresh.includes('OPENING.') && !fresh.includes('OPENING SCRIPT'), 'the opening is the greeting, not a script');
+  assert.ok(fresh.includes('WHAT IS STAGWELL AI') && fresh.includes(openingScript(DATA)), 'the story, word for word, under its own heading');
+  assert.ok(/Slowly/.test(fresh) && /clear pause after each product/.test(fresh), 'paced slower');
+  assert.ok(/First the interruption line/.test(fresh), 'the interruption notice comes before the detail');
+  assert.ok(/If they interrupt with a question, answer it/.test(fresh), 'an interruption wins');
+  assert.ok(/Tell it once/.test(fresh));
   assert.ok(fresh.includes('MARKETING GENIUS'), 'general marketing guidance allowed, within the limits');
   const back = buildInstructions(DATA, { showcase: false });
-  assert.ok(!back.includes('OPENING SCRIPT') && back.includes('No opening script'));
+  assert.ok(!back.includes('OPENING.') && back.includes('No opening script'), 'resuming: no greeting script');
+  assert.ok(back.includes('WHAT IS STAGWELL AI'), 'but the story can still be asked for');
 });
 
-test('mintSession: the showcase is off when the browser says so, and always when resuming', async () => {
+test('mintSession: the greeting is off when the browser says so, and always when resuming', async () => {
   const bodyOf = async (b) => { let body = null; await mintSession(b, { OPENAI_API_KEY: 'sk' }, async (u, i) => { body = JSON.parse(i.body); return { ok: true, status: 200, json: async () => ({ value: 'ek', expires_at: 1 }) }; }); return body.session.instructions; };
-  assert.ok((await bodyOf({})).includes('OPENING SCRIPT'), 'fresh → the script');
-  assert.ok((await bodyOf({ showcase: false })).includes('No opening script'), 'showcase:false → a greeting');
-  assert.ok((await bodyOf({ resume: { summary: 'they said x', step: 'their role' } })).includes('No opening script'), 'resume → a greeting');
+  assert.ok((await bodyOf({})).includes('OPENING.'), 'fresh → the greeting');
+  assert.ok((await bodyOf({ showcase: false })).includes('No opening script'), 'showcase:false → a hello');
+  assert.ok((await bodyOf({ resume: { summary: 'they said x', step: 'their role' } })).includes('No opening script'), 'resume → a hello');
 });
 
 test('resuming adds what is known and the current step, capped', () => {
-  const s = buildInstructions(DATA, { resume: { summary: 'x'.repeat(2000), step: 'their role' } });
+  const s = buildInstructions(DATA, { showcase: false, resume: { summary: 'x'.repeat(2000), step: 'their role', reason: 'reconnect' } });
   assert.ok(s.includes('RESUMING') && s.includes('The current step is their role'));
+  assert.ok(/coming back after a drop/.test(s) && !/HANDOFF/.test(s), 'a reconnect is one line that it is back, not a handoff');
   assert.ok(s.length < buildInstructions(DATA).length + 1200, 'the summary is capped');
 });
 
@@ -186,16 +211,48 @@ test('mintSession: no key → 503 voice_unconfigured; OpenAI error → 502 mint_
   assert.equal(net.status, 504); assert.equal(net.json.error, 'mint_network');
 });
 
+test('voice joining a conversation begun in writing: a handoff line, what is known, the current step — and no second introduction', () => {
+  const s = buildInstructions(DATA, { showcase: false, resume: { summary: 'They said: "protect brand reputation". Goal: brand_reputation.', step: 'their website', reason: 'join' } });
+  assert.ok(/INTRODUCTION — A HANDOFF/.test(s), 'the introduction is a handoff');
+  assert.ok(/just been handed the conversation and have caught up/.test(s), 'says it has caught up');
+  assert.ok(/name in a few words what they have told you so far/.test(s), 'and names what was said');
+  assert.ok(/JOINING\. The conversation so far, in writing: They said: "protect brand reputation"/.test(s) && /The current step is their website/.test(s), 'what is known and where we are');
+  assert.ok(!/RESUMING/.test(s) && !/connection dropped/.test(s), 'not described as a dropped call');
+  assert.ok(/Do not introduce yourself again after that/.test(s));
+  /* the language rule: English, and never a switch on noise (the client saw it drift into French) */
+  assert.ok(/LANGUAGE\. Speak English\./.test(s), 'English by default (copy.voice.language)');
+  assert.ok(/never because of background noise/.test(s) && /A conversation that began in English stays in English/.test(s), 'no switch on noise or an unsure transcript');
+  assert.ok(/carries no real words/.test(s) && /do not greet or introduce yourself again/.test(s), 'an empty turn gets no second greeting');
+});
+
 test('mintSession: a resume summary is passed through, capped', async () => {
   let body = null;
   await mintSession({ resume: { summary: 'y'.repeat(5000), step: 'their phone number' } }, { OPENAI_API_KEY: 'sk' }, async (u, i) => { body = JSON.parse(i.body); return { ok: true, status: 200, json: async () => ({ value: 'ek', expires_at: 1 }) }; });
-  assert.ok(body.session.instructions.includes('RESUMING'));
+  assert.ok(body.session.instructions.includes('JOINING') && !body.session.instructions.includes('RESUMING'), 'no reason given → a join (a handoff), the safe default');
+  await mintSession({ resume: { summary: 'y', step: 'their phone number', reason: 'reconnect' } }, { OPENAI_API_KEY: 'sk' }, async (u, i) => { body = JSON.parse(i.body); return { ok: true, status: 200, json: async () => ({ value: 'ek', expires_at: 1 }) }; });
+  assert.ok(body.session.instructions.includes('RESUMING'), 'reason:reconnect → resuming');
   assert.ok(body.session.instructions.includes('their phone number'));
   assert.ok(body.session.instructions.length < 12000);
 });
 
 /* ── the reducer ───────────────────────────────────────────────────────────── */
 const run = events => { let st = VR.blank(); const ops = []; events.forEach(e => { const r = VR.reduce(st, e); st = r.state; ops.push(...r.ops); }); return { st, ops }; };
+
+test('reducer: the visitor\'s turn is placed when committed — before its transcript, which lands after the reply has begun — so the thread can reserve the bubble', () => {
+  const { ops } = run([
+    { type: 'input_audio_buffer.speech_started' }, { type: 'input_audio_buffer.speech_stopped' },
+    { type: 'input_audio_buffer.committed', item_id: 'u1' },
+    { type: 'conversation.item.created', item: { id: 'u1', type: 'message', role: 'user', content: [{ type: 'input_audio' }] } },
+    { type: 'response.created', response: { id: 'r1' } },
+    { type: 'conversation.item.input_audio_transcription.completed', item_id: 'u1', transcript: 'keep going' }
+  ]);
+  assert.deepEqual(ops.map(o => o.op), ['user.speaking', 'user.silent', 'me.committed', 'ai.start', 'me.final'], 'placed once, before the reply, then filled');
+  assert.equal(ops[2].itemId, 'u1');
+  const b = run([{ type: 'conversation.item.added', item: { id: 'u2', type: 'message', role: 'user', content: [{ type: 'input_audio' }] } }, { type: 'input_audio_buffer.committed', item_id: 'u2' }]);
+  assert.deepEqual(b.ops.map(o => o.op), ['me.committed'], 'the GA event name too, and only once for the same item');
+  const c = run([{ type: 'conversation.item.created', item: { id: 'u3', type: 'message', role: 'user', content: [{ type: 'input_text', text: 'hi' }] } }]);
+  assert.equal(c.ops.length, 0, 'a typed line is not placed — the browser drew it as it was sent');
+});
 
 test('the visitor\'s speech: interim deltas fill one bubble, the completed transcript finalises it', () => {
   const { ops } = run([

@@ -941,6 +941,15 @@ body.chat-open{overflow:hidden}
   transform:translateX(125%) rotate(4deg);opacity:0;transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .5s ease,inset .7s var(--ease,ease),width .7s var(--ease,ease),height .7s var(--ease,ease)}
 .vstage.is-hero .vstage__hero{transform:none;opacity:1}
 .vstage__heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* NewVoices' own mark, top-left of its card; the product marks on their tiles,
+   each on the navy plate its lockup was drawn on */
+.vstage__herologo{position:absolute;top:14px;left:16px;height:26px;width:auto;max-width:46%;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));transition:opacity .4s ease}
+.vstage.is-deck .vstage__herologo{opacity:0}
+.vstage__tilelogo{position:absolute;top:12px;left:12px;height:40px;width:128px;border-radius:8px;background:#0A1743;box-shadow:0 6px 18px rgba(0,0,0,.35);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(-6px);transition:opacity .4s ease .35s,transform .5s cubic-bezier(.2,.7,.2,1) .35s}
+.vstage__tilelogo img{position:static;width:100%;height:100%;object-fit:contain;padding:0}
+.vstage__tile.is-in .vstage__tilelogo{opacity:1;transform:none}
+.vstage__tile.is-past .vstage__tilelogo{height:22px;width:70px;top:6px;left:6px;border-radius:5px}
 .vstage__herotext{position:absolute;left:0;right:0;bottom:0;padding:18px 22px 20px;background:linear-gradient(to top,rgba(11,18,32,.82),rgba(11,18,32,0));color:#FFFFFF;display:flex;flex-direction:column;gap:2px}
 .vstage__heroname{font-family:var(--display,var(--ui));font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1}
 .vstage__herosub{font-family:var(--ui);font-size:14px;opacity:.85}
@@ -973,6 +982,7 @@ body.chat-open{overflow:hidden}
 .vstage__caption{position:absolute;left:4%;right:4%;bottom:10px;margin:0;font-family:var(--ui);font-size:13.5px;line-height:1.4;color:rgba(255,255,255,.92);
   text-shadow:0 1px 8px rgba(0,0,0,.6);pointer-events:none;z-index:2}
 .vstage.is-deck .vstage__caption{left:30%}
+.vstage.is-deck .vstage__tile.is-current .vstage__tiletext{padding-bottom:52px}   /* room for the caption under the tile's own line */
 /* it all lifts away */
 .vstage.is-closing .vstage__tile,.vstage.is-closing .vstage__hero{transform:translateY(-40px) scale(.96);opacity:0;transition-duration:.5s}
 /* reduced motion: fades only, no flight, no burst */
@@ -1002,9 +1012,40 @@ body.chat-open{overflow:hidden}
 .askbox__thread .turnb__text .t-lead{display:block;font-family:var(--display);font-weight:800;font-size:1.45em;line-height:1.12;letter-spacing:-.025em;color:var(--ink);margin:0 0 8px}
 .askbox__thread .turnb__text .t-lead .t-brand{color:var(--teal)}
 @media (max-width:640px){.askbox__thread .turnb__text .t-lead{font-size:1.3em}}
+/* a product's own mark beside its name, on the navy plate its lockup was
+   drawn on ("when you mention company names, show their icons") */
+.askbox__thread .turnb__text .t-brand--logo{white-space:nowrap}
+.askbox__thread .turnb__text .t-logo{display:inline-block;height:1.15em;width:auto;max-width:5.2em;vertical-align:-.22em;margin:0 .3em 0 0;
+  border-radius:4px;background:#0A1743;object-fit:contain;padding:.08em .22em;box-sizing:content-box}
+.askbox__thread .turnb__text .t-lead .t-logo{display:none}   /* the welcome line is type alone */
+
+/* ── the starter pills (client, 2026-09-11: "give them an opportunity to say
+   something first … those should appear as animated pills at the bottom …
+   a focused hero pill") ── every row of pills rises one after another; the
+   hero pill is set apart, in ink with a live dot, and breathes until tapped */
+@keyframes pillIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes heroBreathe{0%,100%{box-shadow:0 0 0 0 rgba(0,150,175,.35)}50%{box-shadow:0 0 0 7px rgba(0,150,175,0)}}
+.askbox__thread .turnb__chips .tag{animation:pillIn .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*85ms)}
+.askbox__thread .turnb__chips .tag--hero{background:var(--ink);border-color:var(--ink);color:#FFFFFF;font-weight:600;gap:8px;padding:0 15px 0 12px;
+  animation:pillIn .5s cubic-bezier(.2,.7,.2,1) both,heroBreathe 2.2s ease-in-out .6s infinite}
+.askbox__thread .turnb__chips .tag--hero::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);flex:none;animation:voiceLive 1.4s ease-in-out infinite}
+.askbox__thread .turnb__chips .tag--hero:hover{background:var(--navy,#0A1743);border-color:var(--navy,#0A1743);color:#FFFFFF}
+.askbox__thread .turnb__chips .tag--hero:disabled{animation:none;box-shadow:none;opacity:.55}
+.askbox__thread .turnb__chips .tag--hero[aria-pressed="true"]{opacity:1;background:var(--teal);border-color:var(--teal)}
+.askbox__thread .turnb__chips--starters{margin-top:var(--s-6)}
+@media (prefers-reduced-motion:reduce){
+  .askbox__thread .turnb__chips .tag,.askbox__thread .turnb__chips .tag--hero,.askbox__thread .turnb__chips .tag--hero::before{animation:none}
+  .askbox__thread .turnb__chips .tag--hero{box-shadow:0 0 0 3px rgba(0,150,175,.25)}
+}
 
 /* transcripts: the visitor's words still arriving, and an answer cut short */
 .askbox__thread .turnb--interim{opacity:.55;font-style:italic}
+/* the visitor's bubble, reserved as they speak and still waiting for the
+   words: a quiet listening mark, so the order of the thread holds */
+@keyframes hearing{0%,100%{opacity:.35}50%{opacity:.9}}
+.askbox__thread .turnb--hearing:empty{min-width:48px;font-style:normal}
+.askbox__thread .turnb--hearing:empty::after{content:"···";letter-spacing:.12em;font-weight:700;color:var(--ink-2);animation:hearing 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.askbox__thread .turnb--hearing:empty::after{animation:none}}
 .askbox__thread .turnb--cutoff .turnb__text::after{content:" —";color:var(--ink-3)}
 @media (max-width:640px){
   .voice__status{max-width:40%;font-size:12px}

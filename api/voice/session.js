@@ -53,7 +53,9 @@ export async function mintSession(body, env, fetchImpl) {
   const cfg = voiceConfig(e);
   if (!cfg.enabled) return { status: 503, json: { ok: false, error: cfg.keyConfigured ? 'voice_disabled' : 'voice_unconfigured' } };
   const b = body && typeof body === 'object' ? body : {};
-  const resume = b.resume && typeof b.resume === 'object' ? { summary: String(b.resume.summary || '').slice(0, 1200), step: String(b.resume.step || '').slice(0, 80) } : null;
+  /* reason: 'join' — voice joining a conversation begun in writing (a handoff
+     line); 'reconnect' — back after a drop (one line that it is back) */
+  const resume = b.resume && typeof b.resume === 'object' ? { summary: String(b.resume.summary || '').slice(0, 1200), step: String(b.resume.step || '').slice(0, 80), reason: b.resume.reason === 'reconnect' ? 'reconnect' : 'join' } : null;
   const page = String(b.page || '').slice(0, 200);
   /* the opening showcase plays once, on a fresh start; a resumed or
      reconnected session greets in one line and carries on */

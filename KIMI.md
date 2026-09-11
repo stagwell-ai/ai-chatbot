@@ -305,6 +305,40 @@ brief tells the agent to ask for the box, the tool result says `input:"typed"`, 
 in the field. Something said aloud at such a step is met with "type it so I have the spelling
 right", not a guess.
 
+**The opening, in two beats (client, 2026-09-11: "the timing here was too fast … give them an
+opportunity to say something first").** Beat one: the agent says the greeting —
+`copy.voice.introduction` + `copy.voice.invite` — and STOPS. Under its words rise animated pills
+(`copy.voice.starters`): a focused hero pill, **What is Stagwell AI?**, then four questions a
+buyer might ask (AI search, influencers, competitors, brand impact). A question tapped is the
+visitor's own words to the agent — step 1. Beat two, only when asked for (the hero pill, or the
+visitor asking aloud — the stage rises when the transcript reaches `showcase.openOn`): the story,
+told slowly. The agent first says they may interrupt at any time (`showcase.interrupt`), then
+flagship → one line per product → the pivot; `voice-stage.js` animates to the transcript — burst,
+NewVoices' card (with its mark), a tile per product as it is named, **each with the product's own
+lockup** on the navy plate, then everything lifts away. In the thread, product names carry their
+mark too (`home.js rich()`, `.t-logo`). Told once per session; a barge, a typed line or Start over
+closes it. Never plays unasked, and never on a conversation begun in text.
+
+**Pills under every question (client, 2026-09-11).** The flow's options hang under the spoken
+question as it arrives; when the agent asks step 1 again in its own words (after an aside, a
+barge, a start-over) the six goals hang under it; a step with options asked twice gets them
+twice; a typed step gets none. Said aloud or tapped, the answer takes the same path.
+
+**Joining, not "the connection dropped".** Voice started on a conversation begun in writing
+mints with `resume.reason:"join"`: the brief's introduction is a quick handoff — "I'm NewVoices,
+I've just been handed our chat and caught up: you're looking to …, we're at your website" — and
+then the current step. A reconnect after a drop is `reason:"reconnect"`: one line that it is back.
+
+**Language.** `copy.voice.language` (English). The agent switches only when the visitor clearly
+speaks to it in another language, never on background noise or an unsure transcript, and a turn
+with no real words gets no second greeting (the client saw a session drift into French after a
+noise turn re-triggered the introduction).
+
+**The order of the thread.** The transcription runs behind the model's reply, so the visitor's
+words used to land under the answer to them. Their bubble is now reserved the moment they start
+speaking (a quiet `···`), takes the turn's id on `input_audio_buffer.committed`
+(`me.committed` in the reducer), and fills when the words arrive; an empty one goes away.
+
 **The strip.** Ink wave = the visitor (mic level), teal wave = the agent (remote level), dots =
 thinking, flat dim = muted, dashed = reconnecting; Mute and End beside it; colours only under
 reduced motion; 30 fps on phones. "Chat with me" becomes the live indicator.

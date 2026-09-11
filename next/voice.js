@@ -96,7 +96,47 @@ function watchHearing() {
   }
 }
 
-/* ── the opening showcase ── */
+/* ── the opening, in two beats (client, 2026-09-11: "the timing here was too
+   fast … give them an opportunity to say something first") ──
+   1. the agent greets and STOPS; a few questions the visitor might ask hang
+      under its words as animated pills, with one focused pill: "What is
+      Stagwell AI?"
+   2. the story (the showcase) plays only when asked for — the hero pill, or
+      the visitor asking aloud — slowly, after the agent has said they may
+      interrupt at any time. */
+let storyShown = false;
+function starterChips() {
+  const st = c().starters || {};
+  const qs = (st.questions || []).map(q => (typeof q === 'string' ? { label: q, value: q } : q)).filter(q => q && q.label);
+  const hero = st.hero ? (typeof st.hero === 'string' ? { label: st.hero, value: st.hero } : st.hero) : null;
+  return (hero ? [Object.assign({ hero: true }, hero)] : []).concat(qs);
+}
+function offerStarters() {
+  const chips = starterChips();
+  if (!chips.length) return;
+  offerChips(chips, chip => {
+    track('voice_starter_tapped', { hero: !!chip.hero, label: String(chip.label).slice(0, 60) });
+    if (chip.hero) explain('pill', chip.value); else sendText(chip.value);
+  }, { fallback: false, cls: 'turnb__chips--starters' });
+}
+/* the story, asked for: the pictures rise at once and the agent is asked, in
+   the visitor's words, what Stagwell AI is — its brief carries the script */
+function explain(via, words) {
+  if (phase !== 'live') return false;
+  const q = String(words || (c().starters || {}).hero || 'What is Stagwell AI?');
+  if (pendingChips) { if (pendingChips.timer) clearTimeout(pendingChips.timer); pendingChips = null; }
+  H.open();
+  H.me(q);
+  H.settleChips();
+  turns++; lastActivity = Date.now();
+  if (rstate.response || rstate.speaking) sendAll(VR.clientEvents.cancel());
+  openStage(via || 'pill');
+  sendAll(VR.clientEvents.userText(q));
+  setSub('thinking');
+  return true;
+}
+
+/* ── the showcase (voice-stage.js) ── */
 function showcaseCfg() {
   const sc = c().showcase || {};
   const products = ((S.data || {}).solutions || {}).solutions || [];
@@ -104,32 +144,44 @@ function showcaseCfg() {
   return {
     burst: sc.burst || [],
     self: sc.self || { name: 'NewVoices', sub: '', img: '' },
-    products: (sc.products || []).map(p => { const P = byId(p.id); return P ? { id: p.id, name: P.name, line: p.line, img: p.img } : null; }).filter(Boolean),
+    /* each tile carries the product's own mark ("when you mention company
+       names, show their icons") — the catalog's lockup, when it has one */
+    products: (sc.products || []).map(p => { const P = byId(p.id); return P ? { id: p.id, name: P.name, line: p.line, img: p.img, lockup: P.lockup || null } : null; }).filter(Boolean),
+    openOn: sc.openOn || 'flagship',
     closeOn: sc.closeOn || 'get to know each other'
   };
 }
-function openStage() {
-  if (!STAGE || flags().voiceShowcase === false) return;
+function openStage(via) {
+  if (!STAGE || flags().voiceShowcase === false || stage) return;
   const host = $('#agentForm'); if (!host) return;
   const cfg = showcaseCfg();
   if (!cfg.products.length) return;
+  storyShown = true;
   stage = STAGE.create(host, cfg);
   stage.open();
   intro = { responseId: null, text: '', cfg, fallback: null, started: Date.now() };
   /* a clock only as the net under the transcript: if the words never name a
-     product, the tiles still come; and nothing stays up past 55 s */
-  intro.fallback = setTimeout(() => { if (intro && stage) revealByClock(); }, 9000);
+     product, the tiles still come — slowly, the story is paced for a listener
+     — and nothing stays up past 90 s */
+  intro.fallback = setTimeout(() => { if (intro && stage) revealByClock(); }, 14000);
   timers.push(intro.fallback);
-  timers.push(setTimeout(() => closeStage('timeout'), 55000));
-  track('voice_showcase_started', { products: cfg.products.length });
+  timers.push(setTimeout(() => closeStage('timeout'), 90000));
+  track('voice_showcase_started', { products: cfg.products.length, via: via || 'voice' });
 }
 function revealByClock() {
   if (!intro || !stage) return;
   const next = intro.cfg.products.find(p => stage.state().revealed.indexOf(p.id) === -1);
   if (!next) return;
   stage.reveal(next.id);
-  intro.fallback = setTimeout(revealByClock, 3000);
+  intro.fallback = setTimeout(revealByClock, 5000);
   timers.push(intro.fallback);
+}
+/* the visitor asked aloud what Stagwell AI is: the agent's words reach the
+   story's first beat, and the pictures rise to meet them */
+function maybeOpenStage(text) {
+  if (stage || storyShown || phase !== 'live') return;
+  const cfg = showcaseCfg();
+  if (cfg.openOn && String(text).toLowerCase().indexOf(String(cfg.openOn).toLowerCase()) !== -1) openStage('voice');
 }
 /* the agent's words so far → the tiles they name, in order; the pivot closes */
 function followTranscript(text) {
@@ -208,7 +260,7 @@ const tag = (reason, e) => { const err = e || new Error(reason); err.reason = re
 
 /* what the model needs to know to pick up a conversation that began in text
    (or was cut by a dropped connection): the state, in a few plain lines */
-function resumeSummary() {
+function resumeSummary(reason) {
   const st = K.state();
   if (!st || st.status === 'IDLE') return null;
   const parts = [];
@@ -227,7 +279,10 @@ function resumeSummary() {
   if (st.lead && st.lead.email) parts.push('Email given.');
   if (st.lead && st.lead.phone) parts.push('Phone given.');
   const view = K.tools && K.tools.view ? K.tools.view() : null;
-  return { summary: parts.join(' ').slice(0, 1200), step: view && view.step ? view.step : '' };
+  /* 'join': voice joining a conversation begun in writing — the agent opens
+     with a quick handoff ("I've just been handed our chat and caught up: …");
+     'reconnect': back after a drop — one line that it is back */
+  return { summary: parts.join(' ').slice(0, 1200), step: view && view.step ? view.step : '', reason: reason || 'join' };
 }
 
 /* ── iOS unlock: the audio element and the AudioContext must be born inside
@@ -323,7 +378,7 @@ async function start() {
   try {
     /* the showcase plays on a fresh start only; a conversation begun in text
        gets a one-line greeting and picks up */
-    const m = await mint(resumeSummary(), { showcase: !startedFromText });
+    const m = await mint(resumeSummary('join'), { showcase: !startedFromText });
     caps = m.caps || {}; model = m.model || null; accepted = m.accepted || null;
     dbg('minted', accepted || 'no echo');
     phase = 'connecting'; paint();
@@ -337,7 +392,10 @@ async function start() {
     dbg('live', conn.micState ? conn.micState() : null);
     track('voice_mic_state', Object.assign({}, conn.micState ? conn.micState() : {}, { label: undefined }));
     H.open();
-    if (!startedFromText) openStage();
+    storyShown = false;
+    /* a fresh start: the agent greets and waits; the questions the visitor
+       might ask hang under its greeting. The story comes only when asked. */
+    if (!startedFromText) offerStarters();
     const restartBtn = $('#agentRestart'); if (restartBtn) restartBtn.hidden = false;
     if (WAVE && waveEl && !wave) wave = WAVE.create(waveEl, () => (conn && conn.levels ? conn.levels() : { user: 0, agent: 0 }), stripState);
     if (wave) wave.start();
@@ -367,6 +425,7 @@ function fail(reason, e) {
 function teardown() {
   if (stage) { const s = stage; stage = null; intro = null; s.destroy(); }
   pendingChips = null;
+  if (hearing) { if (!hearing.textContent) hearing.remove(); hearing = null; }
   timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = [];
   if (ticker) { clearInterval(ticker); ticker = 0; }
   if (conn) { try { conn.close(); } catch (e) {} conn = null; }
@@ -396,7 +455,7 @@ async function onClose(why) {
   if (conn) { try { conn.close(); } catch (e) {} conn = null; }
   try {
     await new Promise(r => setTimeout(r, 800 * reconnects));
-    const m = await mint(resumeSummary());
+    const m = await mint(resumeSummary('reconnect'));
     conn = await transport().connect({ secret: m.value, model: m.model, onEvent, onClose, onNeedTap: () => setStatus(c().tap || 'Tap to hear', 'warn') });
     await conn.ready;
     rstate = VR.blank();
@@ -444,6 +503,30 @@ function onEvent(ev) {
   r.ops.forEach(apply);
 }
 
+/* ── THE ORDER OF THE THREAD ──
+   The visitor's transcript arrives AFTER the model has begun to answer (the
+   transcription runs behind the response), so a bubble made when the words
+   land would sit under the reply ("it should have its response under my
+   transcript, not above it", client 2026-09-11). So their bubble is reserved
+   the moment they start speaking — a quiet listening mark — takes the turn's
+   id when the turn is committed, and fills when the words arrive. A reserved
+   bubble that never gets words (noise, a cough) goes away by itself. */
+let hearing = null, hearingTimer = 0;
+function reserveMe() {
+  if (hearing) return;
+  hearing = H.me('');
+  hearing.classList.add('turnb--interim', 'turnb--hearing');
+  if (H.follow) H.follow();
+  clearTimeout(hearingTimer);
+  hearingTimer = setTimeout(() => { if (hearing && !hearing.textContent) { hearing.remove(); hearing = null; } }, 12000);
+  timers.push(hearingTimer);
+}
+function meBubble(itemId) {
+  if (meBubbles[itemId]) return meBubbles[itemId];
+  if (hearing) { meBubbles[itemId] = hearing; hearing = null; return meBubbles[itemId]; }
+  return (meBubbles[itemId] = H.me(''));
+}
+
 function bubbleText(el, text, cls) {
   let t = el.querySelector('.turnb__text');
   if (!t) { t = document.createElement('div'); t.className = 'turnb__text'; el.insertBefore(t, el.firstChild); }
@@ -458,20 +541,46 @@ function bubbleText(el, text, cls) {
    for its next bubble and hang under it; if no bubble comes, they get one of
    their own. Typed steps (website, email, phone) have no suggestions. */
 let pendingChips = null;
-function offerChips(chips, onChip) {
+function offerChips(chips, onChip, opts) {
+  const o = opts || {};
   if (!chips || !chips.length) { pendingChips = null; return; }
   if (pendingChips && pendingChips.timer) clearTimeout(pendingChips.timer);
-  pendingChips = { chips, onChip, bubble: null, at: Date.now(), timer: null };
-  pendingChips.timer = setTimeout(() => {
-    if (pendingChips && !pendingChips.bubble && phase === 'live') { const p = pendingChips; pendingChips = null; H.ai(null, p.chips, null, p.onChip); }
-  }, 6000);
-  timers.push(pendingChips.timer);
+  pendingChips = { chips, onChip, cls: o.cls || null, bubble: null, at: Date.now(), timer: null };
+  /* the starters only ever hang under the greeting — no bubble of their own */
+  if (o.fallback !== false) {
+    pendingChips.timer = setTimeout(() => {
+      if (pendingChips && !pendingChips.bubble && phase === 'live') { const p = pendingChips; pendingChips = null; H.ai(null, p.chips, null, p.onChip); }
+    }, 6000);
+    timers.push(pendingChips.timer);
+  }
 }
 function hangChips(bubble) {
   if (!pendingChips || !bubble) return;
   const p = pendingChips; pendingChips = null;
   if (p.timer) clearTimeout(p.timer);
-  H.chips(bubble, p.chips, p.onChip);
+  H.chips(bubble, p.chips, p.onChip, p.cls);
+}
+/* "whenever it asks me questions, there should be pills with common answers I
+   can either say out loud or click on" (client, 2026-09-11). The flow's own
+   options are offered as each step arrives (offerChips); this is the net under
+   every OTHER question the agent asks: step 1 asked again (after a barge, a
+   start-over, an aside) gets the six goals; a step with options gets them
+   again; a typed step (website, email, phone) gets none — the box is the answer. */
+function chipsForNow() {
+  const st = K.state();
+  if (!st) return null;
+  if (st.status === 'IDLE') {
+    const goals = (((S.data || {}).goals || {}).goals || []).filter(g => g && g.label);
+    return goals.length ? goals.slice(0, 6).map(g => ({ label: g.label, value: g.label })) : null;
+  }
+  if (typedStep()) return null;
+  if (st.question && st.suggestions && st.suggestions.length) return st.suggestions.map(s => ({ label: s.label, value: s.value }));
+  return null;
+}
+function pillsUnderQuestion(el, text) {
+  if (!el || stage || !/\?/.test(String(text || '')) || el.querySelector('.turnb__chips')) return;
+  const chips = chipsForNow();
+  if (chips) H.chips(el, chips, chip => sendText(chip.value), 'turnb__chips--answers');
 }
 
 function apply(op) {
@@ -480,19 +589,25 @@ function apply(op) {
       lastActivity = Date.now();
       if (stage) closeStage('barge');          /* they have started talking: the show is over */
       if (sub !== 'speaking') setSub('listening');
+      reserveMe();                             /* their bubble takes its place NOW, above whatever the agent answers */
       break;
     case 'user.silent':
       break;
+    case 'me.committed':
+      /* the turn has an id: the reserved bubble is theirs */
+      if (!meBubbles[op.itemId] && hearing) { meBubbles[op.itemId] = hearing; hearing = null; }
+      break;
     case 'me.interim': {
-      const el = meBubbles[op.itemId] || (meBubbles[op.itemId] = H.me(''));
+      const el = meBubble(op.itemId);
       el.classList.add('turnb--interim');
+      el.classList.remove('turnb--hearing');
       el.textContent = op.text;
       if (H.follow) H.follow();
       break;
     }
     case 'me.final': {
-      const el = meBubbles[op.itemId] || (meBubbles[op.itemId] = H.me(''));
-      el.classList.remove('turnb--interim');
+      const el = meBubble(op.itemId);
+      el.classList.remove('turnb--interim', 'turnb--hearing');
       el.textContent = op.text;
       if (!op.text) el.remove();
       else { turns++; lastActivity = Date.now(); H.settleChips(); }
@@ -506,6 +621,7 @@ function apply(op) {
       if (!el) { el = bubbles[op.itemId] = H.ai('', null, null, null); if (pendingChips && !pendingChips.bubble) pendingChips.bubble = el; }
       bubbleText(el, op.text);
       if (!rstate.speaking) setSub('speaking');
+      maybeOpenStage(op.text);                 /* asked aloud: the pictures rise with the words */
       if (stage && intro) {
         if (!intro.responseId && rstate.response) intro.responseId = rstate.response.id;
         followTranscript(op.text);
@@ -517,6 +633,7 @@ function apply(op) {
       bubbleText(el, op.text);
       if (!op.text) el.remove();
       else if (pendingChips && (pendingChips.bubble === el || !pendingChips.bubble)) hangChips(el);
+      else pillsUnderQuestion(el, op.text);
       break;
     }
     case 'ai.cutoff': {
@@ -560,6 +677,8 @@ async function runTool(op) {
       if (HA && HA.restart) HA.restart({ fromVoice: true });
       bubbles = {}; meBubbles = {};
       out = fn ? await fn(op.args) : {};
+      storyShown = false;
+      offerStarters();                         /* the questions come back under the new greeting */
     } else out = fn ? await fn(op.args || {}) : { error: 'unknown_tool', known: Object.keys(K.tools || {}) };
   } catch (e) { out = { error: 'tool_failed' }; }
   toolBusy--;
@@ -590,7 +709,9 @@ function onRestart() {
   if (stage) closeStage('restart');
   bubbles = {}; meBubbles = {};
   if (rstate.response || rstate.speaking) sendAll(VR.clientEvents.cancel());
-  sendAll([{ type: 'response.create', response: { instructions: c().restarted || 'The visitor started over. Greet them again in one short line and ask what they want to solve.' } }]);
+  storyShown = false;
+  sendAll([{ type: 'response.create', response: { instructions: c().restarted || 'The visitor started over. Greet them again in one short line — you are NewVoices; ask what you can help with, or to tap one of the questions below — then stop and wait.' } }]);
+  offerStarters();                             /* under the new greeting */
 }
 
 /* ── wiring ── */
@@ -618,7 +739,7 @@ startBtn.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 20 20" aria-hidden="
 paint();
 
 window.SAIVOICE = {
-  start, end, mute, sendText, onRestart, offerChips,
+  start, end, mute, sendText, onRestart, offerChips, explain,
   live: () => phase === 'live' || phase === 'reconnecting',
   phase: () => phase,
   showcase: () => (stage ? stage.state() : null),
