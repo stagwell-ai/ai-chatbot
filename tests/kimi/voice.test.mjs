@@ -35,9 +35,19 @@ test('the brief names every active product with its catalog line, and no URL, pr
   assert.ok(!/Unlock/.test(s), 'inactive products are not named');
 });
 
-test('the brief states the house rules: never invent, tools move the steps, email/phone read back, say what is shown', () => {
+test('the brief states the house rules: never invent, tools move the steps, typed answers for websites/emails/phones, say what is shown', () => {
   const s = buildInstructions(DATA);
-  ['NEVER INVENT', 'submit_answer', 'request_contact', 'start_over', 'repeat it back', 'on screen rather than reading it out', 'Speak the language the visitor speaks', 'transcribed'].forEach(k => assert.ok(s.includes(k), k));
+  ['NEVER INVENT', 'submit_answer', 'request_contact', 'start_over', 'TYPED ANSWERS', 'input:"typed"', 'on screen rather than reading it out', 'Speak the language the visitor speaks', 'transcribed'].forEach(k => assert.ok(s.includes(k), k));
+  assert.ok(!/repeat it back exactly as you understood/.test(s), 'no spelling by ear');
+  assert.ok(/do not offer to take it aloud/.test(s), 'typed, not offered aloud');
+});
+
+test('the brief opens as NewVoices, from the copy, once', () => {
+  const s = buildInstructions(DATA);
+  assert.ok(s.includes('You are NewVoices'), 'named NewVoices');
+  assert.ok(s.includes(DATA.kimi.copy.voice.introduction), 'the introduction is the copy\'s line');
+  assert.ok(/revolutionary AI voice agent/.test(s));
+  assert.ok(/Never repeat the introduction/.test(s));
 });
 
 test('resuming adds what is known and the current step, capped', () => {

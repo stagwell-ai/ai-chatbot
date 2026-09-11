@@ -95,6 +95,8 @@
     "voice": {
       "_note": "Chat with me (client, 2026-09-11; KIMI-VOICE-PLAN.md). Every visible string of the voice session, and the three lines the model is handed out-of-band (timeUp, restarted, back). The agent's own brief is api/_lib/voice/instructions.js.",
       "start": "Chat with me",
+      "introduction": "Hi — I'm NewVoices, a revolutionary AI voice agent that is changing how brands and companies interact with their customers.",
+      "typeIt": "Type it in the box below — spelling matters here",
       "connecting": "Connecting…",
       "consent": "Voice is transcribed on screen so you can read it and so the right team can follow up.",
       "listening": "Listening",

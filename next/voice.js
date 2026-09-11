@@ -72,9 +72,17 @@ function paint() {
   if (endBtn) endBtn.hidden = !live;
   if (phase === 'live') {
     if (muted) setStatus(muteReason === 'silence' ? (c.mutedSilence || 'Muted after a quiet spell — tap Unmute to carry on') : (c.muted || 'Muted'));
+    else if (sub === 'listening' && typedStep()) setStatus(c.typeIt || 'Type it in the box below', 'warn');
     else setStatus(sub === 'speaking' ? (c.speaking || 'Speaking') : sub === 'thinking' ? (c.thinking || 'Thinking') : (c.listening || 'Listening'));
   }
 }
+/* websites, emails and phone numbers are typed, never taken by ear (client,
+   2026-09-11): while the flow waits for one, the strip says so */
+function typedStep() {
+  const st = K.state();
+  return !!(st && ((st.question && st.question.field === 'website') || st.status === 'CAPTURE_EMAIL' || st.status === 'CAPTURE_PHONE'));
+}
+K.onChange(() => { if (phase === 'live') paint(); });
 function setSub(s) { sub = s; paint(); }
 
 /* ── mint ── */

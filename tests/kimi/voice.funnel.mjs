@@ -195,6 +195,8 @@ try {
     const r1 = await toolCall(page, 'submit_answer', { text: 'we need to know what competitors are doing this week' });
     ok(r1.status === 'DISCOVERY' && r1.question && r1.question.id === 'website', 'step 1 answered → the flow asks for the website (' + (r1.question && r1.question.id) + ')');
     ok(/website/i.test(r1.say) && r1.step === 'their website', 'the model is handed the question to say ("' + r1.say.slice(0, 50) + '…")');
+    ok(r1.input === 'typed', 'and told the website is TYPED, not taken by ear');
+    ok(/Type it in the box/.test((await strip(page)).status), 'the strip says so too: "' + (await strip(page)).status + '"');
     ok((await thread(page)).length === bubblesBefore, 'hero-agent drew NO question text — the agent is saying it');
     ok((await kstate(page)).primaryGoal !== undefined, 'the flow state moved');
     const r2 = await toolCall(page, 'submit_answer', { text: 'acmehotels.com' });
@@ -208,6 +210,7 @@ try {
     ok((await page.$$('.reco__card--best')).length === 1, 'the cards are drawn');
     ok(!(await page.$$eval('#agentThread .turnb--ai .turnb__text', els => els.some(e => /work email/i.test(e.textContent)))), 'but the email question is not written — it is spoken');
     ok(await page.$eval('#agentInput', el => el.getAttribute('inputmode') === 'email' && !el.disabled), 'the keyboard is set to email, the composer open');
+    ok(r3.input === 'typed' && (await page.$eval('#agentInput', el => document.activeElement === el)), 'the email is a typed step and the caret is in the box');
     const r4 = await toolCall(page, 'submit_answer', { text: 'not an email' });
     ok(r4.status === 'CAPTURE_EMAIL' && r4.holding === true && /does not look like/i.test(r4.say), 'a bad email: the model is told to ask again');
     const r5 = await toolCall(page, 'submit_answer', { text: 'cmo@acmehotels.com' });

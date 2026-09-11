@@ -997,9 +997,12 @@ function toolView() {
   const stepOf = { DISCOVERY: null, QUALIFICATION: null, CAPTURE_EMAIL: 'their work email', CAPTURE_PHONE: 'their phone number', BOOK: 'booking a call', RECOMMENDATION: 'the recommendation', CONTACT_CAPTURE: 'the contact form', COMPLETE: 'done' };
   const q = s.question;
   const step = q ? ({ website: 'their website', companySize: 'how large their organisation is', role: 'their role', goal: 'what they want to solve' }[q.field] || 'a question about their need') : (stepOf[s.status] || null);
+  /* websites, emails and phone numbers are typed, never taken by ear (client, 2026-09-11) */
+  const typed = (q && q.field === 'website') || s.status === 'CAPTURE_EMAIL' || s.status === 'CAPTURE_PHONE';
   return {
     status: s.status,
     step,
+    input: typed ? 'typed' : 'spoken',
     say: s.message || '',
     question: q ? { id: q.id, prompt: s.prompt || s.message, options: list(s.suggestions).map(x => x.label) } : null,
     facts: findingsFacts(),

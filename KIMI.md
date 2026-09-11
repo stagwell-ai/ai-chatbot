@@ -296,6 +296,15 @@ reading it out. `next/voice-reducer.js` turns server events into thread ops (pur
 `next/voice.js` runs the session; `next/voice-wave.js` draws the strip. GA and beta event names
 are both understood.
 
+**Who it is, and what is typed.** The agent introduces itself once as **NewVoices** — "a
+revolutionary AI voice agent that is changing how brands and companies interact with their
+customers" (`copy.voice.introduction`, client 2026-09-11) — and goes straight into the questions.
+**Websites, email addresses and phone numbers are typed, never taken by ear:** at those steps the
+brief tells the agent to ask for the box, the tool result says `input:"typed"`, the strip says
+"Type it in the box below — spelling matters here", the keyboard is set for it and the caret is
+in the field. Something said aloud at such a step is met with "type it so I have the spelling
+right", not a guess.
+
 **The strip.** Ink wave = the visitor (mic level), teal wave = the agent (remote level), dots =
 thinking, flat dim = muted, dashed = reconnecting; Mute and End beside it; colours only under
 reduced motion; 30 fps on phones. "Chat with me" becomes the live indicator.
