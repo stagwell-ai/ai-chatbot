@@ -486,7 +486,7 @@ async function start(opts) {
   st.status = 'DISCOVERY';
   const chip = o.chipLabel == null ? null : String(o.chipLabel);
   const text = o.initialText == null ? null : String(o.initialText).trim();
-  track('kimi_started', { input_type: chip ? 'pill' : 'free_text', landing_page: location.pathname, utm_source: (S.session.attribution || {}).utm_source || null, utm_campaign: (S.session.attribution || {}).utm_campaign || null });
+  track('kimi_started', { input_type: o.via || (chip ? 'pill' : 'free_text'), landing_page: location.pathname, utm_source: (S.session.attribution || {}).utm_source || null, utm_campaign: (S.session.attribution || {}).utm_campaign || null });
 
   let goal = o.goal || null;
   if (!goal && o.domain && R()) goal = R().goalForDomain(o.domain, data());
@@ -971,8 +971,70 @@ function state() {
 function notify() { const s = state(); listeners.slice().forEach(cb => { try { cb(s); } catch (e) {} }); }
 function onChange(cb) { if (typeof cb !== 'function') return () => {}; listeners.push(cb); return () => { listeners = listeners.filter(f => f !== cb); }; }
 
+/* ── the voice agent's hands (KIMI-VOICE-PLAN.md §3) ──
+   The Realtime model cannot move a step, recommend a product or write a lead
+   itself: it calls one of these, the flow does exactly what it does for a
+   typed turn, and the view below is what the model is allowed to say next. */
+function findingsFacts() {
+  const f = st.findings; if (!f) return null;
+  const R_ = (copy().research || {});
+  const out = {};
+  if (f.name) out.company = f.name;
+  if (f.domain) out.domain = f.domain;
+  if (f.industry) out.industry = f.industry;
+  if (f.companySize) out.size = (R_.sizeBands || {})[f.companySize] || f.companySize;
+  if (list(f.competitors).length) out.comparedWith = f.competitors.slice();
+  return Object.keys(out).length ? out : null;
+}
+function toolView() {
+  const s = state();
+  const shown = [];
+  if (s.findings && s.researched) shown.push('a fact list about their company');
+  if (s.uiAction === 'CAPTURE_CONTACT') shown.push('a short contact form (name, email, phone) — wait for them to fill it in');
+  if (s.cards && s.cards.length && (s.uiAction === 'CAPTURE_EMAIL' || s.uiAction === 'SHOW_RECOMMENDATIONS' || s.uiAction === 'CAPTURE_PHONE' || s.uiAction === 'BOOK' || s.uiAction === 'COMPLETE')) shown.push('the recommendation card(s)');
+  if (s.uiAction === 'BOOK') shown.push('a "Book a call" button');
+  const stepOf = { DISCOVERY: null, QUALIFICATION: null, CAPTURE_EMAIL: 'their work email', CAPTURE_PHONE: 'their phone number', BOOK: 'booking a call', RECOMMENDATION: 'the recommendation', CONTACT_CAPTURE: 'the contact form', COMPLETE: 'done' };
+  const q = s.question;
+  const step = q ? ({ website: 'their website', companySize: 'how large their organisation is', role: 'their role', goal: 'what they want to solve' }[q.field] || 'a question about their need') : (stepOf[s.status] || null);
+  return {
+    status: s.status,
+    step,
+    say: s.message || '',
+    question: q ? { id: q.id, prompt: s.prompt || s.message, options: list(s.suggestions).map(x => x.label) } : null,
+    facts: findingsFacts(),
+    recommendation: s.cards && s.cards.length ? s.cards.map(c => ({ name: c.productName, badge: c.badge, description: c.description, why: c.whyThisFits })) : null,
+    lead: s.lead ? { emailGiven: !!s.lead.email, phoneGiven: !!s.lead.phone } : null,
+    holding: !!(s.holds && s.holds > 0),
+    shown,
+    done: s.status === 'BOOK' || s.status === 'COMPLETE'
+  };
+}
+function requestContact(kind) {
+  const k = String(kind || '').toLowerCase();
+  const ok = ['call', 'demo', 'trial', 'expert', 'pricing'].indexOf(k) !== -1;
+  if (!ok) return state();
+  if (st.status === 'IDLE') { st.status = 'DISCOVERY'; track('kimi_started', { input_type: 'voice', landing_page: location.pathname }); }
+  if (st.status === 'CONTACT_CAPTURE' || st.status === 'RECOMMENDATION' || st.status === 'BOOK' || st.status === 'COMPLETE') return state();
+  recompute();
+  fastTrack(k);
+  notify();
+  return state();
+}
+const tools = {
+  async submit_answer(args) {
+    const text = String((args || {}).text == null ? '' : args.text).trim();
+    if (!text) return toolView();
+    if (st.status === 'IDLE') await start({ initialText: text, via: 'voice' });
+    else await answer(text);
+    return toolView();
+  },
+  request_contact(args) { requestContact((args || {}).kind); return toolView(); },
+  start_over() { epoch++; st = blank(); deterministicNoted = false; notify(); return toolView(); },
+  view: toolView
+};
+
 window.SAIKIMI = {
-  start, answer, contact, clicked, state, onChange,
+  start, answer, contact, clicked, state, onChange, requestContact, tools,
   validate: lead => { const v = validate(lead || {}); return v.error ? { ok: false, error: v.error, message: v.message } : { ok: true, lead: v.lead }; },
   recommendation: () => st.reco,
   result: () => ({ state: state(), reco: st.reco, discovery: discoveryPayload() }),
