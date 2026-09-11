@@ -93,7 +93,7 @@
     ],
     "composerClosedForm": "Fill in the form above to see your recommendation.",
     "voice": {
-      "_note": "Chat with me (client, 2026-09-11; KIMI-VOICE-PLAN.md). Every visible string of the voice session, and the three lines the model is handed out-of-band (timeUp, restarted, back). The agent's own brief is api/_lib/voice/instructions.js.",
+      "_note": "Chat with me (client, 2026-09-11; KIMI-VOICE-PLAN.md). Every visible string of the voice session, and the two lines the model is handed out-of-band (timeUp, back). Start over replaces the session, so there is no 'restarted' line. The agent's own brief is api/_lib/voice/instructions.js.",
       "start": "Chat with me",
       "live": "Chat is live",
       "introduction": "Welcome to Stagwell AI. I'm NewVoices — a revolutionary AI voice agent that is changing how brands and companies interact with their customers.",
@@ -115,14 +115,15 @@
         "flagship": "You're talking to one of the flagship AI products from Stagwell AI — and I'm in good company.",
         "openOn": "flagship",
         "products": [
-          { "id": "newintel", "line": "NewIntel — what your competitors did this week, not last quarter.", "img": "/assets/img/intro/4.jpg" },
-          { "id": "questbrand", "line": "QuestBrand — always-on brand tracking against the competitors you name.", "img": "/assets/img/questbrand.jpg" },
-          { "id": "targeting_machine", "line": "The Targeting Machine — your first-party data, turned into audiences you can buy.", "img": "/assets/img/targeting.jpg" },
-          { "id": "imai", "line": "IMAI — influencer programs end to end, from discovery to ROI.", "img": "/assets/img/imai.jpg" },
-          { "id": "geopulse", "line": "GEOPulse — how ChatGPT, Gemini and Perplexity describe your brand.", "img": "/assets/img/geopulse.jpg" }
+          { "id": "newintel", "icon": "radar", "line": "NewIntel — what your competitors did this week, not last quarter.", "img": "/assets/img/intro/4.jpg" },
+          { "id": "questbrand", "icon": "shield", "line": "QuestBrand — always-on brand tracking against the competitors you name.", "img": "/assets/img/questbrand.jpg" },
+          { "id": "targeting_machine", "icon": "crosshair", "line": "The Targeting Machine — your first-party data, turned into audiences you can buy.", "img": "/assets/img/targeting.jpg" },
+          { "id": "imai", "icon": "megaphone", "line": "IMAI — influencer programs end to end, from discovery to ROI.", "img": "/assets/img/imai.jpg" },
+          { "id": "geopulse", "icon": "pulse", "line": "GEOPulse — how ChatGPT, Gemini and Perplexity describe your brand.", "img": "/assets/img/geopulse.jpg" }
         ],
+        "teamLabel": "The Stagwell AI team",
         "pivot": "Here's how this works: I want to figure out your biggest problems and how Stagwell AI can help. So let's get to know each other a little better — tell me what you're working on. Ask me about Stagwell AI's products, your market, your competitors. Treat me like a marketing genius and I'll point you in the right direction.",
-        "self": { "name": "NewVoices", "sub": "Stagwell AI's voice agent", "img": "/assets/img/products/card-call.jpg", "logo": "/assets/img/companies/newvoices/logo-white.png" },
+        "self": { "name": "NewVoices", "sub": "Stagwell AI's voice agent", "icon": "waveform", "img": "/assets/img/products/card-call.jpg", "logo": "/assets/img/companies/newvoices/logo-white.png" },
         "burst": ["/assets/img/intro/1.jpg", "/assets/img/intro/2.jpg", "/assets/img/intro/3.jpg", "/assets/img/intro/5.jpg", "/assets/img/intro/6.jpg", "/assets/img/intro/7.jpg"],
         "closeOn": "get to know each other"
       },
@@ -150,7 +151,6 @@
         "dropped": "Voice dropped — carry on typing, or tap Chat with me to reconnect."
       },
       "timeUp": "Time is nearly up: say in one line that the rest is quicker to type, then stop.",
-      "restarted": "The visitor started over. Greet them again in one short line — you are NewVoices; ask what you can help with, or to tap one of the questions below — then stop and wait.",
       "back": "You are reconnected. Say one short line that you are back, then continue with the current step."
     },
     "pointers": {

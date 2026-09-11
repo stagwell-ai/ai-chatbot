@@ -941,63 +941,106 @@ body.chat-open{overflow:hidden}
   transform:translateX(125%) rotate(4deg);opacity:0;transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .5s ease,inset .7s var(--ease,ease),width .7s var(--ease,ease),height .7s var(--ease,ease)}
 .vstage.is-hero .vstage__hero{transform:none;opacity:1}
 .vstage__heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-/* NewVoices' own mark, top-left of its card; the product marks on their tiles,
-   each on the navy plate its lockup was drawn on */
+/* NewVoices' own mark, top-left of its card */
 .vstage__herologo{position:absolute;top:14px;left:16px;height:26px;width:auto;max-width:46%;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));transition:opacity .4s ease}
-.vstage.is-deck .vstage__herologo{opacity:0}
-.vstage__tilelogo{position:absolute;top:12px;left:12px;height:40px;width:128px;border-radius:8px;background:#0A1743;box-shadow:0 6px 18px rgba(0,0,0,.35);overflow:hidden;
-  display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(-6px);transition:opacity .4s ease .35s,transform .5s cubic-bezier(.2,.7,.2,1) .35s}
-.vstage__tilelogo img{position:static;width:100%;height:100%;object-fit:contain;padding:0}
-.vstage__tile.is-in .vstage__tilelogo{opacity:1;transform:none}
-.vstage__tile.is-past .vstage__tilelogo{height:22px;width:70px;top:6px;left:6px;border-radius:5px}
+.vstage.is-deck .vstage__herologo,.vstage.is-deck .vstage__emblem--hero{opacity:0}
 .vstage__herotext{position:absolute;left:0;right:0;bottom:0;padding:18px 22px 20px;background:linear-gradient(to top,rgba(11,18,32,.82),rgba(11,18,32,0));color:#FFFFFF;display:flex;flex-direction:column;gap:2px}
 .vstage__heroname{font-family:var(--display,var(--ui));font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1}
 .vstage__herosub{font-family:var(--ui);font-size:14px;opacity:.85}
-/* once the products start, NewVoices steps to the top-left as a small card */
-.vstage.is-deck .vstage__hero{inset:auto auto 6% 4%;width:22%;height:30%;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+/* once the team starts, NewVoices steps to the bottom-left as a small card */
+.vstage.is-deck .vstage__hero{inset:auto auto 16% 4%;width:22%;height:26%;box-shadow:0 12px 30px rgba(0,0,0,.35)}
 .vstage.is-deck .vstage__herotext{padding:8px 10px 10px}
 .vstage.is-deck .vstage__heroname{font-size:15px}
 .vstage.is-deck .vstage__herosub{display:none}
+
+/* ── THE EMBLEMS: an icon in a glowing ring — the member's power ── */
+.vstage__emblem{position:absolute;display:grid;place-items:center;border-radius:50%;color:#FFFFFF;
+  background:radial-gradient(circle at 32% 30%,#3FD9F2 0%,#009CBD 55%,#064B60 100%);
+  box-shadow:0 0 0 5px rgba(255,255,255,.14),0 18px 44px rgba(0,0,0,.5),0 0 54px rgba(0,156,189,.55)}
+.vstage__emblem svg{width:54%;height:54%}
+.vstage__emblem--hero{top:14px;right:16px;width:clamp(44px,9%,64px);aspect-ratio:1;transition:opacity .4s ease}
+/* the slam: it lands large, settles, and a ring ripples out */
+.vstage__tile>.vstage__emblem{left:50%;top:36%;width:clamp(78px,20%,136px);aspect-ratio:1;opacity:0;transform:translate(-50%,-50%) scale(2.1);
+  transition:transform .6s cubic-bezier(.2,1.5,.35,1) .22s,opacity .3s ease .22s}
+.vstage__tile.is-in>.vstage__emblem{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.vstage__tile>.vstage__emblem::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:3px solid rgba(255,255,255,.75);opacity:0}
+.vstage__tile.is-in>.vstage__emblem::after{animation:slamRing .9s ease-out .55s}
+@keyframes slamRing{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+/* a flash of light as the member lands */
+.vstage__tile::after{content:"";position:absolute;inset:0;background:#FFFFFF;opacity:0;pointer-events:none}
+.vstage__tile.is-in::after{animation:slamFlash .7s ease-out .2s}
+@keyframes slamFlash{0%{opacity:0}18%{opacity:.55}100%{opacity:0}}
+
+/* ── THE CARDS ── */
 .vstage__deck{position:absolute;inset:0;pointer-events:none}
 .vstage__tile{position:absolute;overflow:hidden;border-radius:14px;box-shadow:0 24px 50px rgba(0,0,0,.4);opacity:0;
-  transition:transform .75s cubic-bezier(.2,.7,.2,1),opacity .45s ease,top .7s var(--ease,ease),left .7s var(--ease,ease),width .7s var(--ease,ease),height .7s var(--ease,ease)}
-.vstage__tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.vstage__tile.is-current{top:6%;left:30%;width:64%;height:88%}
+  transition:transform .75s cubic-bezier(.2,.7,.2,1),opacity .45s ease}
+.vstage__tileimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
+.vstage__tile.is-current{top:6%;left:30%;width:66%;height:76%}
 .vstage__tile.from-left{transform:translate(-60%,40%) rotate(-8deg) scale(.7)}
 .vstage__tile.from-right{transform:translate(60%,40%) rotate(8deg) scale(.7)}
 .vstage__tile.is-in{transform:none;opacity:1}
-.vstage__tiletext{position:absolute;left:0;right:0;bottom:0;padding:16px 18px 18px;background:linear-gradient(to top,rgba(11,18,32,.86),rgba(11,18,32,0));color:#FFFFFF;display:flex;flex-direction:column;gap:4px}
-.vstage__tilename{font-family:var(--display,var(--ui));font-size:clamp(20px,2.6vw,30px);font-weight:700;letter-spacing:-.02em;line-height:1.05}
-.vstage__tileline{font-family:var(--ui);font-size:14.5px;line-height:1.35;opacity:.92}
-/* the ones already named shrink into a column on the left, newest at the top */
-.vstage__tile.is-past{width:22%;height:22%;left:4%;opacity:.92}
-.vstage__tile.is-past .vstage__tileline{display:none}
-.vstage__tile.is-past .vstage__tilename{font-size:13px}
-.vstage__tile.is-past .vstage__tiletext{padding:8px 10px}
-.vstage__tile.is-past:nth-last-of-type(2){top:6%}
-.vstage__tile.is-past:nth-last-of-type(3){top:31%}
-.vstage__tile.is-past:nth-last-of-type(4){top:6%;left:auto;right:4%;opacity:0}
-.vstage__tile.is-past:nth-last-of-type(n+5){opacity:0}
+.vstage__tiletext{position:absolute;left:0;right:0;bottom:0;padding:44px 18px 16px;background:linear-gradient(to top,rgba(11,18,32,.92) 40%,rgba(11,18,32,0));color:#FFFFFF;display:flex;flex-direction:column;gap:5px}
+/* its mark — the lockup on the navy it was drawn on — then the name, then the power */
+.vstage__tilelogo{display:block;height:34px;width:112px;border-radius:7px;background:#0A1743;box-shadow:0 6px 18px rgba(0,0,0,.35);overflow:hidden;margin-bottom:2px;
+  opacity:0;transform:translateY(8px);transition:opacity .4s ease .5s,transform .5s cubic-bezier(.2,.7,.2,1) .5s}
+.vstage__tilelogo img{display:block;width:100%;height:100%;object-fit:contain}
+.vstage__tile.is-in .vstage__tilelogo{opacity:1;transform:none}
+.vstage__tilename{font-family:var(--display,var(--ui));font-size:clamp(22px,2.8vw,32px);font-weight:800;letter-spacing:-.02em;line-height:1.05;
+  opacity:0;transform:translateY(8px);transition:opacity .4s ease .4s,transform .5s cubic-bezier(.2,.7,.2,1) .4s}
+.vstage__tileline{font-family:var(--ui);font-size:14.5px;line-height:1.35;opacity:0;transform:translateY(8px);transition:opacity .4s ease .6s,transform .5s cubic-bezier(.2,.7,.2,1) .6s}
+.vstage__tile.is-in .vstage__tilename{opacity:1;transform:none}
+.vstage__tile.is-in .vstage__tileline{opacity:.94;transform:none}
+/* the ones already named leave the card; they live on the roster now */
+.vstage__tile.is-past{opacity:0;transform:translateY(-30px) scale(.94);transition:opacity .4s ease,transform .5s ease}
+
+/* ── THE ROSTER: every member named so far, as badges along the foot ── */
+.vstage__roster{position:absolute;left:4%;right:4%;bottom:10px;display:flex;align-items:flex-end;gap:14px;z-index:3;pointer-events:none;
+  transition:bottom .7s var(--ease,ease),left .7s var(--ease,ease),right .7s var(--ease,ease)}
+.vstage.is-deck .vstage__roster{left:30%}
+.vstage__badge{display:flex;flex-direction:column;align-items:center;gap:5px;width:64px;opacity:0;transform:translateY(14px) scale(.8);
+  transition:opacity .4s ease .35s,transform .55s cubic-bezier(.2,1.2,.3,1) .35s}
+.vstage__badge.is-in{opacity:1;transform:none}
+.vstage__badge .vstage__emblem{position:static;width:36px;height:36px;box-shadow:0 0 0 3px rgba(255,255,255,.14),0 8px 20px rgba(0,0,0,.45);transition:width .5s var(--ease,ease),height .5s var(--ease,ease)}
+.vstage__badgename{font-family:var(--ui);font-size:11.5px;font-weight:600;color:rgba(255,255,255,.9);text-align:center;line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.6);max-width:84px;text-wrap:balance}
+.vstage__badge{width:84px;align-self:flex-start}
+.vstage__teamlabel{position:absolute;left:0;right:0;bottom:calc(100% + 14px);text-align:center;font-family:var(--display,var(--ui));font-size:clamp(16px,2vw,22px);font-weight:700;color:#FFFFFF;letter-spacing:-.01em;opacity:0;transition:opacity .5s ease .3s}
+
+/* ── ASSEMBLE: the pivot — the whole team, centre stage ── */
+.vstage.is-team .vstage__tile,.vstage.is-team .vstage__hero{opacity:0;transform:translateY(-30px) scale(.94);transition:opacity .45s ease,transform .5s ease}
+.vstage.is-team .vstage__roster{left:6%;right:6%;bottom:22%;justify-content:center;gap:clamp(14px,3vw,34px)}
+.vstage.is-team .vstage__badge{width:auto;transform:none}
+.vstage.is-team .vstage__badge .vstage__emblem{width:clamp(48px,7vw,74px);height:clamp(48px,7vw,74px);box-shadow:0 0 0 5px rgba(255,255,255,.14),0 16px 40px rgba(0,0,0,.5),0 0 44px rgba(0,156,189,.55)}
+.vstage.is-team .vstage__badgename{font-size:13px;max-width:none}
+.vstage.is-team .vstage__teamlabel{opacity:1}
+.vstage.is-team .vstage__caption{opacity:.9}
+
 /* the caption: the agent's words as it says them */
 .vstage__caption{position:absolute;left:4%;right:4%;bottom:10px;margin:0;font-family:var(--ui);font-size:13.5px;line-height:1.4;color:rgba(255,255,255,.92);
-  text-shadow:0 1px 8px rgba(0,0,0,.6);pointer-events:none;z-index:2}
-.vstage.is-deck .vstage__caption{left:30%}
-.vstage.is-deck .vstage__tile.is-current .vstage__tiletext{padding-bottom:52px}   /* room for the caption under the tile's own line */
+  text-shadow:0 1px 8px rgba(0,0,0,.6);pointer-events:none;z-index:2;transition:opacity .3s ease}
+.vstage.is-deck .vstage__caption{left:30%;bottom:auto;top:calc(6% + 76% + 6px);font-size:12.5px;opacity:0}
+.vstage.is-team .vstage__caption{top:auto;bottom:8%;left:6%;right:6%;text-align:center}
 /* it all lifts away */
-.vstage.is-closing .vstage__tile,.vstage.is-closing .vstage__hero{transform:translateY(-40px) scale(.96);opacity:0;transition-duration:.5s}
-/* reduced motion: fades only, no flight, no burst */
-.vstage--still,.vstage--still *{transition-duration:.25s!important}
-.vstage--still .vstage__hero,.vstage--still .vstage__tile{transform:none!important}
+.vstage.is-closing .vstage__tile,.vstage.is-closing .vstage__hero,.vstage.is-closing .vstage__roster{transform:translateY(-40px) scale(.96);opacity:0;transition-duration:.5s}
+/* reduced motion: fades only, no flight, no burst, no slam */
+.vstage--still,.vstage--still *{transition-duration:.25s!important;animation:none!important}
+.vstage--still .vstage__hero,.vstage--still .vstage__tile,.vstage--still .vstage__badge{transform:none!important}
+.vstage--still .vstage__tile>.vstage__emblem{transform:translate(-50%,-50%)!important}
 .vstage--still .vstage__burst{display:none}
 @media (max-width:640px){
   .vstage{height:min(46svh,380px)}
-  .vstage__tile.is-current{top:5%;left:5%;width:90%;height:66%}
-  .vstage.is-deck .vstage__hero{inset:auto auto 5% 5%;width:28%;height:22%}
-  .vstage__tile.is-past{width:28%;height:22%;left:auto;top:auto!important;bottom:5%;opacity:.92}
-  .vstage__tile.is-past:nth-last-of-type(2){right:5%}
-  .vstage__tile.is-past:nth-last-of-type(3){right:36%}
-  .vstage__tile.is-past:nth-last-of-type(n+4){opacity:0}
-  .vstage.is-deck .vstage__caption{left:5%;bottom:auto;top:73%;font-size:12.5px}
+  .vstage__tile.is-current{top:5%;left:5%;width:90%;height:64%}
+  .vstage__tile>.vstage__emblem{width:clamp(60px,22%,90px);top:34%}
+  .vstage__tiletext{padding:26px 14px 12px}
+  .vstage__tilelogo{height:26px;width:86px}
+  .vstage.is-deck .vstage__hero{display:none}
+  .vstage.is-deck .vstage__roster{left:5%;right:5%;bottom:8px;gap:8px}
+  .vstage__badge{width:52px}
+  .vstage__badge .vstage__emblem{width:30px;height:30px}
+  .vstage__badgename{font-size:10.5px;max-width:60px}
+  .vstage.is-deck .vstage__caption{left:5%;right:5%;top:calc(5% + 64% + 4px);font-size:12px}
+  .vstage.is-team .vstage__roster{bottom:24%;flex-wrap:wrap;gap:10px 14px}
+  .vstage.is-team .vstage__badge .vstage__emblem{width:48px;height:48px}
   .vstage__caption{font-size:12.5px}
 }
 

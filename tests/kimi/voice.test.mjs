@@ -83,6 +83,12 @@ test('the story: the interruption line → flagship → each showcased product i
     if (P.lockup) assert.ok(fs.existsSync(path.join(ROOT, P.lockup.replace(/^\//, ''))), P.lockup + ' exists');
   });
   assert.ok(sc.products.filter(p => (R.productById(p.id, DATA) || {}).lockup).length >= 3, 'most showcased products carry a lockup for their tile');
+  /* the team: every member has an emblem the stage can draw, and no two share one */
+  const STAGE = require(path.join(ROOT, 'next', 'voice-stage.js'));
+  sc.products.forEach(p => assert.ok(STAGE.icons.indexOf(p.icon) !== -1, p.id + ' has a drawable emblem: ' + p.icon));
+  assert.equal(new Set(sc.products.map(p => p.icon)).size, sc.products.length, 'each member its own emblem');
+  assert.ok(STAGE.icons.indexOf(sc.self.icon) !== -1, 'NewVoices has one too');
+  assert.ok(sc.teamLabel && sc.teamLabel.length <= 40, 'a short label for the assembled team');
   assert.ok(s.indexOf(sc.pivot) > at, 'the pivot last');
   assert.ok(/marketing genius/.test(sc.pivot) && sc.pivot.toLowerCase().includes(sc.closeOn.toLowerCase()), 'the pivot carries the words that close the stage');
   const words = s.split(/\s+/).length;

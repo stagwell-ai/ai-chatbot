@@ -313,11 +313,22 @@ buyer might ask (AI search, influencers, competitors, brand impact). A question 
 visitor's own words to the agent — step 1. Beat two, only when asked for (the hero pill, or the
 visitor asking aloud — the stage rises when the transcript reaches `showcase.openOn`): the story,
 told slowly. The agent first says they may interrupt at any time (`showcase.interrupt`), then
-flagship → one line per product → the pivot; `voice-stage.js` animates to the transcript — burst,
-NewVoices' card (with its mark), a tile per product as it is named, **each with the product's own
-lockup** on the navy plate, then everything lifts away. In the thread, product names carry their
-mark too (`home.js rich()`, `.t-logo`). Told once per session; a barge, a typed line or Start over
-closes it. Never plays unasked, and never on a conversation begun in text.
+flagship → one line per product → the pivot; `voice-stage.js` animates to the transcript like a
+team of superheroes being introduced (client, 2026-09-11): burst, NewVoices' card (its mark and
+emblem), then as each product is named its card slams in **emblem first** — an SVG icon in a
+glowing ring, one per product (`showcase.products[].icon`, drawn from a fixed set in the stage,
+never markup from the copy) — then its lockup on the navy plate, its name and its power line; the
+ones already named line up as badges on the roster at the foot; at the pivot the whole team
+assembles centre stage under `showcase.teamLabel` (NewVoices joins the line-up), then everything
+lifts away. In the thread, product names carry their mark too (`home.js rich()`, `.t-logo`). Told
+once per session; a barge or a typed line closes it. Never plays unasked, and never on a
+conversation begun in text.
+
+**Start over while the voice is open starts the voice agent over** (client, 2026-09-11): the flow
+and thread clear as always, and the session is replaced — the old connection closed, a fresh
+secret minted, the greeting and the pills again — from the button or from the model's own
+`start_over` tool (no tool result goes to the session that is gone). Tracked as
+`voice_session_ended {reason:restart, via:button|tool}` then `voice_session_started`.
 
 **Pills under every question (client, 2026-09-11).** The flow's options hang under the spoken
 question as it arrives; when the agent asks step 1 again in its own words (after an aside, a
@@ -352,8 +363,8 @@ conversation and the current step, one line "I'm back"; after that, "Voice dropp
 carries on. Soft cap (10 min): the agent is told to wrap up; hard cap (15): the session ends.
 Silence (90 s): the mic mutes, a tap on the strip resumes. Tab hidden: muted; visible: back. Safari
 refusing playback: "Tap to hear". Barge-in by voice or by typing: the agent's bubble ends with "—"
-and its audio is cancelled. Start over: the thread and flow clear, the voice stays open and the
-agent greets again (from the button or from the model's own tool). Text first, voice later: the
+and its audio is cancelled. Start over: the thread and flow clear and the voice agent starts over
+— a fresh session, the greeting and the pills (from the button or from the model's own tool). Text first, voice later: the
 mint carries a summary so nothing is re-asked. The fast track by voice: the form appears with no
 written intro, the agent says it. Every link still opens a new tab, so the session survives a
 product page.

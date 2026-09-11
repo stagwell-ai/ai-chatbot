@@ -323,28 +323,38 @@ try {
     await ctx.close();
   }
 
-  console.log('\n▶ Start over during a voice session: the thread clears, the flow resets, the agent is told');
+  console.log('\n▶ Start over during a voice session STARTS THE VOICE AGENT OVER: the thread clears, the flow resets, a fresh session greets with the pills');
   {
-    const { ctx, page } = await open();
+    const { ctx, page, state } = await open();
     await startVoice(page);
     await agentSays(page, 'What are you trying to solve?');
     await toolCall(page, 'submit_answer', { text: 'we need to track competitors' });
     ok((await kstate(page)).status === 'DISCOVERY', 'a conversation is under way');
+    const V = await page.evaluate(() => window.SAI.data.kimi.copy.voice);
     await page.click('#agentRestart');
-    await page.waitForTimeout(150);
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'live' && window.__voiceFake.connects === 2, null, { timeout: 8000 });
+    await page.waitForTimeout(100);
     ok((await thread(page)).length === 0, 'the thread is empty');
     ok((await kstate(page)).status === 'IDLE', 'the flow is blank');
-    ok((await vstate(page)).phase === 'live', 'the voice stays open');
-    const last = await page.evaluate(() => window.__voiceFake.last('response.create'));
-    ok(last && last.response && /started over/i.test(last.response.instructions), 'the agent is told to greet again');
-    /* and the model's own start_over tool does the same, without a second prompt */
-    await agentSays(page, 'Sure — what do you want to solve?');
-    ok(!!(await page.$('#agentThread .turnb--ai:last-child .turnb__chips--starters .tag--hero')), 'the starter pills come back under the new greeting');
-    const n = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
-    await toolCall(page, 'start_over', {});
+    ok(state.mints.length === 2 && !state.mints[1].resume && state.mints[1].showcase !== false, 'a fresh secret, no resume: the greeting script again');
+    ok(await page.evaluate(() => window.__voiceFake.connects === 2 && window.__voiceFake.closed === 1), 'the old connection closed, a new one opened');
+    ok((await tracked(page, 'voice_session_ended')).some(e => e[1].reason === 'restart' && e[1].via === 'button'), 'voice_session_ended {reason:restart, via:button}');
+    ok((await tracked(page, 'voice_session_started')).length === 2, 'voice_session_started again');
+    ok(!(await page.evaluate(() => window.__voiceFake.sent.some(e => e.type === 'response.create' && e.response && e.response.instructions))), 'no "greet again" prompt to an old session — the new one simply opens');
+    ok(await page.$eval('#voiceStart', b => /Chat is live/.test(b.textContent)) && !(await strip(page)).hidden, 'the strip and the live button carry on');
+    await agentSays(page, V.introduction + ' ' + V.invite, 'a_greet2');
+    ok(!!(await page.$('#agentThread .turnb--ai:last-child .turnb__chips--starters .tag--hero')), 'the greeting comes with the starter pills, as on a first start');
+    /* and the model's own start_over tool (the visitor asked aloud) does the same */
+    await emit(page, { type: 'response.created', response: { id: 'r_so' } });
+    await emit(page, { type: 'response.function_call_arguments.done', call_id: 'c_so', name: 'start_over', arguments: '{}' });
+    await emit(page, { type: 'response.done', response: { id: 'r_so', status: 'completed' } });
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'live' && window.__voiceFake.connects === 3, null, { timeout: 8000 });
+    await page.waitForTimeout(100);
     ok((await thread(page)).length === 0 && (await kstate(page)).status === 'IDLE', 'start_over from the model clears too');
-    const n2 = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
-    ok(n2 === n + 1, 'one response.create for the tool result, no extra prompt (' + n + ' → ' + n2 + ')');
+    ok(state.mints.length === 3 && !state.mints[2].resume, 'and replaces the session the same way');
+    ok(!(await page.evaluate(() => window.__voiceFake.sent.some(e => e.type === 'conversation.item.create' && e.item && e.item.call_id === 'c_so'))), 'no tool result is sent to the session that is gone');
+    ok((await tracked(page, 'voice_session_ended')).some(e => e[1].reason === 'restart' && e[1].via === 'tool'), 'voice_session_ended {reason:restart, via:tool}');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
     await ctx.close();
   }
 
@@ -612,13 +622,20 @@ try {
     }
     ok(await page.$eval('.vstage__tile.is-current', (e, id) => e.dataset.product === id, sc.products[sc.products.length - 1].id), 'the one being described is the large one');
     ok((await page.$$('.vstage__tile.is-past')).length === sc.products.length - 1, 'the earlier ones have stepped aside');
+    /* the team: each card lands emblem-first, and the roster at the foot holds every member named so far */
+    ok(await page.$eval('.vstage__tile.is-current > .vstage__emblem svg', e => !!e), 'the member\'s emblem — its icon in a glowing ring — is on the card');
+    const badges = await page.$$eval('.vstage__roster .vstage__badge', els => els.map(e => ({ id: e.dataset.product, name: e.querySelector('.vstage__badgename').textContent, icon: !!e.querySelector('.vstage__emblem svg'), on: e.classList.contains('is-in') })));
+    ok(badges.length === sc.products.length && badges.every((b, i) => b.id === sc.products[i].id && b.icon && b.on), 'the roster: ' + badges.map(b => b.name).join(' · '));
+    ok(await page.evaluate(() => { const K = window.SAIVOICESTAGE.icons; return window.SAI.data.kimi.copy.voice.showcase.products.every(p => K.indexOf(p.icon) !== -1); }), 'every member has an emblem the stage can draw');
     ok(await page.$eval('.vstage.is-deck .vstage__hero', e => e.getBoundingClientRect().width < 400), 'NewVoices has stepped into the corner');
     await S.speak(sc.pivot);
     await emit(page, { type: 'response.output_audio_transcript.done', item_id: 'a_story', transcript: S.said() });
     await emit(page, { type: 'output_audio_buffer.stopped' });
     await emit(page, { type: 'response.done', response: { id: 'r_story', status: 'completed' } });
+    await page.waitForSelector('.vstage.is-team', { timeout: 3000 });
+    ok(await page.$eval('.vstage.is-team .vstage__teamlabel', (e, label) => e.textContent === label, sc.teamLabel), '"' + sc.closeOn + '" → the whole team assembles, centre stage: "' + sc.teamLabel + '"');
     await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 6000 });
-    ok(true, '"' + sc.closeOn + '" → the stage lifts away');
+    ok(true, 'then the stage lifts away');
     ok(await page.$eval('#agentThread', t => getComputedStyle(t).display !== 'none'), 'and the thread is there underneath');
     const bubble = await page.$eval('#agentThread .turnb--ai:last-child .turnb__text', e => ({ text: e.textContent, logos: [...e.querySelectorAll('.t-brand--logo .t-logo')].map(i => i.getAttribute('src')) }));
     ok(bubble.text.includes(sc.interrupt) && bubble.text.includes(sc.pivot.slice(0, 40)), 'with the whole story as one bubble, in sync with what was said');

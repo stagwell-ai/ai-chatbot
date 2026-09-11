@@ -144,9 +144,12 @@ function showcaseCfg() {
   return {
     burst: sc.burst || [],
     self: sc.self || { name: 'NewVoices', sub: '', img: '' },
-    /* each tile carries the product's own mark ("when you mention company
-       names, show their icons") — the catalog's lockup, when it has one */
-    products: (sc.products || []).map(p => { const P = byId(p.id); return P ? { id: p.id, name: P.name, line: p.line, img: p.img, lockup: P.lockup || null } : null; }).filter(Boolean),
+    teamLabel: sc.teamLabel || 'The Stagwell AI team',
+    /* each member of the team carries its emblem (an icon key the stage
+       draws) and its own mark — the catalog's lockup, when it has one
+       ("when each of them is named, display the logo, or some kind of SVG
+       icon … like introducing a team of superheroes", client 2026-09-11) */
+    products: (sc.products || []).map(p => { const P = byId(p.id); return P ? { id: p.id, name: P.name, line: p.line, img: p.img, icon: p.icon || null, lockup: P.lockup || null } : null; }).filter(Boolean),
     openOn: sc.openOn || 'flagship',
     closeOn: sc.closeOn || 'get to know each other'
   };
@@ -190,7 +193,8 @@ function followTranscript(text) {
   stage.caption(text);
   const low = text.toLowerCase();
   intro.cfg.products.forEach(p => { if (low.indexOf(p.name.toLowerCase()) !== -1) { if (stage.reveal(p.id) && intro.fallback) { clearTimeout(intro.fallback); intro.fallback = null; } } });
-  if (intro.cfg.closeOn && low.indexOf(String(intro.cfg.closeOn).toLowerCase()) !== -1) closeStage('pivot', 1400);
+  /* the pivot: the whole team assembles for a beat, then the stage lifts away */
+  if (intro.cfg.closeOn && low.indexOf(String(intro.cfg.closeOn).toLowerCase()) !== -1) { if (stage.assemble) stage.assemble(); closeStage('pivot', 2400); }
 }
 function closeStage(why, delay) {
   if (!stage) return;
@@ -673,12 +677,15 @@ async function runTool(op) {
   try {
     const fn = K.tools && K.tools[op.name];
     if (op.name === 'start_over') {
+      /* the visitor asked the agent to start again: the flow and thread are
+         cleared, and the session itself is replaced — the fresh one greets */
       const HA = window.SAIHEROAGENT;
       if (HA && HA.restart) HA.restart({ fromVoice: true });
-      bubbles = {}; meBubbles = {};
-      out = fn ? await fn(op.args) : {};
-      storyShown = false;
-      offerStarters();                         /* the questions come back under the new greeting */
+      if (fn) { try { await fn(op.args); } catch (e) { /* the flow is already reset */ } }
+      toolBusy--;
+      track('voice_tool_call', { name: op.name, status: 'IDLE' });
+      restartSession('tool');
+      return;                                  /* no result to send — that session is gone */
     } else out = fn ? await fn(op.args || {}) : { error: 'unknown_tool', known: Object.keys(K.tools || {}) };
   } catch (e) { out = { error: 'tool_failed' }; }
   toolBusy--;
@@ -702,17 +709,22 @@ function sendText(text) {
   return true;
 }
 
-/* Start over pressed on the card while the voice is open: the flow and the
-   thread are cleared by hero-agent; the agent is told and greets again */
-function onRestart() {
-  if (phase !== 'live') return;
-  if (stage) closeStage('restart');
+/* Start over while the voice is open STARTS THE VOICE AGENT OVER (client,
+   2026-09-11): the flow and the thread are cleared by hero-agent; the session
+   is replaced by a fresh one — a new secret, the greeting, the pills — rather
+   than asking the old one to greet again (which left an empty, silent card). */
+function restartSession(via) {
+  if (!(phase === 'live' || phase === 'reconnecting' || phase === 'minting' || phase === 'connecting')) return false;
+  const seconds = Math.round((Date.now() - startedAt) / 1000);
+  if (conn && (rstate.response || rstate.speaking)) sendAll(VR.clientEvents.cancel());
+  teardown();
   bubbles = {}; meBubbles = {};
-  if (rstate.response || rstate.speaking) sendAll(VR.clientEvents.cancel());
-  storyShown = false;
-  sendAll([{ type: 'response.create', response: { instructions: c().restarted || 'The visitor started over. Greet them again in one short line — you are NewVoices; ask what you can help with, or to tap one of the questions below — then stop and wait.' } }]);
-  offerStarters();                             /* under the new greeting */
+  phase = 'idle'; muted = false; muteReason = null; storyShown = false;
+  track('voice_session_ended', { seconds, turns, reason: 'restart', via: via || 'button' });
+  start();                                     /* inside the same tap, so audio stays unlocked */
+  return true;
 }
+function onRestart() { restartSession('button'); }
 
 /* ── wiring ── */
 /* the showcase's pictures warm up while the finger is still on its way */
