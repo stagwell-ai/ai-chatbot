@@ -5,13 +5,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
+import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import { DATA, R, ROOT } from './_data.mjs';
 
 const require = createRequire(import.meta.url);
 const VR = require(path.join(ROOT, 'next', 'voice-reducer.js'));
-const { buildInstructions, buildTools, buildSession, STEPS } = await import(path.join(ROOT, 'api', '_lib', 'voice', 'instructions.js'));
-const { mintSession, voiceConfig } = await import(path.join(ROOT, 'api', 'voice', 'session.js'));
+const { buildInstructions, buildTools, buildSession, openingScript, STEPS } = await import(path.join(ROOT, 'api', '_lib', 'voice', 'instructions.js'));
+const { mintSession, voiceConfig, default: voiceHandler } = await import(path.join(ROOT, 'api', 'voice', 'session.js'));
 
 const active = R.activeProducts(DATA);
 
@@ -47,7 +48,44 @@ test('the brief opens as NewVoices, from the copy, once', () => {
   assert.ok(s.includes('You are NewVoices'), 'named NewVoices');
   assert.ok(s.includes(DATA.kimi.copy.voice.introduction), 'the introduction is the copy\'s line');
   assert.ok(/revolutionary AI voice agent/.test(s));
-  assert.ok(/Never repeat the introduction/.test(s));
+  assert.ok(/Never repeat the script or the introduction/.test(s));
+});
+
+/* ── the opening showcase ──────────────────────────────────────────────────── */
+test('the opening script: introduction → flagship → each showcased product in order → the pivot; real products, real pictures, about 45 s of speech', () => {
+  const V = DATA.kimi.copy.voice, sc = V.showcase;
+  const s = openingScript(DATA);
+  assert.ok(s.startsWith(V.introduction), 'opens with the introduction');
+  let at = s.indexOf(sc.flagship); assert.ok(at > 0, 'then the flagship line');
+  assert.ok(sc.products.length >= 4 && sc.products.length <= 6, sc.products.length + ' products — about 20 s');
+  sc.products.forEach(p => {
+    const P = R.productById(p.id, DATA);
+    assert.ok(P && P.active !== false, p.id + ' is an active product');
+    assert.ok(p.line.includes(P.name), p.id + ' names itself as the catalog does');
+    const j = s.indexOf(p.line); assert.ok(j > at, p.id + ' in order'); at = j;
+    assert.ok(fs.existsSync(path.join(ROOT, p.img.replace(/^\//, ''))), p.img + ' exists');
+  });
+  assert.ok(s.indexOf(sc.pivot) > at, 'the pivot last');
+  assert.ok(/marketing genius/.test(sc.pivot) && sc.pivot.toLowerCase().includes(sc.closeOn.toLowerCase()), 'the pivot carries the words that close the stage');
+  const words = s.split(/\s+/).length;
+  assert.ok(words >= 90 && words <= 170, 'about 45 s of speech in all: ' + words + ' words');
+  [].concat(sc.burst, [sc.self.img]).forEach(img => assert.ok(fs.existsSync(path.join(ROOT, img.replace(/^\//, ''))), img + ' exists'));
+  assert.ok(!/https?:\/\//.test(s) && !/\$\s?\d/.test(s), 'no URL, no price in the script');
+});
+
+test('the brief carries the script on a fresh start, and only a one-line greeting when resuming or told not to', () => {
+  const fresh = buildInstructions(DATA);
+  assert.ok(fresh.includes('OPENING SCRIPT') && fresh.includes(openingScript(DATA)), 'the script, word for word');
+  assert.ok(fresh.includes('MARKETING GENIUS'), 'general marketing guidance allowed, within the limits');
+  const back = buildInstructions(DATA, { showcase: false });
+  assert.ok(!back.includes('OPENING SCRIPT') && back.includes('No opening script'));
+});
+
+test('mintSession: the showcase is off when the browser says so, and always when resuming', async () => {
+  const bodyOf = async (b) => { let body = null; await mintSession(b, { OPENAI_API_KEY: 'sk' }, async (u, i) => { body = JSON.parse(i.body); return { ok: true, status: 200, json: async () => ({ value: 'ek', expires_at: 1 }) }; }); return body.session.instructions; };
+  assert.ok((await bodyOf({})).includes('OPENING SCRIPT'), 'fresh → the script');
+  assert.ok((await bodyOf({ showcase: false })).includes('No opening script'), 'showcase:false → a greeting');
+  assert.ok((await bodyOf({ resume: { summary: 'they said x', step: 'their role' } })).includes('No opening script'), 'resume → a greeting');
 });
 
 test('resuming adds what is known and the current step, capped', () => {
@@ -87,9 +125,39 @@ test('voiceConfig: off without a key, on with one, caps from env with sane defau
   const on = voiceConfig({ OPENAI_API_KEY: 'sk-test', VOICE_SESSION_SECONDS: '300' });
   assert.equal(on.enabled, true);
   assert.equal(on.caps.sessionSeconds, 300);
-  assert.equal(on.caps.mintsPerHour, 6);
+  /* the per-IP mint limit is OFF (0) while voice is in beta; a positive env value turns it on */
+  assert.equal(on.caps.mintsPerHour, 0);
+  assert.equal(voiceConfig({ OPENAI_API_KEY: 'sk-test', VOICE_MINT_PER_HOUR: '12' }).caps.mintsPerHour, 12);
   assert.equal(on.caps.silenceMuteSeconds, 90);
   assert.equal(voiceConfig({ OPENAI_API_KEY: 'sk-test', VOICE_ENABLED: 'off' }).enabled, false);
+});
+
+test('handler: no per-IP 429 while the mint limit is off; a positive VOICE_MINT_PER_HOUR brings it back', async () => {
+  const saved = { key: process.env.OPENAI_API_KEY, per: process.env.VOICE_MINT_PER_HOUR };
+  const call = async (ip) => {
+    let status = 0, body = null;
+    const res = { setHeader() {}, status(s) { status = s; return res; }, json(j) { body = j; return res; } };
+    await voiceHandler({ method: 'POST', headers: { 'x-forwarded-for': ip }, body: {} }, res);
+    return { status, body };
+  };
+  try {
+    delete process.env.OPENAI_API_KEY;              /* no key → 503 from the mint, never 429 from a limiter */
+    delete process.env.VOICE_MINT_PER_HOUR;
+    for (let i = 0; i < 60; i++) {
+      const r = await call('203.0.113.9');
+      assert.equal(r.status, 503, 'call ' + i + ' was not rate-limited');
+      assert.equal(r.body.error, 'voice_unconfigured');
+    }
+    process.env.VOICE_MINT_PER_HOUR = '2';
+    assert.equal((await call('203.0.113.10')).status, 503);
+    assert.equal((await call('203.0.113.10')).status, 503);
+    const third = await call('203.0.113.10');
+    assert.equal(third.status, 429);
+    assert.equal(third.body.error, 'rate_limited');
+  } finally {
+    if (saved.key === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = saved.key;
+    if (saved.per === undefined) delete process.env.VOICE_MINT_PER_HOUR; else process.env.VOICE_MINT_PER_HOUR = saved.per;
+  }
 });
 
 test('mintSession posts the session to client_secrets with the key, and returns the secret — never the key', async () => {

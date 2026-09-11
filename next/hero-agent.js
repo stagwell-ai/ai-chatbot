@@ -123,7 +123,7 @@ const tpl = (s, vars) => String(s || '').replace(/\{(\w+)\}/g, (m, k) => (vars[k
    line and a door to its page — and only then asks the next question. The list
    is drawn when it changes, not repeated under every question. */
 const pointerKeyOf = P => (P && P.items.length) ? P.kind + ':' + P.items.map(p => p.id).join(',') : null;
-const askText = s => H.esc(s).replace(/\?/g, '<span class="q">?</span>');
+const askText = s => (H.rich ? H.rich(s) : H.esc(s).replace(/\?/g, '<span class="q">?</span>'));
 
 function pointersHtml(P) {
   const pc = copy().pointers || {};
@@ -168,6 +168,12 @@ function render(st) {
     if (key === lastKey) return;
     lastKey = key;
     if (!quiet) drawAsk(st);
+    /* voice mode: the agent speaks the question; the answers still come as
+       pills, hung under its words when they arrive ("there should be pills
+       with reasonable answers to the questions the voice agent asks me") */
+    else if (st.suggestions && st.suggestions.length && window.SAIVOICE.offerChips) {
+      window.SAIVOICE.offerChips(st.suggestions.map(s => ({ label: s.label, value: s.value })), chip => send(chip.value, chip.label));
+    }
     inputMode('text');
     H.placeholder(st.hint || (st.question && st.question.field === 'website' ? ((copy().hints || {}).website || 'yourcompany.com') : 'Type your answer…'));
     refocus();

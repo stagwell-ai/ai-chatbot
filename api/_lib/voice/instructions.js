@@ -73,10 +73,15 @@ export function buildInstructions(data, opts) {
   const steps = STEPS.map((s, i) => `${i + 1}) ${s}`).join('  ');
 
   const intro = clean(V.introduction || "Hi — I'm NewVoices, a revolutionary AI voice agent that is changing how brands and companies interact with their customers.", 300);
+  const script = o.showcase === false ? null : openingScript(data);
   const lines = [
     `You are NewVoices, Stagwell AI's voice agent, on stagwell.ai, speaking with a marketing buyer. You help them find the Stagwell AI product that fits a real problem they have, then connect them with the right team. You are warm, direct and brief — this is a spoken conversation, so one or two short sentences at a time, no lists read aloud, no markdown.`,
     ``,
-    `INTRODUCTION. Your very first words, once, exactly: "${intro}" Then, in the same breath, ask what they are trying to solve. Never repeat the introduction, and do not introduce yourself again after a reconnect or a start-over beyond your name.`,
+    script
+      ? `OPENING SCRIPT. Your first response, once, is this script — word for word, warmly, at an easy pace, with a short breath between products. The screen animates to your words: each product appears the moment you name it, so do not add products, skip any, or change their order. The script:\n"${script}"\nAfter it, wait for them. Never repeat the script or the introduction; after a start-over, greet again with your name only.`
+      : `INTRODUCTION. No opening script this time (you are picking up a conversation already under way, or coming back). One short greeting with your name, then continue. Do not introduce yourself again after that.`,
+    ``,
+    `A MARKETING GENIUS, WITHIN LIMITS. They may ask about Stagwell AI's products, their market or their competitors: answer as a seasoned strategist would — general, useful, a sentence or two — then bring it back to the current step. You still never state a fact about THEIR company that is not in "facts", and never invent a product fact, a price, a customer or a number.`,
     ``,
     `TYPED ANSWERS. Websites, email addresses and phone numbers are TYPED, never taken by ear — the spelling matters and the box below is already set up for it. At those steps ask them to type it in the box and wait; do not offer to take it aloud. If they say it aloud anyway, thank them and ask them to type it so you have the spelling right; do not call submit_answer with something you heard. A tool result with input:"typed" is such a step.`,
     ``,
@@ -104,6 +109,20 @@ export function buildInstructions(data, opts) {
     lines.push('', `THE PAGE. The visitor is on a product page (${clean(o.page, 120)}); they may already have that product in mind — ask what they want to solve all the same.`);
   }
   return lines.join('\n');
+}
+
+/* the opening, assembled from the copy: introduction → flagship → one line per
+   showcased product → the pivot. Deterministic text, so the stage can follow it. */
+export function openingScript(data) {
+  const V = (((data && data.kimi) || {}).copy || {}).voice || {};
+  const S = V.showcase || {};
+  const products = list(data && data.solutions && data.solutions.solutions);
+  const active = id => products.some(p => p && p.id === id && p.active !== false);
+  const parts = [clean(V.introduction, 300)];
+  if (S.flagship) parts.push(clean(S.flagship, 200));
+  list(S.products).filter(p => p && p.id && active(p.id) && p.line).forEach(p => parts.push(clean(p.line, 160)));
+  if (S.pivot) parts.push(clean(S.pivot, 600));
+  return parts.filter(Boolean).join(' ');
 }
 
 /* the session object OpenAI's client_secrets endpoint takes, minus nothing secret */

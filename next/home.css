@@ -917,7 +917,92 @@ body.chat-open{overflow:hidden}
 .voice__ctl--end{border-color:transparent;color:var(--ink-3)}
 .voice__ctl[hidden]{display:none}
 .voice[data-state="speaking"] .voice__status{color:var(--teal)}
+/* no session (ended, or it could not start): no wave, no controls — one quiet
+   line at the left, where the eye is already reading ("this layout is strange
+   with the error", client) */
+.voice[data-state="ended"]{min-height:0;justify-content:flex-start;margin:0 0 4px;padding:6px 0 2px}
+.voice[data-state="ended"] .voice__wave{display:none}
+.voice[data-state="ended"] .voice__status{max-width:none;font-size:13px}
 .voice[data-state="muted"] .voice__wave{opacity:.5}
+/* ── THE OPENING SHOWCASE (voice-stage.js): brand pictures flash and fly out,
+   NewVoices comes in, each product flies in as it is named, then everything
+   lifts away and the thread is underneath ── */
+.askbox__thread[data-vstage-hidden]{display:none}
+.vstage{position:relative;height:min(52svh,440px);margin:0 0 10px;border-radius:18px;overflow:hidden;background:var(--deep,#0B1220);
+  opacity:0;transform:translateY(8px);transition:opacity .45s var(--ease,ease),transform .45s var(--ease,ease),height .55s var(--ease,ease),margin .55s var(--ease,ease)}
+.vstage.is-open{opacity:1;transform:none}
+.vstage.is-closing{opacity:0;height:0!important;margin-bottom:0}
+.vstage__burst{position:absolute;inset:0}
+.vstage__frame{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.02)}
+.vstage__frame.is-on{opacity:1}
+/* the last frame flies out to the left as the NewVoices card comes in from the right */
+.vstage.is-hero .vstage__burst{transition:transform .75s cubic-bezier(.2,.7,.2,1),opacity .6s ease;transform:translateX(-118%) rotate(-5deg) scale(.86);opacity:0}
+.vstage__hero{position:absolute;inset:6% 6%;border-radius:16px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.35);
+  transform:translateX(125%) rotate(4deg);opacity:0;transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .5s ease,inset .7s var(--ease,ease),width .7s var(--ease,ease),height .7s var(--ease,ease)}
+.vstage.is-hero .vstage__hero{transform:none;opacity:1}
+.vstage__heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vstage__herotext{position:absolute;left:0;right:0;bottom:0;padding:18px 22px 20px;background:linear-gradient(to top,rgba(11,18,32,.82),rgba(11,18,32,0));color:#FFFFFF;display:flex;flex-direction:column;gap:2px}
+.vstage__heroname{font-family:var(--display,var(--ui));font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1}
+.vstage__herosub{font-family:var(--ui);font-size:14px;opacity:.85}
+/* once the products start, NewVoices steps to the top-left as a small card */
+.vstage.is-deck .vstage__hero{inset:auto auto 6% 4%;width:22%;height:30%;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.vstage.is-deck .vstage__herotext{padding:8px 10px 10px}
+.vstage.is-deck .vstage__heroname{font-size:15px}
+.vstage.is-deck .vstage__herosub{display:none}
+.vstage__deck{position:absolute;inset:0;pointer-events:none}
+.vstage__tile{position:absolute;overflow:hidden;border-radius:14px;box-shadow:0 24px 50px rgba(0,0,0,.4);opacity:0;
+  transition:transform .75s cubic-bezier(.2,.7,.2,1),opacity .45s ease,top .7s var(--ease,ease),left .7s var(--ease,ease),width .7s var(--ease,ease),height .7s var(--ease,ease)}
+.vstage__tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vstage__tile.is-current{top:6%;left:30%;width:64%;height:88%}
+.vstage__tile.from-left{transform:translate(-60%,40%) rotate(-8deg) scale(.7)}
+.vstage__tile.from-right{transform:translate(60%,40%) rotate(8deg) scale(.7)}
+.vstage__tile.is-in{transform:none;opacity:1}
+.vstage__tiletext{position:absolute;left:0;right:0;bottom:0;padding:16px 18px 18px;background:linear-gradient(to top,rgba(11,18,32,.86),rgba(11,18,32,0));color:#FFFFFF;display:flex;flex-direction:column;gap:4px}
+.vstage__tilename{font-family:var(--display,var(--ui));font-size:clamp(20px,2.6vw,30px);font-weight:700;letter-spacing:-.02em;line-height:1.05}
+.vstage__tileline{font-family:var(--ui);font-size:14.5px;line-height:1.35;opacity:.92}
+/* the ones already named shrink into a column on the left, newest at the top */
+.vstage__tile.is-past{width:22%;height:22%;left:4%;opacity:.92}
+.vstage__tile.is-past .vstage__tileline{display:none}
+.vstage__tile.is-past .vstage__tilename{font-size:13px}
+.vstage__tile.is-past .vstage__tiletext{padding:8px 10px}
+.vstage__tile.is-past:nth-last-of-type(2){top:6%}
+.vstage__tile.is-past:nth-last-of-type(3){top:31%}
+.vstage__tile.is-past:nth-last-of-type(4){top:6%;left:auto;right:4%;opacity:0}
+.vstage__tile.is-past:nth-last-of-type(n+5){opacity:0}
+/* the caption: the agent's words as it says them */
+.vstage__caption{position:absolute;left:4%;right:4%;bottom:10px;margin:0;font-family:var(--ui);font-size:13.5px;line-height:1.4;color:rgba(255,255,255,.92);
+  text-shadow:0 1px 8px rgba(0,0,0,.6);pointer-events:none;z-index:2}
+.vstage.is-deck .vstage__caption{left:30%}
+/* it all lifts away */
+.vstage.is-closing .vstage__tile,.vstage.is-closing .vstage__hero{transform:translateY(-40px) scale(.96);opacity:0;transition-duration:.5s}
+/* reduced motion: fades only, no flight, no burst */
+.vstage--still,.vstage--still *{transition-duration:.25s!important}
+.vstage--still .vstage__hero,.vstage--still .vstage__tile{transform:none!important}
+.vstage--still .vstage__burst{display:none}
+@media (max-width:640px){
+  .vstage{height:min(46svh,380px)}
+  .vstage__tile.is-current{top:5%;left:5%;width:90%;height:66%}
+  .vstage.is-deck .vstage__hero{inset:auto auto 5% 5%;width:28%;height:22%}
+  .vstage__tile.is-past{width:28%;height:22%;left:auto;top:auto!important;bottom:5%;opacity:.92}
+  .vstage__tile.is-past:nth-last-of-type(2){right:5%}
+  .vstage__tile.is-past:nth-last-of-type(3){right:36%}
+  .vstage__tile.is-past:nth-last-of-type(n+4){opacity:0}
+  .vstage.is-deck .vstage__caption{left:5%;bottom:auto;top:73%;font-size:12.5px}
+  .vstage__caption{font-size:12.5px}
+}
+
+/* ?voicedebug=1: the wire, readable off a screenshot */
+.voice__debug{margin:0 0 8px;padding:8px 10px;border-radius:10px;background:#0B1220;color:#B9E5EF;font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto}
+
+/* typography in the thread (home.js rich): names bold, the welcome in display
+   type, the asking sentence weighted, figures tabular */
+.askbox__thread .turnb__text .t-brand{font-weight:700;color:var(--ink);letter-spacing:-.005em}
+.askbox__thread .turnb__text .t-num{font-weight:700;font-variant-numeric:tabular-nums}
+.askbox__thread .turnb__text .t-ask{font-weight:600;color:var(--ink)}
+.askbox__thread .turnb__text .t-lead{display:block;font-family:var(--display);font-weight:800;font-size:1.45em;line-height:1.12;letter-spacing:-.025em;color:var(--ink);margin:0 0 8px}
+.askbox__thread .turnb__text .t-lead .t-brand{color:var(--teal)}
+@media (max-width:640px){.askbox__thread .turnb__text .t-lead{font-size:1.3em}}
+
 /* transcripts: the visitor's words still arriving, and an answer cut short */
 .askbox__thread .turnb--interim{opacity:.55;font-style:italic}
 .askbox__thread .turnb--cutoff .turnb__text::after{content:" —";color:var(--ink-3)}

@@ -95,8 +95,25 @@
     "voice": {
       "_note": "Chat with me (client, 2026-09-11; KIMI-VOICE-PLAN.md). Every visible string of the voice session, and the three lines the model is handed out-of-band (timeUp, restarted, back). The agent's own brief is api/_lib/voice/instructions.js.",
       "start": "Chat with me",
-      "introduction": "Hi — I'm NewVoices, a revolutionary AI voice agent that is changing how brands and companies interact with their customers.",
+      "live": "Chat is live",
+      "introduction": "Welcome to Stagwell AI. I'm NewVoices — a revolutionary AI voice agent that is changing how brands and companies interact with their customers.",
+      "showcase": {
+        "_note": "The opening (client, 2026-09-11: 'a banger, awesome opening statement … very visual, with something flying out and another thing coming in, then something goes away … list another product, explain what it does … for about 20 seconds … then talk about how we want to work with the customer'). The agent speaks introduction → flagship → each product line → pivot, word for word; voice-stage.js animates to the transcript as it arrives — a product's tile flies in the moment its name is said. Every line is the catalog's claim in fewer words; ids must be active products; images must exist.",
+        "flagship": "You're talking to one of the flagship AI products from Stagwell AI — and I'm in good company.",
+        "products": [
+          { "id": "newintel", "line": "NewIntel — what your competitors did this week, not last quarter.", "img": "/assets/img/intro/4.jpg" },
+          { "id": "questbrand", "line": "QuestBrand — always-on brand tracking against the competitors you name.", "img": "/assets/img/questbrand.jpg" },
+          { "id": "targeting_machine", "line": "The Targeting Machine — your first-party data, turned into audiences you can buy.", "img": "/assets/img/targeting.jpg" },
+          { "id": "imai", "line": "IMAI — influencer programs end to end, from discovery to ROI.", "img": "/assets/img/imai.jpg" },
+          { "id": "geopulse", "line": "GEOPulse — how ChatGPT, Gemini and Perplexity describe your brand.", "img": "/assets/img/geopulse.jpg" }
+        ],
+        "pivot": "Here's how this works: I want to figure out your biggest problems and how Stagwell AI can help. So let's get to know each other a little better — tell me what you're working on. Ask me about Stagwell AI's products, your market, your competitors. Treat me like a marketing genius and I'll point you in the right direction.",
+        "self": { "name": "NewVoices", "sub": "Stagwell AI's voice agent", "img": "/assets/img/products/card-call.jpg" },
+        "burst": ["/assets/img/intro/1.jpg", "/assets/img/intro/2.jpg", "/assets/img/intro/3.jpg", "/assets/img/intro/5.jpg", "/assets/img/intro/6.jpg", "/assets/img/intro/7.jpg"],
+        "closeOn": "get to know each other"
+      },
       "typeIt": "Type it in the box below — spelling matters here",
+      "cantHear": "Not hearing you? Check the mic isn't muted, or type below.",
       "connecting": "Connecting…",
       "consent": "Voice is transcribed on screen so you can read it and so the right team can follow up.",
       "listening": "Listening",
@@ -113,7 +130,7 @@
       "unavailable": {
         "denied": "The microphone was not allowed — carry on typing, or allow it and try again.",
         "nomic": "No microphone was found — carry on typing.",
-        "busy": "Voice is busy right now — carry on typing.",
+        "busy": "Voice is rate-limited while it's in beta, and the limit was just hit — try again in a few minutes, or carry on typing.",
         "unconfigured": "Voice is not available here yet — carry on typing.",
         "network": "Voice could not connect — carry on typing, or try again.",
         "dropped": "Voice dropped — carry on typing, or tap Chat with me to reconnect."

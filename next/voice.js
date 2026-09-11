@@ -22,7 +22,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 (() => {
 'use strict';
-const H = window.SAIHERO, K = window.SAIKIMI, S = window.SAI, VR = window.SAIVOICEREDUCER, WAVE = window.SAIVOICEWAVE;
+const H = window.SAIHERO, K = window.SAIKIMI, S = window.SAI, VR = window.SAIVOICEREDUCER, WAVE = window.SAIVOICEWAVE, STAGE = window.SAIVOICESTAGE;
 if (!H || !K || !S || !VR) return;
 
 const $ = (sel, root) => (root || document).querySelector(sel);
@@ -50,6 +50,106 @@ let muted = false, muteReason = null, speakerMuted = false;
 let bubbles = {}, meBubbles = {};
 let startedAt = 0, turns = 0, lastActivity = 0, reconnects = 0, caps = null, model = null;
 let wave = null, timers = [], ticker = 0, toolBusy = 0;
+/* the opening showcase (voice-stage.js): up while the agent speaks its
+   script, driven by the transcript, gone when it says "let's get to know each
+   other" — or the moment the visitor talks or types */
+let stage = null, intro = null;      /* intro = { responseId, text, revealed:Set, fallback:timer } */
+
+/* ── DIAGNOSTICS ──
+   ?voicedebug=1 (or localStorage sai-voice-debug=1) shows a panel under the
+   strip: the phase, the microphone track's real state, the connection state,
+   what OpenAI accepted at the mint, and the last events on the wire — so a
+   "it doesn't hear me" can be read off a screenshot. Also logs to the console. */
+const DEBUG = (() => { try { return /[?&]voicedebug=1/.test(location.search) || localStorage.getItem('sai-voice-debug') === '1'; } catch (e) { return false; } })();
+const dlog = [];
+let debugEl = null, accepted = null, heardSpeech = false, micEnergyHits = 0, rescued = false;
+function dbg(kind, detail) {
+  const line = new Date().toISOString().slice(11, 19) + ' ' + kind + (detail ? ' ' + (typeof detail === 'string' ? detail : JSON.stringify(detail)).slice(0, 160) : '');
+  dlog.push(line); if (dlog.length > 40) dlog.shift();
+  if (DEBUG) { try { console.debug('[voice]', line); } catch (e) {} }
+  paintDebug();
+}
+function paintDebug() {
+  if (!DEBUG) return;
+  if (!debugEl) { debugEl = document.createElement('pre'); debugEl.className = 'voice__debug'; strip.insertAdjacentElement('afterend', debugEl); }
+  const mic = conn && conn.micState ? conn.micState() : null;
+  const pc = conn && conn.pcState ? conn.pcState() : null;
+  debugEl.textContent =
+    'phase ' + phase + ' · sub ' + sub + ' · muted ' + muted + ' · heardSpeech ' + heardSpeech + ' · micEnergyHits ' + micEnergyHits + '\n' +
+    'mic ' + (mic ? JSON.stringify(mic) : '—') + '\n' +
+    'pc ' + (pc ? JSON.stringify(pc) : '—') + '\n' +
+    'accepted ' + (accepted ? JSON.stringify(accepted) : '—') + '\n' +
+    dlog.slice(-18).join('\n');
+}
+/* the rescue: the mic clearly carries sound but the server never says
+   speech_started — try plain server VAD once, and say what is going on */
+function watchHearing() {
+  if (!conn || phase !== 'live' || heardSpeech || rescued) return;
+  const L = conn.levels ? conn.levels() : { user: 0 };
+  if (L.user > 0.08 && !muted) micEnergyHits++;
+  if (micEnergyHits >= 12 && !rstate.speaking) {
+    rescued = true;
+    dbg('rescue', 'mic energy but no speech_started → session.update server_vad');
+    track('voice_no_input_detected', { micEnergyHits, accepted: accepted || null });
+    sendAll(VR.clientEvents.sessionUpdate({ audio: { input: { turn_detection: { type: 'server_vad', create_response: true, interrupt_response: true } } } }));
+    setStatus(c().cantHear || 'Not hearing you? Check the mic isn\'t muted, or type below.', 'warn');
+  }
+}
+
+/* ── the opening showcase ── */
+function showcaseCfg() {
+  const sc = c().showcase || {};
+  const products = ((S.data || {}).solutions || {}).solutions || [];
+  const byId = id => products.find(p => p && p.id === id && p.active !== false);
+  return {
+    burst: sc.burst || [],
+    self: sc.self || { name: 'NewVoices', sub: '', img: '' },
+    products: (sc.products || []).map(p => { const P = byId(p.id); return P ? { id: p.id, name: P.name, line: p.line, img: p.img } : null; }).filter(Boolean),
+    closeOn: sc.closeOn || 'get to know each other'
+  };
+}
+function openStage() {
+  if (!STAGE || flags().voiceShowcase === false) return;
+  const host = $('#agentForm'); if (!host) return;
+  const cfg = showcaseCfg();
+  if (!cfg.products.length) return;
+  stage = STAGE.create(host, cfg);
+  stage.open();
+  intro = { responseId: null, text: '', cfg, fallback: null, started: Date.now() };
+  /* a clock only as the net under the transcript: if the words never name a
+     product, the tiles still come; and nothing stays up past 55 s */
+  intro.fallback = setTimeout(() => { if (intro && stage) revealByClock(); }, 9000);
+  timers.push(intro.fallback);
+  timers.push(setTimeout(() => closeStage('timeout'), 55000));
+  track('voice_showcase_started', { products: cfg.products.length });
+}
+function revealByClock() {
+  if (!intro || !stage) return;
+  const next = intro.cfg.products.find(p => stage.state().revealed.indexOf(p.id) === -1);
+  if (!next) return;
+  stage.reveal(next.id);
+  intro.fallback = setTimeout(revealByClock, 3000);
+  timers.push(intro.fallback);
+}
+/* the agent's words so far → the tiles they name, in order; the pivot closes */
+function followTranscript(text) {
+  if (!intro || !stage) return;
+  intro.text = text;
+  stage.caption(text);
+  const low = text.toLowerCase();
+  intro.cfg.products.forEach(p => { if (low.indexOf(p.name.toLowerCase()) !== -1) { if (stage.reveal(p.id) && intro.fallback) { clearTimeout(intro.fallback); intro.fallback = null; } } });
+  if (intro.cfg.closeOn && low.indexOf(String(intro.cfg.closeOn).toLowerCase()) !== -1) closeStage('pivot', 1400);
+}
+function closeStage(why, delay) {
+  if (!stage) return;
+  const s = stage; stage = null;
+  const seconds = intro ? Math.round((Date.now() - intro.started) / 1000) : 0;
+  const revealed = s.state().revealed.length;
+  intro = null;
+  const go = () => s.close(why);
+  if (delay) timers.push(setTimeout(go, delay)); else go();
+  track('voice_showcase_ended', { why, seconds, revealed });
+}
 
 /* ── the strip ── */
 function setStatus(text, tone) {
@@ -65,8 +165,13 @@ function stripState() {
 function paint() {
   const c = copy();
   strip.dataset.state = stripState();
-  startBtn.classList.toggle('is-live', phase === 'live' || phase === 'reconnecting');
-  startBtn.setAttribute('aria-pressed', phase === 'live' || phase === 'reconnecting' ? 'true' : 'false');
+  const on = phase === 'live' || phase === 'reconnecting';
+  startBtn.classList.toggle('is-live', on);
+  startBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  /* "if I'm in a chat, then it should say 'chat is live', not 'Chat with me'" */
+  const label = startBtn.querySelector('span');
+  if (label) label.textContent = on ? (c.live || 'Chat is live') : (phase === 'minting' || phase === 'connecting') ? (c.connecting || 'Connecting…') : (c.start || 'Chat with me');
+  startBtn.setAttribute('aria-label', on ? (c.live || 'Chat is live') + ' — end the voice chat' : (c.start || 'Chat with me'));
   const live = phase === 'live' || phase === 'reconnecting' || phase === 'minting' || phase === 'connecting';
   if (muteBtn) { muteBtn.hidden = !live; muteBtn.textContent = muted ? (c.unmute || 'Unmute') : (c.mute || 'Mute'); muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false'); }
   if (endBtn) endBtn.hidden = !live;
@@ -86,8 +191,8 @@ K.onChange(() => { if (phase === 'live') paint(); });
 function setSub(s) { sub = s; paint(); }
 
 /* ── mint ── */
-async function mint(resume) {
-  const body = { page: location.pathname };
+async function mint(resume, extra) {
+  const body = Object.assign({ page: location.pathname }, extra || {});
   if (resume) body.resume = resume;
   let r;
   try {
@@ -193,6 +298,8 @@ async function webrtcConnect(o) {
   return {
     ready: new Promise((res, rej) => { if (dc.readyState === 'open') res(); dc.onopen = () => res(); setTimeout(() => rej(tag('network', new Error('datachannel_timeout'))), 15000); }),
     send: obj => { if (dc.readyState === 'open') dc.send(JSON.stringify(obj)); },
+    micState: () => { const t = mic.getAudioTracks()[0]; return t ? { enabled: t.enabled, muted: t.muted, readyState: t.readyState, label: String(t.label || '').slice(0, 40), senders: pc.getSenders().filter(s => s.track && s.track.kind === 'audio').length } : { none: true }; },
+    pcState: () => ({ connection: pc.connectionState, ice: pc.iceConnectionState, signaling: pc.signalingState, dc: dc.readyState, remote: !!remote }),
     close: () => { try { dc.close(); } catch (e) {} try { pc.close(); } catch (e) {} mic.getTracks().forEach(t => t.stop()); audioEl.remove(); if (actx) actx.close().catch(() => {}); },
     setMuted: m => mic.getAudioTracks().forEach(t => { t.enabled = !m; }),
     setSpeakerMuted: m => { audioEl.muted = !!m; },
@@ -204,7 +311,7 @@ async function webrtcConnect(o) {
 const transport = () => fakeTransport() || { connect: webrtcConnect };
 
 /* ── the session ── */
-const sendAll = evs => { if (!conn) return; (evs || []).forEach(e => conn.send(e)); };
+const sendAll = evs => { if (!conn) return; (evs || []).forEach(e => { dbg('→', e.type); conn.send(e); }); };
 const c = () => copy();
 
 async function start() {
@@ -214,16 +321,23 @@ async function start() {
   phase = 'minting'; strip.hidden = false; paint();
   setStatus((c().connecting || 'Connecting…') + ' ' + (c().consent || ''));
   try {
-    const m = await mint(resumeSummary());
-    caps = m.caps || {}; model = m.model || null;
+    /* the showcase plays on a fresh start only; a conversation begun in text
+       gets a one-line greeting and picks up */
+    const m = await mint(resumeSummary(), { showcase: !startedFromText });
+    caps = m.caps || {}; model = m.model || null; accepted = m.accepted || null;
+    dbg('minted', accepted || 'no echo');
     phase = 'connecting'; paint();
     conn = await transport().connect({ secret: m.value, model, onEvent, onClose, audioEl: unlock.audioEl, audioContext: unlock.actx, onNeedTap: () => setStatus(c().tap || 'Tap to hear', 'warn') });
     await conn.ready;
     rstate = VR.blank(); bubbles = {}; meBubbles = {};
     phase = 'live'; sub = 'thinking'; muted = false; muteReason = null; reconnects = 0;
+    heardSpeech = false; micEnergyHits = 0; rescued = false;
     startedAt = Date.now(); lastActivity = startedAt; turns = 0;
     paint();
+    dbg('live', conn.micState ? conn.micState() : null);
+    track('voice_mic_state', Object.assign({}, conn.micState ? conn.micState() : {}, { label: undefined }));
     H.open();
+    if (!startedFromText) openStage();
     const restartBtn = $('#agentRestart'); if (restartBtn) restartBtn.hidden = false;
     if (WAVE && waveEl && !wave) wave = WAVE.create(waveEl, () => (conn && conn.levels ? conn.levels() : { user: 0, agent: 0 }), stripState);
     if (wave) wave.start();
@@ -251,7 +365,9 @@ function fail(reason, e) {
 }
 
 function teardown() {
-  timers.forEach(t => clearTimeout(t)); timers = [];
+  if (stage) { const s = stage; stage = null; intro = null; s.destroy(); }
+  pendingChips = null;
+  timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = [];
   if (ticker) { clearInterval(ticker); ticker = 0; }
   if (conn) { try { conn.close(); } catch (e) {} conn = null; }
   if (wave) { wave.stop(); wave = null; }
@@ -302,6 +418,8 @@ function armTimers() {
     if (phase !== 'live' || muted) return;
     if (Date.now() - lastActivity > quiet * 1000 && !rstate.speaking && !rstate.response && !toolBusy) { mute(true, 'silence'); track('voice_silence_mute', {}); }
   }, Math.max(250, Math.min(5000, quiet * 1000 / 3)));
+  /* twice a second: is sound reaching the mic while the server hears nothing? */
+  timers.push(setInterval(() => { watchHearing(); if (DEBUG) paintDebug(); }, 500));
 }
 document.addEventListener('visibilitychange', () => {
   if (phase !== 'live') return;
@@ -318,6 +436,9 @@ function mute(m, reason) {
 
 /* ── events → the thread and the flow ── */
 function onEvent(ev) {
+  const t = ev && ev.type;
+  if (t && !/delta$/.test(t)) dbg('←', t + (t === 'error' ? ' ' + JSON.stringify(ev.error || {}).slice(0, 120) : ''));
+  if (t === 'input_audio_buffer.speech_started') heardSpeech = true;
   const r = VR.reduce(rstate, ev);
   rstate = r.state;
   r.ops.forEach(apply);
@@ -326,14 +447,38 @@ function onEvent(ev) {
 function bubbleText(el, text, cls) {
   let t = el.querySelector('.turnb__text');
   if (!t) { t = document.createElement('div'); t.className = 'turnb__text'; el.insertBefore(t, el.firstChild); }
-  t.innerHTML = esc(text).replace(/\?/g, '<span class="q">?</span>');
+  t.innerHTML = H.rich ? H.rich(text) : esc(text).replace(/\?/g, '<span class="q">?</span>');
   if (cls) el.classList.add(cls);
+  if (H.follow) H.follow();              /* the thread keeps up with the words */
+}
+
+/* ── answer pills in voice mode ──
+   The flow's suggestions for the current question (size bands, roles, the
+   goal's options). The agent is about to SAY the question, so the pills wait
+   for its next bubble and hang under it; if no bubble comes, they get one of
+   their own. Typed steps (website, email, phone) have no suggestions. */
+let pendingChips = null;
+function offerChips(chips, onChip) {
+  if (!chips || !chips.length) { pendingChips = null; return; }
+  if (pendingChips && pendingChips.timer) clearTimeout(pendingChips.timer);
+  pendingChips = { chips, onChip, bubble: null, at: Date.now(), timer: null };
+  pendingChips.timer = setTimeout(() => {
+    if (pendingChips && !pendingChips.bubble && phase === 'live') { const p = pendingChips; pendingChips = null; H.ai(null, p.chips, null, p.onChip); }
+  }, 6000);
+  timers.push(pendingChips.timer);
+}
+function hangChips(bubble) {
+  if (!pendingChips || !bubble) return;
+  const p = pendingChips; pendingChips = null;
+  if (p.timer) clearTimeout(p.timer);
+  H.chips(bubble, p.chips, p.onChip);
 }
 
 function apply(op) {
   switch (op.op) {
     case 'user.speaking':
       lastActivity = Date.now();
+      if (stage) closeStage('barge');          /* they have started talking: the show is over */
       if (sub !== 'speaking') setSub('listening');
       break;
     case 'user.silent':
@@ -342,6 +487,7 @@ function apply(op) {
       const el = meBubbles[op.itemId] || (meBubbles[op.itemId] = H.me(''));
       el.classList.add('turnb--interim');
       el.textContent = op.text;
+      if (H.follow) H.follow();
       break;
     }
     case 'me.final': {
@@ -356,15 +502,21 @@ function apply(op) {
       setSub('thinking');
       break;
     case 'ai.delta': {
-      const el = bubbles[op.itemId] || (bubbles[op.itemId] = H.ai('', null, null, null));
+      let el = bubbles[op.itemId];
+      if (!el) { el = bubbles[op.itemId] = H.ai('', null, null, null); if (pendingChips && !pendingChips.bubble) pendingChips.bubble = el; }
       bubbleText(el, op.text);
       if (!rstate.speaking) setSub('speaking');
+      if (stage && intro) {
+        if (!intro.responseId && rstate.response) intro.responseId = rstate.response.id;
+        followTranscript(op.text);
+      }
       break;
     }
     case 'ai.done': {
       const el = bubbles[op.itemId] || (bubbles[op.itemId] = H.ai('', null, null, null));
       bubbleText(el, op.text);
       if (!op.text) el.remove();
+      else if (pendingChips && (pendingChips.bubble === el || !pendingChips.bubble)) hangChips(el);
       break;
     }
     case 'ai.cutoff': {
@@ -374,6 +526,8 @@ function apply(op) {
     }
     case 'ai.end':
       lastActivity = Date.now();
+      /* the opening response is over: whatever the words did, the stage goes */
+      if (stage && intro && (!intro.responseId || intro.responseId === op.responseId)) closeStage('end', 900);
       if (!rstate.speaking) setSub(muted ? 'muted' : 'listening');
       break;
     case 'agent.speaking':
@@ -417,6 +571,8 @@ async function runTool(op) {
 function sendText(text) {
   const v = String(text == null ? '' : text).trim();
   if (!v || phase !== 'live') return false;
+  if (stage) closeStage('typed');
+  if (pendingChips) { if (pendingChips.timer) clearTimeout(pendingChips.timer); pendingChips = null; }   /* answered another way */
   H.open();
   H.me(v);
   H.settleChips();
@@ -431,12 +587,19 @@ function sendText(text) {
    thread are cleared by hero-agent; the agent is told and greets again */
 function onRestart() {
   if (phase !== 'live') return;
+  if (stage) closeStage('restart');
   bubbles = {}; meBubbles = {};
   if (rstate.response || rstate.speaking) sendAll(VR.clientEvents.cancel());
   sendAll([{ type: 'response.create', response: { instructions: c().restarted || 'The visitor started over. Greet them again in one short line and ask what they want to solve.' } }]);
 }
 
 /* ── wiring ── */
+/* the showcase's pictures warm up while the finger is still on its way */
+let warmed = false;
+const warm = () => { if (warmed) return; warmed = true; const cfg = showcaseCfg(); [].concat(cfg.burst, cfg.self.img ? [cfg.self.img] : [], cfg.products.map(p => p.img)).forEach(src => { const im = new Image(); im.src = src; }); };
+startBtn.addEventListener('pointerenter', warm, { passive: true });
+startBtn.addEventListener('focus', warm);
+startBtn.addEventListener('touchstart', warm, { passive: true });
 startBtn.addEventListener('click', () => {
   if (phase === 'live' || phase === 'reconnecting') { end('user'); return; }
   if (conn && conn.needsTap && conn.needsTap()) { conn.resumeAudio().catch(() => {}); return; }
@@ -455,9 +618,10 @@ startBtn.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 20 20" aria-hidden="
 paint();
 
 window.SAIVOICE = {
-  start, end, mute, sendText, onRestart,
+  start, end, mute, sendText, onRestart, offerChips,
   live: () => phase === 'live' || phase === 'reconnecting',
   phase: () => phase,
+  showcase: () => (stage ? stage.state() : null),
   state: () => ({ phase, sub, muted, muteReason, turns, reconnects, model, startedAt })
 };
 })();

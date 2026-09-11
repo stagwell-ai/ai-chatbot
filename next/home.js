@@ -197,7 +197,7 @@
       else thread.scrollTop = thread.scrollHeight;
       more();
     };
-    const add = (el) => { thread.appendChild(el); requestAnimationFrame(() => settle(el)); return el; };
+    const add = (el) => { thread.appendChild(el); requestAnimationFrame(() => { settle(el); keepCardInView(); }); return el; };
     thread.addEventListener('scroll', more, { passive: true });
     const me = (text) => { const t = document.createElement('div'); t.className = 'turnb turnb--me'; t.textContent = text; return add(t); };
     /* the thinking field: not particles — a fine lattice of dots that never
@@ -317,23 +317,70 @@
         a.addEventListener('click', () => { if (state.site) { try { sessionStorage.setItem('sai-lead-site', state.site); } catch (e) {} } });
         t.appendChild(a);
       }
-      if (chips) {
-        const row = document.createElement('div'); row.className = 'turnb__chips';
-        /* a chip is a label, or {label, value} from the flow; the click goes to
-           onChip when there is one, else to the placeholder conversation */
-        chips.forEach(cp => {
-          const c = typeof cp === 'string' ? { label: cp, value: cp } : cp;
-          const b = document.createElement('button'); b.type = 'button'; b.className = 'tag'; b.textContent = c.label;
-          b.addEventListener('click', () => {
-            if (b.disabled) return;
-            row.querySelectorAll('.tag').forEach(o => { o.disabled = true; o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
-            if (onChip) onChip(c); else send(c.value);
-          });
-          row.appendChild(b);
-        });
-        t.appendChild(row);
-      }
+      if (chips) t.appendChild(chipsRow(chips, onChip));
       return add(t);
+    };
+    /* a row of answer pills. A chip is a label, or {label, value} from the flow;
+       the click goes to onChip when there is one, else to the placeholder
+       conversation. Voice mode (voice.js) hangs a row under the agent's spoken
+       question with H.chips(bubble, …). */
+    function chipsRow(chips, onChip) {
+      const row = document.createElement('div'); row.className = 'turnb__chips';
+      chips.forEach(cp => {
+        const c = typeof cp === 'string' ? { label: cp, value: cp } : cp;
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'tag'; b.textContent = c.label;
+        b.addEventListener('click', () => {
+          if (b.disabled) return;
+          row.querySelectorAll('.tag').forEach(o => { o.disabled = true; o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+          if (onChip) onChip(c); else send(c.value);
+        });
+        row.appendChild(b);
+      });
+      return row;
+    }
+    /* the thread keeps up with words arriving in a bubble that is already on
+       it — unless the visitor has scrolled up to read, in which case it stays
+       where they put it ("it should smoothly scroll down as new text comes
+       in", client, 2026-09-11) */
+    /* ── TYPOGRAPHY IN THE THREAD ──
+       "the things it wants to emphasise should be bold, it should use font and
+       typography to be interesting" (client, 2026-09-11). Deterministic, from
+       the catalog: Stagwell AI, NewVoices and every product name in bold; a
+       welcome line in display type; the question in a bubble carries weight;
+       figures set tabular. Text in, safe HTML out — escaped first, then dressed. */
+    const brandNames = () => {
+      const S = window.SAI, list = ((S && S.data && S.data.solutions && S.data.solutions.solutions) || []).filter(p => p && p.active !== false).map(p => p.name);
+      return ['Stagwell AI', 'NewVoices', 'Stagwell'].concat(list).filter(Boolean).sort((a, b) => b.length - a.length);
+    };
+    const rich = (text, opts) => {
+      const o = opts || {};
+      let s = esc(String(text == null ? '' : text));
+      const names = brandNames().map(n => esc(n).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      if (names.length) s = s.replace(new RegExp('(^|[^\\w>])(' + names.join('|') + ')(?![\\w<])', 'g'), (m, pre, name) => pre + '<strong class="t-brand">' + name + '</strong>');
+      s = s.replace(/(^|[\s(])(\d[\d,.]*\+?%?)(?=[\s,.;:)]|$)/g, (m, pre, num) => pre + '<span class="t-num">' + num + '</span>');
+      /* the sentence that asks carries the weight */
+      s = s.replace(/([^.!?]*\?)/g, m => (/t-ask/.test(m) ? m : '<span class="t-ask">' + m.replace(/\?/g, '<span class="q">?</span>') + '</span>'));
+      /* a welcome opens in display type */
+      if (o.welcome !== false) s = s.replace(/^((?:<[^>]+>)*Welcome to (?:<[^>]+>)*Stagwell AI(?:<\/[^>]+>)*[.!]?)/, '<span class="t-lead">$1</span>');
+      return s;
+    };
+    /* and the PAGE keeps the card in view as the conversation grows ("when the
+       conversation grows, it should smoothly scroll down so the chat does not
+       get cut off"): when the composer's foot has slipped below the fold, the
+       window scrolls just enough to bring it back. Never upwards. */
+    let pageFollowAt = 0;
+    const keepCardInView = () => {
+      const card = mini.getBoundingClientRect();
+      const over = card.bottom - (window.innerHeight - 12);
+      if (over <= 0 || Date.now() - pageFollowAt < 120) return;
+      pageFollowAt = Date.now();
+      try { window.scrollBy({ top: over, behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) { window.scrollBy(0, over); }
+    };
+    const follow = () => {
+      const gap = thread.scrollHeight - thread.scrollTop - thread.clientHeight;
+      if (gap <= 160) { try { thread.scrollTo({ top: thread.scrollHeight, behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) { thread.scrollTop = thread.scrollHeight; } }
+      more();
+      requestAnimationFrame(keepCardInView);
     };
     const reply = (html, chips, go) => new Promise(res => {
       const w = wait();
@@ -451,7 +498,8 @@
     });
 
     window.SAIHERO = {
-      me, ai, wait, esc, think,
+      me, ai, wait, esc, think, follow, rich,
+      chips(bubble, chips, onChip) { if (!bubble || !chips || !chips.length) return null; const row = chipsRow(chips, onChip); bubble.appendChild(row); follow(); return row; },
       open() { agentSec.classList.add('is-chat'); },
       placeholder(t) { miniInput.placeholder = t || ''; grow(); },
       /* the field is sized to its words again — after a send has emptied it */

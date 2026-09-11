@@ -269,8 +269,9 @@ intact; the strip says "Voice is unavailable — carry on typing" and the button
   structured one.
 - Full email addresses never reach the analytics bus (today's redaction covers the new events).
 - The key never reaches the browser: only a ~60-second ephemeral secret does. The mint endpoint
-  is rate-limited per IP (6/hour) and sessions are capped (§6), so nobody can run up a bill from
-  a URL.
+  can be rate-limited per IP (`VOICE_MINT_PER_HOUR`; OFF during the beta at the client's request,
+  2026-09-11 — they will say when to turn it on) and sessions are capped (§6), which bounds what
+  one session can cost.
 
 **Accessibility**
 - The strip has `role="status"` with the state as text ("Listening", "Agent speaking", "Muted").

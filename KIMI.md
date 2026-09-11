@@ -310,7 +310,9 @@ thinking, flat dim = muted, dashed = reconnecting; Mute and End beside it; colou
 reduced motion; 30 fps on phones. "Chat with me" becomes the live indicator.
 
 **Edge cases handled (all in `test:voice`).** Microphone refused / none / http → the button is
-hidden or one honest line, text carries on. Mint 503/429 → unavailable/busy, text carries on.
+hidden or one honest line, text carries on. Mint 503/429 → unavailable/busy, text carries on
+(the busy line says voice is rate-limited while in beta; our own per-IP limit is OFF by default —
+`VOICE_MINT_PER_HOUR=0` — so a 429 today can only come from OpenAI itself).
 Connection drop or an API session error → three reconnects, each primed with a summary of the
 conversation and the current step, one line "I'm back"; after that, "Voice dropped", text
 carries on. Soft cap (10 min): the agent is told to wrap up; hard cap (15): the session ends.
@@ -362,7 +364,7 @@ VOICE_NAME=marin                                       # the agent's voice
 VOICE_ENABLED=on                                       # off hides the button server-side; flags.voice in kimi.json hides it client-side
 VOICE_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe          # what types the visitor's words out
 VOICE_SESSION_SECONDS=900  VOICE_SOFT_SECONDS=600      # hard / soft caps
-VOICE_SILENCE_MUTE_SECONDS=90  VOICE_MINT_PER_HOUR=6   # the silence mute; mints per IP per hour
+VOICE_SILENCE_MUTE_SECONDS=90  VOICE_MINT_PER_HOUR=0   # the silence mute; mints per IP per hour — 0 = OFF (the beta default, at the client's request 2026-09-11; set a number when they say so)
 VOICE_SECRET_SECONDS=120  VOICE_MAX_OUTPUT_TOKENS=700  # the client secret's life; per-turn cap
 KIMI_TERTIARY_MODEL=anthropic/claude-haiku-4-5-20251001 # default when ANTHROPIC_API_KEY is set; 'off' to disable
 KIMI_PRIMARY_TIMEOUT_MS=7000 KIMI_SECONDARY_TIMEOUT_MS=4000 KIMI_TOTAL_DEADLINE_MS=12000 KIMI_LLM_ENABLED=true
