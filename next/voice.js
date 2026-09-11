@@ -117,6 +117,21 @@ function resumeSummary() {
   return { summary: parts.join(' ').slice(0, 1200), step: view && view.step ? view.step : '' };
 }
 
+/* ── iOS unlock: the audio element and the AudioContext must be born inside
+   the tap, or Safari refuses to play the agent later. start() calls this
+   synchronously before its first await and hands the pair to the transport. */
+function unlockAudio() {
+  let audioEl = null, actx = null;
+  try {
+    audioEl = document.createElement('audio');
+    audioEl.autoplay = true; audioEl.setAttribute('playsinline', ''); audioEl.hidden = true;
+    document.body.appendChild(audioEl);
+    if (typeof MediaStream === 'function') { audioEl.srcObject = new MediaStream(); audioEl.play().catch(() => {}); }
+  } catch (e) { audioEl = null; }
+  try { const AC = window.AudioContext || window.webkitAudioContext; if (AC) { actx = new AC(); if (actx.state === 'suspended') actx.resume().catch(() => {}); } } catch (e) { actx = null; }
+  return { audioEl, actx };
+}
+
 /* ── transport: WebRTC to OpenAI, or the injected fake ── */
 async function webrtcConnect(o) {
   let mic;
@@ -127,9 +142,12 @@ async function webrtcConnect(o) {
     throw tag(name === 'NotAllowedError' || name === 'SecurityError' ? 'denied' : name === 'NotFoundError' ? 'nomic' : 'network', e);
   }
   const pc = new RTCPeerConnection();
-  const audioEl = document.createElement('audio');
-  audioEl.autoplay = true; audioEl.setAttribute('playsinline', ''); audioEl.hidden = true;
-  document.body.appendChild(audioEl);
+  let audioEl = o.audioEl;
+  if (!audioEl) {
+    audioEl = document.createElement('audio');
+    audioEl.autoplay = true; audioEl.setAttribute('playsinline', ''); audioEl.hidden = true;
+    document.body.appendChild(audioEl);
+  }
   let remote = null, needTap = false;
   pc.ontrack = e => {
     remote = e.streams && e.streams[0];
@@ -139,8 +157,15 @@ async function webrtcConnect(o) {
   mic.getTracks().forEach(t => pc.addTrack(t, mic));
   const dc = pc.createDataChannel('oai-events');
   dc.onmessage = ev => { try { o.onEvent(JSON.parse(ev.data)); } catch (e) { /* not ours */ } };
-  dc.onclose = () => o.onClose && o.onClose('datachannel');
-  pc.onconnectionstatechange = () => { if (['failed', 'disconnected', 'closed'].indexOf(pc.connectionState) !== -1) o.onClose && o.onClose(pc.connectionState); };
+  let gone = false;
+  const lost = why => { if (gone) return; gone = true; o.onClose && o.onClose(why); };
+  dc.onclose = () => lost('datachannel');
+  pc.onconnectionstatechange = () => {
+    const s = pc.connectionState;
+    if (s === 'failed' || s === 'closed') lost(s);
+    /* a blip on a phone: 'disconnected' often heals itself — give it three seconds */
+    else if (s === 'disconnected') setTimeout(() => { if (pc.connectionState === 'disconnected') lost('disconnected'); }, 3000);
+  };
   const offer = await pc.createOffer();
   await pc.setLocalDescription(offer);
   const r = await fetch('https://api.openai.com/v1/realtime/calls', { method: 'POST', headers: { authorization: 'Bearer ' + o.secret, 'content-type': 'application/sdp' }, body: offer.sdp });
@@ -149,7 +174,8 @@ async function webrtcConnect(o) {
 
   /* the wave's ears: one analyser per direction */
   const AC = window.AudioContext || window.webkitAudioContext;
-  const actx = AC ? new AC() : null;
+  const actx = o.audioContext || (AC ? new AC() : null);
+  if (actx && actx.state === 'suspended') actx.resume().catch(() => {});
   let userA = null, agentA = null;
   if (actx) { userA = actx.createAnalyser(); userA.fftSize = 256; try { actx.createMediaStreamSource(mic).connect(userA); } catch (e) { userA = null; } }
   const attachAgent = () => { if (actx && remote && !agentA) { try { agentA = actx.createAnalyser(); agentA.fftSize = 256; actx.createMediaStreamSource(remote).connect(agentA); } catch (e) { agentA = null; } } };
@@ -176,13 +202,14 @@ const c = () => copy();
 async function start() {
   if (phase === 'minting' || phase === 'connecting' || phase === 'live' || phase === 'reconnecting') return;
   const startedFromText = K.state().status !== 'IDLE';
+  const unlock = unlockAudio();          /* inside the tap, before any await */
   phase = 'minting'; strip.hidden = false; paint();
   setStatus((c().connecting || 'Connecting…') + ' ' + (c().consent || ''));
   try {
     const m = await mint(resumeSummary());
     caps = m.caps || {}; model = m.model || null;
     phase = 'connecting'; paint();
-    conn = await transport().connect({ secret: m.value, model, onEvent, onClose, onNeedTap: () => setStatus(c().tap || 'Tap to hear', 'warn') });
+    conn = await transport().connect({ secret: m.value, model, onEvent, onClose, audioEl: unlock.audioEl, audioContext: unlock.actx, onNeedTap: () => setStatus(c().tap || 'Tap to hear', 'warn') });
     await conn.ready;
     rstate = VR.blank(); bubbles = {}; meBubbles = {};
     phase = 'live'; sub = 'thinking'; muted = false; muteReason = null; reconnects = 0;
@@ -265,8 +292,8 @@ function armTimers() {
   timers.push(setTimeout(() => { if (phase === 'live' || phase === 'reconnecting') end('cap'); }, hard * 1000));
   ticker = setInterval(() => {
     if (phase !== 'live' || muted) return;
-    if (Date.now() - lastActivity > quiet * 1000 && !rstate.speaking && !rstate.response && !toolBusy) mute(true, 'silence');
-  }, 5000);
+    if (Date.now() - lastActivity > quiet * 1000 && !rstate.speaking && !rstate.response && !toolBusy) { mute(true, 'silence'); track('voice_silence_mute', {}); }
+  }, Math.max(250, Math.min(5000, quiet * 1000 / 3)));
 }
 document.addEventListener('visibilitychange', () => {
   if (phase !== 'live') return;

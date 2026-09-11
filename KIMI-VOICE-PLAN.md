@@ -12,6 +12,16 @@
 The OpenAI key on the project can mint Realtime sessions today (`gpt-realtime`,
 `gpt-realtime-2.1`, `gpt-realtime-mini` — verified 2026-09-11 via `/api/ask?health=1&models=1`).
 
+**Status, 2026-09-11 — Phases 1 and 2 shipped** (client: "just start working on it, make sprints
+and do QA and do it all in a loop"). Sprint 1: mint endpoint, brief, reducer, tools — 16 unit
+tests, live mint verified. Sprint 2: the browser client, the strip, one thread for voice and text,
+19 pages — a fake-peer Playwright suite. Sprint 3: the edge cases in §5 — caps, silence, tab
+hidden, tap-to-hear, reconnect and give-up, the fast track by voice, plus the docs (KIMI.md §4f).
+Defaults taken where §10 asked for a decision: `gpt-realtime`, `marin`, all pages, 10/15 min and
+6 mints/IP/hour, the consent line as written; text-only primary → `openai/gpt-4o-mini`. Still
+theirs: rotate the OpenAI key; the first real spoken session on a phone against production
+(this box cannot reach OpenAI). Phase 3 (hand-off into the New Voices phone agent) not started.
+
 ---
 
 ## 0. The one idea

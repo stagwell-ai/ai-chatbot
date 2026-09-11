@@ -273,6 +273,56 @@ alone. Asserted in the value and fast-track suites.
 Decided the same afternoon: `flags.contactGate` is off — the cards come before the email is
 asked (§9). The skip link on the form now applies to the fast track's form only.
 
+## 4f. Voice — "Chat with me"
+
+Client, 2026-09-11: a button on the chat box for a spoken conversation, GPT as the default brain,
+text and voice in one thread, a sound bubble with waves for both sides, on mobile too. The plan is
+`KIMI-VOICE-PLAN.md`; this is what shipped.
+
+**One idea.** The thread is the single source of truth. What the visitor says is typed out (a grey
+interim bubble that settles when the transcript is final); what the agent says is typed out as it
+speaks; what the visitor types while the session is open goes to the agent and is answered by
+voice. The Kimi flow stays the state: the Realtime model can only move a step through
+`SAIKIMI.tools` — `submit_answer(text)`, `request_contact(kind)`, `start_over()` — and every tool
+is the step a typed turn would have taken, so the nine-step order, the lead, HubSpot and the
+events are identical to a typed conversation.
+
+**Wire.** `POST /api/voice/session` mints a two-minute OpenAI Realtime client secret (the key never
+leaves the function; 6 mints per IP per hour). The browser opens WebRTC to OpenAI — mic up, audio
+down, events on a data channel; audio never touches our servers. `api/_lib/voice/instructions.js`
+builds the agent's brief from the same JSON as the text flow: the nine steps, every active
+product with its catalog line, never invent, email/phone read back, say what is shown rather than
+reading it out. `next/voice-reducer.js` turns server events into thread ops (pure, unit-tested);
+`next/voice.js` runs the session; `next/voice-wave.js` draws the strip. GA and beta event names
+are both understood.
+
+**The strip.** Ink wave = the visitor (mic level), teal wave = the agent (remote level), dots =
+thinking, flat dim = muted, dashed = reconnecting; Mute and End beside it; colours only under
+reduced motion; 30 fps on phones. "Chat with me" becomes the live indicator.
+
+**Edge cases handled (all in `test:voice`).** Microphone refused / none / http → the button is
+hidden or one honest line, text carries on. Mint 503/429 → unavailable/busy, text carries on.
+Connection drop or an API session error → three reconnects, each primed with a summary of the
+conversation and the current step, one line "I'm back"; after that, "Voice dropped", text
+carries on. Soft cap (10 min): the agent is told to wrap up; hard cap (15): the session ends.
+Silence (90 s): the mic mutes, a tap on the strip resumes. Tab hidden: muted; visible: back. Safari
+refusing playback: "Tap to hear". Barge-in by voice or by typing: the agent's bubble ends with "—"
+and its audio is cancelled. Start over: the thread and flow clear, the voice stays open and the
+agent greets again (from the button or from the model's own tool). Text first, voice later: the
+mint carries a summary so nothing is re-asked. The fast track by voice: the form appears with no
+written intro, the agent says it. Every link still opens a new tab, so the session survives a
+product page.
+
+**Defaults chosen (client asked to proceed without answering):** `gpt-realtime`, voice `marin`,
+all 19 pages, caps 10/15 min and 6 mints/IP/hour, consent line in the strip while connecting.
+Text-only mode runs GPT first: `KIMI_PRIMARY_MODEL=openai/gpt-4o-mini`, Kimi gateway second.
+"Why this fits" on the voice path is the deterministic template.
+
+**Not yet verified for real:** this box cannot reach OpenAI, so the browser suite runs against a
+fake Realtime peer through the transport seam (`window.__SAIVOICE_TRANSPORT`). The mint is
+verified live from production; the first real spoken session is the client's phone on the
+production URL.
+
 ## 5. No-LLM fallback
 
 Launch requirement, tested in a browser with `/api/ask` aborted: pills → questions → form →
@@ -297,6 +347,14 @@ response carries `{provider, model, chainIndex, fallbacks, failed[]}` for the
 ```
 KIMI_PRIMARY_MODEL=kimi/kimi-for-coding-highspeed      # default when LLM_API_KEY is set
 KIMI_SECONDARY_MODEL=openai/gpt-4o-mini                # default when OPENAI_API_KEY is set
+# production (2026-09-11): KIMI_PRIMARY_MODEL=openai/gpt-4o-mini, KIMI_SECONDARY_MODEL=kimi/kimi-for-coding-highspeed
+VOICE_MODEL=gpt-realtime                               # or gpt-realtime-mini (≈⅕ the cost)
+VOICE_NAME=marin                                       # the agent's voice
+VOICE_ENABLED=on                                       # off hides the button server-side; flags.voice in kimi.json hides it client-side
+VOICE_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe          # what types the visitor's words out
+VOICE_SESSION_SECONDS=900  VOICE_SOFT_SECONDS=600      # hard / soft caps
+VOICE_SILENCE_MUTE_SECONDS=90  VOICE_MINT_PER_HOUR=6   # the silence mute; mints per IP per hour
+VOICE_SECRET_SECONDS=120  VOICE_MAX_OUTPUT_TOKENS=700  # the client secret's life; per-turn cap
 KIMI_TERTIARY_MODEL=anthropic/claude-haiku-4-5-20251001 # default when ANTHROPIC_API_KEY is set; 'off' to disable
 KIMI_PRIMARY_TIMEOUT_MS=7000 KIMI_SECONDARY_TIMEOUT_MS=4000 KIMI_TOTAL_DEADLINE_MS=12000 KIMI_LLM_ENABLED=true
 ```
@@ -419,6 +477,13 @@ work there.
 
 ## 13. Analytics events
 
+Voice (2026-09-11): `voice_session_started {model, resumed}`, `voice_session_ended {seconds,
+turns, reason: user|cap|dropped}`, `voice_unavailable {reason: denied|nomic|busy|unconfigured|
+network}`, `voice_reconnected {attempt}`, `voice_tool_call {name, status}`, `voice_barge_in`,
+`voice_muted`, `voice_silence_mute`, `voice_error {code}`; `kimi_started {input_type:'voice'}`
+and `kimi_restarted {via}`. Transcripts never go to analytics; the full email address never does
+(the tool result carries `emailGiven`, not the address).
+
 `SAIANALYTICS.track(name, props)` → the in-page bus (`SAI.events`, PII-redacting) and, when
 present on the page, `dataLayer`, `gtag`, `mixpanel`, `analytics`. Events: `kimi_started`,
 `kimi_goal_selected`, `kimi_free_text_submitted`, `kimi_question_answered`,
@@ -470,6 +535,21 @@ a generated product page, the card returns to its opening state — empty thread
 with the opening hint, pills enabled, blank flow state, focus in the field — and takes a fresh
 first message; pressed while an answer is still in flight, the abandoned answer never repopulates
 the box or re-locks the composer.
+
+`npm test` also runs `voice.test.mjs` (16): the brief carries the nine steps in order and every
+active product with its own line, no URL, no price, no inactive product; the tools and their
+kinds; the session object; the mint (secret returned, key never; 503/502/504; resume capped); the
+reducer (visitor interim → final, agent stream GA and beta names, barge-in and cancel cut-offs,
+tool calls once with parsed arguments, errors short, unknown events ignored, client event shapes).
+
+`npm run test:voice` — Playwright against a fake Realtime peer injected through the transport
+seam: the button, strip and greeting; agent and visitor transcripts; the full nine steps through
+`submit_answer` with the lead created on the email and updated on the phone and no question text
+drawn by hero-agent; typing over voice; barge-in by voice and by typing; mute/end and text after;
+Start over from the button and from the model; text-first priming; microphone refused; mint
+503/429; drop → reconnect primed; soft and hard caps; silence mute and the tap back; tab hidden;
+Safari's tap-to-hear; the fast track by voice; an API session error → reconnect; three drops →
+give up honestly; a phone viewport; a browser without a microphone hides the button.
 
 `npm run test:order` — Playwright, every model off, the site lookup mocked known/unknown: the
 client's nine steps asserted in order from a pill (website with no skip chip → "couldn't find

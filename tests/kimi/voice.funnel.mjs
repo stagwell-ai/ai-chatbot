@@ -37,15 +37,16 @@ window.__SAIVOICE_TRANSPORT = {
     F.connects++; F.lastSecret = o.secret; F.model = o.model;
     if (F.denied) { const e = new Error('Permission denied'); e.name = 'NotAllowedError'; throw e; }
     if (F.failConnect) throw new Error('sdp_500');
-    F._onEvent = o.onEvent; F._onClose = o.onClose;
+    F._onEvent = o.onEvent; F._onClose = o.onClose; F.gotAudioEl = !!o.audioEl;
+    if (F.needTap) setTimeout(() => o.onNeedTap && o.onNeedTap(), 0);
     return {
       ready: Promise.resolve(),
       send: obj => F.sent.push(obj),
       close: () => { F.closed++; },
       setMuted: m => { F.muted = m; },
       setSpeakerMuted: () => {},
-      resumeAudio: () => Promise.resolve(),
-      needsTap: () => false,
+      resumeAudio: () => { F.needTap = false; F.resumed = (F.resumed || 0) + 1; return Promise.resolve(); },
+      needsTap: () => !!F.needTap,
       levels: () => F.levels
     };
   }
@@ -63,7 +64,7 @@ async function open(opts = {}) {
     state.mints.push(JSON.parse(r.request().postData() || '{}'));
     if (opts.mint === 503) return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'voice_unconfigured' }) });
     if (opts.mint === 429) return r.fulfill({ status: 429, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'rate_limited' }) });
-    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, value: 'ek_test_' + state.mints.length, expiresAt: 1, model: 'gpt-realtime', voice: 'marin', caps: { sessionSeconds: 900, softSeconds: 600, silenceMuteSeconds: 90 } }) });
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, value: 'ek_test_' + state.mints.length, expiresAt: 1, model: 'gpt-realtime', voice: 'marin', caps: Object.assign({ sessionSeconds: 900, softSeconds: 600, silenceMuteSeconds: 90 }, opts.caps || {}) }) });
   });
   await page.route('**/api/ask', r => {
     const body = JSON.parse(r.request().postData() || '{}');
@@ -390,6 +391,109 @@ try {
     await agentSays(page, 'What are you trying to solve?');
     ok((await thread(page)).length === 1, 'transcripts land on the phone too');
     ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the caps: the agent is told to wrap up at the soft cap, the session ends at the hard cap');
+  {
+    const { ctx, page } = await open({ caps: { softSeconds: 1, sessionSeconds: 2, silenceMuteSeconds: 900 } });
+    await startVoice(page);
+    await page.waitForFunction(() => window.__voiceFake.sent.some(e => e.type === 'response.create' && e.response && /quicker to type/i.test(e.response.instructions)), null, { timeout: 5000 });
+    ok(true, 'at the soft cap the agent is told to say the rest is quicker to type');
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'ended', null, { timeout: 5000 });
+    const ended = await tracked(page, 'voice_session_ended');
+    ok(ended.length === 1 && ended[0][1].reason === 'cap', 'at the hard cap the session ends {reason:cap}');
+    ok(await page.evaluate(() => window.__voiceFake.closed === 1), 'the connection is closed');
+    ok(!(await page.$eval('#agentInput', el => el.disabled)), 'the composer stays open for text');
+    await ctx.close();
+  }
+
+  console.log('\n▶ silence: a quiet spell mutes the mic, a tap on the strip brings it back');
+  {
+    const { ctx, page } = await open({ caps: { silenceMuteSeconds: 1 } });
+    await startVoice(page);
+    await agentSays(page, 'What are you trying to solve?');
+    await page.waitForFunction(() => window.SAIVOICE.state().muted === true, null, { timeout: 6000 });
+    let s = await strip(page);
+    ok(s.state === 'muted' && /quiet spell/i.test(s.status), 'muted after the quiet spell: "' + s.status + '"');
+    ok((await vstate(page)).muteReason === 'silence' && (await tracked(page, 'voice_silence_mute')).length === 1, 'recorded as a silence mute');
+    ok(await page.evaluate(() => window.__voiceFake.muted === true), 'the mic track is off');
+    await page.click('#voiceWave');
+    await page.waitForTimeout(100);
+    ok((await vstate(page)).muted === false && await page.evaluate(() => window.__voiceFake.muted === false), 'a tap on the strip un-mutes');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the tab goes to the background: the mic is muted; coming back un-mutes');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
+    ok((await vstate(page)).muted === true && (await vstate(page)).muteReason === 'hidden', 'hidden → muted');
+    await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); });
+    ok((await vstate(page)).muted === false, 'visible → un-muted');
+    await ctx.close();
+  }
+
+  console.log('\n▶ Safari will not play until tapped: "Tap to hear", and the tap plays');
+  {
+    const { ctx, page } = await open();
+    await fake(page, () => { window.__voiceFake.needTap = true; });
+    await startVoice(page);
+    await page.waitForFunction(() => /Tap to hear/.test(document.querySelector('#voiceStatus').textContent), null, { timeout: 3000 });
+    ok(true, 'the strip says "Tap to hear"');
+    ok(await page.evaluate(() => window.__voiceFake.gotAudioEl === true), 'the audio element was born inside the tap and handed to the transport');
+    await page.click('#voiceWave');
+    ok(await page.evaluate(() => window.__voiceFake.resumed === 1 && window.__voiceFake.needTap === false), 'the tap resumes playback');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the fast track by voice: request_contact puts the form up, quietly');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    await agentSays(page, 'What are you trying to solve?');
+    const before = (await thread(page)).length;
+    const r = await toolCall(page, 'request_contact', { kind: 'call' });
+    ok(r.status === 'CONTACT_CAPTURE' && r.shown.some(s => /contact form/.test(s)), 'the tool answers: the form is shown, wait (' + r.status + ')');
+    ok(!!(await page.$('#heroLeadForm')), 'the form is in the thread');
+    ok(await page.$eval('#agentThread .turnb--form .turnb__text', e => e.textContent.trim() === ''), 'with no written intro — the agent says it');
+    ok((await thread(page)).length === before + 1, 'one new bubble: the form');
+    await page.fill('#heroLeadForm [name=name]', 'Test Visitor');
+    await page.fill('#heroLeadForm [name=email]', 'visitor@example-brand.com');
+    await page.fill('#heroLeadForm [name=phone]', '+1 212 555 0100');
+    await page.click('#heroLeadForm .askform__go');
+    await page.waitForFunction(() => !document.querySelector('#heroLeadForm'), null, { timeout: 12000 });
+    ok(state.leads.length === 1 && state.leads[0].discovery.contactRequest === 'call', 'the lead carries the call request');
+    ok((await vstate(page)).phase === 'live', 'the voice stays open through it');
+    await ctx.close();
+  }
+
+  console.log('\n▶ a session error from the API is treated as a drop: reconnect');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    await emit(page, { type: 'error', error: { code: 'session_expired', message: 'Your session hit the maximum duration' } });
+    await page.waitForFunction(() => window.SAIVOICE.state().reconnects > 0, null, { timeout: 5000 });
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'live', null, { timeout: 10000 });
+    ok(state.mints.length === 2 && (await tracked(page, 'voice_error')).length === 1, 'a fresh secret and a reconnect, the error recorded');
+    await ctx.close();
+  }
+
+  console.log('\n▶ three drops in a row: give up honestly, text carries on');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    for (let i = 0; i < 3; i++) {
+      await fake(page, () => window.__voiceFake.drop('failed'));
+      await page.waitForFunction(() => window.SAIVOICE.phase() === 'live' || window.SAIVOICE.phase() === 'ended', null, { timeout: 10000 });
+    }
+    await fake(page, () => window.__voiceFake.drop('failed'));
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'ended', null, { timeout: 10000 });
+    const s = await strip(page);
+    ok(/Voice dropped/i.test(s.status), 'after the third reconnect fails again it says so: "' + s.status + '"');
+    ok((await tracked(page, 'voice_session_ended')).some(e => e[1].reason === 'dropped'), 'voice_session_ended {reason:dropped}');
+    ok(!(await page.$eval('#agentInput', el => el.disabled)), 'the composer is open for text');
     await ctx.close();
   }
 
