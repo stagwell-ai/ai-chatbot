@@ -1595,3 +1595,14 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 /* the dismiss rides above the message, never behind it */
 .hc-launch__say{position:relative;z-index:1}
 .hc-launch__x{z-index:5}
+
+/* the voice mark sits in its own round, centred against the two shorter lines of the message */
+.hc-launch{max-width:min(320px,86vw)}
+.hc-launch__say{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.hc-launch__mic{width:32px !important;height:32px !important;flex:0 0 auto;margin:0;padding:7px;
+  border-radius:50%;background:rgba(0,156,189,.1);
+  box-shadow:inset 0 0 0 1px rgba(0,156,189,.3);color:var(--teal);box-sizing:border-box}
+.hc-launch__say > span{flex:1 1 auto;text-wrap:balance;max-width:220px;line-height:1.45}
+/* the three groups draw closer: less air under the title and under the panel */
+.hc-page .hcs__kind{margin:0 0 12px !important}
+.hc-page .hcs__media{flex:0 0 128px !important;height:128px !important;margin:0 0 14px}
