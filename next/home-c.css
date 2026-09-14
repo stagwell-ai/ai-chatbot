@@ -593,3 +593,11 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
 /* the film is now a video: same frame, same crop, and it rests when it is off screen */
 .hc-page video.intro__pic{display:block;background:#0B0B0C}
 .hc-page .intro__media::after{background:linear-gradient(180deg,rgba(11,11,12,.34) 0%,rgba(11,11,12,.40) 50%,rgba(11,11,12,.58) 100%)}
+
+/* a fine dot grid over the film: it settles the moving footage so the type reads on every frame.
+   Both layers ride the one ::after — dots first, then the veil under them. */
+.hc-page .intro__media::after{
+  background-image:radial-gradient(rgba(8,10,14,.34) 0.7px,transparent 0.8px),
+    linear-gradient(180deg,rgba(11,11,12,.28) 0%,rgba(11,11,12,.34) 50%,rgba(11,11,12,.52) 100%);
+  background-size:5px 5px,auto;
+  background-position:0 0,0 0}
