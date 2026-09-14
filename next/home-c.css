@@ -1002,3 +1002,27 @@ body.hc-page{--hc-ground:#FBFBFA;--hc-edge:#E7E7E3}
 .hc-page .intro__more svg{width:22px;height:22px;animation:hcNudge 2.1s ease-in-out infinite}
 @keyframes hcNudge{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
 @media (prefers-reduced-motion:reduce){.hc-page .intro__more svg{animation:none}}
+
+/* ═══ the closing call: one panel, no chat ══════════════════════════════════════════════════════
+   The words and the buttons are the ones that were already here; the form and its dot field are
+   gone, and they sit on a panel that runs from near-black into the logo's teal. */
+.hc-page .ask-end{background:var(--hc-ground);padding-block:clamp(48px,5vw,80px) !important}
+.hc-page .ask-end #endThink,.hc-page .ask-end .ask-mini{display:none !important}
+.hc-page .ask-end .wrap.ask-end__in{max-width:1240px;margin-inline:auto;
+  padding:clamp(56px,8vw,110px) clamp(24px,5vw,64px);border-radius:24px;text-align:center;
+  background:linear-gradient(105deg,#05080C 0%,#071A28 38%,#00506A 72%,#009CBD 100%)}
+.hc-page .ask-end .display--end,.hc-page .ask-end .display--end *{color:#FFFFFF !important;
+  font-size:clamp(34px,1rem + 2.9vw,58px) !important;font-weight:400 !important;margin:0 !important}
+.hc-page .ask-end .ask-end__lede{color:rgba(255,255,255,.78) !important;font-family:var(--ui);
+  font-size:16px;margin:14px 0 0 !important}
+.hc-page .ask-end .ask-end__acts{display:flex;justify-content:center;margin-top:clamp(24px,3vw,36px)}
+.hc-page .ask-end .ask-end__ways{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+/* on the panel the main call is the white pill, the quiet one is outlined in white */
+.hc-page .ask-end .btn--ink{background:#FFFFFF !important;color:var(--ink) !important}
+.hc-page .ask-end .btn--ink:hover{background:rgba(255,255,255,.88) !important}
+.hc-page .ask-end .call__btn{background:transparent !important;color:#FFFFFF !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55) !important}
+.hc-page .ask-end .call__btn:hover{background:rgba(255,255,255,.14) !important;color:#FFFFFF !important}
+.hc-page .ask-end .call__form,.hc-page .ask-end .call__done{color:var(--ink)}
+.hc-page .ask-end .ask-end__ways .btn,.hc-page .ask-end .call{width:auto !important;flex:0 0 auto}
+.hc-page .ask-end .ask-end__ways{width:auto;max-width:none}
