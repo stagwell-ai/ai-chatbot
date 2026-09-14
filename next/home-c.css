@@ -1415,3 +1415,7 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 .hc-page .why__item,.hc-page .why__item:nth-child(even),
 .hc-page .why__item:nth-child(4n+3){background:#F2F2F2 !important}
 .hc-page .hc-port__tab:hover{background:#F2F2F2}
+/* the card ground the client picked */
+.hc-page .hcs__card,.hc-page .hcs__card:hover,
+.hc-page .why__item,.hc-page .why__item:nth-child(even),
+.hc-page .why__item:nth-child(4n+3){background:#F3F3F3 !important}
