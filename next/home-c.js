@@ -107,14 +107,32 @@
     tabs.forEach((t, n) => t.classList.toggle('is-on', n === at));
     slides.forEach((s, n) => s.classList.toggle('is-on', n === at));
   };
-  tabs.forEach((t, n) => t.addEventListener('click', () => show(n)));
+  /* it moves on by itself, the ink filling the live tab as its turn runs down; a hover, a touch
+     or a click hands control back to the reader */
+  const DWELL = 6000;
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  let timer = 0, held = false, seen = false;
+  const arm = () => {
+    const t = tabs[at];
+    t.classList.remove('is-timing'); void t.offsetWidth;
+    if (!still.matches) t.classList.add('is-timing');
+  };
+  const start = () => { if (timer || held || !seen || still.matches) return; arm(); timer = setInterval(() => { show(at + 1); arm(); }, DWELL); };
+  const stop = () => { if (timer) { clearInterval(timer); timer = 0; } tabs.forEach(t => t.classList.remove('is-timing')); };
+  const again = () => { stop(); start(); };
+  tabs.forEach((t, n) => t.addEventListener('click', () => { show(n); again(); }));
+  sec.addEventListener('pointerenter', () => { held = true; stop(); });
+  sec.addEventListener('pointerleave', () => { held = false; start(); });
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(es => { seen = es[0].isIntersecting; seen ? start() : stop(); }, { threshold: .25 }).observe(sec);
+  else { seen = true; start(); }
   const prev = sec.querySelector('.hc-port__nav--prev');
   const next = sec.querySelector('.hc-port__nav--next');
-  if (prev) prev.addEventListener('click', () => show(at - 1));
-  if (next) next.addEventListener('click', () => show(at + 1));
+  if (prev) prev.addEventListener('click', () => { show(at - 1); again(); });
+  if (next) next.addEventListener('click', () => { show(at + 1); again(); });
   sec.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') { show(at + 1); e.preventDefault(); }
-    else if (e.key === 'ArrowLeft') { show(at - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { show(at + 1); again(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { show(at - 1); again(); e.preventDefault(); }
   });
 })();
 

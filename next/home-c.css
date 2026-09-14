@@ -844,3 +844,89 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
   .hc-page .hcs__head{flex-direction:column;align-items:flex-start;gap:14px}
   .hc-page .hcs__rail > li{flex:0 0 78vw}
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════
+   One type rule, one rhythm, one arrow.
+   · the serif belongs to the chat: the hero and the closing ask. Every other title runs in the sans
+   · every section between the film and the footer breathes by the same measure
+   · the cards carry their own ground, and the section title starts on the first card's edge
+   ═══════════════════════════════════════════════════════════════════════════════════════════════ */
+body.hc-page{--hc-rhythm:clamp(64px,6.6vw,104px)}
+
+/* ── type ─────────────────────────────────────────────────────────────────────────────────────── */
+.hc-page .display,.hc-page .display *,.hc-page .hc-port__h,.hc-page .hcs__h,
+.hc-page .hc-port__eb,.hc-page .hcs__desc{font-family:var(--ui) !important}
+.hc-page .display{letter-spacing:-.025em;font-weight:500 !important}
+.hc-page .display *{font-weight:500 !important}
+.hc-page .hero .display,.hc-page .hero .display *,
+.hc-page .chat-over__title,.hc-page .chat-over__title *,
+.hc-page .ask-end .display,.hc-page .ask-end .display *{font-family:var(--hc-serif) !important;
+  font-weight:400 !important;letter-spacing:-.015em}
+.hc-page .hc-port__h{font-weight:500;letter-spacing:-.02em}
+
+/* ── rhythm ───────────────────────────────────────────────────────────────────────────────────── */
+.hc-page .intro,.hc-page .hc-port,.hc-page .why,.hc-page .hcs,.hc-page .ask-end{
+  padding-top:var(--hc-rhythm) !important;padding-bottom:var(--hc-rhythm) !important}
+.hc-page .hc-port .display--port,.hc-page .why .display--cos,.hc-page .hcs__head{
+  margin-bottom:clamp(28px,3vw,44px) !important}
+
+/* ── the suite, read from the reference: flat cards on their own ground ───────────────────────── */
+.hc-page .hcs__head,.hc-page .hcs__nav{max-width:1180px;margin-inline:auto;
+  padding-inline:clamp(20px,4vw,40px)}
+.hc-page .hcs__h{text-align:left}
+/* the rail starts on the head's left edge and runs off the right, as in the reference */
+.hc-page .hcs__rail{max-width:none;margin-inline:0;width:100%;
+  padding-left:max(clamp(20px,4vw,40px),calc((100% - 1180px) / 2 + clamp(20px,4vw,40px)));
+  padding-right:0;margin-top:0}
+.hc-page .hcs__card{background:#EFEFEC;border-radius:14px;padding:14px 14px 18px;height:100%;
+  transition:background .2s ease}
+.hc-page .hcs__card:hover{background:#E8E8E3}
+.hc-page .hcs__media{border-radius:10px}
+.hc-page .hcs__desc{margin:14px 2px 0}
+.hc-page .hcs__go{margin:12px 2px 0}
+.hc-page .hcs__nav{margin-top:22px}
+
+/* ── one arrow system: round outlined buttons, under the thing they move ──────────────────────── */
+.hc-page .hc-port__nav{position:static;width:44px;height:44px;border-radius:999px;
+  background:transparent;color:var(--ink);border:1px solid rgba(11,18,32,.22);
+  transition:background .2s ease,border-color .2s ease}
+.hc-page .hc-port__nav:hover{background:#FFFFFF;border-color:rgba(11,18,32,.34)}
+.hc-page .hc-port__arrows{display:flex;gap:10px;margin-top:18px}
+
+/* ── the tabs move on their own: the ink fills the live one, then it hands over ────────────────── */
+.hc-page .hc-port__tab{position:relative;z-index:0;overflow:hidden;border-radius:8px;isolation:isolate}
+.hc-page .hc-port__all{border-radius:8px}
+.hc-page .hc-port__tab::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--ink);
+  transform:scaleX(0);transform-origin:left center}
+.hc-page .hc-port__tab.is-on{background:transparent;border-color:var(--ink);color:#FFFFFF}
+.hc-page .hc-port__tab.is-on::before{transform:scaleX(1)}
+.hc-page .hc-port__tab.is-on.is-timing::before{animation:hcFill var(--hc-dwell,6s) linear forwards}
+.hc-page .hc-port__tab:not(.is-on)::before{transform:scaleX(0)}
+@keyframes hcFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hc-port__tab.is-on.is-timing::before{animation:none;transform:scaleX(1)}
+}
+
+/* the live tab fills with a soft grey, as in the reference — not ink */
+.hc-page .hc-port__tab{background:#FFFFFF;border-color:rgba(11,18,32,.12);color:var(--ink)}
+.hc-page .hc-port__tab:hover{background:#F2F2EF;border-color:rgba(11,18,32,.2)}
+.hc-page .hc-port__tab::before{background:#DCDCD7}
+.hc-page .hc-port__tab.is-on{background:#FFFFFF;border-color:rgba(11,18,32,.12);color:var(--ink)}
+.hc-page .hc-port__all{background:#FFFFFF;border-color:rgba(11,18,32,.12)}
+/* the two arrows sit in the picture's corners again, quiet over the still */
+.hc-page .hc-port__nav{position:absolute;bottom:clamp(14px,2vw,26px);width:56px;height:42px;
+  border-radius:0;border:0;background:rgba(235,235,232,.55);color:#FFFFFF;backdrop-filter:blur(2px)}
+.hc-page .hc-port__nav:hover{background:rgba(235,235,232,.78);border:0}
+.hc-page .hc-port__nav--prev{left:clamp(14px,2vw,26px)}
+.hc-page .hc-port__nav--next{right:clamp(14px,2vw,26px)}
+
+/* Products runs the full width of the screen, as in the reference */
+.hc-page .hc-port > .wrap{max-width:none !important;width:100% !important;
+  padding-inline:clamp(14px,2.2vw,28px) !important;margin-inline:0 !important}
+.hc-page .hc-port__stage{aspect-ratio:auto;height:clamp(420px,64vh,720px)}
+.hc-page .hc-port__cap{max-width:min(620px,52%)}
+@media (max-width:760px){
+  .hc-page .hc-port__stage{height:clamp(380px,58vh,520px)}
+  .hc-page .hc-port__cap{max-width:none}
+}
+.hc-page .hc-port__h{text-wrap:balance}
