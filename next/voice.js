@@ -502,6 +502,7 @@ function fail(reason, e) {
 function teardown() {
   if (stage) { const s = stage; stage = null; intro = null; s.destroy(); }
   pendingChips = null;
+  clearFalseBarge();
   if (hearing) { if (!hearing.textContent) hearing.remove(); hearing = null; }
   timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = [];
   if (ticker) { clearInterval(ticker); ticker = 0; }
@@ -578,6 +579,37 @@ function onEvent(ev) {
   const r = VR.reduce(rstate, ev);
   rstate = r.state;
   r.ops.forEach(apply);
+}
+
+/* ── A FALSE ALARM IS NOT AN INTERRUPTION ──
+   The server cuts the agent off the instant its VAD thinks someone spoke, and
+   a door, a cough or a noisy room trips it. Left alone the agent simply stops
+   mid-sentence and never comes back, which reads as broken. So a cut-off arms
+   a short watch: if real words land, the interruption stands; if the transcript
+   comes back empty, or nothing arrives at all, the agent is asked to carry on
+   from where it stopped. Once per cut-off, never in a loop. */
+const FALSE_BARGE_MS = 2200;
+let falseBarge = null;
+function armFalseBarge(itemId) {
+  clearFalseBarge();
+  if (phase !== 'live') return;
+  const said = (rstate.items[itemId] && rstate.items[itemId].text) || '';
+  falseBarge = { itemId, said, resumed: false, timer: setTimeout(() => resumeAfterNoise('silence'), FALSE_BARGE_MS) };
+  timers.push(falseBarge.timer);
+}
+function clearFalseBarge() { if (falseBarge) { clearTimeout(falseBarge.timer); falseBarge = null; } }
+function resumeAfterNoise(why) {
+  const fb = falseBarge;
+  if (!fb || fb.resumed || phase !== 'live') { clearFalseBarge(); return; }
+  /* the model is already saying something new — leave it alone */
+  if (rstate.response || rstate.speaking) { clearFalseBarge(); return; }
+  fb.resumed = true; clearFalseBarge();
+  const tail = String(fb.said || '').slice(-160);
+  const line = c().resumed || 'That was background noise, not the visitor. Carry on from exactly where you stopped, in the same sentence. Do not greet them, do not start again and do not repeat what you have already said.';
+  dbg('false-barge', why + ' → resuming');
+  track('voice_false_barge', { why });
+  sendAll([{ type: 'response.create', response: { instructions: line + (tail ? ' You had got as far as: "' + tail + '"' : '') } }]);
+  setSub('thinking');
 }
 
 /* ── THE ORDER OF THE THREAD ──
@@ -688,8 +720,12 @@ function apply(op) {
       const el = meBubble(op.itemId);
       el.classList.remove('turnb--interim', 'turnb--hearing');
       el.textContent = op.text;
-      if (!op.text) el.remove();
-      else { turns++; lastActivity = Date.now(); H.settleChips(); if (stage) closeStage('barge'); }
+      if (!op.text) { el.remove(); resumeAfterNoise('empty'); }   /* the mic heard something; it was not words */
+      else {
+        turns++; lastActivity = Date.now(); H.settleChips();
+        clearFalseBarge();                     /* they really did speak: the interruption stands */
+        if (stage) closeStage('barge');
+      }
       break;
     }
     case 'ai.start':
@@ -718,15 +754,22 @@ function apply(op) {
     case 'ai.cutoff': {
       const el = bubbles[op.itemId];
       if (el && !el.classList.contains('turnb--cutoff')) { el.classList.add('turnb--cutoff'); track('voice_barge_in', {}); }
-      if (stage) closeStage('barge');          /* the story was cut off: the show is over */
+      /* NOT the end of the show yet. The server truncates the answer the moment
+         it thinks someone spoke, and a cough or a room does that too. We wait
+         to see whether real words arrive; if none do, we pick the answer back
+         up (client, 2026-09-13: "any background noise will have it just pause
+         and then it feels like it's broken"). */
+      armFalseBarge(op.itemId);
       break;
     }
     case 'ai.end':
       lastActivity = Date.now();
-      /* the STORY's response is over: whatever the words did, the stage goes.
-         Only that response — a wordless one before it (a tool call, an empty
-         turn) used to close the stage before the first product was named. */
-      if (stage && intro && intro.responseId && intro.responseId === op.responseId) closeStage('end', 900);
+      /* the STORY's response is over: the stage goes. Only that response — a
+         wordless one before it (a tool call, an empty turn) used to close the
+         stage before the first product was named. And only when it FINISHED:
+         a cancelled response means it was cut off, which may yet turn out to
+         be noise, so that path is left to me.final and the false-barge watch. */
+      if (stage && intro && intro.responseId && intro.responseId === op.responseId && op.status !== 'cancelled') closeStage('end', 900);
       if (!rstate.speaking) setSub(muted ? 'muted' : 'listening');
       break;
     case 'agent.speaking':
@@ -781,6 +824,7 @@ function sendText(text) {
   const v = String(text == null ? '' : text).trim();
   if (!v || phase !== 'live') return false;
   if (stage) closeStage('typed');
+  clearFalseBarge();                           /* they typed: a real turn, not noise */
   if (pendingChips) { if (pendingChips.timer) clearTimeout(pendingChips.timer); pendingChips = null; }   /* answered another way */
   H.open();
   H.me(v);

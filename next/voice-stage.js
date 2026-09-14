@@ -131,12 +131,16 @@
           '<span class="vstage__tileline">' + esc(p.line) + '</span>' +
         '</div>';
       deck.appendChild(tile);
-      /* its badge on the roster — every member named so far, in order */
+      /* its badge on the roster — every member named so far, in order. The one
+         being SPOKEN ABOUT right now is lit and the rest dim, so the screen
+         always says which name the voice is on (client, 2026-09-13). */
       const badge = document.createElement('span');
-      badge.className = 'vstage__badge';
+      badge.className = 'vstage__badge is-speaking';
       badge.setAttribute('data-product', p.id);
       badge.innerHTML = emblem(p.icon, 'vstage__emblem--badge') + '<span class="vstage__badgename">' + esc(p.name) + '</span>';
+      roster.querySelectorAll('.vstage__badge.is-speaking').forEach(b => b.classList.remove('is-speaking'));
       roster.appendChild(badge);
+      roster.classList.add('has-speaking');
       requestAnimationFrame(() => requestAnimationFrame(() => { tile.classList.add('is-in'); badge.classList.add('is-in'); }));
       return true;
     }
@@ -150,6 +154,8 @@
       moreBadge.className = 'vstage__badge vstage__badge--more';
       moreBadge.setAttribute('data-product', 'more');
       moreBadge.innerHTML = emblem('spark', 'vstage__emblem--badge') + '<span class="vstage__badgename">' + esc(c.moreLabel) + '</span>';
+      roster.querySelectorAll('.vstage__badge.is-speaking').forEach(b => b.classList.remove('is-speaking'));
+      moreBadge.classList.add('is-speaking');
       roster.appendChild(moreBadge);
       el.classList.add('is-more');
       requestAnimationFrame(() => requestAnimationFrame(() => moreBadge.classList.add('is-in')));
@@ -168,6 +174,9 @@
       me.innerHTML = emblem(self.icon || 'waveform', 'vstage__emblem--badge') + '<span class="vstage__badgename">' + esc(self.name || 'NewVoices') + '</span>';
       roster.insertBefore(me, roster.children[1] || null);   /* after the label, before the first member */
       if (!moreBadge) revealMore();                           /* the family, if the words never got there */
+      /* the team is together now: nobody is singled out */
+      roster.querySelectorAll('.vstage__badge.is-speaking').forEach(b => b.classList.remove('is-speaking'));
+      roster.classList.remove('has-speaking');
       requestAnimationFrame(() => requestAnimationFrame(() => me.classList.add('is-in')));
       el.classList.add('is-team');
       return true;

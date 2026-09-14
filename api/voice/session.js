@@ -85,6 +85,10 @@ export async function mintSession(body, env, fetchImpl) {
       transcription: !!(ai.transcription && ai.transcription.model),
       transcriptionModel: (ai.transcription && ai.transcription.model) || null,
       turnDetection: (ai.turn_detection && ai.turn_detection.type) || null,
+      /* the whole object, so what OpenAI actually accepted for the listening
+         settings can be read from a curl or the ?voicedebug=1 panel */
+      turnDetectionConfig: ai.turn_detection || null,
+      noiseReduction: (ai.noise_reduction && ai.noise_reduction.type) || null,
       interrupts: ai.turn_detection ? ai.turn_detection.interrupt_response !== false : null,
       voice: (S.audio && S.audio.output && S.audio.output.voice) || null,
       tools: Array.isArray(S.tools) ? S.tools.length : null,

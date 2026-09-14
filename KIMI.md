@@ -318,7 +318,8 @@ team of superheroes being introduced (client, 2026-09-11): burst, NewVoices' car
 emblem), then as each product is named its card slams in **emblem first** — an SVG icon in a
 glowing ring, one per product (`showcase.products[].icon`, drawn from a fixed set in the stage,
 never markup from the copy) — then its lockup on the navy plate, its name and its power line; the
-ones already named line up as badges on the roster at the foot; after the six comes "…and that's
+ones already named line up as badges on the roster at the foot, with the one being spoken about
+lit and the rest dimmed so the screen always says which name the voice is on; after the six comes "…and that's
 just six of them — more than ten products in total" (`showcase.more`); at the pivot the whole team
 assembles centre stage under `showcase.teamLabel` (NewVoices joins the line-up, plus a "10+
 products" badge), and then — instead of vanishing — **the team stays as a card in the thread**
@@ -374,6 +375,21 @@ noise turn re-triggered the introduction).
 words used to land under the answer to them. Their bubble is now reserved the moment they start
 speaking (a quiet `···`), takes the turn's id on `input_audio_buffer.committed`
 (`me.committed` in the reducer), and fills when the words arrive; an empty one goes away.
+
+**How easily it is interrupted (client, 2026-09-13: "any background noise will have it just pause
+and then it feels like it's broken").** Two halves. On the server, `turnDetection(env)` in the
+instructions builder sets semantic VAD at `eagerness:"low"`, the setting that waits longest before
+deciding someone spoke, and `audio.input.noise_reduction` is `far_field`, which filters the mic
+BEFORE the VAD sees it and is the strongest single control for a noisy room. Every dial is
+env-tunable without a code change (`VOICE_VAD`, `VOICE_VAD_EAGERNESS`, `VOICE_VAD_THRESHOLD`,
+`VOICE_VAD_SILENCE_MS`, `VOICE_VAD_PREFIX_MS`, `VOICE_VAD_INTERRUPT`, `VOICE_NOISE_REDUCTION`),
+and the mint echoes `accepted.turnDetectionConfig` and `accepted.noiseReduction` so what OpenAI
+actually took can be read from a curl or the debug panel. In the browser, a cut-off no longer ends
+anything by itself: `armFalseBarge()` watches for the visitor's words, and if the transcript comes
+back empty or nothing arrives within 2.2 s the agent is asked to carry on from exactly where it
+stopped (`copy.voice.resumed`, with the tail of what it had said). Once per cut-off, never in a
+loop, cancelled the moment real words or a typed line land. Tracked as `voice_false_barge {why}`.
+A cancelled response also no longer closes the showcase as a natural end.
 
 **The strip.** Ink wave = the visitor (mic level), teal wave = the agent (remote level), dots =
 thinking, flat dim = muted, dashed = reconnecting; Mute and End beside it; colours only under
@@ -433,6 +449,10 @@ VOICE_MODEL=gpt-realtime                               # or gpt-realtime-mini (�
 VOICE_NAME=marin                                       # the agent's voice
 VOICE_ENABLED=on                                       # off hides the button server-side; flags.voice in kimi.json hides it client-side
 VOICE_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe          # what types the visitor's words out
+VOICE_VAD=semantic  VOICE_VAD_EAGERNESS=low            # how easily it is interrupted; low waits longest
+VOICE_VAD_INTERRUPT=on                                 # off = the visitor cannot cut the agent off
+VOICE_VAD_THRESHOLD=0.65  VOICE_VAD_SILENCE_MS=700     # server VAD only (VOICE_VAD=server)
+VOICE_NOISE_REDUCTION=far_field                        # far_field | near_field | off — filters BEFORE the VAD
 VOICE_SESSION_SECONDS=900  VOICE_SOFT_SECONDS=600      # hard / soft caps
 VOICE_SILENCE_MUTE_SECONDS=90  VOICE_MINT_PER_HOUR=0   # the silence mute; mints per IP per hour — 0 = OFF (the beta default, at the client's request 2026-09-11; set a number when they say so)
 VOICE_SECRET_SECONDS=120  VOICE_MAX_OUTPUT_TOKENS=700  # the client secret's life; per-turn cap

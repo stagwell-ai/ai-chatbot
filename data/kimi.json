@@ -159,6 +159,7 @@
         "network": "Voice could not connect — carry on typing, or try again.",
         "dropped": "Voice dropped — carry on typing, or tap Chat with me to reconnect."
       },
+      "resumed": "That was background noise, not the visitor. Carry on from exactly where you stopped, in the same sentence. Do not greet them, do not start again and do not repeat what you have already said.",
       "timeUp": "Time is nearly up: say in one line that the rest is quicker to type, then stop.",
       "back": "You are reconnected. Say one short line that you are back, then continue with the current step."
     },

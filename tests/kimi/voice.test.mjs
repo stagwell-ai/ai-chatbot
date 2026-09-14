@@ -11,7 +11,7 @@ import { DATA, R, ROOT } from './_data.mjs';
 
 const require = createRequire(import.meta.url);
 const VR = require(path.join(ROOT, 'next', 'voice-reducer.js'));
-const { buildInstructions, buildTools, buildSession, openingScript, greetingLine, STEPS } = await import(path.join(ROOT, 'api', '_lib', 'voice', 'instructions.js'));
+const { buildInstructions, buildTools, buildSession, openingScript, greetingLine, turnDetection, STEPS } = await import(path.join(ROOT, 'api', '_lib', 'voice', 'instructions.js'));
 const { mintSession, voiceConfig, default: voiceHandler } = await import(path.join(ROOT, 'api', 'voice', 'session.js'));
 
 const active = R.activeProducts(DATA);
@@ -153,6 +153,34 @@ test('the session object: realtime, the configured model and voice, transcriptio
   assert.ok(s.max_output_tokens > 0);
   const d = buildSession(DATA, {});
   assert.equal(d.model, 'gpt-realtime'); assert.equal(d.audio.output.voice, 'marin');
+});
+
+/* ── how easily it is interrupted (client, 2026-09-13) ─────────────────────── */
+test('listening: semantic VAD at LOW eagerness by default, far-field noise reduction, and every dial settable from the environment', () => {
+  const d = turnDetection({});
+  assert.equal(d.type, 'semantic_vad');
+  assert.equal(d.eagerness, 'low', 'low = waits longer, interrupts less');
+  assert.equal(d.create_response, true);
+  assert.equal(d.interrupt_response, true, 'the visitor can still cut in; the agent invites it');
+
+  assert.equal(turnDetection({ VOICE_VAD_EAGERNESS: 'high' }).eagerness, 'high');
+  assert.equal(turnDetection({ VOICE_VAD_EAGERNESS: 'nonsense' }).eagerness, 'low', 'a bad value falls back, never reaches OpenAI');
+  assert.equal(turnDetection({ VOICE_VAD_INTERRUPT: 'off' }).interrupt_response, false);
+
+  const s = turnDetection({ VOICE_VAD: 'server' });
+  assert.equal(s.type, 'server_vad');
+  assert.equal(s.threshold, 0.65, 'deafer than the 0.5 default');
+  assert.equal(s.silence_duration_ms, 700);
+  assert.equal(s.prefix_padding_ms, 300);
+  assert.equal(turnDetection({ VOICE_VAD: 'server', VOICE_VAD_THRESHOLD: '0.8' }).threshold, 0.8);
+  assert.equal(turnDetection({ VOICE_VAD: 'server', VOICE_VAD_THRESHOLD: '9' }).threshold, 0.65, 'out of range falls back');
+  assert.equal(turnDetection({ VOICE_VAD: 'server', VOICE_VAD_SILENCE_MS: '1200' }).silence_duration_ms, 1200);
+
+  /* the filter runs before the VAD, so it is the strongest control for a noisy room */
+  assert.deepEqual(buildSession(DATA, {}).audio.input.noise_reduction, { type: 'far_field' });
+  assert.deepEqual(buildSession(DATA, { VOICE_NOISE_REDUCTION: 'near_field' }).audio.input.noise_reduction, { type: 'near_field' });
+  assert.equal(buildSession(DATA, { VOICE_NOISE_REDUCTION: 'off' }).audio.input.noise_reduction, undefined, 'off sends no field at all');
+  assert.equal(buildSession(DATA, {}).audio.input.turn_detection.eagerness, 'low', 'the session carries it');
 });
 
 /* ── the mint ──────────────────────────────────────────────────────────────── */

@@ -297,6 +297,59 @@ try {
     await ctx.close();
   }
 
+  console.log('\n▶ a false alarm is not an interruption: noise cuts the agent off, no words follow, it picks up where it stopped');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    /* the agent is mid-answer when the room makes a noise */
+    await emit(page, { type: 'response.created', response: { id: 'rn1' } });
+    await emit(page, { type: 'output_audio_buffer.started' });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'an1', delta: 'QuestBrand tracks awareness and consideration against' });
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'response.done', response: { id: 'rn1', status: 'cancelled' } });
+    await emit(page, { type: 'output_audio_buffer.cleared' });
+    ok(await page.$eval('#agentThread .turnb--ai', e => e.classList.contains('turnb--cutoff')), 'the bubble is marked cut off');
+    const before = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
+    /* the transcript comes back empty: it was a door, not a person */
+    await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'un1', transcript: '' });
+    await page.waitForFunction(n => window.__voiceFake.sent.filter(e => e.type === 'response.create').length > n, before, { timeout: 4000 });
+    const r = await page.evaluate(() => window.__voiceFake.last('response.create'));
+    ok(/Carry on from exactly where you stopped/i.test(r.response.instructions), 'the agent is asked to carry on, not to start again');
+    ok(/QuestBrand tracks awareness/.test(r.response.instructions), 'and it is told how far it had got');
+    ok((await tracked(page, 'voice_false_barge'))[0][1].why === 'empty', 'voice_false_barge {why:empty}');
+    ok((await thread(page)).filter(t => /turnb--me/.test(t.cls)).length === 0, 'no empty visitor bubble is left behind');
+    await ctx.close();
+  }
+
+  console.log('\n▶ and when nothing comes back at all, it still picks up — once, never in a loop');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await emit(page, { type: 'response.created', response: { id: 'rn2' } });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'an2', delta: 'The Targeting Machine turns your first-party data' });
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'response.done', response: { id: 'rn2', status: 'cancelled' } });
+    const n0 = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
+    /* no transcript ever arrives — the watch times out */
+    await page.waitForFunction(n => window.__voiceFake.sent.filter(e => e.type === 'response.create').length > n, n0, { timeout: 6000 });
+    ok((await tracked(page, 'voice_false_barge'))[0][1].why === 'silence', 'voice_false_barge {why:silence}');
+    const n1 = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
+    await page.waitForTimeout(2600);
+    ok((await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length)) === n1, 'it resumes once and then leaves it alone');
+    /* a real interruption still stops it dead */
+    await emit(page, { type: 'response.created', response: { id: 'rn3' } });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'an3', delta: 'As I was saying' });
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'response.done', response: { id: 'rn3', status: 'cancelled' } });
+    await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'un3', transcript: 'actually, what does it cost?' });
+    const n2 = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
+    await page.waitForTimeout(2600);
+    const after = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create' && e.response && /Carry on from exactly/i.test(e.response.instructions || '')).length);
+    ok(after === 1, 'real words: no resume is sent, the interruption stands');
+    ok((await thread(page)).some(t => /turnb--me/.test(t.cls) && /what does it cost/.test(t.text)), 'their question is in the thread');
+    await ctx.close();
+  }
+
   console.log('\n▶ mute, end — and the text keeps working after');
   {
     const { ctx, page, state } = await open();
@@ -618,6 +671,9 @@ try {
       await S.speak(sc.products[i].line);
       const tiles = await page.$$eval('.vstage__tile', els => els.map(e => ({ id: e.dataset.product, logo: (e.querySelector('.vstage__tilelogo img') || {}).getAttribute ? e.querySelector('.vstage__tilelogo img').getAttribute('src') : null })));
       ok(tiles.length === i + 1 && tiles[i].id === sc.products[i].id, 'named → appears: ' + tiles.map(t => t.id).join(' → '));
+      /* the one being spoken about is the one lit on the roster; the rest dim */
+      const lit = await page.$$eval('.vstage__roster .vstage__badge.is-speaking', els => els.map(e => e.dataset.product));
+      ok(lit.length === 1 && lit[0] === sc.products[i].id, '   and it is the name lit on the roster: ' + lit.join(','));
       if (lockups[i]) ok(tiles[i].logo === lockups[i], '   with its mark: ' + lockups[i]);
     }
     ok(await page.$eval('.vstage__tile.is-current', (e, id) => e.dataset.product === id, sc.products[sc.products.length - 1].id), 'the one being described is the large one');
@@ -626,6 +682,9 @@ try {
     ok(await page.$eval('.vstage__tile.is-current > .vstage__emblem svg', e => !!e), 'the member\'s emblem — its icon in a glowing ring — is on the card');
     const badges = await page.$$eval('.vstage__roster .vstage__badge', els => els.map(e => ({ id: e.dataset.product, name: e.querySelector('.vstage__badgename').textContent, icon: !!e.querySelector('.vstage__emblem svg'), on: e.classList.contains('is-in') })));
     ok(badges.length === sc.products.length && badges.every((b, i) => b.id === sc.products[i].id && b.icon && b.on), 'the roster: ' + badges.map(b => b.name).join(' · '));
+    await page.waitForTimeout(900);            /* the badges finish fading in */
+    const dim = await page.$eval('.vstage__roster', r => { const a = r.querySelector('.vstage__badge:not(.is-speaking)'), b = r.querySelector('.vstage__badge.is-speaking'); return { other: a ? +getComputedStyle(a).opacity : null, lit: b ? +getComputedStyle(b).opacity : null }; });
+    ok(dim.lit === 1 && dim.other !== null && dim.other < 0.6, 'the lit name is full strength and the others step back (' + dim.lit + ' vs ' + dim.other + ')');
     ok(await page.evaluate(() => { const K = window.SAIVOICESTAGE.icons; return window.SAI.data.kimi.copy.voice.showcase.products.every(p => K.indexOf(p.icon) !== -1); }), 'every member has an emblem the stage can draw');
     ok(await page.$eval('.vstage.is-deck .vstage__hero', e => e.getBoundingClientRect().width < 400), 'NewVoices has stepped into the corner');
     ok(!(await page.$('.vstage__badge--more')), 'the rest of the family is not on the roster yet');
@@ -691,7 +750,10 @@ try {
     ok((await page.$$eval('.vstage__tile', els => els.map(e => e.dataset.product))).join(',') === sc.products[0].id, 'and follows the words from there');
     const st = await tracked(page, 'voice_showcase_started');
     ok(st.length === 1 && st[0][1].via === 'voice', 'voice_showcase_started {via:voice}');
+    /* a real interruption: cut off AND words */
     await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'response.done', response: { id: 'r_story', status: 'cancelled' } });
+    await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'u_stop', transcript: 'got it, thanks' });
     await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 3000 });
     await agentSays(page, 'Sure. You are talking to one of the flagship AI products from Stagwell AI.');
     await page.waitForTimeout(150);
@@ -721,13 +783,17 @@ try {
     /* a real interruption: the story is playing and the server cuts it off */
     const Sa = await speakStory(a.page, (await a.page.evaluate(() => window.SAI.data.kimi.copy.voice)).showcase);
     await Sa.speak('Before I go into it — interrupt me any time.');
+    /* a real interruption is the server truncating the answer AND words arriving */
     await emit(a.page, { type: 'input_audio_buffer.speech_started' });
+    await emit(a.page, { type: 'response.done', response: { id: 'r_story', status: 'cancelled' } });
+    await a.page.waitForTimeout(120);
+    ok(!!(await a.page.$('.vstage')), 'cut off but no words yet: the stage holds, nothing is thrown away');
+    await emit(a.page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'u_real', transcript: 'wait, what does QuestBrand cost?' });
     await a.page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 3000 });
-    ok((await tracked(a.page, 'voice_showcase_ended'))[0][1].why === 'barge', 'speaking over the story itself: gone, recorded as a barge');
+    ok((await tracked(a.page, 'voice_showcase_ended'))[0][1].why === 'barge', 'their words arrive: gone, recorded as a barge');
     ok(!(await a.page.$('#agentThread .turnb--team')), 'nobody was introduced, so no team card is left behind');
     /* nothing was shown, so asking again can raise it again */
     await a.page.waitForTimeout(800);
-    await emit(a.page, { type: 'response.done', response: { id: 'r_story', status: 'cancelled' } });
     await agentSays(a.page, 'Sure — what is Stagwell AI? You are talking to one of the flagship AI products from Stagwell AI.', 'a_retry');
     ok(!!(await a.page.$('.vstage')), 'told nothing yet → asked again, the pictures rise again');
     await a.ctx.close();

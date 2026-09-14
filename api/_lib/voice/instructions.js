@@ -146,9 +146,62 @@ export function openingScript(data) {
   return parts.filter(Boolean).join(' ');
 }
 
+/* ── HOW EASILY IT IS INTERRUPTED ──
+   The client (2026-09-13): "any background noise will have it just pause and
+   then it feels like it's broken." Two dials, both here, both env-tunable so
+   the setting can be changed without a code change:
+
+   VOICE_VAD                 semantic | server        (default semantic)
+   VOICE_VAD_EAGERNESS       low | medium | high | auto — semantic only. How
+                             keen the model is to jump in. LOW is the default
+                             here: it waits longer and interrupts less.
+   VOICE_VAD_THRESHOLD       0–1, server VAD only. Higher = deafer to noise.
+   VOICE_VAD_SILENCE_MS      server VAD only: how long a pause ends a turn.
+   VOICE_VAD_PREFIX_MS       server VAD only: audio kept from before the start.
+   VOICE_VAD_INTERRUPT       'off' stops the visitor cutting the agent off at
+                             all. Rarely what you want; the agent is told to
+                             invite interruptions.
+   VOICE_NOISE_REDUCTION     far_field (default) | near_field | off. far_field
+                             suits a laptop or a room; near_field a headset.
+                             Filtering runs BEFORE the VAD, so it is the single
+                             most useful control against a noisy room.
+
+   The browser's own half of this is voice.js: a truncated answer with no words
+   behind it is treated as a false alarm and the agent picks up where it was. */
+export function turnDetection(env) {
+  const e = env || {};
+  const kind = String(e.VOICE_VAD || 'semantic').toLowerCase();
+  const interrupt = String(e.VOICE_VAD_INTERRUPT || 'on').toLowerCase() !== 'off';
+  if (kind === 'server') {
+    const n = (v, d) => (Number(v) > 0 ? Number(v) : d);
+    const t = Number(e.VOICE_VAD_THRESHOLD);
+    return {
+      type: 'server_vad',
+      threshold: t > 0 && t <= 1 ? t : 0.65,
+      prefix_padding_ms: n(e.VOICE_VAD_PREFIX_MS, 300),
+      silence_duration_ms: n(e.VOICE_VAD_SILENCE_MS, 700),
+      create_response: true,
+      interrupt_response: interrupt
+    };
+  }
+  const eagerness = String(e.VOICE_VAD_EAGERNESS || 'low').toLowerCase();
+  return {
+    type: 'semantic_vad',
+    eagerness: ['low', 'medium', 'high', 'auto'].indexOf(eagerness) === -1 ? 'low' : eagerness,
+    create_response: true,
+    interrupt_response: interrupt
+  };
+}
+
 /* the session object OpenAI's client_secrets endpoint takes, minus nothing secret */
 export function buildSession(data, env, opts) {
   const e = env || {};
+  const nr = String(e.VOICE_NOISE_REDUCTION || 'far_field').toLowerCase();
+  const input = {
+    transcription: { model: e.VOICE_TRANSCRIBE_MODEL || 'gpt-4o-mini-transcribe' },
+    turn_detection: turnDetection(e)
+  };
+  if (nr === 'near_field' || nr === 'far_field') input.noise_reduction = { type: nr };
   return {
     type: 'realtime',
     model: e.VOICE_MODEL || 'gpt-realtime',
@@ -156,12 +209,6 @@ export function buildSession(data, env, opts) {
     tools: buildTools(),
     tool_choice: 'auto',
     max_output_tokens: Number(e.VOICE_MAX_OUTPUT_TOKENS) > 0 ? Number(e.VOICE_MAX_OUTPUT_TOKENS) : 700,
-    audio: {
-      input: {
-        transcription: { model: e.VOICE_TRANSCRIBE_MODEL || 'gpt-4o-mini-transcribe' },
-        turn_detection: { type: 'semantic_vad', create_response: true, interrupt_response: true }
-      },
-      output: { voice: e.VOICE_NAME || 'marin' }
-    }
+    audio: { input, output: { voice: e.VOICE_NAME || 'marin' } }
   };
 }
