@@ -1309,3 +1309,11 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page .hcs__media .mk{left:50%;top:50%;bottom:auto;transform-origin:center center}
 .hc-page .hcs__media .mk.mk-arm{translate:0 12px}
 .hc-page .hcs__media .mk.mk-arm.in{translate:0 0}
+
+/* the suite's panels stand about 15% shorter: the same rows, less air in them */
+.hc-page .hcs__media .mk{padding:12px 14px}
+.hc-page .hcs__media .mk-t{font-size:16px;margin:0 0 9px}
+.hc-page .hcs__media .mk-th{padding:8px 12px}
+.hc-page .hcs__media .mk-td{padding:7px 12px}
+.hc-page .hcs__media .mk-row,.hc-page .hcs__media .mk-f,
+.hc-page .hcs__media .mk-foot,.hc-page .hcs__media .mk-kv{padding-block:7px}
