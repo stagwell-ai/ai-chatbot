@@ -388,3 +388,21 @@
   if (document.readyState === 'loading') addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();
+
+/* the country list reads as a flag, a short name and the dial code, so the field needs less room
+   and still says where the call comes from. Values are untouched, so the form behaves as before. */
+(function () {
+  'use strict';
+  const say = {
+    '1': '🇺🇸 US / CA +1', '44': '🇬🇧 UK +44', '972': '🇮🇱 IL +972', '49': '🇩🇪 DE +49',
+    '33': '🇫🇷 FR +33', '34': '🇪🇸 ES +34', '39': '🇮🇹 IT +39', '31': '🇳🇱 NL +31',
+    '61': '🇦🇺 AU +61', '55': '🇧🇷 BR +55', '52': '🇲🇽 MX +52', '91': '🇮🇳 IN +91',
+    '81': '🇯🇵 JP +81', '65': '🇸🇬 SG +65', '971': '🇦🇪 AE +971'
+  };
+  const init = () => document.querySelectorAll('.hc-page .call__cc option').forEach(o => {
+    const t = say[o.value];
+    if (t) { o.dataset.long = o.textContent; o.textContent = t; }
+  });
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+})();

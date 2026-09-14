@@ -1536,3 +1536,26 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 .hc-page .hcs__media{flex:0 0 150px !important;height:150px !important;min-height:0}
 .hc-page .hcs__desc{margin-top:0 !important;padding-top:20px}
 .hc-page .hcs__go{margin-top:auto !important;padding-top:14px}
+
+/* the phone row gets room: the blue block a little wider, the field breathing */
+.hc-page .ask-end .ask-end__ways{grid-template-columns:0.86fr 1.14fr}
+.hc-page .ask-end .call__form{gap:10px;padding:20px !important}
+.hc-page .ask-end .call__form .call__cc{min-width:128px;max-width:150px;font-size:14px;
+  appearance:none;-webkit-appearance:none;padding-right:26px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M3 4.5l3 3 3-3' fill='none' stroke='white' stroke-width='1.4' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 8px center;background-size:12px}
+.hc-page .ask-end .call__form .call__num{font-size:15px;padding:0 14px}
+.hc-page .ask-end .call__x{position:absolute;top:10px;right:12px}
+@media (max-width:760px){
+  .hc-page .ask-end .ask-end__ways{grid-template-columns:1fr}
+}
+
+/* the block keeps its title while the number is typed: the row opens along the foot, the words stay */
+.hc-page .ask-end .call[data-state="phone"] .call__btn,
+.hc-page .ask-end .call[data-state="sending"] .call__btn,
+.hc-page .ask-end .call[data-state="done"] .call__btn{opacity:1 !important;visibility:visible !important;
+  pointer-events:none}
+.hc-page .ask-end .call__form,.hc-page .ask-end .call__done{position:absolute;inset:auto 0 0 0;
+  height:auto !important;background:none !important;padding:0 20px 20px !important;border-radius:0}
+.hc-page .ask-end .call__btn::after{transition:opacity .2s ease}
+.hc-page .ask-end .call:not([data-state="idle"]) .call__btn::after{opacity:0}
