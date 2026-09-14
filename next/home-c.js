@@ -83,3 +83,12 @@
   decide();
   wide.addEventListener('change', decide); still.addEventListener('change', decide);
 })();
+
+/* the film plays only while it is on screen */
+(function () {
+  'use strict';
+  const film = document.querySelector('.hc-page video.intro__pic');
+  if (!film || !('IntersectionObserver' in window)) return;
+  const play = () => { const p = film.play(); if (p && p.catch) p.catch(() => {}); };
+  new IntersectionObserver(es => es[0].isIntersecting ? play() : film.pause(), { threshold: .1 }).observe(film);
+})();
