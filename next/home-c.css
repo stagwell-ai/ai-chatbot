@@ -1328,3 +1328,15 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 @media (max-width:760px){
   .hc-page .foot__band{padding-right:clamp(20px,5vw,40px)}
 }
+
+/* ═══ the suite drops its photographs: each card is a pastel field in the brand's own tones ══════ */
+.hc-page .hcs__media img{display:none !important}
+.hc-page .hcs__media{background:#F0EFEA}
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media{
+  background:linear-gradient(150deg,#FFE7D8 0%,#FFD9C2 100%)}   /* orange, pastel */
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media{
+  background:linear-gradient(150deg,#DCEFF6 0%,#C4E4EE 100%)}   /* blue, pastel */
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{
+  background:linear-gradient(150deg,#FFF3D2 0%,#FFE9B4 100%)}   /* yellow, pastel */
+/* the panel keeps its white so it reads on every tone */
+.hc-page .hcs__media .mk{background:#FFFFFF}
