@@ -1559,3 +1559,19 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
   height:auto !important;background:none !important;padding:0 20px 20px !important;border-radius:0}
 .hc-page .ask-end .call__btn::after{transition:opacity .2s ease}
 .hc-page .ask-end .call:not([data-state="idle"]) .call__btn::after{opacity:0}
+/* the helper's close is always there, quietly, not only under the pointer */
+.hc-launch__x{opacity:.5;width:22px;height:22px;top:7px;right:7px;border-radius:50%}
+.hc-launch__x:hover,.hc-launch:hover .hc-launch__x{opacity:1;background:rgba(11,18,32,.06)}
+.hc-launch__x svg{width:12px;height:12px}
+.hc-launch__say{padding-right:36px}
+
+/* the site grows its own arrow inside a session button on hover — with ours in place that read as
+   two arrows, so the built-in one stays away on this page */
+.hc-page .btn:is([data-cta="session"],.btn--go)::before,
+.hc-page .btn:is([data-cta="session"],.btn--go):hover::before,
+.hc-page .btn:is([data-cta="session"],.btn--go):focus-visible::before{display:none !important;
+  width:0 !important;margin:0 !important;opacity:0 !important;content:none !important}
+.hc-page .ask-end .btn:hover,.hc-page .nav .btn--ink:hover{transform:none}
+
+/* a dismissed helper stays dismissed: its entrance animation was holding it open */
+.hc-launch__say.is-gone{animation:none !important;opacity:0 !important;visibility:hidden}
