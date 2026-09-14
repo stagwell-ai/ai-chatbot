@@ -1530,3 +1530,9 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 /* the phone row: the code stays readable, the number takes the rest */
 .hc-page .ask-end .call__form .call__cc{flex:0 0 auto;min-width:118px;max-width:150px}
 .hc-page .ask-end .call__form .call__num{flex:1 1 auto;min-width:0}
+
+/* the panel's band is fixed, so title, panel and first line of copy start on the same line in
+   every card; the link stays pinned to the foot */
+.hc-page .hcs__media{flex:0 0 150px !important;height:150px !important;min-height:0}
+.hc-page .hcs__desc{margin-top:0 !important;padding-top:20px}
+.hc-page .hcs__go{margin-top:auto !important;padding-top:14px}
