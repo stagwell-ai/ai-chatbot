@@ -92,3 +92,28 @@
   const play = () => { const p = film.play(); if (p && p.catch) p.catch(() => {}); };
   new IntersectionObserver(es => es[0].isIntersecting ? play() : film.pause(), { threshold: .1 }).observe(film);
 })();
+
+/* Products: the tabs and the two arrows move one still at a time */
+(function () {
+  'use strict';
+  const sec = document.querySelector('.hc-page .hc-port');
+  if (!sec) return;
+  const tabs = [...sec.querySelectorAll('.hc-port__tab')];
+  const slides = [...sec.querySelectorAll('.hc-port__slide')];
+  if (!tabs.length || tabs.length !== slides.length) return;
+  let at = Math.max(0, slides.findIndex(s => s.classList.contains('is-on')));
+  const show = i => {
+    at = (i + slides.length) % slides.length;
+    tabs.forEach((t, n) => t.classList.toggle('is-on', n === at));
+    slides.forEach((s, n) => s.classList.toggle('is-on', n === at));
+  };
+  tabs.forEach((t, n) => t.addEventListener('click', () => show(n)));
+  const prev = sec.querySelector('.hc-port__nav--prev');
+  const next = sec.querySelector('.hc-port__nav--next');
+  if (prev) prev.addEventListener('click', () => show(at - 1));
+  if (next) next.addEventListener('click', () => show(at + 1));
+  sec.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { show(at + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { show(at - 1); e.preventDefault(); }
+  });
+})();
