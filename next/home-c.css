@@ -1426,3 +1426,9 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 .hc-page .hcs__media{border-radius:8px}
 .hc-page .hcs__desc,.hc-page .hcs__go{margin-inline:0}
 @media (max-width:760px){.hc-page .hcs__rail > li{flex:0 0 78vw}}
+
+/* each card names its service at the top left, with the panel centred under it */
+.hc-page .hcs__kind{position:absolute;top:16px;left:16px;right:16px;z-index:3;
+  font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
+  color:var(--hc-quiet);display:block}
+.hc-page .hcs__media .mk{margin-top:10px}
