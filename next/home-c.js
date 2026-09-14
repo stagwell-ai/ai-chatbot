@@ -198,3 +198,23 @@
     else start();
   });
 })();
+
+/* the voice chip reads as what it is: speaking, not typing. voice.js owns the label and rewrites it
+   on every state change, so the wording is mapped here rather than in the shared script. */
+(function () {
+  'use strict';
+  const btn = document.getElementById('voiceStart');
+  if (!btn) return;
+  const say = { 'Chat with me': 'Use your voice', 'Chat is live': 'Listening…' };
+  const fix = () => {
+    const label = btn.querySelector('span') || btn;
+    const now = (label.textContent || '').trim();
+    if (say[now]) label.textContent = say[now];
+    const aria = btn.getAttribute('aria-label') || '';
+    Object.keys(say).forEach(k => {
+      if (aria.includes(k)) btn.setAttribute('aria-label', aria.replace(k, say[k]));
+    });
+  };
+  fix();
+  new MutationObserver(fix).observe(btn, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['aria-label'] });
+})();

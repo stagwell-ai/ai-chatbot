@@ -930,3 +930,15 @@ body.hc-page{--hc-rhythm:clamp(64px,6.6vw,104px)}
   .hc-page .hc-port__cap{max-width:none}
 }
 .hc-page .hc-port__h{text-wrap:balance}
+
+/* ── the voice chip: it is a spoken turn, not a typed one, so it says so and carries the logo's
+      middle colour (the teal bar), the way the reference chip carries its blue ─────────────────── */
+.hc-page .askbox__voice{height:36px;padding:0 14px 0 12px;gap:8px;border-radius:999px;
+  background:rgba(0,156,189,.09) !important;border:1px solid rgba(0,156,189,.42) !important;
+  color:var(--teal) !important;font-weight:600}
+.hc-page .askbox__voice svg{width:16px;height:16px;color:var(--teal)}
+.hc-page .askbox__voice:hover{background:rgba(0,156,189,.16) !important;
+  border-color:rgba(0,156,189,.6) !important}
+.hc-page .askbox__voice.is-live{background:var(--teal) !important;border-color:var(--teal) !important;
+  color:#FFFFFF !important}
+.hc-page .askbox__voice.is-live svg{color:#FFFFFF}
