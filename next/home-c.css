@@ -161,3 +161,40 @@ body.hc-page{--hc-serif:'Newsreader',Georgia,'Times New Roman',serif}
 .hc-page .foot__in .btn--ink{background:var(--ink) !important;color:#FFFFFF !important}
 .hc-page .foot__in .btn--ink *{color:#FFFFFF !important}
 .hc-page .display--end .navy,.hc-page .display--end em{color:var(--ink) !important}
+
+/* ═══ pass 3: the references' divisions, sizes and a black footer (client, 2026-09-14) ═══════════
+   The page's own markup pins several things with inline styles (the opening picture's pixel size,
+   the Why gradient and its white cards, the footer gradient and its white text), and inline styles
+   beat a stylesheet — so the ones that matter are overridden here by name. */
+
+/* ── the opening block: a soft light picture that fills a rounded card ─────────────────────────── */
+.hc-page .intro__media{width:auto !important;height:clamp(380px,50vh,520px) !important;border-radius:22px;overflow:hidden}
+.hc-page .intro__pic{width:100% !important;height:100% !important;left:0 !important;object-fit:cover;border-radius:22px}
+
+/* ── section heads as in the references: centred, serif, with a quiet line under them ──────────── */
+.hc-page .why .display,.hc-page .impact .display,.hc-page .ask-end .display{text-align:center}
+.hc-page .why__grid,.hc-page .impact__steps{margin-top:clamp(36px,4.5vw,64px)}
+.hc-page .ask-end__lede,.hc-page .intro__lede{color:var(--hc-quiet);font-size:clamp(16px,1.1vw,18px);line-height:1.55}
+
+/* ── the feature cards: soft grey panels, icon, bold sans title, quiet body ────────────────────── */
+.hc-page .why__item{background:#F0F0EC !important;border:0 !important;border-radius:18px;padding:clamp(22px,2.4vw,30px);gap:10px}
+.hc-page .why__t{font-size:clamp(17px,.9rem + .3vw,20px)}
+.hc-page .why__d{font-size:15.5px;line-height:1.55}
+.hc-page .why__ic{width:34px;height:34px;border-radius:9px}
+
+/* ── the footer, black at the end ─────────────────────────────────────────────────────────────── */
+.hc-page .foot{background:#0B0B0C !important;border-top:0}
+.hc-page .foot__in{background:transparent !important;background-image:none !important}
+.hc-page .foot,.hc-page .foot__in,.hc-page .foot__in *,
+.hc-page .foot__band,.hc-page .foot__band *{color:#FFFFFF !important}
+.hc-page .foot__big a:hover{color:rgba(255,255,255,.66) !important}
+.hc-page .foot__disc,.hc-page .foot__so{box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);color:#FFFFFF}
+.hc-page .foot__so:hover,.hc-page .foot__small a:hover .foot__disc,.hc-page .foot__small button:hover .foot__disc{
+  background:#FFFFFF;color:#0B0B0C !important;box-shadow:inset 0 0 0 1px #FFFFFF}
+.hc-page .foot__so:hover svg,.hc-page .foot__small a:hover .foot__disc svg{color:#0B0B0C}
+.hc-page .foot__band{border-top:1px solid rgba(255,255,255,.18)}
+.hc-page .foot__brand,.hc-page .foot__mark{color:#FFFFFF}
+
+@media (max-width:900px){
+  .hc-page .intro__media{height:clamp(260px,38vh,380px) !important}
+}
