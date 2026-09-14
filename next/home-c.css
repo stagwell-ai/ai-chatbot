@@ -1282,3 +1282,24 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page .foot__brand{order:-1;margin:0 auto 0 0}
 .hc-page .foot__copy{order:3}
 .hc-page .foot__social{order:2}
+
+/* the voice round in the full-screen chat: the chip's colours, no words */
+.hc-page .chat-over .ask__field{grid-template-columns:minmax(0,1fr) 42px 42px;column-gap:10px}
+.hc-page .chat-over .chat-over__voice{grid-column:2;grid-row:1;align-self:end;width:42px;height:42px;
+  border-radius:50%;display:grid;place-items:center;cursor:pointer;
+  background:rgba(0,156,189,.09);border:1px solid rgba(0,156,189,.42);color:var(--teal);
+  transition:background .2s ease,border-color .2s ease}
+.hc-page .chat-over .chat-over__voice:hover{background:rgba(0,156,189,.16);border-color:rgba(0,156,189,.6)}
+.hc-page .chat-over .chat-over__voice.is-live{background:var(--teal);border-color:var(--teal);color:#FFFFFF}
+.hc-page .chat-over .chat-over__voice svg{width:19px;height:19px}
+.hc-page .chat-over .ask__go{grid-column:3}
+
+/* no arrows inside the CTAs themselves — the words carry them */
+.hc-page .btn svg:not(.btn__ic):not(.btn__ic--wave),
+.hc-page .btn .btn__caret,
+.hc-page .hcs__all svg{display:none !important}
+.hc-page .btn--go::after{display:none !important}
+/* clean everywhere a call is made: the rail's Explore, the header, the panels */
+.hc-page .hcs__go svg,.hc-page .why__cta svg,.hc-page .menu__acts .btn svg,
+.hc-page .ask-end .btn svg:not(.btn__ic--wave){display:none !important}
+.hc-page .chat-over .ask__tags .tag__br{flex-basis:100%;width:100%;height:0;list-style:none}

@@ -338,3 +338,51 @@
 /* the rail no longer greets the reader: any movement of its own read as the carousel drifting
    while the page scrolled past. It sits still until the reader takes it. */
 
+
+/* the full-screen chat takes the hero's voice control: the same teal round, icon only, beside the
+   field — and the hero's own invitation as its placeholder */
+(function () {
+  'use strict';
+  const init = () => {
+    const field = document.querySelector('.hc-page .chat-over .ask__field');
+    const input = document.getElementById('askInputOver');
+    const hero = document.getElementById('agentInput');
+    const voice = document.getElementById('voiceStart');
+    if (!field || !input || !voice) return;
+    if (hero && hero.placeholder) input.placeholder = hero.placeholder;
+
+    if (field.querySelector('.chat-over__voice')) return;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chat-over__voice';
+    b.setAttribute('aria-label', voice.getAttribute('aria-label') || 'Use your voice');
+    b.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">'
+      + '<rect x="7.2" y="2.4" width="5.6" height="9.4" rx="2.8" fill="none" stroke="currentColor" stroke-width="1.6"/>'
+      + '<path d="M4.6 9.4a5.4 5.4 0 0 0 10.8 0M10 14.8v2.6M7.6 17.4h4.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    b.addEventListener('click', () => voice.click());
+    field.insertBefore(b, field.querySelector('.ask__go'));
+    /* it shows the live state the hero's chip shows */
+    new MutationObserver(() => b.classList.toggle('is-live', voice.classList.contains('is-live')))
+      .observe(voice, { attributes: true, attributeFilter: ['class'] });
+    if (voice.hidden) b.hidden = true;          /* browsers that cannot do voice hide both */
+  };
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+})();
+
+/* the overlay's starting points break three and three, as the hero's do */
+(function () {
+  'use strict';
+  const init = () => {
+    const list = document.querySelector('.hc-page .chat-over .ask__tags');
+    if (!list || list.querySelector('.tag__br')) return;
+    const items = [...list.children];
+    if (items.length < 5) return;
+    const br = document.createElement('li');
+    br.className = 'tag__br';
+    br.setAttribute('aria-hidden', 'true');
+    list.insertBefore(br, items[3]);
+  };
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+})();
