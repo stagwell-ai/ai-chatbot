@@ -1626,3 +1626,9 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 @media (min-width:901px){
   .hc-page .intro__stage.is-cine{height:145vh}
 }
+
+/* nothing on this page falls back to a serif: the token itself now points at the title face, so
+   even a rule we missed lands on Roobert */
+body.hc-page{--hc-serif:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
+.hc-page h1,.hc-page h2,.hc-page h3,.hc-page .display,.hc-page .display *,
+.hc-page .hero .display,.hc-page .hero .display *{font-family:var(--hc-title) !important}
