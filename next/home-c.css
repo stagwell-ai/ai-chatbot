@@ -1357,3 +1357,19 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-launch__btn svg{color:#FFFFFF}
 .hc-launch.is-on .hc-launch__btn::after{animation:hcRingT 1.15s ease-out .5s 2}
 @keyframes hcRingT{from{box-shadow:0 0 0 0 rgba(0,156,189,.55)}to{box-shadow:0 0 0 16px rgba(0,156,189,0)}}
+
+/* the blocks breathe through the three brand pastels, each card a step behind the last */
+.hc-page .hcs__media{background-image:none !important;animation:hcTone 24s ease-in-out infinite}
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media{animation-delay:-8s}
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{animation-delay:-16s}
+@keyframes hcTone{
+  0%,100%{background-color:#FFE7D8}   /* orange */
+  33%{background-color:#DCEFF6}       /* blue */
+  66%{background-color:#FFF3D2}       /* yellow */
+}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hcs__media{animation:none}
+  .hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media{background-color:#FFE7D8}
+  .hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media{background-color:#DCEFF6}
+  .hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{background-color:#FFF3D2}
+}
