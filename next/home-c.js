@@ -248,3 +248,60 @@
     sound.setAttribute('aria-label', film.muted ? 'Turn the sound on' : 'Turn the sound off');
   });
 })();
+
+/* the chat's way back: once the hero's chat has scrolled away, the launcher arrives; it opens the
+   same overlay the header's chat button used to open, which is why that button only goes dark. */
+(function () {
+  'use strict';
+  /* the launcher's markup sits at the end of the page, after this script is parsed */
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+  function init() {
+  const box = document.getElementById('hcLaunch');
+  const btn = document.getElementById('hcLaunchBtn');
+  const chat = document.querySelector('.hc-page .hero .chat') || document.getElementById('ask');
+  const opener = document.getElementById('navSearch');
+  if (!box || !btn || !chat || !opener) return;
+
+  const show = on => {
+    if (on) { box.hidden = false; requestAnimationFrame(() => box.classList.add('is-on')); }
+    else { box.classList.remove('is-on'); setTimeout(() => { if (!box.classList.contains('is-on')) box.hidden = true; }, 420); }
+  };
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(es => show(!es[0].isIntersecting), { threshold: 0 }).observe(chat);
+  else show(true);
+
+  btn.addEventListener('click', () => opener.click());
+  /* while the overlay is open the launcher steps out of the way */
+  const over = document.getElementById('chatOver');
+  if (over) new MutationObserver(() => { box.style.display = over.hidden ? '' : 'none'; })
+    .observe(over, { attributes: true, attributeFilter: ['hidden'] });
+  }
+})();
+
+/* the rail greets the reader: a short drift left, then back, so it reads as something that moves */
+(function () {
+  'use strict';
+  const rail = document.querySelector('.hc-page .hcs__rail');
+  if (!rail || !('IntersectionObserver' in window)) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let done = false;
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const drift = () => {
+    if (done) return; done = true;
+    const reach = Math.min(180, Math.max(0, rail.scrollWidth - rail.clientWidth));
+    if (!reach) return;
+    rail.style.scrollSnapType = 'none';          /* mandatory snap would jump the drift */
+    const out = 900, back = 700, hold = 260, t0 = performance.now();
+    const step = now => {
+      const t = now - t0;
+      if (t < out) rail.scrollLeft = reach * ease(t / out);
+      else if (t < out + hold) rail.scrollLeft = reach;
+      else if (t < out + hold + back) rail.scrollLeft = reach * (1 - ease((t - out - hold) / back));
+      else { rail.scrollLeft = 0; rail.style.scrollSnapType = ''; return; }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  new IntersectionObserver(es => { if (es[0].isIntersecting) drift(); }, { threshold: .35 }).observe(rail);
+})();

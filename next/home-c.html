@@ -39,7 +39,7 @@ d.setAttribute('data-theme',t||sys);})();
 <link rel="stylesheet" href="/next/assets/fonts/fonts.css">
 <link rel="stylesheet" href="/next/lead.css">
 <link rel="stylesheet" href="/next/home.css">
-<link rel="stylesheet" href="/next/home-c.css?v=17">
+<link rel="stylesheet" href="/next/home-c.css?v=20">
 </head>
 <!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta]
      click on this page — the same panel every other booking CTA on the site opens -->
@@ -94,6 +94,24 @@ d.setAttribute('data-theme',t||sys);})();
         <svg class="ic-ask" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M6 3.5h12A3.5 3.5 0 0 1 21.5 7v8a3.5 3.5 0 0 1-3.5 3.5h-6.6L7 21.8v-3.3H6A3.5 3.5 0 0 1 2.5 15V7A3.5 3.5 0 0 1 6 3.5zM12 6.6Q12.55 10.45 16.4 11Q12.55 11.55 12 15.4Q11.45 11.55 7.6 11Q11.45 10.45 12 6.6Z"/></svg>
       </button>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
+      <div class="call call--nav" id="callNav" data-state="idle">
+          <button type="button" class="btn btn--line btn--lg btn--ic call__btn"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg> Call me</button>
+          <form class="call__form" autocomplete="off" novalidate aria-label="Call me">
+            <button type="button" class="call__x" data-close aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <label class="vh" for="callNavCode">Country code</label>
+            <select class="call__cc" id="callNavCode" aria-label="Country code"><option value="1" selected>United States / Canada (+1)</option><option value="44">United Kingdom (+44)</option><option value="972">Israel (+972)</option><option value="49">Germany (+49)</option><option value="33">France (+33)</option><option value="34">Spain (+34)</option><option value="39">Italy (+39)</option><option value="31">Netherlands (+31)</option><option value="61">Australia (+61)</option><option value="55">Brazil (+55)</option><option value="52">Mexico (+52)</option><option value="91">India (+91)</option><option value="81">Japan (+81)</option><option value="65">Singapore (+65)</option><option value="971">United Arab Emirates (+971)</option></select>
+            <span class="call__sep" aria-hidden="true"></span>
+            <label class="vh" for="callNavNum">Phone number</label>
+            <input class="call__num" id="callNavNum" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel-national" spellcheck="false">
+            <button type="submit" class="call__go" aria-label="Call me"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </form>
+          <div class="call__done" role="status" aria-live="polite">
+            <button type="button" class="call__x" data-close aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <span class="call__wave" aria-hidden="true"><svg class="btn__ic btn__ic--wave" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="1.5" y="8" width="2" height="4" rx="1" fill="currentColor"/><rect x="5.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="2" height="16" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="2" height="10" rx="1" fill="currentColor"/><rect x="17.5" y="8" width="2" height="4" rx="1" fill="currentColor"/></svg></span>
+            <span class="call__status"><b class="call__line">Calling you now…</b><span class="call__to"></span></span>
+          </div>
+        </div>
+
       <!-- the phone's way in: the links and both buttons live in the sheet -->
       <button type="button" class="nav__burger" id="navBurger" aria-expanded="false" aria-controls="navMenu"><span class="nav__blbl">Menu</span><span class="nav__bl"></span><span class="nav__bl"></span><span class="nav__bl"></span></button>
     </div>
@@ -239,7 +257,7 @@ d.setAttribute('data-theme',t||sys);})();
 <!-- ═══════════════════════ 3 · WHAT IS STAGWELL AI ═══════════════════════ -->
 <section class="intro" id="about">
   <div class="intro__stage"><div class="intro__media" style="width:518px;height:587px">
-    <video class="intro__pic is-on" src="/assets/video/intro-film.mp4" poster="/assets/video/intro-film-poster.jpg" autoplay muted loop playsinline preload="metadata" width="1920" height="1080"></video>
+    <video class="intro__pic is-on" src="/assets/video/stagwell-ai-explainer.mp4" poster="/assets/video/explainer-film-poster.jpg" autoplay muted loop playsinline preload="metadata" width="1280" height="720"></video>
   <div class="intro__body intro__over">
     <p class="hero__sign rv" style="letter-spacing:2px">INTRODUCING STAGWELL AI</p>
     <h2 class="display display--intro rv" style="--d:.1s;font-weight:600"><span style="font-weight:600">Stagwell AI is a custom portfolio of <span style="color:#009CBD">agentic solutions built for businesses of any size.</span></span></h2>
@@ -461,6 +479,15 @@ d.setAttribute('data-theme',t||sys);})();
 <script src="/next/voice-stage.js"></script>
 <script src="/next/voice.js"></script>
 <script src="/next/hero-agent.js"></script>
-<script src="/next/home-c.js?v=17"></script>
+<script src="/next/home-c.js?v=20"></script>
+
+<!-- C only: once the hero's chat is out of sight, the way back in arrives here -->
+<div class="hc-launch" id="hcLaunch" hidden>
+  <p class="hc-launch__say">Ask Stagwell AI anything. Maybe just start with your site.</p>
+  <button type="button" class="hc-launch__btn" id="hcLaunchBtn">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2.8l1.7 4.8 4.8 1.7-4.8 1.7L12 15.8l-1.7-4.8L5.5 9.3l4.8-1.7z"/><path fill="currentColor" d="M18.6 14.6l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z"/></svg>
+    <span>Ask Stagwell AI</span>
+  </button>
+</div>
 </body>
 </html>
