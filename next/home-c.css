@@ -1677,3 +1677,20 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .intro__over .intro__act{margin:clamp(18px,2.2vw,26px) 0 0 !important;justify-content:center}
 .hc-page .intro__over .btn--ink{background:var(--ink) !important;color:#FFFFFF !important}
 .hc-page .intro__over .btn--ink:hover{background:#05080F !important;color:#FFFFFF !important}
+
+/* ═══ the words ride on the film again: a veil under them, the title in the serif ═══════════════ */
+.hc-page .intro__media::after{display:block !important;content:'';position:absolute;inset:0;z-index:1;
+  pointer-events:none;background-image:none;
+  background:linear-gradient(180deg,rgba(11,18,32,.42) 0%,rgba(11,18,32,.34) 46%,rgba(11,18,32,.58) 100%)}
+.hc-page .intro__over{position:absolute !important;inset:0;z-index:3;display:flex !important;
+  flex-direction:column;align-items:center;justify-content:center;text-align:center !important;
+  padding:0 clamp(22px,5vw,64px) !important;width:100% !important;max-width:none !important}
+.hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+  font-family:var(--hc-head) !important;font-weight:400 !important;color:#FFFFFF !important;
+  text-shadow:0 1px 22px rgba(0,0,0,.3)}
+.hc-page .intro__over .display--intro{width:min(100%,900px);margin:0 auto !important}
+.hc-page .intro__over .intro__act{margin:clamp(20px,2.4vw,30px) 0 0 !important}
+.hc-page .intro__over .btn--ink{background:#FFFFFF !important;color:var(--ink) !important}
+.hc-page .intro__over .btn--ink:hover{background:rgba(255,255,255,.88) !important;color:var(--ink) !important}
+/* the film's own controls and the scroll word stay clear of the words */
+.hc-page .intro__ctl,.hc-page .intro__more{z-index:4}
