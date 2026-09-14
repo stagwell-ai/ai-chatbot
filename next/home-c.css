@@ -475,3 +475,19 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
 
 /* three and three: the markup carries a line break after the third tag — it comes back (client) */
 .hc-page .chat__tags .tag__br{display:block !important;flex-basis:100%;width:100%;height:0;margin:0;padding:0}
+
+/* ═══ centring, and the hero's thinking field ═══════════════════════════════════════════════════
+   Measured: the frame sits on the page centre (720) but the title, line and button sat at 765 —
+   they were not centred inside their column. */
+.hc-page .intro__body{align-items:center !important;text-align:center !important;margin-inline:auto !important}
+.hc-page .display--intro,.hc-page .intro__lede,.hc-page .intro__act{align-self:center !important;margin-inline:auto !important}
+
+/* the hero's dots were a dense 600x300 block behind the box; the one by the footer spreads across its
+   whole section, which is why it reads quieter. This one spreads too. */
+.hc-page .hero .chat > .hero__think{left:50%;right:auto;transform:translateX(-50%);
+  width:min(100vw,1200px) !important;height:440px !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.34}
+
+/* the text column kept an 89.6px left padding from the old two-column layout — half of it was the
+   45px by which the title, line and button sat right of the frame's centre */
+.hc-page .intro__body{padding:0 !important}

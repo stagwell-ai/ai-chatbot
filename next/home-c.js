@@ -23,3 +23,13 @@
   if ('IntersectionObserver' in window) new IntersectionObserver(es => es[0].isIntersecting ? start() : stop(), { threshold: .15 }).observe(frame);
   else start();
 })();
+
+/* the hero's dot field is drawn to the size its canvas reports, so it re-measures once the wider
+   size above has been applied */
+(function () {
+  'use strict';
+  if (!document.querySelector('.hc-page .hero .hero__think')) return;
+  const nudge = () => dispatchEvent(new Event('resize'));
+  if (document.readyState === 'complete') setTimeout(nudge, 60);
+  else addEventListener('load', () => setTimeout(nudge, 60), { once: true });
+})();
