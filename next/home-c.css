@@ -1442,3 +1442,54 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 .hc-page .hcs__kind{position:static;margin:0 0 10px;font-family:var(--ui);font-size:14px;
   font-weight:400;letter-spacing:0;text-transform:none;color:var(--hc-quiet)}
 .hc-page .hcs__media .mk{top:calc(50% + 12px);left:50%;margin-top:0}
+
+/* ═══ the closing call becomes two blocks, as in the reference ══════════════════════════════════ */
+.hc-page .ask-end .wrap.ask-end__in{background:none !important;padding:0 !important;
+  max-width:1240px;border-radius:0}
+.hc-page .ask-end .display--end,.hc-page .ask-end .display--end *{color:var(--ink) !important;
+  text-align:left}
+.hc-page .ask-end .ask-end__acts{margin-top:clamp(24px,3vw,38px)}
+.hc-page .ask-end .ask-end__ways{display:grid !important;grid-template-columns:1fr 1fr;gap:16px;
+  width:100%;flex-wrap:nowrap}
+/* each call fills its own block */
+.hc-page .ask-end .ask-end__ways .btn,
+.hc-page .ask-end .call,.hc-page .ask-end .call__btn{width:100% !important;height:150px !important;
+  border-radius:10px;justify-content:space-between;align-items:flex-end;
+  padding:22px 24px !important;font-size:22px !important;font-weight:500;letter-spacing:-.01em}
+.hc-page .ask-end .btn--ink{background:#E9E9E9 !important;color:var(--ink) !important;
+  box-shadow:none !important}
+.hc-page .ask-end .btn--ink:hover{background:#E1E1E1 !important}
+.hc-page .ask-end .call__btn{background:linear-gradient(105deg,#041634 0%,#063056 42%,#009CBD 100%) !important;
+  color:#FFFFFF !important;box-shadow:none !important}
+.hc-page .ask-end .call__btn:hover{filter:brightness(1.06)}
+/* the block's own arrow, the one the reference carries */
+.hc-page .ask-end .ask-end__ways .btn::after,
+.hc-page .ask-end .call__btn::after{content:'';display:block !important;width:26px;height:26px;
+  flex:0 0 auto;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat}
+.hc-page .ask-end .call__btn .btn__ic--wave{display:none}
+@media (max-width:760px){
+  .hc-page .ask-end .ask-end__ways{grid-template-columns:1fr}
+  .hc-page .ask-end .ask-end__ways .btn,.hc-page .ask-end .call,
+  .hc-page .ask-end .call__btn{height:120px !important;font-size:19px !important}
+}
+/* the two blocks match exactly: same width, same top line */
+.hc-page .ask-end .ask-end__ways{align-items:stretch;justify-items:stretch}
+.hc-page .ask-end .call{display:block !important;position:relative;justify-self:stretch;
+  padding:0 !important;height:150px !important}
+.hc-page .ask-end .call__btn{position:absolute;inset:0;height:100% !important;width:100% !important;
+  display:flex !important;margin:0 !important}
+@media (max-width:760px){
+  .hc-page .ask-end .call{height:120px !important}
+}
+
+/* ═══ the cards line up: title at the top, panel in the middle, words and link on one baseline ═══ */
+.hc-page .hcs__rail{align-items:stretch}
+.hc-page .hcs__rail > li{display:flex}
+.hc-page .hcs__card{display:flex;flex-direction:column;height:100%;width:100%}
+.hc-page .hcs__kind{font-family:var(--hc-title) !important;font-weight:600;font-size:15px;
+  color:var(--ink);margin:0 0 12px}
+.hc-page .hcs__media{flex:1 1 auto;min-height:150px;height:auto !important}
+.hc-page .hcs__desc{margin-top:auto;padding-top:18px}
+.hc-page .hcs__go{margin-top:14px;font-family:var(--ui)}
