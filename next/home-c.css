@@ -1614,3 +1614,6 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 .hc-page .ask-end .ask-end__ways{width:100% !important;max-width:1180px;margin-inline:auto;
   grid-template-columns:0.86fr 1.14fr;gap:20px}
 .hc-page .ask-end .wrap.ask-end__in{width:100%;padding-inline:clamp(20px,4vw,40px) !important}
+/* the Products stage stands taller — full width was reading as a letterbox */
+.hc-page .hc-port__stage{height:clamp(560px,84vh,940px)}
+@media (max-width:760px){.hc-page .hc-port__stage{height:clamp(420px,64vh,600px)}}
