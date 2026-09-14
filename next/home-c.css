@@ -965,3 +965,40 @@ body.hc-page{--hc-ground:#FBFBFA;--hc-edge:#E7E7E3}
 
 /* the suite's stills stand shorter */
 .hc-page .hcs__media{aspect-ratio:1 / 1}
+
+/* the rail's snap was landing on the container edge, which ate the left inset — snap to the same
+   line the title starts on */
+.hc-page .hcs__rail{scroll-padding-left:max(clamp(20px,4vw,40px),calc((100% - 1180px) / 2 + clamp(20px,4vw,40px)))}
+
+/* the cards run wider, so the words take fewer lines and the cells stand shorter */
+.hc-page .why > .wrap{max-width:1300px}
+.hc-page .why__d,.hc-page .why__d--lead{max-width:64ch}
+/* the mark reads at its proper size, and never on a plate */
+.hc-page .why__ic{width:28px !important;height:28px !important;background:none !important}
+.hc-page .why__ic svg{width:26px;height:26px}
+.hc-page .why__head{gap:12px;margin-bottom:14px}
+
+/* the still behind Products stands taller */
+.hc-page .hc-port__stage{height:clamp(460px,72vh,820px)}
+@media (max-width:760px){.hc-page .hc-port__stage{height:clamp(380px,58vh,520px)}}
+/* no eyebrows above these two: the title carries the section on its own */
+.hc-page .hc-port .port__eyebrow,.hc-page .hcs__eb{display:none !important}
+
+/* ═══ while the film holds the screen: its own controls, and the word to keep going ══════════════ */
+.hc-page .intro__ctl,.hc-page .intro__more{position:absolute;z-index:3;opacity:0;visibility:hidden;
+  transition:opacity .35s ease,visibility .35s ease}
+.hc-page .intro__stage.is-full .intro__ctl,.hc-page .intro__stage.is-full .intro__more{opacity:1;visibility:visible}
+.hc-page .intro__ctl{right:clamp(16px,2.4vw,32px);bottom:clamp(16px,2.4vw,32px);display:flex;gap:10px}
+.hc-page .intro__btn{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;
+  background:var(--ink);color:#FFFFFF;cursor:pointer;transition:background .2s ease}
+.hc-page .intro__btn:hover{background:#000000}
+.hc-page .intro__btn svg{width:20px;height:20px}
+.hc-page .intro__btn .intro__on{display:none}
+.hc-page .intro__btn[aria-pressed="true"] .intro__off{display:none}
+.hc-page .intro__btn[aria-pressed="true"] .intro__on{display:block}
+.hc-page .intro__more{left:50%;transform:translateX(-50%);bottom:clamp(74px,11vh,120px);margin:0;
+  display:flex;flex-direction:column;align-items:center;gap:6px;color:#FFFFFF;font-family:var(--ui);
+  font-size:12px;letter-spacing:1.6px;text-transform:uppercase}
+.hc-page .intro__more svg{width:22px;height:22px;animation:hcNudge 2.1s ease-in-out infinite}
+@keyframes hcNudge{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
+@media (prefers-reduced-motion:reduce){.hc-page .intro__more svg{animation:none}}

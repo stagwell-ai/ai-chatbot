@@ -61,6 +61,7 @@
     const b = media.getBoundingClientRect();
     const covering = e > .5 && b.top <= 1 && b.bottom >= vh - 1;
     if (nav) nav.classList.toggle('on-film', covering);
+    stage.classList.toggle('is-full', covering);
   };
   const onScroll = () => { if (!tick) tick = requestAnimationFrame(paint); };
 
@@ -90,7 +91,7 @@
   const film = document.querySelector('.hc-page video.intro__pic');
   if (!film || !('IntersectionObserver' in window)) return;
   const play = () => { const p = film.play(); if (p && p.catch) p.catch(() => {}); };
-  new IntersectionObserver(es => es[0].isIntersecting ? play() : film.pause(), { threshold: .1 }).observe(film);
+  new IntersectionObserver(es => (es[0].isIntersecting && film.dataset.held !== '1') ? play() : film.pause(), { threshold: .1 }).observe(film);
 })();
 
 /* Products: the tabs and the two arrows move one still at a time */
@@ -217,4 +218,33 @@
   };
   fix();
   new MutationObserver(fix).observe(btn, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['aria-label'] });
+})();
+
+/* the film's own two controls, live only while it holds the screen */
+(function () {
+  'use strict';
+  const film = document.querySelector('.hc-page video.intro__pic');
+  const play = document.getElementById('filmPlay');
+  const sound = document.getElementById('filmSound');
+  if (!film || !play || !sound) return;
+  const paintPlay = () => {
+    const on = !film.paused;
+    play.setAttribute('aria-label', on ? 'Pause the film' : 'Play the film');
+    play.innerHTML = on
+      ? '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="7" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor"/><rect x="13.6" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor"/></svg>'
+      : '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.6 18.5 12 8 18.4z" fill="currentColor"/></svg>';
+  };
+  play.addEventListener('click', () => {
+    if (film.paused) { const p = film.play(); if (p && p.catch) p.catch(() => {}); film.dataset.held = ''; }
+    else { film.pause(); film.dataset.held = '1'; }   /* a hand-paused film stays paused on scroll */
+    paintPlay();
+  });
+  film.addEventListener('play', paintPlay);
+  film.addEventListener('pause', paintPlay);
+  paintPlay();
+  sound.addEventListener('click', () => {
+    film.muted = !film.muted;
+    sound.setAttribute('aria-pressed', String(!film.muted));
+    sound.setAttribute('aria-label', film.muted ? 'Turn the sound on' : 'Turn the sound off');
+  });
 })();

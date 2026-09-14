@@ -39,7 +39,7 @@ d.setAttribute('data-theme',t||sys);})();
 <link rel="stylesheet" href="/next/assets/fonts/fonts.css">
 <link rel="stylesheet" href="/next/lead.css">
 <link rel="stylesheet" href="/next/home.css">
-<link rel="stylesheet" href="/next/home-c.css?v=12">
+<link rel="stylesheet" href="/next/home-c.css?v=14">
 </head>
 <!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta]
      click on this page — the same panel every other booking CTA on the site opens -->
@@ -245,6 +245,12 @@ d.setAttribute('data-theme',t||sys);})();
     <h2 class="display display--intro rv" style="--d:.1s;font-weight:600"><span style="font-weight:600">Stagwell AI is a custom portfolio of <span style="color:#009CBD">agentic solutions built for businesses of any size.</span></span></h2>
     <p class="intro__act rv" style="--d:.2s"><button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button><a class="btn btn--line btn--lg" href="#ask" data-ask>Try free</a></p>
   </div>
+    <div class="intro__ctl" aria-hidden="false">
+      <button type="button" class="intro__btn" id="filmPlay" aria-label="Pause the film"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="7" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor"/><rect x="13.6" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor"/></svg></button>
+      <button type="button" class="intro__btn" id="filmSound" aria-label="Turn the sound on" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 9.5h3.2L13 5.6v12.8L8.2 14.5H5z" fill="currentColor"/><path class="intro__off" d="M16.5 9.5l4 5m0-5l-4 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path class="intro__on" d="M16.6 9.4a3.6 3.6 0 0 1 0 5.2M19 7.3a6.8 6.8 0 0 1 0 9.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </div>
+    <p class="intro__more" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4.5v14M6.5 13l5.5 5.5L17.5 13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Keep scrolling</span></p>
+  
   </div></div>
 </section>
 
@@ -455,6 +461,6 @@ d.setAttribute('data-theme',t||sys);})();
 <script src="/next/voice-stage.js"></script>
 <script src="/next/voice.js"></script>
 <script src="/next/hero-agent.js"></script>
-<script src="/next/home-c.js?v=12"></script>
+<script src="/next/home-c.js?v=14"></script>
 </body>
 </html>
