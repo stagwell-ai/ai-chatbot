@@ -351,13 +351,11 @@
     const reach = Math.min(150, Math.max(0, rail.scrollWidth - rail.clientWidth));
     if (!reach) return;
     const span = 1100, t0 = performance.now();
-    rail.style.scrollSnapType = 'none';
     const step = now => {
-      if (touched) { rail.style.scrollSnapType = ''; return; }   /* the reader takes over, we stop */
+      if (touched) return;                                  /* the reader takes over, we stop */
       const t = (now - t0) / span;
       rail.scrollLeft = reach * ease(Math.min(1, t));
       if (t < 1) requestAnimationFrame(step);
-      else rail.style.scrollSnapType = '';
     };
     requestAnimationFrame(step);
   };
