@@ -51,7 +51,7 @@
     tick = 0;
     const vh = innerHeight, vw = innerWidth;
     const top = stage.getBoundingClientRect().top;
-    let p = -top / (vh * 0.5);                          /* it arrives card-sized, then grows once pinned */
+    let p = -top / (vh * 0.35);                         /* it arrives card-sized, then grows once pinned */
     p = p < 0 ? 0 : p > 1 ? 1 : p;
     const e = p * p * (3 - 2 * p);                      /* eased */
     const x = Math.max(0, (vw - CARD_W) / 2) * (1 - e);

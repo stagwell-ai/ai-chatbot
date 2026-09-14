@@ -1619,3 +1619,10 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 @media (max-width:760px){.hc-page .hc-port__stage{height:clamp(420px,64vh,600px)}}
 /* the launcher lines up with the footer's right-hand links rather than the screen's edge */
 .hc-launch{right:clamp(24px,5.8vw,60px)}
+
+/* the film sits closer to the chat, and its scroll runway is shorter, so the gap to Products
+   stops dwarfing the one above it */
+.hc-page .intro{padding-top:clamp(28px,3vw,44px) !important;padding-bottom:clamp(28px,3vw,44px) !important}
+@media (min-width:901px){
+  .hc-page .intro__stage.is-cine{height:145vh}
+}
