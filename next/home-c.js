@@ -406,3 +406,95 @@
   if (document.readyState === 'loading') addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();
+
+/* ═══ C's own thinking field ═══════════════════════════════════════════════════════════════════
+   The shared script's loop walks the chat's own parts; the client wants the light to travel
+   chat → top right (the bar's calls) → chat → top left (the mark) → chat → …, leading the eye in.
+   Rather than change the stop list option A runs on, C paints its own field and hides that one. */
+(function () {
+  'use strict';
+  const hero = document.querySelector('.hc-page .hero');
+  const chat = document.querySelector('.hc-page .hero .chat');
+  if (!hero || !chat) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const old = document.getElementById('agentThink');
+  if (old) old.style.display = 'none';          /* the shared field steps aside on this page */
+
+  const cv = document.createElement('canvas');
+  cv.className = 'hc-think';
+  cv.setAttribute('aria-hidden', 'true');
+  hero.insertBefore(cv, hero.firstChild);
+  const ctx = cv.getContext('2d');
+
+  const GAP = 12, R = 190;                       /* the grid, and how far the light reaches */
+  let pts = [], W = 0, H = 0, raf = 0, t0 = 0, seen = true;
+
+  const size = () => {
+    const d = Math.min(2, devicePixelRatio || 1);
+    const r = hero.getBoundingClientRect();
+    W = Math.round(r.width); H = Math.round(r.height);
+    cv.width = Math.round(W * d); cv.height = Math.round(H * d);
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    pts = [];
+    for (let y = GAP / 2; y < H; y += GAP) for (let x = GAP / 2; x < W; x += GAP) pts.push({ x, y });
+  };
+
+  /* the stops, in the hero's own coordinates: the chat, then a corner, then the chat again */
+  const stops = () => {
+    const h = hero.getBoundingClientRect();
+    const c = chat.getBoundingClientRect();
+    const mid = { x: c.left - h.left + c.width / 2, y: c.top - h.top + c.height / 2 };
+    const nav = document.getElementById('nav');
+    const brand = document.querySelector('.hc-page .nav__brand');
+    const call = document.querySelector('.hc-page .nav__acts .btn--ink');
+    const pin = el => {
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      if (!r.width) return null;
+      return { x: r.left - h.left + r.width / 2, y: r.top - h.top + r.height / 2 };
+    };
+    const TR = pin(call) || { x: W - 90, y: 40 };
+    const TL = pin(brand) || { x: 90, y: 40 };
+    return [mid, TR, TL];              /* a triangle: the chat, the bar's call, the mark */
+  };
+
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const LEG = 2.4, DWELL = .5;                   /* seconds travelling, seconds resting */
+
+  const frame = now => {
+    raf = 0;
+    if (!t0) t0 = now;
+    const s = (now - t0) / 1000;
+    const S = stops(), span = LEG + DWELL;
+    const i = Math.floor(s / span) % S.length;
+    const a = S[i], b = S[(i + 1) % S.length];
+    const u = Math.min(1, (s % span) / LEG);
+    const x = a.x + (b.x - a.x) * ease(u), y = a.y + (b.y - a.y) * ease(u);
+
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pts) {
+      const dx = p.x - x, dy = p.y - y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d > R) continue;
+      const k = 1 - d / R;
+      ctx.globalAlpha = .34 * k * k;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.25 + k * .9, 0, 6.2832);
+      ctx.fillStyle = '#0B1220';
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (seen) raf = requestAnimationFrame(frame);
+  };
+
+  const start = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = 0; } };
+
+  size();
+  addEventListener('resize', () => { size(); });
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(es => { seen = es[0].isIntersecting; seen ? start() : stop(); },
+      { threshold: 0 }).observe(hero);
+  start();
+})();
