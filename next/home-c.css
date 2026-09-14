@@ -1575,3 +1575,11 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 
 /* a dismissed helper stays dismissed: its entrance animation was holding it open */
 .hc-launch__say.is-gone{animation:none !important;opacity:0 !important;visibility:hidden}
+/* the dismiss reads as a control, not a whisper: a small disc on the bubble's corner */
+.hc-launch__x{opacity:1;width:24px;height:24px;top:-9px;right:-9px;border-radius:50%;
+  background:#FFFFFF;color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--hc-edge);transition:background .2s ease,color .2s ease}
+.hc-launch__x:hover,.hc-launch:hover .hc-launch__x{background:var(--ink);color:#FFFFFF;
+  box-shadow:none}
+.hc-launch__x svg{width:11px;height:11px}
+.hc-launch__say{padding-right:20px;overflow:visible}
