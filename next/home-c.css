@@ -408,3 +408,33 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
    winning, so the centred picture overflowed into the next row) */
 .hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:clamp(240px,30vh,340px) !important}
 @media (max-width:760px){ .hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:0 !important} }
+
+/* ═══ the first block is a video frame, and the Why pictures stand taller (client) ═══════════════ */
+/* HD: the divider between the chat and the introduction is 16:9, ready for the film */
+.hc-page .intro__media{aspect-ratio:16/9;height:auto !important;width:min(100%,900px) !important}
+.hc-page .intro__pic{width:100% !important;height:100% !important;object-fit:cover}
+
+/* the Why pictures were far too wide (500x270): taller, nearer 4:3, and the row grows with them */
+.hc-page .why__pic{height:clamp(300px,26vw,420px) !important}
+.hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:clamp(300px,26vw,420px) !important}
+@media (max-width:760px){
+  .hc-page .intro__media{aspect-ratio:16/9;height:auto !important}
+  .hc-page .why__pic,.hc-page .why__item:nth-child(even) .why__pic{height:clamp(230px,58vw,300px) !important}
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:0 !important}
+}
+
+/* ═══ the closing chat matches the hero's (client) ═══════════════════════════════════════════════
+   It was a 60px pill while the hero is a card: same white card, same hairline, the line to type on
+   at the top and the black send disc on its floor. */
+.hc-page .ask-end__acts{width:min(100%,760px)}
+.hc-page .ask-end .ask-mini{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;
+  height:auto;min-height:150px;padding:20px 20px 14px;border-radius:18px;background:var(--hc-card);
+  box-shadow:inset 0 0 0 1px var(--hc-edge);align-items:start}
+.hc-page .ask-end .ask-mini:focus-within{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34)}
+.hc-page .ask-end .ask-mini__dots{display:none}
+.hc-page .ask-end .ask-mini__input{grid-column:1 / -1;grid-row:1;height:34px;font-size:17px;padding:0}
+.hc-page .ask-end .ask-mini__input::placeholder{color:#9AA0A8}
+.hc-page .ask-end .ask-mini__hint{left:20px;right:20px;top:22px;transform:none;text-align:left;font-size:17px;color:#9AA0A8}
+.hc-page .ask-end .ask-mini__go{grid-column:2;grid-row:2;align-self:end;justify-self:end;
+  width:40px;height:40px;border-radius:50%;background:var(--ink);color:#FFFFFF}
+.hc-page .ask-end .ask-mini__go:hover{background:#000000;color:#FFFFFF}
