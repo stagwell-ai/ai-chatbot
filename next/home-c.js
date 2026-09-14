@@ -285,33 +285,48 @@
 
   /* the bubble says its piece, then leaves the pill on its own */
   const say = box.querySelector('.hc-launch__say');
-  let retire = 0;
-  const armRetire = () => { clearTimeout(retire); if (say) retire = setTimeout(() => say.classList.add('is-gone'), 14000); };
+  /* the message stays with the pill — it only goes if the reader closes it */
+  const armRetire = () => { if (say && !box.dataset.hushed) say.classList.remove('is-gone'); };
+  const shut = box.querySelector('.hc-launch__x');
+  if (shut) shut.addEventListener('click', e => {
+    e.stopPropagation();
+    box.dataset.hushed = '1';
+    if (say) say.classList.add('is-gone');
+  });
 
-  /* a soft two-note chime as it lands — only ever after the reader has touched the page, and never
-     more than once; if the browser will not let it sound, nothing happens and nothing breaks */
-  let touched = false, chimed = false;
-  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(t =>
-    addEventListener(t, () => { touched = true; }, { once: true, passive: true }));
-  const chime = () => {
-    if (chimed || !touched || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    chimed = true;
-    try {
+  /* a soft two-note chime as it lands. Browsers only let sound play after a real gesture — and a
+     trackpad scroll is not one — so the audio context is opened and kept warm on the first click or
+     key, and if the launcher arrived before that, the chime waits for it. */
+  let ctx = null, chimed = false, owed = false;
+  const wake = () => {
+    if (!ctx) {
       const Ctx = window.AudioContext || window.webkitAudioContext;
       if (!Ctx) return;
-      const ctx = new Ctx();
-      const at = ctx.currentTime;
-      [[784, 0], [1175, .11]].forEach(([hz, when]) => {         /* G5 then D6, short and soft */
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = 'sine'; o.frequency.value = hz;
-        g.gain.setValueAtTime(0, at + when);
-        g.gain.linearRampToValueAtTime(.06, at + when + .02);
-        g.gain.exponentialRampToValueAtTime(.0001, at + when + .38);
-        o.connect(g).connect(ctx.destination);
-        o.start(at + when); o.stop(at + when + .42);
-      });
-      setTimeout(() => { try { ctx.close(); } catch (e) {} }, 900);
-    } catch (e) {}
+      try { ctx = new Ctx(); } catch (e) { return; }
+    }
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    if (owed) { owed = false; ring(); }
+  };
+  ['pointerdown', 'keydown', 'touchstart'].forEach(t =>
+    addEventListener(t, wake, { passive: true }));
+
+  const ring = () => {
+    if (!ctx || ctx.state !== 'running') { owed = true; return; }
+    const at = ctx.currentTime;
+    [[784, 0], [1175, .11]].forEach(([hz, when]) => {          /* G5 then D6, short and soft */
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = hz;
+      g.gain.setValueAtTime(0, at + when);
+      g.gain.linearRampToValueAtTime(.09, at + when + .02);
+      g.gain.exponentialRampToValueAtTime(.0001, at + when + .4);
+      o.connect(g).connect(ctx.destination);
+      o.start(at + when); o.stop(at + when + .44);
+    });
+  };
+  const chime = () => {
+    if (chimed || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    chimed = true;
+    ring();
   };
   /* while the overlay is open the launcher steps out of the way */
   const over = document.getElementById('chatOver');

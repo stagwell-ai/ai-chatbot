@@ -1205,3 +1205,14 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-launch{z-index:80}
 .hc-page .intro__stage.is-cine .intro__media{z-index:1}
 .hc-launch.is-away{opacity:1 !important;transform:none !important;pointer-events:auto}
+
+/* the message keeps its place beside the pill; only the reader can send it away */
+.hc-launch{position:fixed}
+.hc-launch__say{position:relative;padding-right:34px}
+.hc-launch__x{position:absolute;top:8px;right:8px;width:20px;height:20px;display:grid;place-items:center;
+  border:0;background:none;color:var(--hc-quiet);cursor:pointer;opacity:0;transition:opacity .2s ease}
+.hc-launch:hover .hc-launch__x,.hc-launch__x:focus-visible{opacity:1}
+.hc-launch__x svg{width:13px;height:13px}
+.hc-launch.is-on .hc-launch__say:not(.is-gone){opacity:1;visibility:visible}
+@media (max-width:420px){.hc-launch__say{display:none}}
+@media (min-width:421px) and (max-width:560px){.hc-launch__say{display:block}}
