@@ -1317,3 +1317,14 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page .hcs__media .mk-td{padding:7px 12px}
 .hc-page .hcs__media .mk-row,.hc-page .hcs__media .mk-f,
 .hc-page .hcs__media .mk-foot,.hc-page .hcs__media .mk-kv{padding-block:7px}
+
+/* the last band keeps to the left: the launcher owns the bottom right of the page, so nothing
+   that has to be read may sit there */
+.hc-page .foot__band{justify-content:flex-start !important;gap:clamp(18px,3vw,44px);
+  flex-wrap:wrap;padding-right:clamp(220px,22vw,320px)}
+.hc-page .foot__brand{order:-1;margin:0 !important}
+.hc-page .foot__social{order:2;margin:0 !important}
+.hc-page .foot__copy{order:3;margin:0 !important}
+@media (max-width:760px){
+  .hc-page .foot__band{padding-right:clamp(20px,5vw,40px)}
+}
