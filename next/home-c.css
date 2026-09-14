@@ -1419,3 +1419,10 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 .hc-page .hcs__card,.hc-page .hcs__card:hover,
 .hc-page .why__item,.hc-page .why__item:nth-child(even),
 .hc-page .why__item:nth-child(4n+3){background:#F3F3F3 !important}
+/* the reference's card metrics: 300 wide, 20px of padding, 20px between cards */
+.hc-page .hcs__rail{gap:20px}
+.hc-page .hcs__rail > li{flex:0 0 300px}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding:20px}
+.hc-page .hcs__media{border-radius:8px}
+.hc-page .hcs__desc,.hc-page .hcs__go{margin-inline:0}
+@media (max-width:760px){.hc-page .hcs__rail > li{flex:0 0 78vw}}
