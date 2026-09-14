@@ -1216,3 +1216,43 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-launch.is-on .hc-launch__say:not(.is-gone){opacity:1;visibility:visible}
 @media (max-width:420px){.hc-launch__say{display:none}}
 @media (min-width:421px) and (max-width:560px){.hc-launch__say{display:block}}
+
+/* the message carries the voice mark and a narrower invitation */
+.hc-launch__say{display:flex;align-items:flex-start;gap:10px}
+.hc-launch__mic{width:18px;height:18px;flex:0 0 auto;margin-top:1px;color:var(--teal)}
+
+/* ═══ the full-screen chat reads exactly like the hero's ════════════════════════════════════════ */
+.hc-page .chat-over{background:var(--hc-ground) !important}
+.hc-page .chat-over__in{max-width:900px}
+.hc-page .chat-over__title{text-align:center}
+.hc-page .chat-over .ask__lede{font-family:var(--ui);font-size:16px;color:var(--hc-quiet);
+  text-align:center;margin:14px auto 26px;max-width:56ch}
+.hc-page .chat-over .ask__lede br{display:none}
+/* the field is the hero's box: one hairline, ink disc, room to breathe */
+.hc-page .chat-over .ask__field{border-radius:18px;background:var(--hc-card);
+  box-shadow:inset 0 0 0 1px var(--hc-edge);min-height:118px;padding:20px 20px 14px;
+  display:grid;grid-template-columns:minmax(0,1fr) 42px;align-items:end}
+.hc-page .chat-over .ask__field:focus-within{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34)}
+.hc-page .chat-over .ask__input{grid-column:1;grid-row:1;align-self:start;border:0;background:none;
+  font-family:var(--ui);font-size:17px;color:var(--ink);padding:0;height:auto;min-height:54px}
+.hc-page .chat-over .ask__input::placeholder{color:#9AA0A8}
+.hc-page .chat-over .ask__go{grid-column:2;grid-row:1;align-self:end;width:42px;height:42px;
+  border-radius:50%;background:var(--ink);color:#FFFFFF;border:0;display:grid;place-items:center}
+.hc-page .chat-over .ask__go:hover{background:#000000;color:#FFFFFF}
+.hc-page .chat-over .ask__go svg{width:19px;height:19px}
+/* the starting points as the hero's ghost tags, three and three */
+.hc-page .chat-over .ask__tags{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+  margin:20px auto 0;max-width:760px;padding:0;list-style:none}
+.hc-page .chat-over .ask__tags .tag{height:38px;padding:0 15px;gap:8px;border-radius:999px;
+  background:transparent;border:1px solid rgba(11,18,32,.22);color:var(--ink);
+  font-family:var(--ui);font-size:13.5px;font-weight:500}
+.hc-page .chat-over .ask__tags .tag:hover{background:#FFFFFF;border-color:rgba(11,18,32,.34)}
+.hc-page .chat-over .ask__tags .tag .tag__ic{opacity:.62}
+
+/* the Call me wave: each bar must grow about its own middle. Without transform-box the origin is
+   the SVG's viewBox centre, so the outer bars climbed instead of pulsing in place. */
+.hc-page .btn__ic--wave rect,.hc-page .call__wave rect{transform-box:fill-box;
+  transform-origin:center center}
+.hc-page .btn__ic--wave rect{animation-duration:1s}
+@keyframes hcWave{from{transform:scaleY(.62)}to{transform:scaleY(1.1)}}
+.hc-page .btn__ic--wave rect{animation-name:hcWave}
