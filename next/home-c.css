@@ -942,3 +942,26 @@ body.hc-page{--hc-rhythm:clamp(64px,6.6vw,104px)}
 .hc-page .askbox__voice.is-live{background:var(--teal) !important;border-color:var(--teal) !important;
   color:#FFFFFF !important}
 .hc-page .askbox__voice.is-live svg{color:#FFFFFF}
+
+/* ═══ one arrow, one disc: the chat's send button is the model ═══════════════════════════════════ */
+/* the page sits on a whiter ground; the cells keep their step away from it */
+body.hc-page{--hc-ground:#FBFBFA;--hc-edge:#E7E7E3}
+.hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .hcs__card{background:#F1F1ED !important}
+.hc-page .hcs__card:hover{background:#EAEAE5 !important}
+.hc-page .hc-port__tab,.hc-page .hc-port__tab.is-on,.hc-page .hc-port__all{background:#FFFFFF}
+
+/* the two movers on the picture, and the rail's, are the chat's disc */
+.hc-page .hc-port__nav,.hc-page .hcs__round{width:44px;height:44px;border-radius:50% !important;
+  border:0 !important;background:var(--ink) !important;color:#FFFFFF !important;backdrop-filter:none;
+  display:grid;place-items:center;transition:background .2s ease,transform .2s ease}
+.hc-page .hc-port__nav:hover,.hc-page .hcs__round:hover{background:#000000 !important;color:#FFFFFF !important}
+.hc-page .hc-port__nav svg,.hc-page .hcs__round svg{width:19px;height:19px}
+
+/* the link mark sits in the container's top right, not inside the sentence */
+.hc-page .hc-port__cap{position:absolute;padding-right:clamp(44px,4vw,58px)}
+.hc-page .hc-port__cap .hc-port__arw{position:absolute;top:16px;right:16px;width:19px;height:19px;
+  margin:0;color:rgba(255,255,255,.9);transition:transform .2s ease}
+.hc-page .hc-port__cap:hover .hc-port__arw{transform:translate(2px,-2px)}
+
+/* the suite's stills stand shorter */
+.hc-page .hcs__media{aspect-ratio:1 / 1}
