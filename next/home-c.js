@@ -272,6 +272,15 @@
   else show(true);
 
   btn.addEventListener('click', () => opener.click());
+
+  /* it never sits on top of the film's own controls: while the film holds the screen it steps away */
+  const stage = document.querySelector('.hc-page .intro__stage');
+  if (stage) new MutationObserver(() => box.classList.toggle('is-away', stage.classList.contains('is-full')))
+    .observe(stage, { attributes: true, attributeFilter: ['class'] });
+
+  /* the bubble says its piece, then leaves the pill on its own */
+  const say = box.querySelector('.hc-launch__say');
+  if (say) setTimeout(() => say.classList.add('is-gone'), 9000);
   /* while the overlay is open the launcher steps out of the way */
   const over = document.getElementById('chatOver');
   if (over) new MutationObserver(() => { box.style.display = over.hidden ? '' : 'none'; })

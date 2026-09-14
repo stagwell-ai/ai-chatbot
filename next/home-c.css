@@ -1124,3 +1124,20 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page .display--intro,.hc-page .display--intro *{font-family:var(--hc-title) !important;
   font-weight:400 !important;letter-spacing:-.02em}
 .hc-page .why__t{font-weight:600 !important}
+
+/* ═══ the film carries nothing but the film, and the one word to keep going ═════════════════════ */
+.hc-page .intro__over{display:none !important}
+.hc-page .intro__media::after{background-image:radial-gradient(rgba(8,10,14,.4) 1px,transparent 1.1px),
+  linear-gradient(180deg,rgba(11,11,12,.14) 0%,rgba(11,11,12,.18) 55%,rgba(11,11,12,.34) 100%)}
+.hc-page .intro__more{bottom:clamp(18px,3vh,34px)}
+.hc-page .intro__stage.is-full .intro__more{bottom:clamp(40px,6vh,70px)}
+
+/* the launcher steps aside while the film holds the screen, and its bubble says its piece once */
+.hc-page .intro__stage.is-full ~ * .hc-launch,.hc-launch.is-away{opacity:0 !important;
+  transform:translateY(14px) scale(.96) !important;pointer-events:none}
+.hc-launch__say.is-gone{opacity:0;transform:translateY(6px);pointer-events:none;
+  max-height:0;padding-block:0;margin-bottom:-10px;overflow:hidden;
+  transition:opacity .3s ease,transform .3s ease,max-height .3s ease,padding .3s ease,margin .3s ease}
+/* nothing over the film now that it carries its own words: no veil, no dots */
+.hc-page .intro__media::after{display:none !important}
+.hc-page .intro__more{text-shadow:0 1px 10px rgba(0,0,0,.45)}
