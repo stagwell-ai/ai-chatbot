@@ -198,3 +198,34 @@ body.hc-page{--hc-serif:'Newsreader',Georgia,'Times New Roman',serif}
 @media (max-width:900px){
   .hc-page .intro__media{height:clamp(260px,38vh,380px) !important}
 }
+
+/* ═══ pass 4 (client, 2026-09-14): Tiro Tamil for the titles, no blue in them, a centred first block ══
+   Tiro Tamil is downloaded from Google Fonts and self-hosted beside the others, so the page still
+   fetches nothing from outside. It ships in one weight, so the titles sit at 400. */
+@font-face{font-family:'Tiro Tamil';font-style:normal;font-weight:400;font-display:swap;
+  src:url(./assets/fonts/tiro-tamil-normal.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Tiro Tamil';font-style:italic;font-weight:400;font-display:swap;
+  src:url(./assets/fonts/tiro-tamil-italic.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',serif}
+/* one weight only: the markup asks some titles for 600, which would fake-bold them */
+.hc-page .display,.hc-page .display *{font-weight:400 !important}
+
+/* no blue in the titles (the markup paints those words inline, so this has to say so) */
+.hc-page .display *,.hc-page .display em,.hc-page .display .navy,.hc-page .display span[style]{color:inherit !important}
+
+/* ── the first block, centred: the words, then the picture, all on the middle line ─────────────── */
+.hc-page .intro{grid-template-columns:minmax(0,1fr) !important;justify-items:center;text-align:center;gap:clamp(28px,4vw,56px)}
+.hc-page .intro__body{align-items:center;text-align:center;max-width:760px}
+.hc-page .intro__body > *{text-align:center}
+.hc-page .display--intro{text-align:center !important;max-width:none !important;margin-inline:auto}
+.hc-page .intro__lede{margin-inline:auto;max-width:60ch}
+.hc-page .intro__media{order:2;width:min(100%,900px) !important;height:clamp(340px,46vh,480px) !important;margin-inline:auto}
+.hc-page .intro__body{order:1}
+
+/* one colour, one size, one weight for every title on the page (client) */
+.hc-page .display,.hc-page .display--hero,.hc-page .display--intro,.hc-page .display--port,
+.hc-page .display--cos,.hc-page .display--end,.hc-page .display--ask{
+  font-size:clamp(34px,1rem + 2.9vw,58px) !important;line-height:1.1;letter-spacing:-.015em;color:var(--ink) !important}
