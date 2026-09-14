@@ -1608,3 +1608,9 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 .hc-page .hcs__media{flex:0 0 128px !important;height:128px !important;margin:0 0 14px}
 /* the round stands as tall as the two lines beside it */
 .hc-launch__mic{width:40px !important;height:40px !important;padding:9px}
+
+/* the two closing blocks run wide: the pair fills the page's measure, not the words' measure */
+.hc-page .ask-end .ask-end__acts{display:block !important;width:100%}
+.hc-page .ask-end .ask-end__ways{width:100% !important;max-width:1180px;margin-inline:auto;
+  grid-template-columns:0.86fr 1.14fr;gap:20px}
+.hc-page .ask-end .wrap.ask-end__in{width:100%;padding-inline:clamp(20px,4vw,40px) !important}
