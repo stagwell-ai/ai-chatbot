@@ -463,3 +463,15 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
    measure widens to about 30 per line */
 .hc-page .intro__body{max-width:1000px !important}
 .hc-page .display--intro{max-width:none !important;width:min(100%,960px);margin-inline:auto}
+
+/* ═══ the first block's frame holds the hero pictures, one fading into the next (client) ═════════
+   They are stacked in the 16:9 frame; home-c.js turns them every three seconds. Videos can take
+   their place later without touching the layout. */
+.hc-page .intro__media{position:relative;overflow:hidden}
+.hc-page .intro__pic{position:absolute;inset:0;width:100% !important;height:100% !important;object-fit:cover;
+  opacity:0;transition:opacity .9s ease}
+.hc-page .intro__pic.is-on{opacity:1}
+@media (prefers-reduced-motion:reduce){ .hc-page .intro__pic{transition:none} }
+
+/* three and three: the markup carries a line break after the third tag — it comes back (client) */
+.hc-page .chat__tags .tag__br{display:block !important;flex-basis:100%;width:100%;height:0;margin:0;padding:0}
