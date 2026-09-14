@@ -1740,3 +1740,10 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
     font-size:clamp(30px,7.2vw,42px) !important}
 }
+
+/* ═══ the thinking field runs the whole column: from under the bar down past the chat ════════════
+   Its loop's top stop is the canvas's own upper third, so the light sets off near the bar's calls
+   and the mark, travels down to the field and the tags, and back — the eye follows it in. */
+.hc-page .hero .chat > .hero__think{top:-232px !important;height:820px !important;
+  width:min(100vw,1440px) !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.6}
