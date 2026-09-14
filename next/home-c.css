@@ -3,3 +3,63 @@
    next/home-c.html, which loads home.css first and then this file. Everything
    here is scoped to body.hc-page, so the live homepage is never touched.
    ─────────────────────────────────────────────────────────────────────────── */
+
+/* ═══ the Manus-clean pass: hero, chat, starting points (client references, 2026-09-14) ══════════
+   Same words, same links — only the design: a warm light ground instead of the picture, one big
+   centred title, a roomy white composer with a black send disc, and the starting points as clean
+   chips. Everything is scoped to .hc-page, so the live homepage keeps its dark hero. */
+
+body.hc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:#6B7079;background:var(--hc-ground)}
+
+/* ── the hero: light, airy, centred ───────────────────────────────────────────────────────────── */
+.hc-page .hero{background:var(--hc-ground);color:var(--ink);min-height:auto;
+  padding:calc(var(--nav-h) + clamp(56px,9vh,112px)) 0 clamp(64px,10vh,120px)}
+.hc-page .hero__bg{display:none}                      /* no picture behind it (the references are plain) */
+.hc-page .hero__in{max-width:min(920px,100%)}
+.hc-page .display--hero,.hc-page .display--hero .navy{color:var(--ink)}
+.hc-page .display--hero{font-weight:500;font-size:clamp(40px,min(1rem + 4.2vw,11vh),72px);line-height:1.06;letter-spacing:-.03em}
+.hc-page .hero__lede{margin-top:clamp(14px,1.6vw,20px);color:var(--hc-quiet);white-space:normal;font-size:clamp(16px,1.1vw,18px)}
+
+/* the bar sits on light now, so its white-on-picture colours step aside */
+.hc-page .nav:not(.is-stuck){color:var(--ink)}
+.hc-page .nav:not(.is-stuck) .nav__links a,.hc-page .nav:not(.is-stuck) .nav__droptrig,
+.hc-page .nav:not(.is-stuck) .nav__ask{color:var(--ink-2, #3B4252)}
+.hc-page .nav:not(.is-stuck) .nav__brand,.hc-page .nav:not(.is-stuck) .nav__burger{color:var(--ink)}
+.hc-page .nav:not(.is-stuck) .btn--ink{background:var(--ink);color:#FFFFFF}
+.hc-page .nav:not(.is-stuck) .nav__search,.hc-page .nav:not(.is-stuck) .nav__search:hover{
+  background:var(--hc-card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--hc-edge)}
+.hc-page .nav.is-stuck{background:var(--hc-ground)}
+
+/* ── the composer: a quiet white card, the send a black disc ──────────────────────────────────── */
+.hc-page .chat{width:min(100%,760px);margin-top:clamp(28px,3.4vw,44px)}
+.hc-page .askbox{border-radius:18px;box-shadow:inset 0 0 0 1px var(--hc-edge);padding:20px 20px 14px;min-height:150px}
+.hc-page .askbox:focus-within{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34)}
+.hc-page .askbox__caret{display:none}                  /* the references show a plain placeholder */
+.hc-page .askbox__input{padding-left:0;font-size:17px}
+.hc-page .askbox__input::placeholder{color:#9AA0A8}
+.hc-page .askbox__bar{padding-top:14px}
+.hc-page .askbox__voice{height:36px;padding:0 14px 0 11px;background:var(--hc-card);border:1px solid var(--hc-edge);color:var(--ink);font-weight:500}
+.hc-page .askbox__voice:hover{background:#F1F1EE;border-color:#D8D8D3}
+.hc-page .askbox__voice.is-live{background:var(--ink);border-color:var(--ink);color:#FFFFFF}
+.hc-page .askbox__go{width:40px;height:40px;background:var(--ink);color:#FFFFFF}
+.hc-page .askbox__go:hover{background:#000000}
+.hc-page .askbox__restart{height:36px}
+
+/* ── the starting points: clean chips in one centred row, as in the references ─────────────────── */
+.hc-page .chat__tags{margin-top:clamp(20px,2.4vw,28px);gap:8px;flex-wrap:wrap;justify-content:center}
+.hc-page .chat__tags .tag__br{display:none}            /* they flow on their own now */
+.hc-page .chat__tags .tag{height:38px;padding:0 15px;gap:8px;background:var(--hc-card);border:1px solid var(--hc-edge);
+  color:var(--ink);font-size:13.5px;font-weight:500;letter-spacing:-.005em}
+.hc-page .chat__tags .tag:hover{background:#F1F1EE;border-color:#D8D8D3;color:var(--ink)}
+.hc-page .chat__tags .tag .tag__ic{opacity:.62}
+.hc-page .chat__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* the thinking dots are ink on a light ground: a touch quieter */
+.hc-page .hero__think.is-on{opacity:.5}
+
+@media (max-width:600px){
+  .hc-page .hero{padding-top:calc(var(--nav-h) + 40px)}
+  .hc-page .askbox{padding:16px 14px 12px;border-radius:16px}
+  .hc-page .chat__tags{gap:6px}
+  .hc-page .chat__tags .tag{height:34px;padding:0 12px;font-size:12.5px}
+}
