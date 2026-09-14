@@ -1,0 +1,5 @@
+/* ── OPTION C ────────────────────────────────────────────────────────────────
+   A copy of the homepage (option A) to work on freely: /home-c serves
+   next/home-c.html, which loads home.css first and then this file. Everything
+   here is scoped to body.hc-page, so the live homepage is never touched.
+   ─────────────────────────────────────────────────────────────────────────── */

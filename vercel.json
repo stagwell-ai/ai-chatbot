@@ -127,6 +127,10 @@
       "destination": "/next/home-b.html"
     },
     {
+      "source": "/home-c",
+      "destination": "/next/home-c.html"
+    },
+    {
       "source": "/book",
       "destination": "/next/book.html"
     },
