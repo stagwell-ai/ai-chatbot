@@ -159,14 +159,16 @@
 
   const panels = [...document.querySelectorAll('.hc-page .hcs__media .mk')];
   if (!panels.length) return;
-  const fit = p => {                    /* drawn at its natural size, then scaled into the picture */
+  const fit = p => {        /* drawn at its natural size, then scaled and set in the picture's middle */
     const m = p.parentElement, w = m.clientWidth, h = m.clientHeight;
     if (!w || !h) return;
-    const inset = Math.round(Math.max(10, w * .04));
-    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h * .46) / p.offsetHeight);
-    p.style.transform = 'scale(' + s.toFixed(4) + ')';
-    p.style.left = inset + 'px';
-    p.style.bottom = inset + 'px';
+    const inset = Math.round(Math.max(10, w * .06));
+    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h * .5) / p.offsetHeight);
+    p.style.left = '50%';
+    p.style.top = '50%';
+    p.style.bottom = 'auto';
+    p.style.transformOrigin = 'center center';
+    p.style.transform = 'translate(-50%, -50%) scale(' + s.toFixed(4) + ')';
   };
   if ('ResizeObserver' in window) {
     const ro = new ResizeObserver(es => es.forEach(e => {
