@@ -1747,3 +1747,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hero .chat > .hero__think{top:-232px !important;height:820px !important;
   width:min(100vw,1440px) !important}
 .hc-page .hero .chat > .hero__think.is-on{opacity:.6}
+/* reach the bar on a desktop too: the taller titles push the chat down, so the field has to start
+   further above it than the old offset allowed */
+.hc-page .hero .chat > .hero__think{top:-360px !important;height:1000px !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.68}
