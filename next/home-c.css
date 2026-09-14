@@ -1662,3 +1662,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .intro__btn:hover{background:#05080F}
 .hc-page .btn--ink:hover,.hc-page .hcs__round:hover,.hc-page .hc-port__nav:hover{background:#05080F !important}
 .hc-page .ask-end .call__form .call__go{color:var(--ink)}
+
+/* the hero's thinking field reads again: wider, taller, a little stronger behind the chat */
+.hc-page .hero .chat > .hero__think{width:min(100vw,1340px) !important;height:560px !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.46}
