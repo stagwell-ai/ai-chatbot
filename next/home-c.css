@@ -1373,3 +1373,6 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
   .hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media{background-color:#DCEFF6}
   .hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{background-color:#FFF3D2}
 }
+/* Explore reads in the same blue as the Ask pill */
+.hc-page .hcs__go{color:var(--teal) !important}
+.hc-page .hcs__card:hover .hcs__go{color:#0089A6 !important}
