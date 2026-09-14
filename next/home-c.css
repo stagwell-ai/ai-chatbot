@@ -1632,3 +1632,8 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 body.hc-page{--hc-serif:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page h1,.hc-page h2,.hc-page h3,.hc-page .display,.hc-page .display *,
 .hc-page .hero .display,.hc-page .hero .display *{font-family:var(--hc-title) !important}
+
+/* the main title goes back to the serif it had — Tiro Tamil — and nothing else follows it */
+body.hc-page{--hc-head:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',serif}
+.hc-page .hero .display--hero,.hc-page .hero .display--hero *{font-family:var(--hc-head) !important;
+  font-weight:400 !important;letter-spacing:-.015em}
