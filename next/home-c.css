@@ -1583,3 +1583,15 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
   box-shadow:none}
 .hc-launch__x svg{width:11px;height:11px}
 .hc-launch__say{padding-right:20px;overflow:visible}
+
+/* ═══ three groups in a card: the title, the panel, then the words with their link ══════════════ */
+.hc-page .hcs__kind{position:static !important;margin:0 0 18px !important;padding:0}
+.hc-page .hcs__media{flex:0 0 150px !important;height:150px !important;margin:0 0 22px;
+  position:relative}
+.hc-page .hcs__media .mk{top:50%;left:50%;margin-top:0}
+.hc-page .hcs__desc{margin:0 !important;padding:0 !important}
+.hc-page .hcs__go{margin-top:14px !important;padding:0 !important}
+.hc-page .hcs__card{justify-content:flex-start}
+/* the dismiss rides above the message, never behind it */
+.hc-launch__say{position:relative;z-index:1}
+.hc-launch__x{z-index:5}
