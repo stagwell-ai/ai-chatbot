@@ -450,3 +450,16 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
    hint, which used to sit exactly on top of each other in the old pill. The hint is the visible one. */
 .hc-page .ask-end .ask-mini__input::placeholder{color:transparent}
 .hc-page .ask-end .ask-mini__hint{top:20px;left:20px;right:20px;line-height:34px;height:34px}
+
+/* ═══ the introduction on three lines, and a CTA on every Why row (client) ══════════════════════ */
+/* four lines was too many: the measure is narrowed so it breaks on three */
+.hc-page .display--intro{max-width:15.2em !important;margin-inline:auto}
+
+/* each row gets the same ink pill as the rest of the page */
+.hc-page .why__cta{display:inline-flex;margin-top:22px}
+@media (max-width:760px){ .hc-page .why__cta{margin-top:18px} }
+
+/* three lines, not four: 88 characters were breaking at ~22 per line inside a 670px measure, so the
+   measure widens to about 30 per line */
+.hc-page .intro__body{max-width:1000px !important}
+.hc-page .display--intro{max-width:none !important;width:min(100%,960px);margin-inline:auto}
