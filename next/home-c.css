@@ -1349,3 +1349,5 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page .hcs__rail > li{flex:0 0 clamp(250px,24vw,320px)}
 .hc-page .hcs__desc{margin:16px 4px 0;font-size:14px;line-height:1.5}
 .hc-page .hcs__go{margin:12px 4px 0}
+/* the spark on the ink pill reads in a pale blue, not the full teal */
+.hc-launch__btn svg{color:#9BE3F5}
