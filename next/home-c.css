@@ -1404,3 +1404,14 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media,
 .hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media,
 .hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{background:#E7E6E1 !important}
+
+/* ═══ the greys go neutral: ours were warm, which read as yellow beside the reference ════════════ */
+body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{background:#F2F2F2 !important}
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media,
+.hc-page .hcs__media{background:#E8E8E8 !important}
+.hc-page .why__item,.hc-page .why__item:nth-child(even),
+.hc-page .why__item:nth-child(4n+3){background:#F2F2F2 !important}
+.hc-page .hc-port__tab:hover{background:#F2F2F2}
