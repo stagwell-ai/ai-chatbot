@@ -1617,3 +1617,5 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 /* the Products stage stands taller — full width was reading as a letterbox */
 .hc-page .hc-port__stage{height:clamp(560px,84vh,940px)}
 @media (max-width:760px){.hc-page .hc-port__stage{height:clamp(420px,64vh,600px)}}
+/* the launcher lines up with the footer's right-hand links rather than the screen's edge */
+.hc-launch{right:clamp(24px,5.8vw,60px)}
