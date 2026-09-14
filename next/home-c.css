@@ -1432,3 +1432,13 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
   font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
   color:var(--hc-quiet);display:block}
 .hc-page .hcs__media .mk{margin-top:10px}
+
+/* ═══ one container only: no inner plate, the words set alike, the panel centred ════════════════ */
+.hc-page .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{background:transparent !important;
+  border-radius:0;aspect-ratio:auto !important;height:170px;display:block}
+.hc-page .hcs__kind{position:static;margin:0 0 10px;font-family:var(--ui);font-size:14px;
+  font-weight:400;letter-spacing:0;text-transform:none;color:var(--hc-quiet)}
+.hc-page .hcs__media .mk{top:calc(50% + 12px);left:50%;margin-top:0}
