@@ -122,10 +122,18 @@
   const stop = () => { if (timer) { clearInterval(timer); timer = 0; } tabs.forEach(t => t.classList.remove('is-timing')); };
   const again = () => { stop(); start(); };
   tabs.forEach((t, n) => t.addEventListener('click', () => { show(n); again(); }));
-  sec.addEventListener('pointerenter', () => { held = true; stop(); });
-  sec.addEventListener('pointerleave', () => { held = false; start(); });
+  /* only the tab strip itself holds the turn — hovering the picture used to freeze it, and a
+     pointer that left by scrolling never reported leaving, so it never started again */
+  const strip = sec.querySelector('.hc-port__tabs');
+  if (strip) {
+    strip.addEventListener('pointerenter', () => { held = true; stop(); });
+    strip.addEventListener('pointerleave', () => { held = false; start(); });
+  }
   if ('IntersectionObserver' in window)
-    new IntersectionObserver(es => { seen = es[0].isIntersecting; seen ? start() : stop(); }, { threshold: .25 }).observe(sec);
+    new IntersectionObserver(es => {
+      seen = es[0].isIntersecting;
+      if (seen) { held = false; start(); } else stop();
+    }, { threshold: .25 }).observe(sec);
   else { seen = true; start(); }
   const prev = sec.querySelector('.hc-port__nav--prev');
   const next = sec.querySelector('.hc-port__nav--next');
@@ -273,10 +281,7 @@
 
   btn.addEventListener('click', () => opener.click());
 
-  /* it never sits on top of the film's own controls: while the film holds the screen it steps away */
-  const stage = document.querySelector('.hc-page .intro__stage');
-  if (stage) new MutationObserver(() => box.classList.toggle('is-away', stage.classList.contains('is-full')))
-    .observe(stage, { attributes: true, attributeFilter: ['class'] });
+  /* it stays in front over the film too — the film's own controls sit in the other corner */
 
   /* the bubble says its piece, then leaves the pill on its own */
   const say = box.querySelector('.hc-launch__say');
@@ -315,29 +320,32 @@
   }
 })();
 
-/* the rail greets the reader: a short drift left, then back, so it reads as something that moves */
+/* the rail greets the reader once: a single soft move to the left, and it stays there — it used to
+   come back, which read as the cards swaying both ways while you scrolled past */
 (function () {
   'use strict';
   const rail = document.querySelector('.hc-page .hcs__rail');
   if (!rail || !('IntersectionObserver' in window)) return;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  let done = false;
-  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  let done = false, touched = false;
+  ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(t =>
+    rail.addEventListener(t, () => { touched = true; }, { passive: true }));
+  const ease = t => 1 - Math.pow(1 - t, 3);
   const drift = () => {
     if (done) return; done = true;
-    const reach = Math.min(180, Math.max(0, rail.scrollWidth - rail.clientWidth));
+    const reach = Math.min(150, Math.max(0, rail.scrollWidth - rail.clientWidth));
     if (!reach) return;
-    rail.style.scrollSnapType = 'none';          /* mandatory snap would jump the drift */
-    const out = 900, back = 700, hold = 260, t0 = performance.now();
+    const span = 1100, t0 = performance.now();
+    rail.style.scrollSnapType = 'none';
     const step = now => {
-      const t = now - t0;
-      if (t < out) rail.scrollLeft = reach * ease(t / out);
-      else if (t < out + hold) rail.scrollLeft = reach;
-      else if (t < out + hold + back) rail.scrollLeft = reach * (1 - ease((t - out - hold) / back));
-      else { rail.scrollLeft = 0; rail.style.scrollSnapType = ''; return; }
-      requestAnimationFrame(step);
+      if (touched) { rail.style.scrollSnapType = ''; return; }   /* the reader takes over, we stop */
+      const t = (now - t0) / span;
+      rail.scrollLeft = reach * ease(Math.min(1, t));
+      if (t < 1) requestAnimationFrame(step);
+      else rail.style.scrollSnapType = '';
     };
     requestAnimationFrame(step);
   };
-  new IntersectionObserver(es => { if (es[0].isIntersecting) drift(); }, { threshold: .35 }).observe(rail);
+  new IntersectionObserver(es => { if (es[0].isIntersecting) setTimeout(drift, 260); },
+    { threshold: .4 }).observe(rail);
 })();

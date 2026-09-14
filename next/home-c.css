@@ -1177,3 +1177,31 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
    the film itself may carry a radius of its own */
 .hc-page .intro__stage.is-cine .intro__media,
 .hc-page .intro__stage.is-cine .intro__pic{border-radius:0 !important}
+
+/* ═══ Why: the mark keeps its own column, so every line starts under the title ═══════════════════
+   Earlier passes painted the mark's plate with nth-child selectors, which outrank a plain one —
+   hence the colours that kept coming back. These match that weight and clear them for good. */
+.hc-page .why__item,.hc-page .why__item:nth-child(even),
+.hc-page .why__item:nth-child(4n+3){display:grid !important;
+  grid-template-columns:28px minmax(0,1fr) !important;column-gap:12px;row-gap:0;
+  align-content:start;justify-items:start}
+.hc-page .why__item .why__head,.hc-page .why__item:nth-child(even) .why__head{display:contents !important}
+.hc-page .why__item .why__ic,.hc-page .why__item:nth-child(even) .why__ic,
+.hc-page .why__item:nth-child(4n+3) .why__ic{grid-column:1 !important;grid-row:1 !important;
+  background:none !important;background-color:transparent !important;background-image:none !important;
+  box-shadow:none !important;border:0 !important;border-radius:0 !important;
+  width:28px !important;height:28px !important;min-height:0 !important;align-self:center !important;
+  padding:0 !important;margin:0 !important}
+.hc-page .why__item .why__t,.hc-page .why__item:nth-child(even) .why__t{grid-column:2 !important;
+  grid-row:1 !important;align-self:center !important;margin:0 !important;padding:0 !important}
+.hc-page .why__item .why__d,.hc-page .why__item .why__d--lead,
+.hc-page .why__item:nth-child(even) .why__d,.hc-page .why__item:nth-child(even) .why__d--lead{
+  grid-column:2 !important;grid-row:auto !important;padding:0 !important;margin:14px 0 0 !important}
+.hc-page .why__item .why__d--lead{margin-top:16px !important}
+.hc-page .why__item .why__d + .why__d{margin-top:10px !important}
+/* proximity, not mandatory: a horizontal rail that snaps hard fights the page's own scrolling */
+.hc-page .hcs__rail{scroll-snap-type:x proximity}
+/* the launcher rides above the film, never behind it */
+.hc-launch{z-index:80}
+.hc-page .intro__stage.is-cine .intro__media{z-index:1}
+.hc-launch.is-away{opacity:1 !important;transform:none !important;pointer-events:auto}
