@@ -1026,3 +1026,17 @@ body.hc-page{--hc-ground:#FBFBFA;--hc-edge:#E7E7E3}
 .hc-page .ask-end .call__form,.hc-page .ask-end .call__done{color:var(--ink)}
 .hc-page .ask-end .ask-end__ways .btn,.hc-page .ask-end .call{width:auto !important;flex:0 0 auto}
 .hc-page .ask-end .ask-end__ways{width:auto;max-width:none}
+
+/* the rail sits out near the page's own edge again, not tucked in to the title's measure */
+.hc-page .hcs__rail{padding-left:clamp(20px,6vw,120px) !important;
+  scroll-padding-left:clamp(20px,6vw,120px) !important}
+.hc-page .hcs__nav{padding-left:clamp(20px,6vw,120px);max-width:none;margin-inline:0}
+
+/* the closing panel: the line goes, the two calls stay shoulder to shoulder, and the dark end of
+   the sweep is blue rather than black */
+.hc-page .ask-end .ask-end__lede{display:none !important}
+.hc-page .ask-end .wrap.ask-end__in{
+  background:linear-gradient(105deg,#041634 0%,#063056 34%,#00618A 70%,#009CBD 100%)}
+.hc-page .ask-end .ask-end__ways{flex-wrap:nowrap}
+.hc-page .ask-end .ask-end__acts{margin-top:clamp(26px,3.2vw,40px)}
+@media (max-width:560px){.hc-page .ask-end .ask-end__ways{flex-wrap:wrap}}
