@@ -438,3 +438,15 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
 .hc-page .ask-end .ask-mini__go{grid-column:2;grid-row:2;align-self:end;justify-self:end;
   width:40px;height:40px;border-radius:50%;background:var(--ink);color:#FFFFFF}
 .hc-page .ask-end .ask-mini__go:hover{background:#000000;color:#FFFFFF}
+
+/* ═══ the starting points as ghost tags (client) ═════════════════════════════════════════════════
+   Inverted from before: nothing but a hairline at rest, and the white fill arrives on hover. */
+.hc-page .chat__tags .tag{background:transparent;border:1px solid rgba(11,18,32,.22);color:var(--ink)}
+.hc-page .chat__tags .tag:hover,.hc-page .chat__tags .tag:focus-visible{background:#FFFFFF;border-color:rgba(11,18,32,.34);color:var(--ink)}
+.hc-page .chat__tags .tag .tag__ic{opacity:.58}
+.hc-page .chat__tags .tag:hover .tag__ic{opacity:.8}
+
+/* the closing field showed two placeholder lines at once — its own placeholder and the rotating
+   hint, which used to sit exactly on top of each other in the old pill. The hint is the visible one. */
+.hc-page .ask-end .ask-mini__input::placeholder{color:transparent}
+.hc-page .ask-end .ask-mini__hint{top:20px;left:20px;right:20px;line-height:34px;height:34px}
