@@ -235,3 +235,176 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
 .hc-page .intro__media{order:1 !important;margin-bottom:clamp(28px,3.6vw,56px)}
 .hc-page .intro__body{order:2 !important}
 .hc-page .intro .hero__sign{display:none}
+
+/* ═══ Why Stagwell AI as split panels (client's reference, 2026-09-14) ═══════════════════════════
+   One full-width rounded block per item, cut in two: a tinted half carrying the item's mark, and a
+   light half with its title and line. The halves swap sides down the list, as in the reference. */
+.hc-page .why__grid{grid-template-columns:minmax(0,1fr) !important;gap:clamp(14px,1.6vw,22px)}
+.hc-page .why__item{display:grid !important;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+  align-items:stretch;gap:0 !important;padding:0 !important;border-radius:20px;overflow:hidden;
+  background:#F4F4F1 !important;border:0 !important;min-height:clamp(200px,26vh,280px)}
+.hc-page .why__head{display:contents}
+/* the tinted half: the mark, large and quiet */
+.hc-page .why__ic{grid-column:1;grid-row:1 / span 2;display:grid;place-items:center;width:100% !important;height:100% !important;
+  border-radius:0 !important;background:#E9E6DF !important;color:var(--ink)}
+.hc-page .why__ic svg{width:clamp(38px,4vw,56px);height:clamp(38px,4vw,56px);opacity:.72}
+/* the light half: the title, then its line */
+.hc-page .why__t{grid-column:2;grid-row:1;align-self:end;margin:0;padding:clamp(24px,3vw,40px) clamp(24px,3vw,40px) 10px}
+.hc-page .why__d{grid-column:2;grid-row:2;align-self:start;margin:0;padding:0 clamp(24px,3vw,40px) clamp(24px,3vw,40px);max-width:52ch}
+/* they swap sides down the list, and the tints alternate */
+.hc-page .why__item:nth-child(even) .why__ic{grid-column:2;background:#DCE4EA !important}
+.hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-column:1}
+.hc-page .why__item:nth-child(4n+3) .why__ic{background:#EDE7E2 !important}
+@media (max-width:760px){
+  .hc-page .why__item{grid-template-columns:minmax(0,1fr);min-height:0}
+  .hc-page .why__ic{grid-column:1 !important;grid-row:1;height:clamp(120px,22vh,170px) !important}
+  .hc-page .why__t,.hc-page .why__d{grid-column:1 !important}
+  .hc-page .why__t{grid-row:2}
+  .hc-page .why__d{grid-row:3}
+}
+
+/* the split panel, corrected: each item carries TWO paragraphs (a lead line and the body), so the
+   text side must flow in its own rows instead of being pinned — and the tinted half keeps the same
+   width when the sides swap */
+.hc-page .why__item{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr) !important;align-content:center}
+.hc-page .why__ic{grid-column:1 !important;grid-row:1 / -1 !important}
+.hc-page .why__t{grid-column:2 !important;grid-row:auto !important;align-self:end;
+  padding:clamp(24px,3vw,38px) clamp(24px,3vw,40px) 0 !important}
+.hc-page .why__d--lead{grid-column:2 !important;grid-row:auto !important;font-weight:600;color:var(--ink);
+  padding:10px clamp(24px,3vw,40px) 0 !important;margin:0}
+.hc-page .why__d:not(.why__d--lead){grid-column:2 !important;grid-row:auto !important;align-self:start;
+  padding:8px clamp(24px,3vw,40px) clamp(24px,3vw,38px) !important;margin:0}
+/* the swapped rows: widths swap with the sides */
+.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr) !important}
+.hc-page .why__item:nth-child(even) .why__ic{grid-column:2 !important}
+.hc-page .why__item:nth-child(even) .why__t,
+.hc-page .why__item:nth-child(even) .why__d{grid-column:1 !important}
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1fr) !important}
+  .hc-page .why__ic,.hc-page .why__item:nth-child(even) .why__ic{grid-column:1 !important;grid-row:1 / span 1 !important}
+  .hc-page .why__t,.hc-page .why__d,
+  .hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-column:1 !important}
+}
+
+/* the tinted half must FILL its side: align-content:center had collapsed the rows to their content,
+   so height:100% had nothing to stretch into. And the two greys were too close to read as a split. */
+.hc-page .why__item{align-content:stretch !important;background:#FFFFFF !important}
+.hc-page .why__ic{align-self:stretch !important;height:auto !important;min-height:100%;background:#E7E2D8 !important}
+.hc-page .why__item:nth-child(even) .why__ic{background:#D7E1E9 !important}
+.hc-page .why__item:nth-child(4n+3) .why__ic{background:#EAE3DC !important}
+
+/* `grid-row: 1 / -1` means "to the last EXPLICIT line", and this grid has no explicit rows, so the
+   tinted half collapsed to one row. It spans the three text rows (title, lead, body) instead. */
+.hc-page .why__ic,.hc-page .why__item:nth-child(even) .why__ic{grid-row:1 / span 3 !important;align-self:stretch !important;height:auto !important}
+@media (max-width:760px){
+  .hc-page .why__ic,.hc-page .why__item:nth-child(even) .why__ic{grid-row:1 / span 1 !important;height:clamp(120px,22vh,170px) !important}
+}
+
+/* phones: the text must flow in its own rows here too — the earlier mobile block pinned both
+   paragraphs to one row, which stacked the lead line on top of the body */
+@media (max-width:760px){
+  .hc-page .why__t,.hc-page .why__d,
+  .hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-row:auto !important}
+  .hc-page .why__t{padding:clamp(18px,4vw,24px) clamp(18px,5vw,24px) 0 !important}
+  .hc-page .why__d--lead{padding:8px clamp(18px,5vw,24px) 0 !important}
+  .hc-page .why__d:not(.why__d--lead){padding:6px clamp(18px,5vw,24px) clamp(18px,4vw,24px) !important}
+}
+
+/* ── phones, last word ────────────────────────────────────────────────────────────────────────────
+   Every rule above this point is unscoped, so it also applied at phone width and put the body
+   paragraph in a collapsed second column, on top of the lead line. This block is last, so it wins. */
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1fr) !important;min-height:0 !important}
+  .hc-page .why__ic,.hc-page .why__item:nth-child(even) .why__ic{grid-column:1 !important;grid-row:1 / span 1 !important;
+    height:clamp(120px,22vh,170px) !important;min-height:0 !important}
+  .hc-page .why__t,.hc-page .why__d,.hc-page .why__d--lead,
+  .hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-column:1 !important;grid-row:auto !important}
+}
+
+/* ═══ Why Stagwell AI, take two (client's newest reference) ══════════════════════════════════════
+   No panel, no tint, nothing behind it: a rounded picture on one side, the words on the other, and
+   the sides swap down the list. Narrower than before, with air around it. */
+.hc-page .why > .wrap{max-width:1180px}
+.hc-page .why__grid{grid-template-columns:minmax(0,1fr) !important;gap:clamp(56px,7vw,104px) !important;margin-top:clamp(40px,5vw,72px)}
+.hc-page .why__item{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  align-items:center;gap:clamp(28px,4.5vw,72px) !important;background:transparent !important;border:0 !important;
+  border-radius:0 !important;padding:0 !important;min-height:0 !important;overflow:visible}
+/* the placeholder picture */
+.hc-page .why__pic{grid-column:2;grid-row:1 / span 3;width:100%;height:clamp(240px,30vh,340px);object-fit:cover;border-radius:16px;display:block}
+/* the mark steps aside — the picture carries the side now */
+.hc-page .why__ic{display:none !important}
+.hc-page .why__t{grid-column:1 !important;grid-row:1 !important;align-self:end;padding:0 !important;
+  font-family:var(--ui);font-weight:700;font-size:clamp(22px,1rem + 1vw,30px);letter-spacing:-.015em;color:var(--ink)}
+.hc-page .why__d--lead{grid-column:1 !important;grid-row:2 !important;padding:10px 0 0 !important;font-weight:600;color:var(--ink)}
+.hc-page .why__d:not(.why__d--lead){grid-column:1 !important;grid-row:3 !important;align-self:start;
+  padding:8px 0 0 !important;color:var(--hc-quiet);font-size:16px;line-height:1.6;max-width:46ch}
+/* the sides swap down the list */
+.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important}
+.hc-page .why__item:nth-child(even) .why__pic{grid-column:1}
+.hc-page .why__item:nth-child(even) .why__t,
+.hc-page .why__item:nth-child(even) .why__d{grid-column:2 !important}
+
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1fr) !important;gap:18px !important}
+  .hc-page .why__pic,.hc-page .why__item:nth-child(even) .why__pic{grid-column:1 !important;grid-row:1 !important;height:clamp(200px,28vh,260px)}
+  .hc-page .why__t,.hc-page .why__d,.hc-page .why__d--lead,
+  .hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-column:1 !important;grid-row:auto !important}
+}
+
+/* ═══ one button system (client: consistent size, no white "learn more") ════════════════════════
+   Main CTAs — Book a demo — are solid ink pills at one size. The quiet ones are text with their
+   arrow, as in the references, and the Call me pill is outlined rather than filled white. */
+.hc-page .btn,.hc-page .btn--lg{height:50px;padding:0 26px;border-radius:999px;
+  font-family:var(--ui);font-size:15px;font-weight:600;letter-spacing:0}
+.hc-page .btn--ink,.hc-page .btn--ink.btn--lg{background:var(--ink);color:#FFFFFF;box-shadow:none}
+.hc-page .btn--ink:hover{background:#000000;color:#FFFFFF}
+/* the quiet one: text and its arrow, never a white pill */
+.hc-page .intro__act .btn--line,.hc-page .intro__act .btn--line.btn--lg{height:auto;padding:0;border-radius:0;
+  background:none;box-shadow:none;color:var(--ink)}
+.hc-page .intro__act .btn--line:hover{background:none;color:var(--ink);opacity:.68;transform:none;box-shadow:none}
+/* Call me: outlined, matching the pill size */
+.hc-page .call,.hc-page .call__btn{height:50px}
+.hc-page .call__btn{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(11,18,32,.3)}
+.hc-page .call__btn:hover{background:var(--ink);color:#FFFFFF;box-shadow:none}
+
+/* the words sit as one tight group beside the picture, instead of being spread across its height */
+.hc-page .why__item{align-content:center !important}
+.hc-page .why__t{align-self:center !important}
+.hc-page .why__d--lead,.hc-page .why__d:not(.why__d--lead){align-self:center !important}
+.hc-page .why__pic{align-self:center}
+
+/* the picture spans the three text rows, and `auto` rows absorb its height — which is what pushed the
+   title, lead and body apart. Content-sized rows can't absorb it, so the words stay together. */
+.hc-page .why__item{grid-template-rows:min-content min-content min-content !important}
+
+/* the spread was the item's own `gap` — it applies to rows too, so the 72px column gap was also
+   pushing the title, lead and body apart. Columns keep the air; the rows close up. */
+.hc-page .why__item,.hc-page .why__item:nth-child(even){row-gap:0 !important;column-gap:clamp(28px,4.5vw,72px) !important}
+.hc-page .why__d--lead{padding-top:14px !important}
+.hc-page .why__d:not(.why__d--lead){padding-top:10px !important}
+
+/* ── the picture leaves the text's flow ───────────────────────────────────────────────────────────
+   Measured: the picture spanned the three text rows, so its height was divided among them and each
+   line sat centred in an over-tall row. The words now flow normally in their own column and the
+   picture is placed beside them, centred on the row. */
+.hc-page .why__item,.hc-page .why__item:nth-child(even){display:block !important;position:relative;
+  min-height:clamp(240px,30vh,340px);padding:0 !important}
+.hc-page .why__item{padding-right:calc(50% + 26px) !important}
+.hc-page .why__item:nth-child(even){padding-left:calc(50% + 26px) !important;padding-right:0 !important}
+.hc-page .why__pic{position:absolute;top:50%;transform:translateY(-50%);right:0;left:auto;
+  width:calc(50% - 26px);height:clamp(240px,30vh,340px);margin:0}
+.hc-page .why__item:nth-child(even) .why__pic{right:auto;left:0}
+.hc-page .why__t{display:block;margin:0 0 12px !important;padding:0 !important}
+.hc-page .why__d--lead{display:block;margin:0 0 10px !important;padding:0 !important}
+.hc-page .why__d:not(.why__d--lead){display:block;margin:0 !important;padding:0 !important}
+
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){padding:0 !important;min-height:0}
+  .hc-page .why__pic,.hc-page .why__item:nth-child(even) .why__pic{position:static;transform:none;
+    width:100%;height:clamp(200px,28vh,260px);margin:0 0 16px}
+}
+
+/* the row must be at least as tall as the picture beside it (an earlier min-height:0 !important was
+   winning, so the centred picture overflowed into the next row) */
+.hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:clamp(240px,30vh,340px) !important}
+@media (max-width:760px){ .hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:0 !important} }
