@@ -1351,3 +1351,9 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page .hcs__go{margin:12px 4px 0}
 /* the spark on the ink pill reads in a pale blue, not the full teal */
 .hc-launch__btn svg{color:#9BE3F5}
+/* this one call wears the logo's middle blue, so it stands out from the ink buttons */
+.hc-launch__btn{background:var(--teal);color:#FFFFFF}
+.hc-launch__btn:hover{background:#0089A6}
+.hc-launch__btn svg{color:#FFFFFF}
+.hc-launch.is-on .hc-launch__btn::after{animation:hcRingT 1.15s ease-out .5s 2}
+@keyframes hcRingT{from{box-shadow:0 0 0 0 rgba(0,156,189,.55)}to{box-shadow:0 0 0 16px rgba(0,156,189,0)}}
