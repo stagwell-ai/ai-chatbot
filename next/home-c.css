@@ -1493,3 +1493,40 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 .hc-page .hcs__media{flex:1 1 auto;min-height:150px;height:auto !important}
 .hc-page .hcs__desc{margin-top:auto;padding-top:18px}
 .hc-page .hcs__go{margin-top:14px;font-family:var(--ui)}
+
+/* ═══ the two closing blocks, settled ═══════════════════════════════════════════════════════════
+   No heading above them; each block carries its words at the top left and its arrow at the top
+   right; the phone field opens inside the blue one and nothing peeks through before it does. */
+.hc-page .ask-end .display--end{display:none !important}
+.hc-page .ask-end .ask-end__acts{margin-top:0 !important}
+.hc-page .ask-end .ask-end__ways .btn,
+.hc-page .ask-end .call__btn{align-items:flex-start !important;justify-content:space-between !important;
+  padding:22px 24px !important;height:170px !important;gap:16px}
+.hc-page .ask-end .call{height:170px !important}
+.hc-page .ask-end .ask-end__ways .btn::after,
+.hc-page .ask-end .call__btn::after{align-self:flex-start;margin-top:2px}
+/* idle: the field is truly out of the way, so nothing flickers under the pointer */
+.hc-page .ask-end .call[data-state="idle"] .call__form,
+.hc-page .ask-end .call[data-state="idle"] .call__done{visibility:hidden;pointer-events:none}
+.hc-page .ask-end .call__form{position:absolute;inset:0;height:100% !important;margin:0 !important;
+  display:flex !important;align-items:center;gap:10px;padding:22px 24px !important;
+  background:linear-gradient(105deg,#041634 0%,#063056 42%,#009CBD 100%);border-radius:10px;
+  box-shadow:none !important}
+.hc-page .ask-end .call__form .call__cc,.hc-page .ask-end .call__form .call__num{
+  background:rgba(255,255,255,.12);border:0;color:#FFFFFF;height:46px;border-radius:8px;padding:0 12px}
+.hc-page .ask-end .call__form .call__num::placeholder{color:rgba(255,255,255,.7)}
+.hc-page .ask-end .call__form .call__sep{display:none}
+.hc-page .ask-end .call__form .call__go{width:46px;height:46px;border-radius:50%;background:#FFFFFF;
+  color:var(--ink);flex:0 0 auto;display:grid;place-items:center}
+.hc-page .ask-end .call__form .call__go svg{display:block !important;width:19px;height:19px}
+.hc-page .ask-end .call__x{color:#FFFFFF;opacity:.8}
+.hc-page .ask-end .call__done{position:absolute;inset:0;height:100% !important;border-radius:10px;
+  background:linear-gradient(105deg,#041634 0%,#063056 42%,#009CBD 100%);color:#FFFFFF;
+  display:flex;align-items:center;gap:12px;padding:22px 24px !important}
+.hc-page .ask-end .call__done .call__line,.hc-page .ask-end .call__done .call__to{color:#FFFFFF}
+/* the hover says one thing only */
+.hc-page .ask-end .btn--ink:hover{background:#E1E1E1 !important;transform:none}
+.hc-page .ask-end .call__btn:hover{filter:none;background:linear-gradient(105deg,#062046 0%,#08406F 42%,#00ACD0 100%) !important;transform:none}
+/* the phone row: the code stays readable, the number takes the rest */
+.hc-page .ask-end .call__form .call__cc{flex:0 0 auto;min-width:118px;max-width:150px}
+.hc-page .ask-end .call__form .call__num{flex:1 1 auto;min-width:0}
