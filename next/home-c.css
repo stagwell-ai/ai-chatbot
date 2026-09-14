@@ -1637,3 +1637,28 @@ body.hc-page{--hc-serif:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 body.hc-page{--hc-head:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',serif}
 .hc-page .hero .display--hero,.hc-page .hero .display--hero *{font-family:var(--hc-head) !important;
   font-weight:400 !important;letter-spacing:-.015em}
+/* the Why heading joins the hero in the serif */
+.hc-page .why .display--cos,.hc-page .why .display--cos *{font-family:var(--hc-head) !important;
+  font-weight:400 !important;letter-spacing:-.015em}
+
+/* ═══ every sans on this page is Roobert; the serif stays on the two titles ═════════════════════ */
+body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --sans:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-family:var(--ui)}
+.hc-page p,.hc-page li,.hc-page a,.hc-page button,.hc-page input,.hc-page select,.hc-page textarea,
+.hc-page span,.hc-page .btn,.hc-page .tag,.hc-page .hcs__desc,.hc-page .why__d,
+.hc-page .hcs__go,.hc-page .hcs__kind{font-family:var(--ui)}
+/* the two that keep the serif */
+.hc-page .hero .display--hero,.hc-page .hero .display--hero *,
+.hc-page .why .display--cos,.hc-page .why .display--cos *{font-family:var(--hc-head) !important}
+/* the two closing blocks share one width */
+.hc-page .ask-end .ask-end__ways{grid-template-columns:1fr 1fr !important}
+
+/* ═══ one dark on the page: the ink the type is set in ══════════════════════════════════════════ */
+.hc-page .foot,.hc-page .foot__band{background:var(--ink) !important}
+.hc-page .hc-port__cap{background:rgba(11,18,32,.82)}
+.hc-page .hc-port__cap:hover{background:rgba(11,18,32,.92)}
+.hc-page .intro__btn{background:var(--ink)}
+.hc-page .intro__btn:hover{background:#05080F}
+.hc-page .btn--ink:hover,.hc-page .hcs__round:hover,.hc-page .hc-port__nav:hover{background:#05080F !important}
+.hc-page .ask-end .call__form .call__go{color:var(--ink)}
