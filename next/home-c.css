@@ -1606,3 +1606,5 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 /* the three groups draw closer: less air under the title and under the panel */
 .hc-page .hcs__kind{margin:0 0 12px !important}
 .hc-page .hcs__media{flex:0 0 128px !important;height:128px !important;margin:0 0 14px}
+/* the round stands as tall as the two lines beside it */
+.hc-launch__mic{width:40px !important;height:40px !important;padding:9px}
