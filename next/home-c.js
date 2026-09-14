@@ -460,7 +460,7 @@
   };
 
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  const LEG = 2.4, DWELL = .5;                   /* seconds travelling, seconds resting */
+  const LEG = 4.4, DWELL = .9;                   /* seconds travelling, seconds resting */
 
   const frame = now => {
     raf = 0;
@@ -479,10 +479,9 @@
       if (d > R) continue;
       const k = 1 - d / R;
       ctx.globalAlpha = .34 * k * k;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 1.25 + k * .9, 0, 6.2832);
       ctx.fillStyle = '#0B1220';
-      ctx.fill();
+      const s = 1.6 + k * .8;                    /* small squares, not dots */
+      ctx.fillRect(Math.round(p.x - s / 2), Math.round(p.y - s / 2), Math.round(s), Math.round(s));
     }
     ctx.globalAlpha = 1;
     if (seen) raf = requestAnimationFrame(frame);
