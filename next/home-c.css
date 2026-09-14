@@ -1666,3 +1666,14 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 /* the hero's thinking field reads again: wider, taller, a little stronger behind the chat */
 .hc-page .hero .chat > .hero__think{width:min(100vw,1340px) !important;height:560px !important}
 .hc-page .hero .chat > .hero__think.is-on{opacity:.46}
+
+/* ═══ the film's words return — under it, centred, with one call ════════════════════════════════ */
+.hc-page .intro__over{display:flex !important;position:static !important;flex-direction:column;
+  align-items:center;text-align:center !important;padding:clamp(28px,3.4vw,46px) 20px 0 !important;
+  max-width:none !important;width:100% !important}
+.hc-page .intro__over .display--intro{width:min(100%,900px);margin:0 auto !important;
+  color:var(--ink) !important;text-shadow:none}
+.hc-page .intro__over .display--intro *{color:var(--ink) !important}
+.hc-page .intro__over .intro__act{margin:clamp(18px,2.2vw,26px) 0 0 !important;justify-content:center}
+.hc-page .intro__over .btn--ink{background:var(--ink) !important;color:#FFFFFF !important}
+.hc-page .intro__over .btn--ink:hover{background:#05080F !important;color:#FFFFFF !important}
