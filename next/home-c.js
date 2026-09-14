@@ -264,7 +264,7 @@
   if (!box || !btn || !chat || !opener) return;
 
   const show = on => {
-    if (on) { box.hidden = false; requestAnimationFrame(() => box.classList.add('is-on')); }
+    if (on) { box.hidden = false; requestAnimationFrame(() => { box.classList.add('is-on'); chime(); armRetire(); }); }
     else { box.classList.remove('is-on'); setTimeout(() => { if (!box.classList.contains('is-on')) box.hidden = true; }, 420); }
   };
   if ('IntersectionObserver' in window)
@@ -280,7 +280,34 @@
 
   /* the bubble says its piece, then leaves the pill on its own */
   const say = box.querySelector('.hc-launch__say');
-  if (say) setTimeout(() => say.classList.add('is-gone'), 9000);
+  let retire = 0;
+  const armRetire = () => { clearTimeout(retire); if (say) retire = setTimeout(() => say.classList.add('is-gone'), 14000); };
+
+  /* a soft two-note chime as it lands — only ever after the reader has touched the page, and never
+     more than once; if the browser will not let it sound, nothing happens and nothing breaks */
+  let touched = false, chimed = false;
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(t =>
+    addEventListener(t, () => { touched = true; }, { once: true, passive: true }));
+  const chime = () => {
+    if (chimed || !touched || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    chimed = true;
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      const at = ctx.currentTime;
+      [[784, 0], [1175, .11]].forEach(([hz, when]) => {         /* G5 then D6, short and soft */
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = hz;
+        g.gain.setValueAtTime(0, at + when);
+        g.gain.linearRampToValueAtTime(.06, at + when + .02);
+        g.gain.exponentialRampToValueAtTime(.0001, at + when + .38);
+        o.connect(g).connect(ctx.destination);
+        o.start(at + when); o.stop(at + when + .42);
+      });
+      setTimeout(() => { try { ctx.close(); } catch (e) {} }, 900);
+    } catch (e) {}
+  };
   /* while the overlay is open the launcher steps out of the way */
   const over = document.getElementById('chatOver');
   if (over) new MutationObserver(() => { box.style.display = over.hidden ? '' : 'none'; })

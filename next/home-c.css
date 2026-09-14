@@ -1141,3 +1141,35 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 /* nothing over the film now that it carries its own words: no veil, no dots */
 .hc-page .intro__media::after{display:none !important}
 .hc-page .intro__more{text-shadow:0 1px 10px rgba(0,0,0,.45)}
+
+/* ═══ the footer's mark moves to the left, clear of the launcher ════════════════════════════════ */
+.hc-page .foot__legal{flex-direction:row-reverse;justify-content:flex-end;gap:clamp(16px,3vw,34px)}
+.hc-page .foot__brand{margin-left:0;margin-right:auto}
+.hc-page .foot__band{padding-bottom:clamp(74px,9vh,96px)}   /* room under it for the launcher */
+
+/* ═══ the launcher arrives: it comes in from the side, settles, and then speaks ═════════════════ */
+.hc-launch{transition:none}
+.hc-launch__btn{opacity:0;transform:translateX(120%);
+  transition:opacity .01s linear,transform .01s linear}
+.hc-launch.is-on{opacity:1;transform:none}
+.hc-launch.is-on .hc-launch__btn{opacity:1;transform:none;
+  animation:hcSlideIn .62s cubic-bezier(.2,1.5,.32,1) both}
+.hc-launch.is-on .hc-launch__say{animation:hcSayIn .5s cubic-bezier(.16,.72,.24,1) .42s both}
+@keyframes hcSlideIn{
+  0%{opacity:0;transform:translateX(130%) scale(.96)}
+  62%{opacity:1;transform:translateX(-8px) scale(1.02)}
+  100%{opacity:1;transform:none}}
+@keyframes hcSayIn{
+  0%{opacity:0;transform:translateY(10px) scale(.94);transform-origin:100% 100%}
+  100%{opacity:1;transform:none}}
+/* a ring goes out from the pill the moment it lands, once */
+.hc-launch__btn::after{content:'';position:absolute;inset:0;border-radius:999px;
+  box-shadow:0 0 0 0 rgba(0,156,189,.55);pointer-events:none}
+.hc-launch.is-on .hc-launch__btn::after{animation:hcRing 1.15s ease-out .5s 2}
+@keyframes hcRing{from{box-shadow:0 0 0 0 rgba(0,156,189,.5)}to{box-shadow:0 0 0 16px rgba(0,156,189,0)}}
+.hc-launch__btn{position:relative}
+@media (prefers-reduced-motion:reduce){
+  .hc-launch.is-on .hc-launch__btn,.hc-launch.is-on .hc-launch__say,
+  .hc-launch.is-on .hc-launch__btn::after{animation:none}
+  .hc-launch__btn{opacity:1;transform:none}
+}
