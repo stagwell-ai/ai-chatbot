@@ -1173,3 +1173,7 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
   .hc-launch.is-on .hc-launch__btn::after{animation:none}
   .hc-launch__btn{opacity:1;transform:none}
 }
+/* full screen means square: the crop does the rounding while it grows, so neither the frame nor
+   the film itself may carry a radius of its own */
+.hc-page .intro__stage.is-cine .intro__media,
+.hc-page .intro__stage.is-cine .intro__pic{border-radius:0 !important}
