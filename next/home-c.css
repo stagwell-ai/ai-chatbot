@@ -1376,3 +1376,14 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 /* Explore reads in the same blue as the Ask pill */
 .hc-page .hcs__go{color:var(--teal) !important}
 .hc-page .hcs__card:hover .hcs__go{color:#0089A6 !important}
+
+/* ═══ the suite, plain: one quiet grey block, a card with no outline, nothing shifting ══════════ */
+.hc-page .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{
+  background:#F0F0EC !important;background-image:none !important;animation:none !important}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{background:transparent !important;
+  box-shadow:none !important;border:0 !important;padding:0 0 4px}
+.hc-page .hcs__desc{margin-inline:0}
+.hc-page .hcs__go{margin-inline:0}
