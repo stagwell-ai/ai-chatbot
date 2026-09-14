@@ -1275,3 +1275,10 @@ body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
 /* the old picture-row pass set gap with !important; this is the gap the cells actually want */
 .hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .why__item:nth-child(4n+3){
   column-gap:10px !important;row-gap:0 !important;gap:0 10px !important}
+
+/* the mark belongs to the band's own left edge, not to the group at its right: the legal group
+   dissolves so its children become band items, and the mark takes the first place */
+.hc-page .foot__legal{display:contents}
+.hc-page .foot__brand{order:-1;margin:0 auto 0 0}
+.hc-page .foot__copy{order:3}
+.hc-page .foot__social{order:2}

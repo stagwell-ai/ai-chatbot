@@ -335,30 +335,6 @@
   }
 })();
 
-/* the rail greets the reader once: a single soft move to the left, and it stays there — it used to
-   come back, which read as the cards swaying both ways while you scrolled past */
-(function () {
-  'use strict';
-  const rail = document.querySelector('.hc-page .hcs__rail');
-  if (!rail || !('IntersectionObserver' in window)) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  let done = false, touched = false;
-  ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(t =>
-    rail.addEventListener(t, () => { touched = true; }, { passive: true }));
-  const ease = t => 1 - Math.pow(1 - t, 3);
-  const drift = () => {
-    if (done) return; done = true;
-    const reach = Math.min(150, Math.max(0, rail.scrollWidth - rail.clientWidth));
-    if (!reach) return;
-    const span = 1100, t0 = performance.now();
-    const step = now => {
-      if (touched) return;                                  /* the reader takes over, we stop */
-      const t = (now - t0) / span;
-      rail.scrollLeft = reach * ease(Math.min(1, t));
-      if (t < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-  new IntersectionObserver(es => { if (es[0].isIntersecting) setTimeout(drift, 260); },
-    { threshold: .4 }).observe(rail);
-})();
+/* the rail no longer greets the reader: any movement of its own read as the carousel drifting
+   while the page scrolled past. It sits still until the reader takes it. */
+
