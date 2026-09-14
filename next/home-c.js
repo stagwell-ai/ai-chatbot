@@ -57,7 +57,10 @@
     const x = Math.max(0, (vw - CARD_W) / 2) * (1 - e);
     const y = Math.max(0, (vh - CARD_H) / 2) * (1 - e);
     media.style.clipPath = 'inset(' + y.toFixed(1) + 'px ' + x.toFixed(1) + 'px ' + y.toFixed(1) + 'px ' + x.toFixed(1) + 'px round ' + (CARD_R * (1 - e)).toFixed(1) + 'px)';
-    if (nav) nav.classList.toggle('on-film', e > .5);
+    /* the bar only borrows the film's colours while the film actually covers the screen */
+    const b = media.getBoundingClientRect();
+    const covering = e > .5 && b.top <= 1 && b.bottom >= vh - 1;
+    if (nav) nav.classList.toggle('on-film', covering);
   };
   const onScroll = () => { if (!tick) tick = requestAnimationFrame(paint); };
 
