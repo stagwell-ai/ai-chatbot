@@ -33,3 +33,50 @@
   if (document.readyState === 'complete') setTimeout(nudge, 60);
   else addEventListener('load', () => setTimeout(nudge, 60), { once: true });
 })();
+
+/* the film's scroll: from the card's shape to the whole screen, then it holds and scrolls away.
+   Desktop only; reduced motion and phones keep the still card. */
+(function () {
+  'use strict';
+  const stage = document.querySelector('.hc-page .intro__stage');
+  if (!stage) return;
+  const media = stage.querySelector('.intro__media');
+  const nav = document.getElementById('nav') || document.querySelector('.nav');
+  const wide = matchMedia('(min-width: 901px)');
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  const CARD_W = 900, CARD_H = 506, CARD_R = 22;
+  let on = false, tick = 0;
+
+  const paint = () => {
+    tick = 0;
+    const vh = innerHeight, vw = innerWidth;
+    const top = stage.getBoundingClientRect().top;
+    let p = -top / (vh * 0.5);                          /* it arrives card-sized, then grows once pinned */
+    p = p < 0 ? 0 : p > 1 ? 1 : p;
+    const e = p * p * (3 - 2 * p);                      /* eased */
+    const x = Math.max(0, (vw - CARD_W) / 2) * (1 - e);
+    const y = Math.max(0, (vh - CARD_H) / 2) * (1 - e);
+    media.style.clipPath = 'inset(' + y.toFixed(1) + 'px ' + x.toFixed(1) + 'px ' + y.toFixed(1) + 'px ' + x.toFixed(1) + 'px round ' + (CARD_R * (1 - e)).toFixed(1) + 'px)';
+    if (nav) nav.classList.toggle('on-film', e > .5);
+  };
+  const onScroll = () => { if (!tick) tick = requestAnimationFrame(paint); };
+
+  const enable = () => {
+    if (on) return; on = true;
+    stage.classList.add('is-cine');
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    paint();
+  };
+  const disable = () => {
+    if (!on) return; on = false;
+    stage.classList.remove('is-cine');
+    removeEventListener('scroll', onScroll);
+    removeEventListener('resize', onScroll);
+    media.style.clipPath = '';
+    if (nav) nav.classList.remove('on-film');
+  };
+  const decide = () => (wide.matches && !still.matches) ? enable() : disable();
+  decide();
+  wide.addEventListener('change', decide); still.addEventListener('change', decide);
+})();

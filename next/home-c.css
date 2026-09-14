@@ -491,3 +491,90 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
 /* the text column kept an 89.6px left padding from the old two-column layout — half of it was the
    45px by which the title, line and button sat right of the frame's centre */
 .hc-page .intro__body{padding:0 !important}
+
+/* ═══ the film grows to fill the screen as you scroll (client, desktop) ══════════════════════════
+   The stage gives it the scroll room; the frame pins to the top and is revealed by a crop that
+   opens from the card's shape to the full screen, so nothing jumps. Without the script, or on a
+   phone, or with reduced motion, it stays exactly the card it is now. */
+.hc-page .intro__stage{width:100%;display:flex;justify-content:center}
+.hc-page .intro__stage .intro__media{margin-inline:auto}
+
+@media (min-width:901px){
+  .hc-page .intro__stage.is-cine{display:block;height:190vh}
+  .hc-page .intro__stage.is-cine .intro__media{position:sticky;top:0;width:100vw !important;max-width:none !important;
+    height:100vh !important;aspect-ratio:auto;margin-left:calc(50% - 50vw);border-radius:0;
+    will-change:clip-path;overflow:hidden}
+  .hc-page .intro__stage.is-cine .intro__pic{width:100% !important;height:100% !important;object-fit:cover}
+  /* while the film covers the screen the bar sits on it: no plate, white type */
+  .hc-page .nav.on-film{background:transparent !important;box-shadow:none !important;
+    border-bottom-color:transparent !important;backdrop-filter:none !important;color:#FFFFFF !important;
+    transition:background .35s ease,color .35s ease,box-shadow .35s ease}
+  .hc-page .nav.on-film .nav__in,.hc-page .nav.on-film .nav__brand,.hc-page .nav.on-film .nav__links a,
+  .hc-page .nav.on-film .nav__droptrig,.hc-page .nav.on-film .nav__burger{color:#FFFFFF !important}
+  .hc-page .nav.on-film .nav__brand svg{fill:#FFFFFF}
+  .hc-page .nav.on-film .btn--ink{background:#FFFFFF !important;color:var(--ink) !important}
+  .hc-page .nav.on-film .nav__search{background:transparent !important;color:#FFFFFF !important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.55) !important}
+}
+@media (prefers-reduced-motion:reduce){ .hc-page .intro__pic{transition:none} }
+
+/* three and three: the markup carries a line break after the third tag — it comes back (client) */
+.hc-page .chat__tags .tag__br{display:block !important;flex-basis:100%;width:100%;height:0;margin:0;padding:0}
+
+/* ═══ centring, and the hero's thinking field ═══════════════════════════════════════════════════
+   Measured: the frame sits on the page centre (720) but the title, line and button sat at 765 —
+   they were not centred inside their column. */
+.hc-page .intro__body{align-items:center !important;text-align:center !important;margin-inline:auto !important}
+.hc-page .display--intro,.hc-page .intro__lede,.hc-page .intro__act{align-self:center !important;margin-inline:auto !important}
+
+/* the hero's dots were a dense 600x300 block behind the box; the one by the footer spreads across its
+   whole section, which is why it reads quieter. This one spreads too. */
+.hc-page .hero .chat > .hero__think{left:50%;right:auto;transform:translateX(-50%);
+  width:min(100vw,1200px) !important;height:440px !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.34}
+
+/* the text column kept an 89.6px left padding from the old two-column layout — half of it was the
+   45px by which the title, line and button sat right of the frame's centre */
+.hc-page .intro__body{padding:0 !important}
+
+/* ═══ the film grows to fill the screen as you scroll (client, desktop) ══════════════════════════
+   The stage gives it the scroll room; the frame pins to the top and is revealed by a crop that
+   opens from the card's shape to the full screen, so nothing jumps. Without the script, or on a
+   phone, or with reduced motion, it stays exactly the card it is now. */
+.hc-page .intro__stage{width:100%;display:flex;justify-content:center}
+.hc-page .intro__stage .intro__media{margin-inline:auto}
+
+@media (min-width:901px){
+  .hc-page .intro__stage.is-cine{display:block;height:190vh}
+  .hc-page .intro__stage.is-cine .intro__media{position:sticky;top:0;width:100vw !important;max-width:none !important;
+    height:100vh !important;aspect-ratio:auto;margin-left:calc(50% - 50vw);border-radius:0;
+    will-change:clip-path;overflow:hidden}
+  .hc-page .intro__stage.is-cine .intro__pic{width:100% !important;height:100% !important;object-fit:cover}
+  /* while the film covers the screen, the bar reads on it */
+  .hc-page .nav.on-film:not(.is-stuck){color:#FFFFFF}
+  .hc-page .nav.on-film:not(.is-stuck) .nav__links a,.hc-page .nav.on-film:not(.is-stuck) .nav__droptrig,
+  .hc-page .nav.on-film:not(.is-stuck) .nav__brand,.hc-page .nav.on-film:not(.is-stuck) .nav__burger{color:#FFFFFF}
+  .hc-page .nav.on-film:not(.is-stuck) .btn--ink{background:#FFFFFF;color:var(--ink)}
+  .hc-page .nav.on-film:not(.is-stuck) .nav__search{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+  .hc-page .nav.on-film{transition:color .3s ease}
+}
+@media (prefers-reduced-motion:reduce){ .hc-page .intro__stage.is-cine{height:auto} }
+
+/* ═══ the title now lives inside the film, over a soft dark veil ═════════════════════════════════ */
+.hc-page .intro__media::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(11,11,12,.30) 0%,rgba(11,11,12,.42) 55%,rgba(11,11,12,.62) 100%)}
+.hc-page .intro__over{position:absolute !important;inset:0;z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center !important;
+  width:100% !important;max-width:none !important;margin:0 !important;
+  padding:0 clamp(22px,5vw,64px) !important}
+.hc-page .intro__over .display--intro{width:min(100%,860px);margin:0 auto !important;
+  color:#FFFFFF !important;text-shadow:0 1px 22px rgba(0,0,0,.28)}
+.hc-page .intro__over .display--intro *{color:#FFFFFF !important}
+@media (max-width:760px){
+  .hc-page .intro__over{padding:0 20px !important}
+  .hc-page .intro__over .display--intro{font-size:clamp(24px,6.4vw,34px) !important}
+}
+@media (max-width:760px){
+  /* on a phone the film stands taller so the title has room inside it */
+  .hc-page .intro__media{aspect-ratio:4/5 !important;height:auto !important}
+}
