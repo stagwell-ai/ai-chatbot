@@ -1040,3 +1040,24 @@ body.hc-page{--hc-ground:#FBFBFA;--hc-edge:#E7E7E3}
 .hc-page .ask-end .ask-end__ways{flex-wrap:nowrap}
 .hc-page .ask-end .ask-end__acts{margin-top:clamp(26px,3.2vw,40px)}
 @media (max-width:560px){.hc-page .ask-end .ask-end__ways{flex-wrap:wrap}}
+
+/* ── the film's controls belong to the film, not only to its full-screen moment ────────────────── */
+.hc-page .intro__ctl,.hc-page .intro__more{opacity:1;visibility:visible}
+.hc-page .intro__more{bottom:clamp(18px,3vh,34px)}
+.hc-page .intro__stage.is-full .intro__more{bottom:clamp(74px,11vh,120px)}
+
+/* ── Why: wider cells, softer corners, and the words starting where the title starts ───────────── */
+.hc-page .why > .wrap{max-width:1400px}
+.hc-page .why__item,.hc-page .why__item:nth-child(even){border-radius:18px !important;
+  padding:clamp(26px,2.2vw,34px) clamp(26px,2.4vw,38px) !important;overflow:hidden}
+.hc-page .why__ic{background:none !important;background-color:transparent !important;
+  box-shadow:none !important;border-radius:0 !important}
+.hc-page .why__ic svg{background:none !important}
+.hc-page .why__d,.hc-page .why__d--lead{padding-left:40px !important;max-width:70ch}
+
+/* ── the suite's words sit on the picture's own edge ───────────────────────────────────────────── */
+.hc-page .hcs__desc,.hc-page .hcs__go{margin-left:0;margin-right:0}
+
+/* ── the closing panel keeps its two calls shoulder to shoulder at any width worth it ──────────── */
+.hc-page .ask-end .ask-end__ways{display:flex !important;flex-direction:row !important;
+  align-items:center;justify-content:center}
