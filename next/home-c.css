@@ -1694,3 +1694,8 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .intro__over .btn--ink:hover{background:rgba(255,255,255,.88) !important;color:var(--ink) !important}
 /* the film's own controls and the scroll word stay clear of the words */
 .hc-page .intro__ctl,.hc-page .intro__more{z-index:4}
+/* a fine dark dot grid rides with the veil, so the words hold on every frame */
+.hc-page .intro__media::after{
+  background-image:radial-gradient(rgba(8,10,14,.42) 1px,transparent 1.1px),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%);
+  background-size:3px 3px,auto;background-position:0 0,0 0}
