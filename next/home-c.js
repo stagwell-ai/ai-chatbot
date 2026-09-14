@@ -117,3 +117,66 @@
     else if (e.key === 'ArrowLeft') { show(at - 1); e.preventDefault(); }
   });
 })();
+
+/* the suite rail: the two round buttons step it, and each panel is fitted and cycled the way
+   option B does it, with the same reduced-motion guard */
+(function () {
+  'use strict';
+  const rail = document.querySelector('.hc-page .hcs__rail');
+  if (!rail) return;
+  document.querySelectorAll('.hc-page .hcs__round[data-rail]').forEach(b =>
+    b.addEventListener('click', () => {
+      const step = (rail.querySelector('li')?.getBoundingClientRect().width || 280) + 16;
+      rail.scrollBy({ left: step * (+b.dataset.rail), behavior: 'smooth' });
+    }));
+
+  const panels = [...document.querySelectorAll('.hc-page .hcs__media .mk')];
+  if (!panels.length) return;
+  const fit = p => {                    /* drawn at its natural size, then scaled into the picture */
+    const m = p.parentElement, w = m.clientWidth, h = m.clientHeight;
+    if (!w || !h) return;
+    const inset = Math.round(Math.max(10, w * .04));
+    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h * .46) / p.offsetHeight);
+    p.style.transform = 'scale(' + s.toFixed(4) + ')';
+    p.style.left = inset + 'px';
+    p.style.bottom = inset + 'px';
+  };
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver(es => es.forEach(e => {
+      const p = e.target.classList.contains('mk') ? e.target : e.target.querySelector('.mk');
+      if (p) fit(p);
+    }));
+    panels.forEach(p => { ro.observe(p.parentElement); ro.observe(p); });
+  }
+  panels.forEach(fit);
+  addEventListener('resize', () => panels.forEach(fit));
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }), { threshold: .2 });
+    panels.forEach(p => { p.classList.add('mk-arm'); io.observe(p); });
+  }
+
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.hc-page .hcs__media .mk[data-states]').forEach(p => {
+    const total = +p.dataset.states || 1;
+    if (total < 2) return;
+    let at = 0, first = true;
+    const paint = () => {
+      p.querySelectorAll('[data-in]').forEach(e => {
+        const on = e.dataset.in.split(' ').includes(String(at));
+        const was = !e.hasAttribute('hidden');
+        e.hidden = !on;
+        if (on && !was && !first) { e.classList.remove('mk-pop'); void e.offsetWidth; e.classList.add('mk-pop'); }
+      });
+      first = false;
+    };
+    paint();
+    let timer = 0;
+    const start = () => { if (!timer) timer = setInterval(() => { at = (at + 1) % total; paint(); }, 2600); };
+    const stop = () => { if (timer) { clearInterval(timer); timer = 0; } };
+    if ('IntersectionObserver' in window)
+      new IntersectionObserver(es => es[0].isIntersecting ? start() : stop(), { threshold: .2 }).observe(p);
+    else start();
+  });
+})();
