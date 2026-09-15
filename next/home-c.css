@@ -1872,3 +1872,6 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-page .ask-end .call,.hc-page .ask-end .call__btn{height:210px !important}
   .hc-page .ask-end .ask-end__ways .btn{height:210px !important}
 }
+/* the caption block is solid: no picture showing through the words */
+.hc-page .hc-port__cap{background:var(--ink) !important}
+.hc-page .hc-port__cap:hover{background:#05080F !important}
