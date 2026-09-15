@@ -2230,3 +2230,8 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
     border-radius:999px;white-space:nowrap}
   .hc-page .hero .askbox__voice > span{display:inline !important;font-size:13px}
 }
+
+@media (max-width:760px){
+  /* the film is a block on the page here, not a screen to scroll through */
+  .hc-page .intro__more{display:none !important}
+}

@@ -98,9 +98,12 @@
   const play = () => { if (film.dataset.held === '1') return; const p = film.play(); if (p && p.catch) p.catch(() => {}); };
   /* a phone simply runs it from the moment the page opens; a desktop waits for the film to be seen */
   if (matchMedia('(max-width: 760px)').matches) {
+    film.autoplay = true;                     /* a muted inline film may start on its own */
+    film.preload = 'auto';
     play();
-    film.addEventListener('loadeddata', play, { once: true });
+    ['loadedmetadata', 'loadeddata', 'canplay'].forEach(e => film.addEventListener(e, play));
     addEventListener('pageshow', play);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) play(); });
     return;
   }
   if (!('IntersectionObserver' in window)) return;
@@ -334,9 +337,10 @@
   });
 
   /* a soft two-note chime as it lands. Browsers only let sound play after a real gesture — and a
-     trackpad scroll is not one — so the audio context is opened and kept warm on the first click or
-     key, and if the launcher arrived before that, the chime waits for it. */
-  let ctx = null, chimed = false, owed = false;
+     trackpad scroll is not one — so the context is opened and kept warm on the first click or key.
+     The chime belongs to the moment the helper arrives: if the sound cannot start then, it is
+     dropped rather than saved up, so it never arrives out of nowhere a minute later. */
+  let ctx = null, chimed = false;
   const wake = () => {
     if (!ctx) {
       const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -344,13 +348,11 @@
       try { ctx = new Ctx(); } catch (e) { return; }
     }
     if (ctx.state === 'suspended') ctx.resume().catch(() => {});
-    if (owed) { owed = false; ring(); }
   };
   ['pointerdown', 'keydown', 'touchstart'].forEach(t =>
     addEventListener(t, wake, { passive: true }));
 
-  const ring = () => {
-    if (!ctx || ctx.state !== 'running') { owed = true; return; }
+  const notes = () => {
     const at = ctx.currentTime;
     [[784, 0], [1175, .11]].forEach(([hz, when]) => {          /* G5 then D6, short and soft */
       const o = ctx.createOscillator(), g = ctx.createGain();
@@ -361,6 +363,14 @@
       o.connect(g).connect(ctx.destination);
       o.start(at + when); o.stop(at + when + .44);
     });
+  };
+  const ring = () => {
+    if (!ctx) return;                                          /* never opened: stay silent */
+    if (ctx.state === 'running') { notes(); return; }
+    const asked = performance.now();                           /* a short grace, never a long wait */
+    ctx.resume().then(() => {
+      if (ctx.state === 'running' && performance.now() - asked < 400) notes();
+    }).catch(() => {});
   };
   const chime = () => {
     if (chimed || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
