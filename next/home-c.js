@@ -123,10 +123,11 @@
     t.classList.remove('is-timing'); void t.offsetWidth;
     if (!still.matches) t.classList.add('is-timing');
   };
-  const start = () => { if (timer || held || !seen || still.matches) return; arm(); timer = setInterval(() => { show(at + 1); arm(); }, DWELL); };
+  let taken = false;                       /* once the reader picks a tab, the run is theirs */
+  const start = () => { if (timer || held || taken || !seen || still.matches) return; arm(); timer = setInterval(() => { show(at + 1); arm(); }, DWELL); };
   const stop = () => { if (timer) { clearInterval(timer); timer = 0; } tabs.forEach(t => t.classList.remove('is-timing')); };
-  const again = () => { stop(); start(); };
-  tabs.forEach((t, n) => t.addEventListener('click', () => { show(n); again(); }));
+  const takeOver = () => { taken = true; stop(); };
+  tabs.forEach((t, n) => t.addEventListener('click', () => { show(n); takeOver(); }));
   /* only the tab strip itself holds the turn — hovering the picture used to freeze it, and a
      pointer that left by scrolling never reported leaving, so it never started again */
   const strip = sec.querySelector('.hc-port__tabs');
@@ -137,16 +138,18 @@
   if ('IntersectionObserver' in window)
     new IntersectionObserver(es => {
       seen = es[0].isIntersecting;
+      /* coming back into view must not restart a turn that is already running, nor one the
+         reader has taken over — that is what made the live tab appear to begin again */
       if (seen) { held = false; start(); } else stop();
     }, { threshold: .25 }).observe(sec);
   else { seen = true; start(); }
   const prev = sec.querySelector('.hc-port__nav--prev');
   const next = sec.querySelector('.hc-port__nav--next');
-  if (prev) prev.addEventListener('click', () => { show(at - 1); again(); });
-  if (next) next.addEventListener('click', () => { show(at + 1); again(); });
+  if (prev) prev.addEventListener('click', () => { show(at - 1); takeOver(); });
+  if (next) next.addEventListener('click', () => { show(at + 1); takeOver(); });
   sec.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') { show(at + 1); again(); e.preventDefault(); }
-    else if (e.key === 'ArrowLeft') { show(at - 1); again(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { show(at + 1); takeOver(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { show(at - 1); takeOver(); e.preventDefault(); }
   });
 })();
 

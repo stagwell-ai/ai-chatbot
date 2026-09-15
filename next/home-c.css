@@ -1875,3 +1875,10 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 /* the caption block is solid: no picture showing through the words */
 .hc-page .hc-port__cap{background:var(--ink) !important}
 .hc-page .hc-port__cap:hover{background:#05080F !important}
+/* the wave sits in close on the Call me block */
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__btn:hover{
+  background:url(/assets/img/hero-film/3.jpg) center/300% auto no-repeat !important}
+/* the Why heading goes back to the sans; the serif stays on the hero alone */
+.hc-page .why .display--cos,.hc-page .why .display--cos *{font-family:var(--hc-title) !important;
+  font-weight:500 !important;letter-spacing:-.025em}
