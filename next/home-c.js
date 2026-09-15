@@ -96,7 +96,7 @@
   const film = document.querySelector('.hc-page video.intro__pic');
   if (!film || !('IntersectionObserver' in window)) return;
   const play = () => { const p = film.play(); if (p && p.catch) p.catch(() => {}); };
-  new IntersectionObserver(es => (es[0].isIntersecting && film.dataset.held !== '1') ? play() : film.pause(), { threshold: .1 }).observe(film);
+  new IntersectionObserver(es => (es[0].isIntersecting && film.dataset.held !== '1') ? play() : film.pause(), { threshold: .35 }).observe(film);
 })();
 
 /* Products: the tabs and the two arrows move one still at a time */
