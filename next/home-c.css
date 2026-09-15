@@ -1787,3 +1787,20 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   33%{background-position:-9px 7px,0 0}
   66%{background-position:6px -8px,0 0}
   100%{background-position:0 0,0 0}}
+
+/* ═══ the grain sits still and re-forms in place: three tiles swapped, never slid ═══════════════ */
+.hc-page .intro__media::after{
+  background-image:url(/assets/img/grain-1.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%);
+  background-size:120px 120px,auto;background-position:0 0,0 0;
+  animation:hcGrainHold 1.5s steps(1) infinite}
+@keyframes hcGrainHold{
+  0%,33%{background-image:url(/assets/img/grain-1.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%)}
+  34%,66%{background-image:url(/assets/img/grain-2.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%)}
+  67%,100%{background-image:url(/assets/img/grain-3.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%)}}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .intro__media::after{animation:none}
+}
