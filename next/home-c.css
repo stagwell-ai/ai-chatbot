@@ -1905,3 +1905,14 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__desc{margin:0 !important;font-size:14px;line-height:1.5;max-width:22ch}
 .hc-page .hcs__go{margin-top:16px !important}
 @media (max-width:760px){.hc-page .hcs__rail > li{flex:0 0 64vw}}
+
+/* ═══ the suite as a marquee: tall quiet cards, the mark up top, the words at the foot ══════════ */
+.hc-page .hcs__rail{overflow-x:auto;scrollbar-width:none}
+.hc-page .hcs__rail::-webkit-scrollbar{display:none}
+.hc-page .hcs__rail > li{flex:0 0 clamp(250px,22vw,310px);height:clamp(380px,34vw,460px)}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{height:100%;padding:26px 26px 28px;border-radius:0;
+  display:flex;flex-direction:column}
+.hc-page .hcs__ic{margin:0 0 auto}                       /* the mark holds the top */
+.hc-page .hcs__kind{margin:0 0 10px !important}
+.hc-page .hcs__desc{margin:0 !important}
+.hc-page .hcs__go{margin:18px 0 0 !important}

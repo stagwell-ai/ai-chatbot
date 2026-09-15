@@ -519,3 +519,47 @@
       { threshold: 0 }).observe(hero);
   start();
 })();
+
+/* the suite runs as a marquee: the cards are doubled so the loop never shows a seam, and the run
+   stops under the pointer. The round buttons still nudge it. */
+(function () {
+  'use strict';
+  const rail = document.querySelector('.hc-page .hcs__rail');
+  if (!rail) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const items = [...rail.children];
+  if (!items.length || rail.dataset.doubled) return;
+  items.forEach(li => {
+    const copy = li.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    copy.querySelectorAll('a,button').forEach(el => el.setAttribute('tabindex', '-1'));
+    rail.appendChild(copy);
+  });
+  rail.dataset.doubled = '1';
+
+  const SPEED = 26;                      /* pixels a second: a drift, not a slide */
+  let last = 0, raf = 0, held = false, seen = true;
+  const half = () => rail.scrollWidth / 2;
+  const step = now => {
+    raf = 0;
+    const dt = last ? Math.min(.05, (now - last) / 1000) : 0;
+    last = now;
+    if (!held && seen) {
+      rail.scrollLeft += SPEED * dt;
+      if (rail.scrollLeft >= half()) rail.scrollLeft -= half();
+    }
+    raf = requestAnimationFrame(step);
+  };
+  const start = () => { if (!raf) { last = 0; raf = requestAnimationFrame(step); } };
+  const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = 0; } };
+
+  rail.addEventListener('pointerenter', () => { held = true; });
+  rail.addEventListener('pointerleave', () => { held = false; });
+  rail.addEventListener('pointerdown', () => { held = true; });
+  addEventListener('pointerup', () => { held = false; });
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(es => { seen = es[0].isIntersecting; seen ? start() : stop(); },
+      { threshold: 0 }).observe(rail);
+  start();
+})();
