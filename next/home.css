@@ -600,6 +600,17 @@ body.chat-open{overflow:hidden}
 .call__f input:focus{border-color:var(--teal);background:rgba(255,255,255,.14)}
 .call__hint{margin:0;font-size:12.5px;line-height:1.35;color:var(--orange)}
 .call__hint[hidden]{display:none}
+/* ── the same widget in the hero, on the picture ──
+   It sits under the ask box, above the starting points. At rest it is one
+   quiet outlined button on a dark photograph, so the outline and the label
+   go white; open, it is the same ink card as everywhere else. */
+.call--hero{align-self:center;margin:14px 0 0}   /* .chat stretches its children; this one sits at its own width */
+.call--hero[data-state="idle"] .call__btn{border-color:rgba(255,255,255,.38);color:#FFFFFF;background:rgba(10,16,28,.34);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.call--hero[data-state="idle"] .call__btn:hover{border-color:#FFFFFF;background:rgba(10,16,28,.52)}
+.call--hero[data-state="details"],.call--hero[data-state="done"]{box-shadow:0 26px 60px rgba(0,0,0,.4)}
+@media (max-width:640px){.call--hero{width:100%}.call--hero .call__btn{width:100%}}
+
 /* the card is ink, so the button cannot be: it goes light, like the send disc */
 .call__send{width:100%;height:46px;border-radius:999px;font-size:15px;background:#FFFFFF;color:var(--ink);
   border:0;transition:transform .25s var(--ease),background-color .2s ease}

@@ -292,6 +292,13 @@ and the trunk zero is stripped on both display and submission: `41` + `076 328 4
 `+41763284000`. `api/callback.js` refuses a body with no dial code (`country_required`, a 400)
 rather than accepting a national number nobody can ring.
 
+**Two places on the homepage.** The widget sits under the hero ask box, above the starting points,
+so it is reachable without scrolling, and again in the closing section. It is deliberately OUTSIDE
+`#agentForm`: its two steps are `<form>` elements and a nested form is dropped by the parser. The
+generator strips the hero copy from the chat box it slices into every other page (`chat_block()`),
+which would otherwise land a second widget in the same closing section. Every page therefore has
+exactly one, and the homepage two.
+
 **Where it goes.** `POST /api/callback` validates, mints a numeric `session_id`, and forwards
 `{session_id, email, first_name, last_name, phone, meta{…}}` to `CALLBACK_WEBHOOK_URL`. The five
 top-level fields are exactly the shape the automation maps; everything of ours (dial code, page,

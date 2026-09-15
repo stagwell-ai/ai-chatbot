@@ -148,13 +148,48 @@ try {
     await ctx.close();
   }
 
+  console.log('\n▶ in the hero too, so it is reachable without scrolling — and only there');
+  {
+    const { ctx, page, state } = await open('/next/index.html');
+    const ids = await page.$$eval('.call', els => els.map(e => e.id));
+    ok(ids.length === 2 && ids.includes('callHero') && ids.includes('callEnd'), 'the homepage has two: one in the hero, one in the closing section (' + ids.join(', ') + ')');
+    const seen = await page.$eval('#callHero', e => { const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight }; });
+    ok(seen.top > 0 && seen.bottom < seen.vh, 'the hero one is on screen at load, no scrolling (' + Math.round(seen.top) + 'px)');
+    ok(await page.$eval('#callHero .call__btn', b => /Call my phone/i.test(b.textContent)), 'same label');
+    /* it sits between the ask box and the starting points */
+    const order = await page.evaluate(() => {
+      const box = document.querySelector('#agentForm'), c = document.querySelector('#callHero'), tags = document.querySelector('#agentTags');
+      return { afterBox: box.getBoundingClientRect().bottom <= c.getBoundingClientRect().top + 1, beforeTags: c.getBoundingClientRect().bottom <= tags.getBoundingClientRect().top + 1 };
+    });
+    ok(order.afterBox && order.beforeTags, 'under the ask box, above the starting points');
+    /* it must not be inside the chat form: a nested form is dropped by the parser */
+    ok(await page.$eval('#callHero', e => !e.closest('#agentForm')), 'it sits outside the chat form, so its own forms survive');
+    ok(await page.$eval('#callHero .call__form', e => e.tagName === 'FORM') && await page.$eval('#callHero .call__more', e => e.tagName === 'FORM'), 'and both steps really are forms');
+    /* the whole flow works from the hero, on its own ids */
+    await page.click('#callHero .call__btn'); await page.waitForTimeout(450);
+    await page.selectOption('#callHeroCode', '44');
+    await page.fill('#callHeroNum', '020 7946 0958');
+    await page.click('#callHero .call__go'); await page.waitForTimeout(500);
+    await page.fill('#callHero input[name=first_name]', 'Ada');
+    await page.fill('#callHero input[name=last_name]', 'Lovelace');
+    await page.fill('#callHero input[name=email]', 'ada@example.com');
+    await page.click('#callHero .call__send');
+    await page.waitForFunction(() => document.querySelector('#callHero').classList.contains('is-placed'), null, { timeout: 6000 });
+    ok(state.posts.length === 1 && state.posts[0].dial_code === '44' && state.posts[0].national_number === '2079460958', 'the hero widget sends its own number with its country: +44 ' + state.posts[0].national_number);
+    ok(await page.$eval('#callEnd', e => e.dataset.state === 'idle'), 'and the closing one is untouched — the two do not share state');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
   console.log('\n▶ the same widget, on every page that carries it, and on a phone');
   {
     for (const f of ['/next/products.html', '/next/newvoices.html', '/next/s/imai.html', '/next/home-b.html']) {
       const { ctx, page, state } = await open(f);
       const hasBtn = await page.$eval('#callEnd .call__btn', b => /Call my phone/i.test(b.textContent)).catch(() => false);
       const hasMore = !!(await page.$('#callEnd .call__more'));
+      const n = (await page.$$('.call')).length;
       ok(hasBtn && hasMore && state.errors.length === 0, f.replace('/next', '') + ' carries the new widget');
+      ok(n === 1, '   and exactly one of it — the hero copy is stripped from the pages the generator builds (' + n + ')');
       await ctx.close();
     }
     const { ctx, page } = await open('/next/index.html', { viewport: { width: 390, height: 844 } });

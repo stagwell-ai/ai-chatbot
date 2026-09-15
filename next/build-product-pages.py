@@ -161,6 +161,24 @@ def must(s, needle, count=1):
     n = s.count(needle)
     assert n == count, f'expected {count}x {needle[:70]!r}, found {n}'
 
+
+def chat_block(home):
+    """The homepage chat box, the thinking canvas and the six pills — MINUS the
+    hero's "Call my phone" widget. That widget belongs under the homepage hero;
+    everywhere else this block lands in the closing section, which carries its
+    own copy a few lines below, and two in one section is clutter."""
+    i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
+    chat = home[i:home.index('</ul>', k) + 5]
+    j = chat.find('<div class="call call--hero"')
+    if j != -1:
+        j = chat.rindex('\n', 0, j)
+        end = chat.index('</div>', chat.index('call__fine--done', j))
+        end = chat.index('</div>', end + 6) + 6
+        chat = chat[:j] + chat[end:]
+    assert 'call--hero' not in chat, 'the hero widget was not removed from the copied chat box'
+    return chat
+
+
 def between(s, start, end_after, from_=0):
     i = s.index(start, from_)
     j = s.index(end_after, i) + len(end_after)
@@ -270,9 +288,8 @@ def page(p, home):
     # asked there opens the chat at the foot of the page (home.js)
     chrome += '\n\n' + home[home.index('<!-- the chat, full screen over the page'):home.index('<main id="top">')].rstrip()
 
-    # the homepage's chat, as it is: the box, the thinking canvas, the six pills
-    i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
-    chat = home[i:home.index('</ul>', k) + 5]
+    # the homepage's chat, without the hero's callback widget (see chat_block)
+    chat = chat_block(home)
 
     i = home.index('<footer class="foot">'); footer = home[i:home.index('</footer>') + 9]
 
@@ -505,8 +522,7 @@ def listing_page(home):
     i = home.index('<header class="nav" id="nav">'); j = home.index('<!-- the chat, full screen over the page')
     chrome = put_blocks(home[i:j].rstrip())
     chrome += '\n\n' + home[home.index('<!-- the chat, full screen over the page'):home.index('<main id="top">')].rstrip()   # the chat overlay, as on the homepage
-    i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
-    chat = home[i:home.index('</ul>', k) + 5]
+    chat = chat_block(home)
     # the close, exactly as the product pages carry it (see page())
     i = home.index('<section class="ask-end" id="start">'); close = home[i:home.index('</section>', i) + 10]
     close = close.replace('\n  <canvas class="hero__think" id="endThink" aria-hidden="true"></canvas>', '')
@@ -573,8 +589,7 @@ def frame(home, *, title, desc, path, body_class, body, css=('product.css',), ex
     i = home.index('<header class="nav" id="nav">'); j = home.index('<!-- the chat, full screen over the page')
     chrome = put_blocks(home[i:j].rstrip())
     chrome += '\n\n' + home[home.index('<!-- the chat, full screen over the page'):home.index('<main id="top">')].rstrip()   # the chat overlay, as on the homepage
-    i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
-    chat = home[i:home.index('</ul>', k) + 5]
+    chat = chat_block(home)
     i = home.index('<section class="ask-end" id="start">'); close = home[i:home.index('</section>', i) + 10]
     close = close.replace('\n  <canvas class="hero__think" id="endThink" aria-hidden="true"></canvas>', '')
     for old, new in [('id="askEndInput"', 'id="ppAskInput"'), ('for="askEndInput"', 'for="ppAskInput"'), ('id="askEnd"', 'id="ppAsk"')]:
