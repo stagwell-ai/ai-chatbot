@@ -18,8 +18,13 @@
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   let i = pics.findIndex(p => p.classList.contains('is-on')), timer = 0;
   const turn = () => { pics[i].classList.remove('is-on'); i = (i + 1) % pics.length; pics[i].classList.add('is-on'); };
-  const start = () => { if (!timer) timer = setInterval(turn, 3000); };
+  let held = false;
+  const start = () => { if (!timer && !held) timer = setInterval(turn, 2800); };
   const stop = () => { if (timer) { clearInterval(timer); timer = 0; } };
+  window.__hcFilm = {                      /* the film's button talks to the cycle through this */
+    get paused() { return held; },
+    toggle() { held = !held; if (held) stop(); else start(); return held; }
+  };
   if ('IntersectionObserver' in window) new IntersectionObserver(es => es[0].isIntersecting ? start() : stop(), { threshold: .15 }).observe(frame);
   else start();
 })();
@@ -236,7 +241,21 @@
   const film = document.querySelector('.hc-page video.intro__pic');
   const play = document.getElementById('filmPlay');
   const sound = document.getElementById('filmSound');
-  if (!film || !play || !sound) return;
+  if (!play || !sound) return;
+  if (!film) {
+    /* stills for now, videos later: the button holds the run, and there is no sound to offer */
+    sound.hidden = true;
+    const paintRun = () => {
+      const paused = window.__hcFilm && window.__hcFilm.paused;
+      play.setAttribute('aria-label', paused ? 'Play the film' : 'Pause the film');
+      play.innerHTML = paused
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.6 18.5 12 8 18.4z" fill="currentColor"/></svg>'
+        : '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="7" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor"/><rect x="13.6" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor"/></svg>';
+    };
+    play.addEventListener('click', () => { if (window.__hcFilm) window.__hcFilm.toggle(); paintRun(); });
+    paintRun();
+    return;
+  }
   const paintPlay = () => {
     const on = !film.paused;
     play.setAttribute('aria-label', on ? 'Pause the film' : 'Play the film');
