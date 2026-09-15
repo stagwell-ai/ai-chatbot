@@ -1830,3 +1830,21 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
     linear-gradient(180deg,rgba(11,18,32,.44) 0%,rgba(11,18,32,.38) 46%,rgba(11,18,32,.6) 100%)}
   67%,100%{background-image:url(/assets/img/grain-3.png),
     linear-gradient(180deg,rgba(11,18,32,.44) 0%,rgba(11,18,32,.38) 46%,rgba(11,18,32,.6) 100%)}}
+
+/* ═══ the Call me block takes the wave still instead of the sweep ═══════════════════════════════ */
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__form,
+.hc-page .ask-end .call__done{
+  background:linear-gradient(180deg,rgba(6,18,24,.52),rgba(6,18,24,.62)),
+    url(/assets/img/hero-film/3.jpg) center/cover no-repeat !important}
+.hc-page .ask-end .call__btn:hover{
+  background:linear-gradient(180deg,rgba(6,18,24,.42),rgba(6,18,24,.54)),
+    url(/assets/img/hero-film/3.jpg) center/cover no-repeat !important}
+.hc-page .ask-end .call__form .call__cc,
+.hc-page .ask-end .call__form .call__num{background:rgba(255,255,255,.16)}
+/* on a narrow block the number keeps a usable width */
+@media (max-width:1100px){
+  .hc-page .ask-end .call__form{flex-wrap:wrap;gap:8px}
+  .hc-page .ask-end .call__form .call__cc{flex:0 0 auto;min-width:112px}
+  .hc-page .ask-end .call__form .call__num{flex:1 1 130px;min-width:110px}
+}
