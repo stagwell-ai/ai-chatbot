@@ -1780,3 +1780,10 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (prefers-reduced-motion:reduce){
   .hc-page .intro__media::after{animation:none}
 }
+/* the grain barely moves: slower, and it shifts a hair rather than a jump */
+.hc-page .intro__media::after{animation:hcGrainSoft 3.4s steps(3) infinite}
+@keyframes hcGrainSoft{
+  0%{background-position:0 0,0 0}
+  33%{background-position:-9px 7px,0 0}
+  66%{background-position:6px -8px,0 0}
+  100%{background-position:0 0,0 0}}
