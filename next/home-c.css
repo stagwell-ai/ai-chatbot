@@ -1893,3 +1893,15 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__media .mk{top:50% !important;left:50% !important;margin:0 !important}
 .hc-page .hcs__media .mk.mk-arm{translate:0 8px}
 .hc-page .hcs__media .mk.mk-arm.in{translate:0 0}
+
+/* ═══ the suite, stripped back: a stroke mark, a name, one line, a link ═════════════════════════ */
+.hc-page .hcs__media{display:none !important}
+.hc-page .hcs__rail > li{flex:0 0 clamp(180px,16vw,220px)}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding:18px 18px 20px;border-radius:14px}
+.hc-page .hcs__ic{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;
+  box-shadow:inset 0 0 0 1px rgba(11,18,32,.16);color:var(--ink);margin:0 0 16px}
+.hc-page .hcs__ic svg{width:21px;height:21px}
+.hc-page .hcs__kind{margin:0 0 8px !important;font-size:15px}
+.hc-page .hcs__desc{margin:0 !important;font-size:14px;line-height:1.5;max-width:22ch}
+.hc-page .hcs__go{margin-top:16px !important}
+@media (max-width:760px){.hc-page .hcs__rail > li{flex:0 0 64vw}}
