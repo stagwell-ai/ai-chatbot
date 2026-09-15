@@ -1995,3 +1995,8 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .foot__follow{display:none}
 .hc-page .foot__copy{font-size:13px;letter-spacing:.01em}
 .hc-page .foot__brand svg{height:22px;width:auto}
+/* the stage follows the picture's own shape, so the stills are barely cropped on a wide screen */
+.hc-page .hc-port__stage{height:auto !important;aspect-ratio:16 / 9;max-height:86vh}
+@media (max-width:760px){
+  .hc-page .hc-port__stage{aspect-ratio:4 / 5;height:auto !important;max-height:none}
+}
