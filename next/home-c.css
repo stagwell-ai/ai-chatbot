@@ -2243,3 +2243,11 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
     margin-inline:-24px !important;padding-inline:24px !important}
   .hc-page .hero .chat__tags::after{content:"";flex:0 0 0px}
 }
+
+@media (max-width:760px){
+  /* the suite's row: the arrows on the left, the way to every product on the right */
+  .hc-page .hcs__nav{display:flex;align-items:center;gap:10px;
+    padding-left:24px !important;padding-right:24px !important}
+  .hc-page .hcs__nav .hcs__acts{margin-left:auto;display:flex}
+  .hc-page .hcs__nav .hcs__all{white-space:nowrap}
+}

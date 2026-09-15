@@ -588,3 +588,21 @@
       { threshold: 0 }).observe(rail);
   start();
 })();
+
+/* on a phone the suite's "See every product" joins the arrows, on the far side of the same row */
+(function () {
+  'use strict';
+  const sec = document.querySelector('.hc-page .hcs');
+  if (!sec) return;
+  const acts = sec.querySelector('.hcs__acts');
+  const head = sec.querySelector('.hcs__head');
+  const nav = sec.querySelector('.hcs__nav');
+  if (!acts || !head || !nav) return;
+  const phone = matchMedia('(max-width: 760px)');
+  const place = () => {
+    const home = phone.matches ? nav : head;
+    if (acts.parentElement !== home) home.appendChild(acts);
+  };
+  place();
+  phone.addEventListener('change', place);
+})();
