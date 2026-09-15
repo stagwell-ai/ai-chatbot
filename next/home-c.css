@@ -1889,3 +1889,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__media .mk-td{padding:7px 10px;font-size:12.5px}
 /* the band gives the tallest panel room, so it is not shrunk to fit */
 .hc-page .hcs__media{flex:0 0 152px !important;height:152px !important}
+/* the panel is centred in its band with nothing added, so it is never cut */
+.hc-page .hcs__media .mk{top:50% !important;left:50% !important;margin:0 !important}
+.hc-page .hcs__media .mk.mk-arm{translate:0 8px}
+.hc-page .hcs__media .mk.mk-arm.in{translate:0 0}

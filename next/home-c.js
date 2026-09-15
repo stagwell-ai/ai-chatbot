@@ -171,7 +171,7 @@
     const m = p.parentElement, w = m.clientWidth, h = m.clientHeight;
     if (!w || !h) return;
     const inset = Math.round(Math.max(6, w * .03));
-    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h * .94) / p.offsetHeight);
+    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h - 2 * inset) / p.offsetHeight);
     p.style.left = '50%';
     p.style.top = '50%';
     p.style.bottom = 'auto';
