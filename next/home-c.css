@@ -2069,3 +2069,9 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
   transform:translateY(-18px)}
 .hc-page .hcs__go{bottom:24px;left:22px;right:22px}
+/* at rest the words sit at the foot as usual; the lift on hover is what opens the room for the call */
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding-bottom:26px}
+.hc-page .hcs__card:hover .hcs__kind,.hc-page .hcs__card:focus-visible .hcs__kind,
+.hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
+  transform:translateY(-56px)}
+.hc-page .hcs__go{bottom:22px}
