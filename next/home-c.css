@@ -1916,3 +1916,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__kind{margin:0 0 10px !important}
 .hc-page .hcs__desc{margin:0 !important}
 .hc-page .hcs__go{margin:18px 0 0 !important}
+/* the gap under the mark comes down by about a hundred: the card is shorter with it */
+.hc-page .hcs__rail > li{height:clamp(300px,26vw,360px)}
+.hc-page .hcs__ic{margin:0 0 auto}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding:24px 24px 26px}
