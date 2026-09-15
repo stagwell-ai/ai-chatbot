@@ -2235,3 +2235,11 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   /* the film is a block on the page here, not a screen to scroll through */
   .hc-page .intro__more{display:none !important}
 }
+
+@media (max-width:760px){
+  /* the starting points run edge to edge, like the Products tabs */
+  .hc-page .hero .chat__tags,.hc-page .hero .chat__tags--split{
+    width:100vw !important;max-width:100vw !important;
+    margin-inline:-24px !important;padding-inline:24px !important}
+  .hc-page .hero .chat__tags::after{content:"";flex:0 0 0px}
+}
