@@ -2042,3 +2042,21 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__media{display:none !important}
 .hc-page .hcs__rail > li{flex:0 0 clamp(200px,17vw,240px);height:clamp(300px,26vw,360px)}
 .hc-page .hcs__ic{order:1;margin:0 0 auto}
+
+/* ═══ a card under the pointer lifts its words and offers the call ══════════════════════════════ */
+.hc-page .hcs__card{position:relative}
+.hc-page .hcs__kind,.hc-page .hcs__desc{transition:transform .34s cubic-bezier(.16,.72,.24,1)}
+.hc-page .hcs__go{position:absolute;left:24px;right:24px;bottom:22px;margin:0 !important;
+  display:inline-flex;align-items:center;justify-content:center;gap:0;height:38px;padding:0 16px;
+  border-radius:999px;background:var(--ink);color:#FFFFFF !important;font-size:13px;font-weight:600;
+  opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity .28s ease,transform .34s cubic-bezier(.16,.72,.24,1)}
+.hc-page .hcs__card:hover .hcs__kind,.hc-page .hcs__card:focus-visible .hcs__kind,
+.hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
+  transform:translateY(-46px)}
+.hc-page .hcs__card:hover .hcs__go,.hc-page .hcs__card:focus-visible .hcs__go{
+  opacity:1;transform:none;pointer-events:auto}
+.hc-page .hcs__card:hover .hcs__ic{border-color:rgba(11,18,32,.3)}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hcs__kind,.hc-page .hcs__desc,.hc-page .hcs__go{transition:none}
+}
