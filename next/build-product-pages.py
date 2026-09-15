@@ -169,13 +169,12 @@ def chat_block(home):
     own copy a few lines below, and two in one section is clutter."""
     i = home.index('    <div class="chat">'); k = home.index('id="agentTags"', i)
     chat = home[i:home.index('</ul>', k) + 5]
-    j = chat.find('<div class="call call--hero"')
+    j = chat.find('<div data-call="callHero"')
     if j != -1:
-        j = chat.rindex('\n', 0, j)
-        end = chat.index('</div>', chat.index('call__fine--done', j))
-        end = chat.index('</div>', end + 6) + 6
-        chat = chat[:j] + chat[end:]
-    assert 'call--hero' not in chat, 'the hero widget was not removed from the copied chat box'
+        j = chat.rindex('\n', 0, chat.rindex('<!--', 0, j))     # the comment above it goes too
+        end = chat.index('\n', chat.index('</div>', j)) + 1
+        chat = chat[:j + 1] + chat[end:]
+    assert 'callHero' not in chat, 'the hero mount was not removed from the copied chat box'
     return chat
 
 
@@ -472,7 +471,7 @@ def book_page(home):
         must(head, old); head = head.replace(old, new)
     i = home.index('<svg width="0"'); symbol = home[i:home.index('</svg>', i) + 6]
     i = home.index('<footer class="foot">'); footer = home[i:home.index('</footer>') + 9]
-    scripts = '\n'.join(f'<script src="/next/{f}"></script>' for f in ('lead.js', 'home.js', 'navdrop.js'))
+    scripts = '\n'.join(f'<script src="/next/{f}"></script>' for f in ('call.js', 'lead.js', 'home.js', 'navdrop.js'))
     out = (head + '</head>\n<body class="home pp bk-page" data-lead-cta>\n\n' + symbol + '\n\n' + site_chrome(home) + '\n' +
            BOOK_BODY + '\n' + footer + '\n\n' + scripts + '\n</body>\n</html>\n')
     assert out.count('id="bookForm"') == 1 and out.count('id="navBurger"') == 1

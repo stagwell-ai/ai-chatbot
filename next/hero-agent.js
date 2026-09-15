@@ -232,6 +232,16 @@ function drawBook(st) {
   bubble.querySelector('[data-kimi-cta="BOOK"]').addEventListener('click', () => {
     try { K.clicked('BOOK', (st.recommendation || {}).primary || null, null, 'book'); } catch (e) {}
   });
+  /* …or have the agent ring them instead of picking a slot (client, 2026-09-15).
+     call.js is form-free, so this is safe inside the thread, which lives in a
+     form; the widget keeps everything it knows to itself and posts on its own. */
+  if (window.SAICALL) {
+    const alt = document.createElement('div');
+    alt.className = 'turnb__alt';
+    alt.innerHTML = '<span class="turnb__or">' + H.esc(window.SAICALL.copy.lead) + '</span>';
+    bubble.appendChild(alt);
+    window.SAICALL.create(alt, { variant: 'thread', placement: 'chat-book' });
+  }
   inputMode('text');
   H.close(c.composerClosedBook || c.composerClosed || 'We\'ll be in touch.');
   ended = true;

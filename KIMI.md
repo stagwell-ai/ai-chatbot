@@ -292,12 +292,31 @@ and the trunk zero is stripped on both display and submission: `41` + `076 328 4
 `+41763284000`. `api/callback.js` refuses a body with no dial code (`country_required`, a 400)
 rather than accepting a national number nobody can ring.
 
-**Two places on the homepage.** The widget sits under the hero ask box, above the starting points,
-so it is reachable without scrolling, and again in the closing section. It is deliberately OUTSIDE
-`#agentForm`: its two steps are `<form>` elements and a nested form is dropped by the parser. The
-generator strips the hero copy from the chat box it slices into every other page (`chat_block()`),
-which would otherwise land a second widget in the same closing section. Every page therefore has
-exactly one, and the homepage two.
+**One implementation, six placements.** `next/call.js` owns the markup, the copy and the
+behaviour; `next/call.css` owns the styling. Both load on every page. A page asks for one with
+`<div data-call="someId" data-variant="…">`, or code calls `SAICALL.create(host, opts)`. Nothing
+in the widget is a `<form>` — the steps are divs with a button and an Enter handler — so it can
+sit inside another form, which is what lets it live in the thread and beside the lead form. That
+trap (a nested form is silently dropped by the parser) had already bitten this codebase twice.
+
+| Where | How it gets there |
+|---|---|
+| Homepage hero, under the ask box | `data-call="callHero"`, outside `#agentForm` |
+| The closing section, on 20 pages | `data-call="callEnd"` |
+| The lead panel, which any page can open | `lead.js` renders `[data-lead-call]`, `wireForm()` fills it |
+| `/book`, under the booking form | the same lead form, mounted inline |
+| The conversation's Book-a-call turn | `hero-agent.js drawBook()` |
+| `/agent`'s "Or let Stagwell AI call you" band | its button opens the lead panel |
+
+`session` and `demo` CTAs navigate to `/book`; `expert`, `workspace`, `callback` and `pdf` open
+the panel. Both destinations now carry the widget, so every call-to-action on the site reaches it.
+Each placement tags its request (`placement`) so the automation can see where a lead came from.
+The generator strips the hero mount from the chat box it slices into every other page
+(`chat_block()`), which would otherwise land a second widget in the same closing section.
+
+The `/agent` band is the one place the widget is NOT mounted directly: `ribbon.css` loads after
+`call.css` there and re-colours everything inside `.callback`, so its button opens the panel
+instead of fighting that cascade.
 
 **Where it goes.** `POST /api/callback` validates, mints a numeric `session_id`, and forwards
 `{session_id, email, first_name, last_name, phone, meta{…}}` to `CALLBACK_WEBHOOK_URL`. The five

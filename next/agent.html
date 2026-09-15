@@ -59,6 +59,7 @@ d.setAttribute('data-theme',q?q[1]:(t||sys));})();
 <link rel="stylesheet" href="/next/styles.css">
 <link rel="stylesheet" href="/next/b.css">
 <link rel="stylesheet" href="/next/lead.css">
+<link rel="stylesheet" href="/next/call.css">
 <link rel="stylesheet" href="/next/convo.css">
 <link rel="stylesheet" href="/next/hero.css">
 <link rel="stylesheet" href="/next/snapshot.css">
@@ -274,10 +275,10 @@ d.setAttribute('data-theme',q?q[1]:(t||sys));})();
           <b><i class="pulse"></i>Or let Stagwell AI call you.</b>
           <span>Leave a number and a NewVoices agent calls within two minutes — already briefed on what you told the agent.</span>
         </div>
-        <form data-cta="callback">
-          <input type="tel" placeholder="+1 (555) 000-0000" aria-label="Phone number">
-          <button class="btn btn--light" type="submit">Call me now</button>
-        </form>
+        <!-- this band's button opens the lead panel, which carries "Call my phone".
+             Mounting the widget here directly fought ribbon.css, which loads after
+             call.css on this page and re-colours everything inside .callback. -->
+        <button class="btn btn--light" type="button" data-cta="callback">Call me now</button>
       </div>
     </div>
   </section>
@@ -359,6 +360,7 @@ d.setAttribute('data-theme',q?q[1]:(t||sys));})();
 <script src="/next/directory.js"></script>
 <script src="/next/shared.js"></script>
 <!-- the shared lead-capture modal; b.js's openModal() delegates to it -->
+<script src="/next/call.js"></script>
 <script src="/next/lead.js"></script>
 <script src="/next/hero-band.js"></script>
 <script src="/next/b.js"></script>

@@ -221,7 +221,15 @@
         </label>
         <button class="btn btn--dark" type="submit">${esc(c.kinds[kind].submit)}</button>
       </form>
-      <p class="modal__fine">${esc(c.fine)}</p>`;
+      <p class="modal__fine">${esc(c.fine)}</p>
+      <!-- the other way to reach us, on the same panel: a call now instead of a
+           form and a wait (client, 2026-09-15). OUTSIDE the form above — the
+           widget has its own controls and a nested form would be dropped.
+           call.js fills this; wireForm() asks it to. -->
+      <div class="lead__alt">
+        <span class="lead__or">${esc((window.SAICALL && window.SAICALL.copy.lead) || 'Or have us call you now.')}</span>
+        <div data-lead-call></div>
+      </div>`;
   }
 
   function successHtml(c, brand, inline) {
@@ -254,6 +262,12 @@
     const emailRow = root.querySelector('#saiLeadEmailRow');
     const emailInput = form.elements.email;
     const hint = root.querySelector('#saiLeadHint');
+
+    /* "Call my phone", on the same panel as the form */
+    const altHost = root.querySelector('[data-lead-call]');
+    if (altHost && window.SAICALL && !altHost.children.length) {
+      window.SAICALL.create(altHost, { variant: 'alt', placement: (inline ? 'book-' : 'modal-') + kind });
+    }
 
     /* the hint clears itself the moment the address becomes plausible — no
        second submit needed to find out you fixed it */

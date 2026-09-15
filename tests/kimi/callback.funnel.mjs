@@ -47,10 +47,10 @@ try {
     await page.click('#callEnd .call__btn');
     await page.waitForTimeout(450);
     ok((await st(page)) === 'phone', 'it opens on the number');
-    ok(await page.isVisible('#callEndNum') && await page.isVisible('#callEndCode'), 'a country and a number, nothing else');
+    ok(await page.isVisible('#callEnd .call__num') && await page.isVisible('#callEnd .call__cc'), 'a country and a number, nothing else');
     ok(!(await page.isVisible('#callEnd .call__more')), 'still no name or email');
     /* the country list has to be long enough to be useful, and carry a dial code */
-    const cc = await page.$$eval('#callEndCode option', os => os.map(o => ({ v: o.value, t: o.textContent })));
+    const cc = await page.$$eval('#callEnd .call__cc option', os => os.map(o => ({ v: o.value, t: o.textContent })));
     ok(cc.length >= 40, cc.length + ' countries offered');
     ok(cc.every(o => /^\d{1,3}$/.test(o.v) && /\(\+\d{1,3}\)$/.test(o.t)), 'every option carries its dial code');
     ok(cc[0].v === '1' && /United States/.test(cc[0].t), 'United States / Canada is the default');
@@ -63,10 +63,10 @@ try {
   {
     const { ctx, page } = await open('/next/index.html');
     await page.click('#callEnd .call__btn'); await page.waitForTimeout(400);
-    await page.fill('#callEndNum', '123');
+    await page.fill('#callEnd .call__num', '123');
     await page.click('#callEnd .call__go'); await page.waitForTimeout(200);
     ok((await st(page)) === 'phone' && await page.$eval('#callEnd', e => e.classList.contains('is-bad')), 'three digits: marked bad, the form does not move on');
-    await page.fill('#callEndNum', '415 555 0134');
+    await page.fill('#callEnd .call__num', '415 555 0134');
     await page.click('#callEnd .call__go'); await page.waitForTimeout(450);
     ok((await st(page)) === 'details', 'a real number: it grows into the rest of the form');
     await ctx.close();
@@ -76,8 +76,8 @@ try {
   {
     const { ctx, page } = await open('/next/index.html');
     await page.click('#callEnd .call__btn'); await page.waitForTimeout(400);
-    await page.selectOption('#callEndCode', '41');
-    await page.fill('#callEndNum', '76 328 4000');
+    await page.selectOption('#callEnd .call__cc', '41');
+    await page.fill('#callEnd .call__num', '76 328 4000');
     await page.click('#callEnd .call__go'); await page.waitForTimeout(450);
     ok(await page.isVisible('#callEnd input[name=first_name]') && await page.isVisible('#callEnd input[name=last_name]') && await page.isVisible('#callEnd input[name=email]'), 'first name, last name and work email are asked for');
     ok(await page.$eval('#callEnd .call__tonum', e => /\+41/.test(e.textContent)), 'it shows the number it will ring: ' + (await page.$eval('#callEnd .call__tonum', e => e.textContent)));
@@ -100,8 +100,8 @@ try {
   {
     const { ctx, page, state } = await open('/next/index.html');
     await page.click('#callEnd .call__btn'); await page.waitForTimeout(400);
-    await page.selectOption('#callEndCode', '41');
-    await page.fill('#callEndNum', '076 328 4000');
+    await page.selectOption('#callEnd .call__cc', '41');
+    await page.fill('#callEnd .call__num', '076 328 4000');
     await page.click('#callEnd .call__go'); await page.waitForTimeout(450);
     /* the form holds the line until it can be acted on */
     await page.click('#callEnd .call__send'); await page.waitForTimeout(150);
@@ -135,7 +135,7 @@ try {
   {
     const { ctx, page } = await open('/next/index.html', { fail: true });
     await page.click('#callEnd .call__btn'); await page.waitForTimeout(400);
-    await page.fill('#callEndNum', '415 555 0134');
+    await page.fill('#callEnd .call__num', '415 555 0134');
     await page.click('#callEnd .call__go'); await page.waitForTimeout(450);
     await page.fill('#callEnd input[name=first_name]', 'Ada');
     await page.fill('#callEnd input[name=last_name]', 'Lovelace');
@@ -163,12 +163,12 @@ try {
     });
     ok(order.afterBox && order.beforeTags, 'under the ask box, above the starting points');
     /* it must not be inside the chat form: a nested form is dropped by the parser */
-    ok(await page.$eval('#callHero', e => !e.closest('#agentForm')), 'it sits outside the chat form, so its own forms survive');
-    ok(await page.$eval('#callHero .call__form', e => e.tagName === 'FORM') && await page.$eval('#callHero .call__more', e => e.tagName === 'FORM'), 'and both steps really are forms');
+    ok(await page.$eval('#callHero', e => !e.closest('#agentForm')), 'it sits outside the chat form');
+    ok(await page.$eval('#callHero .call__form', e => e.tagName !== 'FORM') && await page.$eval('#callHero .call__more', e => e.tagName !== 'FORM'), 'neither step is a <form>, so it survives inside one');
     /* the whole flow works from the hero, on its own ids */
     await page.click('#callHero .call__btn'); await page.waitForTimeout(450);
-    await page.selectOption('#callHeroCode', '44');
-    await page.fill('#callHeroNum', '020 7946 0958');
+    await page.selectOption('#callHero .call__cc', '44');
+    await page.fill('#callHero .call__num', '020 7946 0958');
     await page.click('#callHero .call__go'); await page.waitForTimeout(500);
     await page.fill('#callHero input[name=first_name]', 'Ada');
     await page.fill('#callHero input[name=last_name]', 'Lovelace');
@@ -177,6 +177,62 @@ try {
     await page.waitForFunction(() => document.querySelector('#callHero').classList.contains('is-placed'), null, { timeout: 6000 });
     ok(state.posts.length === 1 && state.posts[0].dial_code === '44' && state.posts[0].national_number === '2079460958', 'the hero widget sends its own number with its country: +44 ' + state.posts[0].national_number);
     ok(await page.$eval('#callEnd', e => e.dataset.state === 'idle'), 'and the closing one is untouched — the two do not share state');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ in the lead panel — what "Talk to an AI expert" and the other modal CTAs open');
+  {
+    const { ctx, page, state } = await open('/next/index.html');
+    /* session and demo go to /book; expert, workspace and the rest open the panel */
+    await page.evaluate(() => { const b = [...document.querySelectorAll('[data-cta="expert"]')].find(x => x.offsetParent); b.click(); });
+    await page.waitForSelector('#saiLead .lead__alt .call', { timeout: 5000 });
+    ok(await page.$eval('#saiLead .lead__or', e => /call you now/i.test(e.textContent)), 'the panel offers it as the other way: "' + (await page.$eval('#saiLead .lead__or', e => e.textContent)) + '"');
+    ok(await page.$eval('#saiLead .lead__alt .call', e => !e.closest('form')), 'it sits outside the lead form, so neither is swallowed by the other');
+    ok(await page.$eval('#saiLeadForm', e => e.tagName === 'FORM'), 'and the lead form is still a real form');
+    /* it works from inside the modal */
+    await page.click('#saiLead .lead__alt .call__btn'); await page.waitForTimeout(400);
+    await page.selectOption('#saiLead .lead__alt .call__cc', '49');
+    await page.fill('#saiLead .lead__alt .call__num', '30 901820');
+    await page.click('#saiLead .lead__alt .call__go'); await page.waitForTimeout(450);
+    await page.fill('#saiLead .lead__alt input[name=first_name]', 'Mara');
+    await page.fill('#saiLead .lead__alt input[name=last_name]', 'Weiss');
+    await page.fill('#saiLead .lead__alt input[name=email]', 'mara@example.de');
+    await page.click('#saiLead .lead__alt .call__send');
+    await page.waitForFunction(() => document.querySelector('#saiLead .lead__alt .call').classList.contains('is-placed'), null, { timeout: 6000 });
+    ok(state.posts.length === 1 && state.posts[0].dial_code === '49', 'a request goes from the modal with its country (+49)');
+    ok(state.posts[0].placement === 'modal-expert', 'and says where it came from: ' + state.posts[0].placement);
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ on the Book a demo page, beside the form');
+  {
+    const { ctx, page, state } = await open('/next/book.html');
+    await page.waitForSelector('#bookForm .lead__alt .call', { timeout: 5000 });
+    ok(true, 'the /book panel carries it under the form');
+    await page.click('#bookForm .lead__alt .call__btn'); await page.waitForTimeout(400);
+    await page.fill('#bookForm .lead__alt .call__num', '415 555 0134');
+    await page.click('#bookForm .lead__alt .call__go'); await page.waitForTimeout(450);
+    await page.fill('#bookForm .lead__alt input[name=first_name]', 'Ada');
+    await page.fill('#bookForm .lead__alt input[name=last_name]', 'Lovelace');
+    await page.fill('#bookForm .lead__alt input[name=email]', 'ada@example.com');
+    await page.click('#bookForm .lead__alt .call__send');
+    await page.waitForFunction(() => document.querySelector('#bookForm .lead__alt .call').classList.contains('is-placed'), null, { timeout: 6000 });
+    ok(state.posts[0].placement === 'book-demo', 'recorded as coming from the booking page: ' + state.posts[0].placement);
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ on /agent, the band that promises a call now opens the panel that can place one');
+  {
+    const { ctx, page, state } = await open('/next/agent.html');
+    ok(await page.$eval('.callback .callback__t b', e => /call you/i.test(e.textContent)), 'the band still says "Or let Stagwell AI call you."');
+    ok(!(await page.$('.callback form[data-cta="callback"]')), 'the old form with a phone box that went nowhere is gone');
+    await page.locator('.callback [data-cta="callback"]').scrollIntoViewIfNeeded();
+    await page.click('.callback [data-cta="callback"]');
+    await page.waitForSelector('#saiLead .lead__alt .call', { timeout: 6000 });
+    ok(true, 'its button opens the panel, and "Call my phone" is on it');
     ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
     await ctx.close();
   }
@@ -194,7 +250,7 @@ try {
     }
     const { ctx, page } = await open('/next/index.html', { viewport: { width: 390, height: 844 } });
     await page.click('#callEnd .call__btn'); await page.waitForTimeout(400);
-    await page.fill('#callEndNum', '415 555 0134');
+    await page.fill('#callEnd .call__num', '415 555 0134');
     await page.click('#callEnd .call__go'); await page.waitForTimeout(500);
     const box = await page.$eval('#callEnd', e => { const r = e.getBoundingClientRect(); return { w: r.width, left: r.left, right: r.right, vw: innerWidth }; });
     ok(box.left >= -1 && box.right <= box.vw + 1, 'on a phone the card stays inside the screen (' + Math.round(box.w) + 'px of ' + box.vw + ')');
