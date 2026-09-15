@@ -1882,3 +1882,10 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 /* the Why heading goes back to the sans; the serif stays on the hero alone */
 .hc-page .why .display--cos,.hc-page .why .display--cos *{font-family:var(--hc-title) !important;
   font-weight:500 !important;letter-spacing:-.025em}
+/* the suite's panels are drawn near the card's own width, so they are barely scaled at all */
+.hc-page .hcs__media .mk{width:280px;padding:12px 13px}
+.hc-page .hcs__media .mk-t{font-size:15px;margin:0 0 8px}
+.hc-page .hcs__media .mk-th{padding:7px 10px;font-size:11.5px}
+.hc-page .hcs__media .mk-td{padding:7px 10px;font-size:12.5px}
+/* the band gives the tallest panel room, so it is not shrunk to fit */
+.hc-page .hcs__media{flex:0 0 152px !important;height:152px !important}

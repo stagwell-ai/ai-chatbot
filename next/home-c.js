@@ -170,8 +170,8 @@
   const fit = p => {        /* drawn at its natural size, then scaled and set in the picture's middle */
     const m = p.parentElement, w = m.clientWidth, h = m.clientHeight;
     if (!w || !h) return;
-    const inset = Math.round(Math.max(10, w * .06));
-    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h * .5) / p.offsetHeight);
+    const inset = Math.round(Math.max(6, w * .03));
+    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h * .94) / p.offsetHeight);
     p.style.left = '50%';
     p.style.top = '50%';
     p.style.bottom = 'auto';
