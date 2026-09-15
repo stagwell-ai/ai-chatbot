@@ -32,12 +32,17 @@
 .call__x svg{width:16px;height:16px}
 .call__x:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
 .call__x:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px}
-.call__cc{appearance:none;-webkit-appearance:none;border:0;background:none;outline:none;padding:0 16px 0 0;height:100%;
-  font-family:var(--ui);font-size:16px;color:#FFFFFF;cursor:pointer;width:auto;max-width:82px;text-overflow:ellipsis;flex-shrink:0;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2.5 4.5l3.5 3.5 3.5-3.5' fill='none' stroke='%23FFFFFF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+/* the country control: a dial code that always fits, with the real select
+   invisible on top of it. The list still reads "Switzerland (+41)"; the pill
+   reads "+41" and can never be cut to "United…" (client, 2026-09-15). */
+.call__ccwrap{position:relative;display:inline-flex;align-items:center;flex-shrink:0;height:100%}
+.call__ccv{font-family:var(--ui);font-size:16px;color:#FFFFFF;white-space:nowrap;font-variant-numeric:tabular-nums;
+  padding-right:16px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2.5 4.5l3.5 3.5 3.5-3.5' fill='none' stroke='%23FFFFFF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat:no-repeat;background-position:right center;background-size:12px}
+.call__cc{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;
+  appearance:none;-webkit-appearance:none;border:0;background:none;outline:none;font-size:16px}
+.call__ccwrap:focus-within .call__ccv{outline:2px solid #FFFFFF;outline-offset:2px;border-radius:4px}
 .call__cc option{color:var(--ink);background:#FFFFFF}
-.call__cc:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px;border-radius:4px}
 .call__sep{width:1px;height:22px;background:rgba(255,255,255,.22);flex-shrink:0}
 .call__num{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;padding:0;
   font-family:var(--ui);font-size:16px;color:#FFFFFF;caret-color:#FFFFFF}

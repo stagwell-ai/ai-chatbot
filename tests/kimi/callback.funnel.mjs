@@ -55,6 +55,17 @@ try {
     ok(cc.every(o => /^\d{1,3}$/.test(o.v) && /\(\+\d{1,3}\)$/.test(o.t)), 'every option carries its dial code');
     ok(cc[0].v === '1' && /United States/.test(cc[0].t), 'United States / Canada is the default');
     ok(!!cc.find(o => o.v === '41'), 'Switzerland is in the list (+41)');
+    /* the pill shows the dial code, which always fits; the list keeps whole
+       country names. It used to read "United…" (client, 2026-09-15). */
+    const shown = () => page.$eval('#callEnd .call__ccv', e => ({ text: e.textContent, cut: e.scrollWidth > e.clientWidth + 1 }));
+    let v = await shown();
+    ok(v.text === '+1' && !v.cut, 'the pill shows the dial code, uncut: "' + v.text + '"');
+    for (const code of ['971', '420', '41']) {
+      await page.selectOption('#callEnd .call__cc', code);
+      v = await shown();
+      ok(v.text === '+' + code && !v.cut, '   +' + code + ' too, never truncated');
+    }
+    ok(!(await page.$$eval('#callEnd .call__cc option', os => os.some(o => /…|\.\.\./.test(o.textContent)))), 'and no country name in the list is abbreviated');
     ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
     await ctx.close();
   }

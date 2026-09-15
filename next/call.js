@@ -89,7 +89,13 @@
       '<button type="button" class="btn btn--line btn--lg btn--ic call__btn">' + WAVE + ' ' + esc(o.button || copy.button) + '</button>' +
       /* step 1 — a country and a number, nothing else */
       '<div class="call__form" role="group" aria-label="' + esc(copy.button) + '">' + X +
-        '<select class="call__cc" aria-label="' + esc(copy.country) + '">' + opts + '</select>' +
+        /* the pill shows the dial code, which always fits; the native list still
+           shows whole country names. The select lies transparent over the label
+           so it keeps its own keyboard and screen-reader behaviour. */
+        '<span class="call__ccwrap">' +
+          '<span class="call__ccv" aria-hidden="true">+1</span>' +
+          '<select class="call__cc" aria-label="' + esc(copy.country) + '">' + opts + '</select>' +
+        '</span>' +
         '<span class="call__sep" aria-hidden="true"></span>' +
         '<input class="call__num" type="tel" inputmode="tel" placeholder="' + esc(copy.placeholder) + '" aria-label="' + esc(copy.placeholder) + '" autocomplete="tel-national" spellcheck="false">' +
         '<button type="button" class="call__go" aria-label="Continue">' + ARROW + '</button>' +
@@ -157,6 +163,11 @@
     addEventListener('keydown', e => { if (e.key === 'Escape' && call.dataset.state !== 'idle') closePill(); });
     addEventListener('pointerdown', e => { if (call.dataset.state === 'phone' && !call.contains(e.target) && !num.value.trim()) closePill(); });
     num.addEventListener('input', () => call.classList.remove('is-bad'));
+    /* keep the visible dial code in step with the choice */
+    const ccv = $('.call__ccv');
+    const showCode = () => { if (ccv) ccv.textContent = '+' + cc.value; };
+    cc.addEventListener('change', showCode);
+    showCode();
     addEventListener('resize', () => { if (call.dataset.state === 'idle') { call.style.removeProperty('--call-w'); rest(); } });
 
     function step1Done() {
