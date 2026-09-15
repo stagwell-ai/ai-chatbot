@@ -2109,3 +2109,86 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   background-size:auto,cover !important;
   background-position:center,68% center !important;
   background-repeat:no-repeat,no-repeat !important}
+
+/* ═══════════════════════ the phone pass ═══════════════════════════════════════════════════════ */
+@media (max-width:760px){
+  /* the title carries the page */
+  .hc-page .hero .display--hero,.hc-page .hero .display--hero *{
+    font-size:clamp(36px,10.8vw,46px) !important;line-height:1.05;letter-spacing:-.012em}
+
+  /* the film runs edge to edge, square-cornered */
+  .hc-page .intro{padding-inline:0 !important;grid-template-columns:1fr !important}
+  .hc-page .intro__stage{overflow:visible;width:100% !important;max-width:100% !important;
+    margin-inline:0 !important;justify-content:center}
+  .hc-page .intro__media{width:100% !important;max-width:100% !important;flex:0 0 100% !important;
+    margin-inline:0 !important;border-radius:0 !important;clip-path:none !important}
+  .hc-page .intro__pic{border-radius:0 !important}
+
+  /* Products: the words sit above their picture, both on one width */
+  .hc-page .hc-port__stage{width:auto !important;max-width:none;margin-inline:0 !important;
+    aspect-ratio:auto !important;height:auto !important;overflow:visible;border-radius:0;background:none}
+  .hc-page .hc-port__slide{position:static;inset:auto;display:none;opacity:1;visibility:visible}
+  .hc-page .hc-port__slide.is-on{display:flex;flex-direction:column;gap:14px}
+  .hc-page .hc-port__cap{position:static !important;order:1;left:auto;top:auto;right:auto;
+    max-width:none !important;width:100%;border-radius:14px;padding:20px 52px 20px 20px}
+  .hc-page .hc-port__cap .hc-port__arw{top:20px;right:20px}
+  .hc-page .hc-port__pic{order:2;width:100%;height:auto;aspect-ratio:4 / 3;border-radius:14px}
+  .hc-page .hc-port__stage{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .hc-page .hc-port__slide.is-on{flex:0 0 100%}
+  .hc-page .hc-port__nav{position:static;order:3;margin-top:2px}
+
+  /* the closing pair stacks */
+  .hc-page .ask-end .ask-end__ways{grid-template-columns:1fr !important;display:grid !important;gap:12px}
+  .hc-page .ask-end .ask-end__ways > *{width:100% !important}
+
+  /* the footer: one column of links, one ink, the actions before the small print */
+  .hc-page .foot__small{flex-direction:column !important;gap:14px !important}
+  .hc-page .foot__small li:nth-child(1){order:1}
+  .hc-page .foot__small li:nth-child(3){order:2}
+  .hc-page .foot__small li:nth-child(2){order:3}
+  .hc-page .foot__small li:nth-child(4){order:4}
+  .hc-page .foot__small a,.hc-page .foot__small button{color:var(--ink) !important;font-size:16px}
+
+  /* the band centres, and keeps clear of the chat button */
+  .hc-page .foot__band{flex-direction:column;align-items:center;text-align:center;
+    gap:20px;padding-bottom:180px !important}
+  .hc-page .foot__social{justify-content:center;flex-wrap:wrap;gap:10px;width:100%;
+    max-width:100%;margin-inline:auto}
+  .hc-page .foot__legal{display:flex !important;flex-direction:column;align-items:center;gap:14px}
+  .hc-page .foot__brand{margin:0 auto}
+  .hc-page .foot__copy{text-align:center}
+}
+
+/* the film is silent, so it offers only play and pause */
+.hc-page .intro__ctl #filmSound,.hc-page #filmSound{display:none !important}
+
+@media (max-width:760px){
+  /* the footer's four links read as one list, in one ink */
+  .hc-page .foot .foot__small a,.hc-page .foot .foot__small a *,
+  .hc-page .foot .foot__small button{color:var(--ink) !important;font-size:16px}
+
+  /* the starting points run in one line the thumb can push along */
+  .hc-page .ask__tags{display:flex !important;flex-wrap:nowrap !important;justify-content:flex-start;
+    overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    gap:8px;padding-block:2px;
+    width:100vw;margin-left:calc(50% - 50vw);padding-left:24px}
+  .hc-page .ask__tags::-webkit-scrollbar{display:none}
+  .hc-page .ask__tags > li{flex:0 0 auto}
+  .hc-page .ask__tags .tag{white-space:nowrap}
+  .hc-page .ask__tags::after{content:"";flex:0 0 24px}
+}
+
+@media (max-width:760px){
+  /* the hero's starting points: one line, pushed sideways by the thumb */
+  .hc-page .hero .chat__tags,.hc-page .hero .chat__tags--split{
+    display:flex !important;flex-wrap:nowrap !important;justify-content:flex-start !important;
+    align-items:center;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;gap:8px !important;padding-block:2px;
+    width:calc(100vw - 48px);max-width:calc(100vw - 48px);min-width:0;
+    margin-inline:0;padding-inline:0}
+  .hc-page .hero .chat__tags .tag__br{display:none !important}
+  .hc-page .hero .chat__tags::-webkit-scrollbar{display:none}
+  .hc-page .hero .chat__tags > li{flex:0 0 auto;margin:0 !important}
+  .hc-page .hero .chat__tags .tag{white-space:nowrap}
+  .hc-page .hero .chat__tags::after{content:"";flex:0 0 2px}
+}
