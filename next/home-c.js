@@ -94,8 +94,16 @@
 (function () {
   'use strict';
   const film = document.querySelector('.hc-page video.intro__pic');
-  if (!film || !('IntersectionObserver' in window)) return;
-  const play = () => { const p = film.play(); if (p && p.catch) p.catch(() => {}); };
+  if (!film) return;
+  const play = () => { if (film.dataset.held === '1') return; const p = film.play(); if (p && p.catch) p.catch(() => {}); };
+  /* a phone simply runs it from the moment the page opens; a desktop waits for the film to be seen */
+  if (matchMedia('(max-width: 760px)').matches) {
+    play();
+    film.addEventListener('loadeddata', play, { once: true });
+    addEventListener('pageshow', play);
+    return;
+  }
+  if (!('IntersectionObserver' in window)) return;
   new IntersectionObserver(es => (es[0].isIntersecting && film.dataset.held !== '1') ? play() : film.pause(), { threshold: .35 }).observe(film);
 })();
 

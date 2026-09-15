@@ -2196,3 +2196,37 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 /* the follow row is names only */
 .hc-page .foot__so svg{display:none !important}
 .hc-page .foot__so{gap:0 !important}
+
+/* ═══ the footer's links read the same on every screen ═════════════════════════════════════════ */
+.hc-page .foot .foot__small{align-items:flex-start}
+.hc-page .foot .foot__small li:nth-child(1){order:1}
+.hc-page .foot .foot__small li:nth-child(3){order:2}
+.hc-page .foot .foot__small li:nth-child(2){order:3}
+.hc-page .foot .foot__small li:nth-child(4){order:4}
+.hc-page .foot .foot__small a,.hc-page .foot .foot__small a *,
+.hc-page .foot .foot__small button{color:var(--ink) !important}
+
+@media (max-width:760px){
+  /* the band sits on the same left edge as the links */
+  .hc-page .foot__band{align-items:flex-start;text-align:left}
+  .hc-page .foot__social{justify-content:flex-start;margin-inline:0}
+  .hc-page .foot__legal{align-items:flex-start}
+  .hc-page .foot__brand{margin:0}
+  .hc-page .foot__copy{text-align:left}
+}
+
+@media (max-width:760px){
+  /* the hero breathes: more air over the title and between every part of it */
+  .hc-page .hero{padding-top:128px !important;padding-bottom:104px !important}
+  .hc-page .hero .hero__lede{margin-top:24px !important}
+  .hc-page .hero .chat{margin-top:40px !important}
+  .hc-page .hero .chat__tags{margin-top:30px !important}
+  .hc-page .intro{padding-top:20px !important;padding-bottom:20px !important}
+}
+
+@media (max-width:760px){
+  /* the chat still says what the microphone is for */
+  .hc-page .hero .askbox__voice{width:auto !important;padding:0 14px 0 12px;gap:8px;
+    border-radius:999px;white-space:nowrap}
+  .hc-page .hero .askbox__voice > span{display:inline !important;font-size:13px}
+}
