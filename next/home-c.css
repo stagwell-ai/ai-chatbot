@@ -1977,3 +1977,21 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .foot__small a,.hc-page .foot__small a *,
 .hc-page .foot__small .link,.hc-page .foot__small .link *{color:var(--hc-quiet) !important}
 .hc-page .foot__small a:hover,.hc-page .foot__small a:hover *{color:var(--teal) !important}
+
+/* ═══ the footer, closer to the reference: rules, room, outlined marks ══════════════════════════ */
+.hc-page .foot{padding-top:clamp(56px,6vw,96px)}
+.hc-page .foot__in{padding-block:0 clamp(30px,3.4vw,48px) !important}
+.hc-page .foot__big a{font-size:19px;letter-spacing:-.01em}
+.hc-page .foot__small{gap:14px 40px}
+.hc-page .foot__small a{font-size:15px}
+/* the band reads as three quiet groups under one rule */
+.hc-page .foot__band{padding-top:clamp(22px,2.4vw,34px);align-items:center}
+.hc-page .foot__social{gap:10px}
+.hc-page .foot__so{width:auto;height:34px;padding:0 14px;border-radius:999px;display:inline-flex;
+  align-items:center;gap:8px;font-family:var(--ui);font-size:11.5px;letter-spacing:1.3px;
+  text-transform:uppercase}
+.hc-page .foot__so svg{width:14px;height:14px}
+.hc-page .foot__so::after{content:attr(aria-label)}
+.hc-page .foot__follow{display:none}
+.hc-page .foot__copy{font-size:13px;letter-spacing:.01em}
+.hc-page .foot__brand svg{height:22px;width:auto}
