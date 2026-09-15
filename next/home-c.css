@@ -2038,3 +2038,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__media .mk{top:auto;bottom:0}
 /* the band no longer clips: a taller panel simply reaches up into the card's own air */
 .hc-page .hcs__media{overflow:visible !important}
+/* the panels come back out: the cards keep the mark, the name, the line and the link */
+.hc-page .hcs__media{display:none !important}
+.hc-page .hcs__rail > li{flex:0 0 clamp(200px,17vw,240px);height:clamp(300px,26vw,360px)}
+.hc-page .hcs__ic{order:1;margin:0 0 auto}
