@@ -605,20 +605,77 @@
       if (g.length > 1 && g[g.length - 1].length === 1) { g[g.length - 2] += g.pop(); }
       return '+' + code + ' ' + g.join(' ');
     };
-    const place = (code, digits) => new Promise(res => setTimeout(res, REDUCED ? 0 : 1800));   /* ← the call API */
-    callForm.addEventListener('submit', async (e) => {
+    /* ── step 2: the number is in, now who to ask for ──
+       The widget opens looking like it wants a phone number and nothing else
+       (client, 2026-09-15). Only once there is a number to call does it grow
+       into the short form: first name, last name, work email — then the
+       request goes to /api/callback, which is the only thing that knows where
+       the lead is forwarded. The number is never sent without its country
+       code: a bare national number is useless to whoever places the call. */
+    const more = $('.call__more', call), toNum = $('.call__tonum', call), hint = $('.call__hint', call);
+    let dial = '', national = '';
+    const openMore = () => {
+      call.dataset.state = 'details';
+      setW(Math.min(420, Math.round((call.parentElement.getBoundingClientRect().width) || 420)));
+      if (toNum) toNum.textContent = pretty(dial, national);
+      const first = more && more.querySelector('input[name=first_name]');
+      setTimeout(() => { if (first) first.focus({ preventScroll: true }); }, 200);
+    };
+    const backToPhone = () => { call.dataset.state = 'phone'; setW(PILL()); setTimeout(() => callNum.focus({ preventScroll: true }), 160); };
+    if (more) $$('[data-back]', more).forEach(b => b.addEventListener('click', backToPhone));
+
+    callForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const digits = callNum.value.replace(/\D/g, '');
       if (digits.length < 6 || digits.length > 14) { call.classList.add('is-bad'); callNum.focus(); return; }
-      const code = callCode.value;
-      callLine.textContent = 'Calling you now…';
-      callTo.textContent = 'Stagwell AI will call ' + pretty(code, digits);
-      call.dataset.state = 'done';
-      $('.call__x', callDone).focus({ preventScroll: true });
-      await place(code, digits);
-      callLine.textContent = 'Your call is on the way.';
-      call.classList.add('is-placed');
+      /* the trunk zero is national shorthand: +41 076… is not a number that
+         dials. It goes, here and in what we send. */
+      dial = callCode.value; national = digits.replace(/^0+/, '') || digits;
+      if (more) openMore(); else send();
     });
+
+    const say = (msg) => { if (!hint) return; hint.textContent = msg || ''; hint.hidden = !msg; };
+    const EMAIL = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+
+    async function send() {
+      const f = more ? more.elements : {};
+      const first = String((f.first_name && f.first_name.value) || '').trim();
+      const last = String((f.last_name && f.last_name.value) || '').trim();
+      const email = String((f.email && f.email.value) || '').trim();
+      if (!first) { say('Please add a first name so the agent knows who to ask for.'); if (f.first_name) f.first_name.focus(); return; }
+      if (!last) { say('Please add a last name.'); if (f.last_name) f.last_name.focus(); return; }
+      if (!EMAIL.test(email)) { say('That does not look like an email address — check it over.'); if (f.email) f.email.focus(); return; }
+      say('');
+      const btn = more && $('.call__send', more);
+      if (btn) { btn.disabled = true; btn.textContent = 'Requesting…'; }
+      /* the screen says what will happen before the network answers, then
+         settles — the same shape the old pill had */
+      callLine.textContent = 'Our AI voice agent will call you shortly.';
+      callTo.textContent = 'We will ring ' + pretty(dial, national) + '.';
+      call.dataset.state = 'done';
+      const x = $('.call__x', callDone); if (x) x.focus({ preventScroll: true });
+      let ok = false;
+      try {
+        const r = await fetch('/api/callback', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ first_name: first, last_name: last, email, dial_code: dial, national_number: national, page: location.pathname })
+        });
+        const j = await r.json().catch(() => null);
+        ok = !!(r.ok && j && j.ok);
+      } catch (err) { ok = false; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Call my phone'; }
+      if (ok) {
+        callLine.textContent = 'Our AI voice agent will call you shortly.';
+        call.classList.add('is-placed');
+        try { const a = window.SAIANALYTICS; if (a) a.track('callback_requested', { dial: dial, page: location.pathname }); } catch (err) {}
+      } else {
+        callLine.textContent = 'We could not book that call.';
+        callTo.textContent = 'Please try again in a moment, or book a demo instead.';
+        call.classList.add('is-bad');
+      }
+    }
+    if (more) more.addEventListener('submit', (e) => { e.preventDefault(); send(); });
+    if (more) $$('input', more).forEach(i => i.addEventListener('input', () => say('')));
   });
 
   /* ── the closing field hands what you typed to the hero's conversation:

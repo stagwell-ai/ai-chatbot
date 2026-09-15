@@ -535,9 +535,10 @@ body.chat-open{overflow:hidden}
    made the box as wide as the widest of them — 418, not 164.) */
 .call > *{transition:opacity .22s ease,visibility 0s linear .22s;opacity:0;visibility:hidden;pointer-events:none}
 .call__form,.call__done{position:absolute;inset:0}
-.call[data-state="idle"]  > .call__btn,
-.call[data-state="phone"] > .call__form,
-.call[data-state="done"]  > .call__done{opacity:1;visibility:visible;pointer-events:auto;transition-delay:.12s,0s}
+.call[data-state="idle"]    > .call__btn,
+.call[data-state="phone"]   > .call__form,
+.call[data-state="details"] > .call__more,
+.call[data-state="done"]    > .call__done{opacity:1;visibility:visible;pointer-events:auto;transition-delay:.12s,0s}
 .call__btn{width:100%;height:100%}
 /* at rest the pill is the white button alone: the ink behind it only belongs to
    the number form and the call. Painted at rest, it showed as a dark hairline
@@ -572,6 +573,53 @@ body.chat-open{overflow:hidden}
 .call__line{font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
 .call__to{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.25}
 .call[data-state="done"]:not(.is-placed) .call__wave{animation:place 1.6s ease-in-out infinite}
+
+/* ── step 2: the pill becomes a short card ──
+   It opens looking like it only wants a number. Once there is one, the box
+   stops being a pill and grows into the form that asks who to ask for, with
+   the consent line and the two policy links under the button (client,
+   2026-09-15). The two tall faces lay out IN FLOW, so the box takes their
+   height; the pill faces stay absolute, as they were. */
+.call[data-state="details"],.call[data-state="done"]{height:auto;border-radius:22px}
+.call[data-state="details"] > .call__btn,.call[data-state="done"] > .call__btn{position:absolute;inset:0;height:60px}
+.call__more{position:relative;display:none;flex-direction:column;gap:11px;padding:16px 18px 18px;text-align:left;white-space:normal}
+.call[data-state="details"] > .call__more{display:flex}
+.call__more .call__x{position:absolute;top:10px;right:10px}
+.call__h{margin:0;padding-right:34px;font-family:var(--display,var(--ui));font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.call__sub{margin:-4px 0 2px;font-size:12.5px;color:rgba(255,255,255,.62);line-height:1.3}
+.call__sub b{color:#FFFFFF;font-weight:600;font-variant-numeric:tabular-nums}
+.call__edit{font-size:12.5px;color:var(--teal);text-decoration:underline;text-underline-offset:2px}
+.call__edit:hover{color:#FFFFFF}
+.call__row{display:flex;gap:10px}
+.call__row .call__f{flex:1 1 0;min-width:0}
+.call__f{display:flex;flex-direction:column;gap:4px}
+.call__f > span{font-size:11.5px;font-weight:600;letter-spacing:.02em;color:rgba(255,255,255,.66)}
+.call__f input{width:100%;height:42px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);
+  color:#FFFFFF;font-family:var(--ui);font-size:15px;padding:0 12px;outline:none;transition:border-color .2s ease,background-color .2s ease}
+.call__f input::placeholder{color:rgba(255,255,255,.4)}
+.call__f input:focus{border-color:var(--teal);background:rgba(255,255,255,.14)}
+.call__hint{margin:0;font-size:12.5px;line-height:1.35;color:var(--orange)}
+.call__hint[hidden]{display:none}
+/* the card is ink, so the button cannot be: it goes light, like the send disc */
+.call__send{width:100%;height:46px;border-radius:999px;font-size:15px;background:#FFFFFF;color:var(--ink);
+  border:0;transition:transform .25s var(--ease),background-color .2s ease}
+.call__send:hover{background:#F0F1F2;transform:translateY(-1px)}
+.call__send:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+.call__send:disabled{opacity:.55;transform:none}
+.call__fine{margin:2px 0 0;font-size:11px;line-height:1.45;color:rgba(255,255,255,.55)}
+.call__fine a{color:rgba(255,255,255,.8);text-decoration:underline;text-underline-offset:2px}
+.call__fine a:hover{color:#FFFFFF}
+/* the confirmation grows the same way, so the consent line stays readable */
+.call[data-state="done"] > .call__done{position:relative;inset:auto;height:auto;flex-wrap:wrap;align-items:center;
+  padding:14px 16px 16px;white-space:normal;text-align:left}
+.call[data-state="done"] .call__status{padding-right:34px}
+.call__fine--done{flex:1 0 100%;margin-top:10px}
+.call[data-state="done"] .call__x{position:absolute;top:10px;right:10px}
+.call.is-bad .call__line{color:var(--orange)}
+@media (max-width:520px){
+  .call__row{flex-direction:column;gap:11px}
+  .call__h{font-size:17px}
+}
 @keyframes place{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.18)}50%{box-shadow:0 0 0 10px rgba(255,255,255,0)}}
 /* the chat field: a white pill with the ink stroke, the send disc inside at
    the right — the same height as the button beside it */

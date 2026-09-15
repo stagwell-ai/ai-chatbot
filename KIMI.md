@@ -273,6 +273,37 @@ alone. Asserted in the value and fast-track suites.
 Decided the same afternoon: `flags.contactGate` is off — the cards come before the email is
 asked (§9). The skip link on the form now applies to the fast track's form only.
 
+## 4e2. "Call my phone" — the callback widget
+
+Client, 2026-09-15: a button that asks for a phone number, then expands for the rest, and tells
+the visitor an AI voice agent will call. The widget is the `.call` box in the closing section of
+every page that has one (20 files; edit `next/index.html` and re-run `next/build-product-pages.py`,
+plus `next/home-b.html` by hand, which the generator never touches). `next/home.js` drives it.
+
+**Three steps, deliberately.** `idle` shows one button, "Call my phone". `phone` opens a pill that
+asks for a country and a number and nothing else. Only once the number validates does it become
+`details`, a short card asking first name, last name and work email, with the consent line and
+links to the Privacy Notice and the Terms of Use under the button — before consent is given, not
+after. `done` says "Our AI voice agent will call you shortly" and names the number it will ring.
+A "change" link goes back to the number, so entering it is not a trap.
+
+**The country code is not optional.** The select offers 48 countries, each carrying its dial code,
+and the trunk zero is stripped on both display and submission: `41` + `076 328 4000` becomes
+`+41763284000`. `api/callback.js` refuses a body with no dial code (`country_required`, a 400)
+rather than accepting a national number nobody can ring.
+
+**Where it goes.** `POST /api/callback` validates, mints a numeric `session_id`, and forwards
+`{session_id, email, first_name, last_name, phone, meta{…}}` to `CALLBACK_WEBHOOK_URL`. The five
+top-level fields are exactly the shape the automation maps; everything of ours (dial code, page,
+consent, timestamp) sits under `meta` so that mapping never has to change. The webhook URL is a
+write endpoint and is **server-side only** — it is a Vercel secret, never in the repo and never in
+the reply. Six requests an hour per address, because each one rings a real person. A lead that
+could not be handed on returns 502 and the widget says so; it never claims a call was placed.
+
+Tests: `npm test` (the E.164 rules, the country requirement, the payload shape against the
+client's own example, the rate limit) and `npm run test:callback` (the three steps, the
+disclaimers and both links, what reaches the endpoint, the failure path, every page, a phone).
+
 ## 4f. Voice — "Chat with me"
 
 Client, 2026-09-11: a button on the chat box for a spoken conversation, GPT as the default brain,
