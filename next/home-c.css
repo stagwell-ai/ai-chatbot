@@ -2015,3 +2015,26 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
    stage be as wide as the section, with its height following the picture */
 .hc-page .hc-port__stage{width:calc(100% + 2 * clamp(14px,2.2vw,28px)) !important;
   max-height:none !important;height:auto !important}
+
+/* ═══ the suite's cards take their panel back, between the mark and the name ════════════════════ */
+.hc-page .hcs__rail > li{flex:0 0 clamp(260px,23vw,320px);height:clamp(420px,38vw,480px)}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{display:flex;flex-direction:column;
+  padding:24px 22px 26px}
+.hc-page .hcs__ic{order:1;margin:0 0 20px}
+.hc-page .hcs__media{order:2;display:block !important;position:relative;
+  flex:0 0 132px !important;height:132px !important;margin:0 0 auto;
+  background:transparent !important;border-radius:0}
+.hc-page .hcs__kind{order:3;margin:0 0 8px !important}
+.hc-page .hcs__desc{order:4;margin:0 !important}
+.hc-page .hcs__go{order:5;margin:16px 0 0 !important}
+/* the panel is drawn near the card's width and never cropped */
+.hc-page .hcs__media .mk{width:258px;padding:11px 12px}
+.hc-page .hcs__media .mk-t{font-size:14px;margin:0 0 7px}
+.hc-page .hcs__media .mk-th{padding:6px 9px;font-size:11px}
+.hc-page .hcs__media .mk-td{padding:6px 9px;font-size:12px}
+@media (max-width:760px){.hc-page .hcs__rail > li{flex:0 0 72vw;height:440px}}
+/* a little more band, so the tallest panels are not scaled far below the rest */
+.hc-page .hcs__media{flex:0 0 150px !important;height:150px !important}
+.hc-page .hcs__media .mk{top:auto;bottom:0}
+/* the band no longer clips: a taller panel simply reaches up into the card's own air */
+.hc-page .hcs__media{overflow:visible !important}

@@ -185,12 +185,14 @@
     const m = p.parentElement, w = m.clientWidth, h = m.clientHeight;
     if (!w || !h) return;
     const inset = Math.round(Math.max(6, w * .03));
-    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth, (h - 2 * inset) / p.offsetHeight);
+    const s = Math.min(1, (w - 2 * inset) / p.offsetWidth);   /* width decides; the band lets a taller panel breathe upward */
+    /* the panels sit on the band's floor, so the distance from panel to name is the same in every
+       card however tall the panel happens to be */
     p.style.left = '50%';
-    p.style.top = '50%';
-    p.style.bottom = 'auto';
-    p.style.transformOrigin = 'center center';
-    p.style.transform = 'translate(-50%, -50%) scale(' + s.toFixed(4) + ')';
+    p.style.top = 'auto';
+    p.style.bottom = '0';
+    p.style.transformOrigin = 'bottom center';
+    p.style.transform = 'translateX(-50%) scale(' + s.toFixed(4) + ')';
   };
   if ('ResizeObserver' in window) {
     const ro = new ResizeObserver(es => es.forEach(e => {
