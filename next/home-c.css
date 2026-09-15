@@ -2192,3 +2192,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-page .hero .chat__tags .tag{white-space:nowrap}
   .hc-page .hero .chat__tags::after{content:"";flex:0 0 2px}
 }
+
+/* the follow row is names only */
+.hc-page .foot__so svg{display:none !important}
+.hc-page .foot__so{gap:0 !important}
