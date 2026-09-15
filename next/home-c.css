@@ -2263,7 +2263,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (max-width:760px){
   /* the type grows with the phone, not a single fixed size */
   .hc-page .hero .display--hero,.hc-page .hero .display--hero *{
-    font-size:clamp(38px,11.4vw,50px) !important}
+    font-size:clamp(36px,10.8vw,46px) !important}
   .hc-page .display--port,.hc-page .display--port *,
   .hc-page .hcs__h,.hc-page .hcs__h *,
   .hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
@@ -2276,8 +2276,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (max-width:760px){
   /* the desktop line breaks don't fit a phone: let the words find their own lines */
   .hc-page .display--port br,.hc-page .hcs__h br,
-  .hc-page .intro__over .display--intro br,
-  .hc-page .hero .display--hero br{display:none}
+  .hc-page .intro__over .display--intro br{display:none}
   .hc-page .display--port,.hc-page .hcs__h,
   .hc-page .intro__over .display--intro,.hc-page .hero .display--hero{
     overflow-wrap:break-word;text-wrap:balance}
@@ -2287,7 +2286,8 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   /* each display line is held on one line by design; on a phone it may take two */
   .hc-page .display--port .ln__in,.hc-page .hcs__h .ln__in,
   .hc-page .intro__over .display--intro .ln__in,
-  .hc-page .hero .display--hero .ln__in,
   .hc-page .display--end .ln__in,.hc-page .why .display--cos .ln__in{
     white-space:normal}
+  /* the hero keeps its three written lines */
+  .hc-page .hero .display--hero .ln__in{white-space:nowrap}
 }
