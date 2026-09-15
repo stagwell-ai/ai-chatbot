@@ -1855,3 +1855,20 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-page .hero .display--hero,.hc-page .hero .display--hero *{
     font-size:clamp(28px,6.8vw,38px) !important}
 }
+
+/* ═══ Call me: the still, and only the still ════════════════════════════════════════════════════
+   The veil is gone, and the phone row no longer paints its own copy of the picture — that second
+   layer is what read as the background changing when the row opened. */
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__btn:hover{
+  background:url(/assets/img/hero-film/3.jpg) center/cover no-repeat !important}
+.hc-page .ask-end .call__form,
+.hc-page .ask-end .call__done{background:none !important;background-image:none !important}
+.hc-page .ask-end .call__form .call__cc,
+.hc-page .ask-end .call__form .call__num{background:rgba(10,20,16,.42);color:#FFFFFF}
+.hc-page .ask-end .call__form .call__num::placeholder{color:rgba(255,255,255,.75)}
+/* where the row wraps, the block gives it the room so it never reaches the words */
+@media (max-width:1100px){
+  .hc-page .ask-end .call,.hc-page .ask-end .call__btn{height:210px !important}
+  .hc-page .ask-end .ask-end__ways .btn{height:210px !important}
+}
