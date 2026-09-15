@@ -2075,3 +2075,21 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
   transform:translateY(-56px)}
 .hc-page .hcs__go{bottom:22px}
+
+/* ═══ the closing pair: the demo block inverts, the call takes the robot ════════════════════════ */
+.hc-page .ask-end .btn--ink,.hc-page .ask-end .ask-end__ways .btn--ink{
+  background:var(--ink) !important;color:#FFFFFF !important}
+.hc-page .ask-end .btn--ink:hover{background:#05080F !important;color:#FFFFFF !important}
+.hc-page .ask-end .ask-end__ways .btn::after{background:#FFFFFF}
+.hc-page .ask-end .call__btn,.hc-page .ask-end .call__btn:hover{
+  background:url(/assets/img/products/new-voices-new.jpg) center/150% auto no-repeat !important}
+
+/* the call block: the picture is pale where the words sit, so it dims toward the left */
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__btn:hover{
+  background:
+    linear-gradient(104deg,rgba(11,18,32,.66) 0%,rgba(11,18,32,.34) 34%,rgba(11,18,32,0) 66%),
+    url(/assets/img/products/new-voices-new.jpg) !important;
+  background-size:auto,150% auto !important;
+  background-position:center,center !important;
+  background-repeat:no-repeat,no-repeat !important}
