@@ -1920,3 +1920,40 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__rail > li{height:clamp(300px,26vw,360px)}
 .hc-page .hcs__ic{margin:0 0 auto}
 .hc-page .hcs__card,.hc-page .hcs__card:hover{padding:24px 24px 26px}
+
+/* ═══ Why Stagwell AI as a list, the way the reference reads it ═════════════════════════════════
+   A small label at the left, then each name set large with its line beneath, divided by hairlines
+   and numbered down the right. */
+.hc-page .why > .wrap{max-width:1180px}
+.hc-page .why .display--cos,.hc-page .why .display--cos *{font-size:17px !important;
+  font-weight:500 !important;letter-spacing:0 !important;text-align:left !important;
+  color:var(--ink) !important;line-height:1.4}
+.hc-page .why .display--cos{margin:0 0 26px !important}
+.hc-page .why .display--cos em{font-style:normal}
+.hc-page .why__grid,.hc-page .why__grid--four{display:block !important;counter-reset:why}
+.hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .why__item:nth-child(4n+3){
+  display:block !important;position:relative;counter-increment:why;
+  background:none !important;border-radius:0 !important;overflow:visible;
+  padding:clamp(28px,3vw,44px) 76px clamp(30px,3.4vw,50px) 0 !important;
+  border-top:1px solid rgba(11,18,32,.14)}
+.hc-page .why__item:last-child{border-bottom:1px solid rgba(11,18,32,.14)}
+.hc-page .why__item .why__ic,.hc-page .why__item:nth-child(even) .why__ic{display:none !important}
+.hc-page .why__item .why__head{display:block !important;margin:0}
+.hc-page .why__item .why__t{font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(40px,1rem + 4.2vw,86px) !important;line-height:1.02;letter-spacing:-.03em;
+  color:var(--ink) !important;margin:0 0 clamp(14px,1.6vw,22px) !important}
+.hc-page .why__item .why__d,.hc-page .why__item .why__d--lead{color:var(--ink) !important;
+  font-size:17px !important;line-height:1.5;max-width:76ch;padding:0 !important}
+.hc-page .why__item .why__d--lead{margin:0 0 8px !important;font-weight:500}
+.hc-page .why__item .why__d + .why__d{margin-top:6px !important;color:var(--hc-quiet) !important}
+/* the index, small, at the right of each row */
+.hc-page .why__item::after{content:"/0." counter(why);position:absolute;top:clamp(28px,3vw,44px);
+  right:0;font-family:var(--ui);font-size:13px;color:var(--hc-quiet);letter-spacing:.02em}
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){padding-right:52px !important}
+  .hc-page .why__item .why__t{font-size:clamp(32px,9vw,46px) !important}
+}
+/* the hairlines were being cleared by the earlier card pass's border:0 */
+.hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .why__item:nth-child(4n+3){
+  border:0 !important;border-top:1px solid rgba(11,18,32,.16) !important}
+.hc-page .why__item:last-child{border-bottom:1px solid rgba(11,18,32,.16) !important}
