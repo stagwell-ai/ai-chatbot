@@ -2093,3 +2093,8 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   background-size:auto,150% auto !important;
   background-position:center,center !important;
   background-repeat:no-repeat,no-repeat !important}
+
+/* ═══ one shape for the four stills, so the section holds its height as the tabs turn ═══════════ */
+.hc-page .hc-port__stage{aspect-ratio:2 / 1 !important}
+.hc-page .hc-port__pic{width:100%;height:100%;object-fit:cover;object-position:center}
+@media (max-width:760px){.hc-page .hc-port__stage{aspect-ratio:4 / 3 !important}}

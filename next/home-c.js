@@ -108,18 +108,9 @@
   const slides = [...sec.querySelectorAll('.hc-port__slide')];
   if (!tabs.length || tabs.length !== slides.length) return;
   let at = Math.max(0, slides.findIndex(s => s.classList.contains('is-on')));
-  /* the stage takes the live picture's own shape, so nothing is cropped whatever the client sends */
+  /* the stage keeps one shape for all four, so the section never changes height as the tabs turn */
   const stage = sec.querySelector('.hc-port__stage');
-  const fitStage = () => {
-    const img = slides[at] && slides[at].querySelector('img');
-    if (!stage || !img) return;
-    const set = () => {
-      if (!img.naturalWidth) return;
-      const r = img.naturalWidth / img.naturalHeight;
-      stage.style.aspectRatio = Math.min(2.6, Math.max(1.4, r)).toFixed(4);
-    };
-    img.complete ? set() : img.addEventListener('load', set, { once: true });
-  };
+  const fitStage = () => { if (stage) stage.style.aspectRatio = ''; };
   const show = i => {
     at = (i + slides.length) % slides.length;
     tabs.forEach((t, n) => t.classList.toggle('is-on', n === at));
