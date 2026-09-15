@@ -1758,3 +1758,9 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   pointer-events:none}
 .hc-page .hero > *:not(canvas.hc-think){position:relative;z-index:1}
 .hc-page .hero .chat > .hero__think{display:none !important}
+
+/* the film's words: the sans, a step smaller, two lines */
+.hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+  font-family:var(--hc-title) !important;font-weight:500 !important;letter-spacing:-.02em;
+  font-size:clamp(28px,1rem + 2.1vw,52px) !important;line-height:1.12}
+.hc-page .intro__over .display--intro{width:min(100%,760px)}
