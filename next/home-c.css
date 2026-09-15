@@ -2251,3 +2251,11 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-page .hcs__nav .hcs__acts{margin-left:auto;display:flex}
   .hc-page .hcs__nav .hcs__all{white-space:nowrap}
 }
+
+@media (max-width:760px){
+  /* the section titles carry more weight than a single name inside a list */
+  .hc-page .display--port,.hc-page .display--port *,
+  .hc-page .hcs__h,.hc-page .hcs__h *,
+  .hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+    font-size:36px !important;line-height:1.08}
+}
