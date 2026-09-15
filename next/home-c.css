@@ -2060,3 +2060,12 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (prefers-reduced-motion:reduce){
   .hc-page .hcs__kind,.hc-page .hcs__desc,.hc-page .hcs__go{transition:none}
 }
+/* the card's call matches every other button: white, upper case, with room above it */
+.hc-page .hcs__go,.hc-page .hcs__card:hover .hcs__go{color:#FFFFFF !important;
+  text-transform:uppercase;letter-spacing:.06em;font-size:12.5px;font-weight:600;height:40px}
+.hc-page .hcs__go svg{display:none !important}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding-bottom:78px}
+.hc-page .hcs__card:hover .hcs__kind,.hc-page .hcs__card:focus-visible .hcs__kind,
+.hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
+  transform:translateY(-18px)}
+.hc-page .hcs__go{bottom:24px;left:22px;right:22px}
