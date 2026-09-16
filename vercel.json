@@ -120,6 +120,10 @@
   "rewrites": [
     {
       "source": "/",
+      "destination": "/next/home-c.html"
+    },
+    {
+      "source": "/home-a",
       "destination": "/next/index.html"
     },
     {
