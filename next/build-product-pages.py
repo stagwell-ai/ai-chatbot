@@ -39,17 +39,17 @@ PRODUCTS = [
         hero_bg='/assets/img/products/hero-the-machine.jpg',   # Julian's hero picture, 2026-09-10
         logo='<img class="pp-logo pp-logo--screen" src="/assets/img/companies/the-machine/logo-wide.png" alt="The Machine" width="570" height="100">',
         title='Turn your marketing stack into an intelligent system.',
-        description="The Machine is Stagwell's agentic operating system for marketing. It connects people, tools, data, and institutional knowledge across strategy, creative, production, and media - improving the systems teams already use rather than forcing a rip-and-replace.",
+        description="The Stagwell Machines is a family of agentic solutions for enterprise marketing organizations – each built for a specific job; all connected under one operating layer. Unlike point solutions that make individual tasks smarter, the Machines share context: every signal, decision, and result carries forward. The Machine is that operating layer: it sits on top of the tools teams already use – Slack, Figma, Adobe, analytics platforms and project systems – and connects them into one system with shared memory. Connected by design.",   # Stagwell AI Messaging FINAL, 2026-09-16
         # the line under the title, two lines at most (client); the definitions' own
         # description moves under the film, whole
         summary="Stagwell's agentic operating system for marketing, built on the tools you already use.",
         url='https://machine.live/',
         image=('/assets/img/products/the-machine.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
         sections=[
-            ('Works with your existing stack', 'An intelligence and orchestration layer that plugs into the tools and processes you already have.'),
-            ('Unifies the marketing workflow', 'Strategy, creative, production, media and performance work from shared context instead of disconnected handoffs.'),
+            ('Works inside your existing workflows', 'Sits on top of Slack, Figma, Adobe, analytics platforms and project systems rather than replacing them – no rip and replace.'),
+            ('One system of record', 'Insight, decision and result live in one place – strategy, creative, production, media and performance work from shared context instead of disconnected handoffs.'),
             ('AI agents execute repeatable work', 'Competitive monitoring, brief generation, asset versioning, brand-compliance review and performance optimization.'),
-            ('Gets smarter over time', 'Every brief, asset, campaign and result feeds a shared intelligence layer, so the next cycle is faster and better informed.'),
+            ('Context persists rather than resets', 'Every brief, asset, campaign and result carries forward into shared memory, so the next cycle is faster and better informed – the result compounds.'),
             ('Built for enterprise outcomes', 'Faster time to market, less duplicated martech spend, less manual coordination, more content at scale and tighter performance feedback loops.'),
         ],
         proof_kind='figs',
@@ -75,15 +75,15 @@ PRODUCTS = [
         # vanished (1.2:1): phones get the sky lockup (3.6:1), desktops keep teal
         logo='<picture><source media="(max-width:820px)" srcset="/assets/img/companies/targeting-machine/logo-lockup.png" width="963" height="100"><img class="pp-logo" src="/assets/img/companies/targeting-machine/logo-lockup-teal.png" alt="The Targeting Machine" width="963" height="100"></picture>',
         title='Turn fragmented data into audiences you can activate.',
-        description="The Targeting Machine is an enterprise-grade, privacy-first audience intelligence platform that combines first-party data, third-party media data, Stagwell's proprietary consumer intelligence, and the Stagwell ID Graph to move from deeper audience understanding to activation.",
+        description="For the insights leader tired of guessing who to reach. First-party data is fragmented, and lookalike models are educated guesses – so The Targeting Machine connects fragmented first-party data with the Stagwell ID Graph and proprietary intelligence from BERA.ai, The Harris Poll and more, building audience profiles from real behavioral and attitudinal signals. One of the Stagwell Machines: connected by design.",   # Stagwell AI Messaging FINAL, 2026-09-16
         # the line under the title, two lines at most (client); the definitions' own
         # description moves under the film, whole
         summary='Privacy-first audience intelligence, from first-party data to activation.',
         url='https://www.themarketingcloud.com/marketplace/sats',
         image=('/assets/img/products/targeting-machine.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
         sections=[
-            ('Build high-intent audiences', 'Stagwell proprietary datasets and your first-party data identify audiences by both behavior and attitudes.'),
-            ('Scale seed segments', 'Tightly defined segments expand into high-fidelity lookalike audiences.'),
+            ('Audiences built from people already exhibiting the behavior', "Real behavioral signals from your first-party data and the Stagwell ID Graph – not a model's educated guess."),
+            ('Attitudinal and behavioral layering', 'Proprietary intelligence from BERA.ai, The Harris Poll and more, layered on what people actually do, to expand addressable reach.'),
             ('Activate without manual handoffs', 'Audience intelligence moves straight into activation platforms, accelerating multi-channel campaign launches.'),
             ('Optimize in real time', 'Secure AI and real-time monitoring show how campaigns perform and refine targeting across channels.'),
             ('Built for governed enterprise data', 'Conversational querying, differential privacy, Stagwell ID Graph connectivity and infrastructure powered by Palantir Foundry.'),
@@ -488,7 +488,7 @@ LISTING_HERO = '''
           <p class="pp-lede">Start with the problem; the product follows.</p>
           <div class="pp-acts">
             <button type="button" class="btn btn--accent btn--lg" data-cta="demo">Book a demo</button>
-            <a class="pp-site" href="#start">Find my fit in a conversation<svg class="pp-site__ic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <a class="pp-site" href="/#ask">Find my fit in a conversation<svg class="pp-site__ic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
           </div>
         </div>
       </section>
@@ -550,6 +550,14 @@ def listing_page(home):
 # capabilities), its picture from the listing, the products teams pair it with,
 # then the homepage's "How can we help?" with its chat, and its footer. No film
 # and no proof section: there are none for these, and nothing is invented.
+# ┌─ CAUTION (2026-09-16) ────────────────────────────────────────────────────
+# │ The five hand pages this script writes — products, newvoices, agent-cloud,
+# │ the-machine, targeting-machine — were re-themed by hand afterwards
+# │ (home-c.css / prod-c.css, the hc-page classes, the hcLaunch widget). Running
+# │ this script rewrites them WITHOUT that theme. Until it is taught the C theme,
+# │ run it for the /s/ pages only and `git checkout` the five afterwards, or
+# │ edit those five directly. Their copy is kept in sync here so the two agree.
+# └───────────────────────────────────────────────────────────────────────────
 SOL_OWN = {'targeting_machine': '/targeting-machine', 'newvoices': '/newvoices',
            'machines_family': '/the-machine', 'agent_cloud': '/agent-cloud'}
 # a first sentence too long to be a title (220 characters): its own second
@@ -625,7 +633,9 @@ def solution_page(home, s, n, by_id, pics):
         site = f'<a class="pp-site" href="{a(s["signupUrl"])}" target="_blank" rel="noopener" data-product-site>Get started with {t(name)}{ARROW}</a>'
     else:
         site = ''
-    caps = s.get('capabilityTags') or s.get('valueProps') or []
+    # the Machines carry the messaging document's proof points (2026-09-16); the
+    # rest keep their capability tags as the steps
+    caps = s.get('proofPoints') or s.get('capabilityTags') or s.get('valueProps') or []
     hero_cls = (f'sp-hero--{sid}' + (' pp-hero--light' if SOL_HERO[sid] == 'light' else '')) if sid in SOL_HERO else f'sp-hero--{SOL_GRADS[n % len(SOL_GRADS)]}'
     steps = '\n'.join(f'        <li class="rv" style="--d:{0.06 * k:.2f}s"><b>{k + 1:02d}</b><div><h3>{t(c)}</h3></div></li>' for k, c in enumerate(caps))
     pic = pics.get(sid)

@@ -516,7 +516,7 @@
      file runs, which is what silently threw the old forced <br> away. */
   (function () {
     const LEDE = [
-      'Agentic solutions grounded in real-world marketing expertise.',
+      'Agentic solutions built to transform marketing.',
       'Tell us what you\u2019re solving \u2014 we\u2019ll find your fit.',
     ];
 

@@ -238,8 +238,8 @@
     {
       "id": "knowledge_machine",
       "name": "The Knowledge Machine",
-      "positioning": "See the story before it breaks. Instead of counting mentions, it reads narrative alignment and emotional intensity — and flags the risks that are about to become headlines.",
-      "whoFor": "Communications chiefs who'd rather prevent than respond",
+      "positioning": "Know what audiences think before it shows up in the numbers. Transforms emotional and market signals into strategic intelligence – surfacing not just what is shifting but the emotional driver underneath it, and who is driving it.",
+      "whoFor": "The communications lead drowning in fragmented signals",
       "shownWhen": "B: domain=reputation; Q6 early-warning/one market · industry boost pharma/finance/insurance/energy/gov · D: beside UNICEPTA when both fit",
       "nextStep": "Demo",
       "companions": [
@@ -256,7 +256,7 @@
       ],
       "lockup": "/assets/img/lockups/knowledge-machine.png",
       "active": true,
-      "cardDescription": "Reads narrative alignment and emotional intensity to flag the risks that are about to become headlines.",
+      "cardDescription": "Transforms emotional and market signals into strategic intelligence: what is shifting, the emotional driver underneath it, and who is driving it.",
       "capabilityTags": [
         "Signal detection",
         "Reputation intelligence",
@@ -290,7 +290,14 @@
       "visual": {
         "logoKey": "knowledge_machine",
         "lockup": "/assets/img/lockups/knowledge-machine.png"
-      }
+      },
+      "solves": "You find out what audiences think after it shows up in the numbers, too late to act on.",
+      "proofPoints": [
+        "Real-time sentiment across owned, earned and competitive channels",
+        "Historical pattern matching against prior market moments",
+        "Full audience profile surfaced with the signal"
+      ],
+      "messagingSource": "Stagwell AI Messaging FINAL (client, 2026-09-16), Stagwell Machines section"
     },
     {
       "id": "unicepta",
@@ -539,8 +546,8 @@
     {
       "id": "targeting_machine",
       "name": "The Targeting Machine",
-      "positioning": "Your data. Your audiences. No walled garden. Fuse your first-party data with third-party media data and proprietary consumer intelligence, build custom audiences, and activate them straight into your buying.",
-      "whoFor": "Media and analytics leaders who want control back",
+      "positioning": "Audiences built from people already exhibiting the behavior. Connects fragmented first-party data with the Stagwell ID Graph and proprietary intelligence from BERA.ai, The Harris Poll and more – building audience profiles from real behavioral and attitudinal signals.",
+      "whoFor": "The insights leader tired of guessing who to reach",
       "shownWhen": "B: domain=audiences · campaign product — its ad traffic lands on the product-branded page · D: where wasted-spend/targeting language appears",
       "nextStep": "Demo",
       "companions": [
@@ -557,7 +564,7 @@
       ],
       "lockup": "/assets/img/lockups/targeting-machine.png",
       "active": true,
-      "cardDescription": "Fuse your first-party data with media and consumer intelligence, build custom audiences and activate them straight into your buying.",
+      "cardDescription": "Connects fragmented first-party data with the Stagwell ID Graph and proprietary intelligence, building audiences from real behavioral and attitudinal signals.",
       "capabilityTags": [
         "Audience exploration",
         "1P onboarding & ID mapping",
@@ -591,7 +598,14 @@
       "visual": {
         "logoKey": "targeting_machine",
         "lockup": "/assets/img/lockups/targeting-machine.png"
-      }
+      },
+      "solves": "First-party data is fragmented, and lookalike models are educated guesses.",
+      "proofPoints": [
+        "Audiences built from people already exhibiting the behavior",
+        "Attitudinal and behavioral layering",
+        "Expanded addressable reach"
+      ],
+      "messagingSource": "Stagwell AI Messaging FINAL (client, 2026-09-16), Stagwell Machines section"
     },
     {
       "id": "numetrix",
@@ -707,8 +721,8 @@
     {
       "id": "machines_family",
       "name": "Stagwell's Machines (family frame)",
-      "positioning": "One family of machines, one operating system for marketing. The Machine connects your tools, audiences, insights and campaigns into an agentic system that keeps learning — with specialized machines for media, knowledge and targeting.",
-      "whoFor": "Enterprise marketing organizations",
+      "positioning": "The Stagwell Machines is a family of agentic solutions for enterprise marketing organizations – each built for a specific job; all connected under one operating layer. Unlike point solutions that make individual tasks smarter, the Machines share context: every signal, decision, and result carries forward.",
+      "whoFor": "The organization, not one role",
       "shownWhen": "B: domain=marketing_ops; enterprise firmographics · frame around every multi-product consultative recap",
       "nextStep": "Consultative",
       "companions": [
@@ -725,7 +739,7 @@
       ],
       "lockup": "/assets/img/lockups/the-machine.png",
       "active": true,
-      "cardDescription": "One operating system for marketing: tools, audiences, insights and campaigns connected into an agentic system that keeps learning.",
+      "cardDescription": "A family of agentic solutions for enterprise marketing – each built for a specific job, all connected under one operating layer, so every signal, decision and result carries forward.",
       "capabilityTags": [
         "Workflow orchestration",
         "Strategic intelligence",
@@ -763,7 +777,15 @@
       "visual": {
         "logoKey": "machines_family",
         "lockup": "/assets/img/lockups/the-machine.png"
-      }
+      },
+      "tagline": "Connected by design.",
+      "solves": "Intelligence that is stagnant in the tool where it was created.",
+      "proofPoints": [
+        "Works inside existing workflows rather than replacing them",
+        "One system of record for insight, decision and result",
+        "Context persists rather than resets"
+      ],
+      "messagingSource": "Stagwell AI Messaging FINAL (client, 2026-09-16), Stagwell Machines section"
     },
     {
       "id": "agent_cloud",
@@ -824,8 +846,8 @@
     {
       "id": "media_machine",
       "name": "The Media Machine",
-      "positioning": "Planning and buying that answers to the brand. Connects investment decisions to brand and business outcomes, instead of channel metrics that flatter themselves.",
-      "whoFor": null,
+      "positioning": "One source of truth for media performance. Turns paid media strategy, planning, activation and measurement into a fully agentic system.",
+      "whoFor": "The media lead running paid across platforms and channels that are not connected",
       "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
       "nextStep": "Demo",
       "companions": [],
@@ -838,9 +860,9 @@
         "Enterprise media"
       ],
       "lockup": null,
-      "sourceNote": "copy approved by the client on 2026-09-10, drawn from this repo's earlier product catalogue (catalogue.js: 'Planning and buying that answers to the brand') and from routing.json, which pairs it with The Machine for marketing operations. Not vendor-published copy — confirm before client use.",
+      "sourceNote": "Copy from Stagwell AI Messaging FINAL (client, 2026-09-16), The Media Machine section, verbatim or shortened.",
       "active": true,
-      "cardDescription": "Planning and buying that answers to the brand: investment decisions connected to brand and business outcomes.",
+      "cardDescription": "Turns paid media strategy, planning, activation and measurement into a fully agentic system – one source of truth across every platform and channel.",
       "capabilityTags": [
         "Media planning",
         "Media buying and activation",
@@ -879,7 +901,14 @@
       "visual": {
         "logoKey": "media_machine",
         "lockup": null
-      }
+      },
+      "solves": "Every platform holds its own audiences, signals and results. There is no single source of truth for media performance.",
+      "proofPoints": [
+        "Scores every platform and channel against evidence of what works",
+        "Drafts the plan and flighting",
+        "Models spend and projected lift"
+      ],
+      "messagingSource": "Stagwell AI Messaging FINAL (client, 2026-09-16), Stagwell Machines section"
     },
     {
       "id": "newintel",

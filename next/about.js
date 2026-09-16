@@ -63,7 +63,7 @@ function render(m) {
         </p>` : ''}
       </header>
 
-      ${promises.length ? `<ul class="about__promises" aria-label="Customer promises">
+      ${promises.length ? `${m.promisesTitle ? `<h3 class="about__h3">${esc(m.promisesTitle)}</h3>` : ''}<ul class="about__promises" aria-label="${esc(m.promisesTitle || 'Customer promises')}">
         ${promises.map(p => `<li><b>${esc(p.title)}</b><span>${esc(p.line)}</span></li>`).join('')}
       </ul>` : ''}
 
@@ -85,9 +85,9 @@ function render(m) {
       </div>` : ''}
 
       ${reasons.length ? `<div class="about__why">
-        <h3 class="about__h3">Why Stagwell AI</h3>
+        <h3 class="about__h3">${esc(m.reasonsTitle || 'Why Stagwell AI')}</h3>
         <ul class="about__reasons">
-          ${reasons.map(r => `<li><b>${esc(r.title)}</b><span>${esc(r.line)}</span></li>`).join('')}
+          ${reasons.map(r => `<li><b>${esc(r.title)}</b><span>${r.lead ? `<strong>${esc(r.lead)}</strong> ` : ''}${esc(r.line)}</span></li>`).join('')}
         </ul>
       </div>` : ''}
 

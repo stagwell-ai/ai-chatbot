@@ -1161,7 +1161,7 @@ function resetB() {
   $('.mnav__new').hidden = true;
   hero.classList.remove('is-chatting', 'is-convo');
   if (!pick) {
-    $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell AI · Agentic solutions grounded in real-world marketing expertise';
+    $('#heroEyebrow').innerHTML = '<i class="pulse"></i>Stagwell AI · Agentic solutions built to transform marketing';
     $('#hero2Title').innerHTML = 'What do you need help <span class="accent">solving today?</span>';
     (window.revealLines||blurWords)($('#hero2Title'));
     $('#hero2Sub').textContent = 'Tell the agent what you\u2019re trying to do \u2014 or just paste your website \u2014 and it will point you to the right solution, with a live snapshot of your brand to show for it.';

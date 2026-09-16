@@ -863,6 +863,15 @@
     if (input) setTimeout(() => input.focus({ preventScroll: true }), REDUCED ? 0 : 600);
   }));
 
+  /* ── arriving from another page on /#ask — the listing's "Find my fit in a
+        conversation", the booking page's bubble — lands IN the conversation:
+        the hero is already at the top, so the caret goes to its field
+        (client, 2026-09-16: "should take you to the chat bot on the homepage") */
+  if (location.hash === '#ask' && $('#ask')) {
+    const input = $('#agentInput');
+    if (input) setTimeout(() => { try { input.focus({ preventScroll: true }); } catch (e) {} }, 400);
+  }
+
   /* ── the overlay's field: a tag puts its words in it, and the arrow or
         Enter hands the question to the agent section on this page. ─────── */
   $$('.ask__form').forEach(form => {
