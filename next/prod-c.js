@@ -18,35 +18,42 @@
         card.dataset.pcDone = '1';
 
         const name = card.querySelector('.prodcard__name');
-        if (name && n.trim() && !name.querySelector('.pc-n')) {
-          const tag = document.createElement('span');
-          tag.className = 'pc-n';
-          tag.textContent = '/' + n.trim() + ' ';
-          name.prepend(tag);
-        }
-        /* the problem this group answers reads as the row's own line, once per group */
-        if (i === 0 && problem.trim() && name) {
+        /* the number and the problem live on the group's picture, so the row leads with its name */
+        if (name && !card.querySelector('.pc-row__h')) {
           const h = document.createElement('p');
           h.className = 'pc-row__h';
-          h.textContent = problem.trim();
+          h.textContent = name.textContent.trim();
           name.insertAdjacentElement('afterend', h);
+          name.classList.add('pc-hide');
         }
-        /* the two lists say what they are */
+
+        /* the two lists sit under the row, each behind its own mark */
         const who = card.querySelector('.prodcard__who');
         if (who && !who.querySelector('.pc-lab')) {
           const txt = who.textContent.replace(/^\s*Who it'?s for:\s*/i, '').trim();
           who.textContent = '';
-          const lab = document.createElement('span');
-          lab.className = 'pc-lab';
-          lab.textContent = 'Who it’s for';
-          who.append(lab, document.createTextNode(txt));
+          who.insertAdjacentHTML('afterbegin',
+            '<svg class="pc-ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false">' +
+            '<circle cx="10" cy="6.4" r="3.1" fill="none" stroke="currentColor" stroke-width="1.5"/>' +
+            '<path d="M3.8 16.6c.7-3 3.2-4.6 6.2-4.6s5.5 1.6 6.2 4.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' +
+            '<span class="pc-lab">Who it\u2019s for</span>');
+          who.append(document.createTextNode(txt));
         }
         const pills = card.querySelector('.prodcard__pills');
-        if (pills && !pills.previousElementSibling?.classList?.contains('pc-lab--own')) {
+        if (pills && !card.querySelector('.pc-lab--own')) {
           const lab = document.createElement('p');
-          lab.className = 'pc-lab pc-lab--own';
-          lab.textContent = 'What it does';
-          pills.insertAdjacentElement('beforebegin', lab);
+          lab.className = 'pc-lab--own';
+          lab.innerHTML =
+            '<svg class="pc-ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false">' +
+            '<rect x="3" y="3" width="6" height="6" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.5"/>' +
+            '<rect x="11" y="3" width="6" height="6" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.5"/>' +
+            '<rect x="3" y="11" width="6" height="6" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.5"/>' +
+            '<path d="M14 11.4v5.2M11.4 14h5.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' +
+            '<span class="pc-lab">What it does</span>';
+          const wrap = document.createElement('div');
+          wrap.className = 'pc-foot__what';
+          pills.insertAdjacentElement('beforebegin', wrap);
+          wrap.append(lab, pills);
         }
       });
     });

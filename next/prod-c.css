@@ -516,3 +516,59 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 .pl-c .prodgroup:first-of-type{padding-top:clamp(18px,2vw,32px)}
 /* the product's name sits a shade lighter */
 .pl-c .prodcard__name{font-weight:500 !important}
+
+/* ═══ the row's foot: who it's for and what it does, each behind its own mark ══════════════════ */
+.pl-c .prodcard__name.pc-hide{display:none !important}
+.pl-c .prodcard__who{grid-column:1 !important;grid-row:3 !important;
+  margin:clamp(22px,2.4vw,34px) 0 0 !important;display:block;font-size:15px;
+  color:var(--ink) !important;max-width:none}
+.pl-c .prodcard .pc-foot__what{grid-column:2 / -1 !important;grid-row:3 !important;
+  margin:clamp(22px,2.4vw,34px) 0 0 !important}
+.pl-c .prodcard .pc-lab--own{margin:0 !important;display:inline}
+.pl-c .prodcard__pills{display:inline !important;margin:0 !important;font-size:15px;
+  color:var(--ink) !important}
+.pl-c .prodcard__pills li{display:inline}
+.pl-c .prodcard .pc-lab{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--hc-quiet) !important;margin:0 8px 0 0;display:inline;white-space:nowrap}
+.pl-c .prodcard .pc-ic{width:16px;height:16px;color:var(--hc-quiet);display:inline-block;
+  vertical-align:-3px;margin-right:7px}
+
+/* ═══ each problem keeps its picture: the number and the words in white on top ═════════════════ */
+.pl-c .prodgroup{display:grid !important;
+  grid-template-columns:minmax(0,.46fr) minmax(0,1fr) !important;
+  column-gap:clamp(28px,3.6vw,72px);align-items:start;
+  padding:clamp(34px,4vw,68px) 0 !important}
+.pl-c .prodgroup + .prodgroup{border-top:1px solid var(--hc-rule)}
+.pl-c .prodgroup__head{display:block !important;position:relative;margin:0 !important;
+  border-radius:18px !important;overflow:hidden !important;background:#0B1220 !important;
+  aspect-ratio:4 / 3;min-height:0 !important}
+.pl-c .prodgroup__pic{display:block !important;width:100%;height:100%;object-fit:cover;
+  position:absolute;inset:0}
+.pl-c .prodgroup__head::after{content:"" !important;display:block !important;position:absolute;
+  inset:0;background:linear-gradient(180deg,rgba(7,12,20,.12) 28%,rgba(7,12,20,.72) 100%)}
+.pl-c .prodgroup__words{position:absolute !important;left:clamp(18px,1.8vw,28px);
+  right:clamp(18px,1.8vw,28px);bottom:clamp(18px,1.8vw,28px);z-index:2;display:block !important}
+.pl-c .prodgroup__n{color:rgba(255,255,255,.72) !important;font-family:var(--ui);font-size:13px;
+  letter-spacing:.22em;margin:0 0 8px !important}
+.pl-c .prodgroup__n::before{content:none}
+.pl-c .prodgroup__h{color:#FFFFFF !important;font-family:var(--hc-title) !important;
+  font-weight:400 !important;text-transform:none !important;letter-spacing:-.03em !important;
+  font-size:clamp(24px,1rem + 1.2vw,34px) !important;line-height:1.1;margin:0 !important}
+/* the rows live beside the picture */
+.pl-c .prodgroup__cards{grid-column:2}
+.pl-c .prodgroup__cards > .prodcard:first-child{border-top:0 !important;padding-top:0}
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(150px,auto) !important}
+.pl-c .prodcard .pc-row__h{grid-column:1 !important;grid-row:1 !important;max-width:24ch;
+  font-size:clamp(22px,1rem + 1vw,32px) !important}
+.pl-c .prodcard__pos{grid-column:1 !important;grid-row:2 !important;margin:14px 0 0 !important;
+  max-width:52ch !important}
+.pl-c .prodcard__link{grid-column:2 !important;grid-row:1 !important}
+.pl-c .prodcard__who{grid-column:1 / -1 !important;grid-row:3 !important}
+.pl-c .prodcard .pc-foot__what{grid-column:1 / -1 !important;grid-row:4 !important;
+  margin-top:10px !important}
+@media (max-width:980px){
+  .pl-c .prodgroup{grid-template-columns:1fr !important;row-gap:22px}
+  .pl-c .prodgroup__cards{grid-column:1}
+  .pl-c .prodgroup__head{aspect-ratio:16 / 9}
+}
+.pl-c .prodgroup__pic{transform:none !important;max-width:none;border-radius:0 !important}
