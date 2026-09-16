@@ -956,3 +956,16 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 /* the marks stay hidden inside the card too */
 .pl-c .pc-cap .pc-ic{display:none !important}
 .pl-c .pc-cap .pc-col{display:block}
+
+/* the product's name reads as the card's title, its sentence beneath it */
+.pl-c .pc-cap__eb{font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(24px,1rem + 1.4vw,36px) !important;letter-spacing:-.03em;text-transform:none;
+  color:#FFFFFF !important;line-height:1.1;margin:0 0 10px !important}
+.pl-c .pc-cap__h{font-family:var(--ui) !important;font-size:16px !important;line-height:1.5;
+  letter-spacing:0;color:rgba(255,255,255,.82) !important}
+
+/* the ground is white on these pages, not the homepage's off-white */
+body.pc-page{--hc-ground:#FFFFFF}
+.pc-page,.pc-page main,.pc-page .pp-hero,.pc-page .prodbody,.pc-page .prodgroup,
+.pc-page .ask-end,.pc-page .ptoc,.pc-page .foot,.pc-page .foot__band,.pc-page .foot__in{
+  background:#FFFFFF !important}
