@@ -813,3 +813,6 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   height:clamp(320px,26vw,420px) !important;min-height:0 !important;max-height:none !important}
 /* a little more length to the lines */
 .pl-c{--pc-measure:clamp(380px,34vw,520px)}
+/* a tag in "what it does" never breaks mid-phrase; it moves to the next line whole */
+.pl-c .prodcard__pills li{display:inline-block;white-space:nowrap}
+.pl-c .prodcard__pills li:not(:last-child)::after{white-space:normal}

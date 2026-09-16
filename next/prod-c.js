@@ -89,14 +89,15 @@
     'p-leads':               '/assets/img/products/new-voices-android.jpg',
     'p-marketing_ops':       '/assets/img/products/the-machine-v2.jpg',
     'p-ai_workspace':        '/assets/img/products/agent-cloud-code.jpg',
-    'p-brand_health':        '/assets/img/hero-film/1.jpg',
+    'p-brand_health':        '/assets/img/questbrand.jpg',
     'p-research':            '/assets/img/hero-film/2.jpg',
-    'p-business_impact':     '/assets/img/hero-film/3.jpg',
+    'p-business_impact':     '/assets/img/brand-growth.jpg',
     'p-reputation':          '/assets/img/hero-film/4.jpg',
     'p-media_monitoring':    '/assets/img/hero-film/5.jpg',
-    'p-ai_visibility':       '/assets/img/hero-film/6.jpg',
-    'p-real_world_behavior': '/assets/img/hero-film/7.jpg',
-    'p-competitive':         '/assets/img/hero-film/agent-cloud.jpg'
+    'p-ai_visibility':       '/assets/img/geopulse.jpg',
+    'p-real_world_behavior': '/assets/img/numetrix.jpg',
+    'p-competitive':         '/assets/img/hero-film/agent-cloud.jpg',
+    'p-newly_added':         '/assets/img/hero-film/6.jpg'
   };
   const repic = () => {
     Object.keys(PIC).forEach(id => {
