@@ -140,12 +140,31 @@ The client's order (2026-09-10), verbatim:
 > your website (if any) 4) how large is your org 5) what's your role 6) here are some
 > recommendations we have 7) give us your email 8) give us your phone number 9) book a call
 
-Steps 1–5 are `questions.json`: the website (`first`, priority 100), company size (99) and role
-(98) are asked in that order while their field is unknown; `select-question.js` then asks a
-discriminating question **only when there is no intent to recommend from** — a bare goal pill —
-and only once (`scoring.conversation.maxQuestions: 1`, `discriminateOnlyWithoutIntent`). A typed
-need goes website → size → role → cards. Steps 6–9 are §9.
+**Where the email sits moved on 2026-09-16** — "be flexible with where the email is put … there
+are no hard rules right now, we'll play with it until we make all the stakeholders happy". So it
+is a flag, not a rewrite. `flags.emailFirst` (on) asks for the **work email second**, reads the
+site from its domain and never asks the website question at all; `flags.phoneStep` (off) takes
+the number out of the conversation and leaves it to the things that actually need it — Book a
+call, Call my phone, the contact form ("it's just when they click contact us or book us that
+they get asked the extra questions about phone number, name"). Turn both back and the order of
+2026-09-10 returns exactly as it was, tests and all.
 
+Steps 1–5 are `questions.json`: the work email (`first`, priority 101), the website (100),
+company size (99) and role (98) are asked in that order **while their field is unknown** — and a
+work address fills `website` too, so that question is simply never reached. `select-question.js`
+then asks a discriminating question **only when there is no intent to recommend from** — a bare
+goal pill — and only once (`scoring.conversation.maxQuestions: 1`,
+`discriminateOnlyWithoutIntent`). A typed need goes work email → size → role → cards. Step 6 is §9.
+
+0. **the work email** — one answer for two questions. `emailDomain()` takes the domain; a
+   company's own domain IS the website and is looked up straight away, so the visitor is never
+   asked for it. A **free address** — the `FREE_MAIL` list in `kimi-flow.js`: gmail, outlook,
+   icloud, gmx, qq and the rest — is kept as the contact (it is how we reach them) but tells us
+   nothing about the company, so the website question is asked next ("if they put in a Gmail or
+   some ambiguous email, then we'll ask for the website"). The lead is created HERE, at the top,
+   on the address alone, so nothing is lost if they leave; it is written again once there is a
+   recommendation to attach, and `leadPayload()` reads the company name at send time because it
+   often turns up later.
 1. **the website** — `/api/ask mode:'research'` asks the model what it already knows about that
    domain. It is built to answer `known:false` rather than guess, so what comes back is real or
    nothing. What it returns is shown as a short fact list (industry, size band, comparison set)

@@ -112,7 +112,7 @@ try {
     ok(b.items.every(i => /^\/(s\/|[a-z-]+$)/.test(i.href)), 'every item links to a page on this site');
     ok(b.texts[0] && /Tracking the competition/.test(b.texts[0]) && !/narrow down/.test(b.texts[0]), 'the ack is one short line: "' + b.texts[0] + '"');
     ok((await pointerBubbles(page)) === 1, 'one pointer block so far');
-    await say(page, 'acme-brands.com');
+    await say(page, 'ada@acme-brands.com');   /* the work email carries the site (2026-09-16) */
     ok((await pointerBubbles(page)) === 1, 'the size question does not repeat the same two');
     await chip(page, '51 to 250');
     ok((await pointerBubbles(page)) === 1, 'nor does the role question');

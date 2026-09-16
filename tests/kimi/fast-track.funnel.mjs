@@ -110,7 +110,7 @@ try {
     await page.click('#agentTags .tag[data-goal="competition"]');
     await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && document.querySelector('#agentThread .turnb--ai .turnb__text'), null, { timeout: 12000 });
     await page.waitForTimeout(250);
-    await say(page, 'acme-brands.com');                                    /* the website, then the size question's chips */
+    await say(page, 'ada@acme-brands.com');   /* the work email: its domain is the site (2026-09-16) */                                    /* the website, then the size question's chips */
     await page.waitForFunction(() => document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])'), null, { timeout: 12000 });
     const before = (await page.evaluate(() => window.SAIKIMI.state())).askedQuestionIds.length;
     await say(page, 'actually just get someone to call me');

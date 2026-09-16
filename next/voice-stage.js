@@ -174,7 +174,10 @@
       me.innerHTML = emblem(self.icon || 'waveform', 'vstage__emblem--badge') + '<span class="vstage__badgename">' + esc(self.name || 'NewVoices') + '</span>';
       roster.insertBefore(me, roster.children[1] || null);   /* after the label, before the first member */
       if (!moreBadge) revealMore();                           /* the family, if the words never got there */
-      /* the team is together now: nobody is singled out */
+      /* the team is together now: nobody is singled out. The spotlight is only
+         lifted HERE, at the true end of the story — never mid-product, which
+         is what left the roster flat with the deck still on the first tile
+         (client's screenshot, 2026-09-16). */
       roster.querySelectorAll('.vstage__badge.is-speaking').forEach(b => b.classList.remove('is-speaking'));
       roster.classList.remove('has-speaking');
       requestAnimationFrame(() => requestAnimationFrame(() => me.classList.add('is-in')));

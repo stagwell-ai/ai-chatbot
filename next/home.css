@@ -967,12 +967,31 @@ body.chat-open{overflow:hidden}
 .vstage__badge{display:flex;flex-direction:column;align-items:center;gap:5px;width:64px;opacity:0;transform:translateY(14px) scale(.8);
   transition:opacity .4s ease .35s,transform .55s cubic-bezier(.2,1.2,.3,1) .35s}
 .vstage__badge.is-in{opacity:1;transform:none}
-/* the member being spoken about right now: lit, the rest step back */
-.vstage__roster.has-speaking .vstage__badge.is-in{opacity:.42;filter:saturate(.5)}
+/* ── THE ONE BEING SPOKEN ABOUT IS IN A SPOTLIGHT ──
+   "each of the names and descriptions is mentioned, it should time with
+   highlighting that company. The icon should highlight, have a little glow
+   behind it" (client, 2026-09-16). The timing was already right — voice.js
+   lands each name within milliseconds of it being said — but the light was
+   too polite to read as a spotlight. Now: the rest of the roster drops well
+   back, the one being named lifts, and a halo BREATHES behind its icon for
+   as long as its line is being read. */
+.vstage__roster.has-speaking .vstage__badge.is-in{opacity:.3;filter:saturate(.35) brightness(.72)}
 .vstage__roster.has-speaking .vstage__badge.is-in.is-speaking{opacity:1;filter:none}
-.vstage__badge.is-speaking .vstage__emblem{box-shadow:0 0 0 4px rgba(255,255,255,.3),0 10px 26px rgba(0,0,0,.5),0 0 34px rgba(0,156,189,.75)}
-.vstage__badge.is-speaking .vstage__badgename{color:#FFFFFF;font-weight:700}
-.vstage__roster.has-speaking .vstage__badge.is-in.is-speaking{transform:translateY(-4px) scale(1.06)}
+.vstage__badge.is-speaking .vstage__badgename{color:#FFFFFF;font-weight:700;letter-spacing:.005em;
+  text-shadow:0 1px 8px rgba(0,0,0,.7),0 0 18px rgba(0,156,189,.55)}
+.vstage__roster.has-speaking .vstage__badge.is-in.is-speaking{transform:translateY(-7px) scale(1.14)}
+/* the halo: its own layer behind the emblem, so it can pulse without moving
+   anything — and it is only ever on one badge at a time */
+.vstage__badge .vstage__emblem{position:relative}
+.vstage__badge .vstage__emblem::after{content:"";position:absolute;inset:-14px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(0,190,225,.55) 0%,rgba(0,156,189,.28) 42%,rgba(0,156,189,0) 72%);
+  opacity:0;transition:opacity .35s ease}
+.vstage__badge.is-speaking .vstage__emblem::after{opacity:1;animation:vspot 1.9s ease-in-out infinite}
+.vstage__badge.is-speaking .vstage__emblem{box-shadow:0 0 0 4px rgba(255,255,255,.42),0 10px 26px rgba(0,0,0,.5),0 0 44px rgba(0,156,189,.9)}
+@keyframes vspot{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.18);opacity:1}}
+/* …and the tile on the deck wears the same light, so "that company is
+   displayed" and "that icon is lit" are plainly the same company */
+.vstage__tile.is-current .vstage__emblem{box-shadow:0 0 0 5px rgba(255,255,255,.28),0 18px 44px rgba(0,0,0,.55),0 0 54px rgba(0,156,189,.8)}
 .vstage__badge{transition:opacity .4s ease .35s,transform .55s cubic-bezier(.2,1.2,.3,1) .35s,filter .4s ease}
 .vstage__badge .vstage__emblem{position:static;width:36px;height:36px;box-shadow:0 0 0 3px rgba(255,255,255,.14),0 8px 20px rgba(0,0,0,.45);transition:width .5s var(--ease,ease),height .5s var(--ease,ease)}
 .vstage__badgename{font-family:var(--ui);font-size:11.5px;font-weight:600;color:rgba(255,255,255,.9);text-align:center;line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.6);max-width:84px;text-wrap:balance}

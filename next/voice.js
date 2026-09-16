@@ -67,6 +67,9 @@ let wave = null, timers = [], ticker = 0, toolBusy = 0;
    script, driven by the transcript, gone when it says "let's get to know each
    other" — or the moment the visitor talks or types */
 let stage = null, intro = null;      /* intro = { responseId, text, revealed:Set, fallback:timer } */
+/* the earliest the story may end when the model has not named everyone: below
+   this it is a model wandering into the pivot's words, not a story told */
+const STORY_FLOOR_MS = 22000;
 
 /* ── DIAGNOSTICS ──
    ?voicedebug=1 (or localStorage sai-voice-debug=1) shows a panel under the
@@ -118,6 +121,11 @@ function watchHearing() {
       the visitor asking aloud — slowly, after the agent has said they may
       interrupt at any time. */
 let storyShown = false;
+let landed = false;      /* the story has put them down and asked its question — once */
+/* …and from the moment the story decides to land, the generic answer-pill net
+   stands down: the landing hangs its own pills under the team card, and the
+   same six goals twice in a row is a stutter, not an offer */
+let landing = false;
 function starterChips() {
   const st = c().starters || {};
   const qs = (st.questions || []).map(q => (typeof q === 'string' ? { label: q, value: q } : q)).filter(q => q && q.label);
@@ -206,8 +214,12 @@ function revealByClock() {
      gone quiet (the rehearsal QA caught the clock landing every card 4–8 s
      before its name was spoken) */
   if (intro.lastDeltaAt && Date.now() - intro.lastDeltaAt < 8000) { intro.fallback = setTimeout(revealByClock, 4000); timers.push(intro.fallback); return; }
+  /* …and it never overtakes: a member the words DID land stays lit for its own
+     line before the clock moves on to the next one */
+  if (intro.lastRevealAt && Date.now() - intro.lastRevealAt < 4000) { intro.fallback = setTimeout(revealByClock, 1500); timers.push(intro.fallback); return; }
   const next = intro.cfg.products.find(p => stage.state().revealed.indexOf(p.id) === -1);
   if (!next) return;
+  intro.lastRevealAt = Date.now();
   stage.reveal(next.id);
   dbg('stage.reveal', next.id + ' by the clock @' + (Date.now() - intro.started) + 'ms');
   track('voice_showcase_reveal', { id: next.id, atMs: Date.now() - intro.started, via: 'clock' });
@@ -232,19 +244,37 @@ function followTranscript(text) {
     if (flat.indexOf(squash(p.name)) === -1) return;
     if (stage.reveal(p.id)) {
       if (intro.fallback) { clearTimeout(intro.fallback); intro.fallback = null; }
+      intro.lastRevealAt = Date.now();
       const at = Date.now() - intro.started;
       dbg('stage.reveal', p.id + ' @' + at + 'ms');
       track('voice_showcase_reveal', { id: p.id, atMs: at, via: 'words' });
     }
   });
-  /* "…more than ten products in total": the rest of the family joins the roster */
-  if (intro.cfg.moreOn && stage.revealMore && flat.indexOf(squash(intro.cfg.moreOn)) !== -1) { if (stage.revealMore()) dbg('stage.more', '@' + (Date.now() - intro.started) + 'ms'); }
-  /* the pivot: the whole team assembles for a beat, then the stage lifts away */
-  if (intro.cfg.closeOn && low.indexOf(String(intro.cfg.closeOn).toLowerCase()) !== -1) { if (stage.assemble) stage.assemble(); closeStage('pivot', 2400); }
+  /* "…plus over ten other AI services": the rest of the family joins the
+     roster — but only once the four have been named. A live model that
+     reaches for that phrase early must not take the light off a product it
+     is still describing. */
+  const told = stage.state().revealed.length >= intro.cfg.products.length;
+  if (told && intro.cfg.moreOn && stage.revealMore && flat.indexOf(squash(intro.cfg.moreOn)) !== -1) {
+    if (stage.revealMore()) dbg('stage.more', '@' + (Date.now() - intro.started) + 'ms');
+  }
+  /* ── THE PIVOT, BUT ONLY WHEN THE STORY IS ACTUALLY TOLD ──
+     closeOn used to fire on its phrase appearing anywhere in the transcript,
+     and a live model that wandered into those words early tore the stage down
+     mid-product: the roster went flat with the deck still on the first tile
+     (client's screenshot, 2026-09-16). The story ends when every member has
+     been named — or after a floor of time, so a model that skips one still
+     gets out. */
+  const longEnough = Date.now() - intro.started > STORY_FLOOR_MS;
+  if ((told || longEnough) && intro.cfg.closeOn && low.indexOf(String(intro.cfg.closeOn).toLowerCase()) !== -1) {
+    if (stage.assemble) stage.assemble();
+    closeStage('pivot', 2400);
+  }
 }
 function closeStage(why, delay) {
   if (!stage) return;
   const s = stage; stage = null;
+  if (s.state().revealed.length && (why === 'pivot' || why === 'end' || why === 'timeout')) landing = true;
   const seconds = intro ? Math.round((Date.now() - intro.started) / 1000) : 0;
   dbg('stage.close', why + ' after ' + seconds + 's, ' + s.state().revealed.length + ' revealed');
   /* closed before a single member was named (an interruption, a drop): the
@@ -259,6 +289,7 @@ function closeStage(why, delay) {
        door to its page, a hover shows who they are (client, 2026-09-11:
        "instead of having it disappear … have it be part of the chat history") */
     if (revealed.length && STAGE.teamCard) dockTeam(cfg, revealed);
+    if (revealed.length && (why === 'pivot' || why === 'end' || why === 'timeout')) landStory(cfg);
   };
   if (delay) timers.push(setTimeout(go, delay)); else go();
   track('voice_showcase_ended', { why, seconds, revealed: revealed.length });
@@ -274,6 +305,55 @@ function dockTeam(cfg, revealed) {
   bubble.appendChild(card);
   requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('is-in')));
   if (H.follow) H.follow();
+}
+
+/* ── WHERE THE STORY PUTS THEM DOWN ──
+   "It should end after it talks about IMAI … it should scroll up and have
+   pills about the next step and reintroduce the original question: what do
+   you need help with today?" (client, 2026-09-16).
+
+   The stage lifts, the team card stays in the thread, and the conversation is
+   handed back with its first question — the six starting points as pills,
+   under the agent's own words. Tapping one is step 1, and the very next thing
+   the flow asks for is the work email (flags.emailFirst), which is the whole
+   point of landing them here rather than leaving them on a picture.
+
+   The page goes to the TOP of the team card, not the foot of the thread: they
+   have just been introduced to a team and should see it, then read down to
+   the question. */
+function landStory(cfg) {
+  if (landed) return;
+  landed = true;
+  const s = K.state ? K.state() : null;
+  /* they got on with it during the story — nothing to reintroduce */
+  if (s && s.status !== 'IDLE' && s.status !== 'DISCOVERY') return;
+  if (s && s.primaryGoal) return;
+  const gs = (((window.SAI || {}).data || {}).goals || {}).goals || [];
+  const chips = gs.map(g => ({ label: g.label, value: g.label }));
+  const onChip = chip => {
+    track('voice_land_tapped', { label: String(chip.label).slice(0, 60) });
+    sendText(chip.value);
+  };
+  /* the pills go UNDER the team card, not under the words above it: the card is
+     the introduction, and the pills are what to do next */
+  const team = document.querySelector('#agentThread .turnb--team');
+  if (chips.length) {
+    if (pendingChips) { if (pendingChips.timer) clearTimeout(pendingChips.timer); pendingChips = null; }
+    if (team && H.chips) H.chips(team, chips, onChip, 'turnb__chips--answers');
+    else offerChips(chips, onChip, { cls: 'turnb__chips--answers' });
+  }
+  track('voice_showcase_landed', { products: ((cfg && cfg.products) || []).length });
+  /* then the page goes UP to the head of the card — "it should scroll up" — so
+     the team is read from the top and the question is under it */
+  /* …and it takes a couple of tries: the agent is often still finishing the
+     sentence, and every word of transcript asks the thread to follow it. The
+     head lock (home.js) holds each attempt for a beat; the last one, once the
+     voice has stopped, is the one that sticks. */
+  [420, 1500, 2600].forEach(ms => timers.push(setTimeout(() => {
+    if (!team) { if (H.follow) H.follow(); return; }
+    if (ms > 420 && sub === 'speaking') return;      /* still talking: let the words scroll */
+    if (H.settle) H.settle(team, { head: true });
+  }, ms)));
 }
 
 /* ── the strip ── */
@@ -310,7 +390,8 @@ function paint() {
    2026-09-11): while the flow waits for one, the strip says so */
 function typedStep() {
   const st = K.state();
-  return !!(st && ((st.question && st.question.field === 'website') || st.status === 'CAPTURE_EMAIL' || st.status === 'CAPTURE_PHONE'));
+  const f = st && st.question && st.question.field;
+  return !!(st && (f === 'website' || f === 'email' || st.status === 'CAPTURE_EMAIL' || st.status === 'CAPTURE_PHONE'));
 }
 K.onChange(() => { if (phase === 'live') paint(); });
 function setSub(s) { sub = s; paint(); }
@@ -469,7 +550,7 @@ async function start() {
     dbg('live', conn.micState ? conn.micState() : null);
     track('voice_mic_state', Object.assign({}, conn.micState ? conn.micState() : {}, { label: undefined }));
     H.open();
-    storyShown = false;
+    storyShown = false; landed = false; landing = false;
     /* a fresh start: the agent greets and waits; the questions the visitor
        might ask hang under its greeting. The story comes only when asked. */
     if (!startedFromText) offerStarters();
@@ -687,6 +768,7 @@ function chipsForNow() {
   return null;
 }
 function pillsUnderQuestion(el, text) {
+  if (landing || landed) return;      /* the landing hangs its own, under the team card */
   if (!el || stage || !/\?/.test(String(text || '')) || el.querySelector('.turnb__chips')) return;
   const chips = chipsForNow();
   if (chips) H.chips(el, chips, chip => sendText(chip.value), 'turnb__chips--answers');
@@ -846,7 +928,7 @@ function restartSession(via) {
   if (conn && (rstate.response || rstate.speaking)) sendAll(VR.clientEvents.cancel());
   teardown();
   bubbles = {}; meBubbles = {};
-  phase = 'idle'; muted = false; muteReason = null; storyShown = false;
+  phase = 'idle'; muted = false; muteReason = null; storyShown = false; landed = false; landing = false;
   track('voice_session_ended', { seconds, turns, reason: 'restart', via: via || 'button' });
   start();                                     /* inside the same tap, so audio stays unlocked */
   return true;

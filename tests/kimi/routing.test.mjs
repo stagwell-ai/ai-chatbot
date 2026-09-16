@@ -115,13 +115,15 @@ test('every goal ends in a recommendation within the question budget, and the pi
     const bare = R.recommend({ goal: g.id, intents: [] }, DATA);
     assert.equal(bare.confidence.level, 'low', g.id + ': a bare goal is low confidence');
     /* pick the first suggestion of every question the selector puts up (the
-       website has none: the walk marks it asked and moves on) */
+       work email and the website have none: the walk types an answer to them
+       the way the flow does, and a work address carries the website with it) */
     const firsts = DATA.questions.discovery.questions.filter(q => q.suggestions.length).map(q => q.suggestions[0].id);
     const r = walk(g.id, firsts);
     assert.ok(r.reco.primary, g.id + ' ends on a primary');
-    /* the client's order: website, size, role, then at most maxQuestions discriminators */
-    assert.ok(r.trail.length <= DATA.scoring.conversation.maxQuestions + 3, g.id + ' asked ' + r.trail.length);
-    assert.deepEqual(r.trail.slice(0, 3).map(t => t.id), ['website', 'company_size', 'role'], g.id + ' opens in the client\'s order');
+    /* the order (2026-09-16): the work email — whose domain is the website —
+       then size, then role, then at most maxQuestions discriminators */
+    assert.ok(r.trail.length <= DATA.scoring.conversation.maxQuestions + 4, g.id + ' asked ' + r.trail.length);
+    assert.deepEqual(r.trail.slice(0, 3).map(t => t.id), ['work_email', 'company_size', 'role'], g.id + ' opens in the client\'s order');
   });
 });
 
@@ -217,7 +219,7 @@ test('a sentence carrying both sides keeps both products in the running — and 
   const r = readText('we want to influence what AI says about us');
   assert.ok(r.candidates.includes('geopulse') && r.candidates.includes('search_plus'), r.candidates.join(','));
   const st = { primaryGoal: null, intents: R.keywordIntents('we want to influence what AI says about us', DATA),
-    askedQuestionIds: ['website', 'company_size', 'role'], website: 'x.com', role: 'c_suite', companySize: 'large' };
+    askedQuestionIds: ['work_email', 'website', 'company_size', 'role'], email: 'a@x.com', website: 'x.com', role: 'c_suite', companySize: 'large' };
   /* the client's order (2026-09-10): after the role, the recommendation */
   assert.equal(Q.selectQuestion(st, r, DATA), null);
   const shown = R.pointers(r, null, DATA).items.map(i => i.id).sort();

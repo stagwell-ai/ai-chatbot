@@ -77,6 +77,13 @@ async function run(browser, opts) {
     await settled(); await page.waitForTimeout(150);
     if (await page.$('.reco__card--best')) break;
     const st = await page.evaluate(() => window.SAIKIMI.state());
+    /* the typed steps: the work email first — its domain IS the website — and
+       the website itself only when the address gave us nothing */
+    if (st.question && st.question.field === 'email') {
+      trail.push('work_email→ada@example-brand.com');
+      await page.fill('#agentInput', 'ada@example-brand.com'); await page.press('#agentInput', 'Enter');
+      continue;
+    }
     if (st.question && st.question.id === 'website') {
       trail.push('website→example-brand.com');
       await page.fill('#agentInput', 'example-brand.com'); await page.press('#agentInput', 'Enter');
@@ -92,19 +99,18 @@ async function run(browser, opts) {
   await settled(); await page.waitForTimeout(200);
   ok(await page.$('.reco__card--best'), 'reached the recommendation after: ' + trail.join(' · '));
   ok(trail.length >= 3 && trail.length <= 5, 'asked ' + trail.length + ' question(s)');
-  ok(!(await page.$('#heroLeadForm')), 'no form: the details are asked in the conversation, after the cards');
-  ok((await page.evaluate(() => window.SAIKIMI.state().status)) === 'CAPTURE_EMAIL', 'the email is asked next');
+  ok(!(await page.$('#heroLeadForm')), 'no form: the details are asked in the conversation');
+  /* the email was asked SECOND now (flags.emailFirst, 2026-09-16), so the
+     recommendation is followed by the call, not by another ask */
+  const end = await page.evaluate(() => window.SAIKIMI.state());
+  ok(end.status === 'BOOK', 'the recommendation is followed by the call (' + end.status + ')');
+  ok(end.email && /@example-brand\.com$/.test(end.email), 'and the address was taken at the top: ' + end.email);
 
-  /* the email: a bad one is asked again, a good one creates the lead; then the phone */
-  await page.fill('#agentInput', 'not-an-email'); await page.press('#agentInput', 'Enter');
-  await settled(); await page.waitForTimeout(150);
-  ok((await page.evaluate(() => window.SAIKIMI.state().status)) === 'CAPTURE_EMAIL' && leadBody === null, 'bad email is asked again, nothing sent');
-  await page.fill('#agentInput', 'visitor@example-brand.com'); await page.press('#agentInput', 'Enter');
-  await page.waitForFunction(() => window.SAIKIMI.state().status === 'CAPTURE_PHONE', null, { timeout: 12000 });
-  await page.fill('#agentInput', '+1 212 555 0100'); await page.press('#agentInput', 'Enter');
-  await page.waitForFunction(() => window.SAIKIMI.state().status === 'BOOK', null, { timeout: 12000 });
-  await page.waitForTimeout(200);
   ok(await page.$('.turnb--book [data-kimi-cta="BOOK"]'), 'ends on "Book a call"');
+  /* the number is NOT asked in the conversation any more: it belongs to the
+     things that need it — Book a call, and the "Call my phone" widget beside
+     it (client, 2026-09-16) */
+  ok(!(await page.$('.turnb--book .call')) === false, 'and offers "Call my phone" beside it');
 
   const card = await page.$eval('.reco__card--best', e => ({ name: e.querySelector('.reco__name').textContent.trim(), why: e.querySelector('.reco__why').textContent.trim(), cta: e.querySelector('.reco__go') && e.querySelector('.reco__go').textContent.trim(), learn: e.querySelector('.reco__learn') && e.querySelector('.reco__learn').getAttribute('href') }));
   ok(card.name === expect, 'best fit is ' + card.name + (card.name === expect ? '' : ' (expected ' + expect + ')'));
@@ -114,11 +120,15 @@ async function run(browser, opts) {
   ok(also <= 2, also + ' secondary card(s)');
 
   const events = await page.evaluate(() => window.SAI.events.list().map(e => e.type));
-  ['kimi_started', 'kimi_recommendation_generated', 'kimi_contact_viewed', 'kimi_email_captured', 'kimi_phone_captured', 'kimi_book_offered'].forEach(t => ok(events.includes(t), 'event ' + t));
+  ['kimi_started', 'kimi_recommendation_generated', 'kimi_email_captured', 'kimi_book_offered'].forEach(t => ok(events.includes(t), 'event ' + t));
+  ok(!events.includes('kimi_phone_captured'), 'and no phone step in the conversation');
   ok(askCalls === 0 || events.includes('kimi_deterministic_mode'), askCalls ? 'event kimi_deterministic_mode after a failed model call' : 'no model call was needed');
-  const leak = await page.evaluate(() => JSON.stringify(window.SAI.events.list()).includes('visitor@example-brand.com'));
+  const leak = await page.evaluate(() => JSON.stringify(window.SAI.events.list()).includes('ada@example-brand.com'));
   ok(!leak, 'no full email address on the event bus');
-  ok(leadBody && leadBody.lead && leadBody.lead.email === 'visitor@example-brand.com' && leadBody.lead.phone === '+1 212 555 0100' && leadBody.discovery && leadBody.discovery.primary, 'the last lead write carries email, phone and the structured discovery (primary=' + (leadBody && leadBody.discovery && leadBody.discovery.primary) + ')');
+  /* the lead is created on the address at the top and has no number yet: the
+     number is asked for by the booking, not by the conversation */
+  ok(leadBody && leadBody.lead && leadBody.lead.email === 'ada@example-brand.com' && !leadBody.lead.phone, 'the lead write carries the address taken at the top, and no number');
+  ok(leadBody && leadBody.discovery && leadBody.discovery.primary, 'and the structured discovery (primary=' + (leadBody && leadBody.discovery && leadBody.discovery.primary) + ')');
   ok(askCalls >= 0 && (await page.evaluate(() => window.SAIKIMI.state().llmStatus)) === 'DETERMINISTIC', 'ran in DETERMINISTIC mode (' + askCalls + ' blocked /api/ask call(s))');
   ok(errors.length === 0, errors.length ? 'page errors: ' + errors.join(' | ') : 'no page errors');
 

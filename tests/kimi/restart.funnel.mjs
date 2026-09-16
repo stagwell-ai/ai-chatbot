@@ -101,7 +101,7 @@ try {
     await page.click('#agentTags .tag[data-goal="competition"]');
     await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && document.querySelector('#agentThread .turnb--ai .turnb__text'), null, { timeout: 12000 });
     await page.waitForTimeout(250);
-    await say(page, 'acme-brands.com');
+    await say(page, 'ada@acme-brands.com');   /* the work email: its domain is the site (2026-09-16) */
     const before = await snap(page);
     ok(before.turns >= 3 && before.goal === 'competition' && before.chat, 'a real conversation is under way (' + before.turns + ' bubbles, goal ' + before.goal + ')');
     await page.click('#agentRestart');

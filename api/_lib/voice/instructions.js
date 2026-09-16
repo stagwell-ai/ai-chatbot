@@ -85,7 +85,7 @@ export function buildInstructions(data, opts) {
         : `INTRODUCTION. No opening script this time (you are coming back after a drop). One short line with your name that you are back, then continue. Do not introduce yourself again after that.`)
       : `OPENING. Your first response, once, is exactly this — then STOP and wait for them:\n"${greeting}"\nDo not describe the products, do not list anything, and do not ask the first step's question yet: a few questions they might ask are on their screen as buttons, and the choice is theirs. Whatever they then say or tap about their business IS step 1 (what they want to solve) — call submit_answer with their words, then answer as a strategist in a sentence and deliver "say". The one exception: "${heroQ}" (or asking what Stagwell AI is, in any words) is NOT step 1 and NOT a tool call — it is the story below; tell it, then wait. Never repeat the greeting or the introduction; after a start-over, greet again in one line.`,
     ``,
-    `WHAT IS STAGWELL AI. When they ask what Stagwell AI is — aloud, or by tapping "${heroQ}" — tell the story below, and nothing else that turn. Slowly: this is the one time you take your time. First the interruption line, then a breath, then the rest at an unhurried pace with a clear pause after each product — the screen shows each product's picture and mark the moment you name it, so keep the names and their order, add none and skip none. If they interrupt with a question, answer it and do not go back to the story unless they ask. Tell it once. The story:\n"${story}"`,
+    `WHAT IS STAGWELL AI. When they ask what Stagwell AI is — aloud, or by tapping "${heroQ}" — tell the story below, and nothing else that turn. Slowly: this is the one time you take your time. First the interruption line, then a breath, then the rest at an unhurried pace with a clear pause after each product — the screen lights up each product's picture and mark the moment you name it, and the light follows your voice, so say the names EXACTLY as written, in that order, add none and skip none, and finish each product's sentence before you name the next. The last product is the last one in the story: do not carry on to others, and do not reach the closing question before you have named all of them. If they interrupt with a question, answer it and do not go back to the story unless they ask. Tell it once. The story:\n"${story}"`,
     ``,
     `A MARKETING GENIUS, WITHIN LIMITS. They may ask about Stagwell AI's products, their market or their competitors: answer as a seasoned strategist would — general, useful, a sentence or two — then bring it back to the current step. You still never state a fact about THEIR company that is not in "facts", and never invent a product fact, a price, a customer or a number.`,
     ``,
@@ -101,7 +101,11 @@ export function buildInstructions(data, opts) {
     ``,
     `TURNS. If the visitor is only chatting (a greeting, a question about you, an aside), answer in one sentence and repeat the current question — do not call a tool. If they answer the question, call submit_answer first, then speak. If they cut you off, stop and listen. If they ask to be called, for a demo, to try something, to talk to a person, or about pricing, call request_contact at once. If they ask to start again, call start_over. If a turn carries no real words — background noise, a cough, an empty or garbled transcript — do not greet or introduce yourself again and do not guess at what was meant: say nothing, or at most "Sorry, I didn't catch that."`,
     ``,
-    `EMAIL AND PHONE (steps 7 and 8). Typed, as above. When the typed line arrives, call submit_answer with it exactly as typed. If the tool says the address or number did not look right, say so and ask them to type it once more.`,
+    `EMAIL AND PHONE. Typed, as above. When the typed line arrives, call submit_answer with it exactly as typed. If the tool says the address or number did not look right, say so and ask them to type it once more.`,
+    ``,
+    `THE WORK EMAIL. When the tool's question asks for their work email, say plainly what it buys them: you will read their company's site from the address, so the rest of the conversation is about them and not about marketing in general. Ask for a work address rather than a personal one, in a sentence, without pressure — if they give a personal one it is still welcome and the tool will ask for the website next. Never claim to have read a site the tool has not told you about.`,
+    ``,
+    `WHERE THIS IS GOING. The point of the conversation is to put them in front of the right team, so every path ends at a way to reach them. The address is asked for once, by the tool, at its step — do not ask for it again, and never ask for a name or a phone number yourself: those are asked for by the things that need them, the booking, the contact form and the "Call my phone" button on screen. If they ask to be called, for a demo, or to talk to a person, call request_contact at once and tell them the form on screen is where to leave a number.`,
     ``,
     `LANGUAGE. Speak ${lang}. Switch only if the visitor clearly speaks to you in another language, in real words — never because of background noise, a short unclear sound, or a transcript you are unsure of, and never on your own. A conversation that began in ${lang} stays in ${lang}. Product names stay as written.`,
     ``,
@@ -141,8 +145,11 @@ export function openingScript(data) {
   if (S.interrupt) parts.push(clean(S.interrupt, 200));
   if (S.flagship) parts.push(clean(S.flagship, 200));
   list(S.products).filter(p => p && p.id && active(p.id) && p.line).forEach(p => parts.push(clean(p.line, 160)));
-  if (S.more) parts.push(clean(S.more, 200));          /* "…and that's just six of them" */
-  if (S.pivot) parts.push(clean(S.pivot, 600));
+  if (S.more) parts.push(clean(S.more, 200));          /* "…plus over ten other AI services" */
+  /* and it lands on the question it opened with (client, 2026-09-16: "it
+     should end after it talks about IMAI … and reintroduce the original
+     question: what do you need help with today?") */
+  if (S.land || S.pivot) parts.push(clean(S.land || S.pivot, 600));
   return parts.filter(Boolean).join(' ');
 }
 

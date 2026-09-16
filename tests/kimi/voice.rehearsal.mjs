@@ -72,13 +72,19 @@ await page.click('#agentThread .turnb__chips--starters .tag--hero');
 const tTap = await page.evaluate(() => Math.round(performance.now() - window.__t0));
 await page.waitForSelector('.vstage.is-open', { timeout: 3000 });
 let last = '';
+const spots = [];
 for (let i = 0; i < 120; i++) {
   const s = await page.evaluate(() => {
     const st = document.querySelector('.vstage'); if (!st) return null;
     const cur = st.querySelector('.vstage__tile.is-current'); const cap = st.querySelector('.vstage__caption');
-    return { cls: st.className.replace('vstage ', ''), current: cur ? cur.dataset.product : null, badges: st.querySelectorAll('.vstage__badge.is-in').length, caption: cap ? cap.textContent.slice(-48) : '' };
+    const lit = st.querySelector('.vstage__badge.is-speaking');
+    return { cls: st.className.replace('vstage ', ''), current: cur ? cur.dataset.product : null,
+      badges: st.querySelectorAll('.vstage__badge.is-in').length, caption: cap ? cap.textContent.slice(-48) : '',
+      lit: lit ? lit.dataset.product : null, glow: lit ? getComputedStyle(lit.querySelector('.vstage__emblem'), '::after').opacity : null,
+      dim: [...st.querySelectorAll('.vstage__badge.is-in')].filter(b => parseFloat(getComputedStyle(b).opacity) < .6).length };
   });
   if (!s) break;
+  spots.push(s);
   const label = (s.cls.includes('is-team') ? 'TEAM' : s.current || (s.cls.includes('is-hero') ? 'NewVoices' : 'burst')) + ' · ' + s.badges + ' on roster';
   await frame(label);
   if (label !== last) { console.log('  ·    ' + ((frames[frames.length - 1].t - tTap) / 1000).toFixed(1).padStart(5) + ' s  ' + label + (s.caption ? '   "…' + s.caption + '"' : '')); last = label; }
@@ -111,7 +117,32 @@ ok(reveals.every(r => r.via === 'words'), 'each one on its words, none by the cl
 ok(tight, 'each card lands within 600 ms of its name');
 ok(inOrder && spaced, 'in speaking order, at least 2 s apart');
 ok(frames.some(f => /TEAM/.test(f.label)), 'the team assembles at the pivot');
-ok(total >= 45 && total <= 90, 'the story runs ' + total.toFixed(1) + ' s (45–90)');
+ok(total >= 35 && total <= 75, 'the story runs ' + total.toFixed(1) + ' s (35–75)');
+
+/* 3b · THE SPOTLIGHT — "each of the names and descriptions is mentioned, it
+   should time with highlighting that company" (client, 2026-09-16). At every
+   sample where a product's tile is on the deck, the LIT badge has to be that
+   same product, its halo has to be painted, and the rest have to be dimmed. */
+const deck = spots.filter(s => s.current && !s.cls.includes('is-team'));
+const mismatched = deck.filter(s => s.lit && s.lit !== s.current && s.lit !== 'more');
+ok(deck.length >= products.length, 'the deck was sampled through the story (' + deck.length + ' frames)');
+ok(mismatched.length === 0, 'the lit badge is always the company on the deck' +
+  (mismatched.length ? ': ' + mismatched.map(s => s.lit + '≠' + s.current).join(', ') : ''));
+ok(deck.filter(s => s.lit).length >= products.length, 'something is lit while each one is described (' + deck.filter(s => s.lit).length + ' frames)');
+ok(deck.filter(s => s.lit).every(s => s.glow === null || parseFloat(s.glow) > .5), 'and its halo is painted behind the icon');
+const many = deck.filter(s => s.badges > 1);
+ok(many.length === 0 || many.every(s => s.dim >= 1), 'the rest of the roster steps back while one is named');
+/* it ENDS on IMAI: nothing after it is ever named aloud */
+ok(products[products.length - 1].id === 'imai', 'the last one named is IMAI');
+ok(!spots.some(s => s.current === 'geopulse' || s.current === 'agent_cloud'), 'GEOPulse and Agent Cloud are never put on the deck');
+/* and it puts them down on the question it opened with */
+const landed = await page.evaluate(() => ({
+  pills: [...document.querySelectorAll('#agentThread .turnb--team .turnb__chips .tag')].map(t => t.textContent.trim()),
+  card: !!document.querySelector('#agentThread .turnb--team'),
+  gone: !document.querySelector('.vstage')
+}));
+ok(landed.gone && landed.card, 'the stage lifts and the team stays in the thread');
+ok(landed.pills.length === ((await page.evaluate(() => window.SAI.data.goals.goals.length))), 'the starting points are offered again, under the card: ' + landed.pills.length + ' pills');
 ok(errors.length === 0, errors.length ? 'page errors: ' + errors.join(' | ') : 'no page errors');
 
 /* 4 · the contact sheet — one picture of the whole thing */

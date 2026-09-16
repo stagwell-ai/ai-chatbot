@@ -175,8 +175,12 @@ function render(st) {
     else if (st.suggestions && st.suggestions.length && window.SAIVOICE.offerChips) {
       window.SAIVOICE.offerChips(st.suggestions.map(s => ({ label: s.label, value: s.value })), chip => send(chip.value, chip.label));
     }
-    inputMode('text');
-    H.placeholder(st.hint || (st.question && st.question.field === 'website' ? ((copy().hints || {}).website || 'yourcompany.com') : 'Type your answer…'));
+    /* the work email is typed like any other address: the phone's keyboard
+       gets the @ for it, and the placeholder says what shape the answer is */
+    const f = st.question && st.question.field;
+    inputMode(f === 'email' ? 'email' : 'text');
+    H.placeholder(st.hint || (f === 'website' ? ((copy().hints || {}).website || 'yourcompany.com')
+      : f === 'email' ? ((copy().hints || {}).email || 'you@company.com') : 'Type your answer…'));
     refocus();
     return;
   }
@@ -203,6 +207,11 @@ function render(st) {
   if (st.uiAction === 'BOOK') {
     if (lastKey === 'book') return;
     lastKey = 'book';
+    /* with the email asked up front the flow goes from the last question
+       STRAIGHT to the call, so this is the first render that has cards to
+       show: draw the recommendation before the button, or the visitor is
+       offered a call about a product they were never shown (2026-09-16) */
+    if (st.cards.length && !cardsDrawn) drawCards(st, { open: true });
     drawBook(quiet ? Object.assign({}, st, { message: '' }) : st);
     return;
   }

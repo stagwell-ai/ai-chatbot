@@ -49,6 +49,10 @@ export function walk(goal, picks, opts) {
     const pick = (q.suggestions || []).find(s => picks.indexOf(s.id) !== -1 || picks.indexOf(s.value) !== -1) || null;
     trail.push({ id: q.id, picked: pick ? pick.id : null });
     if (pick) Q.applySuggestion(state, q, pick);
+    /* the typed steps have no pills: answer them the way the flow does — a work
+       address fills the website too, because its domain IS the website */
+    else if (q.field === 'email') { state.email = o.email || 'ada@acme-brands.com'; if (!/@(gmail|outlook|yahoo|hotmail|icloud)\./.test(state.email)) state.website = state.email.split('@')[1]; }
+    else if (q.field === 'website') state.website = o.website || 'acme-brands.com';
   }
   throw new Error('conversation did not end');
 }

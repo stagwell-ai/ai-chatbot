@@ -118,9 +118,9 @@ try {
     await page.waitForTimeout(400);
     ok((await active(page)) !== 'agentInput', 'the button they focused kept the caret');
 
-    /* the client's order: the website is typed, then chips (size, role, the
-       goal's opener), then the cards with the composer still open for the email */
-    await page.fill('#agentInput', 'example-brand.com'); await page.press('#agentInput', 'Enter');
+    /* the order (2026-09-16): the work email is typed — its domain is the site
+       — then chips (size, role, the goal's opener), then the cards and the call */
+    await page.fill('#agentInput', 'ada@example-brand.com'); await page.press('#agentInput', 'Enter');
     await answered(page); await page.waitForTimeout(250);
     for (let i = 0; i < 6 && !(await page.$('.reco__card--best')); i++) {
       await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');
@@ -129,15 +129,13 @@ try {
     }
     await page.waitForSelector('.reco__card--best', { timeout: 15000 });
     await page.waitForTimeout(400);
-    ok(!(await page.$eval('#agentInput', e => e.disabled)) && (await active(page)) === 'agentInput', 'the cards are up and the composer keeps the caret for the email');
-    await page.fill('#agentInput', 'visitor@example-brand.com'); await page.press('#agentInput', 'Enter');
-    await page.waitForFunction(() => window.SAIKIMI.state().status === 'CAPTURE_PHONE', null, { timeout: 15000 });
-    await page.waitForTimeout(300);
-    ok((await active(page)) === 'agentInput', 'and for the phone');
-    await page.fill('#agentInput', '+1 212 555 0100'); await page.press('#agentInput', 'Enter');
-    await page.waitForFunction(() => window.SAIKIMI.state().status === 'BOOK', null, { timeout: 15000 });
-    await page.waitForTimeout(300);
-    ok(await page.$eval('#agentInput', e => e.disabled), 'the composer is closed once the call is offered');
+    /* the address was taken at the top, so the cards land on the call and the
+       composer closes: there is nothing left to type */
+    ok(await page.$eval('#agentInput', e => e.disabled), 'the cards are up and the composer has closed — the address was given at the top');
+    ok((await page.evaluate(() => window.SAIKIMI.state().status)) === 'BOOK', 'the call is offered straight away');
+    /* the number is asked for by the things that need it, and one of them is
+       right there under the button */
+    ok(!!(await page.$('#agentThread .turnb--book .call__num')), 'with a field for a number inside "Call my phone"');
     await ctx.close();
   }
   console.log('\n▶ the fast track\'s form takes the caret at Full name');

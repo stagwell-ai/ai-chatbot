@@ -65,7 +65,7 @@ const chip = async (page, label) => {
 const toCards = async (page) => {
   await page.click('#agentTags .tag[data-goal="competition"]');
   await settle(page); await done(page);
-  await say(page, 'acme-brands.com');
+  await say(page, 'ada@acme-brands.com');   /* the work email: its domain is the site (2026-09-16) */
   await chip(page, '51 to 250');
   await chip(page, 'Marketing manager');
   await chip(page, "What they're doing right now");
@@ -77,7 +77,7 @@ try {
     const { ctx, page, state } = await open('no-preference');
     await page.click('#agentTags .tag[data-goal="competition"]');
     await settle(page); await done(page);
-    await say(page, 'acme-brands.com');
+    await say(page, 'ada@acme-brands.com');   /* the work email: its domain is the site (2026-09-16) */
     await chip(page, '51 to 250');
     await chip(page, 'Marketing manager');
 

@@ -639,6 +639,18 @@
     "_comment": "Kimi's discriminating questions (brief §7). Not a sequence: next/select-question.js picks the one that best separates the products still in the running, and stops when scoring.json says the top candidate is clearly ahead. `field` is what an answer fills — 'intent' adds the suggestion's value to the visitor's signals as an EXPLICIT intent (taxonomy.json id); companySize / creatorProgramSize / geographicScope set that band. `askWhen` is declarative: goals (the visitor's primary goal is one of these), intentsAny (any of these intents already detected), candidatesAll (all these products currently in the top candidates), always. `separates` names the products the question exists to tell apart; the selector counts how many of them are in the running to value the question. `required:true` questions are asked once whenever the field is still unknown, after the discriminators; `first:true` is asked BEFORE them (the website, so the lookup can colour everything after it). Suggestions: 3–5, visitor language, never mandatory — free text is always allowed.",
     "questions": [
       {
+        "id": "work_email",
+        "purpose": "The work email, asked second — its domain IS the website, so one answer does the job of two and the lookup can colour everything after it (client, 2026-09-16: \"let's ask for the work email first, and if they put in a Gmail or some ambiguous email, then we'll ask for the website\"). A free address is kept as the contact but tells us nothing about the company, so the website question is asked after it. Switched by flags.emailFirst in kimi.json; with it off this question is never asked and the email goes back after the recommendation.",
+        "field": "email",
+        "priority": 101,
+        "first": true,
+        "prompt": "What's your work email? I'll read your company's site from it, so the rest of this is about you.",
+        "suggestions": [],
+        "askWhen": {
+          "always": true
+        }
+      },
+      {
         "id": "website",
         "purpose": "Read the visitor's own site so everything after this is about them, not about marketing in general No way out of it on a chip: the client wants the company (2026-09-10) — a non-address answer is asked once more for the address itself, then accepted as the company's name.",
         "field": "website",

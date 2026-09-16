@@ -44,7 +44,7 @@ const GOAL_Q = '__goal__';
 
 const data = () => (eng() && eng().data) || {};
 const kimi = () => data().kimi || {};
-const flags = () => Object.assign({ enabled: true, llm: true, contactGate: true, secondaryRecommendations: true, analytics: true, explainWithLlm: true }, kimi().flags || {});
+const flags = () => Object.assign({ enabled: true, llm: true, contactGate: true, secondaryRecommendations: true, analytics: true, explainWithLlm: true, emailFirst: false, phoneStep: true }, kimi().flags || {});
 const copy = () => Object.assign({}, kimi().copy || {});
 const goals = () => ((data().goals || {}).goals) || [];
 const conv = () => Object.assign({ secondaryMax: 2 }, ((data().scoring || {}).conversation) || {});
@@ -90,6 +90,8 @@ function blank() {
     role: null,                  /* founder | manager | director_vp | c_suite */
     roleText: null,              /* their own words, when they typed a title instead */
     website: null,               /* the domain they gave, or '__skip__' if they declined */
+    email: null,                  /* the work email, asked second when flags.emailFirst — its domain is the website */
+    emailFree: false,             /* …unless it is a personal address, and then the website is still to come */
     findings: null,              /* what the lookup actually knew — never anything it did not */
     contactRequest: null,        /* 'call'|'demo'|'trial'|'expert'|'pricing' — they asked to be contacted */
     contact: null,               /* the resolved copy for the form they are about to see */
@@ -311,6 +313,7 @@ function present(q, first, modelAck) {
      the size, otherwise "pick one, or type" */
   const hints = c.hints || {};
   st.hint = q.field === 'website' ? (hints.website || 'yourcompany.com')
+    : q.field === 'email' ? (hints.email || 'you@company.com')
     : q.field === 'companySize' ? hints.size
     : (list(q.suggestions).length ? hints.question : (hints.typed || 'Type your answer…'));
   st.status = st.status === 'DISCOVERY' && st.step > 1 ? 'QUALIFICATION' : (st.status === 'IDLE' ? 'DISCOVERY' : st.status);
@@ -473,9 +476,23 @@ function readyForContact() {
   } else {
     /* the client's order (2026-09-10): "6) here are some recommendations we
        have 7) give us your email 8) give us your phone number 9) book a call" —
-       the value first, then the ask */
+       the value first, then the ask.
+       With the email asked up front instead (flags.emailFirst, 2026-09-16) it
+       is already in hand by now, so the recommendation goes straight to the
+       call, where a name and a number are asked for by the thing that needs
+       them — Book a call, Call my phone, the contact form. */
     showRecommendation();
-    askEmail();
+    if (st.contactCaptured && st.lead && st.lead.email) {
+      /* the address came in at the top, before there was anything to say about
+         them: now there is — the recommendation, the size, the role — so the
+         same lead is written again, brought up to date */
+      const e = epoch;
+      submitLead(leadPayload()).then(d => {
+        if (stale(e)) return;
+        track('kimi_lead_updated', Object.assign({ delivered: !!d.delivered }, recoProps()));
+      });
+      book();
+    } else askEmail();
   }
 }
 
@@ -488,10 +505,13 @@ function advance(ack) {
   const first = st.askedQuestionIds.length === 0;
   if (!st.primaryGoal && !st.intents.length) { askGoal(); return; }
   const reco = recompute();
+  /* with the email asked after the recommendation instead (flags.emailFirst
+     off), the work_email question is simply never in the running */
+  const asked = flags().emailFirst === false ? st.askedQuestionIds.concat('work_email') : st.askedQuestionIds;
   const q = Qs() ? Qs().selectQuestion({
-    primaryGoal: st.primaryGoal, intents: st.intents, askedQuestionIds: st.askedQuestionIds,
+    primaryGoal: st.primaryGoal, intents: st.intents, askedQuestionIds: asked,
     companySize: st.companySize, creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope,
-    website: st.website, role: st.role
+    website: st.website, role: st.role, email: st.email
   }, reco, data()) : null;
   if (q) { present(q, first, ack); return; }
   if (!reco || !reco.primary) { askGoal(); return; }
@@ -594,6 +614,67 @@ async function answer(input) {
   if (q.field === 'website' || q.field === 'role') {
     const cut = R() ? R().contactRequest(text, data()) : null;
     if (cut) { if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600); fastTrack(cut); notify(); return state(); }
+  }
+
+  /* ── THE WORK EMAIL, ASKED SECOND ──
+     One answer for two questions: the address is the contact, and its domain
+     is the site to read. A personal address is kept all the same — it is how
+     we reach them — and the website is asked straight after it. The lead is
+     created here, early, so nothing is lost if they leave before the
+     recommendation; it carries whatever is known at the time and is updated
+     as the conversation fills in. */
+  if (q.field === 'email') {
+    const c = copy();
+    const domain = emailDomain(text);
+    if (!domain) {
+      st.holds++;
+      st.message = (c.contactErrors || {}).email || 'That does not look like an email address.';
+      st.ack = null; st.prompt = st.message; st.suggestions = []; st.uiAction = 'ASK';
+      emit('question_asked', { id: q.id, slot: 'work_email', copy: st.message, mode: 'nudge' });
+      notify(); return state();
+    }
+    const email = text.trim();
+    st.email = email;
+    st.emailFree = isFreeMail(domain);
+    st.lead = Object.assign({ name: null, phone: null }, st.lead || {}, { email, company: st.company || null });
+    setSlot('work_email', email, 'visitor');
+    setSlot('contact_consent', true, 'visitor');
+    emit('answer_given', { id: q.id, slot: 'work_email', text: '@' + domain, chip: null });
+    track('kimi_question_answered', { question_id: q.id, input_type: 'free_text', understood: true });
+    st.currentQuestion = null;
+    /* the lead goes out now, and again as more is learned */
+    const e2 = epoch;
+    const delivery = await submitLead(leadPayload());
+    if (stale(e2)) return state();
+    if (delivery.ok) {
+      st.contactCaptured = true;
+      emit('capture_email', { domain, kind: 'kimi' });
+      emit('capture_consent', { consent: true });
+      track('kimi_email_captured', Object.assign({ email_domain: domain, free_mail: st.emailFree, at: 'early',
+        delivered: !!delivery.delivered, destination: delivery.destination || null }, recoProps()));
+    }
+    /* a personal address tells us nothing about the company: on to the website */
+    if (st.emailFree) {
+      track('kimi_email_free', { email_domain: domain });
+      advance(c.emailFree || null);
+      notify(); return state();
+    }
+    /* a company's own address: its domain IS the website, and the site is read
+       now — so the website question never has to be asked at all */
+    st.website = domain;
+    setSlot('company_domain', domain, 'visitor');
+    st.researching = domain;
+    st.uiAction = 'READING';
+    st.message = tpl(c.emailRead || (c.research || {}).reading, { domain });
+    notify();
+    const found = await research(domain);
+    if (stale(e2)) return state();
+    st.researching = null;
+    st.researched = true;
+    absorbFindings(found);
+    if (!found) track('kimi_site_read', { domain, known: false });
+    advance(null);
+    notify(); return state();
   }
 
   /* the website question: take the domain, look it up, show what came back */
@@ -702,6 +783,19 @@ async function answer(input) {
 const EMAIL_RE = /^[^\s@]+@([a-z0-9.-]+\.[a-z]{2,})$/i;
 const PHONE_RE = /^\+?[\d\s().-]{7,20}$/;
 const emailDomain = e => { const m = String(e || '').trim().toLowerCase().match(EMAIL_RE); return m ? m[1] : null; };
+/* ── A WORK ADDRESS, OR A PERSONAL ONE ──
+   The work email's domain IS the website, which is why it is asked first: one
+   answer does the job of two. A free address is still a perfectly good way to
+   reach someone — it is kept as the contact — but it says nothing about their
+   company, so the website is asked after it (client, 2026-09-16: "if they put
+   in a Gmail or some ambiguous email, then we'll ask for the website").
+   Deliberately a short list of the addresses people actually use, not an
+   attempt at every free host on earth: a miss costs one skipped lookup. */
+const FREE_MAIL = ['gmail.com', 'googlemail.com', 'yahoo.com', 'yahoo.co.uk', 'ymail.com', 'hotmail.com', 'hotmail.co.uk',
+  'outlook.com', 'live.com', 'msn.com', 'icloud.com', 'me.com', 'mac.com', 'aol.com', 'proton.me', 'protonmail.com',
+  'gmx.com', 'gmx.de', 'mail.com', 'zoho.com', 'yandex.com', 'yandex.ru', 'mail.ru', 'qq.com', '163.com', '126.com',
+  'comcast.net', 'verizon.net', 'btinternet.com', 'sbcglobal.net', 'orange.fr', 'free.fr', 'web.de', 't-online.de'];
+const isFreeMail = d => !d || FREE_MAIL.indexOf(String(d).toLowerCase()) !== -1;
 
 function validate(lead) {
   const c = copy().contactErrors || {};
@@ -854,7 +948,14 @@ function showRecommendation(why) {
    the email lands and updated when the phone does (leadService upserts by
    email), so nothing is lost if they leave halfway. A wrong email is asked
    again; a wrong phone is asked once more, then the call is offered anyway. */
-const leadPayload = () => ({ lead: st.lead, discovery: discoveryPayload(), page: location.pathname + location.search, ts: new Date().toISOString(), source: 'stagwell-ai · kimi' });
+/* the company is read at SEND time, not at capture time: with the address
+   taken at the top, the name of the company often turns up later — typed where
+   the website was asked for — and the lead is written again when it does */
+const leadPayload = () => ({
+  lead: Object.assign({}, st.lead, { company: (st.lead && st.lead.company) || st.company || null }),
+  discovery: discoveryPayload(), page: location.pathname + location.search,
+  ts: new Date().toISOString(), source: 'stagwell-ai · kimi'
+});
 
 function askEmail() {
   const c = copy();
@@ -891,8 +992,10 @@ async function captureEmail(text) {
   emit('capture_email', { domain: emailDomain(email), kind: 'kimi' });
   emit('capture_consent', { consent: true });
   emit('journey_converted', { kind: 'kimi', product: (st.reco || {}).primary || null });
-  track('kimi_email_captured', Object.assign({ email_domain: emailDomain(email), delivered: !!delivery.delivered, destination: delivery.destination || null }, recoProps()));
-  askPhone();
+  track('kimi_email_captured', Object.assign({ email_domain: emailDomain(email), at: 'late', delivered: !!delivery.delivered, destination: delivery.destination || null }, recoProps()));
+  /* the number is asked for by the thing that needs it, not by the
+     conversation (client, 2026-09-16) — unless flags.phoneStep says otherwise */
+  if (flags().phoneStep) askPhone(); else book();
   notify(); return state();
 }
 
@@ -969,6 +1072,8 @@ function state() {
     hint: st.hint,
     question: st.currentQuestion ? { id: st.currentQuestion.id, field: st.currentQuestion.field || 'intent' } : null,
     website: st.website,
+    email: st.email,
+    emailFree: !!st.emailFree,
     role: st.role,
     ack: st.ack,
     prompt: st.prompt,
@@ -1021,7 +1126,7 @@ function toolView() {
   const q = s.question;
   const step = q ? ({ website: 'their website', companySize: 'how large their organisation is', role: 'their role', goal: 'what they want to solve' }[q.field] || 'a question about their need') : (stepOf[s.status] || null);
   /* websites, emails and phone numbers are typed, never taken by ear (client, 2026-09-11) */
-  const typed = (q && q.field === 'website') || s.status === 'CAPTURE_EMAIL' || s.status === 'CAPTURE_PHONE';
+  const typed = (q && (q.field === 'website' || q.field === 'email')) || s.status === 'CAPTURE_EMAIL' || s.status === 'CAPTURE_PHONE';
   return {
     status: s.status,
     step,

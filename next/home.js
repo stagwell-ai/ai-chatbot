@@ -476,11 +476,19 @@
        the slack ABOVE the card: once its first line is at the top, the window
        stops, and the rest is read by scrolling. */
     let pageFollowAt = 0, pageFollowTo = -1;
+    /* ── THE HEAD LOCK ──
+       When a turn has been deliberately opened at its FIRST line, the ordinary
+       following must not immediately drag it back to its last: the voice agent
+       goes on speaking while the team card lands, and every word of transcript
+       called follow() and undid the scroll (2026-09-16). For a short beat after
+       a head-settle, nothing chases the foot. */
+    let headLockUntil = 0;
+    const headLocked = () => Date.now() < headLockUntil;
     /* while the card is lent to the full-screen overlay there is no page under
        it to follow: the thread scrolls inside itself and the window stays put */
     const inOverlay = () => !!(mini && mini.closest('.chat-over'));
     const keepCardInView = () => {
-      if (inOverlay()) return;
+      if (inOverlay() || headLocked()) return;
       const now = Date.now();
       /* a smooth scroll is still travelling: measuring the card mid-flight
          reads a gap that is already being closed, and asking for it again
@@ -504,6 +512,7 @@
        response", client, 2026-09-16). This one may travel either way. */
     const headInView = (el) => {
       if (!el || inOverlay()) return;
+      headLockUntil = Date.now() + 1500;
       const bar = $('#nav');
       const top = (bar ? bar.getBoundingClientRect().height : 0) + 16;
       const by = el.getBoundingClientRect().top - top;
@@ -513,6 +522,7 @@
       try { window.scrollBy({ top: by, behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) { window.scrollBy(0, by); }
     };
     const follow = () => {
+      if (headLocked()) { more(); return; }
       const gap = thread.scrollHeight - thread.scrollTop - thread.clientHeight;
       if (gap <= 160) { try { thread.scrollTo({ top: thread.scrollHeight, behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) { thread.scrollTop = thread.scrollHeight; } }
       more();
@@ -639,7 +649,16 @@
          pointers): it types the new words in itself, and settles the thread on
          the bubble's first line rather than its foot */
       type: typeIn,
-      settle(el, o) { if (el) requestAnimationFrame(() => { settle(el); if (o && o.head) headInView(el); else keepCardInView(); }); },
+      /* {head:true}: the thread opens on this turn's FIRST line and the page
+         comes up to it — for a turn that is an arrival rather than a reply
+         (the recommendation, the team the story just introduced) */
+      settle(el, o) {
+        if (!el) return;
+        requestAnimationFrame(() => {
+          if (o && o.head) { thread.scrollTop = el.offsetTop; more(); headInView(el); }
+          else { settle(el); keepCardInView(); }
+        });
+      },
       chips(bubble, chips, onChip, cls) { if (!bubble || !chips || !chips.length) return null; const row = chipsRow(chips, onChip, cls); bubble.appendChild(row); follow(); return row; },
       open() { agentSec.classList.add('is-chat'); },
       placeholder(t) { miniInput.placeholder = t || ''; grow(); },

@@ -72,7 +72,7 @@ test('the story: the interruption line → flagship → each showcased product i
   assert.ok(s.startsWith(sc.interrupt) && /interrupt me any time/i.test(sc.interrupt), 'opens by saying they may interrupt ("' + sc.interrupt.slice(0, 40) + '…")');
   let at = s.indexOf(sc.flagship); assert.ok(at > 0, 'then the flagship line');
   assert.ok(sc.flagship.toLowerCase().includes(sc.openOn.toLowerCase()), 'the flagship line carries the word that raises the stage when asked aloud: ' + sc.openOn);
-  assert.ok(sc.products.length >= 4 && sc.products.length <= 6, sc.products.length + ' products — about 25 s');
+  assert.ok(sc.products.length === 4, sc.products.length + ' products — it ends on IMAI (client, 2026-09-16)');
   sc.products.forEach(p => {
     const P = R.productById(p.id, DATA);
     assert.ok(P && P.active !== false, p.id + ' is an active product');
@@ -89,16 +89,26 @@ test('the story: the interruption line → flagship → each showcased product i
   assert.equal(new Set(sc.products.map(p => p.icon)).size, sc.products.length, 'each member its own emblem');
   assert.ok(STAGE.icons.indexOf(sc.self.icon) !== -1, 'NewVoices has one too');
   assert.ok(sc.teamLabel && sc.teamLabel.length <= 40, 'a short label for the assembled team');
-  /* Agent Cloud is on the team, and the family is bigger than the team (client, 2026-09-11) */
-  assert.ok(sc.products.some(p => p.id === 'agent_cloud'), 'Agent Cloud is one of the six');
-  const jm = s.indexOf(sc.more); assert.ok(jm > at, 'then "…and that\'s just six of them"'); at = jm;
-  assert.ok(/more than ten products/.test(sc.more) && /growing/.test(sc.more), 'more than ten, a growing family: "' + sc.more + '"');
+  /* it ENDS on IMAI, and the rest of the family is named as a number, not one
+     by one (client, 2026-09-16: "it should end after it talks about IMAI,
+     saying plus over 10 other AI services to help with all your business
+     needs"). GEOPulse and Agent Cloud are still in the catalogue, still in the
+     10+ card, just not said aloud. */
+  assert.equal(sc.products[sc.products.length - 1].id, 'imai', 'IMAI is the last one named');
+  assert.ok(!sc.products.some(p => p.id === 'geopulse' || p.id === 'agent_cloud'), 'GEOPulse and Agent Cloud are not in the spoken four');
+  ['geopulse', 'agent_cloud'].forEach(id => assert.ok((R.productById(id, DATA) || {}).active !== false, id + ' is still an active product'));
+  const jm = s.indexOf(sc.more); assert.ok(jm > at, 'then "…plus over ten other AI services"'); at = jm;
+  assert.ok(/over ten other/i.test(sc.more) && /business needs/i.test(sc.more), 'over ten others, for all their business needs: "' + sc.more + '"');
+  assert.ok(sc.more.toLowerCase().includes(sc.moreOn.toLowerCase()), 'the more line carries the words that add the 10+ badge: ' + sc.moreOn);
   assert.ok(R.activeProducts ? true : DATA.solutions.solutions.filter(p => p.active !== false).length > 10, 'and that is true of the catalog');
   assert.ok(/^\d+\+ /.test(sc.moreLabel), 'a badge for the rest: ' + sc.moreLabel);
-  assert.ok(s.indexOf(sc.pivot) > at, 'the pivot last');
-  assert.ok(/marketing genius/.test(sc.pivot) && sc.pivot.toLowerCase().includes(sc.closeOn.toLowerCase()), 'the pivot carries the words that close the stage');
+  /* and it lands on the question it opened with (client, 2026-09-16) */
+  const land = sc.land || sc.pivot;
+  assert.ok(s.indexOf(land) > at, 'the question it opened with, last');
+  assert.ok(/what do you need help with/i.test(land), 'it reintroduces the original question: "' + land + '"');
+  assert.ok(land.toLowerCase().includes(sc.closeOn.toLowerCase()), 'and carries the words that close the stage');
   const words = s.split(/\s+/).length;
-  assert.ok(words >= 100 && words <= 215, 'about 60–75 s of unhurried speech: ' + words + ' words');
+  assert.ok(words >= 70 && words <= 150, 'about 40–55 s of unhurried speech: ' + words + ' words');
   [].concat(sc.burst, [sc.self.img, sc.self.logo]).forEach(img => assert.ok(fs.existsSync(path.join(ROOT, img.replace(/^\//, ''))), img + ' exists'));
   assert.ok(!/https?:\/\//.test(s) && !/\$\s?\d/.test(s), 'no URL, no price in the script');
 });

@@ -68,9 +68,9 @@ try {
     const { ctx, page, state } = await open(KNOWN);
     await page.click('#agentTags .tag[data-goal="operations"]');
     await settle(page); await page.waitForTimeout(250);
-    ok(/website/i.test(await lastAsk(page)), 'the first question is the website');
-    await say(page, 'acmehotels.com');
-    ok(state.researched.includes('acmehotels.com'), 'the domain was looked up');
+    ok(/work email/i.test(await lastAsk(page)), 'the first question is the work email — its domain is the site (2026-09-16)');
+    await say(page, 'ada@acmehotels.com');
+    ok(state.researched.includes('acmehotels.com'), 'the domain from the address was looked up');
     const rows = await page.$$eval('.found__row', els => els.map(e => e.querySelector('dt').textContent.trim() + '=' + e.querySelector('dd').textContent.trim()));
     ok(rows.some(r => /^INDUSTRY=hospitality$/i.test(r)), 'it shows the industry');
     ok(rows.some(r => /251 or more/.test(r)), 'it shows the size band');
@@ -93,9 +93,8 @@ try {
     const asked = (await page.evaluate(() => window.SAIKIMI.state())).askedQuestionIds;
     ok(!asked.includes('company_size'), 'the size question is never asked: ' + asked.join(' → '));
     ok(!!(await page.$('.reco__card--best')), 'the conversation reaches the recommendation');
-    ok((await page.evaluate(() => window.SAIKIMI.state().status)) === 'CAPTURE_EMAIL', 'and then asks for the email');
+    ok((await page.evaluate(() => window.SAIKIMI.state().status)) === 'BOOK', 'and then offers the call — the address was taken at the top');
 
-    await say(page, 'ada@acmehotels.com');
     const d = state.lead.discovery;
     ok(d.website === 'acmehotels.com', 'the lead carries the website');
     ok(d.role === 'director_vp', 'the lead carries the role');
@@ -110,7 +109,7 @@ try {
     const { ctx, page, state } = await open(UNKNOWN);
     await page.click('#agentTags .tag[data-goal="competition"]');
     await settle(page); await page.waitForTimeout(250);
-    await say(page, 'some-unknown-brand-xyz.com');
+    await say(page, 'ada@some-unknown-brand-xyz.com');
     const text = await thread(page);
     ok(/couldn't find much/i.test(text), 'it says plainly that it found nothing');
     ok((await page.$$('.found__row')).length === 0, 'no fact list is drawn');
@@ -125,7 +124,7 @@ try {
     const { ctx, page, state } = await open('down');
     await page.click('#agentTags .tag[data-goal="competition"]');
     await settle(page); await page.waitForTimeout(250);
-    await say(page, 'acmehotels.com');
+    await say(page, 'ada@acmehotels.com');
     ok(/how big/i.test(await lastAsk(page)), 'the conversation carries on regardless (to the size)');
     const st = await page.evaluate(() => window.SAIKIMI.state());
     ok(st.website === 'acmehotels.com', 'the website is still captured for the lead');
@@ -138,9 +137,11 @@ try {
     const { ctx, page, state } = await open(KNOWN);
     await page.click('#agentTags .tag[data-goal="competition"]');
     await settle(page); await page.waitForTimeout(250);
-    /* no chip out of the website question any more (client): a decline is asked
-       once more for the address, and a second decline is accepted */
+    /* no chip out of the typed questions (client): a decline is asked once more
+       for the address, and a second decline is accepted. A personal address is
+       what gets us to the website question at all now. */
     ok((await page.$$('#agentThread .turnb--ai:last-child .turnb__chips .tag')).length === 0, 'no "I\'d rather not say" chip');
+    await say(page, 'someone@gmail.com');
     await say(page, "I'd rather not say");
     ok(/web address itself/i.test(await lastAsk(page)), 'declining is met with one more ask for the address');
     await say(page, 'no');
