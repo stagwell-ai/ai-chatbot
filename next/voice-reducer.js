@@ -170,12 +170,19 @@
         break;
       }
 
+      /* the voice, starting and stopping. They carry the response they belong
+         to — `spoke` is the last response that actually made a sound, because
+         response.done has usually cleared st.response by the time the audio
+         ends: the model finishes writing long before it finishes speaking.
+         Without it, one response's silence is read as another's (voice.js took
+         the greeting's for the story's and put the pictures away). */
       case 'output_audio_buffer.started':
-        if (!st.speaking) { st.speaking = true; ops.push({ op: 'agent.speaking' }); }
+        if (st.response) st.spoke = st.response.id;
+        if (!st.speaking) { st.speaking = true; ops.push({ op: 'agent.speaking', responseId: st.spoke || '' }); }
         break;
       case 'output_audio_buffer.stopped':
       case 'output_audio_buffer.cleared':
-        if (st.speaking) { st.speaking = false; ops.push({ op: 'agent.silent' }); }
+        if (st.speaking) { st.speaking = false; ops.push({ op: 'agent.silent', responseId: st.spoke || '', cleared: e.type === 'output_audio_buffer.cleared' }); }
         break;
 
       case 'error': {

@@ -39,7 +39,7 @@ await page.route('**/api/ask', r => r.abort());
 await page.goto(BASE + '/next/index.html?voicerehearse=1' + PACE, { waitUntil: 'load' });
 await page.waitForFunction(() => window.SAIKIMI && window.SAIVOICE && window.SAI && window.SAI.data && window.__SAIVOICE_TRANSPORT && window.__SAIVOICE_TRANSPORT.rehearsal, null, { timeout: 8000 });
 await page.evaluate(() => {
-  const a = window.SAIANALYTICS; window.__tracked = []; window.__t0 = performance.now();
+  const a = window.SAIANALYTICS; window.__tracked = []; window.__t0 = performance.now(); window.__dt0 = Date.now();
   const stamp = (n, p) => window.__tracked.push([n, p || {}, Math.round(performance.now() - window.__t0)]);
   if (a && a.track) { const orig = a.track.bind(a); a.track = (n, p) => { stamp(n, p); return orig(n, p); }; }
   /* the words as they arrive, stamped: when was each member's name first said? */
@@ -95,26 +95,50 @@ await frame('after the story');
 
 /* 3 · the timeline: when each name was said vs when its card landed */
 const said = await page.evaluate(() => window.__said);
+/* WHEN THE VOICE SAID IT, not when the text arrived. The transcript comes in a
+   burst — that is the whole point — so measuring a reveal against the text
+   would pass no matter how far ahead the pictures ran. The harness publishes
+   the audio schedule; this is the only honest ruler. */
+const voiced = await page.evaluate(() => (window.__voiced || []).map(([t, w]) => [Math.round(t - window.__dt0), w]));
 const reveals = (await page.evaluate(() => window.__tracked.filter(t => t[0] === 'voice_showcase_reveal'))).map(t => ({ id: t[1].id, via: t[1].via, at: t[2] }));
 const squash = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
 const products = V.showcase.products.map(p => ({ id: p.id, name: (window_name => window_name)(p.line.split(' — ')[0]) }));
 let acc = '', firstSaid = {};
-for (const [t, d] of said) { acc += d; for (const p of products) if (!firstSaid[p.id] && squash(acc).includes(squash(p.name))) firstSaid[p.id] = t; }
-console.log('\n  member                 named at   landed at   lag');
+for (const [t, w] of voiced) { acc += ' ' + w; for (const p of products) if (!firstSaid[p.id] && squash(acc).includes(squash(p.name))) firstSaid[p.id] = t; }
+let textAcc = '', firstTyped = {};
+for (const [t, d] of said) { textAcc += d; for (const p of products) if (!firstTyped[p.id] && squash(textAcc).includes(squash(p.name))) firstTyped[p.id] = t; }
+console.log('\n  member                  typed at   voiced at   landed at      lag');
 let prev = 0, inOrder = true, spaced = true, tight = true;
 products.forEach((p, i) => {
   const r = reveals.find(x => x.id === p.id); const named = firstSaid[p.id];
   const lag = r && named != null ? r.at - named : null;
   if (r && r.at < prev) inOrder = false;
   if (r && prev && r.at - prev < 2000) spaced = false;
-  if (lag == null || lag < -100 || lag > 600) tight = false;
-  console.log('  ' + p.name.padEnd(22) + (named != null ? ((named - tTap) / 1000).toFixed(1).padStart(6) + ' s' : '     —  ') + (r ? ((r.at - tTap) / 1000).toFixed(1).padStart(9) + ' s' : '        —  ') + (lag != null ? String(lag).padStart(6) + ' ms' : '      —') + (r ? '  (' + r.via + ')' : ''));
+  /* LATE IS FINE, EARLY IS THE BUG: a picture that lands a beat after its name
+     reads as the screen keeping up; one that lands before it is the thing the
+     client saw. So the window is tight on the early side and forgiving on the
+     late one. */
+  if (lag == null || lag < -400 || lag > 2200) tight = false;
+  console.log('  ' + p.name.padEnd(22) + (firstTyped[p.id] != null ? ((firstTyped[p.id] - tTap) / 1000).toFixed(1).padStart(7) + ' s' : '      —  ') + (named != null ? ((named - tTap) / 1000).toFixed(1).padStart(8) + ' s' : '       —  ') + (r ? ((r.at - tTap) / 1000).toFixed(1).padStart(9) + ' s' : '        —  ') + (lag != null ? String(lag).padStart(7) + ' ms' : '       —') + (r ? '  (' + r.via + ')' : ''));
   if (r) prev = r.at;
 });
 const total = (tEnd - tTap) / 1000;
 ok(reveals.length === products.length, 'every member landed (' + reveals.length + '/' + products.length + ')');
-ok(reveals.every(r => r.via === 'words'), 'each one on its words, none by the clock');
-ok(tight, 'each card lands within 600 ms of its name');
+ok(reveals.every(r => r.via === 'voice'), 'each one on the voice, none by the clock');
+ok(tight, 'each card lands ON the voice saying its name — never before it, never more than a beat after');
+/* …and it is the VOICE they follow, not the text. Only worth asserting when
+   the text really did arrive in a burst — with &textwps low the harness puts
+   the two in step on purpose, and then there is nothing to tell apart. */
+const burst = products.every(p => firstTyped[p.id] != null && firstSaid[p.id] != null) &&
+  (firstSaid[products[0].id] - firstTyped[products[0].id]) > 5000;
+if (burst) {
+  const early = products.filter(p => reveals.find(x => x.id === p.id) && (reveals.find(x => x.id === p.id).at - firstTyped[p.id]) < 2000);
+  ok(early.length === 0, 'and none of them followed the TEXT, which arrived in a burst ' +
+    Math.round((firstSaid[products[0].id] - firstTyped[products[0].id]) / 1000) + ' s ahead of the voice' +
+    (early.length ? ': ' + early.map(p => p.name).join(', ') : ''));
+} else {
+  console.log('  ·    the transcript was in step with the voice this run — nothing to tell apart');
+}
 ok(inOrder && spaced, 'in speaking order, at least 2 s apart');
 ok(frames.some(f => /TEAM/.test(f.label)), 'the team assembles at the pivot');
 ok(total >= 35 && total <= 75, 'the story runs ' + total.toFixed(1) + ' s (35–75)');

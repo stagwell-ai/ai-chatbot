@@ -22,8 +22,27 @@
   'use strict';
   const q = (() => { try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(); } })();
   const num = (k, d) => { const v = Number(q.get(k)); return v > 0 ? v : d; };
-  const WPS = num('wps', 2.7), BREATH = num('breath', 900), STOP = num('stop', 420), COMMA = num('comma', 140), DASH = num('dash', 240);
-  const WORD = Math.round(1000 / WPS);
+  /* WPS is the rate OVERALL — words a second including every pause — which is
+     the only definition that means anything to something trying to keep up
+     with the voice, and the one voice.js uses. The breath/stop/comma/dash
+     numbers are the SHAPE: how the time is distributed, in word-units. The
+     whole is scaled so the response really does run at WPS. (They used to be
+     milliseconds piled on top of a per-word rate, so &wps=2.7 actually spoke
+     at 2.06, and anything calibrated against it was wrong by a third.) */
+  const WPS = num('wps', 2.5);
+  const BREATH = num('breath', 2.4), STOP = num('stop', 1.7), COMMA = num('comma', 0.45), DASH = num('dash', 0.8);
+  /* ── THE TRANSCRIPT IS NOT THE VOICE ──
+     The first version of this harness streamed the transcript at speaking pace,
+     and every test passed while the real thing was badly broken: the Realtime
+     API sends the transcript as fast as the model WRITES it — the whole story
+     in a couple of seconds — and plays the audio at speaking pace underneath.
+     Following the text ran the pictures through the entire story in seven
+     seconds (client's recording, 2026-09-16). So the default here is now the
+     REAL shape: text in a burst, audio on the clock. &textwps= sets the
+     transcript's pace (default 18 words/s); &textwps=2.7 puts it back in step
+     with the voice, which is the other thing that has to keep working. */
+  const TEXT_WPS = num('textwps', 18);
+  const TEXT_WORD = Math.max(1, Math.round(1000 / TEXT_WPS));
 
   const copy = () => ((((window.SAI || {}).data || {}).kimi || {}).copy || {}).voice || {};
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -33,7 +52,9 @@
   const emit = ev => { if (onEvent) onEvent(ev); };
   const log = [];
 
-  /* one response, spoken: the transcript word by word at pace, with breaths */
+  /* one response, the way the wire really carries it: the transcript in a
+     burst, `response.done` with it — and the AUDIO still playing underneath,
+     ending at output_audio_buffer.stopped a speaking-pace later. */
   async function say(segments) {
     n++;
     const item = 'reh_a' + n, resp = 'reh_r' + n;
@@ -41,27 +62,51 @@
     emit({ type: 'response.created', response: { id: resp } });
     emit({ type: 'response.output_item.added', item: { id: item, type: 'message', role: 'assistant' } });
     emit({ type: 'output_audio_buffer.started' });
-    let said = '';
     const t0 = Date.now();
+    /* how long the VOICE will take — breaths and full stops included — and
+       WHEN it says each word. That schedule is the thing anything watching the
+       pacing has to measure against, so it is published: window.__voiced is
+       [absoluteMs, word] for every word of every response. */
+    let total = 0, units = 0;
+    const beat = [];
+    try { if (!window.__voiced) window.__voiced = []; } catch (e) {}
+    segments.forEach(seg => {
+      if (seg.breath) units += BREATH;
+      String(seg.text).split(/\s+/).filter(Boolean).forEach(w => {
+        total++;
+        beat.push({ at: units, w });
+        units += 1 + (/[.!?]["')\]]?$/.test(w) ? STOP : /[,;:]$/.test(w) ? COMMA : /[—–-]$/.test(w) ? DASH : 0);
+      });
+    });
+    /* …and the shape is stretched to the real rate */
+    const msPerUnit = units ? (total / WPS) * 1000 / units : 0;
+    const audioMs = Math.round(units * msPerUnit);
+    beat.forEach(b => { try { window.__voiced.push([t0 + Math.round(b.at * msPerUnit), b.w]); } catch (e) {} });
+    /* the text, in a burst */
+    let said = '';
     for (const seg of segments) {
       if (cancelled) break;
-      if (seg.breath) await sleep(seg.breath);
       const words = String(seg.text).split(/\s+/).filter(Boolean);
       for (const w of words) {
         if (cancelled) break;
         const delta = (said ? ' ' : '') + w;
         said += delta;
         emit({ type: 'response.output_audio_transcript.delta', item_id: item, delta });
-        let pause = WORD;
-        if (/[.!?]$/.test(w)) pause += STOP; else if (/,$/.test(w)) pause += COMMA; else if (/^—$|—$/.test(w)) pause += DASH;
-        await sleep(pause);
+        await sleep(TEXT_WORD);
       }
     }
-    log.push({ resp, words: said.split(/\s+/).length, ms: Date.now() - t0, cancelled });
+    const textMs = Date.now() - t0;
     emit({ type: 'response.output_audio_transcript.done', item_id: item, transcript: said });
-    emit({ type: 'output_audio_buffer.stopped' });
-    speaking = false;
     emit({ type: 'response.done', response: { id: resp, status: cancelled ? 'cancelled' : 'completed' } });
+    /* …and the voice carries on, until it doesn't. A barge-in — or the visitor
+       tapping a pill, which sends response.cancel — stops it mid-word, and the
+       buffer is cleared, exactly as the real one is. */
+    const left = Math.max(0, audioMs - textMs);
+    const until = Date.now() + left;
+    while (!cancelled && Date.now() < until) await sleep(Math.min(60, until - Date.now()));
+    log.push({ resp, words: total, textMs, audioMs, ms: Date.now() - t0, cancelled });
+    speaking = false;
+    emit({ type: cancelled ? 'output_audio_buffer.cleared' : 'output_audio_buffer.stopped' });
   }
 
   const greeting = () => { const V = copy(); return [{ text: (V.introduction || '') + ' ' + (V.invite || '') }]; };
@@ -106,7 +151,7 @@
     /* what the mint would have said, minus the secret */
     mint: () => ({ ok: true, value: 'rehearsal', model: 'rehearsal', voice: 'none', caps: { sessionSeconds: 900, softSeconds: 600, silenceMuteSeconds: 900 }, accepted: { model: 'rehearsal' } }),
     log: () => log.slice(),
-    pace: { wps: WPS, wordMs: WORD, breath: BREATH, stop: STOP },
+    pace: { wps: WPS, textWps: TEXT_WPS, breath: BREATH, stop: STOP },
     async connect(o) {
       onEvent = o.onEvent;
       setTimeout(() => emit({ type: 'session.created', session: { id: 'rehearsal' } }), 0);

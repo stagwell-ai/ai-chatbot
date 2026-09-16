@@ -203,7 +203,10 @@
         if (thread) thread.removeAttribute('data-vstage-hidden');
         if (el && el.parentNode) el.parentNode.removeChild(el);
         el = null; phase = 'closed';
-        if (thread) { try { thread.scrollTop = thread.scrollHeight; } catch (e) {} }
+        /* …to the foot of the thread, unless the team card is sitting there:
+           the landing opens on its FIRST line, and snapping to the bottom here
+           and back again a beat later is the jump (client, 2026-09-16) */
+        if (thread && !thread.querySelector('.turnb--team')) { try { thread.scrollTop = thread.scrollHeight; } catch (e) {} }
       };
       later(done, D ? 700 : 60);
     }

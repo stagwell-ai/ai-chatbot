@@ -324,6 +324,40 @@ number after a week.
   preview URL that the client (and I, via the function) exercise — phone in hand for iOS Safari.
   A checklist of the §4 use cases for that pass.
 
+### The transcript is not the voice (2026-09-16)
+
+The single most expensive mistake in this feature so far, worth writing down because every
+instinct says otherwise. **The Realtime API streams the transcript as fast as the model WRITES
+it, and plays the audio at speaking pace underneath.** A forty-five-second story arrives as text
+in about two seconds. So anything on screen that follows `response.output_audio_transcript.delta`
+runs the entire story before the voice has finished its first sentence — which is exactly what
+the client filmed: four products, seven seconds, the voice still on the first one.
+
+What makes it expensive is that a harness which streams the transcript at speaking pace passes
+every test while the real thing is broken. The first version of `voice-rehearsal.js` did exactly
+that, and the pacing suite was green throughout. It now models the real shape by default — text
+in a burst, audio on its own clock — and `&textwps=2.5` puts them back in step for the other
+case. It also publishes `window.__voiced`, the audio schedule, because a reveal measured against
+the transcript proves nothing.
+
+The fix, in `voice.js`: **the text is the score and the audio is the clock.** The transcript says
+what is coming and in what order; a clock anchored to the first word of the response, running at
+this voice's words-a-second, says where the voice has got to. Both gates must pass before a
+product is revealed. Two details that are not obvious:
+
+- **Anchor on the first transcript delta, not on `output_audio_buffer.started`.** The reducer
+  reports only the rising edge of speech, and a response that follows a cancelled one never gets
+  one — so the event simply never arrives and the clock silently starts seconds early. The model
+  emits audio and its transcript together, so the first word is a reliable anchor.
+- **Words are not evenly spaced.** A voice rests at a full stop, breathes at a dash, dips at a
+  comma. Counting words alone puts every reveal a little early and the error grows with every
+  product, because the pauses it ignored are all in front of it. Each word costs a unit plus
+  what its punctuation is worth, and the whole is scaled to the time the voice takes.
+
+The rate is measured from any response spoken all the way through (`noteSpeechEnded`), pinnable
+without a deploy via `copy.voice.wordsPerSecond`, and biased 2% slow — a picture landing a beat
+after its name reads as the screen keeping up; one landing before it reads as broken.
+
 ---
 
 ## 9. Phases

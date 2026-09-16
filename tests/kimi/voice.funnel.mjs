@@ -596,12 +596,22 @@ try {
   /* the greeting, as the agent would say it; the starters then hang under it */
   const greet = async page => { const V = await page.evaluate(() => window.SAI.data.kimi.copy.voice); await agentSays(page, V.introduction + ' ' + V.invite, 'a_greet'); await page.waitForTimeout(80); return V; };
   const speakStory = async (page, sc, upTo) => {
-    /* the agent tells the story, piece by piece, as the API would stream it */
+    /* The agent tells the story, piece by piece, as the API would stream it.
+       The PICTURES follow the voice, not the text (voice.js: the transcript
+       arrives in a burst far ahead of the audio), so the clock has to move for
+       anything to appear. Pinning a very fast words-a-second in the copy runs
+       that clock at speed: the schedule is the same code, just compressed, so
+       a whole story's worth of pacing fits in a second of test. */
+    await page.evaluate(() => { window.SAI.data.kimi.copy.voice.wordsPerSecond = 120; });
     await emit(page, { type: 'response.created', response: { id: 'r_story' } });
     await emit(page, { type: 'response.output_item.added', item: { id: 'a_story', type: 'message', role: 'assistant' } });
     await emit(page, { type: 'output_audio_buffer.started' });
     let said = '';
-    const speak = async chunk => { const delta = (said ? ' ' : '') + chunk; said += delta; await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'a_story', delta }); await page.waitForTimeout(80); };
+    const speak = async chunk => {
+      const delta = (said ? ' ' : '') + chunk; said += delta;
+      await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'a_story', delta });
+      await page.waitForTimeout(260);                 /* two beats of the conductor */
+    };
     return { speak, said: () => said };
   };
 

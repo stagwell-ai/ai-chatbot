@@ -33,6 +33,7 @@ if (!strip || !startBtn) return;
 const copy = () => ((((S.data || {}).kimi || {}).copy || {}).voice) || {};
 const flags = () => ((S.data || {}).kimi || {}).flags || {};
 const esc = s => H.esc(String(s == null ? '' : s));
+const list = v => (Array.isArray(v) ? v : []);
 const track = (name, props) => { try { const a = window.SAIANALYTICS; if (a) a.track(name, props || {}); else S.events.emit(name, props || {}); } catch (e) {} };
 
 /* ── REHEARSAL (?voicerehearse=1) ──
@@ -70,6 +71,45 @@ let stage = null, intro = null;      /* intro = { responseId, text, revealed:Set
 /* the earliest the story may end when the model has not named everyone: below
    this it is a model wandering into the pivot's words, not a story told */
 const STORY_FLOOR_MS = 22000;
+
+/* ── HOW FAST THIS VOICE IS ACTUALLY SPEAKING ──
+   The Realtime API streams the transcript as fast as the model WRITES it,
+   which is several times faster than the voice SAYS it. So the text cannot be
+   the clock. The audio can: output_audio_buffer.started/stopped bracket a
+   response's speech, and the transcript says how many words were in it, which
+   is a real words-a-second for this voice, on this connection. The greeting is
+   spoken before the story, so by the time the story starts this is measured
+   rather than guessed. */
+/* An unhurried Realtime voice runs about 2.5 words a second once its pauses
+   are counted in. It is in the copy so it can be tuned without a deploy, and
+   it is only the starting point: a response that is spoken all the way through
+   measures the real thing and replaces it. */
+const WPS_FALLBACK = 2.5;
+/* …and the schedule leans LATE. A picture that lands a beat after its name
+   reads as the screen keeping up; one that lands before it reads as broken. */
+const LATE_BIAS = 1.02;
+let wpsSamples = [];
+let speech = { at: 0, text: '' };          /* the response being spoken right now */
+const wordsIn = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
+function wps() {
+  /* pinned in the copy wins outright — the team can set a rate without a
+     deploy, and the tests use it to run the story's clock fast */
+  const pinned = Number(copy().wordsPerSecond);
+  if (pinned > 0) return pinned;
+  if (!wpsSamples.length) return WPS_FALLBACK;
+  return wpsSamples.slice(-3).reduce((a, b) => a + b, 0) / Math.min(3, wpsSamples.length);
+}
+function noteSpeechEnded() {
+  if (!speech.at) return;
+  const secs = (Date.now() - speech.at) / 1000;
+  const n = wordsIn(speech.text);
+  speech = { at: 0, text: '' };
+  if (secs < 1.2 || n < 6) return;                     /* too short to measure anything */
+  const r = n / secs;
+  if (r < 1.2 || r > 6) return;                        /* a cut-off or a stutter, not a pace */
+  wpsSamples.push(r);
+  dbg('wps', r.toFixed(2) + ' words/s (' + n + ' words in ' + secs.toFixed(1) + 's)');
+}
 
 /* ── DIAGNOSTICS ──
    ?voicedebug=1 (or localStorage sai-voice-debug=1) shows a panel under the
@@ -199,7 +239,12 @@ function openStage(via) {
   stage = STAGE.create(host, cfg);
   stage.open();
   dbg('stage.open', via || 'voice');
-  intro = { responseId: null, text: '', cfg, fallback: null, started: Date.now() };
+  intro = { responseId: null, text: '', cfg, fallback: null, started: Date.now(),
+            plan: {}, audioAt: 0, ended: false, beat: 0 };
+  /* the conductor's beat: it reads the score against the audio clock. 120 ms is
+     a third of a word at speaking pace — closer than anyone can see. */
+  intro.beat = setInterval(conduct, 120);
+  timers.push(intro.beat);
   /* a clock only as the net under the transcript: if the words never name a
      product, the tiles still come — slowly, the story is paced for a listener
      — and nothing stays up past 90 s */
@@ -235,45 +280,96 @@ function maybeOpenStage(text) {
 }
 /* the agent's words so far → the tiles they name, in order; the pivot closes */
 const squash = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '');   /* "GEO Pulse" = "GEOPulse" = "geopulse" */
-function followTranscript(text) {
+/* ── THE SCORE ──
+   Where each name falls in the story — not in words, but in the TIME the voice
+   will take to reach it. Words are not evenly spaced: a voice rests at a full
+   stop, breathes at a dash, dips at a comma. Counting words alone put every
+   reveal a few seconds early and the error grew with every product, because
+   the pauses it ignored were all in front of it. So each word costs a unit
+   plus what its punctuation is worth, and the whole is scaled to the time this
+   voice takes for this many words. The transcript arrives early and whole, so
+   the score is complete long before the voice needs it. */
+const PAUSE_UNITS = { stop: 1.7, comma: 0.45, dash: 0.8 };
+function wordUnits(w) {
+  if (/[.!?]["')\]]?$/.test(w)) return 1 + PAUSE_UNITS.stop;
+  if (/[,;:]$/.test(w)) return 1 + PAUSE_UNITS.comma;
+  if (/[—–-]$/.test(w)) return 1 + PAUSE_UNITS.dash;
+  return 1;
+}
+function planFrom(text, cfg) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+  const marks = list(cfg.products).map(p => ({ key: p.id, s: squash(p.name) }));
+  if (cfg.moreOn) marks.push({ key: '__more', s: squash(cfg.moreOn) });
+  if (cfg.closeOn) marks.push({ key: '__land', s: squash(cfg.closeOn) });
+  const at = {};
+  let acc = '', units = 0;
+  for (let i = 0; i < words.length; i++) {
+    acc += squash(words[i]);
+    units += wordUnits(words[i]);
+    for (let m = 0; m < marks.length; m++) {
+      if (at[marks[m].key] == null && marks[m].s && acc.indexOf(marks[m].s) !== -1) at[marks[m].key] = units;
+    }
+  }
+  return { at, units, words: words.length };
+}
+/* ── THE CONDUCTOR ──
+   "it still is not focusing on the company when it says the name" (client's
+   recording, 2026-09-16). It was following the TEXT, and on the wire the whole
+   story arrives in a couple of seconds while the voice is still on the first
+   product — so the pictures ran the entire story in seven seconds and the
+   voice was left behind. Now the text is the score and the AUDIO is the clock:
+   elapsed time since the voice started, at this voice's measured pace, gives
+   the word it is on, and a name lights up when the voice reaches it. Two gates,
+   both required: never before the name has been transcribed (it is real, and
+   in order), and never before the voice has said it. */
+function conduct() {
   if (!intro || !stage) return;
-  intro.text = text; intro.lastDeltaAt = Date.now();
-  stage.caption(text);
-  const low = text.toLowerCase(), flat = squash(text);
-  intro.cfg.products.forEach(p => {
-    if (flat.indexOf(squash(p.name)) === -1) return;
+  const plan = intro.plan;
+  if (!plan || !plan.units) return;
+  const from = intro.audioAt || intro.started;
+  /* how long this voice takes for the whole story, spread over the score's
+     units — so the reveals keep the shape of the speech, not of the word count */
+  const msPerUnit = (plan.words / wps()) * 1000 * LATE_BIAS / plan.units;
+  const elapsed = Date.now() - from;
+  const reached = key => plan.at[key] != null && plan.at[key] * msPerUnit <= elapsed;
+  let passed = 0;
+  list(intro.cfg.products).forEach(p => {
+    if (!reached(p.id)) return;
+    passed++;
     if (stage.reveal(p.id)) {
       if (intro.fallback) { clearTimeout(intro.fallback); intro.fallback = null; }
       intro.lastRevealAt = Date.now();
       const at = Date.now() - intro.started;
-      dbg('stage.reveal', p.id + ' @' + at + 'ms');
-      track('voice_showcase_reveal', { id: p.id, atMs: at, via: 'words' });
+      dbg('stage.reveal', p.id + ' @' + at + 'ms (voice at ' + Math.round(elapsed / 1000) + 's)');
+      track('voice_showcase_reveal', { id: p.id, atMs: at, via: 'voice', wps: Math.round(wps() * 100) / 100 });
     }
   });
-  /* "…plus over ten other AI services": the rest of the family joins the
-     roster — but only once the four have been named. A live model that
-     reaches for that phrase early must not take the light off a product it
-     is still describing. */
-  const told = stage.state().revealed.length >= intro.cfg.products.length;
-  if (told && intro.cfg.moreOn && stage.revealMore && flat.indexOf(squash(intro.cfg.moreOn)) !== -1) {
+  const all = passed >= list(intro.cfg.products).length;
+  if (all && reached('__more') && stage.revealMore) {
     if (stage.revealMore()) dbg('stage.more', '@' + (Date.now() - intro.started) + 'ms');
   }
-  /* ── THE PIVOT, BUT ONLY WHEN THE STORY IS ACTUALLY TOLD ──
-     closeOn used to fire on its phrase appearing anywhere in the transcript,
-     and a live model that wandered into those words early tore the stage down
-     mid-product: the roster went flat with the deck still on the first tile
-     (client's screenshot, 2026-09-16). The story ends when every member has
-     been named — or after a floor of time, so a model that skips one still
-     gets out. */
+  /* the landing: the voice has reached the closing question, and the story was
+     really told (or has run long enough that a skipped name is not worth
+     waiting for) */
   const longEnough = Date.now() - intro.started > STORY_FLOOR_MS;
-  if ((told || longEnough) && intro.cfg.closeOn && low.indexOf(String(intro.cfg.closeOn).toLowerCase()) !== -1) {
+  if ((all || longEnough) && reached('__land')) {
     if (stage.assemble) stage.assemble();
     closeStage('pivot', 2400);
   }
 }
+function followTranscript(text) {
+  if (!intro || !stage) return;
+  intro.text = text; intro.lastDeltaAt = Date.now();
+  /* the score is rewritten as more of it arrives; the conductor reads it on
+     its own beat. Nothing is revealed from here — the words are minutes ahead
+     of the voice. */
+  intro.plan = planFrom(text, intro.cfg);
+  stage.caption(text);
+}
 function closeStage(why, delay) {
   if (!stage) return;
   const s = stage; stage = null;
+  if (intro && intro.beat) { clearInterval(intro.beat); intro.beat = 0; }
   if (s.state().revealed.length && (why === 'pivot' || why === 'end' || why === 'timeout')) landing = true;
   const seconds = intro ? Math.round((Date.now() - intro.started) / 1000) : 0;
   dbg('stage.close', why + ' after ' + seconds + 's, ' + s.state().revealed.length + ' revealed');
@@ -284,12 +380,16 @@ function closeStage(why, delay) {
   const cfg = intro ? intro.cfg : showcaseCfg();
   intro = null;
   const go = () => {
-    s.close(why);
     /* the team stays: not gone, but a card in the conversation — each member a
        door to its page, a hover shows who they are (client, 2026-09-11:
-       "instead of having it disappear … have it be part of the chat history") */
+       "instead of having it disappear … have it be part of the chat history").
+       It is put in FIRST, while the thread is still hidden behind the stage, so
+       that when the stage lifts the card is already there. Docking it after the
+       lift left a beat of empty white card between the two — the jump in the
+       client's recording (2026-09-16). */
     if (revealed.length && STAGE.teamCard) dockTeam(cfg, revealed);
     if (revealed.length && (why === 'pivot' || why === 'end' || why === 'timeout')) landStory(cfg);
+    s.close(why);
   };
   if (delay) timers.push(setTimeout(go, delay)); else go();
   track('voice_showcase_ended', { why, seconds, revealed: revealed.length });
@@ -349,9 +449,9 @@ function landStory(cfg) {
      sentence, and every word of transcript asks the thread to follow it. The
      head lock (home.js) holds each attempt for a beat; the last one, once the
      voice has stopped, is the one that sticks. */
-  [420, 1500, 2600].forEach(ms => timers.push(setTimeout(() => {
+  [800, 1600, 2600].forEach(ms => timers.push(setTimeout(() => {
     if (!team) { if (H.follow) H.follow(); return; }
-    if (ms > 420 && sub === 'speaking') return;      /* still talking: let the words scroll */
+    if (ms > 800 && sub === 'speaking') return;      /* still talking: let the words scroll */
     if (H.settle) H.settle(team, { head: true });
   }, ms)));
 }
@@ -817,10 +917,18 @@ function apply(op) {
       let el = bubbles[op.itemId];
       if (!el) { el = bubbles[op.itemId] = H.ai('', null, null, null); if (pendingChips && !pendingChips.bubble) pendingChips.bubble = el; }
       bubbleText(el, op.text);
+      speech.text = op.text;                   /* what this response is saying, for the pace */
       if (!rstate.speaking) setSub('speaking');
       maybeOpenStage(op.text);                 /* asked aloud: the pictures rise with the words */
       if (stage && intro) {
         if (!intro.responseId && rstate.response) intro.responseId = rstate.response.id;
+        /* THE ANCHOR. output_audio_buffer.started would be the honest one, but
+           the reducer only reports the rising edge and a response that follows
+           a cancelled one does not get a new edge — so it never arrived and the
+           clock started when the PICTURES opened, seconds before the voice.
+           The first word of the story is the reliable anchor: the model streams
+           the audio and its transcript together, so they begin as one. */
+        if (!intro.audioAt) { intro.audioAt = Date.now(); dbg('stage.audio', 'the voice started (first word)'); }
         followTranscript(op.text);
       }
       break;
@@ -846,18 +954,36 @@ function apply(op) {
     }
     case 'ai.end':
       lastActivity = Date.now();
-      /* the STORY's response is over: the stage goes. Only that response — a
-         wordless one before it (a tool call, an empty turn) used to close the
-         stage before the first product was named. And only when it FINISHED:
-         a cancelled response means it was cut off, which may yet turn out to
-         be noise, so that path is left to me.final and the false-barge watch. */
-      if (stage && intro && intro.responseId && intro.responseId === op.responseId && op.status !== 'cancelled') closeStage('end', 900);
+      /* the STORY's response is over — as TEXT. The voice is still speaking it:
+         the model finishes writing most of a minute before it finishes saying,
+         and closing here took the stage away mid-sentence (client's recording,
+         2026-09-16: "there is a strange jump in the animation"). Mark it, and
+         let agent.silent — output_audio_buffer.stopped — end the story. */
+      if (stage && intro && intro.responseId && intro.responseId === op.responseId && op.status !== 'cancelled') {
+        intro.ended = true;
+        /* a response with no audio at all still has to end */
+        if (!rstate.speaking && !intro.audioAt) closeStage('end', 900);
+      }
       if (!rstate.speaking) setSub(muted ? 'muted' : 'listening');
       break;
     case 'agent.speaking':
       setSub('speaking');
+      /* the voice has started: this is the only honest clock for the story */
+      speech = { at: Date.now(), text: speech.text || '' };
+      if (intro && !intro.audioAt) { intro.audioAt = Date.now(); dbg('stage.audio', 'the voice started'); }
       break;
     case 'agent.silent':
+      noteSpeechEnded();
+      /* …and when it STOPS, the story really is over — not when the model
+         finished writing it, which is most of a minute earlier. Only the
+         STORY's own silence counts, and only once the story was actually told:
+         the greeting's audio running out behind it used to put the pictures
+         away before the first product had been named. */
+      if (stage && intro && intro.ended && intro.audioAt && !op.cleared &&
+          stage.state().revealed.length >= list(intro.cfg.products).length) {
+        if (stage.assemble) stage.assemble();
+        closeStage('end', 900);
+      }
       if (!rstate.response) setSub(muted ? 'muted' : 'listening');
       break;
     case 'tool.call':
