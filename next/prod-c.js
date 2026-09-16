@@ -152,7 +152,7 @@
       else holder.insertAdjacentElement('afterbegin', strip);
 
       /* each product gets the homepage's caption card, laid over the still */
-      const caps = cards.map(card => {
+      const caps = cards.map((card, ci) => {
         const cap = document.createElement('a');
         cap.className = 'pc-cap';
         const href = card.querySelector('.prodcard__link');
@@ -165,12 +165,15 @@
           '<span class="pc-cap__eb"></span><span class="pc-cap__h"></span>';
         cap.querySelector('.pc-cap__eb').textContent = name.trim();
         cap.querySelector('.pc-cap__h').textContent = line.trim();
-        /* who it's for and what it does move inside the dark card with it */
+        head.appendChild(cap);
+        /* what it is for and what it does stand beside it, in the same dark style */
+        const side = document.createElement('div');
+        side.className = 'pc-side';
         const who = card.querySelector('.prodcard__who');
         const what = card.querySelector('.pc-foot__what');
-        if (who) cap.appendChild(who);
-        if (what) cap.appendChild(what);
-        head.appendChild(cap);
+        if (who) side.appendChild(who);
+        if (what) side.appendChild(what);
+        if (side.children.length) { side.dataset.pcFor = String(ci); head.appendChild(side); cap.pcSide = side; }
         /* the way in rides on the still, at its foot */
         if (href) { href.classList.add('pc-go'); head.appendChild(href); }
         return cap;
@@ -182,7 +185,10 @@
         at = (i + cards.length) % cards.length;
         cards.forEach((c, n) => c.classList.toggle('is-on', n === at));
         tabs.forEach((t, n) => t.classList.toggle('is-on', n === at));
-        caps.forEach((c, n) => c.classList.toggle('is-on', n === at));
+        caps.forEach((c, n) => {
+          c.classList.toggle('is-on', n === at);
+          if (c.pcSide) c.pcSide.classList.toggle('is-on', n === at);
+        });
       };
       const stop = () => { if (timer) { clearInterval(timer); timer = 0; } };
       const start = () => {

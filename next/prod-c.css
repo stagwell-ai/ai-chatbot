@@ -969,3 +969,33 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pc-page,.pc-page main,.pc-page .pp-hero,.pc-page .prodbody,.pc-page .prodgroup,
 .pc-page .ask-end,.pc-page .ptoc,.pc-page .foot,.pc-page .foot__band,.pc-page .foot__in{
   background:#FFFFFF !important}
+
+/* ═══ two dark columns on the still: the product, and what it is for ═══════════════════════════ */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap:clamp(14px,1.4vw,22px);align-items:stretch}
+.pl-c .prodgroup[data-pc-multi] .pc-cap{grid-column:1;grid-row:1;width:auto !important;
+  max-width:none !important}
+.pl-c .pc-side{display:none;grid-column:2;grid-row:1;background:var(--ink);color:#FFFFFF;
+  border-radius:14px;padding:clamp(20px,2.2vw,30px)}
+.pl-c .pc-side.is-on{display:block}
+.pl-c .pc-side .prodcard__who,.pl-c .pc-side .pc-foot__what{display:block !important;
+  grid-column:auto !important;grid-row:auto !important;width:auto !important;
+  max-width:none !important;color:#FFFFFF !important;margin:0 !important;font-size:14px}
+.pl-c .pc-side .pc-foot__what{margin-top:clamp(16px,1.8vw,22px) !important}
+.pl-c .pc-side .pc-lab{color:rgba(255,255,255,.62) !important}
+.pl-c .pc-side .pc-ic{display:none !important}
+.pl-c .pc-side .prodcard__pills li{color:rgba(255,255,255,.88) !important;font-size:14px}
+.pl-c .pc-side .prodcard__pills li:not(:last-child)::after{color:rgba(255,255,255,.4)}
+/* the two cards together take the left half of the still */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{
+  grid-template-columns:minmax(0,.34fr) minmax(0,.34fr) minmax(0,.32fr) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head > .prodgroup__pic{grid-area:1 / 1 / -1 / -1}
+@media (max-width:980px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head{grid-template-columns:1fr !important;row-gap:12px}
+  .pl-c .pc-side{grid-column:1;grid-row:auto}
+}
+
+/* listing.css paints a full-bleed #F5F7F8 band behind every even problem — that is the grey */
+.pl-c .prodgroup::before,.pl-c .prodgroup:nth-of-type(even)::before{
+  content:none !important;display:none !important;background:none !important}
