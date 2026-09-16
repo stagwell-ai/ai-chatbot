@@ -476,7 +476,11 @@
        the slack ABOVE the card: once its first line is at the top, the window
        stops, and the rest is read by scrolling. */
     let pageFollowAt = 0, pageFollowTo = -1;
+    /* while the card is lent to the full-screen overlay there is no page under
+       it to follow: the thread scrolls inside itself and the window stays put */
+    const inOverlay = () => !!(mini && mini.closest('.chat-over'));
     const keepCardInView = () => {
+      if (inOverlay()) return;
       const now = Date.now();
       /* a smooth scroll is still travelling: measuring the card mid-flight
          reads a gap that is already being closed, and asking for it again
@@ -499,7 +503,7 @@
        cards and sitting on the email line ("it should let me read the
        response", client, 2026-09-16). This one may travel either way. */
     const headInView = (el) => {
-      if (!el) return;
+      if (!el || inOverlay()) return;
       const bar = $('#nav');
       const top = (bar ? bar.getBoundingClientRect().height : 0) + 16;
       const by = el.getBoundingClientRect().top - top;
@@ -716,21 +720,80 @@
       over.style.setProperty('--ox', Math.round(r.left + r.width / 2) + 'px');
       over.style.setProperty('--oy', Math.round(r.top + r.height / 2) + 'px');
     };
+    /* ── THE OVERLAY IS THE CONVERSATION, NOT A PICTURE OF ONE ──
+       Full screen used to be a drawing of the chat: a field and six pills
+       that, on submit, closed themselves and threw the reader back to the
+       hero at the top of the page. From halfway down the page that reads as
+       a dead end ("i get a full screen splash, but none of the functionality
+       of the interactive chat appears in this view, make it work", client,
+       2026-09-16).
+
+       The chat is one card, and every listener on it lives on its own nodes,
+       so the card MOVES into the overlay while it is open and goes home when
+       it closes. Same conversation, same thread, same voice, same
+       recommendation — carried on where the reader is rather than restarted
+       at the top. A comment node holds its place in the hero. On a page with
+       no chat of its own (a product page, /why) nothing moves and the old
+       hand-off below still runs.
+
+       The card is the askbox; the starting points are its sibling, not its
+       child, so both travel, each with its own seat. */
+    const card = mini ? mini.closest('.chat') : null;
+    const lent = [card, $('#agentTags')].filter(Boolean);
+    const overIn = $('.chat-over__in', over);
+    const mock = [$('#askFormOver', over), $('.ask__tags', over), $('.ask__lede', over)].filter(Boolean);
+    let seats = null;
+    const lend = () => {
+      if (!card || !overIn || seats) return;
+      seats = lent.map(el => {
+        const s = document.createComment('lent to the full screen');
+        el.parentNode.insertBefore(s, el);
+        overIn.appendChild(el);
+        el.classList.add('is-over');
+        return s;
+      });
+      mock.forEach(m => { m.hidden = true; });
+      over.classList.add('chat-over--live');
+    };
+    const giveBack = () => {
+      if (!seats) return;
+      lent.forEach((el, i) => {
+        const s = seats[i];
+        if (s && s.parentNode) { s.parentNode.insertBefore(el, s); s.parentNode.removeChild(s); }
+        el.classList.remove('is-over');
+      });
+      seats = null;
+      over.classList.remove('chat-over--live');
+      mock.forEach(m => { m.hidden = false; });
+    };
+    /* the reader was somewhere on the page when they opened it; locking the
+       body and lending the card out of the hero both move that place, so it
+       is remembered and given back */
+    let wasAt = 0;
     const openChat = (from) => {
       if (!over.hidden) return;
       originAt(from || searchBtn);
+      wasAt = window.scrollY;
       lastFocus = document.activeElement;
       over.hidden = false; document.body.classList.add('chat-open');
       searchBtn.setAttribute('aria-expanded', 'true');
+      lend();
       fitDisplays();                                   /* it had no width while hidden */
       requestAnimationFrame(() => requestAnimationFrame(() => over.classList.add('is-in')));
-      const input = $('.ask__input', over);
-      setTimeout(() => (input || overClose).focus({ preventScroll: true }), REDUCED ? 0 : 200);
+      const input = (card ? miniInput : $('.ask__input', over));
+      setTimeout(() => {
+        try { (input || overClose).focus({ preventScroll: true }); } catch (e) {}
+        /* a conversation already under way opens on its last turn */
+        if (card && thread.scrollHeight > thread.clientHeight) thread.scrollTop = thread.scrollHeight;
+      }, REDUCED ? 0 : 200);
     };
     const closeChat = () => {
       if (over.hidden) return;
       over.classList.remove('is-in');
-      const done = () => { over.hidden = true; document.body.classList.remove('chat-open'); };
+      const done = () => {
+        over.hidden = true; document.body.classList.remove('chat-open'); giveBack();
+        if (Math.abs(window.scrollY - wasAt) > 2) window.scrollTo(0, wasAt);
+      };
       REDUCED ? done() : setTimeout(done, 760);
       searchBtn.setAttribute('aria-expanded', 'false');
       (lastFocus || searchBtn).focus({ preventScroll: true });

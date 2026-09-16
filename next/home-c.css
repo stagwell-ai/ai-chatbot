@@ -2330,3 +2330,39 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .nav__pall,.hc-page .nav__panel .nav__pfoot a{font-size:13.5px}
 /* the suite's cards lose a third of their height */
 .hc-page .hcs__rail > li{height:clamp(255px,22vw,300px)}
+/* ═══ "Call me" is the shared widget again ═══════════════════════════════════════════════════════
+   Both of C's Call me buttons were hand-written markup driven by a block that used to live in
+   home.js. That block moved out to call.js when the widget was rebuilt (progressive disclosure:
+   the number first, then who to ask for, the consent line and the two policy links), and C never
+   loaded the new file — so both buttons went dead. They are `[data-call]` mounts now, like every
+   other page's, and call.js owns them.
+
+   Everything above is C's design and stays: the bar's outlined pill, the two 170px closing tiles,
+   the gradient, the field that opens inside the blue one. The only thing that has to give is the
+   HEIGHT, and only in the one state that did not exist when those rules were written — `details`,
+   the short card that asks for a name and an email. A fixed height clipped it to a strip of ink
+   with the fields hanging out below, unreadable. */
+.hc-page .call[data-state="details"],
+.hc-page .call[data-state="done"]{height:auto !important}
+.hc-page .ask-end .call[data-state="details"]{height:auto !important;border-radius:14px}
+/* the tile's gradient and its arrow belong to the tile; the card that opens out of it is the
+   widget's own ink, the same card the bar and the chat show, so the fields read the same
+   everywhere. The button stays behind it, filling it, so no page shows through the corners. */
+.hc-page .ask-end .call[data-state="details"] .call__btn{height:100% !important;padding:0 !important;
+  background:var(--ink) !important;background-image:none !important}
+.hc-page .ask-end .call[data-state="details"] .call__btn::after{display:none !important}
+.hc-page .call__more{z-index:1}
+/* …and the card's own send is a send, not one of the closing panel's 170px tiles: those rules
+   reach it because it carries .btn and sits inside .ask-end__ways */
+.hc-page .ask-end .ask-end__ways .call .call__send,
+.hc-page .ask-end .ask-end__ways .call .btn.call__send{height:46px !important;width:100% !important;
+  padding:0 16px !important;font-size:15px !important;align-items:center !important;justify-content:center !important;
+  gap:0 !important;border-radius:999px !important;background:#FFFFFF !important;background-image:none !important;
+  color:var(--ink) !important;letter-spacing:.01em;flex:0 0 auto !important}
+.hc-page .ask-end .ask-end__ways .call .call__send:hover{background:#F0F1F2 !important;filter:none;transform:none}
+.hc-page .ask-end .ask-end__ways .call .call__send::after{display:none !important;content:none !important}
+
+/* the bar's pill: 42px at rest with the rest of the bar's buttons, and out of the flow the moment
+   it opens, so the bar's own height never changes and nothing beside it moves */
+.hc-page .call--nav[data-state="phone"]{height:56px !important}
+.hc-page .call--nav[data-state="phone"] .call__form{height:56px}

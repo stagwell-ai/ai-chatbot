@@ -316,6 +316,23 @@ body.menu-open .nav{background:#FFFFFF;transform:none!important}
 .chat-over .ask__go:hover{transform:scale(1.06)}
 .chat-over .ask__tags{margin-top:var(--s-8)}
 .chat-over .tag{height:36px;padding:0 16px;font-size:13px}
+/* ── THE REAL CHAT, LENT TO THE FULL SCREEN ──
+   home.js moves the hero's card in here while the overlay is open, so this is
+   the conversation itself and not a drawing of one. It gets the room: the
+   title shrinks out of the way and the thread takes the height the window can
+   spare, so a long answer is read here rather than in a letterbox. */
+.chat-over--live{align-items:flex-start;padding:calc(var(--s-6) + 64px) 0 var(--s-10)}
+.chat-over--live .chat-over__in{width:100%;max-width:820px}
+.chat-over--live .chat-over__title{font-size:clamp(30px, 1rem + 1.8vw, 44px);margin-bottom:var(--s-8)}
+.chat.is-over{width:100%;margin:0}
+.chat.is-over .askbox{box-shadow:0 30px 80px rgba(10,16,28,.14)}
+.chat.is-over .askbox__thread{max-height:min(56vh,560px)}
+.chat-over--live .chat__tags.is-over{margin-top:var(--s-8);justify-content:center}
+@media (max-width:640px){
+  .chat-over--live{padding:calc(var(--s-6) + 56px) 0 var(--s-8)}
+  .chat-over--live .chat-over__title{font-size:26px}
+  .chat.is-over .askbox__thread{max-height:52vh}
+}
 /* the disc rules sit later in the file: state these with the parent so they win */
 .chat-over .chat-over__close{position:absolute;top:var(--s-6);right:var(--gutter);background:var(--ink);color:#FFFFFF}
 /* the mark, top left of the overlay, on the close button's own line */
