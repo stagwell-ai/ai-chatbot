@@ -683,3 +683,6 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 /* eight or nine words a line, measured; and the earlier reset had floored the picture's height */
 .pl-c .prodcard__pos{max-width:37ch !important}
 .pl-c .prodgroup__head{min-height:clamp(320px,28vw,450px) !important}
+/* the hero's statement breaks like the rest, and the descriptions lose their last long line */
+.pl-c .pl-hero .pl-say{max-width:36ch !important}
+.pl-c .prodcard__pos{max-width:34ch !important}
