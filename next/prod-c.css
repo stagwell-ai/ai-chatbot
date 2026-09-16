@@ -816,3 +816,11 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 /* a tag in "what it does" never breaks mid-phrase; it moves to the next line whole */
 .pl-c .prodcard__pills li{display:inline-block;white-space:nowrap}
 .pl-c .prodcard__pills li:not(:last-child)::after{white-space:normal}
+
+/* the pictures sit fifteen percent deeper in black (the ::before was switched off earlier, so it
+   is switched back on and given its own layer) */
+.pl-c .prodgroup__head::before{content:"" !important;display:block !important;position:absolute;
+  inset:0;background:rgba(7,12,20,.15) !important;opacity:1 !important;filter:none;mask:none;
+  z-index:1;pointer-events:none}
+.pl-c .prodgroup__head::after{z-index:1}
+.pl-c .prodgroup__words{z-index:2 !important}
