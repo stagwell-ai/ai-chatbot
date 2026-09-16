@@ -181,8 +181,8 @@
         if (who) side.appendChild(who);
         if (what) side.appendChild(what);
         if (side.children.length) { side.dataset.pcFor = String(ci); head.appendChild(side); cap.pcSide = side; }
-        /* the way in rides on the still, at its foot */
-        if (href) { href.classList.add('pc-go'); head.appendChild(href); }
+        /* the way in sits inside the card, under its words */
+        if (href) { href.classList.add('pc-go'); cap.appendChild(href); }
         return cap;
       });
 

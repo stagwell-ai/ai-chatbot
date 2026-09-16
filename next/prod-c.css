@@ -1065,3 +1065,16 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
   background-image:var(--pc-bg) !important;background-size:cover !important;
   background-position:center !important;background-repeat:no-repeat !important}
+/* Explore lives in the left card, under the paragraph */
+.pl-c .pc-cap .pc-go{position:static !important;display:inline-flex;align-items:center;
+  justify-content:center;height:42px;padding:0 20px !important;border-radius:999px;
+  background:#FFFFFF !important;color:var(--ink) !important;border:0 !important;
+  font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+  margin:clamp(16px,1.8vw,22px) 0 0 !important;grid-column:auto !important;grid-row:auto !important;
+  justify-self:start !important;align-self:auto !important;width:auto}
+.pl-c .pc-cap .pc-go:hover{background:#F1F1EE !important;color:var(--ink) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{grid-template-rows:auto !important}
+/* more air inside and between the two cards */
+.pl-c .pc-cap,.pl-c .pc-side{padding:clamp(24px,2.6vw,34px) !important}
+.pl-c .pc-cap{padding-right:clamp(46px,4vw,58px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{column-gap:clamp(16px,1.8vw,28px) !important}
