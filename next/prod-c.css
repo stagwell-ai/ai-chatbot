@@ -12,11 +12,9 @@
 @font-face{font-family:'Tiro Tamil';font-style:normal;font-weight:400;font-display:swap;
   src:url(/next/assets/fonts/tiro-tamil-normal.woff2) format('woff2')}
 
-body.pc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:#6B7079;
-  --hc-rule:rgba(11,18,32,.16);
-  --hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
-  --hc-serif:'Tiro Tamil',Georgia,'Times New Roman',serif;
-  background:var(--hc-ground)}
+/* the tokens come from the homepage's own stylesheet, so the ground, the ink and the faces are
+   literally the same values it uses; only the hairline is named here */
+body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 
 /* every title on the page is Roobert; the words stay Montserrat */
 .pc-page .pp-title,.pc-page .pp-title *,.pc-page .pp-h2,.pc-page .pp-h2 *,
@@ -99,8 +97,8 @@ body.pc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:
   background:none;width:auto;height:auto;border-radius:0;display:block}
 .pc-page .pp-steps > li > b::before{content:"/0."}
 .pc-page .pp-steps h3{color:var(--ink) !important;
-  font-size:clamp(30px,1rem + 2.6vw,54px);line-height:1.04;letter-spacing:-.03em;
-  margin:0 0 clamp(12px,1.4vw,18px)}
+  font-size:clamp(36px,1rem + 3.6vw,76px);line-height:1.02;letter-spacing:-.03em;
+  margin:0 0 clamp(14px,1.6vw,22px)}
 .pc-page .pp-steps p{color:var(--hc-quiet) !important;font-size:17px;line-height:1.5;
   max-width:76ch;margin:0}
 .pc-page .pp-mid{margin:clamp(30px,3.4vw,48px) 0 0}
@@ -275,3 +273,45 @@ body.pc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:
 .pl-c .prodcard__link{grid-column:2;grid-row:1;align-self:start;min-width:150px}
 .pl-c .prodgroup__words{flex:1 1 auto;min-width:0;max-width:none}
 .pl-c .prodgroup__h{max-width:none;white-space:normal}
+
+/* the chooser sits on the page's own left edge and wears the homepage's tab shape */
+.pl-c .ptoc{padding-top:clamp(20px,2.4vw,36px);padding-bottom:0}
+.pl-c .ptoc__line{display:flex;align-items:center;gap:12px;justify-content:flex-start;
+  width:auto;margin:0;text-align:left}
+.pl-c .ptoc__lead{color:var(--hc-quiet) !important;font-size:13px;letter-spacing:.06em;
+  text-transform:uppercase;margin:0}
+.pl-c .ptoc__btn{height:44px;padding:0 16px;border-radius:10px;background:var(--hc-card) !important;
+  border:1px solid var(--hc-edge) !important;color:var(--ink) !important;font-size:15px;
+  display:inline-flex;align-items:center;gap:10px;width:auto}
+.pl-c .ptoc__btn:hover{background:#F1F1EE !important}
+.pl-c .ptoc__label{font-size:15px !important;color:var(--ink) !important}
+
+/* ═══ the listing runs the width of the screen, the way the reference does ══════════════════════
+   The hairlines start near the left edge and end near the right; the name takes the first half,
+   the words the next third, the way in sits at the far right. */
+.pl-c .prodbody,.pl-c .ptoc{max-width:none !important;
+  padding-inline:clamp(20px,3.6vw,72px) !important}
+.pl-c .prodgroup{padding-top:clamp(36px,4vw,64px)}
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(0,.74fr) minmax(190px,.3fr) !important;
+  column-gap:clamp(24px,3vw,60px);row-gap:10px;
+  padding:clamp(34px,3.4vw,52px) 0 clamp(38px,3.8vw,60px)}
+.pl-c .prodcard__name{grid-column:1 !important;grid-row:1 !important;
+  font-size:clamp(28px,1rem + 2vw,46px) !important}
+.pl-c .prodcard__pos{grid-column:2 !important;grid-row:1 !important;color:var(--ink) !important;
+  font-size:17px;max-width:46ch}
+.pl-c .prodcard__who{grid-column:2 !important;grid-row:2 !important;margin-top:12px}
+.pl-c .prodcard__pills{grid-column:2 !important;grid-row:3 !important}
+.pl-c .prodcard__link{grid-column:3 !important;grid-row:1 !important;justify-self:stretch;
+  align-self:start;min-width:0}
+/* the hero and the statement keep the same edges as the rows */
+.pl-c .pl-hero .pp-hero__in,.pl-c .pl-about .pp-wrap{max-width:none !important;
+  padding-inline:clamp(20px,3.6vw,72px) !important}
+.pl-c .pl-hero .pp-title{max-width:20ch}
+.pl-c .pp-about__text{max-width:80ch}
+
+@media (max-width:980px){
+  .pl-c .prodcard{grid-template-columns:1fr !important}
+  .pl-c .prodcard__name,.pl-c .prodcard__pos,.pl-c .prodcard__who,
+  .pl-c .prodcard__pills,.pl-c .prodcard__link{grid-column:1 !important;grid-row:auto !important}
+  .pl-c .prodcard__link{justify-self:start;min-width:190px}
+}
