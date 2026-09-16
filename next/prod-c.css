@@ -504,3 +504,5 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 .pl-c .prodcard__link{background:var(--ink) !important;border:0 !important;color:#FFFFFF !important;
   box-shadow:none !important}
 .pl-c .prodcard__link:hover{background:#05080F !important;color:#FFFFFF !important}
+/* the row's eyebrow carries the product's name, so it reads four pixels larger */
+.pl-c .prodcard__name{font-size:17.5px !important}
