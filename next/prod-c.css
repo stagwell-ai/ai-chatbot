@@ -968,7 +968,7 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 body.pc-page{--hc-ground:#FFFFFF}
 .pc-page,.pc-page main,.pc-page .pp-hero,.pc-page .prodbody,.pc-page .prodgroup,
 .pc-page .ask-end,.pc-page .ptoc,.pc-page .foot,.pc-page .foot__band,.pc-page .foot__in{
-  background:#FFFFFF !important}
+  background-color:#FFFFFF !important}
 
 /* ═══ two dark columns on the still: the product, and what it is for ═══════════════════════════ */
 .pl-c .prodgroup[data-pc-multi] .prodgroup__head{
@@ -999,3 +999,43 @@ body.pc-page{--hc-ground:#FFFFFF}
 /* listing.css paints a full-bleed #F5F7F8 band behind every even problem — that is the grey */
 .pl-c .prodgroup::before,.pl-c .prodgroup:nth-of-type(even)::before{
   content:none !important;display:none !important;background:none !important}
+/* the still spans the whole stage; it had been auto-placed into the last column */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__pic{grid-area:1 / 1 / -1 / -1 !important;
+  position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;
+  object-fit:cover !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::before{grid-area:1 / 1 / -1 / -1 !important}
+/* the still covers the whole stage, padding and all */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{--pc-py:clamp(22px,2.6vw,40px);
+  --pc-px:clamp(20px,3.6vw,72px);
+  padding:var(--pc-py) var(--pc-px) clamp(78px,7vw,104px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__pic,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::before{
+  top:calc(-1 * var(--pc-py)) !important;left:calc(-1 * var(--pc-px)) !important;
+  right:calc(-1 * var(--pc-px)) !important;bottom:calc(-1 * clamp(78px,7vw,104px)) !important;
+  width:auto !important;height:auto !important}
+/* the stage carries the still itself */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
+  background-size:cover !important;background-position:center !important;
+  background-repeat:no-repeat !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__pic{display:none !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{
+  top:calc(-1 * var(--pc-py)) !important;left:calc(-1 * var(--pc-px)) !important;
+  right:calc(-1 * var(--pc-px)) !important;bottom:calc(-1 * clamp(78px,7vw,104px)) !important}
+/* an earlier fix set background:none !important on this header, so the still is carried in a
+   custom property and applied with the same weight */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
+  background-image:var(--pc-bg) !important;background-size:cover !important;
+  background-position:center !important;background-repeat:no-repeat !important;
+  background-color:#0B1220 !important}
+/* Explore sits under the two cards, on the left, as drawn */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go{
+  position:static !important;grid-column:1 !important;grid-row:2 !important;
+  justify-self:start !important;align-self:start !important;
+  margin:clamp(16px,1.8vw,24px) 0 0 !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{grid-template-rows:auto auto !important;
+  align-content:start;padding-bottom:clamp(28px,3vw,44px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{
+  bottom:calc(-1 * clamp(28px,3vw,44px)) !important}
+.pl-c .prodgroup[data-pc-multi] .pc-cap,.pl-c .prodgroup[data-pc-multi] .pc-side{grid-row:1}

@@ -137,6 +137,13 @@
         head.insertAdjacentElement('beforebegin', words);
       }
 
+      /* the still becomes the stage's own background, so no padding can inset it */
+      const pic = group.querySelector('.prodgroup__pic');
+      if (pic && head && !head.dataset.pcBg) {
+        head.dataset.pcBg = '1';
+        head.style.setProperty('--pc-bg', 'url("' + pic.getAttribute('src') + '")');
+      }
+
       const strip = document.createElement('div');
       strip.className = 'pc-tabs';
       const tabs = cards.map((card, i) => {
