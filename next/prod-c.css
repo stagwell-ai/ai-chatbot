@@ -1101,3 +1101,53 @@ body.pc-page{--hc-ground:#FFFFFF}
 }
 /* both cards keep one tone, hover or not */
 .pl-c .pc-cap,.pl-c .pc-cap:hover,.pl-c .pc-side{background:var(--ink) !important}
+
+/* ═══ the product page, polished ═══════════════════════════════════════════════════════════════
+   The hero reads like the listing's: the name at a civil size, the sentence facing it, both ways
+   in beneath. The how-it-works picture stands taller. The numbers sit on the page's own hairlines.
+   The page ends on the two blocks the homepage ends on. */
+.pc-page:not(.pl-c) .pp-hero__in{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) !important;
+  column-gap:clamp(32px,5vw,88px);align-items:start}
+.pc-page:not(.pl-c) .pp-title{grid-area:2 / 1 / 3 / 2 !important;
+  font-size:clamp(34px,1rem + 2.8vw,58px) !important;line-height:1.06;max-width:18ch}
+.pc-page:not(.pl-c) .pp-eyebrow{grid-area:1 / 1 / 2 / 2 !important}
+.pc-page:not(.pl-c) .pp-lede{grid-area:2 / 2 / 3 / 3 !important;font-size:19px;max-width:40ch;
+  padding-top:8px}
+.pc-page:not(.pl-c) .pp-acts{grid-area:3 / 1 / 4 / 2 !important;display:flex;flex-wrap:nowrap;
+  gap:12px;align-items:center;justify-content:flex-start !important;
+  border-top:0 !important;padding-top:0 !important;margin-top:clamp(20px,2.4vw,32px) !important}
+.pc-page:not(.pl-c) .pp-site{display:inline-flex;align-items:center;height:48px;padding:0 20px;
+  border-radius:999px;border:1px solid var(--hc-rule);color:var(--ink) !important;font-size:15px;
+  font-weight:500;text-decoration:none;white-space:nowrap}
+.pc-page:not(.pl-c) .pp-site:hover{background:#F4F4F1}
+
+/* the picture of how it works stands taller and stays inside the page */
+.pc-page .pp-more__media{width:100%;margin-inline:0;overflow:hidden;border-radius:18px}
+.pc-page .pp-more__media img{width:100%;height:clamp(420px,52vh,660px) !important;
+  max-height:none !important;object-fit:cover;display:block}
+
+/* the numbers read like the rest of the site */
+.pc-page .pp-proof{padding-top:clamp(40px,5vw,80px)}
+.pc-page .pp-proof .pp-h2{font-size:clamp(30px,1rem + 2.4vw,50px) !important}
+.pc-page .pp-figs{border-top:1px solid var(--hc-rule);border-bottom:1px solid var(--hc-rule)}
+.pc-page .pp-figs > li{border-left:1px solid var(--hc-rule)}
+.pc-page .pp-figs strong{font-family:var(--hc-title) !important;font-weight:400 !important}
+
+/* the closing pair, as on the homepage */
+.pc-page:not(.pl-c) .ask-end .ask-end__ways{display:grid !important;grid-template-columns:1fr 1fr;
+  gap:16px;width:min(100%,920px) !important;max-width:100% !important;margin-inline:auto}
+.pc-page:not(.pl-c) .ask-end .ask-end__acts{display:flex !important;justify-content:center;width:100%}
+@media (max-width:760px){
+  .pc-page:not(.pl-c) .pp-hero__in{grid-template-columns:1fr !important}
+  .pc-page:not(.pl-c) .pp-title,.pc-page:not(.pl-c) .pp-eyebrow,
+  .pc-page:not(.pl-c) .pp-lede,.pc-page:not(.pl-c) .pp-acts{grid-area:auto !important}
+  .pc-page:not(.pl-c) .ask-end .ask-end__ways{grid-template-columns:1fr !important}
+}
+/* the how-it-works picture stays inside the page */
+.pc-page .pp-more__grid{display:block !important}
+.pc-page .pp-more__media,.pc-page .pp-more__media picture{display:block !important;
+  width:100% !important;max-width:100% !important;margin-inline:0 !important;
+  transform:none !important;overflow:hidden;border-radius:18px}
+.pc-page .pp-more__media img{width:100% !important;max-width:100% !important;
+  height:clamp(420px,52vh,660px) !important;object-fit:cover !important;
+  margin:0 !important;transform:none !important;display:block}

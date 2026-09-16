@@ -250,3 +250,17 @@
   note();
   new MutationObserver(() => { build(); repic(); lift(); note(); tabify(); bleedSoon(); }).observe(root, { childList: true, subtree: true });
 })();
+
+/* the closing block on every product page ends with the two ways in, as the homepage does.
+   The pair sits inside the chat panel that only opens later, so it is lifted out once. */
+(function () {
+  'use strict';
+  if (!document.body.classList.contains('pc-page')) return;
+  const ways = document.querySelector('.ask-end .ask-end__ways');
+  const acts = document.querySelector('.ask-end .ask-end__acts');
+  if (!ways || !acts || ways.dataset.pcLifted) return;
+  ways.dataset.pcLifted = '1';
+  acts.appendChild(ways);
+  const note = document.querySelector('.pc-page .prodfoot');
+  if (note && !note.dataset.pcMoved) { note.dataset.pcMoved = '1'; acts.insertAdjacentElement('afterend', note); }
+})();
