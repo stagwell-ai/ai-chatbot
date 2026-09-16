@@ -432,3 +432,5 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 /* the separator hugs the word before it, so a wrapped line never begins with a dot */
 .pl-c .prodcard__pills li + li::before{content:none !important}
 .pl-c .prodcard__pills li:not(:last-child)::after{content:"·";margin:0 8px;color:rgba(11,18,32,.3)}
+/* the two ways in start on the title's left edge, not centred */
+.pl-c .pl-hero .pp-acts{justify-content:flex-start !important;text-align:left !important}
