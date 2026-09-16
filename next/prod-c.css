@@ -506,3 +506,11 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 .pl-c .prodcard__link:hover{background:#05080F !important;color:#FFFFFF !important}
 /* the row's eyebrow carries the product's name, so it reads four pixels larger */
 .pl-c .prodcard__name{font-size:17.5px !important}
+
+/* the label stays white whether the row is hovered or not (an earlier outline rule turned it ink) */
+.pl-c .prodcard:hover .prodcard__link,.pl-c .prodcard__link,
+.pl-c .prodcard:hover .prodcard__link:hover{color:#FFFFFF !important}
+/* the chooser sits closer under the hero */
+.pl-c .pl-hero{padding-bottom:clamp(18px,2vw,30px) !important}
+.pl-c .ptoc{padding-top:clamp(14px,1.6vw,24px) !important;padding-bottom:0 !important}
+.pl-c .prodgroup:first-of-type{padding-top:clamp(18px,2vw,32px)}
