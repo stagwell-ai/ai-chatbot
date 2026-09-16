@@ -188,6 +188,13 @@
 
       let at = 0, timer = 0, taken = false, seen = false;
       const still = matchMedia('(prefers-reduced-motion: reduce)');
+      const arm = () => {
+        const t = tabs[at];
+        if (!t) return;
+        t.classList.remove('is-timing');
+        void t.offsetWidth;                        /* restart the fill */
+        if (!still.matches && !taken) t.classList.add('is-timing');
+      };
       const show = i => {
         at = (i + cards.length) % cards.length;
         cards.forEach((c, n) => c.classList.toggle('is-on', n === at));
@@ -197,10 +204,12 @@
           if (c.pcSide) c.pcSide.classList.toggle('is-on', n === at);
         });
       };
-      const stop = () => { if (timer) { clearInterval(timer); timer = 0; } };
+      const stop = () => { if (timer) { clearInterval(timer); timer = 0; }
+        tabs.forEach(t => t.classList.remove('is-timing')); };
       const start = () => {
         if (timer || taken || !seen || still.matches) return;
-        timer = setInterval(() => show(at + 1), 4200);
+        arm();
+        timer = setInterval(() => { show(at + 1); arm(); }, 4200);
       };
       tabs.forEach((t, i) => t.addEventListener('click', () => { taken = true; stop(); show(i); }));
       show(0);

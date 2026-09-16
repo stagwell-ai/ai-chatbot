@@ -1086,3 +1086,16 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pl-c .pc-cap__eb{margin:0 0 clamp(14px,1.6vw,20px) !important}
 /* the margins are set from JS, so the stylesheet must not fight them */
 .pl-c .prodgroup[data-pc-multi] .prodgroup__head{margin-left:0;margin-right:0}
+
+/* the group must not clip: the stage bleeds past its box on purpose */
+.pl-c .prodgroup[data-pc-multi]{overflow:visible !important}
+
+/* the tabs fill as their turn runs down, as on the homepage */
+.pl-c .pc-tab{position:relative;overflow:hidden;isolation:isolate}
+.pl-c .pc-tab::before{content:"";position:absolute;inset:0;transform-origin:0 50%;
+  transform:scaleX(0);background:#DCDCD7;z-index:-1}
+.pl-c .pc-tab.is-on.is-timing::before{animation:pcFill 4.2s linear forwards}
+@keyframes pcFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){
+  .pl-c .pc-tab.is-on.is-timing::before{animation:none;transform:scaleX(1)}
+}
