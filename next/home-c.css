@@ -2311,3 +2311,7 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (prefers-reduced-motion:reduce){
   .hc-page .hcs__card::after{transition:none}
 }
+/* the mark keeps the top and the words keep the foot; the air between them narrows because the
+   card is shorter, not because the words moved up into the mark */
+.hc-page .hcs__ic{margin:0 0 auto !important}
+.hc-page .hcs__rail > li{height:clamp(360px,32vw,420px)}
