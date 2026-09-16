@@ -844,18 +844,18 @@ try {
     await agentSays(page, 'Got it. What is your website? Type it in the box below.');
     ok((await page.$$('#agentThread .turnb__chips:not(.turnb__chips--starters)')).length === 0, 'the website is typed: no pills for it');
     const r = await toolCall(page, 'submit_answer', { text: 'acme-brands.com' });
-    ok(r.question && r.question.id === 'company_size' && r.question.options.length === 3, 'an unknown site → the size question, with three options for the model to offer');
+    ok(r.question && r.question.id === 'company_size' && r.question.options.length === 4, 'an unknown site → the size question, with four options for the model to offer');
     ok((await page.$$('#agentThread .turnb__chips:not(.turnb__chips--starters)')).length === 0, 'the pills wait for the agent to ask');
     await agentSays(page, 'Roughly how big is your company?', 'a_size');
     const chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.map(e => e.textContent.trim()));
-    ok(chips.join(' | ') === 'Under 250 people | 250 to 2,500 | 2,500 or more', 'the size pills hang under the spoken question: ' + chips.join(' | '));
+    ok(chips.join(' | ') === 'Under 20 | 21 to 50 | 51 to 250 | 251 or more', 'the size pills hang under the spoken question: ' + chips.join(' | '));
     ok(await page.$eval('#agentThread .turnb--ai:last-child .turnb__text', e => /how big/i.test(e.textContent)), 'under the agent\'s own words, not a separate box');
-    await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:has-text("250 to 2,500")');
+    await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:has-text("51 to 250")');
     await page.waitForTimeout(150);
     const created = await page.evaluate(() => window.__voiceFake.last('conversation.item.create'));
-    ok(created && created.item.content && created.item.content[0].text === '250 to 2,500', 'a tap on a pill goes to the agent as the visitor\'s words');
+    ok(created && created.item.content && created.item.content[0].text === '51 to 250', 'a tap on a pill goes to the agent as the visitor\'s words');
     ok(await page.$eval('#agentThread .turnb--ai .turnb__chips .tag[aria-pressed="true"]', e => e.disabled), 'the pills settle once answered');
-    const r2 = await toolCall(page, 'submit_answer', { text: '250 to 2,500' });
+    const r2 = await toolCall(page, 'submit_answer', { text: '51 to 250' });
     ok(r2.question && r2.question.id === 'role' && r2.question.options.length === 4, 'the model relays it → the size lands, the role comes next with four options');
     await agentSays(page, 'And what is your role there?', 'a_role');
     ok((await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.length)) === 4, 'four role pills under the role question');
@@ -884,10 +884,10 @@ try {
     await toolCall(page, 'submit_answer', { text: 'acme-brands.com' });
     await agentSays(page, 'Thanks. Before I go on — how big is your company, roughly?', 'a_size');
     chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.map(e => e.textContent.trim()));
-    ok(chips.length === 3 && /Under 250/.test(chips[0]), 'the size options hang under the size question: ' + chips.join(' | '));
+    ok(chips.length === 4 && /Under 20/.test(chips[0]), 'the size options hang under the size question: ' + chips.join(' | '));
     /* said aloud instead of tapped: the same words, the same step */
-    await visitorSays(page, '250 to 2,500');
-    const r = await toolCall(page, 'submit_answer', { text: '250 to 2,500' });
+    await visitorSays(page, '51 to 250');
+    const r = await toolCall(page, 'submit_answer', { text: '51 to 250' });
     ok(r.question && r.question.id === 'role', 'said aloud works the same: the size lands, the role is next');
     await agentSays(page, 'And your role?', 'a_role1');
     chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.map(e => e.textContent.trim()));

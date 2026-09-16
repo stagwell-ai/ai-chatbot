@@ -156,7 +156,14 @@ need goes website → size → role → cards. Steps 6–9 are §9.
    second non-address is accepted — kept as the company's name on the lead (`lead.company`) if it
    was a name, dropped if it was a decline — and the conversation moves on rather than trapping
    anyone. A failed lookup puts the flow in DETERMINISTIC mode like any other model failure.
-2. **company size** — under 250 / 250–2,500 / 2,500+; skipped when the lookup already knows.
+2. **company size** — under 20 / 21–50 / 51–250 / 251 or more (client, 2026-09-15); skipped when
+   the lookup already knows. The bands live in `taxonomy.json` and nowhere else: each carries its
+   `label`, the `max` headcount that closes it (the last one has none) and the `tier` it maps to
+   for `routing.json`'s three-tier routing, so redrawing them is a data edit. The top band is
+   open-ended, so when the site lookup counted the heads that number is handed to the engine
+   instead, and it tiers it. `audiences.companySize` in `solutions.json` names bands, not tiers:
+   the SMB platform takes `micro`/`small`/`mid`, the five bigger products `mid`/`large` — they
+   overlap at 51–250, where the goal decides rather than the size.
 3. **their role** — founder / marketing manager / director-VP / C-suite, or typed in their own
    words and matched to one of those bands. It does not move the product recommendation; it
    qualifies the lead, and it is the vocabulary `routing.json`'s seniority override and

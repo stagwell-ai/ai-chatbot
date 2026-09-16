@@ -73,7 +73,7 @@ try {
     ok(state.researched.includes('acmehotels.com'), 'the domain was looked up');
     const rows = await page.$$eval('.found__row', els => els.map(e => e.querySelector('dt').textContent.trim() + '=' + e.querySelector('dd').textContent.trim()));
     ok(rows.some(r => /^INDUSTRY=hospitality$/i.test(r)), 'it shows the industry');
-    ok(rows.some(r => /2,500\+/.test(r)), 'it shows the size band');
+    ok(rows.some(r => /251 or more/.test(r)), 'it shows the size band');
     ok(rows.some(r => /Marriott, Hilton, Accor/.test(r)), 'it shows the comparison set');
     ok(/Acme Hotels/.test(await thread(page)), 'it names the company it recognised');
     ok(/role/i.test(await lastAsk(page)), 'then it asks the role');
@@ -81,7 +81,7 @@ try {
     await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled]):nth-child(3)');
     await settle(page); await page.waitForTimeout(250);
     const st = await page.evaluate(() => window.SAIKIMI.state());
-    ok(st.companySize === 'enterprise', 'the size it read is kept (' + st.companySize + ')');
+    ok(st.companySize === 'large', 'the size it read is kept (' + st.companySize + ')');
     ok(st.role === 'director_vp', 'the role is kept (' + st.role + ')');
 
     /* the size question must never be asked now — the lookup answered it */
@@ -99,7 +99,7 @@ try {
     const d = state.lead.discovery;
     ok(d.website === 'acmehotels.com', 'the lead carries the website');
     ok(d.role === 'director_vp', 'the lead carries the role');
-    ok(d.companySize === 'enterprise' && d.industry === 'hospitality', 'the lead carries what the lookup read');
+    ok(d.companySize === 'large' && d.industry === 'hospitality', 'the lead carries what the lookup read');
     ok(d.siteKnown === true, 'the lead records that the site was recognised');
     ok(state.errors.length === 0, state.errors.length ? state.errors.join(' | ') : 'no page errors');
     await ctx.close();

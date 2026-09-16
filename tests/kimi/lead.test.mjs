@@ -14,7 +14,7 @@ import { submitLead } from '../../api/_lib/leads/leadService.js';
 const BODY = () => ({
   lead: { name: 'Ada Lovelace', email: 'Ada@Example-Brand.com', phone: '+1 (212) 555-0100', company: 'Example Brand' },
   discovery: { sessionId: 'k_test', primaryGoal: 'competition', rawProblemText: 'We need competitor pricing and hiring signals this week',
-    intents: [{ id: 'competitive_activity', explicit: true }, { id: 'not_real', explicit: true }], companySize: 'enterprise', askedQuestionIds: ['competition_type', 'company_size'], steps: 2,
+    intents: [{ id: 'competitive_activity', explicit: true }, { id: 'not_real', explicit: true }], companySize: 'large', askedQuestionIds: ['competition_type', 'company_size'], steps: 2,
     primary: 'questdiy', secondary: [], confidence: { level: 'high' }, llmStatus: 'DETERMINISTIC', industry: 'hospitality',
     attribution: { utmSource: 'linkedin', utmCampaign: 'launch', landingPage: '/next?utm_source=linkedin', referrer: 'https://linkedin.com/' } },
   page: '/next', ts: '2026-09-10T10:00:00.000Z'
@@ -62,11 +62,11 @@ test('field mapping: every custom property written exists in the definitions; th
   const defined = new Set(PROPERTIES.map(p => p.name).concat(['email', 'firstname', 'lastname', 'phone', 'company', 'website', 'jobtitle']));
   Object.keys(props).forEach(k => assert.ok(defined.has(k), 'undefined property ' + k));
   assert.equal(props.stagwell_ai_primary_product, 'newintel');
-  assert.equal(props.stagwell_ai_company_size, 'enterprise');
+  assert.equal(props.stagwell_ai_company_size, 'large');
   assert.equal(props.stagwell_ai_utm_source, 'linkedin');
   assert.equal(props.stagwell_ai_recommendation_confidence, 0.9);
   assert.match(summary, /Primary recommendation: NewIntel/);
-  assert.match(summary, /hospitality company, 2,500\+ people/);
+  assert.match(summary, /hospitality company, 251 or more people/);
   assert.ok(!summary.includes('Ada@'), 'no email in the summary');
 });
 

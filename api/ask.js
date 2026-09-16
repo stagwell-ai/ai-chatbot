@@ -409,7 +409,7 @@ const INTERPRET_SYSTEM = [
   INTENTS.map(i => `- ${i.id}: wants to ${i.need}`).join('\n'),
   '',
   'INFERRED FIELDS — set only when the text actually says or clearly implies them, else null:',
-  `- companySize: one of ${VOCAB.sizeBands.join(' | ')} (under 250 people / 250–2,500 / 2,500+; "startup", "small business" → smb; "enterprise", "global brand", "Fortune 500" → enterprise)`,
+  `- companySize: one of ${(BANDS.companySize || []).map(b => `${b.id} (${b.label})`).join(' | ')} — go by headcount when the text gives one`,
   `- creatorProgramSize: one of ${VOCAB.creatorBands.join(' | ')} (creators or influencers worked with per year)`,
   `- geographicScope: one of ${VOCAB.geoBands.join(' | ')}`,
   '- industry: a short category in plain words ("hospitality", "retail", "financial services"), else null',

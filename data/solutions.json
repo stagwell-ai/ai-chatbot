@@ -164,8 +164,8 @@
       },
       "audiences": {
         "companySize": [
-          "mid_market",
-          "enterprise"
+          "mid",
+          "large"
         ]
       },
       "excludesIntents": [],
@@ -391,8 +391,8 @@
       },
       "audiences": {
         "companySize": [
-          "mid_market",
-          "enterprise"
+          "mid",
+          "large"
         ],
         "creatorVolume": [
           "100_plus"
@@ -454,7 +454,9 @@
       },
       "audiences": {
         "companySize": [
-          "smb"
+          "micro",
+          "small",
+          "mid"
         ],
         "creatorVolume": [
           "under_100"
@@ -742,8 +744,8 @@
       },
       "audiences": {
         "companySize": [
-          "mid_market",
-          "enterprise"
+          "mid",
+          "large"
         ]
       },
       "excludesIntents": [],
@@ -858,8 +860,8 @@
       },
       "audiences": {
         "companySize": [
-          "mid_market",
-          "enterprise"
+          "mid",
+          "large"
         ]
       },
       "excludesIntents": [],
@@ -968,8 +970,8 @@
       },
       "audiences": {
         "companySize": [
-          "mid_market",
-          "enterprise"
+          "mid",
+          "large"
         ]
       },
       "excludesIntents": [],

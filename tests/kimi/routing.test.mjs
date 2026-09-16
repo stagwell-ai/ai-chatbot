@@ -43,7 +43,7 @@ test('"Enterprise program with 500 creators" → IMAI', () => {
   const r = readText('Enterprise program with 500 creators');
   assert.equal(top(r), 'imai');
   assert.equal(r.signals.creatorProgramSize, '100_plus');
-  assert.equal(r.signals.companySize, 'enterprise');
+  assert.equal(r.signals.companySize, 'large');
 });
 test('"Need competitor pricing and hiring signals this week" → NewIntel', () => {
   assert.equal(top(readText('Need competitor pricing and hiring signals this week')), 'newintel');
@@ -80,8 +80,8 @@ test('audience: target → Targeting Machine; identity → ID Graph; media → M
 test('operations: conversations → NewVoices; AI access → Agent Cloud; unify ops → Machines; paid+owned+earned → Search+', () => {
   assert.equal(top(walk('operations', ['conversations', 'phone', 'mid']).reco), 'newvoices');
   assert.equal(top(walk('operations', ['ai_access', 'access', 'mid']).reco), 'agent_cloud');
-  assert.equal(top(walk('operations', ['ops', 'os', 'ent']).reco), 'machines_family');
-  assert.equal(top(walk('operations', ['orchestration', 'shape', 'ent']).reco), 'search_plus');
+  assert.equal(top(walk('operations', ['ops', 'os', 'large']).reco), 'machines_family');
+  assert.equal(top(walk('operations', ['orchestration', 'shape', 'large']).reco), 'search_plus');
 });
 test('reputation: early warning → Knowledge Machine; global → UNICEPTA; AI answers → GEOPulse', () => {
   assert.equal(top(walk('reputation', ['early', 'single', 'mid']).reco), 'knowledge_machine');
@@ -92,20 +92,20 @@ test('brand awareness: measure → QuestBrand; media → Media Machine; AI searc
   assert.equal(top(walk('brand_awareness', ['measure', 'tracking', 'mid']).reco), 'questbrand');
   assert.equal(top(walk('brand_awareness', ['media', 'planning', 'mid']).reco), 'media_machine');
   assert.equal(top(walk('brand_awareness', ['ai_search', 'recommends', 'mid']).reco), 'geopulse');
-  assert.equal(top(walk('brand_awareness', ['creators', 'under_100', 'smb']).reco), 'smb_platform');
-  assert.equal(top(walk('brand_awareness', ['creators', '100_plus', 'ent']).reco), 'imai');
+  assert.equal(top(walk('brand_awareness', ['creators', 'under_100', 'small']).reco), 'smb_platform');
+  assert.equal(top(walk('brand_awareness', ['creators', '100_plus', 'large']).reco), 'imai');
 });
 test('creators: small + under 100 → SMB; 100+ → IMAI; ambiguous → one primary and the other as secondary', () => {
   /* the creator-volume question is no longer asked once an intent is known
      (the client's order stops at the role); the band still decides when it is
      known — read from the sentence or the site */
   const creators = [{ id: 'creator_discovery', explicit: true }];
-  assert.equal(R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: 'under_100', companySize: 'smb' }, DATA).primary, 'smb_platform');
-  assert.equal(R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: '100_plus', companySize: 'enterprise' }, DATA).primary, 'imai');
-  const unsure = R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: 'unknown', companySize: 'mid_market' }, DATA);
+  assert.equal(R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: 'under_100', companySize: 'small' }, DATA).primary, 'smb_platform');
+  assert.equal(R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: '100_plus', companySize: 'large' }, DATA).primary, 'imai');
+  const unsure = R.recommend({ goal: 'audience_growth', intents: creators, creatorProgramSize: 'unknown', companySize: 'mid' }, DATA);
   assert.ok(['smb_platform', 'imai'].includes(unsure.primary));
   assert.ok(unsure.secondary.some(id => id === 'smb_platform' || id === 'imai'), 'the other creator product rides as secondary');
-  const w = walk('audience_growth', ['creators', 'under_100', 'smb']);
+  const w = walk('audience_growth', ['creators', 'under_100', 'small']);
   assert.ok(!w.trail.some(t => t.id === 'creator_scale'), 'no creator-volume question after the opener: ' + w.trail.map(t => t.id).join(' → '));
 });
 
@@ -139,7 +139,7 @@ test('signals score explicit choices above read text, and contradictions push a 
   const read = R.recommend({ goal: null, intents: [{ id: 'competitive_activity', explicit: false }] }, DATA);
   const chosen = R.recommend({ goal: null, intents: [{ id: 'competitive_activity', explicit: true }] }, DATA);
   assert.ok(chosen.ranked[0].score > read.ranked[0].score);
-  const smbWithMany = R.recommend({ goal: 'audience_growth', intents: [{ id: 'creator_discovery', explicit: true }], creatorProgramSize: '100_plus', companySize: 'smb' }, DATA);
+  const smbWithMany = R.recommend({ goal: 'audience_growth', intents: [{ id: 'creator_discovery', explicit: true }], creatorProgramSize: '100_plus', companySize: 'small' }, DATA);
   assert.equal(smbWithMany.primary, 'imai', 'a hundred-plus creator program goes to IMAI even at SMB size');
 });
 
@@ -217,7 +217,7 @@ test('a sentence carrying both sides keeps both products in the running — and 
   const r = readText('we want to influence what AI says about us');
   assert.ok(r.candidates.includes('geopulse') && r.candidates.includes('search_plus'), r.candidates.join(','));
   const st = { primaryGoal: null, intents: R.keywordIntents('we want to influence what AI says about us', DATA),
-    askedQuestionIds: ['website', 'company_size', 'role'], website: 'x.com', role: 'c_suite', companySize: 'enterprise' };
+    askedQuestionIds: ['website', 'company_size', 'role'], website: 'x.com', role: 'c_suite', companySize: 'large' };
   /* the client's order (2026-09-10): after the role, the recommendation */
   assert.equal(Q.selectQuestion(st, r, DATA), null);
   const shown = R.pointers(r, null, DATA).items.map(i => i.id).sort();

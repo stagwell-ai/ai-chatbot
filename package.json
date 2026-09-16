@@ -17,6 +17,7 @@
     "test:order": "node tests/kimi/order.funnel.mjs",
     "test:voice": "node tests/kimi/voice.funnel.mjs",
     "test:rehearsal": "node tests/kimi/voice.rehearsal.mjs",
-    "test:callback": "node tests/kimi/callback.funnel.mjs"
+    "test:callback": "node tests/kimi/callback.funnel.mjs",
+    "test:reveal": "node tests/kimi/reveal.funnel.mjs"
   }
 }

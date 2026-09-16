@@ -114,7 +114,7 @@ try {
     ok((await pointerBubbles(page)) === 1, 'one pointer block so far');
     await say(page, 'acme-brands.com');
     ok((await pointerBubbles(page)) === 1, 'the size question does not repeat the same two');
-    await chip(page, '250 to 2,500');
+    await chip(page, '51 to 250');
     ok((await pointerBubbles(page)) === 1, 'nor does the role question');
     await chip(page, 'Marketing manager');
     ok((await pointerBubbles(page)) === 1, 'nor does the goal\'s own first question');

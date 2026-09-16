@@ -121,7 +121,10 @@ export function salesSummary(lead, data) {
   const d = lead.discovery || {};
   const P = id => (RECOMMEND.productById(id, data) || {}).name || id;
   const need = (d.intents || []).map(i => (RECOMMEND.intentById(i.id, data) || {}).need).filter(Boolean).slice(0, 3);
-  const size = { smb: 'under 250 people', mid_market: '250–2,500 people', enterprise: '2,500+ people' }[d.companySize];
+  /* the band's own words, from taxonomy.json — the bands are the client's to
+     redraw and a copy of them here would go stale the first time they are */
+  const band = (((data.taxonomy || {}).bands || {}).companySize || []).find(b => b.id === d.companySize);
+  const size = band ? String(band.label).replace(/^Under /, 'under ') : null;
   const who = d.industry ? d.industry + ' company' + (size ? ', ' + size : '') : (size ? 'company with ' + size : null);
   const requests = (data.taxonomy && data.taxonomy.contactRequests) || [];
   const asked = d.contactRequest ? (requests.find(r => r.id === d.contactRequest) || {}).label || d.contactRequest : null;

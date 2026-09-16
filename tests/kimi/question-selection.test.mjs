@@ -14,7 +14,7 @@ import { DATA, R, Q, walk } from './_data.mjs';
 const reco = st => R.recommend({ goal: st.primaryGoal, intents: st.intents, companySize: st.companySize, creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope }, DATA);
 const blank = (goal, extra) => Object.assign({ primaryGoal: goal, intents: [], askedQuestionIds: [], website: null, role: null, companySize: null, creatorProgramSize: null, geographicScope: null }, extra || {});
 /* past the three opening questions: these are tests about what comes AFTER them */
-const opened = (goal, extra) => blank(goal, Object.assign({ askedQuestionIds: ['website', 'company_size', 'role'], website: 'acme.com', companySize: 'mid_market', role: 'director_vp' }, extra || {}));
+const opened = (goal, extra) => blank(goal, Object.assign({ askedQuestionIds: ['website', 'company_size', 'role'], website: 'acme.com', companySize: 'mid', role: 'director_vp' }, extra || {}));
 
 test('bank shape: every discovery question has a purpose, a prompt and a valid field; intent values exist in the taxonomy', () => {
   const intents = DATA.taxonomy.intents.map(i => i.id);
@@ -48,13 +48,13 @@ test('the opening order is website → company size → role, for every goal', (
     assert.equal(Q.selectQuestion(s0, reco(s0), DATA).id, 'website', g.id + ': the website first');
     const s1 = blank(g.id, { website: 'acme.com', askedQuestionIds: ['website'] });
     assert.equal(Q.selectQuestion(s1, reco(s1), DATA).id, 'company_size', g.id + ': then how large the org is');
-    const s2 = blank(g.id, { website: 'acme.com', companySize: 'smb', askedQuestionIds: ['website', 'company_size'] });
+    const s2 = blank(g.id, { website: 'acme.com', companySize: 'small', askedQuestionIds: ['website', 'company_size'] });
     assert.equal(Q.selectQuestion(s2, reco(s2), DATA).id, 'role', g.id + ': then the role');
   });
 });
 
 test('what the site lookup already found is not asked again: size known → straight to the role', () => {
-  const s = blank('operations', { website: 'acmehotels.com', companySize: 'enterprise', askedQuestionIds: ['website'] });
+  const s = blank('operations', { website: 'acmehotels.com', companySize: 'large', askedQuestionIds: ['website'] });
   assert.equal(Q.selectQuestion(s, reco(s), DATA).id, 'role');
 });
 
@@ -87,7 +87,7 @@ test('with an intent known the recommendation follows the role directly — no d
 });
 
 test('the whole walk, from a bare goal: three openers, one discriminator, done', () => {
-  const r = walk('competition', ['smb', 'manager', 'current_activity']);
+  const r = walk('competition', ['small', 'manager', 'current_activity']);
   assert.deepEqual(r.trail.map(t => t.id), ['website', 'company_size', 'role', 'competition_type']);
   assert.equal(r.reco.primary, 'newintel');
 });

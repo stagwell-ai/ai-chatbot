@@ -156,6 +156,7 @@ function drawAsk(st) {
   block.innerHTML = pointersHtml(P) + '<div class="turnb__text turnb__text--after">' + askText(st.prompt || st.message || '') + '</div>';
   while (block.firstChild) bubble.insertBefore(block.firstChild, row || null);
   wirePointers(bubble, 'chat');
+  H.type(bubble);          /* the question arrived after the ack: it types in too */
   try { const a = window.SAIANALYTICS; if (a) a.track('kimi_pointer_shown', { kind: P.kind, products: P.items.map(p => p.id).join(','), at_step: (K.state() || {}).step }); } catch (e) {}
 }
 
@@ -371,6 +372,7 @@ function drawForm(st) {
   bubble.classList.add('turnb--form');
   bubble.innerHTML = formHtml(st);
   formBubble = bubble;
+  H.type(bubble);          /* the words above the fields, not the labels in them */
   /* the form is the way to a tailored recommendation and a specialist — not
      the only way to the product. The page is one click away, no details asked. */
   const P = flags().pointers ? st.pointers : null;
@@ -447,7 +449,12 @@ function drawCards(st, opts) {
   target.querySelectorAll('[data-kimi-cta]').forEach(el => el.addEventListener('click', () => {
     try { K.clicked(el.dataset.kimiCta, el.dataset.kimiProduct, el.getAttribute('href')); } catch (e) {}
   }));
-  try { target.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) {}
+  /* the words of the recommendation type themselves in, and the thread opens on
+     the FIRST of them. scrollIntoView used to do this, and took the window with
+     it: the answer arrived and the page was already at the email line, past
+     everything it had just been asked for (client, 2026-09-16). */
+  H.type(target);
+  H.settle(target, { head: true });
 }
 
 /* ── wiring: the field, the starting points, the overlay's hand-offs ───── */

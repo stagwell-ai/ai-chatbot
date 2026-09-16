@@ -190,10 +190,15 @@
        how it jumps", client, 2026-09-10). A fade at the foot says there is more. */
     const more = () => thread.classList.toggle('is-more', thread.scrollTop + thread.clientHeight < thread.scrollHeight - 4);
     const settle = (el) => {
-      const tall = el && el.classList.contains('turnb--ai') && !el.classList.contains('turnb--wait') && el.offsetHeight > thread.clientHeight - 8;
+      const ai = el && el.classList.contains('turnb--ai') && !el.classList.contains('turnb--wait');
+      /* a recommendation opens at its first line whatever its height: it is the
+         answer, and the answer is read from the top ("it scrolled down forcibly
+         to the end, thats a mistake, it shouldnt scroll me down, it should let
+         me read the response", client, 2026-09-16) */
+      const head = ai && (el.classList.contains('turnb--reco') || el.offsetHeight > thread.clientHeight - 8);
       /* offsetTop, not a client rect: a bubble still sliding in reports a rect
          that is mid-animation, and the thread would settle 16px off */
-      if (tall) thread.scrollTop = el.offsetTop;
+      if (head) thread.scrollTop = el.offsetTop;
       else thread.scrollTop = thread.scrollHeight;
       more();
     };
@@ -304,6 +309,81 @@
     makeThink($('#endThink'), [['#start .display--end', .5, .25], ['#askEnd', .5, .55], ['#start .ask-end__ways .btn', .4, .8], ['#callEnd', .6, .8]]).ambient();
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     const wait = (label) => { const t = document.createElement('div'); t.className = 'turnb turnb--ai turnb--wait'; t.innerHTML = '<i></i><i></i><i></i>' + (label ? '<span class="turnb__waitlabel">' + esc(String(label)) + '</span>' : ''); add(t); think.at(t); think.on(); return t; };
+    /* ── THE ANSWER TYPES ITSELF IN ──
+       "i want the response to animate in like an ai chatbot, like its typing up
+       the response in a cool animation" (client, 2026-09-16).
+
+       Not a real typewriter: a typewriter appends characters, so the bubble
+       grows line by line and everything under it — the cards, the composer, the
+       page — moves for a second and a half. This one puts the whole answer in
+       the DOM at once, so the layout is final from the first frame and nothing
+       below it ever jumps, then uncovers it a word at a time (each word blurs
+       into focus, which is how the words arrive when the agent SPEAKS them too,
+       voice.js), with a caret riding the edge of what has been written.
+
+       Every word carries its index; the stagger is one custom property, so the
+       whole reveal is CSS and the only JS running is the caret. */
+    const wrapWords = (root, from) => {
+      let i = from;
+      const nodes = [];
+      try {
+        /* text AND the marks rich() sets among it — a brand's logo is one
+           atom, and it arrives with the name it belongs to, not before it */
+        const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, null);
+        for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+          if (n.nodeType === 1) { if (/^(img|svg)$/i.test(n.nodeName)) nodes.push(n); }
+          else nodes.push(n);
+        }
+      } catch (e) { return i; }
+      nodes.forEach(node => {
+        if (!node.parentNode) return;
+        if (node.nodeType === 1) { node.classList.add('tw'); node.style.setProperty('--w', String(i++)); return; }
+        if (!node.nodeValue) return;
+        const parts = node.nodeValue.split(/(\s+)/);
+        if (parts.length < 2 && !parts[0].trim()) return;
+        const frag = document.createDocumentFragment();
+        parts.forEach(p => {
+          if (!p) return;
+          if (!p.trim()) { frag.appendChild(document.createTextNode(p)); return; }
+          const s = document.createElement('span');
+          s.className = 'tw'; s.style.setProperty('--w', String(i++)); s.textContent = p;
+          frag.appendChild(s);
+        });
+        node.parentNode.replaceChild(frag, node);
+      });
+      return i;
+    };
+    const typeIn = (bubble) => {
+      if (!bubble || REDUCED) return;
+      const texts = $$('.turnb__text', bubble).filter(t => !t.dataset.typed);
+      if (!texts.length) return;
+      let n = 0;
+      texts.forEach(t => { t.dataset.typed = '1'; n = wrapWords(t, n); });
+      if (!n) return;
+      /* a one-line ack should not crawl and a long recommendation should not
+         take all day: the whole reveal lands inside ~1.4s either way */
+      const step = Math.max(9, Math.min(30, 1400 / n));
+      bubble.style.setProperty('--step', step + 'ms');
+      bubble.classList.add('is-typing');
+      const caret = document.createElement('span');
+      caret.className = 'turnb__caret'; caret.setAttribute('aria-hidden', 'true');
+      const words = $$('.tw', bubble);
+      const WORD_FADE = 340;      /* home.css: wordIn */
+      const t0 = performance.now();
+      const ride = () => {
+        const ms = performance.now() - t0;
+        const at = Math.floor(ms / step);
+        const w = words[at];
+        /* width 0, so moving it never reflows a single word */
+        if (w && w.parentNode && caret.nextSibling !== w) w.parentNode.insertBefore(caret, w);
+        else if (at >= n && caret.parentNode) caret.parentNode.removeChild(caret);
+        /* the last word is still coming into focus after the last one STARTS:
+           the pills wait for it to land, not for its cue */
+        if (ms >= n * step + WORD_FADE) { bubble.classList.remove('is-typing'); more(); return; }
+        requestAnimationFrame(ride);
+      };
+      requestAnimationFrame(ride);
+    };
     const ai = (html, chips, go, onChip) => {
       const t = document.createElement('div'); t.className = 'turnb turnb--ai';
       if (html != null) t.innerHTML = '<div class="turnb__text">' + String(html).replace(/\?/g, '<span class="q">?</span>') + '</div>';
@@ -318,7 +398,9 @@
         t.appendChild(a);
       }
       if (chips) t.appendChild(chipsRow(chips, onChip));
-      return add(t);
+      add(t);
+      typeIn(t);        /* the button and the pills wait for the last word (home.css) */
+      return t;
     };
     /* a row of answer pills. A chip is a label, or {label, value} from the flow;
        the click goes to onChip when there is one, else to the placeholder
@@ -386,13 +468,45 @@
        conversation grows, it should smoothly scroll down so the chat does not
        get cut off"): when the composer's foot has slipped below the fold, the
        window scrolls just enough to bring it back. Never upwards. */
-    let pageFollowAt = 0;
+    /* …but it never drags the head of the card off the top of the window. A
+       recommendation is taller than the fold, and following its foot threw the
+       reader past everything they had just asked for, onto the email line
+       ("when this popped out, it scrolled down forcibly to the end … it should
+       let me read the response", client, 2026-09-16). So the page only takes up
+       the slack ABOVE the card: once its first line is at the top, the window
+       stops, and the rest is read by scrolling. */
+    let pageFollowAt = 0, pageFollowTo = -1;
     const keepCardInView = () => {
+      const now = Date.now();
+      /* a smooth scroll is still travelling: measuring the card mid-flight
+         reads a gap that is already being closed, and asking for it again
+         stacked overshoot on overshoot until the head of the card was 400px
+         above the window (the very thing this is here to prevent) */
+      if (pageFollowTo >= 0 && Math.abs(window.scrollY - pageFollowTo) > 2 && now - pageFollowAt < 900) return;
+      if (now - pageFollowAt < 120) return;
       const card = mini.getBoundingClientRect();
       const over = card.bottom - (window.innerHeight - 12);
-      if (over <= 0 || Date.now() - pageFollowAt < 120) return;
+      if (over <= 0) return;
+      const by = Math.min(over, Math.max(0, card.top - 12));
+      if (by < 1) return;
+      pageFollowAt = now;
+      pageFollowTo = window.scrollY + by;
+      try { window.scrollBy({ top: by, behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) { window.scrollBy(0, by); }
+    };
+    /* …and when the ANSWER lands — the recommendation, the thing that was asked
+       for — the page goes to its FIRST line and stops there, under the bar.
+       Not its foot, which is where it used to end up, three screens past the
+       cards and sitting on the email line ("it should let me read the
+       response", client, 2026-09-16). This one may travel either way. */
+    const headInView = (el) => {
+      if (!el) return;
+      const bar = $('#nav');
+      const top = (bar ? bar.getBoundingClientRect().height : 0) + 16;
+      const by = el.getBoundingClientRect().top - top;
+      if (Math.abs(by) < 8) return;
       pageFollowAt = Date.now();
-      try { window.scrollBy({ top: over, behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) { window.scrollBy(0, over); }
+      pageFollowTo = window.scrollY + by;
+      try { window.scrollBy({ top: by, behavior: REDUCED ? 'auto' : 'smooth' }); } catch (e) { window.scrollBy(0, by); }
     };
     const follow = () => {
       const gap = thread.scrollHeight - thread.scrollTop - thread.clientHeight;
@@ -517,6 +631,11 @@
 
     window.SAIHERO = {
       me, ai, wait, esc, think, follow, rich,
+      /* hero-agent.js fills a bubble AFTER it is on the thread (the cards, the
+         pointers): it types the new words in itself, and settles the thread on
+         the bubble's first line rather than its foot */
+      type: typeIn,
+      settle(el, o) { if (el) requestAnimationFrame(() => { settle(el); if (o && o.head) headInView(el); else keepCardInView(); }); },
       chips(bubble, chips, onChip, cls) { if (!bubble || !chips || !chips.length) return null; const row = chipsRow(chips, onChip, cls); bubble.appendChild(row); follow(); return row; },
       open() { agentSec.classList.add('is-chat'); },
       placeholder(t) { miniInput.placeholder = t || ''; grow(); },

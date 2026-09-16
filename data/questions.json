@@ -1230,19 +1230,24 @@
         "prompt": "Roughly how big is your company?",
         "suggestions": [
           {
-            "id": "smb",
-            "label": "Under 250 people",
-            "value": "smb"
+            "id": "micro",
+            "label": "Under 20",
+            "value": "micro"
+          },
+          {
+            "id": "small",
+            "label": "21 to 50",
+            "value": "small"
           },
           {
             "id": "mid",
-            "label": "250 to 2,500",
-            "value": "mid_market"
+            "label": "51 to 250",
+            "value": "mid"
           },
           {
-            "id": "ent",
-            "label": "2,500 or more",
-            "value": "enterprise"
+            "id": "large",
+            "label": "251 or more",
+            "value": "large"
           }
         ],
         "askWhen": {

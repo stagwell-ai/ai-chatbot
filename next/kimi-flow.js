@@ -212,7 +212,24 @@ function absorb(read, opts) {
   });
   if (inf.industry && !st.industry) st.industry = String(inf.industry).slice(0, 80);
   if (read.userNeedSummary && !st.summary) st.summary = String(read.userNeedSummary).slice(0, 300);
-  if (st.companySize) setSlot('size_tier', st.companySize, 'visitor');
+  if (st.companySize) setSlot('size_tier', sizeTier(st.companySize), 'visitor');
+}
+
+/* ── THE BAND THE VISITOR PICKS vs THE TIER THE ENGINE ROUTES ON ──
+   engine.js routes on routing.json's three tiers (SMB / mid-market /
+   enterprise). The visitor answers in the client's four bands — under 20,
+   21–50, 51–250, 251 or more — and each band carries the tier it belongs to
+   (taxonomy.json). The top band opens at 251 and has no ceiling, so when the
+   site lookup has counted the heads, that count is the better witness for
+   anything above it: hand the engine the number and let it tier it. */
+function sizeTier(band) {
+  const d = data();
+  const B = list(d.taxonomy && d.taxonomy.bands && d.taxonomy.bands.companySize);
+  const hit = B.filter(b => b && b.id === band)[0];
+  if (!hit) return band;
+  const n = st.findings && typeof st.findings.employees === 'number' ? st.findings.employees : null;
+  if (hit.max == null && n != null && n > 250) return n;
+  return hit.tier || band;
 }
 
 /* what a turn can change; compared before and after absorb() */
@@ -350,9 +367,15 @@ function roleFromText(text) {
    competitor set. What it never buys: a claim we cannot stand behind. */
 const RESEARCH_MS = 9000;
 
+/* the lookup's headcount → a band, read off taxonomy.json's own ceilings, so
+   the site and the pills can never drift apart when the bands are redrawn */
 function bandFromEmployees(n) {
   if (typeof n !== 'number' || !isFinite(n) || n <= 0) return null;
-  return n < 250 ? 'smb' : n < 2500 ? 'mid_market' : 'enterprise';
+  const d = data();
+  const B = list(d.taxonomy && d.taxonomy.bands && d.taxonomy.bands.companySize);
+  if (!B.length) return null;
+  for (let i = 0; i < B.length; i++) if (B[i].max == null || n <= B[i].max) return B[i].id;
+  return B[B.length - 1].id;
 }
 
 async function research(domain) {
@@ -378,7 +401,7 @@ async function research(domain) {
 function absorbFindings(f) {
   if (!f) return;
   st.findings = f;
-  if (f.companySize && !st.companySize) { st.companySize = f.companySize; setSlot('size_tier', f.companySize, 'research'); }
+  if (f.companySize && !st.companySize) { st.companySize = f.companySize; setSlot('size_tier', sizeTier(f.companySize), 'research'); }
   if (f.industry && !st.industry) st.industry = f.industry;
   if (f.name) setSlot('company', f.name, 'research');
   track('kimi_site_read', { domain: f.domain, known: true, industry: f.industry || null, size: f.companySize || null, competitors: (f.competitors || []).length });
@@ -644,7 +667,7 @@ async function answer(input) {
   emit('answer_given', { id: q.id, slot: q.field || 'intent', text, chip: sel ? sel.value : null });
   if (sel) {
     Qs().applySuggestion(st, q, sel);
-    if (q.field === 'companySize' && st.companySize) setSlot('size_tier', st.companySize, 'visitor');
+    if (q.field === 'companySize' && st.companySize) setSlot('size_tier', sizeTier(st.companySize), 'visitor');
     track('kimi_question_answered', { question_id: q.id, suggestion_id: sel.id, input_type: 'pill' });
   } else {
     const before = knowledge();
@@ -659,7 +682,7 @@ async function answer(input) {
       const map = { companySize: bands.companySize, creatorProgramSize: bands.creatorProgramSize, geographicScope: bands.geographicScope };
       if (map[q.field]) st[q.field] = map[q.field];
       else if (read.inferred && read.inferred[q.field]) st[q.field] = String(read.inferred[q.field]);
-      if (q.field === 'companySize' && st.companySize) setSlot('size_tier', st.companySize, 'visitor');
+      if (q.field === 'companySize' && st.companySize) setSlot('size_tier', sizeTier(st.companySize), 'visitor');
     }
     absorb(read, { explicit: q.field === 'intent' || !q.field });
     const understood = knowledge() !== before;

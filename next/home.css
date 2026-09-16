@@ -1069,6 +1069,38 @@ body.chat-open{overflow:hidden}
   .askbox__thread .turnb__chips .tag--hero{box-shadow:0 0 0 3px rgba(0,150,175,.25)}
 }
 
+/* ── THE ANSWER TYPES ITSELF IN (client, 2026-09-16: "i want the response to
+   animate in like an ai chatbot, like its typing up the response in a cool
+   animation") ── home.js puts the whole answer in the DOM at once, so the
+   height is final and nothing under it moves, and hands every word its index;
+   the reveal is all here. A word blurs into focus as it lands — the same way
+   the spoken words arrive — and a caret of no width rides the edge of what has
+   been written. The pills and the button wait for the last word. */
+@keyframes wordIn{from{opacity:0;filter:blur(5px);transform:translateY(.16em)}
+  to{opacity:1;filter:blur(0);transform:none}}
+@keyframes caretBlink{0%,45%{opacity:1}55%,100%{opacity:0}}
+.askbox__thread .turnb--ai .turnb__text .tw{display:inline-block;
+  animation:wordIn .34s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--w,0)*var(--step,18ms))}
+.askbox__thread .turnb__caret{display:inline-block;width:0;height:1em;position:relative;vertical-align:-.14em}
+.askbox__thread .turnb__caret::after{content:"";position:absolute;left:0;top:.04em;width:2px;height:.96em;
+  border-radius:1px;background:var(--teal);animation:caretBlink .9s steps(1,end) infinite}
+.askbox__thread .turnb--ai.is-typing .turnb__chips,
+.askbox__thread .turnb--ai.is-typing .turnb__go,
+.askbox__thread .turnb--ai.is-typing .reco,
+.askbox__thread .turnb--ai.is-typing .askform{opacity:0;pointer-events:none}
+.askbox__thread .turnb--ai .turnb__chips,
+.askbox__thread .turnb--ai .turnb__go,
+.askbox__thread .turnb--ai .reco,
+.askbox__thread .turnb--ai .askform{transition:opacity .4s ease}
+@media (prefers-reduced-motion:reduce){
+  .askbox__thread .turnb--ai .turnb__text .tw{animation:none}
+  .askbox__thread .turnb__caret{display:none}
+  .askbox__thread .turnb--ai.is-typing .turnb__chips,
+  .askbox__thread .turnb--ai.is-typing .turnb__go,
+  .askbox__thread .turnb--ai.is-typing .reco,
+  .askbox__thread .turnb--ai.is-typing .askform{opacity:1;pointer-events:auto}
+}
+
 /* transcripts: the visitor's words still arriving, and an answer cut short */
 .askbox__thread .turnb--interim{opacity:.55;font-style:italic}
 /* the visitor's bubble, reserved as they speak and still waiting for the

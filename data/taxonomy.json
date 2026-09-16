@@ -549,45 +549,67 @@
   "bands": {
     "companySize": [
       {
-        "id": "smb",
-        "label": "Under 250 people",
+        "id": "micro",
+        "label": "Under 20 people",
+        "tier": "smb",
+        "max": 20,
         "keywords": [
-          "small business",
-          "startup",
-          "start-up",
-          "small team",
-          "boutique",
-          "smb",
-          "small company",
           "just me",
           "solo",
+          "one person",
+          "two of us",
+          "tiny team",
+          "founder-led",
+          "single store",
+          "family business",
+          "sole trader",
+          "freelance"
+        ]
+      },
+      {
+        "id": "small",
+        "label": "21 to 50 people",
+        "tier": "smb",
+        "max": 50,
+        "keywords": [
+          "small team",
+          "small company",
+          "small business",
+          "boutique",
           "small brand",
           "small agency",
+          "small shop",
           "small ecommerce",
           "small e-commerce",
           "small online",
-          "small shop",
           "local business",
-          "family business",
-          "single store"
+          "startup",
+          "start-up"
         ]
       },
       {
-        "id": "mid_market",
-        "label": "250 to 2,500 people",
+        "id": "mid",
+        "label": "51 to 250 people",
+        "tier": "smb",
+        "max": 250,
         "keywords": [
-          "mid-market",
-          "mid market",
+          "smb",
+          "growing company",
+          "scaleup",
+          "scale-up",
           "midsize",
           "mid-size",
           "medium-sized",
-          "growing company"
+          "a couple of hundred"
         ]
       },
       {
-        "id": "enterprise",
-        "label": "2,500 or more",
+        "id": "large",
+        "label": "251 or more people",
+        "tier": "mid_market",
         "keywords": [
+          "mid-market",
+          "mid market",
           "enterprise",
           "global brand",
           "multinational",
@@ -595,7 +617,8 @@
           "large company",
           "multi-brand",
           "holding company",
-          "public company"
+          "public company",
+          "thousands of employees"
         ]
       }
     ],

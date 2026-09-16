@@ -174,7 +174,18 @@
     }
     return null;
   }
-  const sizeBand = n => (n == null ? null : n < 250 ? 'smb' : n < 2500 ? 'mid_market' : 'enterprise');
+  /* a headcount → a band, from taxonomy.json's own ceilings rather than from
+     three numbers written here: the bands are the client's to redraw, and they
+     have been ("i think here we want under 20, 21-50 , 51-250", 2026-09-15).
+     Each band carries `max`, its last headcount; the last band carries none
+     and catches everything above. */
+  const sizeBand = (n, data) => {
+    if (n == null) return null;
+    const B = list(bandsOf(data).companySize);
+    if (!B.length) return null;
+    for (let i = 0; i < B.length; i++) if (B[i].max == null || n <= B[i].max) return B[i].id;
+    return B[B.length - 1].id;
+  };
   const creatorBand = n => (n == null ? null : n < 100 ? 'under_100' : '100_plus');
 
   function bandFromKeywords(t, bands) {
@@ -194,7 +205,7 @@
     const creators = numberBefore(t, 'creators?|influencers?|kols?|ambassadors?');
     if (creators != null) out.creatorProgramSize = creatorBand(creators);
     const people = numberBefore(t, 'people|employees?|persons?|staff|headcount|ftes?|team|seats|strong|person team|person company');
-    if (people != null) out.companySize = sizeBand(people);
+    if (people != null) out.companySize = sizeBand(people, data);
     if (!out.companySize) out.companySize = bandFromKeywords(t, B.companySize);
     if (!out.creatorProgramSize) out.creatorProgramSize = bandFromKeywords(t, B.creatorVolume);
     out.geographicScope = bandFromKeywords(t, B.geographicScope);

@@ -92,7 +92,7 @@ try {
     /* 4) how large the org is */
     s = await st(page);
     ok(s.question && s.question.id === 'company_size', '4) how large the org is (' + (s.question && s.question.id) + ')');
-    await chip(page, '250 to 2,500');
+    await chip(page, '51 to 250');
     /* 5) the role */
     s = await st(page);
     ok(s.question && s.question.id === 'role', '5) the role (' + (s.question && s.question.id) + ')');
@@ -118,7 +118,7 @@ try {
     ok(/does not look like/i.test(await lastText(page)) && (await st(page)).status === 'CAPTURE_EMAIL', '   a bad email is asked again');
     await say(page, 'ada@acme-brands.com');
     ok(state.leads.length === 1 && state.leads[0].lead.email === 'ada@acme-brands.com' && state.leads[0].lead.name == null, '   the lead is created on the email alone');
-    ok(state.leads[0].discovery.primary === 'newintel' && state.leads[0].discovery.companySize === 'mid_market' && state.leads[0].discovery.role === 'manager', '   carrying the recommendation, size and role');
+    ok(state.leads[0].discovery.primary === 'newintel' && state.leads[0].discovery.companySize === 'mid' && state.leads[0].discovery.role === 'manager', '   carrying the recommendation, size and role');
     /* 8) the phone */
     s = await st(page);
     ok(s.status === 'CAPTURE_PHONE', '8) then the phone (' + s.status + ')');
@@ -160,7 +160,7 @@ try {
     await say(page, 'acmehotels.com');
     /* 3) insights */
     const rows = await page.$$eval('.found__row', els => els.map(e => e.querySelector('dt').textContent.trim() + '=' + e.querySelector('dd').textContent.trim()));
-    ok(rows.some(r => /^INDUSTRY=hospitality$/i.test(r)) && rows.some(r => /2,500\+/.test(r)), '3) insights about the site are shown: ' + rows.join(', '));
+    ok(rows.some(r => /^INDUSTRY=hospitality$/i.test(r)) && rows.some(r => /251 or more/.test(r)), '3) insights about the site are shown: ' + rows.join(', '));
     s = await st(page);
     ok(s.question && s.question.id === 'role', '4→5) size was read from the site, so the role comes next (' + (s.question && s.question.id) + ')');
     await chip(page, 'C-suite');
@@ -168,7 +168,7 @@ try {
     ok((await page.$$('.reco__card--best')).length === 1 && s.status === 'CAPTURE_EMAIL', '6→7) an intent was known, so no discriminator: cards, then the email (' + s.status + ')');
     ok(s.askedQuestionIds.join(' → ') === 'website → role', '   asked only: ' + s.askedQuestionIds.join(' → '));
     await say(page, 'cmo@acmehotels.com');
-    ok(state.leads.length === 1 && state.leads[0].discovery.companySize === 'enterprise' && state.leads[0].discovery.industry === 'hospitality' && state.leads[0].discovery.siteKnown === true, '   the lead carries what the lookup read');
+    ok(state.leads.length === 1 && state.leads[0].discovery.companySize === 'large' && state.leads[0].discovery.industry === 'hospitality' && state.leads[0].discovery.siteKnown === true, '   the lead carries what the lookup read');
     /* 8) declining the phone, twice, is an answer */
     await say(page, 'no thanks');
     ok((await st(page)).status === 'CAPTURE_PHONE', '8) a first "no" is asked once more');
@@ -196,7 +196,7 @@ try {
     ok(s.question && s.question.id === 'company_size', '   the second answer is accepted and the size is asked (' + (s.question && s.question.id) + ')');
     ok(s.company === 'Acme Brands' && s.website === '__skip__', '   what they typed is kept as the company\'s name (' + s.company + ')');
     ok(state.researched.length === 0, '   nothing was looked up for a name that is not an address');
-    await chip(page, 'Under 250');
+    await chip(page, 'Under 20');
     await chip(page, 'Founder');
     await chip(page, 'Revenue, pricing power');
     await say(page, 'founder@acme-brands.com');

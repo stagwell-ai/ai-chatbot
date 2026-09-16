@@ -221,9 +221,10 @@
         "competitors": "Compared with"
       },
       "sizeBands": {
-        "smb": "Under 250 people",
-        "mid_market": "250 to 2,500 people",
-        "enterprise": "2,500+ people"
+        "micro": "under 20 people",
+        "small": "21 to 50 people",
+        "mid": "51 to 250 people",
+        "large": "251 or more people"
       },
       "sizeKnown": "I'll take it from there on size, so I won't ask."
     }
