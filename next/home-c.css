@@ -2328,3 +2328,5 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .nav__pname{font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
 .hc-page .nav__pdesc{font-size:12.5px;line-height:1.4;color:var(--hc-quiet);margin-top:2px}
 .hc-page .nav__pall,.hc-page .nav__panel .nav__pfoot a{font-size:13.5px}
+/* the suite's cards lose a third of their height */
+.hc-page .hcs__rail > li{height:clamp(255px,22vw,300px)}
