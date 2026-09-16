@@ -13,6 +13,8 @@
       const n = (group.querySelector('.prodgroup__n') || {}).textContent || '';
       const problem = (group.querySelector('.prodgroup__h') || {}).textContent || '';
       const cards = [...group.querySelectorAll('.prodcard')];
+      /* a problem answered by more than one product reads as a stack, not as one wide row */
+      if (cards.length > 1) group.dataset.pcMulti = '1'; else delete group.dataset.pcMulti;
       cards.forEach((card, i) => {
         if (card.dataset.pcDone) return;
         card.dataset.pcDone = '1';

@@ -752,3 +752,24 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 .pl-c .prodcard{height:auto !important;grid-template-rows:auto auto auto auto !important}
 .pl-c .prodgroup__cards > .prodcard:last-child{flex:1 1 auto;
   grid-template-rows:auto auto auto 1fr !important}
+
+/* ═══ a problem with more than one product: each one keeps its own way in, beneath it ══════════ */
+.pl-c .prodgroup[data-pc-multi] .prodcard{grid-template-columns:minmax(0,1fr) !important;
+  grid-template-rows:auto auto auto auto auto !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-row__h,
+.pl-c .prodgroup[data-pc-multi] .prodcard__pos,
+.pl-c .prodgroup[data-pc-multi] .prodcard__who,
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what{
+  grid-column:1 !important;justify-self:start !important;width:var(--pc-measure) !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:1 !important;grid-row:5 !important;
+  justify-self:start !important;align-self:start !important;
+  margin-top:clamp(22px,2.4vw,32px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards > .prodcard:last-child{flex:0 0 auto;
+  grid-template-rows:auto auto auto auto auto !important}
+
+/* a single-product problem lets its row stretch to the picture's foot (an earlier fix had forced
+   this column back to a block, so nothing could stretch); a multi-product one simply stacks */
+.pl-c .prodgroup:not([data-pc-multi]) .prodgroup__cards{display:flex !important;
+  flex-direction:column;height:100%}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards{display:block !important;height:auto}
+.pl-c .prodgroup[data-pc-multi] .prodcard{height:auto !important}
