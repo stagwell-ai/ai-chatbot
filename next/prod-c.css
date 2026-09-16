@@ -658,3 +658,12 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 }
 /* pin it to the last row so its foot is the row's foot */
 .pl-c .prodcard__link{grid-row:3 !important;align-self:end !important}
+
+/* the picture runs the full height of its problem, so its foot meets the last Explore */
+.pl-c .prodgroup{align-items:stretch}
+.pl-c .prodgroup__head{aspect-ratio:auto !important;height:auto !important;
+  min-height:clamp(260px,25vw,380px);align-self:stretch !important}
+.pl-c .prodgroup__cards{display:flex;flex-direction:column;height:100%}
+.pl-c .prodgroup__cards > .prodcard:last-child{flex:1 1 auto}
+/* a long problem should not stretch its picture into a strip */
+.pl-c .prodgroup__head{max-height:clamp(300px,34vw,540px)}
