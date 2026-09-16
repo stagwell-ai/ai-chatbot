@@ -119,6 +119,81 @@
   };
   lift();
 
+  /* a problem answered by several products shows one at a time, its tabs turning on their own —
+     the way the homepage turns its Products stills */
+  const tabify = () => {
+    document.querySelectorAll('.pl-c .prodgroup[data-pc-multi]').forEach(group => {
+      if (group.dataset.pcTabs) return;
+      const cards = [...group.querySelectorAll('.prodcard')];
+      const holder = group.querySelector('.prodgroup__cards');
+      if (cards.length < 2 || !holder) return;
+      group.dataset.pcTabs = '1';
+
+      /* the problem's words step off the picture and become the section's heading */
+      const words = group.querySelector('.prodgroup__words');
+      const head = group.querySelector('.prodgroup__head');
+      if (words && head && !words.dataset.pcLifted) {
+        words.dataset.pcLifted = '1';
+        head.insertAdjacentElement('beforebegin', words);
+      }
+
+      const strip = document.createElement('div');
+      strip.className = 'pc-tabs';
+      const tabs = cards.map((card, i) => {
+        const title = card.querySelector('.pc-row__h');
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pc-tab';
+        b.textContent = (title ? title.textContent : '').trim().replace(/\s*\(.*$/, '') || String(i + 1);
+        strip.appendChild(b);
+        return b;
+      });
+      if (words && words.parentElement === group) words.insertAdjacentElement('afterend', strip);
+      else holder.insertAdjacentElement('afterbegin', strip);
+
+      /* each product gets the homepage's caption card, laid over the still */
+      const caps = cards.map(card => {
+        const cap = document.createElement('a');
+        cap.className = 'pc-cap';
+        const href = card.querySelector('.prodcard__link');
+        if (href) cap.href = href.getAttribute('href') || '#';
+        const name = (card.querySelector('.pc-row__h') || {}).textContent || '';
+        const line = (card.querySelector('.prodcard__pos') || {}).textContent || '';
+        cap.innerHTML = '<svg class="pc-cap__arw" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+          '<path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+          'stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+          '<span class="pc-cap__eb"></span><span class="pc-cap__h"></span>';
+        cap.querySelector('.pc-cap__eb').textContent = name.trim();
+        cap.querySelector('.pc-cap__h').textContent = line.trim();
+        head.appendChild(cap);
+        return cap;
+      });
+
+      let at = 0, timer = 0, taken = false, seen = false;
+      const still = matchMedia('(prefers-reduced-motion: reduce)');
+      const show = i => {
+        at = (i + cards.length) % cards.length;
+        cards.forEach((c, n) => c.classList.toggle('is-on', n === at));
+        tabs.forEach((t, n) => t.classList.toggle('is-on', n === at));
+        caps.forEach((c, n) => c.classList.toggle('is-on', n === at));
+      };
+      const stop = () => { if (timer) { clearInterval(timer); timer = 0; } };
+      const start = () => {
+        if (timer || taken || !seen || still.matches) return;
+        timer = setInterval(() => show(at + 1), 4200);
+      };
+      tabs.forEach((t, i) => t.addEventListener('click', () => { taken = true; stop(); show(i); }));
+      show(0);
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(es => {
+          seen = es[0].isIntersecting;
+          seen ? start() : stop();
+        }, { threshold: .25 }).observe(group);
+      } else { seen = true; start(); }
+    });
+  };
+  tabify();
+
   /* the note about the prototype belongs under the two ways in, not above them */
   const note = () => {
     const n = document.querySelector('.pl-c .prodfoot');
@@ -128,5 +203,5 @@
     acts.insertAdjacentElement('afterend', n);
   };
   note();
-  new MutationObserver(() => { build(); repic(); lift(); note(); }).observe(root, { childList: true, subtree: true });
+  new MutationObserver(() => { build(); repic(); lift(); note(); tabify(); }).observe(root, { childList: true, subtree: true });
 })();

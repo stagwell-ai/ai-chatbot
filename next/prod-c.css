@@ -824,3 +824,89 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   z-index:1;pointer-events:none}
 .pl-c .prodgroup__head::after{z-index:1}
 .pl-c .prodgroup__words{z-index:2 !important}
+
+/* ═══ several products under one problem: tabs that turn, one product shown at a time ══════════ */
+.pl-c .pc-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 clamp(22px,2.4vw,32px)}
+.pl-c .pc-tab{height:40px;padding:0 16px;border-radius:10px;background:#FFFFFF;
+  border:1px solid var(--hc-edge);color:var(--ink);font-family:var(--ui);font-size:14px;
+  font-weight:500;letter-spacing:-.005em;cursor:pointer;
+  transition:background .2s ease,border-color .2s ease}
+.pl-c .pc-tab:hover{background:#F2F2EF;border-color:rgba(11,18,32,.2)}
+.pl-c .pc-tab.is-on{background:#EBEBE8;border-color:rgba(11,18,32,.12)}
+.pl-c .prodgroup[data-pc-tabs] .prodcard{display:none !important;margin-top:0 !important}
+.pl-c .prodgroup[data-pc-tabs] .prodcard.is-on{display:grid !important}
+/* the homepage's thinking field belongs to the homepage */
+.pc-page .ask-end .hero__think,.pc-page #agentThink,.pc-page #endThink{display:none !important}
+
+/* ═══ the two multi-product problems break the grid and run wide ═══════════════════════════════
+   The picture becomes a stage across the whole page, the tabs sit under it, and the product it
+   turns to reads beneath them — the homepage's Products rhythm, twice down this page. */
+.pl-c .prodgroup[data-pc-multi]{display:block !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{width:100% !important;
+  height:clamp(340px,40vw,560px) !important;border-radius:18px !important;
+  margin:0 0 clamp(22px,2.4vw,34px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__h{font-size:clamp(28px,1rem + 2vw,44px) !important;
+  max-width:20ch}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards{width:100% !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard.is-on{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap:var(--pc-gap) !important;row-gap:0}
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-row__h{grid-column:1 !important;grid-row:1 !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__pos{grid-column:1 !important;grid-row:2 !important;
+  margin-top:12px !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__who{grid-column:2 !important;grid-row:1 !important;
+  margin:0 !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what{grid-column:2 !important;grid-row:2 !important;
+  margin-top:18px !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:2 !important;grid-row:3 !important;
+  justify-self:start !important;align-self:start !important;
+  margin-top:clamp(20px,2.2vw,30px) !important}
+@media (max-width:980px){
+  .pl-c .prodgroup[data-pc-multi] .prodcard.is-on{grid-template-columns:1fr !important}
+  .pl-c .prodgroup[data-pc-multi] .prodcard .pc-row__h,
+  .pl-c .prodgroup[data-pc-multi] .prodcard__pos,
+  .pl-c .prodgroup[data-pc-multi] .prodcard__who,
+  .pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what,
+  .pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:1 !important;grid-row:auto !important}
+}
+
+/* the heading steps off the picture, the tabs sit under it, and the caption card carries the
+   product across the still — the homepage's own component, adapted */
+.pl-c .prodgroup[data-pc-multi] > .prodgroup__words{position:static !important;display:block;
+  margin:0 0 clamp(16px,1.8vw,24px) !important;left:auto;right:auto;bottom:auto}
+.pl-c .prodgroup[data-pc-multi] > .prodgroup__words .prodgroup__n{color:var(--hc-quiet) !important;
+  letter-spacing:.06em}
+.pl-c .prodgroup[data-pc-multi] > .prodgroup__words .prodgroup__h{color:var(--ink) !important;
+  font-size:clamp(30px,1rem + 2.6vw,52px) !important;max-width:24ch}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{background:linear-gradient(90deg,
+  rgba(7,12,20,.34) 0%,rgba(7,12,20,.06) 56%,rgba(7,12,20,0) 100%) !important}
+.pl-c .pc-cap{position:absolute;z-index:3;left:clamp(16px,2.2vw,32px);top:clamp(16px,2.2vw,32px);
+  display:none;max-width:min(560px,52%);background:var(--ink);color:#FFFFFF;border-radius:14px;
+  padding:clamp(18px,2vw,26px) clamp(46px,4vw,58px) clamp(20px,2.2vw,28px) clamp(18px,2vw,26px);
+  text-decoration:none}
+.pl-c .pc-cap.is-on{display:block}
+.pl-c .pc-cap__eb{display:block;font-family:var(--ui);font-size:12px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72);margin:0 0 10px}
+.pl-c .pc-cap__h{display:block;font-family:var(--hc-title);font-weight:400;
+  font-size:clamp(20px,1rem + 1vw,30px);line-height:1.18;letter-spacing:-.02em;color:#FFFFFF}
+.pl-c .pc-cap__arw{position:absolute;top:clamp(18px,2vw,26px);right:clamp(18px,2vw,26px);
+  width:19px;height:19px;color:#FFFFFF;transition:transform .24s ease}
+.pl-c .pc-cap:hover{background:#05080F}
+.pl-c .pc-cap:hover .pc-cap__arw{transform:translate(2px,-2px)}
+/* below the still: what the product is for, what it does, and the way in */
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-row__h,
+.pl-c .prodgroup[data-pc-multi] .prodcard__pos{display:none !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard.is-on{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__who{grid-column:1 !important;grid-row:1 !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what{grid-column:2 !important;grid-row:1 !important;
+  margin-top:0 !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:3 !important;grid-row:1 !important;
+  justify-self:end !important;align-self:start !important;margin-top:0 !important}
+@media (max-width:980px){
+  .pl-c .pc-cap{position:static;max-width:none;margin:0;border-radius:0 0 18px 18px}
+  .pl-c .prodgroup[data-pc-multi] .prodcard.is-on{grid-template-columns:1fr !important}
+  .pl-c .prodgroup[data-pc-multi] .prodcard__who,
+  .pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what,
+  .pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:1 !important;grid-row:auto !important;
+    justify-self:start !important;margin-top:18px !important}
+}
