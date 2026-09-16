@@ -1039,3 +1039,29 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{
   bottom:calc(-1 * clamp(28px,3vw,44px)) !important}
 .pl-c .prodgroup[data-pc-multi] .pc-cap,.pl-c .prodgroup[data-pc-multi] .pc-side{grid-row:1}
+/* both cards stand above the scrim, so they read as one colour */
+.pl-c .pc-side,.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go{position:relative;z-index:3}
+.pl-c .pc-cap{z-index:3}
+
+/* the darkening travels with the picture as background layers on the same box, so nothing can
+   fall short of an edge or drift as the tabs turn */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
+  background-image:
+    linear-gradient(90deg,rgba(7,12,20,.62) 0%,rgba(7,12,20,.34) 46%,rgba(7,12,20,.12) 100%),
+    linear-gradient(rgba(7,12,20,.15),rgba(7,12,20,.15)),
+    var(--pc-bg) !important;
+  background-size:cover,cover,cover !important;
+  background-position:center,center,center !important;
+  background-repeat:no-repeat,no-repeat,no-repeat !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::before,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{content:none !important;display:none !important}
+/* bleed by the page's own gutter rather than 100vw, so a scrollbar cannot leave a gap */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{
+  width:auto !important;max-width:none !important;
+  margin-left:calc(-1 * clamp(20px,3.6vw,72px)) !important;
+  margin-right:calc(-1 * clamp(20px,3.6vw,72px)) !important}
+/* the homepage lays no darkening over this still — the words live in the card, so the picture
+   stays as bright as it was shot */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
+  background-image:var(--pc-bg) !important;background-size:cover !important;
+  background-position:center !important;background-repeat:no-repeat !important}
