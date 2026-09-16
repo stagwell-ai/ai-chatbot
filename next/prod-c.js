@@ -103,5 +103,15 @@
     mini.insertAdjacentElement('afterend', ways);
   };
   lift();
-  new MutationObserver(() => { build(); repic(); lift(); }).observe(root, { childList: true, subtree: true });
+
+  /* the note about the prototype belongs under the two ways in, not above them */
+  const note = () => {
+    const n = document.querySelector('.pl-c .prodfoot');
+    const acts = document.querySelector('.pl-c .ask-end .ask-end__acts');
+    if (!n || !acts || n.dataset.pcMoved) return;
+    n.dataset.pcMoved = '1';
+    acts.insertAdjacentElement('afterend', n);
+  };
+  note();
+  new MutationObserver(() => { build(); repic(); lift(); note(); }).observe(root, { childList: true, subtree: true });
 })();
