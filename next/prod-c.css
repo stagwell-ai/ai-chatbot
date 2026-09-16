@@ -642,3 +642,19 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 /* the marks were taking room the words need: the labels carry it on their own */
 .pl-c .prodcard .pc-ic{display:none !important}
 .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{gap:0}
+
+/* Explore keeps its own column at the right and rests on the foot of it */
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(150px,auto) !important}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos{grid-column:1 / 3 !important}
+.pl-c .prodcard__who{grid-column:1 !important;grid-row:3 !important}
+.pl-c .prodcard .pc-foot__what{grid-column:2 !important;grid-row:3 !important}
+.pl-c .prodcard__link{grid-column:3 !important;grid-row:1 / -1 !important;
+  align-self:end !important;justify-self:end !important;margin:0 !important}
+@media (max-width:980px){
+  .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,.pl-c .prodcard__who,
+  .pl-c .prodcard .pc-foot__what,.pl-c .prodcard__link{
+    grid-column:1 !important;grid-row:auto !important;justify-self:start !important}
+  .pl-c .prodcard__link{margin-top:22px !important}
+}
+/* pin it to the last row so its foot is the row's foot */
+.pl-c .prodcard__link{grid-row:3 !important;align-self:end !important}
