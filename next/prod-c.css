@@ -1,0 +1,174 @@
+/* ── OPTION C ON THE PRODUCT PAGES ───────────────────────────────────────────
+   The four product pages keep every word, link and script they had; this file
+   dresses them in the homepage's language: paper ground, Roobert titles, the
+   film edge to edge, the steps read as a list, a light footer. Everything is
+   scoped to body.pc-page and loaded after product.css.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Light.ttf') format('truetype');font-weight:300;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Bold.ttf') format('truetype');font-weight:600 700;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Heavy.ttf') format('truetype');font-weight:800 900;font-display:swap}
+@font-face{font-family:'Tiro Tamil';font-style:normal;font-weight:400;font-display:swap;
+  src:url(/next/assets/fonts/tiro-tamil-normal.woff2) format('woff2')}
+
+body.pc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:#6B7079;
+  --hc-rule:rgba(11,18,32,.16);
+  --hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --hc-serif:'Tiro Tamil',Georgia,'Times New Roman',serif;
+  background:var(--hc-ground)}
+
+/* every title on the page is Roobert; the words stay Montserrat */
+.pc-page .pp-title,.pc-page .pp-title *,.pc-page .pp-h2,.pc-page .pp-h2 *,
+.pc-page .pp-steps h3,.pc-page .pp-figs strong,
+.pc-page .display,.pc-page .display *{font-family:var(--hc-title) !important;
+  font-weight:400 !important;letter-spacing:-.02em}
+
+/* ── the bar sits on paper ────────────────────────────────────────────────────────────────────── */
+.pc-page .nav:not(.is-stuck){color:var(--ink);background:transparent}
+.pc-page .nav:not(.is-stuck) .nav__links a,.pc-page .nav:not(.is-stuck) .nav__droptrig,
+.pc-page .nav:not(.is-stuck) .nav__ask{color:var(--ink-2,#3B4252)}
+.pc-page .nav:not(.is-stuck) .nav__brand,.pc-page .nav:not(.is-stuck) .nav__burger{color:var(--ink)}
+.pc-page .nav:not(.is-stuck) .btn--ink{background:var(--ink);color:#FFFFFF}
+.pc-page .nav:not(.is-stuck) .nav__search,.pc-page .nav:not(.is-stuck) .nav__search:hover{
+  background:var(--hc-card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--hc-edge)}
+.pc-page .nav.is-stuck{background:var(--hc-ground)}
+
+/* ── the hero: the name large at the left, the sentence and the demo at the right ─────────────── */
+.pc-page .pp-hero,.pc-page .pp-hero--photo,.pc-page .pp-hero--light{
+  background:var(--hc-ground) !important;background-image:none !important;color:var(--ink) !important;
+  padding:calc(var(--nav-h) + clamp(48px,7vh,104px)) 0 clamp(40px,5vw,72px);min-height:auto}
+.pc-page .pp-hero::before,.pc-page .pp-hero::after{display:none !important}
+.pc-page .pp-hero__in{max-width:1180px;display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);
+  column-gap:clamp(28px,5vw,88px);row-gap:clamp(14px,1.6vw,22px);align-items:start}
+.pc-page .pp-logo{grid-area:1 / 1 / 2 / 2;max-width:min(260px,52%);height:auto;
+  margin:0 0 clamp(10px,1.4vw,18px);filter:none}
+.pc-page .pp-title{grid-area:2 / 1 / 4 / 2;margin:0;color:var(--ink) !important;
+  font-size:clamp(38px,1rem + 4.4vw,84px);line-height:1.02;letter-spacing:-.03em}
+.pc-page .pp-eyebrow{grid-area:1 / 2 / 2 / 3;margin:0;color:var(--hc-quiet) !important;
+  font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.pc-page .pp-lede{grid-area:2 / 2 / 3 / 3;margin:0;color:var(--ink) !important;
+  font-size:clamp(17px,1.25vw,21px);line-height:1.5;max-width:46ch}
+.pc-page .pp-acts{grid-area:3 / 2 / 4 / 3;display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;
+  margin:clamp(20px,2.4vw,32px) 0 0;padding-top:clamp(18px,2vw,26px);
+  border-top:1px solid var(--hc-rule)}
+.pc-page .pp-acts .btn--accent,.pc-page .pp-acts .btn--lg{background:var(--ink) !important;
+  color:#FFFFFF !important;border:0 !important}
+.pc-page .pp-acts .btn--accent:hover{background:#05080F !important}
+.pc-page .pp-site{color:var(--hc-quiet) !important}
+.pc-page .pp-site:hover{color:var(--ink) !important}
+
+/* ── the film runs the width of the page, square cornered, and plays as it is reached ─────────── */
+.pc-page .pp-film{background:var(--hc-ground);padding:0}
+.pc-page .pp-film__frame{width:100%;max-width:100%;margin-inline:0;
+  border-radius:0 !important;aspect-ratio:16 / 9;height:auto;overflow:hidden;background:#0B1220}
+.pc-page .pp-film__frame video{width:100%;height:100%;object-fit:cover;display:block;border-radius:0}
+.pc-page .pp-film__play{width:44px;height:44px;border-radius:50%;left:clamp(16px,2.4vw,34px);
+  top:auto;bottom:clamp(16px,2.4vw,34px);transform:none;
+  background:rgba(255,255,255,.9);color:var(--ink);border:0;box-shadow:none}
+.pc-page .pp-film__play:hover{background:#FFFFFF}
+.pc-page .pp-film__play svg{width:18px;height:18px}
+
+/* ── the statement under the film, in the serif the homepage uses ────────────────────────────── */
+.pc-page .pp-about{padding:clamp(56px,7vw,110px) 0 clamp(20px,3vw,44px)}
+.pc-page .pp-about .pp-wrap{max-width:1180px}
+.pc-page .pp-about__text{font-family:var(--hc-serif);font-weight:400;
+  font-size:clamp(24px,1rem + 1.7vw,40px);line-height:1.28;letter-spacing:-.01em;
+  color:var(--ink) !important;max-width:22ch;max-width:min(980px,100%)}
+
+/* ── how it works: the steps read as the homepage's list ─────────────────────────────────────── */
+.pc-page .pp-more{padding:clamp(44px,6vw,92px) 0 clamp(56px,7vw,104px)}
+.pc-page .pp-more .pp-wrap{max-width:1180px}
+.pc-page .pp-more__head{display:block;margin:0 0 clamp(22px,2.6vw,36px)}
+.pc-page .pp-sign{color:var(--hc-quiet) !important;font-size:13px;letter-spacing:.06em;
+  text-transform:uppercase;margin:0 0 10px}
+.pc-page .pp-h2,.pc-page .pp-h2 span{color:var(--ink) !important;
+  font-size:clamp(34px,1rem + 3.4vw,68px);line-height:1.04;letter-spacing:-.03em;margin:0}
+.pc-page .pp-more__grid{display:block}
+.pc-page .pp-more__media{width:100%;margin:0 0 clamp(28px,3.4vw,52px);border-radius:0;overflow:hidden}
+.pc-page .pp-more__media img{width:100%;height:auto;max-height:clamp(320px,46vh,560px);
+  object-fit:cover;display:block}
+.pc-page .pp-steps{display:block;counter-reset:none;margin:0;padding:0;list-style:none}
+.pc-page .pp-steps > li{display:block;position:relative;margin:0;
+  padding:clamp(26px,3vw,42px) 76px clamp(28px,3.2vw,46px) 0;
+  border:0;border-top:1px solid var(--hc-rule)}
+.pc-page .pp-steps > li:last-child{border-bottom:1px solid var(--hc-rule)}
+.pc-page .pp-steps > li > b{position:absolute;top:clamp(26px,3vw,42px);right:0;
+  font-family:var(--ui);font-weight:400;font-size:13px;color:var(--hc-quiet);letter-spacing:.02em;
+  background:none;width:auto;height:auto;border-radius:0;display:block}
+.pc-page .pp-steps > li > b::before{content:"/0."}
+.pc-page .pp-steps h3{color:var(--ink) !important;
+  font-size:clamp(30px,1rem + 2.6vw,54px);line-height:1.04;letter-spacing:-.03em;
+  margin:0 0 clamp(12px,1.4vw,18px)}
+.pc-page .pp-steps p{color:var(--hc-quiet) !important;font-size:17px;line-height:1.5;
+  max-width:76ch;margin:0}
+.pc-page .pp-mid{margin:clamp(30px,3.4vw,48px) 0 0}
+.pc-page .pp-mid .btn--ink{background:var(--ink) !important;color:#FFFFFF !important}
+
+/* ── the numbers, on the same hairlines ──────────────────────────────────────────────────────── */
+.pc-page .pp-proof{padding:0 0 clamp(56px,7vw,104px);background:var(--hc-ground)}
+.pc-page .pp-proof .pp-wrap{max-width:1180px}
+.pc-page .pp-proof__head{display:block;margin:0 0 clamp(20px,2.4vw,32px)}
+.pc-page .pp-flag{display:inline-block;margin-top:10px;color:var(--hc-quiet) !important;
+  background:none;border:1px solid var(--hc-rule);border-radius:999px;padding:4px 12px;font-size:12px}
+.pc-page .pp-figs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;
+  border-top:1px solid var(--hc-rule);border-bottom:1px solid var(--hc-rule);margin:0;padding:0}
+.pc-page .pp-figs > li{background:none;border:0;border-left:1px solid var(--hc-rule);
+  border-radius:0;padding:clamp(24px,2.6vw,36px) clamp(16px,1.8vw,26px)}
+.pc-page .pp-figs > li:first-child{border-left:0;padding-left:0}
+.pc-page .pp-figs strong{display:block;color:var(--ink) !important;
+  font-size:clamp(30px,1rem + 2vw,46px);line-height:1.04;letter-spacing:-.03em}
+.pc-page .pp-figs span{display:block;margin-top:10px;color:var(--hc-quiet) !important;
+  font-size:14.5px;line-height:1.45}
+.pc-page .pp-proof__note{margin-top:16px;color:var(--hc-quiet) !important;font-size:13.5px}
+
+/* ── the phone ───────────────────────────────────────────────────────────────────────────────── */
+@media (max-width:860px){
+  .pc-page .pp-hero__in{grid-template-columns:1fr}
+  .pc-page .pp-logo,.pc-page .pp-title,.pc-page .pp-eyebrow,.pc-page .pp-lede,.pc-page .pp-acts{
+    grid-area:auto !important}
+  .pc-page .pp-eyebrow{order:-1}
+  .pc-page .pp-figs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pc-page .pp-figs > li{border-left:0;border-top:1px solid var(--hc-rule);padding-left:0}
+  .pc-page .pp-figs > li:nth-child(-n+2){border-top:0}
+}
+@media (max-width:760px){
+  .pc-page .pp-steps > li{padding-right:52px}
+  .pc-page .pp-steps h3{font-size:clamp(28px,8vw,40px)}
+  .pc-page .pp-film__frame{aspect-ratio:4 / 3}
+  .pc-page .pp-figs{grid-template-columns:1fr}
+  .pc-page .pp-figs > li:nth-child(2){border-top:1px solid var(--hc-rule)}
+}
+
+/* ── corrections against product.css ──────────────────────────────────────────────────────────── */
+.pc-page .pp-about__text{text-align:left !important;margin-inline:0 !important}
+.pc-page .pp-film__play{left:clamp(16px,2.4vw,34px) !important;right:auto !important;
+  top:auto !important;bottom:clamp(16px,2.4vw,34px) !important;transform:none !important}
+.pc-page .pp-more__head,.pc-page .pp-proof__head{text-align:left !important}
+.pc-page .pp-sign,.pc-page .pp-h2,.pc-page .pp-mid{text-align:left !important}
+.pc-page .pp-mid{margin-inline:0 !important}
+.pc-page .pp-film{margin-top:0 !important;padding:0 !important}
+.pc-page .pp-hero{overflow:visible !important}
+/* the product wordmarks exist only white-on-black, so on paper the name is set as type */
+.pc-page .pp-logo{display:none !important}
+.pc-page .pp-hero,.pc-page .pp-hero__in,.pc-page .pp-title,
+.pc-page .pp-eyebrow,.pc-page .pp-lede,.pc-page .pp-acts{text-align:left !important}
+.pc-page .pp-acts{justify-content:flex-start}
+
+/* the closing pair needs room here: the product page's acts row is a block, not a flex */
+.pc-page .ask-end .ask-end__acts{display:flex !important;justify-content:center;width:100%}
+.pc-page .ask-end .ask-end__ways{width:min(100%,1000px) !important;max-width:100% !important;
+  flex:1 1 auto}
+
+/* ── the closing section: a product page has no two-block pair, so its own ask stays ──────────── */
+.pc-page .ask-end .display--end,.pc-page .ask-end .display--end *{display:block !important;
+  color:var(--ink) !important;font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(34px,1rem + 3.4vw,68px) !important;line-height:1.04;letter-spacing:-.03em;
+  text-align:center}
+.pc-page .ask-end .ask-end__lede{display:block !important;color:var(--hc-quiet) !important;
+  text-align:center;margin-top:14px}
+.pc-page .ask-end .ask-mini{display:grid !important}
+.pc-page .ask-end .ask-end__acts{display:flex !important;justify-content:center;width:100%;
+  margin-top:clamp(24px,3vw,38px)}
+.pc-page .ask-end{padding:clamp(64px,8vw,120px) 0 clamp(56px,7vw,100px) !important}
