@@ -1057,9 +1057,7 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{content:none !important;display:none !important}
 /* bleed by the page's own gutter rather than 100vw, so a scrollbar cannot leave a gap */
 .pl-c .prodgroup[data-pc-multi] .prodgroup__head{
-  width:auto !important;max-width:none !important;
-  margin-left:calc(-1 * clamp(20px,3.6vw,72px)) !important;
-  margin-right:calc(-1 * clamp(20px,3.6vw,72px)) !important}
+  width:auto !important;max-width:none !important}
 /* the homepage lays no darkening over this still — the words live in the card, so the picture
    stays as bright as it was shot */
 .pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
@@ -1078,3 +1076,13 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pl-c .pc-cap,.pl-c .pc-side{padding:clamp(24px,2.6vw,34px) !important}
 .pl-c .pc-cap{padding-right:clamp(46px,4vw,58px) !important}
 .pl-c .prodgroup[data-pc-multi] .prodgroup__head{column-gap:clamp(16px,1.8vw,28px) !important}
+
+/* ═══ the cards: their own heights, their own rhythm ═══════════════════════════════════════════ */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{align-items:start !important}
+.pl-c .pc-cap,.pl-c .pc-side{align-self:start !important;height:auto !important}
+/* the label sits on its own line, above what it names */
+.pl-c .pc-side .pc-lab,.pl-c .pc-cap .pc-lab{display:block !important;margin:0 0 6px !important}
+/* more air between the product's name and its paragraph */
+.pl-c .pc-cap__eb{margin:0 0 clamp(14px,1.6vw,20px) !important}
+/* the margins are set from JS, so the stylesheet must not fight them */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{margin-left:0;margin-right:0}

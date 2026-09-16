@@ -214,6 +214,22 @@
   };
   tabify();
 
+  /* the wide stills reach the true edges of the window, measured rather than assumed */
+  const bleed = () => {
+    document.querySelectorAll('.pl-c .prodgroup[data-pc-multi] .prodgroup__head').forEach(head => {
+      head.style.marginLeft = '0px';
+      head.style.marginRight = '0px';
+      const r = head.getBoundingClientRect();
+      const w = document.documentElement.clientWidth;
+      head.style.marginLeft = (-Math.round(r.left)) + 'px';
+      head.style.marginRight = (-Math.round(w - r.right)) + 'px';
+    });
+  };
+  const bleedSoon = () => requestAnimationFrame(() => requestAnimationFrame(bleed));
+  bleedSoon();
+  addEventListener('resize', bleedSoon);
+  addEventListener('load', bleedSoon);
+
   /* the note about the prototype belongs under the two ways in, not above them */
   const note = () => {
     const n = document.querySelector('.pl-c .prodfoot');
@@ -223,5 +239,5 @@
     acts.insertAdjacentElement('afterend', n);
   };
   note();
-  new MutationObserver(() => { build(); repic(); lift(); note(); tabify(); }).observe(root, { childList: true, subtree: true });
+  new MutationObserver(() => { build(); repic(); lift(); note(); tabify(); bleedSoon(); }).observe(root, { childList: true, subtree: true });
 })();
