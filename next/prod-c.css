@@ -342,3 +342,93 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   margin-inline:0 !important}
 .pl-c .ptoc__label,.pl-c .ptoc__btn{color:var(--ink) !important;opacity:1 !important}
 .pl-c .ptoc__btn svg{color:var(--hc-quiet)}
+
+/* ═══ the listing, fourth pass (client) ════════════════════════════════════════════════════════
+   The hero reads title → the statement → the two ways in. Every section sits on one ground, every
+   line starts on the same left edge, and each row leads with what the product does, the name
+   above it as a quiet tag. */
+.pl-c .pl-hero .pp-hero__in{grid-template-columns:1fr !important;
+  grid-template-rows:auto !important;row-gap:clamp(12px,1.4vw,20px);max-width:none}
+.pl-c .pl-hero .pp-eyebrow{grid-area:auto !important;order:1}
+.pl-c .pl-hero .pp-title{grid-area:auto !important;order:2;max-width:20ch}
+.pl-c .pl-hero .pp-lede{display:none !important}
+.pl-c .pl-hero .pl-say{grid-area:auto !important;order:3;margin:clamp(6px,.8vw,12px) 0 0;
+  max-width:74ch;font-size:clamp(17px,1rem + .45vw,21px) !important;line-height:1.5;
+  color:var(--hc-quiet) !important}
+.pl-c .pl-hero .pp-acts{grid-area:auto !important;order:4;
+  margin-top:clamp(14px,1.8vw,24px) !important;border-top:0 !important;padding-top:0 !important}
+.pl-c .pl-about{display:none !important}
+
+/* one ground for the whole page, one colour for every hairline, one left edge */
+.pl-c,.pl-c main,.pl-c .pp-hero,.pl-c .prodbody,.pl-c .prodgroup,.pl-c .ask-end,
+.pl-c .ptoc,.pl-c .prodgroup__head{background:var(--hc-ground) !important}
+.pl-c .prodcard,.pl-c .prodgroup__head{border-color:var(--hc-rule) !important}
+.pl-c .prodgroup__cards > .prodcard:last-child{border-bottom-color:var(--hc-rule) !important}
+.pl-c .prodgroup,.pl-c .prodcard,.pl-c .prodgroup__head,.pl-c .ptoc,
+.pl-c .pl-hero .pp-hero__in{text-align:left !important}
+
+/* the row: what it does reads large, the product's name is the tag above it */
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(190px,.26fr) !important;
+  row-gap:0;padding:clamp(30px,3vw,46px) 0 clamp(32px,3.2vw,50px)}
+.pl-c .prodcard__name{grid-column:1 !important;grid-row:1 !important;
+  font-family:var(--ui) !important;font-weight:600 !important;
+  font-size:13px !important;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--hc-quiet) !important;margin:0 0 12px}
+.pl-c .prodcard__pos{grid-column:1 !important;grid-row:2 !important;
+  font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(26px,1rem + 1.7vw,42px) !important;line-height:1.08;letter-spacing:-.03em;
+  color:var(--ink) !important;max-width:22ch;margin:0}
+.pl-c .prodcard__who{grid-column:1 !important;grid-row:3 !important;margin:18px 0 0 !important;
+  font-size:14px}
+.pl-c .prodcard__pills{grid-column:1 !important;grid-row:4 !important;margin:8px 0 0 !important;
+  row-gap:4px}
+.pl-c .prodcard__link{grid-column:2 !important;grid-row:1 !important;align-self:start;
+  justify-self:end}
+
+/* ═══ the listing, settled (client) ════════════════════════════════════════════════════════════
+   Hero: the title at the left with its two buttons beneath it, the statement facing it at the
+   right. The chooser sits in the centre. Each row keeps the division we had — the name, then what
+   it does facing it, then the way in — with every column starting on the same line. */
+.pl-c .pl-hero .pp-hero__in{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr) !important;
+  grid-template-rows:auto auto auto !important;column-gap:clamp(32px,5vw,96px);
+  row-gap:clamp(12px,1.4vw,20px);align-items:start}
+.pl-c .pl-hero .pp-eyebrow{grid-area:1 / 1 / 2 / 2 !important;order:0}
+.pl-c .pl-hero .pp-title{grid-area:2 / 1 / 3 / 2 !important;order:0;max-width:18ch}
+.pl-c .pl-hero .pp-acts{grid-area:3 / 1 / 4 / 2 !important;order:0;display:flex;gap:12px;
+  align-items:center;margin-top:clamp(14px,1.8vw,24px) !important}
+.pl-c .pl-hero .pl-say{grid-area:2 / 2 / 4 / 3 !important;order:0;margin:0;max-width:46ch;
+  font-size:clamp(17px,1rem + .4vw,20px) !important;line-height:1.5;color:var(--ink) !important}
+/* both ways in read as buttons */
+.pl-c .pl-hero .pp-site{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 20px;
+  border-radius:999px;border:1px solid var(--hc-rule);color:var(--ink) !important;
+  font-size:15px;font-weight:500;text-decoration:none}
+.pl-c .pl-hero .pp-site:hover{background:#FFFFFF;border-color:rgba(11,18,32,.32)}
+
+/* the chooser, centred */
+.pl-c .ptoc{text-align:center !important;padding-block:clamp(28px,3.4vw,52px) 0}
+.pl-c .ptoc__line{display:inline-flex !important;justify-content:center !important}
+
+/* the row: the name, what it does facing it, the way in — all starting on one line */
+.pl-c .prodcard{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr) minmax(170px,.26fr) !important;
+  column-gap:clamp(24px,3.2vw,64px);row-gap:0;align-items:start !important}
+.pl-c .prodcard__name{grid-column:1 !important;grid-row:1 !important;
+  font-family:var(--hc-title) !important;font-weight:400 !important;text-transform:none !important;
+  letter-spacing:-.03em !important;font-size:clamp(22px,1rem + 1vw,30px) !important;
+  line-height:1.15;color:var(--ink) !important;margin:0 !important}
+.pl-c .prodcard__pos{grid-column:2 !important;grid-row:1 !important;
+  font-family:var(--ui) !important;font-size:17px !important;line-height:1.5;letter-spacing:0 !important;
+  color:var(--ink) !important;max-width:46ch !important;margin:0 !important}
+.pl-c .prodcard__who{grid-column:2 !important;grid-row:2 !important;margin:14px 0 0 !important}
+.pl-c .prodcard__pills{grid-column:2 !important;grid-row:3 !important;margin:6px 0 0 !important}
+.pl-c .prodcard__link{grid-column:3 !important;grid-row:1 !important;align-self:start !important;
+  justify-self:end}
+/* the tags read quietly, on one flowing line */
+.pl-c .prodcard__pills{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 !important;
+  font-size:13.5px;line-height:1.7}
+.pl-c .prodcard__pills li{font-weight:400 !important;color:var(--hc-quiet) !important;
+  letter-spacing:0 !important;text-transform:none !important}
+/* the way in starts on the same line as the name and the words */
+.pl-c .prodcard__link{line-height:25.5px;padding:0 !important;margin:0 !important}
+/* the separator hugs the word before it, so a wrapped line never begins with a dot */
+.pl-c .prodcard__pills li + li::before{content:none !important}
+.pl-c .prodcard__pills li:not(:last-child)::after{content:"·";margin:0 8px;color:rgba(11,18,32,.3)}
