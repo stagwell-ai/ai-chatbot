@@ -617,3 +617,32 @@
     if (src) card.style.setProperty('--hcs-bg', 'url("' + src + '")');
   });
 })();
+
+/* the products menu reads as a clean list: a drawn mark, the name, the line under it */
+(function () {
+  'use strict';
+  const MARK = {
+    '/the-machine':
+      '<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/>' +
+      '<rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><path d="M17 14v6M14 17h6"/>',
+    '/targeting-machine':
+      '<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/>',
+    '/newvoices':
+      '<rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5"/>',
+    '/agent-cloud':
+      '<path d="M7 18.5h9.5a4 4 0 0 0 .5-7.97A6 6 0 0 0 5.6 9.6 4.2 4.2 0 0 0 7 18.5z"/>'
+  };
+  document.querySelectorAll('.hc-page .nav__pitem').forEach(a => {
+    const path = (a.getAttribute('href') || '').replace(/[?#].*$/, '');
+    const d = MARK[path];
+    const thumb = a.querySelector('.nav__pthumb');
+    if (!d || !thumb || a.dataset.hcMark) return;
+    a.dataset.hcMark = '1';
+    const mark = document.createElement('span');
+    mark.className = 'nav__pmark';
+    mark.setAttribute('aria-hidden', 'true');
+    mark.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+    thumb.replaceWith(mark);
+  });
+})();

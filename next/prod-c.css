@@ -1151,3 +1151,7 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pc-page .pp-more__media img{width:100% !important;max-width:100% !important;
   height:clamp(420px,52vh,660px) !important;object-fit:cover !important;
   margin:0 !important;transform:none !important;display:block}
+/* when a product has no "who it's for", "what it does" starts at the card's own padding */
+.pl-c .pc-side .pc-foot__what:first-child,.pl-c .pc-cap .pc-foot__what:first-child{
+  margin-top:0 !important}
+.pl-c .pc-side .prodcard__who:first-child{margin-top:0 !important}
