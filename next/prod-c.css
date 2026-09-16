@@ -639,3 +639,6 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   padding-inline:clamp(20px,3.6vw,72px)}
 .pl-c .prodgroup__cards > .prodcard:last-child,
 .pl-c .prodgroup__cards > .prodcard:only-child{border-bottom:0 !important}
+/* the marks were taking room the words need: the labels carry it on their own */
+.pl-c .prodcard .pc-ic{display:none !important}
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{gap:0}
