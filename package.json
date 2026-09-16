@@ -19,6 +19,7 @@
     "test:rehearsal": "node tests/kimi/voice.rehearsal.mjs",
     "test:callback": "node tests/kimi/callback.funnel.mjs",
     "test:reveal": "node tests/kimi/reveal.funnel.mjs",
-    "test:homec": "node tests/kimi/homec.funnel.mjs"
+    "test:homec": "node tests/kimi/homec.funnel.mjs",
+    "test:story": "node tests/kimi/story.funnel.mjs"
   }
 }

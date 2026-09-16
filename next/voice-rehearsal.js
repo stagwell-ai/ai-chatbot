@@ -41,6 +41,14 @@
      REAL shape: text in a burst, audio on the clock. &textwps= sets the
      transcript's pace (default 18 words/s); &textwps=2.7 puts it back in step
      with the voice, which is the other thing that has to keep working. */
+  /* ── WHEN THE "AUDIO STOPPED" EVENT REALLY ARRIVES ──
+     output_audio_buffer.stopped is the SERVER's buffer draining, not the
+     visitor's ears: the model generates audio far faster than it is heard, so
+     on the real wire that event lands while the last several seconds are still
+     playing out of the client's buffer. &audiostop=send models that (the
+     default); &audiostop=play keeps it at the end of playback, which is what
+     this harness used to do and is the shape that hid the bug. */
+  const AUDIO_STOP = (q.get('audiostop') || 'send').toLowerCase();
   const TEXT_WPS = num('textwps', 18);
   const TEXT_WORD = Math.max(1, Math.round(1000 / TEXT_WPS));
 
@@ -102,11 +110,13 @@
        tapping a pill, which sends response.cancel — stops it mid-word, and the
        buffer is cleared, exactly as the real one is. */
     const left = Math.max(0, audioMs - textMs);
+    /* the server's buffer drains about when it has finished generating */
+    if (AUDIO_STOP === 'send' && !cancelled) { speaking = false; emit({ type: 'output_audio_buffer.stopped' }); }
     const until = Date.now() + left;
     while (!cancelled && Date.now() < until) await sleep(Math.min(60, until - Date.now()));
     log.push({ resp, words: total, textMs, audioMs, ms: Date.now() - t0, cancelled });
     speaking = false;
-    emit({ type: cancelled ? 'output_audio_buffer.cleared' : 'output_audio_buffer.stopped' });
+    if (AUDIO_STOP !== 'send' || cancelled) emit({ type: cancelled ? 'output_audio_buffer.cleared' : 'output_audio_buffer.stopped' });
   }
 
   const greeting = () => { const V = copy(); return [{ text: (V.introduction || '') + ' ' + (V.invite || '') }]; };

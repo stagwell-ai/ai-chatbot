@@ -358,6 +358,30 @@ The rate is measured from any response spoken all the way through (`noteSpeechEn
 without a deploy via `copy.voice.wordsPerSecond`, and biased 2% slow — a picture landing a beat
 after its name reads as the screen keeping up; one landing before it reads as broken.
 
+### An echo is not a turn (2026-09-16)
+
+"It suddenly cuts out when it starts talking about IMAI." On a laptop with speakers the
+microphone hears the AGENT, and the server hands those words straight back as a completed
+visitor transcript. Every `me.final` carrying words was treated as a real interruption, so the
+showcase was torn down mid-sentence.
+
+IMAI is the reason it looked like a rule. It is the LAST of the four, so by the time the voice
+reaches it every end-of-story condition is already true — the roster is complete, the model
+finished writing most of a minute ago, the server's audio buffer drained long before — and the
+story is at its longest and loudest, which is when echo is most likely to get through. Anything
+that reads one of those as "the story is over" fails there and nowhere else.
+
+`isEcho()` counts how much of what was heard is the agent's own recent words: four or more of
+them, and 70% of the utterance, and it is the room rather than a person — the bubble is dropped
+and `resumeAfterNoise` has the agent carry on from where it stopped. Short utterances are never
+judged this way, because "yes", "go on" and "IMAI?" are things a visitor really says.
+
+`tests/kimi/story.funnel.mjs` drives the four ways a real session differs from the happy path —
+the buffer draining early, the model finishing its writing early, echo, and a model that
+compresses the script and reaches the closing question a breath after IMAI — and asserts the
+stage is still up while the voice is still speaking, and closes exactly once. Only the echo case
+failed, which is how we know that is the one.
+
 ---
 
 ## 9. Phases

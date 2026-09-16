@@ -779,6 +779,26 @@ function armFalseBarge(itemId) {
   timers.push(falseBarge.timer);
 }
 function clearFalseBarge() { if (falseBarge) { clearTimeout(falseBarge.timer); falseBarge = null; } }
+/* ── AN ECHO IS NOT A TURN ──
+   On a laptop with speakers the microphone hears the AGENT, and the server
+   hands those words straight back as the visitor's. Mid-story that read as a
+   real interruption and took the pictures away in the middle of a sentence
+   ("it suddenly cuts out when it starts talking about IMAI", client,
+   2026-09-16 — reproduced in tests/kimi/story.funnel.mjs).
+
+   The tell is that what came back is what the agent has just been saying. Not
+   verbatim — transcription garbles it — so this counts how much of it is the
+   agent's own recent words: four or more of them, and most of what was heard,
+   and it is the room rather than a person. Short utterances are never judged
+   this way; "yes", "go on", "IMAI?" are things a visitor really says. */
+function isEcho(said, agentText) {
+  const heard = String(said || '').toLowerCase().match(/[a-z0-9']{4,}/g) || [];
+  if (heard.length < 4) return false;
+  const mine = ' ' + String(agentText || '').toLowerCase().replace(/[^a-z0-9']+/g, ' ') + ' ';
+  let hit = 0;
+  heard.forEach(w => { if (mine.indexOf(' ' + w + ' ') !== -1) hit++; });
+  return hit / heard.length >= 0.7;
+}
 function resumeAfterNoise(why) {
   const fb = falseBarge;
   if (!fb || fb.resumed || phase !== 'live') { clearFalseBarge(); return; }
@@ -903,6 +923,14 @@ function apply(op) {
       el.classList.remove('turnb--interim', 'turnb--hearing');
       el.textContent = op.text;
       if (!op.text) { el.remove(); resumeAfterNoise('empty'); }   /* the mic heard something; it was not words */
+      else if (stage && intro && isEcho(op.text, intro.text)) {
+        /* the room hearing itself: no turn, no bubble, and the agent picks up
+           where it stopped — the story carries on */
+        el.remove();
+        dbg('echo', op.text.slice(0, 60));
+        track('voice_echo_ignored', { words: (op.text.match(/\S+/g) || []).length });
+        resumeAfterNoise('echo');
+      }
       else {
         turns++; lastActivity = Date.now(); H.settleChips();
         clearFalseBarge();                     /* they really did speak: the interruption stands */
