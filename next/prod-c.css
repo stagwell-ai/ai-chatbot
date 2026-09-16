@@ -572,3 +572,35 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   .pl-c .prodgroup__head{aspect-ratio:16 / 9}
 }
 .pl-c .prodgroup__pic{transform:none !important;max-width:none;border-radius:0 !important}
+
+/* ═══ the row's foot, the closing block, and one line between groups ═══════════════════════════ */
+/* one divider, not two: the rows carry the line, the group does not */
+.pl-c .prodgroup + .prodgroup{border-top:0 !important}
+.pl-c .prodgroup__cards > .prodcard{border-top:0 !important;
+  border-bottom:1px solid var(--hc-rule) !important}
+
+/* the marks sit in the homepage's own rounded containers */
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{display:flex;align-items:flex-start;gap:12px}
+.pl-c .prodcard .pc-ic{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;
+  border-radius:12px;box-shadow:inset 0 0 0 1px rgba(11,18,32,.16);color:var(--ink);
+  vertical-align:0;margin:0;transform:none;padding:9px}
+.pl-c .prodcard .pc-lab{display:block;margin:0 0 3px}
+.pl-c .prodcard__who > span:not(.pc-lab),.pl-c .prodcard .pc-foot__what > *{min-width:0}
+.pl-c .prodcard .pc-foot__what{flex-wrap:nowrap}
+.pl-c .prodcard .pc-lab--own{display:block}
+
+/* the ask keeps the homepage's measure, and the two ways in follow it */
+.pc-page .ask-end .ask-end__acts{flex-direction:column;align-items:center;gap:clamp(18px,2.2vw,28px)}
+.pc-page .ask-end .ask-mini{width:min(100%,620px) !important}
+.pc-page .ask-end .ask-end__ways{display:grid !important;grid-template-columns:1fr 1fr;gap:16px;
+  width:min(100%,920px) !important;max-width:100% !important}
+@media (max-width:760px){
+  .pc-page .ask-end .ask-end__ways{grid-template-columns:1fr !important}
+}
+/* each list: the mark, then its label over its words */
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{display:flex !important;align-items:flex-start;
+  gap:12px;flex-wrap:nowrap}
+.pl-c .prodcard .pc-col{display:block;min-width:0;padding-top:2px}
+.pl-c .prodcard .pc-lab{display:block;margin:0 0 2px}
+.pl-c .prodcard .pc-lab--own{display:contents}
+.pl-c .prodcard__pills{display:block !important;margin:0 !important}
