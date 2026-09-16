@@ -676,3 +676,10 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what,.pl-c .prodcard__link{
     grid-column:1 !important;grid-row:auto !important}
 }
+/* a line of the description runs eight or nine words, no more */
+.pl-c .prodcard__pos{max-width:50ch !important}
+/* and the pictures stand taller */
+.pl-c .prodgroup__head{min-height:clamp(320px,28vw,450px);max-height:clamp(360px,38vw,600px)}
+/* eight or nine words a line, measured; and the earlier reset had floored the picture's height */
+.pl-c .prodcard__pos{max-width:37ch !important}
+.pl-c .prodgroup__head{min-height:clamp(320px,28vw,450px) !important}
