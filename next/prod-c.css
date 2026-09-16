@@ -773,3 +773,16 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   flex-direction:column;height:100%}
 .pl-c .prodgroup[data-pc-multi] .prodgroup__cards{display:block !important;height:auto}
 .pl-c .prodgroup[data-pc-multi] .prodcard{height:auto !important}
+
+/* ═══ the picture matches its words, and a line falls only between one problem and the next ════ */
+.pl-c .prodgroup__head{min-height:0 !important;max-height:none !important;height:auto !important;
+  align-self:stretch !important;aspect-ratio:auto !important}
+/* no line inside a problem — the products under one picture read as one block */
+.pl-c .prodgroup__cards > .prodcard,
+.pl-c .prodgroup__cards > .prodcard + .prodcard{border:0 !important;margin-top:0 !important;
+  padding-top:0 !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards > .prodcard + .prodcard{
+  margin-top:clamp(30px,3.2vw,48px) !important}
+/* one line between problems */
+.pl-c .prodgroup + .prodgroup{border-top:1px solid var(--hc-rule) !important}
+.pl-c .prodgroup{padding-block:clamp(34px,4vw,64px) !important}
