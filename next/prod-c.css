@@ -495,3 +495,12 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 /* nothing on these pages puts an arrow inside a button, as on the homepage */
 .pc-page .pp-acts .btn svg,.pc-page .pp-site svg,.pc-page .pp-mid .btn svg,
 .pc-page .ask-end .btn svg:not(.btn__ic--wave){display:none !important}
+
+/* the name carries the row's eyebrow; the number stays quiet beside it */
+.pl-c .prodcard__name{color:var(--ink) !important;font-weight:600 !important;font-size:13.5px !important;
+  letter-spacing:.07em}
+.pl-c .prodcard .pc-n{color:var(--hc-quiet) !important;font-weight:500}
+/* Explore is a solid black button, the way the homepage draws its own */
+.pl-c .prodcard__link{background:var(--ink) !important;border:0 !important;color:#FFFFFF !important;
+  box-shadow:none !important}
+.pl-c .prodcard__link:hover{background:#05080F !important;color:#FFFFFF !important}
