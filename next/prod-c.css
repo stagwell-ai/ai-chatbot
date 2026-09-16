@@ -800,3 +800,10 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
 .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{justify-self:start !important}
 .pl-c .prodcard{grid-template-columns:minmax(0,1fr) !important}
+
+/* more air between the picture and the words, as in the hero */
+.pl-c{--pc-gap:clamp(44px,5vw,96px)}
+/* a problem with several products keeps its picture a card at the top, not a long strip whose
+   words drift to the foot */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{align-self:start !important;
+  height:clamp(320px,26vw,420px) !important;max-height:none !important}
