@@ -240,3 +240,38 @@ body.pc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:
 .pl-c .prodgroup__head{background:none !important;min-height:0 !important;overflow:visible !important;
   border-radius:0 !important;color:var(--ink) !important}
 .pl-c .prodgroup__words{position:static !important;padding:0 !important;color:var(--ink) !important}
+
+/* ═══ the listing, second pass (client) ════════════════════════════════════════════════════════
+   The title gives room back, the right column reads top-to-bottom with the demo on its rule at
+   the foot, the statement is set in the sans, and each row is quieter. */
+.pl-c .pl-hero .pp-title{font-size:clamp(32px,1rem + 2.6vw,54px) !important;line-height:1.06;
+  max-width:16ch}
+.pl-c .pl-hero .pp-hero__in{grid-template-rows:auto auto 1fr;align-items:start;
+  row-gap:clamp(12px,1.4vw,18px)}
+.pl-c .pl-hero .pp-acts{align-self:end;margin-top:0}
+.pl-c .pl-hero .pp-lede{font-size:17px;max-width:40ch}
+
+/* the serif belongs to the chat; every statement on these pages is set in the sans */
+.pc-page .pp-about__text,.pl-c .pp-about__text{font-family:var(--ui) !important;
+  font-size:clamp(19px,1rem + .8vw,27px) !important;line-height:1.45;letter-spacing:-.01em;
+  color:var(--ink) !important;max-width:66ch}
+
+/* the problem reads as a label over its rows, not as a heading competing with the names */
+.pl-c .prodgroup__h{font-family:var(--ui) !important;font-size:13px !important;
+  font-weight:600 !important;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--hc-quiet) !important;line-height:1.35}
+.pl-c .prodgroup__n{font-size:12px}
+.pl-c .prodgroup__head{margin-bottom:clamp(4px,.8vw,10px)}
+
+/* the row: the name and everything about it at the left, the way in at the right */
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(150px,auto);
+  column-gap:clamp(20px,3vw,56px);row-gap:8px}
+.pl-c .prodcard__name{grid-column:1;grid-row:1;font-size:clamp(24px,1rem + 1.2vw,34px)}
+.pl-c .prodcard__pos{grid-column:1;grid-row:2;font-size:16px;max-width:72ch;color:var(--hc-quiet) !important}
+.pl-c .prodcard__who{grid-column:1;grid-row:3;margin-top:4px;font-size:13.5px}
+.pl-c .prodcard__pills{grid-column:1;grid-row:4;margin-top:10px;gap:6px}
+.pl-c .prodcard__pills li{border:0;background:rgba(11,18,32,.05);color:var(--hc-quiet) !important;
+  font-size:12px;letter-spacing:.01em;padding:4px 10px}
+.pl-c .prodcard__link{grid-column:2;grid-row:1;align-self:start;min-width:150px}
+.pl-c .prodgroup__words{flex:1 1 auto;min-width:0;max-width:none}
+.pl-c .prodgroup__h{max-width:none;white-space:normal}
