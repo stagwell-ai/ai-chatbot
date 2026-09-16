@@ -27,6 +27,14 @@
           name.classList.add('pc-hide');
         }
 
+        /* the way in names the product it opens */
+        const link = card.querySelector('.prodcard__link');
+        if (link && name && !link.dataset.pcNamed) {
+          link.dataset.pcNamed = '1';
+          const plain = name.textContent.trim().replace(/\s*\(.*$/, '');
+          if (plain) link.textContent = 'Explore ' + plain;
+        }
+
         /* the two lists sit under the row: a mark, then its label and its words */
         const mk = (name, path) => {
           const i = document.createElement('span');

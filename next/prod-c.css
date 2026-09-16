@@ -722,3 +722,27 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
   .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{width:auto;justify-self:start !important}
 }
+
+/* the words sit centred between the picture and the way in, and the button rests on the
+   picture's own foot */
+.pl-c .prodcard{height:100%;grid-template-rows:auto auto auto 1fr !important}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+  width:40ch;max-width:100% !important;justify-self:center !important}
+.pl-c .prodcard__link{align-self:end !important;justify-self:end !important;
+  grid-row:4 !important;margin-bottom:0 !important}
+@media (max-width:980px){
+  .pl-c .prodcard{height:auto;grid-template-rows:none !important}
+  .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+  .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{width:auto;justify-self:start !important}
+}
+/* one measure in absolute terms, so the big title and the small words share a width */
+.pl-c{--pc-measure:clamp(340px,30vw,460px)}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+  width:var(--pc-measure) !important;max-width:100% !important;justify-self:center !important}
+@media (max-width:980px){
+  .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+  .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+    width:auto !important;justify-self:start !important}
+}
