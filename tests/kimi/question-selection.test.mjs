@@ -94,9 +94,10 @@ test('a bare goal — no intent to recommend from — gets that goal\'s own open
 });
 
 test('with an intent known the recommendation follows the role directly — no discriminator, whatever the confidence', () => {
-  /* two AI-search intents tie GEOPulse and Search+: low confidence, and the
-     client still wants the recommendation now, not another question */
-  const st = opened(null, { intents: [{ id: 'ai_search_visibility', explicit: false }, { id: 'ai_search_influence', explicit: false }] });
+  /* two reputation intents leave the Knowledge Machine and UNICEPTA level: low
+     confidence, and the client still wants the recommendation now, not another
+     question — the sibling tie-break only ever fires BEFORE size and role */
+  const st = opened(null, { intents: [{ id: 'reputation_risk', explicit: false }, { id: 'media_monitoring', explicit: false }] });
   const r = reco(st);
   assert.notEqual(r.confidence.level, 'high');
   assert.equal(Q.selectQuestion(st, r, DATA), null);

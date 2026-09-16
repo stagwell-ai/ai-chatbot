@@ -32,6 +32,38 @@
     "closeGap": 4,
     "secondaryMax": 2,
     "secondaryMinScore": 4,
-    "alwaysAskCompanySize": false
+    "alwaysAskCompanySize": false,
+    "_siblingNote": "Two products the words alone cannot separate (client sheet, 2026-09-16). When the top two of the ranking are a listed pair and the gap between them is at most pairGap, ONE discriminating question whose `separates` covers both is asked — before the cards, ahead of the size and the role (select-question.js). It is never asked after them: once size and role are in, the client's order of 2026-09-10 stands and a level pair is shown as two cards. IMAI / the SMB platform are deliberately NOT a pair: the company size decides them, both are shown until it is known. It spends the discriminator budget.",
+    "siblingPairs": [
+      [
+        "geopulse",
+        "search_plus"
+      ],
+      [
+        "knowledge_machine",
+        "unicepta"
+      ],
+      [
+        "media_machine",
+        "machines_family"
+      ],
+      [
+        "agent_cloud",
+        "machines_family"
+      ],
+      [
+        "media_machine",
+        "targeting_machine"
+      ],
+      [
+        "questdiy",
+        "questbrand"
+      ],
+      [
+        "numetrix",
+        "questbrand"
+      ]
+    ],
+    "pairGap": 2
   }
 }

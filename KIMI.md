@@ -541,6 +541,46 @@ creators" → under_100; "3,000 employees" → enterprise). Unrecognised text ge
 `kimi.json` `unclassified` / `fallback` and the six goal pills. The visitor never sees a
 technical error.
 
+## 5b. The golden set — the client's prompts-to-products sheet (2026-09-16)
+
+The client's "Stagwell AI Chatbot Prompts to Products" sheet — 15 products × 3 prompts × 3
+keywords — is the acceptance test for the matcher. It lives in `data/prompts-golden.json` and
+`tests/kimi/prompts.golden.test.mjs` runs every prompt through the **model-free** path on every
+`npm test`, printing the product-by-product ✓~✗ table the sheet's authors read. Before the sheet
+was folded in: 16/45 exact, 25/45 top-3, 16 landed on nothing. Now: **45/45 exact**, and the
+test's floor is 42 so a stray keyword cannot pass unnoticed. What changed:
+
+- **Vocabulary.** Every keyword in the sheet and the phrasing of every prompt went into
+  `taxonomy.json`. Four intents were added for products that had no words of their own:
+  `ai_citations` (GEOPulse), `executive_alerts` (UNICEPTA), `ad_measurement` (Numetrix),
+  `workflow_automation` (Agent Cloud). Two word-sense traps were fixed: "messaging" only means
+  a chat channel with "app / channels" beside it (so "test messaging" is QuestDIY), and "brand
+  lift" / "ad effectiveness" moved from campaign measurement (QuestBrand) to ad measurement
+  (Numetrix). Lean-team cues ("without a big team", "a simple way to") fill the `small` band, so
+  IMAI and the SMB platform separate on size, as the sheet intends.
+- **Tags.** Siblings' primary intents are now distinct: GEOPulse *sees* how AI shows you
+  (visibility, citations), Search+ *changes* it (influence); UNICEPTA owns monitoring + alerts,
+  the Knowledge Machine early warning; Numetrix owns reach and lift, QuestBrand perception.
+- **A product named outright** — typed or as speech-to-text hears it ("quest brand", "unisepta",
+  "geo pulse") — is the strongest signal there is. `solutions.json` `aliases` +
+  `recommend.js nameMentions()`; `deterministicRead()` takes that product's primary intents as
+  EXPLICIT, so it tops the running whatever else was said, and the model's read cannot displace it.
+  The voice brief tells the agent to pass the name through as heard.
+- **Sibling tie-break.** `scoring.json conversation.siblingPairs` + `pairGap`. When the top two are
+  a listed pair within `pairGap` *and there is an intent behind it* (a goal pill alone is not a
+  tie), `select-question.js` asks the one bank question whose `separates` covers both — in ONE
+  place: after the address, before the cards and before size/role. Never later: once size and
+  role are in, the 2026-09-10 order stands and a level pair is shown as two cards.
+  IMAI / SMB are deliberately not a pair — size decides, both are shown until it is known.
+- **The model** (`api/ask.js` INTERPRET_SYSTEM) is shown the sheet's prompts as worked examples
+  under each intent (`taxonomy.json` `examples`, "match by meaning, not by wording"). It still
+  only ever names intents; the scorer names the product.
+- **One contradiction in the sheet**, recorded in the golden row's `accept`: "improve my
+  visibility in ChatGPT and AI search" → Search+ (row 14) and "improve my AI search visibility"
+  → GEOPulse (row 37) are the same sentence. We apply the sheet's own majority rule (improve /
+  change / influence = Search+; how visible / am I cited = GEOPulse) and accept either until the
+  authors rule. Not in the sheet at all: NewVoices, NewIntel, the ID Graph.
+
 ## 6. LLM broker and fallback chain
 
 `api/_lib/llm/broker.js`. Chain from env (§7). Per attempt 7 s for the Kimi gateway (a

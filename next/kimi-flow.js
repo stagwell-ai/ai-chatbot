@@ -101,6 +101,7 @@ function blank() {
     emailWhyGiven: false,        /* they turned the address down once and were told why it is asked for */
     emailDone: false,            /* the work email step is behind us — answered, dodged or declined */
     previewed: false,            /* the products have been shown once, before the business questions */
+    mentioned: [],               /* products the visitor named outright — the strongest signal there is */
     phoneNudged: false,          /* asked once more for a number that looked wrong */
     action: null,                /* the BOOK step's button: { label, cta } */
     after: null,
@@ -133,10 +134,16 @@ function deterministicRead(text) {
   const r = R();
   const intents = r ? r.keywordIntents(text, data()) : [];
   const bands = r ? r.bandsFromText(text, data()) : {};
-  return { detectedGoals: [], detectedIntents: intents.map(i => i.id), inferred: {
+  /* a product named outright ("is GEOPulse the one?", "quest brand" as the
+     transcript hears it) is the strongest signal there is: its primary intents
+     are taken as CHOSEN, so it tops the running whatever else was said */
+  const mentioned = r && r.nameMentions ? r.nameMentions(text, data()) : [];
+  const named = mentioned.length ? list(((r.productById(mentioned[0], data()) || {}).intentTags || {}).primary) : [];
+  return { detectedGoals: [], detectedIntents: named.concat(intents.map(i => i.id)).filter((id, i, a) => a.indexOf(id) === i), inferred: {
     industry: null, companySize: bands.companySize || null, creatorProgramSize: bands.creatorProgramSize || null, geographicScope: bands.geographicScope || null
-  }, userNeedSummary: null, confidence: intents.length ? 0.5 : 0, ack: null, reply: null,
+  }, userNeedSummary: null, confidence: intents.length || named.length ? 0.5 : 0, ack: null, reply: null,
     contactRequest: r ? r.contactRequest(text, data()) : null,
+    mentioned, namedIntents: named,
     website: S_extractDomain(text), live: false };
 }
 
@@ -165,10 +172,12 @@ async function interpret(text) {
     st.llmStatus = ['PRIMARY', 'FALLBACK_1', 'FALLBACK_2'][meta.chainIndex || 0] || 'FALLBACK_2';
     if (st.fallbacks > 0) track('kimi_model_fallback', { llm_fallback_count: st.fallbacks, llm_model: st.llmModel, failed: meta.failed || null });
     const it = j.interpretation;
-    /* the model leads; the keyword pass fills anything it left empty */
+    /* the model leads; the keyword pass fills anything it left empty — and a
+       product the visitor NAMED stays in front of whatever the model read */
     return {
+      mentioned: off.mentioned, namedIntents: off.namedIntents,
       detectedGoals: list(it.detectedGoals),
-      detectedIntents: list(it.detectedIntents).length ? it.detectedIntents : off.detectedIntents,
+      detectedIntents: list(off.namedIntents).concat(list(it.detectedIntents).length ? it.detectedIntents : off.detectedIntents).filter((id, i, a) => a.indexOf(id) === i),
       inferred: Object.assign({}, off.inferred, Object.fromEntries(Object.entries(it.inferred || {}).filter(([, v]) => v != null && v !== ''))),
       userNeedSummary: it.userNeedSummary || null,
       confidence: typeof it.confidence === 'number' ? it.confidence : 0.5,
@@ -197,12 +206,15 @@ function absorb(read, opts) {
   const o = opts || {};
   const r = R();
   const known = data();
+  const named = list(read.namedIntents);
   list(read.detectedIntents).forEach(id => {
     if (!r || !r.intentById(id, known)) return;
+    const explicit = !!o.explicit || named.indexOf(id) !== -1;
     const have = st.intents.find(i => i.id === id);
-    if (!have) st.intents.push({ id, explicit: !!o.explicit });
-    else if (o.explicit) have.explicit = true;
+    if (!have) st.intents.push({ id, explicit });
+    else if (explicit) have.explicit = true;
   });
+  if (list(read.mentioned).length) { st.mentioned = read.mentioned.slice(0, 2); track('kimi_product_named', { products: st.mentioned.join(',') }); }
   if (!st.primaryGoal) {
     const g = list(read.detectedGoals).find(id => goals().some(x => x.id === id));
     if (g) setGoal(g, 'inferred');
@@ -556,8 +568,12 @@ function advance(ack) {
   if (!st.primaryGoal && !st.intents.length) { askGoal(); return; }
   const reco = recompute();
   /* the goal is known and the address step is behind us: show them something
-     before asking them anything else */
-  if (!st.previewed && st.emailDone && flags().showcaseAfterEmail !== false && reco && reco.primary) preview(reco);
+     before asking them anything else — unless the running is two siblings the
+     words cannot separate (GEOPulse/Search+, IMAI/SMB…): then the one question
+     that tells them apart comes first, and the card after the answer */
+  const tie = Qs() && Qs().siblingTie ? Qs().siblingTie(reco, data()) : null;
+  if (!st.previewed && st.emailDone && flags().showcaseAfterEmail !== false && reco && reco.primary && !tie) preview(reco);
+  if (tie && !st.previewed) track('kimi_sibling_tie', { pair: tie.join(',') });
   /* with the email asked after the recommendation instead (flags.emailFirst
      off), the work_email question is simply never in the running */
   const asked = flags().emailFirst === false ? st.askedQuestionIds.concat('work_email') : st.askedQuestionIds;

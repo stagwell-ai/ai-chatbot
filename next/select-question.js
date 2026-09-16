@@ -88,6 +88,27 @@
       .sort((a, b) => (b.value - a.value) || (b.priority - a.priority) || (a.i - b.i));
   }
 
+  /* ── TWO PRODUCTS THE WORDS CANNOT TELL APART ──
+     GEOPulse and Search+ both live on "AI search"; IMAI and the SMB platform
+     on "influencers"; the Knowledge Machine and UNICEPTA on "reputation". When
+     the top two of the ranking are such a pair (scoring.json siblingPairs) and
+     the gap between them is small, the pair is returned — the caller asks the
+     one question that separates them instead of guessing. */
+  function siblingTie(reco, data) {
+    const V = convOf(data);
+    const pairs = list(V.siblingPairs);
+    const ranked = list(reco && reco.ranked);
+    if (!pairs.length || ranked.length < 2) return null;
+    /* a goal pill alone gives every candidate the same points: that is not a
+       tie between two products, it is no evidence yet */
+    if (!list(reco && reco.signals && reco.signals.intents).length) return null;
+    const a = ranked[0], b = ranked[1];
+    if (!a || !b || !(a.score > 0) || !(b.score > 0)) return null;
+    if (a.score - b.score > (V.pairGap == null ? 2 : V.pairGap)) return null;
+    const hit = pairs.find(p => list(p).indexOf(a.productId) !== -1 && list(p).indexOf(b.productId) !== -1);
+    return hit ? [a.productId, b.productId] : null;
+  }
+
   function selectQuestion(state, reco, data) {
     const C = confOf(data), V = convOf(data);
     const st = state || {};
@@ -102,11 +123,27 @@
     const first = bank(data)
       .filter(q => q && q.first && asked.indexOf(q.id) === -1 && !fieldKnown(st, q.field))
       .sort((a, b) => (b.priority || 0) - (a.priority || 0))[0];
-    if (first) return first;
+    /* the typed steps — the address, the website — stay in front of everything */
+    if (first && (first.field === 'email' || first.field === 'website')) return first;
 
     const discriminatorsAsked = asked.filter(id => { const q = bank(data).find(x => x && x.id === id); return q && !q.required && !q.first; }).length;
     const level = (reco && reco.confidence && reco.confidence.level) || 'low';
     const settled = LEVEL[level] >= (LEVEL[C.stopAt] == null ? 2 : LEVEL[C.stopAt]);
+
+    /* ── the sibling tie-break, in ONE place: before the cards ──
+       The products are shown as soon as the address step is behind us (client,
+       2026-09-16), so this is the last moment a question can change what is
+       shown. If the running is two siblings the words cannot separate, the one
+       question that tells them apart is asked here, ahead of the size and the
+       role. It is never asked later: once size and role are in, the client's
+       order stands — after the role, the recommendation, and a level pair is
+       shown as two cards rather than asked about again (2026-09-10). */
+    const tie = first ? siblingTie(reco, data) : null;
+    if (tie && !settled && discriminatorsAsked < V.maxQuestions) {
+      const q = eligible(st, reco, data).find(e => tie.every(id => list(e.question.separates).indexOf(id) !== -1));
+      if (q) return q.question;
+    }
+    if (first) return first;
 
     /* the client's order (2026-09-10): website, size, role, then the
        recommendation. A discriminator is asked only when there is nothing to
@@ -155,5 +192,5 @@
     return st;
   }
 
-  return { selectQuestion, applySuggestion, matchSuggestion, eligible, _passes: passes };
+  return { selectQuestion, applySuggestion, matchSuggestion, eligible, siblingTie, _passes: passes };
 });

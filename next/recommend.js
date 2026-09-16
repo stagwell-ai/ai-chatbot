@@ -126,6 +126,30 @@
       .map(x => ({ id: x.id, explicit: false, term: x.term }));
   }
 
+  /* ── A PRODUCT NAMED OUTRIGHT ──
+     "tell me about GEOPulse", "is quest brand the one?", "you-nicepta" as the
+     transcript hears it. The catalog's `aliases` (solutions.json) are matched
+     as whole phrases; the longest alias orders the answer. A name is the
+     strongest signal a visitor can give, so the caller treats the product's
+     primary intents as EXPLICIT — chosen, not read (client sheet, 2026-09-16:
+     the voice path in particular has to land on the product they said). */
+  function nameMentions(text, data) {
+    const t = norm(text);
+    if (!t) return [];
+    const out = [];
+    activeProducts(data).forEach((p, order) => {
+      let longest = 0;
+      list(p.aliases).concat(p.name ? [p.name] : []).forEach(al => {
+        const n = norm(al);
+        if (!n || n.length <= longest) return;
+        let re; try { re = kwRe(al); } catch (e) { return; }
+        if (re.test(t)) longest = n.length;
+      });
+      if (longest) out.push({ id: p.id, longest, order });
+    });
+    return out.sort((a, b) => (b.longest - a.longest) || (a.order - b.order)).map(x => x.id);
+  }
+
   /* ── "just call me" ──
      The visitor asking to be CONTACTED rather than advised. It is not an
      intent — it says nothing about which product fits — so it is read
@@ -339,7 +363,7 @@
   }
 
   return {
-    recommend, pointers, keywordIntents, bandsFromText, contactRequest, contactRequestIds,
+    recommend, pointers, keywordIntents, nameMentions, bandsFromText, contactRequest, contactRequestIds,
     goalForDomain, goalById, productById, intentById,
     activeProducts, dedupeIntents, norm,
     _config: { weightsOf, confOf, convOf }

@@ -16,7 +16,20 @@
         "brand perception",
         "how our brand is doing",
         "brand metrics",
-        "brand strength"
+        "brand strength",
+        "brand health tracking",
+        "how consumers feel",
+        "consumers feel",
+        "feel about my brand",
+        "feel about our brand",
+        "how people feel about",
+        "how customers feel",
+        "track my brand",
+        "brand over time"
+      ],
+      "examples": [
+        "I want to track my brand health over time.",
+        "How do consumers feel about my brand?"
       ]
     },
     {
@@ -25,13 +38,17 @@
       "keywords": [
         "campaign impact",
         "campaign lift",
-        "brand lift",
         "did the campaign work",
         "campaign effectiveness",
         "measure the campaign",
         "campaign performance",
-        "ad effectiveness",
-        "campaign tracking"
+        "campaign tracking",
+        "impact of my campaigns",
+        "impact of our campaigns",
+        "campaigns on brand"
+      ],
+      "examples": [
+        "I need to measure the impact of my campaigns on brand perception."
       ]
     },
     {
@@ -65,7 +82,22 @@
         "justify our budget",
         "brand spend",
         "commercial impact",
-        "shareholder"
+        "shareholder",
+        "brand roi",
+        "brand investment",
+        "driving revenue",
+        "drive revenue",
+        "highest roi",
+        "audience prioritization",
+        "audience prioritisation",
+        "brand performance",
+        "brand performance changing",
+        "why is my brand performance"
+      ],
+      "examples": [
+        "I need to prove whether my brand investment is driving revenue.",
+        "Which audiences will generate the highest ROI?",
+        "Why is my brand performance changing?"
       ]
     },
     {
@@ -86,7 +118,27 @@
         "market research",
         "research study",
         "run research",
-        "respondents"
+        "respondents",
+        "build surveys",
+        "build a survey",
+        "my own survey",
+        "own survey",
+        "launch a survey",
+        "consumer feedback",
+        "customer feedback",
+        "quick feedback",
+        "feedback before",
+        "before a product launch",
+        "before launch",
+        "test messaging",
+        "test my messaging",
+        "test our creative",
+        "before it goes live"
+      ],
+      "examples": [
+        "I need to build and launch my own survey.",
+        "I want quick consumer feedback before a product launch.",
+        "How can I test messaging or creative before it goes live?"
       ]
     },
     {
@@ -105,7 +157,52 @@
         "say/do gap",
         "in-store",
         "visits to our stores",
-        "physical locations"
+        "physical locations",
+        "location intelligence",
+        "consumer movement",
+        "visitation",
+        "visitation insights",
+        "movement patterns",
+        "where my customers go",
+        "where customers go",
+        "where people go",
+        "in the real world",
+        "real world",
+        "mobility data",
+        "mobility"
+      ],
+      "examples": [
+        "I want to understand where my customers go in the real world.",
+        "How can I use location data to improve targeting?",
+        "I need visibility into consumer movement patterns."
+      ]
+    },
+    {
+      "id": "ad_measurement",
+      "need": "know who your advertising actually reached",
+      "keywords": [
+        "audience measurement",
+        "brand lift",
+        "ad effectiveness",
+        "ad reach",
+        "advertising reach",
+        "seeing my advertising",
+        "seeing my ads",
+        "see my ads",
+        "how many people are seeing",
+        "how many people saw",
+        "actually seeing",
+        "ad exposure",
+        "campaign reach",
+        "measure my advertising",
+        "advertising measurement",
+        "reach measurement"
+      ],
+      "_source": "Stagwell AI Chatbot Prompts to Products (client sheet, 2026-09-16) — Numetrix (Measurement)",
+      "examples": [
+        "How many people are actually seeing my advertising?",
+        "Can I measure brand lift from my campaigns?",
+        "I need better audience measurement."
       ]
     },
     {
@@ -123,7 +220,18 @@
         "reach the right people",
         "wasted spend",
         "custom audiences",
-        "audience building"
+        "audience building",
+        "audience segmentation",
+        "highest-value audiences",
+        "highest value audiences",
+        "grow my audience",
+        "grow our audience",
+        "audience segments",
+        "activate audience segments"
+      ],
+      "examples": [
+        "How can i grow my audience? I need help finding my highest-value audiences.",
+        "I want to build and activate audience segments across channels."
       ]
     },
     {
@@ -139,7 +247,15 @@
         "our own data",
         "data onboarding",
         "data clean room",
-        "warehouse data"
+        "warehouse data",
+        "first-party data activation",
+        "first-party and third-party",
+        "first party and third party",
+        "combine first-party",
+        "third-party data"
+      ],
+      "examples": [
+        "How can I combine first-party and third-party data for audience targeting?"
       ]
     },
     {
@@ -171,7 +287,31 @@
         "media mix",
         "where to spend",
         "media investment",
-        "planning and buying"
+        "planning and buying",
+        "media performance",
+        "improve media performance",
+        "media performance across channels",
+        "media optimization",
+        "media optimisation",
+        "campaign optimization",
+        "campaign optimisation",
+        "optimize campaigns",
+        "optimise campaigns",
+        "automate media planning",
+        "advertising platforms",
+        "multiple advertising platforms",
+        "manage and measure campaigns",
+        "campaigns across multiple",
+        "across multiple platforms",
+        "cross-channel media",
+        "cross-platform media",
+        "ad platforms",
+        "paid media"
+      ],
+      "examples": [
+        "How can I improve media performance across channels?",
+        "I want to automate media planning and campaign optimization.",
+        "How can I manage and measure campaigns across multiple advertising platforms from one place?"
       ]
     },
     {
@@ -201,7 +341,15 @@
         "creator discovery",
         "influencer marketing",
         "influencer discovery",
-        "micro-influencers"
+        "micro-influencers",
+        "find influencers",
+        "finding the right influencers",
+        "right influencers"
+      ],
+      "examples": [
+        "I need help finding the right influencers.",
+        "I need an easy way to manage influencer campaigns.",
+        "How do I find influencers without a big team?"
       ]
     },
     {
@@ -217,7 +365,15 @@
         "creator program",
         "influencer platform",
         "briefs and approvals",
-        "creator payments"
+        "creator payments",
+        "influencer management",
+        "influencer campaigns",
+        "creator management",
+        "manage influencer campaigns",
+        "manage influencer"
+      ],
+      "examples": [
+        "How can I manage influencer campaigns at scale?"
       ]
     },
     {
@@ -231,7 +387,18 @@
         "measure influencers",
         "audience quality",
         "fake followers",
-        "influencer fraud"
+        "influencer fraud",
+        "influencer campaign roi",
+        "campaign roi",
+        "measure influencer",
+        "influencer campaign performance",
+        "which creators are driving",
+        "creators are driving",
+        "best results"
+      ],
+      "examples": [
+        "Which creators are driving the best results?",
+        "I want a simpel way to measure influencer campaign ROI."
       ]
     },
     {
@@ -249,7 +416,21 @@
         "protect our reputation",
         "brand safety",
         "backlash",
-        "controversy"
+        "controversy",
+        "reputation monitoring",
+        "risk detection",
+        "emerging issues",
+        "emerging pr",
+        "pr issues",
+        "pr issue",
+        "spot emerging",
+        "before they become",
+        "become crises",
+        "before it becomes a crisis"
+      ],
+      "examples": [
+        "I want to identify reputation risks before they become crises.",
+        "How can I spot emerging PR issues sooner?"
       ]
     },
     {
@@ -269,7 +450,37 @@
         "global coverage",
         "broadcast monitoring",
         "daily briefing",
-        "media intelligence"
+        "media intelligence",
+        "global media monitoring",
+        "global monitoring",
+        "developments affecting"
+      ],
+      "examples": [
+        "I need global media monitoring."
+      ]
+    },
+    {
+      "id": "executive_alerts",
+      "need": "be alerted to the developments that matter",
+      "keywords": [
+        "alerts",
+        "alert",
+        "alerting",
+        "executive alerts",
+        "important developments",
+        "developments affecting my brand",
+        "notify me",
+        "notifications",
+        "stay ahead of",
+        "stay ahead",
+        "threats",
+        "reputation threats",
+        "early alerts"
+      ],
+      "_source": "Stagwell AI Chatbot Prompts to Products (client sheet, 2026-09-16) — UNICEPTA",
+      "examples": [
+        "How can I stay ahead of reputation threats?",
+        "I want alerts on important developments affecting my brand."
       ]
     },
     {
@@ -284,6 +495,9 @@
         "stakeholder perception",
         "story forming",
         "discourse"
+      ],
+      "examples": [
+        "What's driving changes in public perception of my brand?"
       ]
     },
     {
@@ -379,6 +593,35 @@
         "visibility in ai",
         "how we appear in ai",
         "how we show up in ai"
+      ],
+      "examples": [
+        "How can I improve my AI search visibility?"
+      ]
+    },
+    {
+      "id": "ai_citations",
+      "need": "see whether and how AI tools cite your brand",
+      "keywords": [
+        "cited",
+        "cite",
+        "citations",
+        "ai citations",
+        "being cited",
+        "not being cited",
+        "ai tools",
+        "ai platforms",
+        "across ai platforms",
+        "how visible",
+        "visible is my brand",
+        "visible in ai",
+        "prompt optimization",
+        "prompt optimisation",
+        "ai visibility measurement"
+      ],
+      "_source": "Stagwell AI Chatbot Prompts to Products (client sheet, 2026-09-16) — GEOPulse",
+      "examples": [
+        "How visible is my brand across AI platforms?",
+        "Why isn't my brand being cited by AI tools?"
       ]
     },
     {
@@ -411,7 +654,28 @@
         "rank higher in ai",
         "appear more in ai",
         "get into ai answers",
-        "be found by ai"
+        "be found by ai",
+        "improve my visibility",
+        "improve our visibility",
+        "improve visibility",
+        "visibility in chatgpt",
+        "chatgpt optimization",
+        "chatgpt optimisation",
+        "ai brand representation",
+        "how ai represents",
+        "instead of my brand",
+        "instead of our brand",
+        "competitors being recommended",
+        "recommended instead",
+        "change what it says",
+        "change what ai says",
+        "change what chatgpt says",
+        "influence what it says"
+      ],
+      "examples": [
+        "How do I improve my visibility in ChatGPT and AI search?",
+        "Why are competitors being recommended in ChatGPT and AI search instead of my brand?",
+        "How can I influence how AI represents my brand?"
       ]
     },
     {
@@ -457,9 +721,12 @@
         "tier-1 support",
         "tier 1 support",
         "conversational ai",
-        "messaging",
         "whatsapp",
-        "sms"
+        "sms",
+        "messaging app",
+        "messaging channels",
+        "customer messaging",
+        "business messaging"
       ]
     },
     {
@@ -481,7 +748,25 @@
         "models under one contract",
         "frontier models",
         "ai assistants for the team",
-        "custom assistants"
+        "custom assistants",
+        "ai agents",
+        "custom ai agents",
+        "build custom ai agents",
+        "build ai agents",
+        "build agents",
+        "agents for my team",
+        "agents for our team",
+        "securely use ai",
+        "use ai securely",
+        "ai across my organization",
+        "ai across the organization",
+        "ai across our organisation",
+        "roll out ai",
+        "deploy ai across"
+      ],
+      "examples": [
+        "I want to build custom AI agents for my team.",
+        "How can I securely use AI across my organization?"
       ]
     },
     {
@@ -514,8 +799,6 @@
         "connect our tools",
         "scale operations",
         "scale our operations",
-        "automate",
-        "automation",
         "orchestration",
         "agentic",
         "tech stack",
@@ -523,7 +806,55 @@
         "too many tools",
         "one system",
         "operational efficiency",
-        "scale the business"
+        "scale the business",
+        "connect marketing tools",
+        "tools connected",
+        "tools and data connected",
+        "connect my tools",
+        "all my marketing tools",
+        "marketing tools",
+        "silos",
+        "siloed",
+        "silo",
+        "duplicating work",
+        "duplicate work",
+        "duplicated work",
+        "work together",
+        "teams to work together",
+        "orchestrate campaigns",
+        "marketing operating system",
+        "workflow orchestration",
+        "connected system",
+        "insights and audiences in one place",
+        "tools in one place",
+        "everything in one place"
+      ],
+      "examples": [
+        "I want all my marketing tools and data connected.",
+        "My teams are duplicating work and operating in silos. How can I get my teams to work together?",
+        "How can I orchestrate campaigns, insights, and audiences in one place?"
+      ]
+    },
+    {
+      "id": "workflow_automation",
+      "need": "automate the repetitive work so the team can do the valuable work",
+      "keywords": [
+        "workflow automation",
+        "automate repetitive",
+        "repetitive work",
+        "repetitive tasks",
+        "repetitive marketing work",
+        "automate marketing work",
+        "automate our work",
+        "automate the work",
+        "manual work",
+        "busywork",
+        "automate workflows",
+        "automate our workflows"
+      ],
+      "_source": "Stagwell AI Chatbot Prompts to Products (client sheet, 2026-09-16) — Agent Cloud",
+      "examples": [
+        "I need to automate repetitive marketing work."
       ]
     },
     {
@@ -533,7 +864,6 @@
         "paid owned earned",
         "paid, owned and earned",
         "paid owned and earned",
-        "orchestrate",
         "search strategy",
         "seo",
         "search+",
@@ -584,7 +914,24 @@
           "small online",
           "local business",
           "startup",
-          "start-up"
+          "start-up",
+          "without a big team",
+          "no big team",
+          "lean team",
+          "small marketing team",
+          "team of one",
+          "simple way",
+          "easy way",
+          "on my own",
+          "by myself",
+          "do it myself",
+          "without an agency",
+          "no agency",
+          "simpel way",
+          "a simple way to",
+          "an easy way to",
+          "simple tool",
+          "easy tool"
         ]
       },
       {
@@ -812,5 +1159,7 @@
         "how much do you charge"
       ]
     }
-  ]
+  ],
+  "_sheetNote": "2026-09-16: the client's 'Chatbot Prompts to Products' sheet (15 products × 3 prompts × 3 keywords) is the golden set — data/prompts-golden.json, tests/kimi/prompts.golden.test.mjs. Its keywords and the phrasing of its prompts were folded into the lists below; four intents were added for products that had no words of their own (ai_citations, executive_alerts, ad_measurement, workflow_automation).",
+  "_examplesNote": "`examples`: the client sheet's prompts, filed under the intent that carries their product. api/ask.js quotes them in the interpreter's vocabulary so a paraphrase lands on the same id the keywords would; tests/kimi/prompts.golden.test.mjs checks they are there."
 }

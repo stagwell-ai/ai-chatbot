@@ -405,8 +405,8 @@ const INTERPRET_SYSTEM = [
   'GOALS (choose zero or more ids, strongest first):',
   GOALS.map(g => `- ${g.id}: ${g.label}`).join('\n'),
   '',
-  'INTENTS (choose zero or more ids, strongest first; only ids from this list):',
-  INTENTS.map(i => `- ${i.id}: wants to ${i.need}`).join('\n'),
+  'INTENTS (choose zero or more ids, strongest first; only ids from this list). The quoted lines are real visitor messages that mean that intent — match by meaning, not by wording:',
+  INTENTS.map(i => `- ${i.id}: wants to ${i.need}` + ((Array.isArray(i.examples) && i.examples.length) ? ' — e.g. ' + i.examples.slice(0, 3).map(e => `"${clean(e, 120)}"`).join(' / ') : '')).join('\n'),
   '',
   'INFERRED FIELDS — set only when the text actually says or clearly implies them, else null:',
   `- companySize: one of ${(BANDS.companySize || []).map(b => `${b.id} (${b.label})`).join(' | ')} — go by headcount when the text gives one`,
@@ -432,6 +432,8 @@ const INTERPRET_SYSTEM = [
   'Reply with ONE JSON object and nothing else — no prose, no code fences:',
   '{"detectedGoals":[],"detectedIntents":[],"inferred":{"industry":null,"companySize":null,"creatorProgramSize":null,"geographicScope":null},"userNeedSummary":"","confidence":0,"contactRequest":"","ack":"","reply":""}'
 ].join('\n');
+
+export { INTERPRET_SYSTEM };
 
 function interpretUser(body) {
   const text = clean(body.text).slice(0, 600);
