@@ -172,3 +172,71 @@ body.pc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:
 .pc-page .ask-end .ask-end__acts{display:flex !important;justify-content:center;width:100%;
   margin-top:clamp(24px,3vw,38px)}
 .pc-page .ask-end{padding:clamp(64px,8vw,120px) 0 clamp(56px,7vw,100px) !important}
+
+/* ═══ THE LISTING: every product on one set of hairlines (the Offerings reference, in light) ════
+   Each problem keeps its heading; under it every product reads as a row — the name at the left,
+   what it does in the middle, the way in at the right. */
+.pl-c .pl-hero .pp-hero__in{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr)}
+.pl-c .pl-hero .pp-title{grid-area:1 / 1 / 4 / 2}
+.pl-c .pl-hero .pp-eyebrow{grid-area:1 / 2 / 2 / 3}
+.pl-c .pl-hero .pp-lede{grid-area:2 / 2 / 3 / 3}
+.pl-c .pl-hero .pp-acts{grid-area:3 / 2 / 4 / 3}
+
+.pl-c .prodbody{max-width:1180px;margin-inline:auto;padding-inline:var(--gutter,24px)}
+.pl-c .prodgroup{padding:clamp(40px,5vw,76px) 0 0;background:none;border:0}
+.pl-c .prodgroup__head{display:flex;align-items:baseline;gap:14px;padding:0;background:none;
+  border:0;margin:0 0 clamp(8px,1.2vw,16px)}
+.pl-c .prodgroup__pic{display:none}
+.pl-c .prodgroup__words{display:flex;align-items:baseline;gap:14px}
+.pl-c .prodgroup__n{margin:0;color:var(--hc-quiet) !important;font-family:var(--ui);font-size:13px;
+  letter-spacing:.02em;background:none;width:auto;height:auto}
+.pl-c .prodgroup__n::before{content:"/"}
+.pl-c .prodgroup__h{margin:0;color:var(--ink) !important;font-family:var(--hc-title) !important;
+  font-weight:400 !important;font-size:clamp(20px,1rem + .6vw,26px);line-height:1.25;
+  letter-spacing:-.02em}
+.pl-c .prodgroup__cards{display:block;gap:0;margin:0;padding:0}
+.pl-c .prodcard{display:block;background:none !important;border:0 !important;border-radius:0 !important;
+  box-shadow:none !important;padding:0;margin:0}
+.pl-c .prodcard__top,.pl-c .prodcard__head{display:contents}
+.pl-c .prodcard{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.15fr) minmax(170px,auto);
+  column-gap:clamp(20px,3vw,56px);align-items:start;
+  padding:clamp(22px,2.6vw,34px) 0;border-top:1px solid var(--hc-rule) !important}
+.pl-c .prodgroup__cards > .prodcard:last-child{border-bottom:1px solid var(--hc-rule) !important}
+.pl-c .prodcard__name{grid-column:1;margin:0;color:var(--ink) !important;
+  font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(26px,1rem + 1.5vw,40px);line-height:1.08;letter-spacing:-.03em}
+.pl-c .prodcard__pos{grid-column:2;grid-row:1;margin:0;color:var(--ink) !important;
+  font-size:16px;line-height:1.5}
+.pl-c .prodcard__who{grid-column:2;grid-row:2;margin:10px 0 0;color:var(--hc-quiet) !important;
+  font-size:14px}
+.pl-c .prodcard__pills{grid-column:2;grid-row:3;display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;
+  padding:0;list-style:none}
+.pl-c .prodcard__pills li{background:none;border:1px solid var(--hc-rule);border-radius:999px;
+  padding:3px 10px;color:var(--hc-quiet) !important;font-size:12.5px}
+.pl-c .prodcard__link{grid-column:3;grid-row:1;justify-self:end;align-self:start;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;
+  padding:0 0 10px;border-bottom:1px solid var(--hc-rule);
+  color:var(--hc-quiet) !important;background:none !important;font-size:15px;text-decoration:none}
+.pl-c .prodcard__link::after{content:"→";font-size:16px}
+.pl-c .prodcard:hover .prodcard__link{color:var(--ink) !important;border-bottom-color:var(--ink)}
+
+/* the chooser at the top of the list */
+.pl-c .ptoc{max-width:1180px;margin-inline:auto;padding:clamp(24px,3vw,44px) var(--gutter,24px) 0}
+.pl-c .ptoc__btn{background:var(--hc-card);border:1px solid var(--hc-edge);color:var(--ink)}
+
+@media (max-width:860px){
+  .pl-c .prodcard{grid-template-columns:1fr;row-gap:12px}
+  .pl-c .prodcard__name,.pl-c .prodcard__pos,.pl-c .prodcard__who,
+  .pl-c .prodcard__pills,.pl-c .prodcard__link{grid-column:1;grid-row:auto}
+  .pl-c .prodcard__link{justify-self:start;width:auto;min-width:180px}
+}
+/* listing.css lays each group out in two columns; here the heading sits above its rows */
+.pl-c .prodgroup{display:block !important;grid-template-columns:none !important}
+.pl-c .prodgroup__cards{display:block !important;width:100% !important;
+  grid-template-columns:none !important}
+.pl-c .prodgroup__head{position:static;width:auto}
+/* the group head carried a dark scrim over its picture; on paper neither is needed */
+.pl-c .prodgroup__head::after,.pl-c .prodgroup__head::before{display:none !important;content:none !important}
+.pl-c .prodgroup__head{background:none !important;min-height:0 !important;overflow:visible !important;
+  border-radius:0 !important;color:var(--ink) !important}
+.pl-c .prodgroup__words{position:static !important;padding:0 !important;color:var(--ink) !important}
