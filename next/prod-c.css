@@ -1155,3 +1155,22 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pl-c .pc-side .pc-foot__what:first-child,.pl-c .pc-cap .pc-foot__what:first-child{
   margin-top:0 !important}
 .pl-c .pc-side .prodcard__who:first-child{margin-top:0 !important}
+
+/* ═══ the product page: the two ways in stand side by side on the title's edge ═════════════════ */
+.pc-page:not(.pl-c) .pp-acts{display:flex !important;flex-direction:row !important;
+  flex-wrap:nowrap !important;align-items:center !important;
+  justify-content:flex-start !important;text-align:left !important;
+  margin-inline:0 !important;width:auto;gap:12px}
+.pc-page:not(.pl-c) .pp-acts > *{margin:0 !important}
+
+/* ═══ the numbers, as quiet as the rest of the page ═══════════════════════════════════════════ */
+.pc-page .pp-figs > li::before,.pc-page .pp-figs > li::after{content:none !important;
+  display:none !important}
+.pc-page .pp-figs > li{background:none !important;text-align:left !important;
+  padding:clamp(24px,2.6vw,36px) clamp(18px,2vw,28px)}
+.pc-page .pp-figs > li:first-child{padding-left:0}
+.pc-page .pp-figs strong{color:var(--ink) !important;letter-spacing:-.03em}
+.pc-page .pp-figs span{color:var(--hc-quiet) !important}
+.pc-page .pp-proof__head,.pc-page .pp-proof .pp-sign,.pc-page .pp-proof .pp-h2,
+.pc-page .pp-proof__note{text-align:left !important;margin-inline:0 !important}
+.pc-page .pp-flag{margin-top:14px}
