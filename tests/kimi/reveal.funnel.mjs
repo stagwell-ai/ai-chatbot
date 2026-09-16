@@ -88,13 +88,19 @@ try {
     await done(page);
     await page.waitForTimeout(400);                 /* any smooth scroll finishes */
 
-    const after = await page.evaluate(() => ({
-      y: scrollY,
-      max: document.documentElement.scrollHeight - innerHeight,
-      recoTop: document.querySelector('.turnb--reco').getBoundingClientRect().top,
-      bar: document.querySelector('#nav').getBoundingClientRect().height,
-      cards: document.querySelector('.reco__card--best').getBoundingClientRect().top,
-    }));
+    /* the cards are shown twice now — a first look before the business
+       questions, then the recommendation proper — so it is the LAST bubble
+       that has to land where the reader is */
+    const after = await page.evaluate(() => {
+      const last = sel => { const e = document.querySelectorAll(sel); return e[e.length - 1]; };
+      return {
+        y: scrollY,
+        max: document.documentElement.scrollHeight - innerHeight,
+        recoTop: last('.turnb--reco').getBoundingClientRect().top,
+        bar: document.querySelector('#nav').getBoundingClientRect().height,
+        cards: last('.reco__card--best').getBoundingClientRect().top
+      };
+    });
     ok(after.y < after.max - 40, 'the page is NOT thrown to the foot when the cards arrive (y=' + Math.round(after.y) + ' of ' + Math.round(after.max) + ')');
     ok(Math.abs(after.recoTop - (after.bar + 16)) < 24,
       'the page rests on the FIRST line of the answer, just under the bar (top=' + Math.round(after.recoTop) + ', bar=' + Math.round(after.bar) + ')');
@@ -102,14 +108,15 @@ try {
     ok(before >= 0, '   (came from y=' + Math.round(before) + ')');
 
     const thread = await page.evaluate(() => {
-      const t = document.querySelector('#agentThread'), r = document.querySelector('.turnb--reco');
+      const all = document.querySelectorAll('.turnb--reco');
+      const t = document.querySelector('#agentThread'), r = all[all.length - 1];
       if (!r) return null;
       return { scrollTop: t.scrollTop, top: r.offsetTop, h: t.scrollHeight - t.clientHeight };
     });
     ok(thread && (thread.h < 4 || Math.abs(thread.scrollTop - thread.top) < 24),
       'the thread opens on the FIRST line of the recommendation, not its last (at ' + Math.round(thread.scrollTop) + ', head at ' + Math.round(thread.top) + ')');
 
-    const text = await page.$eval('.turnb--reco .turnb__text', e => e.textContent.trim());
+    const text = await page.$$eval('.turnb--reco .turnb__text', els => els[els.length - 1].textContent.trim());
     ok(text.length > 4, 'and every word of the opening line is there once it has been written ("' + text + '")');
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
     await ctx.close();

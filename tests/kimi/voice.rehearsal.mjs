@@ -160,13 +160,17 @@ ok(many.length === 0 || many.every(s => s.dim >= 1), 'the rest of the roster ste
 ok(products[products.length - 1].id === 'imai', 'the last one named is IMAI');
 ok(!spots.some(s => s.current === 'geopulse' || s.current === 'agent_cloud'), 'GEOPulse and Agent Cloud are never put on the deck');
 /* and it puts them down on the question it opened with */
-const landed = await page.evaluate(() => ({
-  pills: [...document.querySelectorAll('#agentThread .turnb--team .turnb__chips .tag')].map(t => t.textContent.trim()),
-  card: !!document.querySelector('#agentThread .turnb--team'),
-  gone: !document.querySelector('.vstage')
-}));
+const landed = await page.evaluate(() => {
+  const i = document.querySelector('#agentInput');
+  const k = window.SAIKIMI.state();
+  return { card: !!document.querySelector('#agentThread .turnb--team'), gone: !document.querySelector('.vstage'),
+    asking: k.question && k.question.field, mode: i && i.getAttribute('inputmode'), ph: i && i.placeholder };
+});
 ok(landed.gone && landed.card, 'the stage lifts and the team stays in the thread');
-ok(landed.pills.length === ((await page.evaluate(() => window.SAI.data.goals.goals.length))), 'the starting points are offered again, under the card: ' + landed.pills.length + ' pills');
+/* the story ends on the PITCH for the address, and the composer is already set
+   up for one (client, 2026-09-16); the problem is asked next, with its pills */
+ok(landed.asking === 'email', 'and it lands on the ask for the work email (' + landed.asking + ')');
+ok(landed.mode === 'email' && /@/.test(landed.ph || ''), '   with the composer set up for an address ("' + landed.ph + '")');
 ok(errors.length === 0, errors.length ? 'page errors: ' + errors.join(' | ') : 'no page errors');
 
 /* 4 · the contact sheet — one picture of the whole thing */

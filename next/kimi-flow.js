@@ -98,6 +98,9 @@ function blank() {
     holds: 0,                    /* consecutive turns that taught us nothing */
     company: null,               /* a company name typed where a web address was asked for */
     websiteNudged: false,        /* asked once more for the address itself */
+    emailWhyGiven: false,        /* they turned the address down once and were told why it is asked for */
+    emailDone: false,            /* the work email step is behind us — answered, dodged or declined */
+    previewed: false,            /* the products have been shown once, before the business questions */
     phoneNudged: false,          /* asked once more for a number that looked wrong */
     action: null,                /* the BOOK step's button: { label, cta } */
     after: null,
@@ -293,6 +296,32 @@ function askGoal(reply) {
   st.status = 'DISCOVERY';
   st.unclassifiedOnce = true;
   emit('question_asked', { id: GOAL_Q, slot: 'goal', copy: st.message, mode: null });
+}
+
+/* ── THE ADDRESS, ASKED BEFORE ANYTHING ELSE ──
+   The voice story ends on the pitch for it — "what's your work email? I'll read
+   your company's site from it" (client, 2026-09-16) — so the conversation needs
+   to be able to stand on that question before a goal is known. advance() always
+   asks the goal first, which is right for someone who typed a sentence; this is
+   the one place that steps in front of it. Answering, or turning it down, goes
+   straight back to the ordinary order. */
+function askWorkEmail() {
+  const c = copy();
+  const q = list((data().questions || {}).discovery && data().questions.discovery.questions).find(x => x && x.field === 'email');
+  if (!q || st.email || flags().emailFirst === false) return state();
+  st.currentQuestion = { id: q.id, field: 'email', prompt: q.prompt, suggestions: [] };
+  st.askedQuestionIds.push(q.id);
+  st.message = c.askWorkEmail || q.prompt;
+  st.ack = null; st.prompt = st.message;
+  st.suggestions = [];
+  st.uiAction = 'ASK';
+  st.hint = (c.hints || {}).email || 'you@company.com';
+  st.status = 'DISCOVERY';
+  st.holds = 0;
+  emit('question_asked', { id: q.id, slot: 'work_email', copy: st.message, mode: 'story' });
+  track('kimi_email_asked', { at: 'story' });
+  notify();
+  return state();
 }
 
 function present(q, first, modelAck) {
@@ -501,10 +530,34 @@ function recoProps() {
   return { primary_product: r.primary || null, secondary_products: list(r.secondary).join(','), recommendation_confidence: r.confidence ? r.confidence.level : null, steps: st.step };
 }
 
+/* ── THE VALUE BEFORE THE QUALIFICATION ──
+   "as soon as we ask for the email, then we need to provide value before we do
+   anything else" (client, 2026-09-16). The order is: what you need → your
+   email → one or more products that fit → and only THEN the questions about
+   the business, the size, who they are. The cards are drawn once, into their
+   own bubble, and the conversation carries on underneath them; the full
+   recommendation — refined by everything those questions add — still comes at
+   the end, where the call is offered. */
+function preview(reco) {
+  const c = copy();
+  const cards = C() ? C().buildCards(reco, signals(), data(), c, { why: {}, secondary: flags().secondaryRecommendations !== false }) : [];
+  if (!cards.length) return false;
+  st.cards = cards;
+  st.previewed = true;
+  const low = !reco.confidence || reco.confidence.level === 'low';
+  st.cardsIntro = (low ? c.showcaseIntroLow : c.showcaseIntro) || c.recommendationIntroOpen || '';
+  st.after = c.showcaseAfter || null;
+  track('kimi_showcase_shown', Object.assign({ cards: cards.length, email_given: !!st.email }, recoProps()));
+  return true;
+}
+
 function advance(ack) {
   const first = st.askedQuestionIds.length === 0;
   if (!st.primaryGoal && !st.intents.length) { askGoal(); return; }
   const reco = recompute();
+  /* the goal is known and the address step is behind us: show them something
+     before asking them anything else */
+  if (!st.previewed && st.emailDone && flags().showcaseAfterEmail !== false && reco && reco.primary) preview(reco);
   /* with the email asked after the recommendation instead (flags.emailFirst
      off), the work_email question is simply never in the running */
   const asked = flags().emailFirst === false ? st.askedQuestionIds.concat('work_email') : st.askedQuestionIds;
@@ -627,14 +680,59 @@ async function answer(input) {
     const c = copy();
     const domain = emailDomain(text);
     if (!domain) {
-      st.holds++;
-      st.message = (c.contactErrors || {}).email || 'That does not look like an email address.';
-      st.ack = null; st.prompt = st.message; st.suggestions = []; st.uiAction = 'ASK';
-      emit('question_asked', { id: q.id, slot: 'work_email', copy: st.message, mode: 'nudge' });
+      /* …but it is not a trap. Someone who answers the address with what they
+         actually want — "we need to track competitors" — has told us something
+         far more useful, and being asked for an email again would be rude.
+         Take the words, drop the question, carry on. */
+      const read = await interpret(text);
+      if (stale(e)) return state();
+      const before = knowledge();
+      absorb(read, {});
+      if (knowledge() !== before || read.contactRequest) {
+        st.currentQuestion = null;
+        st.emailDone = true;
+        track('kimi_email_deferred', { at: 'story' });
+        if (read.contactRequest) { fastTrack(read.contactRequest); notify(); return state(); }
+        advance(read.ack || null);
+        notify(); return state();
+      }
+      /* Someone who typed an address and got it wrong wants "check it"; someone
+         who said no wants a reason. They are not the same turn, and one must
+         not spend the other's patience: a typo is always asked again, and a
+         refusal is answered ONCE with what the domain actually buys them
+         (client, 2026-09-16: "we ask again one more time, with a justification
+         that we can provide customized services based on your email domain").
+         Say no twice and it is dropped. */
+      const tried = /@/.test(text) || /[a-z0-9][a-z0-9-]*\.[a-z]{2,}/i.test(text);
+      if (tried || !st.emailWhyGiven) {
+        if (!tried) st.emailWhyGiven = true;
+        st.holds++;
+        st.message = tried
+          ? ((c.contactErrors || {}).email || 'That does not look like an email address.')
+          : (c.emailWhy || (c.contactErrors || {}).email || 'That does not look like an email address.');
+        st.ack = null; st.prompt = st.message; st.suggestions = []; st.uiAction = 'ASK';
+        emit('question_asked', { id: q.id, slot: 'work_email', copy: st.message, mode: tried ? 'nudge' : 'why' });
+        track('kimi_email_nudged', { at: 'story', declined: !tried });
+        notify(); return state();
+      }
+      /* asked twice is an answer: the conversation carries on and finds them a
+         product without it. The address is asked for again at the end, by the
+         form, when there is something to send them. */
+      st.currentQuestion = null;
+      st.emailDone = true;
+      st.holds = 0;   /* turning the address down is an answer, not a blank turn */
+      emit('answer_given', { id: q.id, slot: 'work_email', text: '__skip__', chip: null });
+      track('kimi_email_skipped', { at: 'story', declined: true });
+      /* advance() drops its ack when it falls through to the goal, and the
+         goal's own line ("I didn't catch a problem in that") is the wrong
+         thing to say to someone who just declined — so say ours instead */
+      if (!st.primaryGoal && !st.intents.length) { askGoal(c.emailSkipped || null); notify(); return state(); }
+      advance(c.emailSkipped || null);
       notify(); return state();
     }
     const email = text.trim();
     st.email = email;
+    st.emailDone = true;
     st.emailFree = isFreeMail(domain);
     st.lead = Object.assign({ name: null, phone: null }, st.lead || {}, { email, company: st.company || null });
     setSlot('work_email', email, 'visitor');
@@ -1079,6 +1177,7 @@ function state() {
     prompt: st.prompt,
     pointers: st.pointers ? { kind: st.pointers.kind, items: st.pointers.items.slice() } : null,
     researched: !!st.researched,
+    previewed: !!st.previewed,
     findings: st.findings ? Object.assign({}, st.findings) : null,
     contact: st.contact ? Object.assign({}, st.contact) : null,
     contactRequest: st.contactRequest,
@@ -1120,7 +1219,7 @@ function toolView() {
   const shown = [];
   if (s.findings && s.researched) shown.push('a fact list about their company');
   if (s.uiAction === 'CAPTURE_CONTACT') shown.push('a short contact form (name, email, phone) — wait for them to fill it in');
-  if (s.cards && s.cards.length && (s.uiAction === 'CAPTURE_EMAIL' || s.uiAction === 'SHOW_RECOMMENDATIONS' || s.uiAction === 'CAPTURE_PHONE' || s.uiAction === 'BOOK' || s.uiAction === 'COMPLETE')) shown.push('the recommendation card(s)');
+  if (s.cards && s.cards.length && (s.previewed || s.uiAction === 'CAPTURE_EMAIL' || s.uiAction === 'SHOW_RECOMMENDATIONS' || s.uiAction === 'CAPTURE_PHONE' || s.uiAction === 'BOOK' || s.uiAction === 'COMPLETE')) shown.push('the recommendation card(s)');
   if (s.uiAction === 'BOOK') shown.push('a "Book a call" button');
   const stepOf = { DISCOVERY: null, QUALIFICATION: null, CAPTURE_EMAIL: 'their work email', CAPTURE_PHONE: 'their phone number', BOOK: 'booking a call', RECOMMENDATION: 'the recommendation', CONTACT_CAPTURE: 'the contact form', COMPLETE: 'done' };
   const q = s.question;
@@ -1166,7 +1265,7 @@ const tools = {
 };
 
 window.SAIKIMI = {
-  start, answer, contact, clicked, state, onChange, requestContact, tools,
+  start, answer, contact, clicked, state, onChange, requestContact, tools, askWorkEmail,
   validate: lead => { const v = validate(lead || {}); return v.error ? { ok: false, error: v.error, message: v.message } : { ok: true, lead: v.lead }; },
   recommendation: () => st.reco,
   result: () => ({ state: state(), reco: st.reco, discovery: discoveryPayload() }),

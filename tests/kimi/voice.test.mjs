@@ -102,10 +102,16 @@ test('the story: the interruption line → flagship → each showcased product i
   assert.ok(sc.more.toLowerCase().includes(sc.moreOn.toLowerCase()), 'the more line carries the words that add the 10+ badge: ' + sc.moreOn);
   assert.ok(R.activeProducts ? true : DATA.solutions.solutions.filter(p => p.active !== false).length > 10, 'and that is true of the catalog');
   assert.ok(/^\d+\+ /.test(sc.moreLabel), 'a badge for the rest: ' + sc.moreLabel);
-  /* and it lands on the question it opened with (client, 2026-09-16) */
+  /* …and it lands on the ASK: the address, and what it buys them (client,
+     2026-09-16: "once we get to this point we need to pitch to get the
+     customer's email and then to ask them what problem they want to solve with
+     pills"). The PROBLEM is asked after it, by the flow, with its own pills —
+     which is why it is not in the script. */
   const land = sc.land || sc.pivot;
-  assert.ok(s.indexOf(land) > at, 'the question it opened with, last');
-  assert.ok(/what do you need help with/i.test(land), 'it reintroduces the original question: "' + land + '"');
+  assert.ok(s.indexOf(land) > at, 'the ask, last');
+  assert.ok(/work email/i.test(land), 'it pitches the work email: "' + land + '"');
+  assert.ok(/read your company|read your site/i.test(land), 'and says what it buys them');
+  assert.ok(!/what do you need help with|what are you trying to solve/i.test(land), 'and does NOT ask the problem in the same breath — that comes next, with pills');
   assert.ok(land.toLowerCase().includes(sc.closeOn.toLowerCase()), 'and carries the words that close the stage');
   const words = s.split(/\s+/).length;
   assert.ok(words >= 70 && words <= 150, 'about 40–55 s of unhurried speech: ' + words + ' words');

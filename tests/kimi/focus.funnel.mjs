@@ -122,12 +122,15 @@ try {
        — then chips (size, role, the goal's opener), then the cards and the call */
     await page.fill('#agentInput', 'ada@example-brand.com'); await page.press('#agentInput', 'Enter');
     await answered(page); await page.waitForTimeout(250);
-    for (let i = 0; i < 6 && !(await page.$('.reco__card--best')); i++) {
+    /* the cards now arrive part-way through — the first look, before the
+       business questions — so the end of it is the composer closing, not a
+       card appearing */
+    for (let i = 0; i < 6 && !(await page.evaluate(() => document.querySelector('#agentInput').disabled)); i++) {
       await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');
-      await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && (document.querySelector('.reco__card--best') || document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])')), null, { timeout: 15000 });
+      await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && (document.querySelector('#agentInput').disabled || document.querySelector('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])')), null, { timeout: 15000 });
       await page.waitForTimeout(250);
     }
-    await page.waitForSelector('.reco__card--best', { timeout: 15000 });
+    await page.waitForSelector('.turnb--book', { timeout: 15000 });
     await page.waitForTimeout(400);
     /* the address was taken at the top, so the cards land on the call and the
        composer closes: there is nothing left to type */

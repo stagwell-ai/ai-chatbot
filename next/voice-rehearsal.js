@@ -127,7 +127,7 @@
     if (S.flagship) segs.push({ text: S.flagship, breath: BREATH * 0.6 });
     (S.products || []).forEach(p => segs.push({ text: p.line, breath: BREATH }));
     if (S.more) segs.push({ text: S.more, breath: BREATH * 0.8 });
-    if (S.pivot) segs.push({ text: S.pivot, breath: BREATH * 0.8 });
+    if (S.land || S.pivot) segs.push({ text: S.land || S.pivot, breath: BREATH * 0.8 });   /* the ask it ends on */
     return segs;
   };
   const isStory = t => { const s = squash(t); return s === squash((copy().starters || {}).hero || 'What is Stagwell AI?') || /what(is|s)?(st|d)agw[ae]ll/.test(s); };

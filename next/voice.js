@@ -428,24 +428,34 @@ function landStory(cfg) {
   /* they got on with it during the story — nothing to reintroduce */
   if (s && s.status !== 'IDLE' && s.status !== 'DISCOVERY') return;
   if (s && s.primaryGoal) return;
-  const gs = (((window.SAI || {}).data || {}).goals || {}).goals || [];
-  const chips = gs.map(g => ({ label: g.label, value: g.label }));
-  const onChip = chip => {
-    track('voice_land_tapped', { label: String(chip.label).slice(0, 60) });
-    sendText(chip.value);
-  };
-  /* the pills go UNDER the team card, not under the words above it: the card is
-     the introduction, and the pills are what to do next */
   const team = document.querySelector('#agentThread .turnb--team');
-  if (chips.length) {
-    if (pendingChips) { if (pendingChips.timer) clearTimeout(pendingChips.timer); pendingChips = null; }
-    if (team && H.chips) H.chips(team, chips, onChip, 'turnb__chips--answers');
-    else offerChips(chips, onChip, { cls: 'turnb__chips--answers' });
+  /* ── THE ASK COMES FIRST ──
+     "once we get to this point we need to pitch to get the customer's email and
+     then to ask them what problem they want to solve with pills" (client,
+     2026-09-16). The story's last line IS the pitch — the agent has just said
+     it aloud — so all this does is stand the conversation on that question: the
+     composer goes to email, no pills, because an address is typed. The moment
+     it is answered (or answered with a problem instead, which the flow takes
+     just as happily) the ordinary order resumes and the six starting points
+     arrive as pills under the agent's next question. */
+  if (pendingChips) { if (pendingChips.timer) clearTimeout(pendingChips.timer); pendingChips = null; }
+  let asked = false;
+  if (K.askWorkEmail) { const after = K.askWorkEmail(); asked = !!(after && after.question && after.question.field === 'email'); }
+  if (!asked) {
+    /* no email step on this build (flags.emailFirst off, or it is already
+       known): fall back to the question itself, with its pills */
+    const gs = (((window.SAI || {}).data || {}).goals || {}).goals || [];
+    const chips = gs.map(g => ({ label: g.label, value: g.label }));
+    const onChip = chip => { track('voice_land_tapped', { label: String(chip.label).slice(0, 60) }); sendText(chip.value); };
+    if (chips.length) {
+      if (team && H.chips) H.chips(team, chips, onChip, 'turnb__chips--answers');
+      else offerChips(chips, onChip, { cls: 'turnb__chips--answers' });
+    }
   }
-  track('voice_showcase_landed', { products: ((cfg && cfg.products) || []).length });
+  track('voice_showcase_landed', { products: ((cfg && cfg.products) || []).length, ask: asked ? 'email' : 'goal' });
   /* then the page goes UP to the head of the card — "it should scroll up" — so
-     the team is read from the top and the question is under it */
-  /* …and it takes a couple of tries: the agent is often still finishing the
+     the team is read from the top and the ask is under it.
+     …and it takes a couple of tries: the agent is often still finishing the
      sentence, and every word of transcript asks the thread to follow it. The
      head lock (home.js) holds each attempt for a beat; the last one, once the
      voice has stopped, is the one that sticks. */

@@ -91,8 +91,11 @@ try {
     ok((await page.$$('#agentThread .point, #agentThread .reco__card')).length === 0, '   and no product is named yet: recommendations come once, at step 6');
     let c = await composer(page);
     ok(/@/.test(c.placeholder) && c.inputmode === 'email', '   the composer asks for an address, keyboard set to email ("' + c.placeholder + '")');
-    await say(page, 'not an email');
-    ok(/does not look like/i.test(await lastText(page)) && (await st(page)).question.id === 'work_email', '   a bad address is asked again');
+    await say(page, 'ada@acme');
+    ok(/does not look like/i.test(await lastText(page)) && (await st(page)).question.id === 'work_email', '   a mistyped address is asked again');
+    await say(page, "i'd rather not");
+    ok(/only use the domain/i.test(await lastText(page)) && (await st(page)).question.id === 'work_email',
+      '   …and turning it down gets the REASON, not the same error: "' + (await lastText(page)).slice(0, 60) + '…"');
     await say(page, 'ada@acme-brands.com');
     /* 3) insights, if any — none here. The address carried the site with it. */
     ok(state.researched.includes('acme-brands.com'), '3) the site was looked up, from the address alone');
@@ -100,8 +103,15 @@ try {
     ok((await st(page)).website === 'acme-brands.com', '   the website is answered without ever being asked');
     ok(state.leads.length === 1 && state.leads[0].lead.email === 'ada@acme-brands.com' && state.leads[0].lead.name == null && state.leads[0].lead.phone == null,
       '   and the lead exists already, on the address alone — nothing is lost if they leave here');
-    /* 4) how large the org is */
+    /* the value before the qualification (client, 2026-09-16): one or more
+       products are shown the moment the address step is behind them, and the
+       questions carry on underneath */
     s = await st(page);
+    ok(s.previewed && (await page.$$('.reco__card--best')).length === 1, '3b) the products are shown BEFORE the business questions');
+    ok(await page.$eval('.turnb--reco .turnb__text', e => /where I'd start|closest fit/.test(e.textContent)),
+      '   under a heading that says it is a first look: "' + (await page.$eval('.turnb--reco .turnb__text', e => e.textContent.trim())) + '"');
+    ok(!(await composer(page)).disabled && s.question, '   and the conversation carries on under them (' + (s.question && s.question.id) + ')');
+    /* 4) how large the org is */
     ok(s.question && s.question.id === 'company_size', '4) how large the org is (' + (s.question && s.question.id) + ')');
     await chip(page, '51 to 250');
     /* 5) the role */
@@ -115,9 +125,9 @@ try {
     /* 6) the recommendation */
     s = await st(page);
     ok((await page.$$('#agentThread .point')).length === 0, '   no product was named before this point');
-    ok((await page.$$('.reco__card--best')).length === 1, '6) the recommendation is shown');
-    ok(await page.$eval('.reco__card--best .reco__name', e => /NewIntel/.test(e.textContent)), '   NewIntel, best fit');
-    ok(await page.$eval('.turnb--reco .turnb__text', e => /where I\'d start|fits best/.test(e.textContent)), '   under its own heading: "' + (await page.$eval('.turnb--reco .turnb__text', e => e.textContent.trim())) + '"');
+    ok((await page.$$('.reco__card--best')).length === 2, '6) the recommendation is shown again, sharpened by the answers');
+    ok(await page.$$eval('.reco__card--best .reco__name', els => /NewIntel/.test(els[els.length - 1].textContent)), '   NewIntel, best fit');
+    ok(await page.$$eval('.turnb--reco .turnb__text', els => /fits best|where I\'d start/.test(els[els.length - 1].textContent)), '   under its own heading: "' + (await page.$$eval('.turnb--reco .turnb__text', els => els[els.length - 1].textContent.trim())) + '"');
     ok(!(await page.$('#heroLeadForm')), '   and there is no form');
     ok((await page.$$eval('#agentThread .turnb--ai .turnb__text', els => els.filter(e => /work email/i.test(e.textContent)).length)) <= 1, '   the address is never asked for twice');
     /* 7) the call — and the number is asked for by the things that need it */
@@ -182,7 +192,7 @@ try {
     ok(s.question && s.question.id === 'role', '4→5) size was read from the site, so the role comes next (' + (s.question && s.question.id) + ')');
     await chip(page, 'C-suite');
     s = await st(page);
-    ok((await page.$$('.reco__card--best')).length === 1 && s.status === 'BOOK', '6→7) an intent was known, so no discriminator: cards, then the call (' + s.status + ')');
+    ok((await page.$$('.reco__card--best')).length === 2 && s.status === 'BOOK', '6→7) an intent was known, so no discriminator: the first look, the role, then the cards and the call (' + s.status + ')');
     ok(s.askedQuestionIds.join(' → ') === 'work_email → role', '   asked only: ' + s.askedQuestionIds.join(' → '));
     const last = state.leads[state.leads.length - 1];
     ok(state.leads.length >= 1 && last.discovery.companySize === 'large' && last.discovery.industry === 'hospitality' && last.discovery.siteKnown === true, '   the lead carries what the lookup read');

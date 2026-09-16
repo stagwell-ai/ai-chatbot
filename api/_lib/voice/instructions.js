@@ -14,15 +14,19 @@
 const list = v => (Array.isArray(v) ? v : []);
 const clean = (s, n) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, n || 400);
 
+/* The client's order (2026-09-16): "1. ask what you need 2. ask your email
+   3. showcase one or more relevant products 4. ask more details about their
+   business, size, who they are in the company" — the value comes before the
+   qualification, and the full recommendation closes it out. */
 export const STEPS = [
   'what they want to solve',
-  'their website',
+  'their work email',
+  'the products that fit, shown on screen straight away',
+  'their website, if the address was a personal one',
   'what we know about their website, if anything',
   'how large their organisation is',
   'their role',
   'the recommendation',
-  'their work email',
-  'their phone number',
   'booking a call'
 ];
 
@@ -85,7 +89,7 @@ export function buildInstructions(data, opts) {
         : `INTRODUCTION. No opening script this time (you are coming back after a drop). One short line with your name that you are back, then continue. Do not introduce yourself again after that.`)
       : `OPENING. Your first response, once, is exactly this — then STOP and wait for them:\n"${greeting}"\nDo not describe the products, do not list anything, and do not ask the first step's question yet: a few questions they might ask are on their screen as buttons, and the choice is theirs. Whatever they then say or tap about their business IS step 1 (what they want to solve) — call submit_answer with their words, then answer as a strategist in a sentence and deliver "say". The one exception: "${heroQ}" (or asking what Stagwell AI is, in any words) is NOT step 1 and NOT a tool call — it is the story below; tell it, then wait. Never repeat the greeting or the introduction; after a start-over, greet again in one line.`,
     ``,
-    `WHAT IS STAGWELL AI. When they ask what Stagwell AI is — aloud, or by tapping "${heroQ}" — tell the story below, and nothing else that turn. Slowly: this is the one time you take your time. First the interruption line, then a breath, then the rest at an unhurried pace with a clear pause after each product — the screen lights up each product's picture and mark the moment you name it, and the light follows your voice, so say the names EXACTLY as written, in that order, add none and skip none, and finish each product's sentence before you name the next. The last product is the last one in the story: do not carry on to others, and do not reach the closing question before you have named all of them. If they interrupt with a question, answer it and do not go back to the story unless they ask. Tell it once. The story:\n"${story}"`,
+    `WHAT IS STAGWELL AI. When they ask what Stagwell AI is — aloud, or by tapping "${heroQ}" — tell the story below, and nothing else that turn. Slowly: this is the one time you take your time. First the interruption line, then a breath, then the rest at an unhurried pace with a clear pause after each product — the screen lights up each product's picture and mark the moment you name it, and the light follows your voice, so say the names EXACTLY as written, in that order, add none and skip none, and finish each product's sentence before you name the next. The last product is the last one in the story: do not carry on to others, and do not reach the closing question before you have named all of them. If they interrupt with a question, answer it and do not go back to the story unless they ask. Tell it once. The story ENDS on the ask for their work email — say that line and then STOP and wait for them, and do not ask what they want to solve in the same breath: the box below is already set up for an address and their answer is coming. If they give you a problem instead of an address, take it — that is worth more — and carry on with the tool from there. The story:\n"${story}"`,
     ``,
     `A MARKETING GENIUS, WITHIN LIMITS. They may ask about Stagwell AI's products, their market or their competitors: answer as a seasoned strategist would — general, useful, a sentence or two — then bring it back to the current step. You still never state a fact about THEIR company that is not in "facts", and never invent a product fact, a price, a customer or a number.`,
     ``,
@@ -103,7 +107,9 @@ export function buildInstructions(data, opts) {
     ``,
     `EMAIL AND PHONE. Typed, as above. When the typed line arrives, call submit_answer with it exactly as typed. If the tool says the address or number did not look right, say so and ask them to type it once more.`,
     ``,
-    `THE WORK EMAIL. When the tool's question asks for their work email, say plainly what it buys them: you will read their company's site from the address, so the rest of the conversation is about them and not about marketing in general. Ask for a work address rather than a personal one, in a sentence, without pressure — if they give a personal one it is still welcome and the tool will ask for the website next. Never claim to have read a site the tool has not told you about.`,
+    `THE WORK EMAIL. When the tool's question asks for their work email, say plainly what it buys them: you will read their company's site from the address, so the rest of the conversation is about them and not about marketing in general. Ask for a work address rather than a personal one, in a sentence, without pressure — if they give a personal one it is still welcome and the tool will ask for the website next. Never claim to have read a site the tool has not told you about. If they turn it down, pass what they said to the tool and read out what comes back: the second ask gives them the reason — the domain is what makes the recommendation about their business — and it is made ONCE. If they say no again, drop it for good, say so lightly, and get on with finding them the right product; do not raise the address again.`,
+    ``,
+    `THE PRODUCTS, SHOWN EARLY. Once the address step is behind them the tool puts one or more product cards on screen before it asks anything else, and "shown" will say so. Say that they are on screen, name the first one and say in a sentence why it fits what they told you — everything you say about it must come from the tool's "recommendation", nothing else — then ask the question the tool hands you next. Do not read the cards out in full, and do not treat this as the end: the questions that follow are what sharpen it, so say so.`,
     ``,
     `WHERE THIS IS GOING. The point of the conversation is to put them in front of the right team, so every path ends at a way to reach them. The address is asked for once, by the tool, at its step — do not ask for it again, and never ask for a name or a phone number yourself: those are asked for by the things that need them, the booking, the contact form and the "Call my phone" button on screen. If they ask to be called, for a demo, or to talk to a person, call request_contact at once and tell them the form on screen is where to leave a number.`,
     ``,
@@ -146,9 +152,10 @@ export function openingScript(data) {
   if (S.flagship) parts.push(clean(S.flagship, 200));
   list(S.products).filter(p => p && p.id && active(p.id) && p.line).forEach(p => parts.push(clean(p.line, 160)));
   if (S.more) parts.push(clean(S.more, 200));          /* "…plus over ten other AI services" */
-  /* and it lands on the question it opened with (client, 2026-09-16: "it
-     should end after it talks about IMAI … and reintroduce the original
-     question: what do you need help with today?") */
+  /* …and it ends on the ASK, not on a question about them: the address, and
+     what it buys them (client, 2026-09-16: "once we get to this point we need
+     to pitch to get the customer's email and then to ask them what problem
+     they want to solve with pills") */
   if (S.land || S.pivot) parts.push(clean(S.land || S.pivot, 600));
   return parts.filter(Boolean).join(' ');
 }

@@ -85,7 +85,9 @@ try {
     ok(st.role === 'director_vp', 'the role is kept (' + st.role + ')');
 
     /* the size question must never be asked now — the lookup answered it */
-    for (let i = 0; i < 5 && !(await page.$('.reco__card--best')); i++) {
+    /* the cards arrive part-way through now (the first look, before the
+       business questions), so keep answering until the questions run out */
+    for (let i = 0; i < 5 && (await page.evaluate(() => window.SAIKIMI.state().uiAction)) === 'ASK'; i++) {
       const chip = await page.$('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');
       if (!chip) break;
       await chip.click(); await settle(page); await page.waitForTimeout(250);

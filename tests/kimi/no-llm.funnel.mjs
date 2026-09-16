@@ -69,14 +69,18 @@ async function run(browser, opts) {
     ok(new Set(lines).size === lines.length, 'each reply is different: ' + lines.map(l => l.slice(0, 30) + '…').join(' | '));
   }
 
-  /* answer until the recommendation arrives (the client's order: website, size,
-     role, the goal's opener when there is no intent yet, then the cards) */
+  /* answer until the conversation runs out of questions. The cards now appear
+     part-way through — the client's order of 2026-09-16 shows them the moment
+     the address step is behind them — so a card on screen is no longer the
+     signal that it is over: no question left is. */
   const trail = [];
+  let previewAt = -1;
   const settled = () => page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && (document.querySelector('.reco__card--best') || document.querySelector('#agentThread .turnb--ai:last-child .turnb__text')), null, { timeout: 12000 });
   for (let i = 0; i < 8; i++) {
     await settled(); await page.waitForTimeout(150);
-    if (await page.$('.reco__card--best')) break;
     const st = await page.evaluate(() => window.SAIKIMI.state());
+    if (previewAt < 0 && st.previewed) previewAt = trail.length;
+    if (!st.question && st.uiAction !== 'ASK') break;
     /* the typed steps: the work email first — its domain IS the website — and
        the website itself only when the address gave us nothing */
     if (st.question && st.question.field === 'email') {
@@ -99,6 +103,11 @@ async function run(browser, opts) {
   await settled(); await page.waitForTimeout(200);
   ok(await page.$('.reco__card--best'), 'reached the recommendation after: ' + trail.join(' · '));
   ok(trail.length >= 3 && trail.length <= 5, 'asked ' + trail.length + ' question(s)');
+  /* the value before the qualification: shown after the address, with real
+     questions still to come under them */
+  ok(previewAt >= 0, 'the products were shown early, after ' + previewAt + ' answer(s)');
+  ok(previewAt > 0 && previewAt < trail.length, '   …with ' + (trail.length - previewAt) + ' question(s) still to come under them');
+  ok((await page.$$('#agentThread .turnb--reco')).length === 2, '   the first look and the recommendation are two bubbles');
   ok(!(await page.$('#heroLeadForm')), 'no form: the details are asked in the conversation');
   /* the email was asked SECOND now (flags.emailFirst, 2026-09-16), so the
      recommendation is followed by the call, not by another ask */
@@ -112,11 +121,13 @@ async function run(browser, opts) {
      it (client, 2026-09-16) */
   ok(!(await page.$('.turnb--book .call')) === false, 'and offers "Call my phone" beside it');
 
-  const card = await page.$eval('.reco__card--best', e => ({ name: e.querySelector('.reco__name').textContent.trim(), why: e.querySelector('.reco__why').textContent.trim(), cta: e.querySelector('.reco__go') && e.querySelector('.reco__go').textContent.trim(), learn: e.querySelector('.reco__learn') && e.querySelector('.reco__learn').getAttribute('href') }));
+  /* the LAST card bubble is the recommendation proper; the first is the look
+     they were given before the questions */
+  const card = await page.$$eval('.reco__card--best', els => [els[els.length - 1]].map(e => ({ name: e.querySelector('.reco__name').textContent.trim(), why: e.querySelector('.reco__why').textContent.trim(), cta: e.querySelector('.reco__go') && e.querySelector('.reco__go').textContent.trim(), learn: e.querySelector('.reco__learn') && e.querySelector('.reco__learn').getAttribute('href') }))[0]);
   ok(card.name === expect, 'best fit is ' + card.name + (card.name === expect ? '' : ' (expected ' + expect + ')'));
   ok(card.why.length > 20 && card.cta, 'card has a why (' + card.why.length + ' chars) and a CTA "' + card.cta + '"');
   ok(card.learn && /^\/(s\/|newvoices|the-machine|targeting-machine|agent-cloud)/.test(card.learn), 'Learn more points into the site: ' + card.learn);
-  const also = await page.$$eval('.reco__card--also', els => els.length);
+  const also = await page.$$eval('#agentThread .turnb--reco:last-of-type .reco__card--also', els => els.length);
   ok(also <= 2, also + ' secondary card(s)');
 
   const events = await page.evaluate(() => window.SAI.events.list().map(e => e.type));

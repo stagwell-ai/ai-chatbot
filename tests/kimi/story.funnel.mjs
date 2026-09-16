@@ -95,6 +95,19 @@ const stageUp = page => page.evaluate(() => !!document.querySelector('.vstage'))
 const roster = page => page.$$eval('.vstage__badge[data-product]', els => els.map(e => e.dataset.product));
 const closes = page => page.evaluate(() => window.__tracked.filter(t => t[0] === 'voice_showcase_ended').map(t => t[1]));
 
+/* the agent relaying what the visitor typed — voice.funnel.mjs's helper */
+async function toolCall(page, name, args, callId) {
+  const id = callId || ('c_' + Math.random().toString(36).slice(2, 8));
+  const before = await page.evaluate(() => window.__voiceFake.sent.length);
+  await emit(page, { type: 'response.created', response: { id: 'r_' + id } });
+  await emit(page, { type: 'response.function_call_arguments.done', call_id: id, name, arguments: JSON.stringify(args || {}) });
+  await emit(page, { type: 'response.done', response: { id: 'r_' + id, status: 'completed' } });
+  await page.waitForFunction(([n, cid]) => window.__voiceFake.sent.slice(n).some(e => e.type === 'conversation.item.create' && e.item && e.item.type === 'function_call_output' && e.item.call_id === cid), [before, id], { timeout: 15000 });
+  const out = await page.evaluate(cid => { const e = window.__voiceFake.sent.find(x => x.type === 'conversation.item.create' && x.item && x.item.call_id === cid); return JSON.parse(e.item.output); }, id);
+  await page.waitForTimeout(120);
+  return out;
+}
+
 const startVoice = async page => { await page.click('#voiceStart'); await page.waitForFunction(() => window.SAIVOICE.phase() === 'live', null, { timeout: 8000 }); await page.waitForTimeout(60); };
 
 /* the greeting, spoken in full — it is what calibrates the pace */
@@ -243,9 +256,92 @@ try {
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
     await ctx.close();
   }
+  console.log('\n▶ 6 · the landing: the address is pitched first, the problem second');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page); await greet(page);
+    await tellStory(page);
+    await writingDone(page);
+    await bufferDrained(page);
+    await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 20000 });
+    await page.waitForTimeout(500);
+    ok(!!(await page.$('#agentThread .turnb--team')), 'the team card stays in the thread');
+    const k = await page.evaluate(() => window.SAIKIMI.state());
+    ok(k.question && k.question.field === 'email', 'the conversation is standing on the WORK EMAIL (' + (k.question && k.question.id) + ')');
+    const c = await page.$eval('#agentInput', e => ({ mode: e.getAttribute('inputmode'), ph: e.placeholder, off: e.disabled }));
+    ok(c.mode === 'email' && !c.off && /@/.test(c.ph), '   the composer is set up for an address ("' + c.ph + '")');
+    ok((await page.$$('#agentThread .turnb__chips--answers .tag')).length === 0, '   and no pills — an address is typed, not picked');
+
+    /* the address, and then the problem arrives WITH its pills */
+    await page.fill('#agentInput', 'ada@acme-brands.com');
+    await page.press('#agentInput', 'Enter');
+    ok((await page.$$eval('#agentThread .turnb--me', e => e.map(x => x.textContent))).some(t => /ada@acme-brands/.test(t)), '   what they typed is their turn on the thread');
+    const r = await toolCall(page, 'submit_answer', { text: 'ada@acme-brands.com' });
+    await page.waitForTimeout(600);
+    const k2 = await page.evaluate(() => window.SAIKIMI.state());
+    ok(r.question && Array.isArray(r.question.options) && r.question.options.length >= 4, '   the model is handed the next question WITH its options: ' + ((r.question || {}).options || []).join(' | '));
+    ok(k2.email === 'ada@acme-brands.com', 'the address is taken (' + k2.email + ')');
+    ok((k2.suggestions || []).length >= 4, '   and the next question comes with its options: ' + (k2.suggestions || []).map(x => x.label).join(' | '));
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
+
+  console.log('\n▶ 7 · …and answering the pitch with a PROBLEM is not a wrong answer');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page); await greet(page);
+    await tellStory(page);
+    await writingDone(page);
+    await bufferDrained(page);
+    await page.waitForFunction(() => window.SAIKIMI.state().question && window.SAIKIMI.state().question.field === 'email', null, { timeout: 20000 });
+    await toolCall(page, 'submit_answer', { text: 'we need to know what our competitors are doing this week' });
+    await page.waitForTimeout(600);
+    const k = await page.evaluate(() => window.SAIKIMI.state());
+    ok(!(k.question && k.question.field === 'email'), 'it does not ask for the address again (' + (k.question ? k.question.id : k.status) + ')');
+    ok((k.intents || []).length > 0 || k.primaryGoal, '   it took what they actually said instead');
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
+  console.log('\n▶ 8 · refusing the address: asked once more WITH the reason, then never again');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page); await greet(page);
+    await tellStory(page);
+    await writingDone(page);
+    await bufferDrained(page);
+    await page.waitForFunction(() => window.SAIKIMI.state().question && window.SAIKIMI.state().question.field === 'email', null, { timeout: 20000 });
+    const C = await page.evaluate(() => window.SAI.data.kimi.copy);
+
+    /* first refusal — not a typo, so not "check the address" */
+    await toolCall(page, 'submit_answer', { text: "i dont want to tell you my email" });
+    await page.waitForTimeout(400);
+    const k1 = await page.evaluate(() => window.SAIKIMI.state());
+    ok(k1.question && k1.question.field === 'email', 'it asks once more (' + (k1.question && k1.question.id) + ')');
+    ok(k1.message === C.emailWhy, '   and what it says is the REASON, not an error: "' + String(k1.message).slice(0, 70) + '…"');
+    ok(!/does not look like/i.test(k1.message || ''), '   the dead-end line is gone');
+
+    /* second refusal — that is an answer */
+    await toolCall(page, 'submit_answer', { text: 'no thanks' });
+    await page.waitForTimeout(400);
+    const k2 = await page.evaluate(() => window.SAIKIMI.state());
+    ok(!(k2.question && k2.question.field === 'email'), 'it lets them through (' + (k2.question ? k2.question.id : k2.status) + ')');
+    ok(!k2.email, '   no address was invented (' + JSON.stringify(k2.email) + ')');
+    ok(String(k2.message || '').startsWith(String(C.emailSkipped).slice(0, 20)), '   and it says so lightly: "' + String(k2.message).slice(0, 60) + '…"');
+    ok((k2.suggestions || []).length >= 4, '   the problem comes next, with its pills: ' + (k2.suggestions || []).map(x => x.label).join(' | '));
+
+    /* …and from there they are still shown a product, before anything else */
+    const r = await toolCall(page, 'submit_answer', { text: 'we need to track what our competitors are doing' });
+    await page.waitForTimeout(600);
+    const k3 = await page.evaluate(() => window.SAIKIMI.state());
+    ok(k3.previewed && k3.cards.length, 'and they are still shown a product, without ever giving an address (' + k3.cards.length + ')');
+    ok(!!(await page.$('#agentThread .turnb--reco')), '   the cards are in the thread');
+    ok((r.shown || []).some(x => /recommendation/.test(x)), '   the voice agent is told they are on screen: ' + JSON.stringify(r.shown));
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
 } finally {
   await browser.close();
 }
 
-console.log(failures ? '\n✗ ' + failures + ' failed\n' : '\n✓ the story survives to the end of IMAI\n');
+console.log(failures ? '\n✗ ' + failures + ' failed\n' : '\n✓ the story survives to the end of IMAI, and lands on the ask\n');
 process.exit(failures ? 1 : 0);

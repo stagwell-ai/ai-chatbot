@@ -228,8 +228,10 @@ try {
     ok((await thread(page)).length === bubblesBefore, 'hero-agent drew NO question text — the agent is saying it');
     ok((await kstate(page)).primaryGoal !== undefined, 'the flow state moved');
     ok(await page.$eval('#agentInput', el => el.getAttribute('inputmode') === 'email' && !el.disabled), 'the keyboard is set to email, the composer open');
-    const rBad = await toolCall(page, 'submit_answer', { text: 'not an email' });
-    ok(rBad.question && rBad.question.id === 'work_email' && /does not look like/i.test(rBad.say), 'a bad address: the model is told to ask again');
+    const rBad = await toolCall(page, 'submit_answer', { text: 'ada@acme' });
+    ok(rBad.question && rBad.question.id === 'work_email' && /does not look like/i.test(rBad.say), 'a mistyped address: the model is told to ask again');
+    const rNo = await toolCall(page, 'submit_answer', { text: "i'd rather not" });
+    ok(rNo.question && rNo.question.id === 'work_email' && /only use the domain/i.test(rNo.say), '   turning it down: the model is handed the REASON to say, once');
     const r2 = await toolCall(page, 'submit_answer', { text: 'cmo@acmehotels.com' });
     ok(r2.facts && r2.facts.company === 'Acme Hotels' && r2.facts.industry === 'hospitality', 'the address → its domain → the lookup\'s facts, and only those (' + JSON.stringify(r2.facts).slice(0, 80) + ')');
     ok(r2.shown.some(s => /fact list/.test(s)), 'and it is told the fact list is on screen');
@@ -239,12 +241,12 @@ try {
     ok(Array.isArray(r2.question.options) && r2.question.options.includes('C-suite'), 'with the options to offer');
     const r3 = await toolCall(page, 'submit_answer', { text: 'I am the CMO' });
     ok(r3.status === 'BOOK' && r3.recommendation && r3.recommendation[0].name === 'NewIntel', 'role → the recommendation (NewIntel) and the call (' + r3.status + ')');
-    ok((await page.$$('.reco__card--best')).length === 1, 'the cards are drawn');
+    ok((await page.$$('.reco__card--best')).length === 2, 'the cards are drawn — the first look, then the recommendation');
     ok(r3.done === true && r3.shown.some(s => /Book a call/.test(s)), 'and the model is told the call is on screen');
     ok(!!(await page.$('.turnb--book [data-kimi-cta="BOOK"]')), 'the Book a call button is on screen');
     ok(!!(await page.$('.turnb--book .call__num')), 'with "Call my phone" beside it — where the number is asked for');
     ok(state.leads.every(l => !l.lead.phone), 'and the conversation never asked for a number');
-    ok((await tracked(page, 'voice_tool_call')).length === 4, 'four tool calls tracked');
+    ok((await tracked(page, 'voice_tool_call')).length === 5, 'five tool calls tracked');
     const asked = (await kstate(page)).askedQuestionIds.join(' → ');
     ok(asked === 'work_email → role', 'the questions ran in order: ' + asked);
     ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
@@ -696,7 +698,7 @@ try {
     ok(!(await page.$('.vstage__badge--more')), 'the rest of the family is not on the roster yet');
     await S.speak(sc.more);
     ok(await page.$eval('.vstage__roster .vstage__badge--more.is-in .vstage__badgename', (e, l) => e.textContent === l, sc.moreLabel), '"' + sc.moreOn + '…" → the family badge joins the roster: ' + sc.moreLabel);
-    await S.speak(sc.pivot);
+    await S.speak(sc.land || sc.pivot);      /* the ask it ends on */
     await emit(page, { type: 'response.output_audio_transcript.done', item_id: 'a_story', transcript: S.said() });
     await emit(page, { type: 'output_audio_buffer.stopped' });
     await emit(page, { type: 'response.done', response: { id: 'r_story', status: 'completed' } });
@@ -704,6 +706,10 @@ try {
     ok(await page.$eval('.vstage.is-team .vstage__teamlabel', (e, label) => e.textContent === label, sc.teamLabel), '"' + sc.closeOn + '" → the whole team assembles, centre stage: "' + sc.teamLabel + '"');
     await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 6000 });
     ok(true, 'then the stage lifts away');
+    /* …and it puts them down on the ASK, not on a question about them */
+    await page.waitForTimeout(400);
+    const landed = await page.evaluate(() => { const k = window.SAIKIMI.state(), i = document.querySelector('#agentInput'); return { field: k.question && k.question.field, mode: i.getAttribute('inputmode') }; });
+    ok(landed.field === 'email' && landed.mode === 'email', 'and lands on the pitch for the work email, composer ready (' + landed.field + ')');
     ok(await page.$eval('#agentThread', t => getComputedStyle(t).display !== 'none'), 'and the thread is there underneath');
     /* …and the team stays, as a card in the conversation */
     await page.waitForSelector('#agentThread .turnb--team .teamcard.is-in', { timeout: 3000 });
@@ -731,7 +737,7 @@ try {
     ok((await tracked(page, 'voice_team_open')).some(e => e[1].id === 'questbrand'), 'a tap on a member is recorded (voice_team_open)');
     /* the story bubble sits just above the team card */
     const bubble = await page.$$eval('#agentThread .turnb--ai .turnb__text', els => { const e = els[els.length - 1]; return { text: e.textContent, logos: [...e.querySelectorAll('.t-brand--logo .t-logo')].map(i => i.getAttribute('src')), next: e.closest('.turnb').nextElementSibling && e.closest('.turnb').nextElementSibling.classList.contains('turnb--team') }; });
-    ok(bubble.text.includes(sc.interrupt) && bubble.text.includes(sc.pivot.slice(0, 40)), 'with the whole story as one bubble, in sync with what was said');
+    ok(bubble.text.includes(sc.interrupt) && bubble.text.includes((sc.land || sc.pivot).slice(0, 40)), 'with the whole story as one bubble, in sync with what was said');
     ok(bubble.next, 'and the team card right under it, in the history');
     ok(bubble.logos.length >= 3 && bubble.logos.some(s => /questbrand/.test(s)) && bubble.logos.some(s => /imai/.test(s)), 'the names in the transcript carry their marks (' + bubble.logos.length + ')');
     const st = await tracked(page, 'voice_showcase_started'), en = await tracked(page, 'voice_showcase_ended'), tp = await tracked(page, 'voice_starter_tapped');

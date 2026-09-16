@@ -149,6 +149,19 @@ call, Call my phone, the contact form ("it's just when they click contact us or 
 they get asked the extra questions about phone number, name"). Turn both back and the order of
 2026-09-10 returns exactly as it was, tests and all.
 
+**And the value moved in front of the qualification, later the same day** — "as soon as we ask
+for the email, then we need to provide value before we do anything else: 1. ask what you need
+2. ask your email 3. showcase one or more relevant products 4. ask more details about their
+business, size, who they are in the company". `flags.showcaseAfterEmail` (on) does exactly that:
+the first `advance()` after the address step — answered, dodged or declined — calls `preview()`,
+which builds the cards from what is known so far and puts them in their own bubble with
+`copy.showcaseIntro` over them and `copy.showcaseAfter` under ("two or three quick things about
+your business and I'll tighten this up"). The composer stays open, the next question is drawn
+underneath, and the **full** recommendation — sharpened by the size and the role — still closes
+the conversation out where the call is offered. So the thread carries two card bubbles; a test
+that wants the recommendation proper takes the LAST one. `st.previewed` says it has happened,
+and rides in `state()` so the voice agent is told the cards are on screen.
+
 Steps 1–5 are `questions.json`: the work email (`first`, priority 101), the website (100),
 company size (99) and role (98) are asked in that order **while their field is unknown** — and a
 work address fills `website` too, so that question is simply never reached. `select-question.js`
@@ -156,7 +169,23 @@ then asks a discriminating question **only when there is no intent to recommend 
 goal pill — and only once (`scoring.conversation.maxQuestions: 1`,
 `discriminateOnlyWithoutIntent`). A typed need goes work email → size → role → cards. Step 6 is §9.
 
-0. **the work email** — one answer for two questions. `emailDomain()` takes the domain; a
+0. **the work email** — one answer for two questions. In VOICE it is also where the story puts
+   them down: the showcase's last line is the pitch for it, spoken aloud, and `landStory()` stands
+   the conversation on the question so the composer is already set for an address (client,
+   2026-09-16: "once we get to this point we need to pitch to get the customer's email and then
+   to ask them what problem they want to solve with pills"). `SAIKIMI.askWorkEmail()` is the one
+   place that steps in front of `advance()`'s goal-first rule, and only there. Answering the pitch
+   with a PROBLEM instead is not a wrong answer — the address question takes the words, drops
+   itself and carries on, because what they want is worth more than the address. **Turning it
+   down is not a dead end either** (client, 2026-09-16: "if the user refuses to give an email, we
+   ask again one more time, with a justification that we can provide customized services based on
+   your email domain. if they refuse we let them continue and try and find the right product for
+   them"). A mistyped address and a refusal are different turns and must not spend each other's
+   patience: anything that looks like an attempted address gets `contactErrors.email` ("check the
+   address") and is asked again; anything else gets `copy.emailWhy` — what the domain actually
+   buys them — **once** (`st.emailWhyGiven`), and a second no drops the question for good with
+   `copy.emailSkipped` leading into the goal. No address is invented, the lead simply is not
+   written yet, and the form asks for one at the end when there is something to send. `emailDomain()` takes the domain; a
    company's own domain IS the website and is looked up straight away, so the visitor is never
    asked for it. A **free address** — the `FREE_MAIL` list in `kimi-flow.js`: gmail, outlook,
    icloud, gmx, qq and the rest — is kept as the contact (it is how we reach them) but tells us

@@ -45,6 +45,7 @@ let waitEl = null, shownFindings = false;
 let lastVia = 'type';                 /* how the visitor sent the last turn: 'type' | 'chip' */
 let pointerKey = null;                /* the way-finding last drawn, so the same products are not listed twice in a row */
 let cardsDrawn = false;               /* the recommendation is drawn once; on the open path the composer stays open under it */
+let previewDrawn = false;             /* …and the first look at the products, shown before the business questions, is drawn once too */
 /* bumped by Start over. A turn already in flight when it is pressed carries the
    old number, so its answer is dropped on the floor instead of landing in the
    box the visitor has just emptied. */
@@ -165,6 +166,10 @@ function render(st) {
   const quiet = voiceLive();           /* the agent is saying it: structures only */
   if (st.uiAction === 'ASK') {
     drawFindings(st);
+    /* the value before the qualification (client, 2026-09-16): the products
+       that fit are shown as soon as the address step is behind us, and the
+       questions about the business carry on underneath them */
+    if (st.previewed && st.cards.length && !previewDrawn) drawPreview(st);
     const key = 'ask|' + (st.question ? st.question.id : '') + '|' + st.message;
     if (key === lastKey) return;
     lastKey = key;
@@ -325,7 +330,7 @@ function restart(opts) {
   const o = opts || {};
   generation++;
   started = false; busy = false; ended = false; lastKey = null;
-  formBubble = null; waitEl = null; shownFindings = false; lastVia = 'type'; pointerKey = null; cardsDrawn = false;
+  formBubble = null; waitEl = null; shownFindings = false; lastVia = 'type'; pointerKey = null; cardsDrawn = false; previewDrawn = false;
   inputMode('text');
   try { K.reset(); } catch (e) {}
   H.think.off();
@@ -438,6 +443,27 @@ function drawForm(st) {
 }
 
 /* ── the recommendation (brief §20–§23): cards from view models ─────────── */
+/* the first look: the same cards, in their own bubble, with the composer left
+   open and the conversation carrying on under them. It does not touch
+   cardsDrawn — the full recommendation still draws itself at the end. */
+function drawPreview(st) {
+  const c = copy();
+  const CARDS = window.SAICARDS;
+  const html = (CARDS && st.cards.length) ? CARDS.renderCards(st.cards, c, H.esc) : '';
+  if (!html) return;
+  previewDrawn = true;
+  const b = H.ai(null, null, null, null);
+  b.classList.add('turnb--reco');
+  b.innerHTML = '<div class="turnb__text">' + H.esc(st.cardsIntro || '') + '</div>' + html +
+    (st.after ? '<p class="reco__after">' + H.esc(st.after) + '</p>' : '');
+  b.querySelectorAll('[data-kimi-cta]').forEach(el => el.addEventListener('click', () => {
+    try { K.clicked(el.dataset.kimiCta, el.dataset.kimiProduct, el.getAttribute('href')); } catch (e) {}
+  }));
+  H.type(b);
+  H.settle(b, { head: true });
+  try { const a = window.SAIANALYTICS; if (a) a.track('kimi_showcase_drawn', { cards: st.cards.length }); } catch (e) {}
+}
+
 function drawCards(st, opts) {
   const o = opts || {};
   const c = copy();
