@@ -786,3 +786,17 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 /* one line between problems */
 .pl-c .prodgroup + .prodgroup{border-top:1px solid var(--hc-rule) !important}
 .pl-c .prodgroup{padding-block:clamp(34px,4vw,64px) !important}
+
+/* ═══ on a single-product problem the way in sits on the picture, under its words ══════════════ */
+.pl-c .prodgroup__words .prodcard__link{position:static !important;display:inline-flex;
+  margin-top:clamp(14px,1.6vw,20px) !important;background:#FFFFFF !important;color:var(--ink) !important;
+  border:0 !important;height:42px;padding:0 20px !important;border-radius:999px;
+  font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+  justify-self:start !important;align-self:auto !important;grid-column:auto !important;
+  grid-row:auto !important}
+.pl-c .prodgroup__words .prodcard__link:hover{background:#F1F1EE !important;color:var(--ink) !important}
+
+/* every title and paragraph starts on the same left edge, one gap from the picture */
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{justify-self:start !important}
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) !important}

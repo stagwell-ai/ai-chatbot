@@ -29,12 +29,16 @@
           name.classList.add('pc-hide');
         }
 
-        /* the way in names the product it opens */
+        /* the way in reads the same on every row; on a problem answered by one product it
+           moves onto the picture, under the words there */
         const link = card.querySelector('.prodcard__link');
-        if (link && name && !link.dataset.pcNamed) {
+        if (link && !link.dataset.pcNamed) {
           link.dataset.pcNamed = '1';
-          const plain = name.textContent.trim().replace(/\s*\(.*$/, '');
-          if (plain) link.textContent = 'Explore ' + plain;
+          link.textContent = 'Explore';
+        }
+        if (link && cards.length === 1 && !link.dataset.pcOnPic) {
+          const words = group.querySelector('.prodgroup__words');
+          if (words) { link.dataset.pcOnPic = '1'; words.appendChild(link); }
         }
 
         /* the two lists sit under the row: a mark, then its label and its words */
