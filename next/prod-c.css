@@ -514,3 +514,5 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 .pl-c .pl-hero{padding-bottom:clamp(18px,2vw,30px) !important}
 .pl-c .ptoc{padding-top:clamp(14px,1.6vw,24px) !important;padding-bottom:0 !important}
 .pl-c .prodgroup:first-of-type{padding-top:clamp(18px,2vw,32px)}
+/* the product's name sits a shade lighter */
+.pl-c .prodcard__name{font-weight:500 !important}
