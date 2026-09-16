@@ -606,3 +606,14 @@
   place();
   phone.addEventListener('change', place);
 })();
+
+/* each suite card keeps a picture in its panel; it becomes the card's own ground on hover */
+(function () {
+  'use strict';
+  document.querySelectorAll('.hc-page .hcs__card').forEach(card => {
+    const img = card.querySelector('.hcs__media img');
+    if (!img) return;
+    const src = img.getAttribute('src');
+    if (src) card.style.setProperty('--hcs-bg', 'url("' + src + '")');
+  });
+})();

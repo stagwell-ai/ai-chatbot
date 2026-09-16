@@ -2291,3 +2291,23 @@ body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
   /* the hero keeps its three written lines */
   .hc-page .hero .display--hero .ln__in{white-space:nowrap}
 }
+
+/* ═══ the suite's cards: less air under the mark, and a picture behind them on hover ═══════════ */
+.hc-page .hcs__ic{margin:0 0 12px !important}
+.hc-page .hcs__card{position:relative;isolation:isolate;overflow:hidden}
+.hc-page .hcs__card::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;
+  background-image:linear-gradient(rgba(7,12,20,.66),rgba(7,12,20,.66)),var(--hcs-bg,none);
+  background-size:cover,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;
+  opacity:0;transition:opacity .3s ease}
+.hc-page .hcs__card:hover::after,.hc-page .hcs__card:focus-visible::after{opacity:1}
+/* the words and the mark read on the picture */
+.hc-page .hcs__card:hover .hcs__kind,.hc-page .hcs__card:focus-visible .hcs__kind{color:#FFFFFF !important}
+.hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
+  color:rgba(255,255,255,.82) !important}
+.hc-page .hcs__card:hover .hcs__ic,.hc-page .hcs__card:focus-visible .hcs__ic{
+  color:#FFFFFF !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.44) !important;
+  border-color:rgba(255,255,255,.44) !important}
+.hc-page .hcs__card:hover .hcs__go{background:#FFFFFF !important;color:var(--ink) !important}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hcs__card::after{transition:none}
+}

@@ -1099,3 +1099,5 @@ body.pc-page{--hc-ground:#FFFFFF}
 @media (prefers-reduced-motion:reduce){
   .pl-c .pc-tab.is-on.is-timing::before{animation:none;transform:scaleX(1)}
 }
+/* both cards keep one tone, hover or not */
+.pl-c .pc-cap,.pl-c .pc-cap:hover,.pl-c .pc-side{background:var(--ink) !important}
