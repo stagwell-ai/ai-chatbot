@@ -443,3 +443,55 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 .pl-c .pl-hero .pp-acts{display:flex !important;flex-direction:row !important;flex-wrap:nowrap;
   align-items:center;justify-content:flex-start !important;gap:12px}
 @media (max-width:620px){.pl-c .pl-hero .pp-acts{flex-wrap:wrap}}
+
+/* ═══ the listing's rows, to the sketch ════════════════════════════════════════════════════════
+   /NN and the product's name small at the top left, the problem it answers set large beneath it,
+   what it does facing them, and Explore as a button at the right. No arrows anywhere. */
+.pl-c .prodgroup__head{display:none !important}
+.pl-c .prodgroup:first-of-type{padding-top:clamp(28px,3vw,48px)}
+.pl-c .prodgroup{padding-top:0}
+.pl-c .prodcard{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr) minmax(150px,auto) !important;
+  column-gap:clamp(28px,3.6vw,72px);align-items:start !important;
+  padding:clamp(30px,3.2vw,48px) 0 clamp(34px,3.6vw,54px)}
+.pl-c .prodcard__name{grid-column:1 !important;grid-row:1 !important;
+  font-family:var(--ui) !important;font-weight:500 !important;font-size:13px !important;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--hc-quiet) !important;
+  margin:0 0 clamp(12px,1.4vw,18px) !important;line-height:1.4}
+.pl-c .prodcard .pc-n{color:rgba(11,18,32,.34)}
+.pl-c .prodcard .pc-row__h{grid-column:1 !important;grid-row:2 !important;margin:0 !important;
+  font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(26px,1rem + 1.7vw,42px) !important;line-height:1.08;letter-spacing:-.03em;
+  color:var(--ink) !important;max-width:18ch}
+.pl-c .prodcard__pos{grid-column:2 !important;grid-row:1 / span 2 !important;
+  font-family:var(--ui) !important;font-size:17px !important;line-height:1.5;
+  color:var(--ink) !important;max-width:44ch !important;margin:0 !important}
+.pl-c .prodcard__who{grid-column:2 !important;grid-row:3 !important;margin:20px 0 0 !important;
+  font-size:15px;color:var(--ink) !important;display:block}
+.pl-c .prodcard .pc-lab{display:block;font-family:var(--ui);font-size:11.5px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--hc-quiet) !important;margin:0 0 4px}
+.pl-c .prodcard .pc-lab--own{grid-column:2 !important;grid-row:4 !important;margin:16px 0 4px !important}
+.pl-c .prodcard__pills{grid-column:2 !important;grid-row:5 !important;margin:0 !important;
+  font-size:15px}
+.pl-c .prodcard__pills li{color:var(--ink) !important}
+/* Explore, a button */
+.pl-c .prodcard__link{grid-column:3 !important;grid-row:1 !important;justify-self:end;
+  display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 22px !important;
+  border-radius:999px;border:1px solid var(--hc-rule);background:transparent !important;
+  color:var(--ink) !important;font-size:14px;font-weight:500;letter-spacing:.04em;
+  text-transform:uppercase;line-height:1 !important;width:auto;min-width:0}
+.pl-c .prodcard__link:hover{background:var(--ink) !important;border-color:var(--ink);
+  color:#FFFFFF !important}
+/* no page on this site puts an arrow inside a button */
+.pl-c .prodcard__link::after,.pl-c .pp-site svg,.pl-c .prodcard__link svg{display:none !important;
+  content:none !important}
+@media (max-width:980px){
+  .pl-c .prodcard{grid-template-columns:1fr !important}
+  .pl-c .prodcard__name,.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,.pl-c .prodcard__who,
+  .pl-c .prodcard .pc-lab--own,.pl-c .prodcard__pills,.pl-c .prodcard__link{
+    grid-column:1 !important;grid-row:auto !important}
+  .pl-c .prodcard__pos{margin-top:14px !important}
+  .pl-c .prodcard__link{justify-self:start;margin-top:22px !important}
+}
+/* nothing on these pages puts an arrow inside a button, as on the homepage */
+.pc-page .pp-acts .btn svg,.pc-page .pp-site svg,.pc-page .pp-mid .btn svg,
+.pc-page .ask-end .btn svg:not(.btn__ic--wave){display:none !important}
