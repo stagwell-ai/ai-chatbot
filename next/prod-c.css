@@ -746,3 +746,9 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
     width:auto !important;justify-self:start !important}
 }
+
+/* only the last row of a group stretches to meet the picture's foot; the others size to
+   their own content (height:100% on every row was making each one a full column tall) */
+.pl-c .prodcard{height:auto !important;grid-template-rows:auto auto auto auto !important}
+.pl-c .prodgroup__cards > .prodcard:last-child{flex:1 1 auto;
+  grid-template-rows:auto auto auto 1fr !important}
