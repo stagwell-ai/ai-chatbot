@@ -434,3 +434,12 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 .pl-c .prodcard__pills li:not(:last-child)::after{content:"·";margin:0 8px;color:rgba(11,18,32,.3)}
 /* the two ways in start on the title's left edge, not centred */
 .pl-c .pl-hero .pp-acts{justify-content:flex-start !important;text-align:left !important}
+
+/* the page title is set in the serif, exactly as the homepage sets its own */
+.pc-page .pp-title,.pc-page .pp-title *,.pl-c .pl-hero .pp-title,.pl-c .pl-hero .pp-title *{
+  font-family:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',serif !important;
+  font-weight:400 !important;letter-spacing:-.02em}
+/* the two ways in sit side by side, on the title's left edge */
+.pl-c .pl-hero .pp-acts{display:flex !important;flex-direction:row !important;flex-wrap:nowrap;
+  align-items:center;justify-content:flex-start !important;gap:12px}
+@media (max-width:620px){.pl-c .pl-hero .pp-acts{flex-wrap:wrap}}
