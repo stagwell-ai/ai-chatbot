@@ -686,3 +686,28 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 /* the hero's statement breaks like the rest, and the descriptions lose their last long line */
 .pl-c .pl-hero .pl-say{max-width:36ch !important}
 .pl-c .prodcard__pos{max-width:34ch !important}
+/* the description and the two lists share one measure */
+.pl-c .prodcard__pos,.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+  max-width:42ch !important}
+.pl-c .prodcard .pc-foot__what .pc-col,.pl-c .prodcard__who .pc-col{max-width:100%}
+/* the who block was still sized to its content, so all three now share one width */
+.pl-c .prodcard__who{width:auto !important;max-width:40ch !important}
+.pl-c .prodcard__pos,.pl-c .prodcard .pc-foot__what{max-width:40ch !important}
+
+/* ═══ three columns on one rhythm: picture, words, the way in ══════════════════════════════════ */
+.pl-c{--pc-gap:clamp(32px,3.4vw,64px)}
+.pl-c .prodgroup{column-gap:var(--pc-gap) !important}
+.pl-c .prodcard{grid-template-columns:minmax(0,40ch) auto !important;
+  column-gap:var(--pc-gap) !important;justify-content:start}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{grid-column:1 !important;max-width:100% !important}
+.pl-c .prodcard .pc-row__h{grid-row:1 !important}
+.pl-c .prodcard__pos{grid-row:2 !important}
+.pl-c .prodcard__who{grid-row:3 !important}
+.pl-c .prodcard .pc-foot__what{grid-row:4 !important}
+.pl-c .prodcard__link{grid-column:2 !important;grid-row:4 !important;
+  justify-self:start !important;align-self:end !important}
+@media (max-width:980px){
+  .pl-c .prodcard{grid-template-columns:1fr !important}
+  .pl-c .prodcard__link{grid-column:1 !important;grid-row:auto !important;margin-top:22px !important}
+}
