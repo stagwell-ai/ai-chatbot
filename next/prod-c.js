@@ -165,7 +165,14 @@
           '<span class="pc-cap__eb"></span><span class="pc-cap__h"></span>';
         cap.querySelector('.pc-cap__eb').textContent = name.trim();
         cap.querySelector('.pc-cap__h').textContent = line.trim();
+        /* who it's for and what it does move inside the dark card with it */
+        const who = card.querySelector('.prodcard__who');
+        const what = card.querySelector('.pc-foot__what');
+        if (who) cap.appendChild(who);
+        if (what) cap.appendChild(what);
         head.appendChild(cap);
+        /* the way in rides on the still, at its foot */
+        if (href) { href.classList.add('pc-go'); head.appendChild(href); }
         return cap;
       });
 

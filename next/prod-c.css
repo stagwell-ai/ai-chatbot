@@ -910,3 +910,49 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
   .pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:1 !important;grid-row:auto !important;
     justify-self:start !important;margin-top:18px !important}
 }
+
+/* ═══ the wide problems, exactly the homepage's Products component ═════════════════════════════ */
+.pl-c .prodgroup[data-pc-multi] > .prodgroup__words .prodgroup__h{
+  font-size:clamp(34px,1rem + 3.4vw,68px) !important;line-height:1.04;max-width:20ch}
+/* the still runs the width of the screen */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{width:100vw !important;max-width:100vw !important;
+  margin-left:calc(50% - 50vw) !important;margin-right:calc(50% - 50vw) !important;
+  border-radius:0 !important;height:clamp(420px,46vw,660px) !important}
+.pl-c .prodgroup[data-pc-multi]{overflow:hidden}
+/* everything the product has to say sits in the dark card */
+.pl-c .pc-cap{left:clamp(20px,3.6vw,72px);top:clamp(20px,2.6vw,40px);
+  max-width:min(620px,46%);padding:clamp(20px,2.2vw,30px) clamp(46px,4vw,58px)
+  clamp(22px,2.4vw,32px) clamp(20px,2.2vw,30px)}
+.pl-c .pc-cap .prodcard__who,.pl-c .pc-cap .pc-foot__what{grid-column:auto !important;
+  grid-row:auto !important;display:block !important;width:auto !important;max-width:none !important;
+  margin:clamp(16px,1.8vw,22px) 0 0 !important;color:#FFFFFF !important}
+.pl-c .pc-cap .pc-lab{color:rgba(255,255,255,.62) !important}
+.pl-c .pc-cap .prodcard__pills li{color:rgba(255,255,255,.88) !important}
+.pl-c .pc-cap .prodcard__pills li:not(:last-child)::after{color:rgba(255,255,255,.4)}
+/* Explore sits on the still, at the bottom right */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go{position:absolute !important;z-index:3;
+  right:clamp(20px,3.6vw,72px);bottom:clamp(20px,2.6vw,40px);left:auto;top:auto;
+  grid-column:auto !important;grid-row:auto !important;margin:0 !important;
+  background:#FFFFFF !important;color:var(--ink) !important;display:inline-flex}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go:hover{background:#F1F1EE !important;
+  color:var(--ink) !important}
+/* the row beneath the still is now empty of everything but its hidden pieces */
+.pl-c .prodgroup[data-pc-multi] .prodcard.is-on{display:block !important;min-height:0}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards{margin-top:0}
+@media (max-width:980px){
+  .pl-c .pc-cap{position:static;max-width:none;margin:0;border-radius:0}
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go{position:static !important;
+    margin:16px 0 0 !important}
+}
+/* the still grows to hold the card, instead of the card spilling out of it */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{display:grid !important;align-items:start;
+  height:auto !important;min-height:clamp(420px,46vw,620px) !important;
+  padding:clamp(22px,2.6vw,40px) clamp(20px,3.6vw,72px) clamp(78px,7vw,104px) !important}
+.pl-c .prodgroup[data-pc-multi] .pc-cap{position:static !important;grid-column:1;grid-row:1;
+  width:min(620px,48%);max-width:100%;margin:0 !important}
+.pl-c .pc-cap__h{font-size:clamp(19px,1rem + .8vw,26px)}
+.pl-c .pc-cap .prodcard__who,.pl-c .pc-cap .pc-foot__what{font-size:14px}
+.pl-c .pc-cap .prodcard__pills{font-size:14px}
+/* the marks stay hidden inside the card too */
+.pl-c .pc-cap .pc-ic{display:none !important}
+.pl-c .pc-cap .pc-col{display:block}
