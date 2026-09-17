@@ -112,7 +112,7 @@
     const pic = document.querySelector('.pl-c #p-leads .prodgroup__pic');
     if (pic && window.hcVoice && !pic.dataset.pcVoice) {
       pic.dataset.pcVoice = '1';
-      window.hcVoice(pic.parentElement, { after: pic });
+      window.hcVoice(pic.parentElement, { after: pic, mid: 0.3 });
     }
   };
   voice();
@@ -208,8 +208,14 @@
         void t.offsetWidth;                        /* restart the fill */
         if (!still.matches && !taken) t.classList.add('is-timing');
       };
+      /* each product in a group can bring its own still */
+      const TAB_PIC = { 'The Media Machine': '/assets/img/hero-film/1.jpg', 'NewIntel': '/assets/img/cta-3.jpg',
+        'Search+': '/assets/img/solutions-guided.jpg', 'Stagwell ID Graph': '/assets/img/trust-banner.jpg' };
+      const tabPics = tabs.map(t => TAB_PIC[(t.textContent || '').trim()] || null);
+      tabPics.forEach(src => { if (src) { const im = new Image(); im.src = src; } });
       const show = i => {
         at = (i + cards.length) % cards.length;
+        if (tabPics[at] && head) head.style.setProperty('--pc-bg', 'url("' + tabPics[at] + '")');
         cards.forEach((c, n) => c.classList.toggle('is-on', n === at));
         tabs.forEach((t, n) => t.classList.toggle('is-on', n === at));
         caps.forEach((c, n) => {

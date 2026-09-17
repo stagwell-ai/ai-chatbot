@@ -656,12 +656,12 @@
     el.style.setProperty('--hl-base', getComputedStyle(el).color);
     el.classList.add('hl--armed');
   });
-  const timed = hls.filter(el => el.closest('.display--hero'));
-  const scrub = hls.filter(el => !el.closest('.display--hero'));
+  const timed = hls.filter(el => el.closest('.display--hero, .pp-title'));
+  const scrub = hls.filter(el => !el.closest('.display--hero, .pp-title'));
 
   timed.forEach(el => el.classList.add('hl--timed'));
   const root = document.documentElement;
-  const go = () => setTimeout(() => timed.forEach(el => el.classList.add('is-in')), 1150);
+  const go = () => setTimeout(() => timed.forEach(el => el.classList.add('is-in')), document.querySelector('.display--hero') ? 1150 : 500);
   if (root.classList.contains('is-ready')) go();
   else new MutationObserver((m, o) => {
     if (root.classList.contains('is-ready')) { o.disconnect(); go(); }
@@ -802,8 +802,15 @@
 
     const draw = t => {
       if (t - lastPick > 95) { pick(t); lastPick = t; }
-      if (o.bg) { ctx.fillStyle = o.bg; ctx.fillRect(0, 0, W, H); } else ctx.clearRect(0, 0, W, H);
-      const mid = Math.round(H * (o.center ? 0.5 : 0.6) - T / 2);
+      ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      if (o.bg) {
+        /* paint (and clip to) the host's own rounded shape, so the corners never square off */
+        const rad = parseFloat(getComputedStyle(btn).borderBottomLeftRadius) || 0;
+        ctx.beginPath(); ctx.roundRect ? ctx.roundRect(0, 0, W, H, rad) : ctx.rect(0, 0, W, H); ctx.clip();
+        ctx.fillStyle = o.bg; ctx.fillRect(0, 0, W, H);
+      }
+      const mid = Math.round(H * (o.mid || (o.center ? 0.5 : 0.6)) - T / 2);
       const rows = Math.floor((H * (o.center ? 0.36 : 0.33) - 8) / (T + G));
       const x0 = o.center ? (W - cols.length * (T + G)) / 2 : W - 24 - cols.length * (T + G);
       cols.forEach((c, i) => {
@@ -820,6 +827,7 @@
           ctx.fillRect(x, y, T, T);
         }
       });
+      ctx.restore();
     };
 
     const loop = t => { raf = 0; draw(t); if (on && !still) raf = requestAnimationFrame(loop); };

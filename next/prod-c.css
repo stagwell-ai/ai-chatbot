@@ -1224,3 +1224,13 @@ body.pc-page{--hc-ground:#FFFFFF}
   .pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]:not(#_){padding-top:calc(75vw + 16px) !important}
   .pl-c .prodgroup__head[data-pc-film] .pc-vid:not(#_){height:75vw;object-position:94% 50%}
 }
+
+/* the product's sentence runs a little longer before it wraps (client, 2026-09-17) */
+.pl-c .prodcard .prodcard__pos:not(#_){width:clamp(420px,42vw,640px) !important;max-width:100% !important}
+
+/* Explore on the pictures and in the dark cards: palette blue, white words */
+.pl-c .prodgroup__words .prodcard__link:not(#_),.pl-c .pc-cap .pc-go:not(#_),.pl-c .pc-cap .prodcard__link:not(#_){
+  background:#009CBD !important;border-color:#009CBD !important;color:#FFFFFF !important}
+.pl-c .prodgroup__words .prodcard__link:not(#_) *,.pl-c .pc-cap .prodcard__link:not(#_) *{color:#FFFFFF !important}
+.pl-c .prodgroup__words .prodcard__link:not(#_):hover,.pl-c .pc-cap .pc-go:not(#_):hover,.pl-c .pc-cap .prodcard__link:not(#_):hover{
+  background:#0E5F8E !important;border-color:#0E5F8E !important;color:#FFFFFF !important}
