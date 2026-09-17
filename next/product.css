@@ -339,3 +339,47 @@ body.pp--the-machine .pp-more__media img{transform:scale(1.5);transform-origin:5
   .bk__ic{width:42px;height:42px;border-radius:12px}
   .bk__ic svg{width:21px;height:21px}
 }
+
+/* ═══ THE MACHINE: differentiators, use cases, and what it does not do ═══════
+   Drafted 2026-09-17 from the material the product team sent: the EXTERNAL
+   demo deck (the three key differentiators, stated twice in it) and the Machine
+   Use Case Library. The "works with" strip is the playbook's own
+   does-NOT-do table, turned the right way round — it is honest positioning,
+   not a disclaimer, so it reads as a list of what it connects to.
+   Nothing here names a client, a price or a roadmap date. ─────────────────── */
+.pp-diff{padding:clamp(72px,9vw,120px) 0 0}
+.pp-diff__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,44px);margin-top:clamp(36px,4vw,52px)}
+.pp-diff__item{border-top:3px solid var(--teal);padding-top:22px}
+.pp-diff__item:nth-child(2){border-top-color:var(--orange)}
+.pp-diff__item:nth-child(3){border-top-color:var(--amber)}
+.pp-diff__n{display:block;font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--ink-3);margin-bottom:10px}
+.pp-diff__item h3{margin:0 0 10px;font-family:var(--display);font-size:clamp(19px,1.5vw,23px);font-weight:600;line-height:1.25;color:var(--ink)}
+.pp-diff__item p{margin:0;font-size:15px;line-height:1.6;color:var(--ink-2)}
+
+/* the use-case library: five groups, each a headed list. Two columns of groups
+   on a desk, one on a phone — the group stays with its items either way. */
+.pp-uses{padding:clamp(80px,10vw,128px) 0;background:#F5F7F8}
+/* five groups of uneven length: CSS columns balance them, a grid leaves the
+   fifth group stranded under a half-empty column */
+.pp-uses__grid{columns:2;column-gap:clamp(40px,5vw,80px);margin-top:clamp(40px,5vw,60px)}
+.pp-uses__group{break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 clamp(32px,4vw,52px)}
+.pp-uses__group > h3{margin:0 0 6px;font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--teal);padding-bottom:14px;border-bottom:1px solid var(--line)}
+.pp-uses__list{margin:0;padding:0;list-style:none}
+.pp-uses__list li{padding:16px 0;border-bottom:1px solid var(--line)}
+.pp-uses__list h4{margin:0;font-family:var(--display);font-size:17px;font-weight:600;line-height:1.3;color:var(--ink)}
+.pp-uses__list p{margin:5px 0 0;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+
+/* what it connects to rather than replaces */
+.pp-with{padding:clamp(72px,9vw,120px) 0}
+.pp-with__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(40px,5vw,72px);margin-top:clamp(32px,4vw,48px)}
+.pp-with__grid li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:0 14px;padding:18px 0;border-top:1px solid var(--line);list-style:none}
+.pp-with__grid{padding:0;margin-top:clamp(32px,4vw,48px)}
+.pp-with__ic{width:20px;height:20px;margin-top:3px;color:var(--teal);flex:none}
+.pp-with__grid b{display:block;font-family:var(--display);font-size:16.5px;font-weight:600;line-height:1.3;color:var(--ink)}
+.pp-with__grid span{display:block;margin-top:4px;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+
+@media (max-width:820px){
+  .pp-diff__grid,.pp-with__grid{grid-template-columns:minmax(0,1fr)}
+  .pp-uses__grid{columns:1}
+}
