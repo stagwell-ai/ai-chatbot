@@ -80,7 +80,9 @@
       "chipConnects": "What does it connect to?",
       "chipDone": "Carry on",
       "capped": "That's the shape of it. Shall we carry on?",
-      "rootAfter": "Three things set it apart:"
+      "rootAfter": "Three things set it apart:",
+      "done": "Happy to go deeper on {product} whenever you like.",
+      "doneGoal": "Happy to go deeper on {product} whenever you like. So — what are you working on? Pick one, or tell me in a sentence."
     },
     "askPhone": "Thanks — I'll send it to {email}. And a number, if you'd rather we call?",
     "bookIntro": "Last thing — pick a time and a Stagwell AI specialist will walk you through {product} against your brand.",
@@ -296,6 +298,7 @@
       "sizeKnown": "I'll take it from there on size, so I won't ask."
     },
     "_emailFreeNote": "The line that leads INTO the website question, so it must not ask it: present() puts the question's own prompt straight after this, and the old wording ended '— what's your website?', which came out as 'what's your website? What's your website? I'll take a quick look…' (2026-09-17).",
-    "_exploreInviteNote": "ONE ASK PER SCREEN (client, 2026-09-17: \"now I have conflicting funnels… I feel a little lost\"). The card used to carry a line and three pills of its own while the question underneath asked for something else entirely — two funnels on one screen. The offer is now a single chip sitting on the QUESTION's own row, beside its answers, so there is one turn, one row and one box."
+    "_exploreInviteNote": "ONE ASK PER SCREEN (client, 2026-09-17: \"now I have conflicting funnels… I feel a little lost\"). The card used to carry a line and three pills of its own while the question underneath asked for something else entirely — two funnels on one screen. The offer is now a single chip sitting on the QUESTION's own row, beside its answers, so there is one turn, one row and one box.",
+    "_exploreDoneNote": "LEAVING THE DETOUR (client, 2026-09-17). Tapping 'Carry on' used to fall through to copy.unclassified — \"I didn't catch a marketing or business problem in that\" — which is the I-did-not-understand-you fallback, fired on a word we put on the screen ourselves. `done` leads into whatever question comes next; `doneGoal` is the variant that carries the goal question, for the rare case where nothing at all is known yet."
   }
 }

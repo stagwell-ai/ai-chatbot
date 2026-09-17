@@ -711,6 +711,27 @@ function askedAboutProduct(text) {
   return id;
 }
 
+/* ── WHAT ASKING ABOUT A PRODUCT TELLS US ──
+   Someone who says "tell me about The Machine" has told us a great deal, and
+   the opening path used to drop it: the detour answered the question and the
+   conversation then asked "which of these is closest?", as if nothing had been
+   said (client, 2026-09-17).
+
+   Its primary intents are taken as INFERRED rather than chosen — they asked
+   ABOUT it, not FOR it — and only when nothing else is known yet. Mid-
+   conversation the visitor has already said what they need, and a question
+   asked out of curiosity must not reweight it. */
+function noteProductInterest(pid) {
+  if (st.primaryGoal || st.intents.length) return false;
+  const r = R(); if (!r) return false;
+  const prim = list(((r.productById(pid, data()) || {}).intentTags || {}).primary);
+  if (!prim.length) return false;
+  absorb({ detectedIntents: prim, detectedGoals: [], inferred: {} }, {});
+  st.mentioned = [pid];
+  track('kimi_product_interest', { product: pid, intents: prim.join(',') });
+  return true;
+}
+
 /* the visitor tapped one of those chips, or the model called show_me */
 function explore(topic, opts) {
   const o = opts || {};
@@ -741,6 +762,8 @@ function explore(topic, opts) {
 /* leaving the detour: the conversation picks up exactly where it was */
 function exploreDone() {
   const pid = st.explore.productId;
+  const c = exCopy();
+  const name = exName(pid, exFor(pid));
   track('kimi_explore_done', { product: pid, depth: st.explore.depth });
   st.explore = blankExplore();
   st.holds = 0;
@@ -748,7 +771,14 @@ function exploreDone() {
     /* the question that was on screen when they wandered off */
     Object.assign(st, st.resume);
     st.resume = null;
-  } else advance(null);
+    notify();
+    return state();
+  }
+  /* nothing to go back to — the detour WAS the conversation so far. It is led
+     out of with a line that is true ("happy to go deeper whenever you like"),
+     never with the fallback that says we did not understand them. */
+  if (!st.primaryGoal && !st.intents.length) askGoal(tpl(c.doneGoal || c.done, { product: name }) || null);
+  else advance(tpl(c.done, { product: name }) || null);
   notify();
   return state();
 }
@@ -788,6 +818,7 @@ async function start(opts) {
       const named = askedAboutProduct(text);
       if (named) {
         track('kimi_explore_asked', { product: named, at: 'opening' });
+        noteProductInterest(named);        /* …and do not forget they asked */
         explore('root', { productId: named });
         return state();
       }
@@ -850,6 +881,7 @@ async function answer(input) {
     if (named) {
       if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
       track('kimi_explore_asked', { product: named, at: (st.currentQuestion && st.currentQuestion.id) || st.status });
+      noteProductInterest(named);
       return explore('root', { productId: named });
     }
   }

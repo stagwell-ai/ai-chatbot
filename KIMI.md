@@ -623,6 +623,20 @@ lost" (client, 2026-09-17). The way deeper is now a **single chip on the questio
 the question below already says what is wanted, and `H.ai()` no longer appends an EMPTY pill row
 for a typed question (`[]` is truthy — that dead div had been there all along).
 
+**Leaving the detour.** "Carry on" used to fall through to `copy.unclassified` — *"I didn't
+catch a marketing or business problem in that"* — the I-did-not-understand-you fallback, fired
+on a word we put on the screen ourselves (client, 2026-09-17). `exploreDone()` now leads out
+with `copy.explore.done`, and `doneGoal` carries the goal question for the rare case where
+nothing at all is known.
+
+**And the interest survives it.** Someone who says "tell me about The Machine" has told us a
+great deal, and the opening path dropped it: the hook returned before `absorb()` ran, so the
+conversation came back asking "which of these is closest?" as if nothing had been said.
+`noteProductInterest()` takes the product's primary intents as **inferred** — they asked ABOUT
+it, not FOR it — and **only when nothing else is known yet**, so a question asked out of
+curiosity mid-conversation cannot reweight a need already on the record. With it, the step after
+the detour is the work email and the running already favours the product they asked about.
+
 **The first step answers.** It used to reply "What would you like to know about The Machine?" —
 a question answered with a question. It now leads with the explainer's own `summary` and deals
 out the three differentiators straight away, then offers what else there is.

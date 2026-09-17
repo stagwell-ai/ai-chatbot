@@ -276,10 +276,39 @@ try {
     ok(!/work email/i.test(s.message), '   not answered with "what\'s your work email?": "' + String(s.message).slice(0, 60) + '…"');
     ok(/operating system for marketing/i.test(s.message), '   it says what The Machine IS');
     ok((await rows(page)).length === 3, '   and shows the three differentiators without being asked again');
-    /* …and the funnel picks up the moment they are done */
+    /* ── LEAVING THE DETOUR ──
+       "Carry on" used to fall through to the I-did-not-understand-you copy —
+       "I didn't catch a marketing or business problem in that" — fired on a
+       word we put on the screen ourselves (client, 2026-09-17). And the
+       strongest signal the visitor had given us, that they care about this
+       product, was dropped on the way. */
     await tap(page, 'Carry on');
     const after = await st(page);
-    ok(after.uiAction === 'ASK' && after.suggestions.length >= 4, 'the conversation then starts properly (' + (after.question && after.question.id) + ')');
+    ok(!/didn't catch|did not catch/i.test(after.message), 'it is not answered with the did-not-understand copy: "' + String(after.message).slice(0, 70) + '…"');
+    ok(/go deeper on The Machine/i.test(after.message), '   it says something true on the way out');
+    ok(after.intents.length > 0, 'the interest survives the detour: ' + after.intents.map(i => i.id).join(','));
+    ok(after.intents.every(i => !i.explicit), '   as inferred, not chosen — they asked ABOUT it, not FOR it');
+    ok(after.recommendation && after.recommendation.primary === 'machines_family', '   so the running already favours it (' + (after.recommendation || {}).primary + ')');
+    ok(after.question && after.question.id === 'work_email', '   and the next step is the address, not the goal pills (' + (after.question || {}).id + ')');
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
+
+  console.log('\n▶ …but curiosity mid-conversation does not rewrite what they already told us');
+  {
+    const { ctx, page, state } = await open();
+    await say(page, 'we need to protect our reputation, spot stories before they break');
+    const before = await st(page);
+    ok(before.primaryGoal || before.intents.length, 'a need is on the record: ' + (before.primaryGoal || before.intents.map(i => i.id).join(',')));
+    const wasReco = (before.recommendation || {}).primary;
+    await say(page, 'out of interest, what is the machine?');
+    const mid = await st(page);
+    ok(mid.uiAction === 'EXPLORE', 'the question is still answered (' + mid.uiAction + ')');
+    ok(!mid.intents.some(i => i.id === 'marketing_operations'),
+      '   but it does NOT add the product\'s own intent over their need: ' + mid.intents.map(i => i.id).join(','));
+    await tap(page, 'Carry on');
+    const done = await st(page);
+    ok((done.recommendation || {}).primary === wasReco, '   and the recommendation is unchanged (' + wasReco + ' → ' + (done.recommendation || {}).primary + ')');
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
     await ctx.close();
   }
