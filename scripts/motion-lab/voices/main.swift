@@ -56,7 +56,7 @@ for (bi, band) in bands.enumerated() {
 // they arrive fast, in a shuffled order, ~0.09 s apart: the whole field is up in two seconds
 var ids = Array(voices.indices)
 for k in stride(from: ids.count - 1, to: 0, by: -1) { let r = Int(rng.next() * Double(k + 1)); ids.swapAt(k, r) }
-for (n, i) in ids.enumerated() { voices[i].born = 0.2 + Double(n) * 0.09 }
+for (n, i) in ids.enumerated() { voices[i].born = 0.1 + Double(n) * 0.04 }
 
 func envelope(_ v: Voice, _ u: Double) -> Double {
   switch v.shape {
@@ -81,11 +81,11 @@ render(path: CommandLine.arguments[1], w: W, h: H, fps: FPS, frames: FR) { ctx, 
     let age = sec - v.born
     if age < 0 { continue }
     // arrival: the line draws out from the centre in a quarter second, then the voice starts
-    let open = min(1, age / 0.16)
+    let open = min(1, age / 0.1)
     let cyc = v.talk + v.rest
     let inTalk = ((age + v.ph).truncatingRemainder(dividingBy: cyc)) < v.talk ? 1.0 : 0.12
     let s = age + v.ph
-    let amp = (0.3 + 0.7 * abs(sin(s * v.f1) * sin(s * v.f2 + 1.1))) * inTalk * min(1, age / 0.25)
+    let amp = (0.3 + 0.7 * abs(sin(s * v.f1) * sin(s * v.f2 + 1.1))) * inTalk * min(1, age / 0.15)
     let k = f / 3
     let step = Double(v.tile + v.gap)
     let x0 = v.cx - Double(v.cols) * step / 2
