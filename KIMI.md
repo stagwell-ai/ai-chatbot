@@ -616,6 +616,16 @@ than a page:
   rendered on a page. They exist so a direct question gets an honest answer instead of an
   overclaim, and they are the guardrail the voice agent needs most.
 
+**Asked for in words.** `"i want to know about the machine"`, typed while the website question
+was on screen, used to be judged as an answer to it — "I need the web address itself, like
+acme.com" (client, 2026-09-17). The matcher already knew the name (`nameMentions()`); nothing
+asked it. `askedAboutProduct()` now reads it before the step does: a product we hold detail for,
+named in a sentence shaped like a question about it, opens the detour on **that** product —
+whichever one is on the card — and the question is handed back after. It stays narrow on
+purpose: a domain at the website step, an address at the email step or a matching chip is still
+an ANSWER, and a product with no explainer entry falls through rather than opening an empty
+detour.
+
 `answer()` reads an explore chip **before** its status guards: once the detour is open the
 uiAction is `EXPLORE`, and those guards would otherwise drop every tap after the first.
 

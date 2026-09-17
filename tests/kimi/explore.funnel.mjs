@@ -226,6 +226,64 @@ try {
     await ctx.close();
   }
 
+  /* ── ASKED FOR IN WORDS ──
+     "i want to know about the machine", typed while the website question was
+     on screen, used to be judged as an answer to it: "I need the web address
+     itself — like acme.com — so I can look it up" (client, 2026-09-17). The
+     matcher already knew the name; nothing asked it. */
+  console.log('\n▶ a product asked about by name opens the detour, from wherever the conversation is');
+  {
+    const { ctx, page, state } = await open();
+    /* a path where the recommendation is NOT The Machine, so we can see it open
+       on the product they NAMED rather than the one on the card */
+    await say(page, 'we miss inbound calls overnight');
+    await say(page, 'ada@gmail.com');                       /* free mail → the website question */
+    let s = await st(page);
+    ok(s.question && s.question.id === 'website', 'the conversation is on the website question');
+    ok(s.cards.every(c => !/Machine/.test(c.productName || '')), '   and the card is not The Machine (' + s.cards.map(c => c.productName).join(', ') + ')');
+
+    await say(page, 'i want to know about the machine');
+    s = await st(page);
+    ok(s.uiAction === 'EXPLORE', 'the question is understood as a question (' + s.uiAction + ')');
+    ok(s.explore && s.explore.productId === 'machines_family', '   and opens on the product they NAMED: ' + (s.explore && s.explore.productId));
+    ok(!/web address itself/.test(s.message), '   not answered with "I need the web address itself"');
+    ok(s.suggestions.length === 4, '   with its ways in: ' + s.suggestions.map(x => x.label).join(' | '));
+
+    await tap(page, 'What does it connect to?');
+    ok((await rows(page)).length === 4, '   and it goes deep from there');
+    await tap(page, 'Carry on');
+    s = await st(page);
+    ok(s.uiAction === 'ASK' && s.question.id === 'website', 'the website question is handed back (' + s.question.id + ')');
+    ok(!/what's your website\?.*what's your website\?/i.test(s.message), '   and asks itself only once: "' + String(s.message).slice(0, 80) + '"');
+    await say(page, 'acme-brands.com');
+    ok((await st(page)).website === 'acme-brands.com', 'and answering it still works after the detour');
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
+
+  console.log('\n▶ …but an answer is still an answer');
+  {
+    const { ctx, page, state } = await open();
+    await say(page, 'we miss inbound calls overnight');
+    await say(page, 'ada@gmail.com');
+    /* a domain at the website step is the answer, even when it carries a name */
+    await say(page, 'themachine-agency.com');
+    let s = await st(page);
+    ok(s.uiAction !== 'EXPLORE' && s.website === 'themachine-agency.com', 'a web address at the website step is taken as the address (' + s.website + ')');
+    /* a chip is a chip */
+    await tap(page, '51 to 250');
+    s = await st(page);
+    ok(s.companySize === 'mid' && s.uiAction !== 'EXPLORE', 'a chip is still an answer (' + s.companySize + ')');
+    /* a product with no deep content falls through rather than opening an empty detour */
+    const empty = await page.evaluate(() => {
+      const before = window.SAIKIMI.state().uiAction;
+      return { before, has: !!window.SAI.data.explainers.products.questbrand };
+    });
+    ok(!empty.has, 'QuestBrand has no explainer entry yet, so it cannot open one');
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
+
   console.log('\n▶ the detour is recorded, so we can see what people ask about');
   {
     const { ctx, page } = await open();

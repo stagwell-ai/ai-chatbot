@@ -668,6 +668,41 @@ function exploreNode(pid, node) {
   return null;
 }
 
+/* ── "i want to know about the machine" ──────────────────────────────────────
+   A question ABOUT a product, asked in the middle of another question. It used
+   to fall through to whatever step was on screen and be judged as an answer to
+   it: asked for a website, the visitor typed that sentence and was told "I need
+   the web address itself — like acme.com" (client, 2026-09-17). The matcher
+   already knew the name — nameMentions() reads it — but nothing asked.
+
+   So it is read before the step is: name a product we have detail for, in a
+   sentence shaped like a question about it, and the detour opens on THAT
+   product — whichever one happens to be on the card. The question that was on
+   screen is remembered and handed straight back afterwards.
+
+   It stays deliberately narrow. A product named while ANSWERING is still an
+   answer — a domain at the website step, an address at the email step, a chip
+   that matches — and a product with no explainer entry falls through rather
+   than opening an empty detour. */
+const ASKING_ABOUT = /\b(tell me|tell us|what is|what's|whats|who is|how does|how do|how would|explain|describe|more about|know about|hear about|learn about|read about|talk about|info|information|details|curious|interested in|show me|walk me)\b/i;
+function askedAboutProduct(text) {
+  const r = R(); if (!r || !r.nameMentions) return null;
+  const raw = String(text || '').trim();
+  if (!raw || raw.length > 240) return null;
+  const q = st.currentQuestion;
+  /* a real answer to the step on screen is an answer, not a question */
+  if (q && q.field === 'website' && S_extractDomain(raw)) return null;
+  if (q && q.field === 'email' && emailDomain(raw)) return null;
+  if (q && Qs() && Qs().matchSuggestion(q, raw)) return null;
+  const id = r.nameMentions(raw, data())[0];
+  if (!id || !exFor(id)) return null;
+  /* asked about, or simply named on its own ("the machine") */
+  const bare = r.norm(raw).replace(/^(the|a)\s+/, '');
+  const name = r.norm(exName(id, exFor(id))).replace(/^(the|a)\s+/, '');
+  if (!ASKING_ABOUT.test(raw) && bare !== name) return null;
+  return id;
+}
+
 /* the visitor tapped one of those chips, or the model called show_me */
 function explore(topic, opts) {
   const o = opts || {};
@@ -786,6 +821,16 @@ async function answer(input) {
     if (topic === 'done') return exploreDone();
     if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
     return explore(topic);
+  }
+  /* …and a product asked about in words opens the same detour, from wherever
+     the conversation happens to be */
+  if (st.status !== 'CONTACT_CAPTURE' && flags().exploreMaxDepth !== 0) {
+    const named = askedAboutProduct(input);
+    if (named) {
+      if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
+      track('kimi_explore_asked', { product: named, at: (st.currentQuestion && st.currentQuestion.id) || st.status });
+      return explore('root', { productId: named });
+    }
   }
   /* after the recommendation the composer asks for the email, then the phone */
   if (st.status === 'CAPTURE_EMAIL') return captureEmail(String(input == null ? '' : input).trim());
