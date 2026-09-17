@@ -59,15 +59,12 @@
    launcher stays in the palette blue #009CBD. :not(#_) outranks page-level rules. ── */
 :root{--accent-btn:#FF6D24;--accent-btn-hover:#D9531A}
 .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_),
-.hcs__all:not(#_),
 .lead__form .btn--dark:not(#_){
   background:var(--accent-btn) !important;border-color:var(--accent-btn) !important;
   color:#FFFFFF !important;box-shadow:none !important}
 .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_) *,
-.hcs__all:not(#_) *,
 .lead__form .btn--dark:not(#_) *{color:#FFFFFF !important}
 .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_):hover,
-.hcs__all:not(#_):hover,
 .lead__form .btn--dark:not(#_):hover{background:var(--accent-btn-hover) !important;border-color:var(--accent-btn-hover) !important;color:#FFFFFF !important}
 #hcLaunchBtn:not(#_){background:#009CBD !important;color:#FFFFFF !important}
 #hcLaunchBtn:not(#_) svg{color:#FFFFFF !important}
