@@ -44,7 +44,7 @@
 (function () {
   'use strict';
   const stage = document.querySelector('.hc-page .intro__stage');
-  if (!stage) return;
+  if (!stage || document.body.classList.contains('hc-b')) return;   /* version B: the film is a still-sized card */
   const media = stage.querySelector('.intro__media');
   const nav = document.getElementById('nav') || document.querySelector('.nav');
   const wide = matchMedia('(min-width: 901px)');
@@ -97,7 +97,7 @@
   if (!film) return;
   const play = () => { if (film.dataset.held === '1') return; const p = film.play(); if (p && p.catch) p.catch(() => {}); };
   /* a phone simply runs it from the moment the page opens; a desktop waits for the film to be seen */
-  if (matchMedia('(max-width: 760px)').matches) {
+  if (matchMedia('(max-width: 760px)').matches || document.body.classList.contains('hc-b')) {
     film.autoplay = true;                     /* a muted inline film may start on its own */
     film.preload = 'auto';
     play();
