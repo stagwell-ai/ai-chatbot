@@ -56,29 +56,6 @@ body.hc-b .stat__n span:not(#_)::before{background:#8A8E95 !important;color:#8A8
   body.hc-b .intro:not(#_){padding-top:48px !important;padding-bottom:56px !important}
 }
 
-/* the clients row, straight after the film */
-body.hc-b .hcb-trust{padding:0 20px clamp(80px,9vw,136px)}
-body.hc-b .hcb-trust .hc-clients{max-width:1240px;margin:0 auto;text-align:center}
-body.hc-b .hcb-trust .hc-clients__t{margin:0 0 20px;font-size:15px;line-height:1.4;color:rgba(11,18,32,.62)}
-body.hc-b .hcb-trust .hc-clients__row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
-body.hc-b .hcb-trust .hc-clients__cell{position:relative;height:clamp(64px,7vw,96px)}
-body.hc-b .hcb-trust .hc-clients__reel{position:absolute;inset:0;margin:auto;width:58%;height:34%;overflow:hidden}
-body.hc-b .hcb-trust .hc-clients__logo{position:absolute;inset:0;background:#0B1220;
-  -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat;
-  transform:translateY(112%);will-change:transform;
-  animation:whyReel calc(var(--n,7) * var(--step,2.4s)) cubic-bezier(.7,0,.3,1) calc(var(--i) * var(--step,2.4s) - var(--d,0s)) infinite both}
-@media (prefers-reduced-motion:reduce){
-  body.hc-b .hcb-trust .hc-clients__logo{animation:none}
-  body.hc-b .hcb-trust .hc-clients__logo[style^="--i:0;"]{transform:none}
-}
-@media (max-width:760px){
-  body.hc-b .hcb-trust{padding-inline:16px}
-  body.hc-b .hcb-trust .hc-clients__row{grid-template-columns:repeat(3,minmax(0,1fr))}
-  body.hc-b .hcb-trust .hc-clients__cell:nth-child(n+4){display:none}
-  body.hc-b .hcb-trust .hc-clients__cell{height:84px}
-  body.hc-b .hcb-trust .hc-clients__reel{width:78%;height:42%}
-}
-
 /* closing Book a demo tile: the crosswalk picture behind it, darkened so the label reads */
 body.hc-b .ask-end .ask-end__ways .btn[data-cta]:not(#_){
   background:linear-gradient(180deg,rgba(11,18,32,.78) 0%,rgba(11,18,32,.36) 55%,rgba(11,18,32,.55) 100%),url(/assets/img/cta/crosswalk-woman.jpg) center 45% / cover no-repeat !important;
