@@ -1720,7 +1720,7 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 /* and the ink one keeps its weight over a picture */
 .hc-page .nav.on-film .btn--ink{background:#FFFFFF !important;color:var(--ink) !important}
 /* every tab holds for the same three seconds, and its fill runs the same length */
-.hc-page .hc-port__tab.is-on.is-timing::before{animation-duration:3s !important}
+.hc-page .hc-port__tab.is-on.is-timing::before{animation-duration:5.5s !important}
 /* the dismiss goes with the message it dismisses */
 .hc-launch[data-hushed] .hc-launch__x{display:none !important}
 

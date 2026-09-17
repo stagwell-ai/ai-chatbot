@@ -131,7 +131,7 @@
   fitStage();
   /* it moves on by itself, the ink filling the live tab as its turn runs down; a hover, a touch
      or a click hands control back to the reader */
-  const DWELL = 3000;
+  const DWELL = 5500;
   const still = matchMedia('(prefers-reduced-motion: reduce)');
   let timer = 0, held = false, seen = false;
   const arm = () => {
