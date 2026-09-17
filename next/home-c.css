@@ -2367,9 +2367,9 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .call--nav[data-state="phone"]{height:56px !important}
 .hc-page .call--nav[data-state="phone"] .call__form{height:56px}
 
-/* ── video title: 30% wider on desktop (840 → 1092) ───────────────────────── */
+/* ── video title: wider on desktop (840 → 1140, client: at least 1100) ───────────────────────── */
 @media (min-width:1024px){
-  .hc-page .intro__over .display--intro{width:min(100%,1092px) !important;max-width:none !important}
+  .hc-page .intro__over .display--intro{width:min(100%,1140px) !important;max-width:none !important}
 }
 
 /* ── H1: Medium (500), not Regular, not Black ─────────────────────────────── */
