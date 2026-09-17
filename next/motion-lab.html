@@ -23,9 +23,6 @@
   .dl{display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:999px;background:var(--orange);color:#FFFFFF;
     text-decoration:none;font-size:13px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap}
   .dl:hover{background:var(--orange-dk)}
-  .clip__acts{display:flex;gap:10px;align-items:center}
-  .dl--quiet{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule)}
-  .dl--quiet:hover{background:rgba(11,18,32,.06)}
   .dl:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 </style>
 </head>
@@ -33,42 +30,39 @@
 <main class="lab">
   <p class="lab__eb">Hidden page · not linked from the site</p>
   <h1>Motion lab</h1>
-  <p class="lab__lede">Full-HD loops for review. Once one is approved, download it for the After Effects edit. Nothing here is used on the site.</p>
+  <p class="lab__lede">Full-HD animations for review. Once one is approved, download it for the After Effects edit. Nothing here is used on the site.</p>
 
   <section class="clip">
     <div class="clip__head">
-      <div><h2>Productivity: the network builds itself</h2><p class="clip__meta">v4 · 1920×1080 · 30 fps · 10 s · empty to full in about 2.5 s, then alive · H.264</p></div>
-      <div class="clip__acts"><a class="dl" href="/assets/video/lab/productivity-network-v4.mp4" download="stagwell-productivity-network-v4.mp4">Download v4</a><a class="dl dl--quiet" href="/assets/video/lab/productivity-network-v3.mp4" download="stagwell-productivity-network-v3.mp4">v3</a><a class="dl dl--quiet" href="/assets/video/lab/productivity-network-v2.mp4" download="stagwell-productivity-network-v2.mp4">v2</a><a class="dl dl--quiet" href="/assets/video/lab/productivity-network-v1.mp4" download="stagwell-productivity-network-v1.mp4">v1</a></div>
+      <div><h2>Productivity: the network builds itself</h2><p class="clip__meta">1920×1080 · 30 fps · 10 s · empty to full in about 2.5 s, then alive · H.264</p></div>
+      <a class="dl" href="/assets/video/lab/productivity-network.mp4" download="stagwell-productivity-network.mp4">Download MP4</a>
     </div>
-    <video src="/assets/video/lab/productivity-network-v4.mp4" poster="/assets/video/lab/productivity-network-v4-poster.jpg" muted loop playsinline controls preload="metadata"></video>
-    <p class="clip__meta">Previous: v3 (built in ~4.3 s), v2 (slower), v1 (drifting loop), download only.</p>
+    <video src="/assets/video/lab/productivity-network.mp4" poster="/assets/video/lab/productivity-network-poster.jpg" muted loop playsinline autoplay controls preload="auto"></video>
   </section>
 
   <section class="clip">
     <div class="clip__head">
-      <div><h2>Your stack: the code rewrites itself</h2><p class="clip__meta">v2 · 1920×1080 · 30 fps · 12 s seamless loop · every block small · H.264</p></div>
-      <div class="clip__acts"><a class="dl" href="/assets/video/lab/your-stack-code-v2.mp4" download="stagwell-your-stack-code-v2.mp4">Download v2</a><a class="dl dl--quiet" href="/assets/video/lab/your-stack-code-v1.mp4" download="stagwell-your-stack-code-v1.mp4">v1</a></div>
+      <div><h2>Your stack: the code rewrites itself</h2><p class="clip__meta">1920×1080 · 30 fps · 12 s seamless loop · H.264</p></div>
+      <a class="dl" href="/assets/video/lab/your-stack-code.mp4" download="stagwell-your-stack-code.mp4">Download MP4</a>
     </div>
-    <video src="/assets/video/lab/your-stack-code-v2.mp4" poster="/assets/video/lab/your-stack-code-v2-poster.jpg" muted loop playsinline controls preload="metadata"></video>
-    <p class="clip__meta">Previous: v1 (12 s loop · one large block), download only.</p>
+    <video src="/assets/video/lab/your-stack-code.mp4" poster="/assets/video/lab/your-stack-code-poster.jpg" muted loop playsinline autoplay controls preload="auto"></video>
   </section>
 
   <section class="clip">
     <div class="clip__head">
-      <div><h2>Voice: a field of voices</h2><p class="clip__meta">v4 · 1920×1080 · 30 fps · 12 s · 22 voices, all up within 1 s, each speaking its own way · H.264</p></div>
-      <div class="clip__acts"><a class="dl" href="/assets/video/lab/voice-squares-v4.mp4" download="stagwell-voice-squares-v4.mp4">Download v4</a><a class="dl dl--quiet" href="/assets/video/lab/voice-squares-v3.mp4" download="stagwell-voice-squares-v3.mp4">v3</a><a class="dl dl--quiet" href="/assets/video/lab/voice-squares-v2.mp4" download="stagwell-voice-squares-v2.mp4">v2</a><a class="dl dl--quiet" href="/assets/video/lab/voice-squares-v1.mp4" download="stagwell-voice-squares-v1.mp4">v1</a></div>
+      <div><h2>Voice: a field of voices</h2><p class="clip__meta">1920×1080 · 30 fps · 12 s · 22 voices, all up within 1 s, each speaking its own way · H.264</p></div>
+      <a class="dl" href="/assets/video/lab/voice-squares.mp4" download="stagwell-voice-squares.mp4">Download MP4</a>
     </div>
-    <video src="/assets/video/lab/voice-squares-v4.mp4" poster="/assets/video/lab/voice-squares-v4-poster.jpg" muted loop playsinline controls preload="metadata"></video>
-    <p class="clip__meta">Previous: v3 (up within 2.4 s), v2 (16 voices), v1 (one large voice), download only.</p>
+    <video src="/assets/video/lab/voice-squares.mp4" poster="/assets/video/lab/voice-squares-poster.jpg" muted loop playsinline autoplay controls preload="auto"></video>
   </section>
 </main>
 <script>
-  /* play only the clip in view, so three HD files don't decode at once */
-  const vids = [...document.querySelectorAll('video')];
+  /* start each clip from the top when it first scrolls into view, so the build is seen whole */
   const io = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) e.target.play().catch(() => {}); else e.target.pause();
-  }), { threshold: 0.4 });
-  vids.forEach(v => io.observe(v));
+    const v = e.target;
+    if (e.isIntersecting) { if (v.dataset.seen !== '1') { v.currentTime = 0; v.dataset.seen = '1'; } v.play().catch(() => {}); }
+  }), { threshold: 0.5 });
+  document.querySelectorAll('video').forEach(v => { v.muted = true; io.observe(v); });
 </script>
 </body>
 </html>
