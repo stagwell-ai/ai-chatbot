@@ -145,18 +145,103 @@ try {
     await ctx.close();
   }
 
-  console.log('\n▶ capped: it cannot become the whole page');
+/* ── THE FOUR THINGS THE 2026-09-17 CRAWL FOUND ──
+   Every reachable turn was walked and read. The budget counted CLICKS, so a
+   sideways move between two use-case groups cost a level and a visitor saw 2
+   of the 5 groups; the cap then REPLACED the answer, so 21 of 22 capped turns
+   printed a full list under "That's the shape of it" and one path answered
+   with nothing at all; no group offered a way back; and the root's
+   differentiators were offered again from another branch. These four hold. */
+
+  console.log('\n▶ the budget takes the CHIPS, never the answer');
   {
     const { ctx, page, state } = await open();
     await toCard(page);
-    const max = await page.evaluate(() => window.SAI.data.kimi.flags.exploreMaxDepth);
+    const max = await page.evaluate(() => window.SAI.data.kimi.flags.exploreMaxSteps);
+    ok(max > 0, 'the limit is a count of steps shown (flags.exploreMaxSteps = ' + max + ')');
     await tap(page, 'Tell me more about The Machine');
+    /* greedily take the first way on until the detour closes itself */
+    const seen = [];
+    for (let i = 0; i < max + 3; i++) {
+      const s = await st(page);
+      if (s.uiAction !== 'EXPLORE') break;
+      seen.push({ node: s.explore.node, step: s.explore.step, close: s.explore.close,
+        rows: (s.explore.panel && s.explore.panel.items || []).length,
+        chips: s.suggestions.map(x => x.label) });
+      const next = s.suggestions.map(x => x.label).find(l => !/carry on/i.test(l));
+      if (!next) break;
+      await tap(page, next);
+    }
+    const shut = seen[seen.length - 1];
+    ok(seen.length <= max, 'it closes itself within the budget (' + seen.length + ' steps of ' + max + ')');
+    ok(!!shut.close, '   the last step carries a closing line ("' + shut.close + '")');
+    ok(shut.chips.length === 1 && /carry on/i.test(shut.chips[0]), '   and only the way out: ' + shut.chips.join(' | '));
+    /* the point of the fix: it still ANSWERED */
+    ok(shut.rows > 0, '   while still answering in full (' + shut.rows + ' rows under the closing line)');
+    const empty = seen.filter(x => !x.rows && x.chips.filter(c => !/carry on/i.test(c)).length === 0);
+    ok(empty.length === 0, '   and no step anywhere answers with nothing' +
+      (empty.length ? ' — ' + empty.map(x => x.node).join(',') : ''));
+    /* every step is a step the visitor had not already been shown */
+    const nodes = seen.map(x => x.node);
+    ok(new Set(nodes).size === nodes.length, '   nothing is shown twice: ' + nodes.join(' → '));
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
+
+  console.log('\n▶ sideways is not deeper: the whole library is walkable');
+  {
+    const { ctx, page, state } = await open();
+    await toCard(page);
+    await tap(page, 'Tell me more about The Machine');
+    const read = new Set(); const groups = new Set();
+    for (let i = 0; i < 12; i++) {
+      const s = await st(page);
+      if (s.uiAction !== 'EXPLORE') break;
+      (s.explore.panel && s.explore.panel.items || []).forEach(it => read.add(it.title));
+      if (String(s.explore.node).indexOf('g:') === 0) groups.add(s.explore.node);
+      /* a group is level 2 however many groups came before it */
+      if (String(s.explore.node).indexOf('g:') === 0) ok(s.explore.depth === 2, '   ' + s.explore.node + ' is level 2, not click number ' + s.explore.step);
+      const next = s.suggestions.map(x => x.label).find(l => !/carry on/i.test(l));
+      if (!next) break;
+      await tap(page, next);
+    }
+    const ex = await page.evaluate(() => window.SAI.data.explainers.products.machines_family);
+    const total = ex.useCaseGroups.reduce((n, g) => n + g.items.length, 0) + ex.differentiators.length + ex.connectsTo.length;
+    ok(groups.size === ex.useCaseGroups.length, 'every one of the ' + ex.useCaseGroups.length + ' groups is reachable (' + groups.size + ')');
+    ok(read.size === total, '   and all ' + total + ' items can be read in one detour (' + read.size + ')');
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
+
+  console.log('\n▶ always a way back, and nothing offered twice');
+  {
+    const { ctx, page, state } = await open();
+    await toCard(page);
+    await tap(page, 'Tell me more about The Machine');
+    /* the root PRINTS the differentiators, so no branch may offer them again */
+    const root = await st(page);
+    ok(!root.suggestions.some(x => /how is it different/i.test(x.label)), 'the root prints the differentiators, so it does not offer them');
+    await tap(page, 'What does it connect to?');
+    const conn = await st(page);
+    ok(!conn.suggestions.some(x => /how is it different/i.test(x.label)),
+      '   and neither does another branch, once they have been read: ' + conn.suggestions.map(x => x.label).join(' | '));
     await tap(page, 'What do teams use it for?');
-    await tap(page, 'Creative and content');
     await tap(page, 'Governance and delivery');
-    const s = await st(page);
-    ok(s.explore.depth === max, 'the cap is reached at depth ' + s.explore.depth + ' (flags.exploreMaxDepth = ' + max + ')');
-    ok(s.suggestions.length === 1 && /carry on/i.test(s.suggestions[0].label), '   and only the way out is offered: ' + s.suggestions.map(x => x.label).join(' | '));
+    const g = await st(page);
+    const labels = g.suggestions.map(x => x.label);
+    ok(labels.some(l => /other groups/i.test(l) || /and /.test(l)), 'from inside a group there is a way back to the others: ' + labels.join(' | '));
+    ok(!labels.some(l => /governance and delivery/i.test(l)), '   never back to the one they are reading');
+    ok(!labels.some(l => /what does it connect to/i.test(l)), '   and not to a branch already read');
+    /* the last group in the list used to be unreachable from inside another */
+    const last = await page.evaluate(() => { const gs = window.SAI.data.explainers.products.machines_family.useCaseGroups; return gs[gs.length - 1].label; });
+    let found = labels.some(l => l === last);
+    for (let i = 0; i < 6 && !found; i++) {
+      const next = (await st(page)).suggestions.map(x => x.label).find(l => !/carry on/i.test(l));
+      if (!next) break;
+      await tap(page, next);
+      found = (await st(page)).suggestions.some(x => x.label === last) || (await st(page)).explore.node === 'g:' + 'growth';
+    }
+    ok(found, '   and the LAST group in the list is reachable from inside another one ("' + last + '")');
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
     await ctx.close();
   }

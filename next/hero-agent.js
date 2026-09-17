@@ -210,7 +210,7 @@ function render(st) {
      flow hands over one node at a time (client, 2026-09-17). */
   if (st.uiAction === 'EXPLORE') {
     const x = st.explore || {};
-    const key = 'explore|' + x.productId + '|' + x.node + '|' + x.depth;
+    const key = 'explore|' + x.productId + '|' + x.node + '|' + x.step;
     if (key === lastKey) return;
     lastKey = key;
     const chips = st.suggestions.map(sg => ({ label: sg.label, value: sg.value }));
@@ -238,6 +238,15 @@ function render(st) {
         }
         ul = panelEl(x.panel);
         bubble.appendChild(ul);
+      }
+      /* the closing line goes UNDER the answer, never instead of it: when the
+         detour has shown all it is going to, the reader still gets what they
+         asked for and then "that's the shape of it" (client, 2026-09-17) */
+      if (x.close) {
+        const close = document.createElement('p');
+        close.className = 'turnb__text turnb__text--close';
+        close.textContent = x.close;
+        bubble.appendChild(close);
       }
       if (chips.length) H.chips(bubble, chips, onChip);
       /* head-aligned, like the recommendation: an explore step is an ANSWER,

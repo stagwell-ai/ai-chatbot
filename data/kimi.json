@@ -16,8 +16,8 @@
     "secondaryRecommendations": true,
     "analytics": true,
     "explainWithLlm": true,
-    "exploreMaxDepth": 3,
-    "_exploreNote": "How many taps deep the product detour may go before only the way back is offered. 0 turns it off."
+    "exploreMaxSteps": 8,
+    "_exploreNote": "How many STEPS of the product detour are shown before only the way back is offered. It is a count of turns, not of clicks deep: moving between two use-case groups is sideways, not deeper, and counting it as depth shut a visitor down after two of the five groups. Eight covers The Machine's whole tree exactly once — what it is, the five groups, what it connects to. The budget takes the CHIPS away, never the answer: the last step still answers in full and adds copy.explore.capped under it. 0 turns the detour off."
   },
   "copy": {
     "intro": "What are you trying to solve?",
@@ -67,12 +67,12 @@
     "showcaseIntro": "Here's where I'd start:",
     "showcaseIntroLow": "Here's the closest fit from what I know so far:",
     "showcaseAfter": "Two or three quick things about your business and I'll tighten this up.",
-    "_exploreNote": "GOING DEEPER ON ONE PRODUCT (client, 2026-09-17: 'we dont want to simply reproduce the whole page in the chat window, we want it to be dynamic, and iterative, and animated, and let the user click things and ask questions'). SAIKIMI.explore() walks data/explainers.json one node at a time — the same file the product page renders from. exploreInvite is the line under the cards that offers the detour; the chip* lines are the pills. flags.exploreMaxDepth caps how deep it goes before it offers only the way out. The root step leads with copy.explore.root — the explainer's own `summary` — and shows the differentiators straight away, rather than asking what they would like to know.",
+    "_exploreNote": "GOING DEEPER ON ONE PRODUCT (client, 2026-09-17: 'we dont want to simply reproduce the whole page in the chat window, we want it to be dynamic, and iterative, and animated, and let the user click things and ask questions'). SAIKIMI.explore() walks data/explainers.json one node at a time — the same file the product page renders from. exploreInvite is the line under the cards that offers the detour; the chip* lines are the pills. flags.exploreMaxSteps caps how many steps it shows before it offers only the way out; the last step still ANSWERS and adds copy.explore.capped under it. The root step leads with copy.explore.root — the explainer's own `summary` — and shows the differentiators straight away, rather than asking what they would like to know.",
     "exploreInvite": "Tell me more about {product}",
     "explore": {
       "root": "{summary}",
       "differentiators": "Three things set it apart:",
-      "usecases": "Fifteen use cases, in five groups. Which is closest to your world?",
+      "usecases": "{cases} use cases, in {n} groups. Which is closest to your world?",
       "group": "{label} — {n} of them:",
       "connects": "It connects to what you already run, rather than replacing it:",
       "chipDifferentiators": "How is it different?",
@@ -82,7 +82,8 @@
       "capped": "That's the shape of it. Shall we carry on?",
       "rootAfter": "Three things set it apart:",
       "done": "Happy to go deeper on {product} whenever you like.",
-      "doneGoal": "Happy to go deeper on {product} whenever you like. So — what are you working on? Pick one, or tell me in a sentence."
+      "doneGoal": "Happy to go deeper on {product} whenever you like. So — what are you working on? Pick one, or tell me in a sentence.",
+      "chipGroups": "See the other groups"
     },
     "askPhone": "Thanks — I'll send it to {email}. And a number, if you'd rather we call?",
     "bookIntro": "Last thing — pick a time and a Stagwell AI specialist will walk you through {product} against your brand.",

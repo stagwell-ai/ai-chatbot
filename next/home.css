@@ -1852,6 +1852,8 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .point__go{margin-top:4px;font-size:13px;font-weight:600;color:var(--ink-3)}
 .point__item:hover .point__go{color:var(--ink)}
 .askbox__thread .turnb__text--after{margin-top:0}
+/* …and the line that closes a detour, under the list rather than instead of it */
+.askbox__thread .turnb__text--close{margin-top:14px}
 .askform__skip{display:inline-block;margin-top:12px;font-size:13.5px;font-weight:600;color:var(--ink-3);text-decoration:none}
 .askform__skip:hover,.askform__skip:focus-visible{color:var(--ink);text-decoration:underline}
 

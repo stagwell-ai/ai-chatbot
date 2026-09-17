@@ -603,14 +603,31 @@ function advance(ack) {
    never shows a level it was not asked for: a node returns a short line, a
    small panel, and the chips that lead on from it.
 
-   Three rules keep it from becoming the page:
-     · `depth` is capped (exploreMaxDepth) — after that only the way out is
-       offered, so a visitor cannot wander forever;
-     · every node carries a way back to the conversation, because the point is
-       still the recommendation and the address;
-     · `answerOnly` items (the does-NOT-do list) are NEVER offered as a chip.
-       They exist so a direct question gets an honest answer instead of an
-       overclaim — they are not something to read off a screen.                */
+   Four rules keep it from becoming the page, and keep it walkable. They were
+   rewritten on 2026-09-17 after crawling all 64 reachable turns:
+
+     · IT NEVER SWALLOWS AN ANSWER. The budget closes the detour by taking the
+       chips away and adding a closing line UNDER the answer — it never replaces
+       the answer with "that's the shape of it". It used to, and 21 of 22 capped
+       turns printed a full list beneath a sentence announcing the end, while one
+       path ("what do teams use it for?") answered with nothing at all.
+     · THE BUDGET IS STEPS SHOWN, NOT CLICKS DEEP. Moving between two use-case
+       groups is sideways, not deeper; counting it as depth meant a visitor saw
+       2 of the 5 groups — 8 of the 15 use cases — and was then shut down.
+       `depth` is now the node's LEVEL in the tree (a branch is 1, a group is 2)
+       and is reported for analytics only; exploreMaxSteps is the real limit.
+     · THERE IS ALWAYS A WAY BACK. Every group offers the other groups and
+       whichever top-level branches have not been read. Nothing is a one-way
+       door, and no group is unreachable (the old step offered three of four
+       siblings, so "Growth and listening" could not be reached from inside
+       another group at all).
+     · NOTHING IS OFFERED TWICE. `seen` holds every node already delivered, so
+       a branch that has been read is not offered again — the root prints the
+       differentiators, and "How is it different?" used to reprint them.
+
+   And, as before: `answerOnly` items (the does-NOT-do list) are NEVER offered
+   as a chip. They exist so a direct question gets an honest answer instead of
+   an overclaim — they are not something to read off a screen.                 */
 const EXPLORE_PREFIX = '__x__';
 const exData = () => (data().explainers && data().explainers.products) || {};
 const exFor = id => exData()[id] || null;
@@ -626,52 +643,82 @@ const exCopy = () => Object.assign({
   chipDifferentiators: 'How is it different?',
   chipUsecases: 'What do teams use it for?',
   chipConnects: 'What does it connect to?',
+  chipGroups: 'See the other groups',
   chipMore: 'Something else about it',
   chipDone: 'Carry on',
   capped: "That's the shape of it. Shall we carry on?"
 }, (copy().explore || {}));
 
-/* every node of the tree: what to say, what to draw, where it can go next */
-function exploreNode(pid, node) {
+/* where a node sits in the tree. A branch off the root is 1; a use-case group
+   is 2. This is the node's LEVEL — it does not go up because you looked at two
+   groups in a row, which is the whole point of it. */
+const exLevel = node => (String(node || '').indexOf('g:') === 0 ? 2 : (node === 'root' ? 0 : 1));
+
+/* every node of the tree: what to say, what to draw, where it can go next.
+   `seen` is the nodes already delivered in this detour — nothing in it is
+   offered again, and a branch whose content is exhausted is not offered at
+   all, so a chip never leads somewhere the visitor has already been. */
+function exploreNode(pid, node, seen) {
   const ex = exFor(pid); if (!ex) return null;
   const c = exCopy(), name = exName(pid, ex);
+  const read = list(seen);
   const fill = (s, v) => tpl(s, Object.assign({ product: name }, v || {}));
   const chip = (id, label) => ({ id: EXPLORE_PREFIX + id, label, value: EXPLORE_PREFIX + id, kind: 'explore' });
   const has = k => list(ex[k]).length;
-  const top = [];
-  if (has('differentiators')) top.push(chip('differentiators', c.chipDifferentiators));
-  if (has('useCaseGroups')) top.push(chip('usecases', c.chipUsecases));
-  if (has('connectsTo')) top.push(chip('connects', c.chipConnects));
+  const groups = list(ex.useCaseGroups);
+  const unread = groups.filter(g => read.indexOf('g:' + g.id) === -1);
+  /* a branch is spent when there is nothing left behind it */
+  const spent = id => (id === 'usecases' ? !unread.length : read.indexOf(id) !== -1);
+  /* the top-level branches still worth offering, minus whatever is on screen */
+  const ways = (not) => {
+    const skip = list(not).concat(read.filter(x => x.indexOf('g:') !== 0));
+    const out = [];
+    if (has('differentiators') && skip.indexOf('differentiators') === -1 && !spent('differentiators')) out.push(chip('differentiators', c.chipDifferentiators));
+    if (has('useCaseGroups') && skip.indexOf('usecases') === -1 && !spent('usecases')) out.push(chip('usecases', c.chipUsecases));
+    if (has('connectsTo') && skip.indexOf('connects') === -1 && !spent('connects')) out.push(chip('connects', c.chipConnects));
+    return out;
+  };
 
   /* the first step ANSWERS: what it is, then the three things that set it
      apart, and only then what else they might want (client, 2026-09-17) */
   if (node === 'root') {
     const summary = ex.summary || (R() && R().productById(pid, data()) || {}).cardDescription || '';
     return { say: fill(c.root, { summary }) || summary,
+      /* the root PRINTS the differentiators, so it has read that branch too */
+      reads: has('differentiators') ? ['differentiators'] : [],
       panel: has('differentiators') ? { kind: 'diff', after: c.rootAfter, items: list(ex.differentiators).map(d => ({ title: d.title, line: d.line })) } : null,
-      chips: top.filter(x => x.id !== EXPLORE_PREFIX + 'differentiators') };
+      chips: ways(['differentiators']) };
   }
   if (node === 'differentiators') {
     return { say: fill(c.differentiators),
       panel: { kind: 'diff', items: list(ex.differentiators).map(d => ({ title: d.title, line: d.line })) },
-      chips: top.filter(x => x.id !== EXPLORE_PREFIX + 'differentiators') };
+      chips: ways(['differentiators']) };
   }
   if (node === 'connects') {
     return { say: fill(c.connects),
       panel: { kind: 'connects', items: list(ex.connectsTo).map(d => ({ title: d.title, line: d.line })) },
-      chips: top.filter(x => x.id !== EXPLORE_PREFIX + 'connects') };
+      chips: ways(['connects']) };
   }
+  /* the groups themselves ARE this step's content — its chips are its answer,
+     which is why the budget must never be allowed to empty them */
   if (node === 'usecases') {
-    return { say: fill(c.usecases), panel: null,
-      chips: list(ex.useCaseGroups).map(g => chip('g:' + g.id, g.label)) };
+    return { say: fill(c.usecases, { n: groups.length, cases: groups.reduce((n, g) => n + g.items.length, 0) }),
+      panel: null, chips: unread.map(g => chip('g:' + g.id, g.label)) };
   }
   if (node.indexOf('g:') === 0) {
-    const g = list(ex.useCaseGroups).find(x => x.id === node.slice(2));
+    const g = groups.find(x => x.id === node.slice(2));
     if (!g) return null;
-    const others = list(ex.useCaseGroups).filter(x => x.id !== g.id).slice(0, 3).map(x => chip('g:' + x.id, x.label));
+    /* the groups they have NOT read, two of them by name and the rest behind
+       one chip. The old step listed three of the four siblings whether they
+       had been read or not, so "Growth and listening" — last in the list —
+       could not be reached from inside another group at all. The set shrinks
+       as they read, so by the second group every one that is left is named. */
+    const rest = groups.filter(x => x.id !== g.id && read.indexOf('g:' + x.id) === -1);
+    const near = rest.slice(0, 2).map(x => chip('g:' + x.id, x.label));
+    const over = rest.length > near.length ? [chip('usecases', c.chipGroups)] : [];
     return { say: fill(c.group, { label: g.label, n: g.items.length }),
       panel: { kind: 'cases', items: g.items.map(i => ({ title: i.name, line: i.line })) },
-      chips: others };
+      chips: near.concat(over, ways(['usecases'])) };
   }
   return null;
 }
@@ -740,21 +787,30 @@ function explore(topic, opts) {
   if (!ex) return state();
   const c = exCopy();
   const node = String(topic || 'root').replace(EXPLORE_PREFIX, '') || 'root';
-  const max = flags().exploreMaxDepth == null ? 4 : flags().exploreMaxDepth;
-  const step = exploreNode(pid, node);
+  const max = flags().exploreMaxSteps == null ? 8 : flags().exploreMaxSteps;
+  /* a detour that has moved to another product starts its own reading */
+  const same = st.explore.productId === pid && !!st.explore.node;
+  const seen = same ? list(st.explore.seen) : [];
+  const step = exploreNode(pid, node, seen);
   if (!step) return state();
-  const depth = node === 'root' ? 0 : (st.explore.productId === pid ? st.explore.depth + 1 : 1);
-  st.explore = { productId: pid, node, depth, panel: step.panel };
-  /* the way on is always offered: deeper while there is room, and out of the
-     detour either way — the conversation is still going somewhere */
-  const onward = depth >= max ? [] : step.chips;
-  st.message = depth >= max ? tpl(c.capped, { product: exName(pid, ex) }) : step.say;
+  const read = seen.concat([node], list(step.reads)).filter((x, i, a) => a.indexOf(x) === i);
+  const shown = (same ? st.explore.shown || 0 : 0) + 1;
+  /* THE BUDGET TAKES THE CHIPS, NEVER THE ANSWER. The question that was asked
+     is answered in full; the closing line goes UNDER it, and the only way on
+     is out. (It used to replace the answer, which left one path saying
+     "that's the shape of it" and nothing else — 2026-09-17.) */
+  const last = shown >= max || !step.chips.length;
+  st.explore = { productId: pid, node, depth: exLevel(node), panel: step.panel,
+    seen: read, shown, close: last ? tpl(c.capped, { product: exName(pid, ex) }) : null };
+  st.message = step.say;
   st.ack = null; st.prompt = st.message;
-  st.suggestions = onward.concat([{ id: EXPLORE_PREFIX + 'done', label: c.chipDone, value: EXPLORE_PREFIX + 'done', kind: 'explore' }]);
+  st.suggestions = (last ? [] : step.chips)
+    .concat([{ id: EXPLORE_PREFIX + 'done', label: c.chipDone, value: EXPLORE_PREFIX + 'done', kind: 'explore' }]);
   st.uiAction = 'EXPLORE';
   st.hint = (copy().hints || {}).explore || 'Pick one, or ask me anything about it';
-  emit('explore_opened', { product: pid, node, depth });
-  track('kimi_explore', { product: pid, node, depth, items: step.panel ? step.panel.items.length : 0 });
+  emit('explore_opened', { product: pid, node, depth: st.explore.depth });
+  track('kimi_explore', { product: pid, node, depth: st.explore.depth, step: shown, last,
+    items: step.panel ? step.panel.items.length : 0 });
   notify();
   return state();
 }
@@ -764,7 +820,7 @@ function exploreDone() {
   const pid = st.explore.productId;
   const c = exCopy();
   const name = exName(pid, exFor(pid));
-  track('kimi_explore_done', { product: pid, depth: st.explore.depth });
+  track('kimi_explore_done', { product: pid, depth: st.explore.depth, steps: st.explore.shown || 0 });
   st.explore = blankExplore();
   st.holds = 0;
   if (st.resume && st.resume.uiAction) {
@@ -782,7 +838,7 @@ function exploreDone() {
   notify();
   return state();
 }
-const blankExplore = () => ({ productId: null, node: null, depth: 0, panel: null });
+const blankExplore = () => ({ productId: null, node: null, depth: 0, panel: null, seen: [], shown: 0, close: null });
 /* the chips this turn are explore chips, so answer() hands them here */
 const isExplore = text => String(text || '').indexOf(EXPLORE_PREFIX) === 0;
 
@@ -814,7 +870,7 @@ async function start(opts) {
        used to be read as a need and answered with "what's your work email?"
        (client, 2026-09-17). A question about a named product is answered first;
        the funnel picks up the moment they are done, through exploreDone(). */
-    if (flags().exploreMaxDepth !== 0) {
+    if (flags().exploreMaxSteps !== 0) {
       const named = askedAboutProduct(text);
       if (named) {
         track('kimi_explore_asked', { product: named, at: 'opening' });
@@ -876,7 +932,7 @@ async function answer(input) {
   }
   /* …and a product asked about in words opens the same detour, from wherever
      the conversation happens to be */
-  if (st.status !== 'CONTACT_CAPTURE' && flags().exploreMaxDepth !== 0) {
+  if (st.status !== 'CONTACT_CAPTURE' && flags().exploreMaxSteps !== 0) {
     const named = askedAboutProduct(input);
     if (named) {
       if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
@@ -1442,7 +1498,8 @@ function state() {
     researched: !!st.researched,
     previewed: !!st.previewed,
     exploreOffer: st.exploreOffer || null,
-    explore: st.explore && st.explore.node ? { productId: st.explore.productId, node: st.explore.node, depth: st.explore.depth, panel: st.explore.panel } : null,
+    explore: st.explore && st.explore.node ? { productId: st.explore.productId, node: st.explore.node, depth: st.explore.depth,
+      panel: st.explore.panel, close: st.explore.close || null, seen: list(st.explore.seen), step: st.explore.shown || 0 } : null,
     findings: st.findings ? Object.assign({}, st.findings) : null,
     contact: st.contact ? Object.assign({}, st.contact) : null,
     contactRequest: st.contactRequest,
