@@ -97,7 +97,7 @@
     'p-ai_visibility':       '/assets/img/geopulse.jpg',
     'p-real_world_behavior': '/assets/img/numetrix.jpg',
     'p-competitive':         '/assets/img/hero-film/agent-cloud.jpg',
-    'p-newly_added':         '/assets/img/hero-film/6.jpg'
+    'p-newly_added':         '/assets/img/tabs/media-machine.jpg'
   };
   const repic = () => {
     Object.keys(PIC).forEach(id => {
@@ -152,6 +152,19 @@
       if (pic && head && !head.dataset.pcBg) {
         head.dataset.pcBg = '1';
         head.style.setProperty('--pc-bg', 'url("' + pic.getAttribute('src') + '")');
+      }
+
+      /* a few words of the heading take the homepage's colour, painted in as it scrolls up */
+      const HL = { 'p-influencer': 'influencer and creator', 'p-newly_added': 'added' };
+      const hh = words && words.querySelector('.prodgroup__h');
+      if (hh && HL[group.id] && !hh.querySelector('.hl') && hh.textContent.includes(HL[group.id])) {
+        const phrase = HL[group.id], txt = hh.textContent, at0 = txt.indexOf(phrase);
+        hh.textContent = '';
+        hh.append(txt.slice(0, at0));
+        const sp = document.createElement('span');
+        sp.className = 'hl'; sp.dataset.hl = 'orange'; sp.textContent = phrase;
+        hh.append(sp, txt.slice(at0 + phrase.length));
+        if (window.hcHighlight) requestAnimationFrame(() => window.hcHighlight(sp));
       }
 
       const strip = document.createElement('div');
@@ -209,8 +222,9 @@
         if (!still.matches && !taken) t.classList.add('is-timing');
       };
       /* each product in a group can bring its own still */
-      const TAB_PIC = { 'The Media Machine': '/assets/img/hero-film/1.jpg', 'NewIntel': '/assets/img/cta-3.jpg',
-        'Search+': '/assets/img/solutions-guided.jpg', 'Stagwell ID Graph': '/assets/img/trust-banner.jpg' };
+      const TAB_PIC = { 'IMAI': '/assets/img/tabs/imai.jpg', 'Stagwell AI for SMBs': '/assets/img/tabs/smb.jpg',
+        'The Media Machine': '/assets/img/tabs/media-machine.jpg', 'NewIntel': '/assets/img/tabs/newintel.jpg',
+        'Search+': '/assets/img/tabs/search-plus.jpg', 'Stagwell ID Graph': '/assets/img/tabs/id-graph.jpg' };
       const tabPics = tabs.map(t => TAB_PIC[(t.textContent || '').trim()] || null);
       tabPics.forEach(src => { if (src) { const im = new Image(); im.src = src; } });
       const show = i => {

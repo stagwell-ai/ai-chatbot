@@ -652,13 +652,17 @@
 (() => {
   const hls = [...document.querySelectorAll('.hc-page .hl')];
   if (!hls.length) return;
-  hls.forEach(el => {
+  const arm = el => {
     el.style.setProperty('--hl-base', getComputedStyle(el).color);
     el.classList.add('hl--armed');
-  });
+  };
+  hls.forEach(arm);
   const timed = hls.filter(el => el.closest('.display--hero, .pp-title'));
   const scrub = hls.filter(el => !el.closest('.display--hero, .pp-title'));
 
+  /* the transition switches on only after the words have settled blank, or they would first
+     un-paint (from the default position) and then paint again */
+  void document.body.offsetWidth;
   timed.forEach(el => el.classList.add('hl--timed'));
   const root = document.documentElement;
   const go = () => setTimeout(() => timed.forEach(el => el.classList.add('is-in')), document.querySelector('.display--hero') ? 1150 : 500);
@@ -681,6 +685,8 @@
     });
   };
   const ask = () => { if (!raf) raf = requestAnimationFrame(paint); };
+  /* titles drawn later (the products listing) join the scroll-driven set */
+  window.hcHighlight = el => { if (!el || el.classList.contains('hl--armed')) return; arm(el); scrub.push(el); ask(); };
   addEventListener('scroll', ask, { passive: true });
   addEventListener('resize', ask);
   paint();
