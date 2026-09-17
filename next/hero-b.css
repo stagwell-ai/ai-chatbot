@@ -121,3 +121,10 @@ body.hc-b #why .why__item:not(#_) > .why__d:not(.why__d--lead){color:rgba(11,18,
   body.hc-b #why .why__item:not(#_) > .why__head{display:block !important;order:0 !important}
   body.hc-b #why .why__item:not(#_) > .why__slot{order:-1 !important;width:100% !important;height:auto !important;min-height:0 !important;aspect-ratio:16 / 10 !important;margin:0 0 24px !important;align-self:stretch !important}
 }
+
+/* Why Stagwell AI: a full-size section title, centred */
+body.hc-b #why .display--cos:not(#_),
+body.hc-b #why .display--cos:not(#_) *{font-size:clamp(40px,1rem + 3.9vw,78px) !important;line-height:1.06 !important;
+  letter-spacing:-.02em !important;font-weight:400 !important;text-transform:none !important;text-align:center !important}
+body.hc-b #why .display--cos:not(#_){display:block !important;width:100% !important;max-width:none !important;margin:0 auto clamp(48px,6vw,96px) !important}
+body.hc-b #why .display--cos:not(#_) .ln{display:block !important}
