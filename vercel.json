@@ -123,6 +123,10 @@
       "destination": "/next/home-c.html"
     },
     {
+      "source": "/hero-b",
+      "destination": "/next/home-hero-b.html"
+    },
+    {
       "source": "/motion-lab",
       "destination": "/next/motion-lab.html"
     },
