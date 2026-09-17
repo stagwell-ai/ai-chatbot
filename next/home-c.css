@@ -2474,3 +2474,11 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-page #why .why__item:not(#_){grid-template-rows:auto auto auto 1fr !important}
   .hc-page #why .why__item:not(#_) > .why__slot{grid-row:1 / 5 !important}
 }
+
+/* Edge on a soft palette blue; Extensible on dark, white dots only */
+.hc-page #why .why__slot--pair:not(#_){background:#D6F5FC !important}
+.hc-page #why .why__slot--dots:not(#_){background:#0B1220 !important}
+/* desktop: the Why paragraphs about 300px narrower (624 → 340) */
+@media (min-width:1024px){
+  .hc-page #why .why__item:not(#_) > .why__d{max-width:340px !important}
+}
