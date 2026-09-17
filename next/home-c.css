@@ -2383,3 +2383,23 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .hcs__card:hover .hcs__ic,.hc-page .hcs__card:focus-visible .hcs__ic{background:rgba(255,255,255,.08)}
 /* hover: the card's Learn more button in the Ask Stagwell AI blue, white text */
 .hc-page .hcs__card:hover .hcs__go:not(#_),.hc-page .hcs__card:focus-visible .hcs__go:not(#_){background:#009CBD !important;border-color:#009CBD !important;color:#FFFFFF !important}
+
+/* ── title highlights in the brand palette (client, 2026-09-17)
+   The key words paint in from left to right as the title comes into view: a hard-edged
+   wipe, not a fade. JS arms each .hl (reads the title colour into --hl-base, adds
+   .hl--armed); without JS the words simply stay in the title colour. ── */
+.hl{--hl:#009CBD}
+.hl[data-hl="blue"]{--hl:#009CBD}
+.hl[data-hl="orange"]{--hl:#FF6D24}
+.hl[data-hl="cyan"]{--hl:#77E3F6}
+.hl.hl--armed:not(#_){
+  color:transparent !important;-webkit-text-fill-color:transparent;
+  background-image:linear-gradient(90deg,var(--hl) 0 50%,var(--hl-base,#0B1220) 50% 100%);
+  background-size:200.5% 100%;background-position:100% 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;
+  transition:background-position 1.1s cubic-bezier(.65,0,.35,1) var(--hl-d,.25s)}
+.hl.hl--armed.is-in:not(#_){background-position:0 0}
+@media (prefers-reduced-motion:reduce){
+  .hl.hl--armed:not(#_){transition:none;background-position:0 0}
+}

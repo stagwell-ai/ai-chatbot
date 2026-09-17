@@ -646,3 +646,18 @@
     thumb.replaceWith(mark);
   });
 })();
+
+/* title highlights: arm each .hl with its title's colour, paint it in when it comes into view */
+(() => {
+  const hls = [...document.querySelectorAll('.hc-page .hl')];
+  if (!hls.length) return;
+  hls.forEach(el => {
+    el.style.setProperty('--hl-base', getComputedStyle(el).color);
+    el.classList.add('hl--armed');
+  });
+  if (!('IntersectionObserver' in window)) { hls.forEach(el => el.classList.add('is-in')); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+  }), { threshold: 0.6, rootMargin: '0px 0px -10% 0px' });
+  hls.forEach(el => io.observe(el));
+})();

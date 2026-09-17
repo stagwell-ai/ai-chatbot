@@ -72,3 +72,8 @@
 
 /* ── H1: tighter letter-spacing on every page (client, 2026-09-17) ── */
 h1:not(#_),h1:not(#_) *{letter-spacing:-.035em !important}
+
+/* ── "Call my phone" in the nav: solid dark, white text (client, 2026-09-17) ── */
+.call--nav .call__btn:not(#_){background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important}
+.call--nav .call__btn:not(#_) *{color:#FFFFFF !important}
+.call--nav .call__btn:not(#_):hover{background:#003349 !important;border-color:#003349 !important}
