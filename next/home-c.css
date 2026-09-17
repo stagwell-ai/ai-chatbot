@@ -2615,3 +2615,11 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 .hc-b .hcb-tags:not(#_){width:100%;max-width:760px;min-width:0;justify-self:center}
 .hc-b .hero :has(> .hcb-tags){min-width:0}
+/* version B, round two: the film runs the full viewport width less 20px a side, square-cornered,
+   with more air above the title and between the tags and the film */
+@media (min-width:761px){
+  .hc-b .hero:not(#_){padding-top:clamp(128px,15vh,168px) !important}
+  .hc-b .intro:not(#_){padding:clamp(48px,7vh,80px) 20px clamp(56px,7vw,104px) !important}
+  .hc-b .intro__stage:not(#_){max-width:none !important}
+}
+.hc-b .intro__media:not(#_){border-radius:0 !important}
