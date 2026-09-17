@@ -562,7 +562,6 @@ SOL_OWN = {'targeting_machine': '/targeting-machine', 'newvoices': '/newvoices',
            'machines_family': '/the-machine', 'agent_cloud': '/agent-cloud'}
 # a first sentence too long to be a title (220 characters): its own second
 # sentence carries the title, the long one moves under the hero
-SOL_TITLE = {'id_graph': "The identity spine under Stagwell's audience work."}
 SOL_GRADS = ('g1', 'g2', 'g3')
 # a product's own hero ground where Julian set one (the rest keep the Stagwell
 # gradients until the final backgrounds pass). 'light' grounds take the
@@ -620,12 +619,24 @@ GO = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 
 
 def solution_page(home, s, n, by_id, pics):
     sid, name = s['id'], s['name']
+    # the headline is the catalog's own `tagline` (the client's Product Package
+    # Checklist field), not the first sentence of `positioning` split off by
+    # regex — that gave The Targeting Machine the headline "Your data." and
+    # needed a hard-coded override for the ID Graph. What goes under the film is
+    # whatever `positioning` says that the headline and the card have not said.
     sent = [x for x in re.split(r'(?<=[.!?])\s+', s['positioning'].strip()) if x]
-    title = SOL_TITLE.get(sid, sent[0])
     card = s['cardDescription']
     norm = lambda x: re.sub(r'\W+', '', x).lower()
-    rest = [sent[0]] if sid in SOL_TITLE else [x for x in sent[1:] if norm(x) != norm(card)]
-    about = ' '.join(rest)
+    title = s.get('tagline') or sent[0]
+    # a sentence the headline already said is not repeated: "It is the identity
+    # spine under Stagwell's audience work." is the ID Graph's headline with two
+    # words in front of it, so it counts as said. The card is matched exactly —
+    # it often EXTENDS a sentence of the positioning rather than repeating it,
+    # and the longer version on the card is not a reason to drop the shorter
+    # one from the page.
+    ttl, crd = norm(title), norm(card)          # not t / c: t() is the escaper
+    told = lambda x: x == crd or x in ttl or ttl in x
+    about = ' '.join(x for x in sent if not told(norm(x)))
     eyebrow = s.get('whoFor') or 'The Stagwell Marketing Cloud'
     if s.get('url'):
         site = f'<a class="pp-site" href="{a(s["url"])}" target="_blank" rel="noopener" data-product-site>Visit {t(name)} website{ARROW}</a>'

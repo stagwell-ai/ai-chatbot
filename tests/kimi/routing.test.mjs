@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { DATA, R, Q, readText, walk } from './_data.mjs';
+import { DATA, R, Q, ROOT, readText, walk } from './_data.mjs';
 
 const top = reco => reco.primary;
 
@@ -20,6 +20,11 @@ test('catalog: 17 active products, every one reachable from a goal, tags valid',
     assert.ok(p.intentTags && p.intentTags.primary.length > 0, p.id + ' has no primary intents');
     [].concat(p.intentTags.primary, p.intentTags.secondary).forEach(t => assert.ok(intentIds.includes(t), p.id + ' tag ' + t + ' not in taxonomy'));
     assert.ok(p.cardDescription && p.conversion && p.conversion.primaryType && p.urls, p.id + ' missing card fields');
+    /* the Product Package Checklist's CORE KNOWLEDGE, 2026-09-17: every product
+       carries its own short brand line, and the page builder puts it on screen
+       as the headline rather than splitting `positioning` with a regex */
+    assert.ok(p.tagline && p.tagline.length > 8, p.id + ' has no tagline');
+    assert.ok(!/^\s|\s$/.test(p.tagline), p.id + ' tagline has loose whitespace');
   });
   DATA.goals.goals.forEach(g => g.candidates.forEach(id => assert.ok(R.productById(id, DATA), g.id + ' names unknown product ' + id)));
 });
@@ -234,6 +239,23 @@ test('eclipse: an intent whose only evidence sits inside another intent\'s longe
   /* but a genuinely two-sided sentence still comes back as two */
   const both = R.keywordIntents('we want to influence what AI says about us', DATA).map(i => i.id).sort();
   assert.deepEqual(both, ['ai_search_influence', 'ai_search_visibility']);
+});
+
+test('every generated product page is headed by its catalog tagline, and says it only once', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const OWN = { targeting_machine: 'targeting-machine', newvoices: 'newvoices', machines_family: 'the-machine', agent_cloud: 'agent-cloud' };
+  const esc = x => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  R.activeProducts(DATA).forEach(p => {
+    if (OWN[p.id]) return;                    /* the four hand-built landing pages carry their own headline */
+    const file = path.join(ROOT, 'next', 's', p.id + '.html');
+    const html = fs.readFileSync(file, 'utf8');
+    const h1 = (html.match(/<h1 class="pp-title">([^<]*)<\/h1>/) || [])[1];
+    assert.equal(h1, esc(p.tagline), p.id + ' headline');
+    /* the line under the film does not repeat the headline */
+    const about = (html.match(/<p class="pp-about__text[^"]*">([^<]*)<\/p>/) || [])[1] || '';
+    assert.ok(!about.includes(esc(p.tagline)), p.id + ' repeats its headline in the body: ' + about.slice(0, 70));
+  });
 });
 
 test('the Search+ entry says what the client says it says', () => {

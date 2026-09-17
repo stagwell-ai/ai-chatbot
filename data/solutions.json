@@ -9,6 +9,7 @@
     {
       "id": "questbrand",
       "name": "QuestBrand",
+      "tagline": "Know how your brand is really doing — every day.",
       "positioning": "Know how your brand is really doing — every day. Always-on tracking of awareness, consideration and momentum, benchmarked against the competitors you name. Watch a campaign move the numbers, as a subscription — not a quarterly research project.",
       "whoFor": "Insights and brand leaders",
       "shownWhen": "B: domain=brand_health, and domain=competitive — its Competitive Benchmarking half is the whole answer there · C: powers competitive & brand modules · D: after Numetrix (retail) and BERA conversations · industry boost QSR/retail/CPG",
@@ -75,6 +76,7 @@
     {
       "id": "questdiy",
       "name": "QuestDIY",
+      "tagline": "Run real consumer research yourself — in days.",
       "positioning": "Run real consumer research yourself — in days. Describe what you want to learn; AI helps draft the questionnaire, fields it to respondents in 100+ countries, and helps you read the results. No agency required.",
       "whoFor": "Teams that need answers before the deadline",
       "shownWhen": "B: domain=research; Q6 one-off · D: to brand-health visitors needing a deep-dive; wherever 'test creative/messaging' appears",
@@ -137,6 +139,7 @@
     {
       "id": "bera",
       "name": "BERA.ai",
+      "tagline": "Prove the brand is moving the business.",
       "positioning": "Prove the brand is moving the business. Continuous scoring of the emotional and functional drivers of brand strength, connected to pricing power, revenue and market value — so you know which brand investments pay, and which audiences to grow.",
       "whoFor": "CMOs who answer to CFOs",
       "shownWhen": "B: domain=business_impact; Q6 board/CFO · D: enterprise brand-health visitors, and enterprise domain=competitive visitors who also use 'prove impact'/CFO language (routing.json competitive→enterprise note); every consultative recap · role boost C-suite",
@@ -255,6 +258,7 @@
     {
       "id": "knowledge_machine",
       "name": "The Knowledge Machine",
+      "tagline": "Know what audiences think before it shows up in the numbers.",
       "positioning": "Know what audiences think before it shows up in the numbers. Transforms emotional and market signals into strategic intelligence – surfacing not just what is shifting but the emotional driver underneath it, and who is driving it.",
       "whoFor": "The communications lead drowning in fragmented signals",
       "shownWhen": "B: domain=reputation; Q6 early-warning/one market · industry boost pharma/finance/insurance/energy/gov · D: beside UNICEPTA when both fit",
@@ -323,6 +327,7 @@
     {
       "id": "unicepta",
       "name": "UNICEPTA",
+      "tagline": "Everything said about you, everywhere, in every language.",
       "positioning": "Everything said about you, everywhere, in every language. Human-plus-AI monitoring of news, social and broadcast worldwide, with analysis of the narratives your stakeholders are forming.",
       "whoFor": "Multinational comms teams",
       "shownWhen": "B: domain=reputation; Q6 global/multi-language · firmographic boost multinational/Europe · D: beside The Knowledge Machine",
@@ -389,6 +394,7 @@
     {
       "id": "imai",
       "name": "IMAI",
+      "tagline": "Influencer programs, end to end.",
       "positioning": "Influencer programs, end to end. Hundreds of millions of creator profiles — discovery, vetting and fraud checks, then outreach, contracts, approvals and tracking through to ROI. One tool instead of spreadsheets and DMs.",
       "whoFor": "Teams running creators at scale",
       "shownWhen": "B: domain=influencer AND tier mid/enterprise (Q6 creators ≥ ~100); SMB sees the SMB platform instead · D: where creator language appears",
@@ -460,6 +466,7 @@
     {
       "id": "smb_platform",
       "name": "Stagwell AI for SMBs",
+      "tagline": "Discover creators, validate audience quality, and prove ROI — without a big team or budget.",
       "positioning": "Discover creators, validate audience quality, and prove ROI — without a big team or budget. Listen, understand, execute, and measure, all from one dashboard.",
       "whoFor": "Brands and small agencies (10–250 people)",
       "shownWhen": "B: domain=influencer AND tier=smb",
@@ -529,6 +536,7 @@
     {
       "id": "geopulse",
       "name": "GEOPulse",
+      "tagline": "When AI answers, is it recommending you?",
       "positioning": "When AI answers, is it recommending you? Track how ChatGPT, Gemini and Perplexity mention, describe and recommend your brand versus rivals — and what to change to show up more.",
       "whoFor": "The new search battleground, measured",
       "shownWhen": "C first: its output IS the snapshot's AI-visibility module · B: domain=ai_visibility · D: universal companion",
@@ -591,6 +599,7 @@
     {
       "id": "targeting_machine",
       "name": "The Targeting Machine",
+      "tagline": "Turn fragmented data into audiences you can activate.",
       "positioning": "Audiences built from people already exhibiting the behavior. Connects fragmented first-party data with the Stagwell ID Graph and proprietary intelligence from BERA.ai, The Harris Poll and more – building audience profiles from real behavioral and attitudinal signals.",
       "whoFor": "The insights leader tired of guessing who to reach",
       "shownWhen": "B: domain=audiences · campaign product — its ad traffic lands on the product-branded page · D: where wasted-spend/targeting language appears",
@@ -659,6 +668,7 @@
     {
       "id": "numetrix",
       "name": "Numetrix",
+      "tagline": "What people do, not what they tell surveys.",
       "positioning": "What people do, not what they tell surveys. Real-world behavior measurement — who actually visited, how foot traffic moved, and whether your advertising changed where people went.",
       "whoFor": "Brands with physical locations",
       "shownWhen": "B: domain=real_world_behavior · firmographic trigger: retail/QSR/venue footprint detected — offered even unasked · D: say/do companion to brand tracking and targeting",
@@ -718,6 +728,7 @@
     {
       "id": "newvoices",
       "name": "NewVoices",
+      "tagline": "Lifelike voice and chat agents that hold real conversations with your customers — any hour, in any language.",
       "positioning": "Lifelike voice and chat agents that hold real conversations with your customers — any hour, in any language. The same agents qualify and book inbound leads, resolve tier-1 service and win back lapsing customers, and interview customers at scale when you need to understand why they act — turning what they say into decision-ready insight. Anything an agent can't finish goes to a person with the context already gathered.",
       "whoFor": "Teams losing demand between the hand-raise and the callback — and teams who need to hear the why, at scale",
       "shownWhen": "B: domain=leads · campaign product — its ad traffic lands on the product-branded page",
@@ -733,6 +744,7 @@
         "Tier-1 service resolution",
         "Retention and payment recovery",
         "Customer interviews at scale",
+        "Decision-ready insight",
         "Decision-ready insight"
       ],
       "lockup": null,
@@ -744,7 +756,8 @@
         "Lead qualification and booking",
         "Tier-1 service resolution",
         "Retention and payment recovery",
-        "Customer interviews at scale"
+        "Customer interviews at scale",
+        "Decision-ready insight"
       ],
       "intentTags": {
         "primary": [
@@ -780,6 +793,7 @@
     {
       "id": "machines_family",
       "name": "Stagwell's Machines (family frame)",
+      "tagline": "Connected by design.",
       "positioning": "The Stagwell Machines is a family of agentic solutions for enterprise marketing organizations – each built for a specific job; all connected under one operating layer. Unlike point solutions that make individual tasks smarter, the Machines share context: every signal, decision, and result carries forward.",
       "whoFor": "The organization, not one role",
       "shownWhen": "B: domain=marketing_ops; enterprise firmographics · frame around every multi-product consultative recap",
@@ -837,7 +851,6 @@
         "logoKey": "machines_family",
         "lockup": "/assets/img/lockups/the-machine.png"
       },
-      "tagline": "Connected by design.",
       "solves": "Intelligence that is stagnant in the tool where it was created.",
       "proofPoints": [
         "Works inside existing workflows rather than replacing them",
@@ -856,6 +869,7 @@
     {
       "id": "agent_cloud",
       "name": "Agent Cloud",
+      "tagline": "Give your marketing team one secure place to use the best AI.",
       "positioning": "One login, one contract and one security standard for the leading multimodal LLMs, image and video tools, and purpose-built marketing assistants — instead of a drawer full of subscriptions. Uploaded data is never used to train the underlying models.",
       "whoFor": "Marketing teams and agencies that want the frontier models without the sprawl or the risk",
       "shownWhen": "B: domain=ai_workspace · campaign product — its ad traffic lands on the product-branded page",
@@ -917,6 +931,7 @@
     {
       "id": "media_machine",
       "name": "The Media Machine",
+      "tagline": "One source of truth for media performance.",
       "positioning": "One source of truth for media performance. Turns paid media strategy, planning, activation and measurement into a fully agentic system.",
       "whoFor": "The media lead running paid across platforms and channels that are not connected",
       "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
@@ -988,6 +1003,7 @@
     {
       "id": "newintel",
       "name": "NewIntel",
+      "tagline": "What your competitors did this week.",
       "positioning": "What your competitors did this week. Live competitive signal across pricing, hiring, earned coverage and creator activity, rather than a quarterly deck that is already out of date.",
       "whoFor": null,
       "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
@@ -1044,6 +1060,7 @@
     {
       "id": "search_plus",
       "name": "Search+",
+      "tagline": "Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.",
       "positioning": "Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.",
       "whoFor": null,
       "shownWhen": "B: domain=ai_visibility, where it is the INFLUENCE half - GEOPulse measures how AI answers describe you, Search+ changes it. Listed on /products in the \"Newly added\" group.",
@@ -1110,6 +1127,7 @@
     {
       "id": "id_graph",
       "name": "Stagwell ID Graph",
+      "tagline": "The identity spine under Stagwell's audience work.",
       "positioning": "Covering 260 million US consumers and 123 million US households, the Stagwell ID Graph connects first-party data, third-party media data and proprietary consumer intelligence so audiences can be built and activated without exposing individual identities. It is the identity spine under Stagwell's audience work.",
       "whoFor": null,
       "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
@@ -1166,5 +1184,6 @@
     }
   ],
   "_catalogNote": "Kimi fields (2026-09-10): active, cardDescription, capabilityTags, intentTags{primary,secondary} (taxonomy.json ids), audiences{companySize,creatorVolume,geography} (bands from taxonomy.json — a product that declares a band scores a fit on it and a mismatch outside it; one that declares none is neutral), excludesIntents (use-case mismatch), conversion{primaryType DEMO|SELF_SERVICE|EXPERT_CALL, primaryLabel, secondaryLabel}, urls{productPage,externalWebsite,demo,selfService}, visual. The recommendation cards render from these and from nothing else; the older fields (positioning, whoFor, valueProps, url, signupUrl, lockup) still drive /products and /s/{id}.",
-  "_aliasesNote": "`aliases`: the product's name as people type it and as speech-to-text hears it. A named product goes straight to the top of the running (recommend.js nameMentions → its primary intents, explicit). Never a plain word that means something else ('machine' alone is not The Machine)."
+  "_aliasesNote": "`aliases`: the product's name as people type it and as speech-to-text hears it. A named product goes straight to the top of the running (recommend.js nameMentions → its primary intents, explicit). Never a plain word that means something else ('machine' alone is not The Machine).",
+  "_taglineNote": "`tagline`: the product's short brand line — the CORE KNOWLEDGE field of the client's Product Package Checklist (2026-09-17), and the <h1> the product-page builder puts on a generated page. Set deliberately rather than derived: the builder used to take the first sentence of `positioning`, which gave The Targeting Machine the headline \"Your data.\" and needed a hard-coded override for the ID Graph. Where the checklist's line predated the FINAL messaging copy (The Machine, Targeting, Knowledge and Media Machines) the current line is kept — superseded wording is not reintroduced."
 }
