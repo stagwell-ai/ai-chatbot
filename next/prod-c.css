@@ -1238,3 +1238,19 @@ body.pc-page{--hc-ground:#FFFFFF}
 /* the last problem runs into the clients row without a gulf */
 .pl-c .prodgroup:last-of-type:not(#_){padding-bottom:0 !important}
 .pl-c .ask-end:not(#_){padding-top:clamp(40px,4.5vw,64px) !important}
+
+/* ═══ Show me: a dropdown under the button with every section (the old full-screen sheet
+   was styled for .pl only, so on this page it opened invisible) ═══ */
+.ptoc__panel--drop{position:fixed;z-index:300;overflow:auto;background:#FFFFFF;
+  border:1px solid rgba(11,18,32,.12);border-radius:14px;padding:8px;font-family:'Montserrat',-apple-system,sans-serif}
+.ptoc__panel--drop[hidden]{display:none !important}
+.ptoc__panel--drop .ptoc__close{display:none}
+.ptoc__panel--drop .ptoc__sheet{display:flex;flex-direction:column;gap:2px}
+.ptoc__panel--drop .ptoc__item{display:flex;align-items:baseline;gap:14px;padding:11px 12px;border-radius:9px;
+  color:#0B1220;text-decoration:none;font-size:15px;line-height:1.3;text-align:left;border:0;background:transparent}
+.ptoc__panel--drop .ptoc__num{flex:0 0 22px;font-size:12px;letter-spacing:.06em;color:#009CBD}
+.ptoc__panel--drop .ptoc__item:hover,.ptoc__panel--drop .ptoc__item:focus-visible{background:rgba(0,156,189,.09);outline:0}
+@media (prefers-reduced-motion:no-preference){
+  .ptoc__panel--drop:not([hidden]){animation:ptocDrop .18s cubic-bezier(.2,.8,.2,1)}
+  @keyframes ptocDrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+}

@@ -98,13 +98,21 @@
   };
 
   const shorts = [];
-  links.forEach(a => {
+  /* the listing (pl-c) opens a dropdown under the button, not a full-screen sheet */
+  const DROP = document.body.classList.contains('pl-c');
+  links.forEach((a, n) => {
     const href = a.getAttribute('href');
     const item = document.createElement('a');
     item.className = 'ptoc__item';
     item.href = href;
     item.setAttribute('role', 'option');
     item.textContent = a.textContent.trim();      /* the full heading */
+    if (DROP) {
+      const num = document.createElement('span');
+      num.className = 'ptoc__num';
+      num.textContent = String(n + 1).padStart(2, '0');
+      item.prepend(num);
+    }
     item.dataset.short = shortFor(href);          /* what the line will say */
     sheet.appendChild(item);
     shorts.push(item.dataset.short);
@@ -141,11 +149,20 @@
   };
 
   let scrollLock = 0;
+  const place = () => {
+    const r = btn.getBoundingClientRect();
+    const w = Math.min(440, innerWidth - 32);
+    panel.style.width = w + 'px';
+    panel.style.left = Math.max(16, Math.min(innerWidth - w - 16, r.left + r.width / 2 - w / 2)) + 'px';
+    panel.style.top = (r.bottom + 8) + 'px';
+    panel.style.maxHeight = Math.max(200, innerHeight - r.bottom - 24) + 'px';
+  };
   const close = () => {
     if (panel.hidden) return;
     panel.hidden = true;
     btn.setAttribute('aria-expanded', 'false');
     wrap.classList.remove('is-open');
+    if (DROP) return;
     /* give the page its scroll position back, exactly */
     document.body.style.position = '';
     document.body.style.top = '';
@@ -158,6 +175,7 @@
     panel.hidden = false;
     btn.setAttribute('aria-expanded', 'true');
     wrap.classList.add('is-open');
+    if (DROP) { place(); return; }
     /* the page behind must not scroll while a full-screen sheet is up */
     document.body.style.top = -scrollLock + 'px';
     document.body.style.width = '100%';
@@ -218,6 +236,11 @@
     if (!wrap.contains(e.target) && !panel.contains(e.target)) close();
   });
   addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  if (DROP) {
+    panel.classList.add('ptoc__panel--drop');
+    addEventListener('scroll', () => { if (!panel.hidden) close(); }, { passive: true });
+    addEventListener('resize', () => { if (!panel.hidden) place(); });
+  }
   return true;
  };
 
