@@ -2508,3 +2508,4 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .ask-end .call__btn:not(#_):hover{background:#050A14 !important}
 .hc-page .ask-end .call__btn > :not(.call__voice){position:relative;z-index:1}
 .hc-page .ask-end .call__voice{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.hc-page .hc-port__slide[data-i="2"] .hc-port__pic:not(#_){object-position:center}
