@@ -2377,3 +2377,7 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 
 /* ── video title: the dash is gone; the second half sits on its own line, quieter ── */
 .hc-page .intro__over .display--intro .intro__sub:not(#_){display:block;margin-top:1.1em;opacity:.82;font-size:.42em !important;line-height:1.35;letter-spacing:0 !important}
+
+/* ── suite card icons in the palette blue, styled like "Use your voice" (client, 2026-09-17) ── */
+.hc-page .hcs__card .hcs__ic{background:rgba(0,156,189,.09);box-shadow:inset 0 0 0 1px rgba(0,156,189,.42);color:#009CBD}
+.hc-page .hcs__card:hover .hcs__ic,.hc-page .hcs__card:focus-visible .hcs__ic{background:rgba(255,255,255,.08)}
