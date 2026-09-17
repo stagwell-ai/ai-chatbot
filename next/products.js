@@ -113,7 +113,7 @@
   /* the four with their own landing pages show that page's cover (client,
      2026-09-10); the rest keep their stills for now */
   const PICTURE = {
-    questbrand: '/assets/img/tabs/questbrand.jpg',
+    questbrand: '/assets/img/tabs/questbrand-women.jpg',
     /* not hero-slide-4: that is the same photograph as targeting.jpg, and the
        two rows sit near each other on this page */
     questdiy: '/assets/img/glass.jpg',

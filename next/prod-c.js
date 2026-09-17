@@ -89,7 +89,7 @@
     'p-leads':               '/assets/img/products/newvoices-voice.jpg',   /* New Voices: the voice, live below */
     'p-marketing_ops':       '/assets/img/products/your-data-walker.jpg',
     'p-ai_workspace':        '/assets/img/products/agent-cloud-code.jpg',
-    'p-brand_health':        '/assets/img/tabs/questbrand.jpg',
+    'p-brand_health':        '/assets/img/tabs/questbrand-women.jpg',
     'p-research':            '/assets/img/hero-film/2.jpg',
     'p-business_impact':     '/assets/img/brand-growth.jpg',
     'p-reputation':          '/assets/img/hero-film/4.jpg',
@@ -222,9 +222,9 @@
         if (!still.matches && !taken) t.classList.add('is-timing');
       };
       /* each product in a group can bring its own still */
-      const TAB_PIC = { 'IMAI': '/assets/img/tabs/imai.jpg', 'Stagwell AI for SMBs': '/assets/img/tabs/smb.jpg',
+      const TAB_PIC = { 'IMAI': '/assets/img/tabs/imai-crowd.jpg', 'Stagwell AI for SMBs': '/assets/img/tabs/smb-right.jpg',
         'The Media Machine': '/assets/img/tabs/media-machine.jpg', 'NewIntel': '/assets/img/tabs/newintel.jpg',
-        'Search+': '/assets/img/tabs/search-plus.jpg', 'Stagwell ID Graph': '/assets/img/tabs/id-graph.jpg' };
+        'Search+': '/assets/img/tabs/geopulse.jpg', 'Stagwell ID Graph': '/assets/img/tabs/id-graph.jpg' };
       const tabPics = tabs.map(t => TAB_PIC[(t.textContent || '').trim()] || null);
       tabPics.forEach(src => { if (src) { const im = new Image(); im.src = src; } });
       const show = i => {
