@@ -1255,7 +1255,7 @@ body.pc-page{--hc-ground:#FFFFFF}
   @keyframes ptocDrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 }
 /* the dropdown shows its scrollbar from the moment it opens, so it never looks like five options and stuck */
-.ptoc__panel--drop{scrollbar-width:thin;scrollbar-color:rgba(11,18,32,.35) transparent;scrollbar-gutter:stable}
+@supports not selector(::-webkit-scrollbar){.ptoc__panel--drop{scrollbar-width:thin;scrollbar-color:rgba(11,18,32,.35) transparent}}
 .ptoc__panel--drop::-webkit-scrollbar{width:10px}
 .ptoc__panel--drop::-webkit-scrollbar-track{background:transparent;margin:10px 0}
 .ptoc__panel--drop::-webkit-scrollbar-thumb{background:rgba(11,18,32,.28);border-radius:10px;border:3px solid #FFFFFF}
