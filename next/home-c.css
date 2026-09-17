@@ -2520,3 +2520,20 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 /* the film: "what's next" in orange, so its Book a demo turns blue */
 .hc-page .intro__act .btn[data-cta]:not(#_){background:#009CBD !important;border-color:#009CBD !important;color:#FFFFFF !important}
 .hc-page .intro__act .btn[data-cta]:not(#_):hover{background:#0E5F8E !important;border-color:#0E5F8E !important}
+
+/* ═══ Our clients: five logos under the closing tiles, all turning together with the
+   Experience motion (rise in from below, carried out the top) ═══ */
+.hc-page .ask-end .hc-clients{grid-column:1 / -1;margin-top:clamp(28px,4vw,48px)}
+.hc-page .ask-end .hc-clients__t{margin:0 0 16px;font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:#009CBD}
+.hc-page .ask-end .hc-clients__row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.hc-page .ask-end .hc-clients__cell{position:relative;height:clamp(64px,7vw,96px)}
+.hc-page .ask-end .hc-clients__cell + .hc-clients__cell::before{content:'';position:absolute;left:0;top:25%;bottom:25%;width:1px;background:rgba(11,18,32,.14)}
+.hc-page .ask-end .hc-clients__reel{position:absolute;inset:0;margin:auto;width:58%;height:34%;overflow:hidden}
+.hc-page .ask-end .hc-clients__logo{position:absolute;inset:0;background:#0B1220;
+  -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat;
+  transform:translateY(100%);will-change:transform;
+  animation:whyReel calc(var(--n,7) * 2.4s) cubic-bezier(.7,0,.3,1) calc(var(--i) * 2.4s) infinite both}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .ask-end .hc-clients__logo{animation:none}
+  .hc-page .ask-end .hc-clients__logo[style^="--i:0;"]{transform:none}
+}
