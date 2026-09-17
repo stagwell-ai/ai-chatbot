@@ -54,25 +54,21 @@
 .lead__hint[hidden]{display:none !important}
 
 /* ── accent: the important buttons in the brand orange (client palette, 2026-09-17)
-   Book a demo (every page, nav + hero + closing + the booking form), See every
-   product, and the Ask Stagwell AI launcher. Dark navy text: white on #FF6D24 is
-   2.8:1, #003349 is 4.8:1. :not(#_) outranks the page-level !important rules. ── */
-:root{--accent-btn:#FF6D24;--accent-btn-ink:#003349}
+   Book a demo (every page, nav + hero + closing + the booking form) and See every
+   product: orange with white text, a darker orange on hover. The Ask Stagwell AI
+   launcher stays in the palette blue #009CBD. :not(#_) outranks page-level rules. ── */
+:root{--accent-btn:#FF6D24;--accent-btn-hover:#D9531A}
 .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_),
 .hcs__all:not(#_),
-.lead__form .btn--dark:not(#_),
-#hcLaunchBtn:not(#_){
+.lead__form .btn--dark:not(#_){
   background:var(--accent-btn) !important;border-color:var(--accent-btn) !important;
-  color:var(--accent-btn-ink) !important;box-shadow:none !important}
+  color:#FFFFFF !important;box-shadow:none !important}
 .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_) *,
 .hcs__all:not(#_) *,
-.lead__form .btn--dark:not(#_) *,
-#hcLaunchBtn:not(#_) *,#hcLaunchBtn:not(#_) svg{color:var(--accent-btn-ink) !important}
+.lead__form .btn--dark:not(#_) *{color:#FFFFFF !important}
 .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_):hover,
 .hcs__all:not(#_):hover,
-.lead__form .btn--dark:not(#_):hover,
-#hcLaunchBtn:not(#_):hover{background:var(--accent-btn-ink) !important;border-color:var(--accent-btn-ink) !important;color:#FFFFFF !important}
-.btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_):hover *,
-.hcs__all:not(#_):hover *,
-.lead__form .btn--dark:not(#_):hover *,
-#hcLaunchBtn:not(#_):hover *,#hcLaunchBtn:not(#_):hover svg{color:#FFFFFF !important}
+.lead__form .btn--dark:not(#_):hover{background:var(--accent-btn-hover) !important;border-color:var(--accent-btn-hover) !important;color:#FFFFFF !important}
+#hcLaunchBtn:not(#_){background:#009CBD !important;color:#FFFFFF !important}
+#hcLaunchBtn:not(#_) svg{color:#FFFFFF !important}
+#hcLaunchBtn:not(#_):hover{background:#0E5F8E !important}
