@@ -283,7 +283,7 @@
       if (aud.geography.indexOf(sig.geographicScope) !== -1) { score += W.geographyFit; reasons.push('geo_fit:' + sig.geographicScope); }
       else { score += W.audienceMismatch; reasons.push('geo_mismatch:' + sig.geographicScope); }
     }
-    return { productId: p.id, name: p.name, score, reasons, matched };
+    return { productId: p.id, name: p.displayName || p.name, score, reasons, matched };
   }
 
   function confidence(ranked, C) {
@@ -356,7 +356,7 @@
       if (g) { kind = 'goal'; ids = list(g.candidates).slice(0, P.fromGoal); }
     }
     const items = ids.map(id => productById(id, data)).filter(p => p && p.active !== false).map(p => ({
-      id: p.id, name: p.name, line: p.cardDescription || p.positioning || '',
+      id: p.id, name: p.displayName || p.name, line: p.cardDescription || p.positioning || '',
       url: (p.urls && p.urls.productPage) || '/s/' + encodeURIComponent(p.id)
     }));
     return { kind: items.length ? kind : null, items };

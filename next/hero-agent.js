@@ -144,6 +144,13 @@ function wirePointers(el, from) {
 }
 function drawAsk(st) {
   const chips = st.suggestions.map(s => ({ label: s.label, value: s.value }));
+  /* ── ONE ASK PER SCREEN ──
+     The card used to carry its own line and three pills while the question
+     underneath asked for something else — two funnels at once, and the visitor
+     could not tell which was live ("I feel a little lost", client 2026-09-17).
+     The way deeper is now ONE chip on this question's own row, beside its own
+     answers: one turn, one row of options, one box. */
+  if (st.exploreOffer && st.exploreOffer.label) chips.push({ label: st.exploreOffer.label, value: '__x__root' });
   const onChip = chip => send(chip.value, chip.label);
   /* flags.pointers is OFF: the client's order names products once, at step 6
      ("it jumped to 6 with giving recommendations, then went back to 2") */
@@ -210,7 +217,17 @@ function render(st) {
     const onChip = chip => send(chip.value, chip.label);
     if (!quiet) {
       const bubble = H.ai(askText(st.message || ''), null, null, null);
-      if (x.panel && x.panel.items && x.panel.items.length) bubble.appendChild(panelEl(x.panel));
+      if (x.panel && x.panel.items && x.panel.items.length) {
+        /* a line introducing the rows, where the step has one ("Three things
+           set it apart:" over the differentiators) */
+        if (x.panel.after) {
+          const lead = document.createElement('p');
+          lead.className = 'turnb__text turnb__text--after';
+          lead.textContent = x.panel.after;
+          bubble.appendChild(lead);
+        }
+        bubble.appendChild(panelEl(x.panel));
+      }
       if (chips.length) H.chips(bubble, chips, onChip);
       /* head-aligned, like the recommendation: an explore step is an ANSWER,
          and the reader should be at its first line. settle() alone left the
@@ -543,20 +560,6 @@ function drawPreview(st) {
   b.querySelectorAll('[data-kimi-cta]').forEach(el => el.addEventListener('click', () => {
     try { K.clicked(el.dataset.kimiCta, el.dataset.kimiProduct, el.getAttribute('href')); } catch (e) {}
   }));
-  /* the way deeper, offered under the card and only there */
-  const off = st.exploreOffer;
-  if (off && copy().explore) {
-    const X = copy().explore;
-    const chips = [
-      { label: X.chipDifferentiators, value: '__x__differentiators' },
-      { label: X.chipUsecases, value: '__x__usecases' },
-      { label: X.chipConnects, value: '__x__connects' }
-    ];
-    const line = document.createElement('p');
-    line.className = 'reco__after'; line.textContent = off.label;
-    b.appendChild(line);
-    H.chips(b, chips, chip => send(chip.value, chip.label), 'turnb__chips--explore');
-  }
   H.type(b);
   H.settle(b, { head: true });
   try { const a = window.SAIANALYTICS; if (a) a.track('kimi_showcase_drawn', { cards: st.cards.length }); } catch (e) {}

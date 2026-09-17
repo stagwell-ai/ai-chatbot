@@ -81,7 +81,12 @@ try {
     ok(b.intro && /point you/.test(b.intro), 'led in with "' + b.intro + '"');
     const q = b.texts[b.texts.length - 1];
     ok(/\?/.test(q), 'then the question still follows: "' + q + '"');
-    ok(b.order.indexOf('pointers') < b.order.lastIndexOf('text') && b.order.lastIndexOf('text') < b.order.indexOf('chips'), 'in reading order: where to look → the question → its chips (' + b.order.join(' → ') + ')');
+    /* a typed question has no pills, and no longer carries an EMPTY pill row
+       either (2026-09-17) — so the order runs to the question and stops there */
+    const hasChips = b.order.indexOf('chips') !== -1;
+    ok(b.order.indexOf('pointers') < b.order.lastIndexOf('text'), 'in reading order: where to look → the question (' + b.order.join(' → ') + ')');
+    if (hasChips) ok(b.order.lastIndexOf('text') < b.order.indexOf('chips'), '   …and then its chips');
+    else ok(true, '   this question is typed, so it carries no pill row at all');
     ok(!/couple of quick questions/i.test(b.texts.join(' ')), 'no "a couple of quick questions" preamble');
     await linksKeepTheChat(page, 'pointers');
     /* "try it out and you will see how it jumps": a tall answer must open at

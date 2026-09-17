@@ -64,7 +64,11 @@ async function open(motion, viewport, cpu) {
 const settle = async page => { await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait'), null, { timeout: 15000 }); await page.waitForTimeout(400); };
 const st = page => page.evaluate(() => window.SAIKIMI.state());
 const tap = async (page, label) => { await page.click(`#agentThread .tag:not([disabled]):text-is("${label}")`); await settle(page); await page.waitForTimeout(300); };
-const rows = page => page.$$eval('#agentThread .xpanel li b', e => e.map(x => x.textContent));
+/* the rows of the MOST RECENT panel — the thread holds one per step now */
+const rows = page => page.$$eval('#agentThread .xpanel', els => {
+  const last = els[els.length - 1];
+  return last ? [...last.querySelectorAll('li b')].map(x => x.textContent) : [];
+});
 const say = async (page, text) => { await page.fill('#agentInput', text); await page.press('#agentInput', 'Enter'); await settle(page); };
 /* to a card for The Machine, the way a visitor gets there */
 async function toCard(page) {
@@ -81,9 +85,22 @@ try {
     await toCard(page);
     const s = await st(page);
     ok(s.cards.some(c => /Machine/.test(c.productName || '')), 'the card is The Machine (' + s.cards.map(c => c.productName).join(', ') + ')');
-    const chips = await page.$$eval('.turnb__chips--explore .tag', e => e.map(x => x.textContent));
-    ok(chips.length === 3, 'three ways in, under the card: ' + chips.join(' | '));
-    ok((await rows(page)).length === 0, 'and no detail on screen yet — the page is not reproduced');
+    /* ── ONE ASK PER SCREEN (client, 2026-09-17) ──
+       The card used to carry its own line and three pills while the question
+       underneath asked for something else: "now I have conflicting funnels…
+       I feel a little lost". One chip, on the question's own row. */
+    const rowsOfChips = await page.$$eval('#agentThread .turnb__chips', e => e.map(r => [...r.querySelectorAll('.tag')].map(t => t.textContent)));
+    ok(rowsOfChips.length === 1, 'exactly one row of options on screen (' + rowsOfChips.length + ')');
+    ok(/Tell me more about/.test(rowsOfChips[0][rowsOfChips[0].length - 1]),
+      '   the way deeper sits on the question\'s own row, last: ' + rowsOfChips[0].join(' | '));
+    ok(rowsOfChips.every(r => r.length), '   no empty pill rows');
+    const extras = await page.$$eval('#agentThread .reco__after, #agentThread .turnb__chips--explore', e => e.map(x => x.textContent));
+    ok(extras.length === 0, '   and the card carries no second ask of its own');
+    ok((await rows(page)).length === 0, 'no detail on screen yet — the page is not reproduced');
+    /* the visitor is never shown a routing label */
+    const shown = await page.evaluate(() => document.querySelector('#agentThread').textContent);
+    ok(!/family frame/i.test(shown), 'no routing label anywhere on the thread');
+    ok(/The Machine/.test(await page.$eval('.reco__name', e => e.textContent)), '   the card is titled "The Machine"');
     const words = await page.evaluate(() => document.querySelector('#agentThread').textContent.length);
     ok(words < 2600, 'the thread is still a conversation, not a page (' + words + ' chars)');
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
@@ -94,10 +111,16 @@ try {
   {
     const { ctx, page, state } = await open();
     await toCard(page);
-    await tap(page, 'What do teams use it for?');
+    await tap(page, 'Tell me more about The Machine');
     let s = await st(page);
+    ok(s.explore.node === 'root', 'the one chip opens the detour (' + s.explore.node + ')');
+    ok(/operating system for marketing/i.test(s.message), '   answering what it IS first: "' + String(s.message).slice(0, 60) + '…"');
+    ok((await rows(page)).length === 3, '   with the three differentiators straight away');
+    await tap(page, 'What do teams use it for?');
+    s = await st(page);
     ok(s.uiAction === 'EXPLORE' && s.explore.node === 'usecases', 'the use cases open (' + s.explore.node + ')');
-    ok((await rows(page)).length === 0, '   the groups are offered as chips, not listed out');
+    const before = await page.$$eval('#agentThread .xpanel', e => e.length);
+    ok(before === 1, '   the groups are offered as chips, not listed out (panels on screen: ' + before + ')');
     ok(s.suggestions.length === 6, '   five groups and the way out: ' + s.suggestions.map(x => x.label).join(' | '));
 
     await tap(page, 'Creative and content');
@@ -117,6 +140,7 @@ try {
     const { ctx, page, state } = await open();
     await toCard(page);
     const max = await page.evaluate(() => window.SAI.data.kimi.flags.exploreMaxDepth);
+    await tap(page, 'Tell me more about The Machine');
     await tap(page, 'What do teams use it for?');
     await tap(page, 'Creative and content');
     await tap(page, 'Governance and delivery');
@@ -133,7 +157,7 @@ try {
     await toCard(page);
     const before = await st(page);
     ok(before.question && before.question.id === 'company_size', 'the conversation was on ' + (before.question && before.question.id));
-    await tap(page, 'How is it different?');
+    await tap(page, 'Tell me more about The Machine');
     ok((await rows(page)).length === 3, '   the three differentiators are shown');
     await tap(page, 'Carry on');
     const after = await st(page);
@@ -179,6 +203,7 @@ try {
     const { ctx, page, state } = await open('no-preference', vp, cpu);
     await toCard(page);
     await page.evaluate(RECORDER);
+    await tap(page, 'Tell me more about The Machine');
     await tap(page, 'What do teams use it for?');
     await page.evaluate(() => { window.__rec.t0 = performance.now(); window.__rec.rows = []; });
     await page.click('#agentThread .tag:not([disabled]):text-is("Creative and content")');
@@ -195,7 +220,10 @@ try {
     ok(gaps.every(g => g > 20), '   one after another, not all at once: ' + gaps.map(g => Math.round(g) + 'ms').join(' '));
     ok(gaps.every(g => g < 400 * cpu), '   and close enough together to read as one list');
     ok(ends.length === 4, '   every row finishes its reveal (' + ends.length + ')');
-    const opacity = await page.$$eval('#agentThread .xpanel li', els => els.map(e => +getComputedStyle(e).opacity));
+    const opacity = await page.$$eval('#agentThread .xpanel', els => {
+      const last = els[els.length - 1];
+      return last ? [...last.children].map(e => +getComputedStyle(e).opacity) : [];
+    });
     ok(opacity.every(v => v === 1), '   and ends up visible: ' + opacity.join(','));
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
     await ctx.close();
@@ -206,9 +234,13 @@ try {
     const { ctx, page } = await open('reduce');
     await toCard(page);
     await page.evaluate(RECORDER);
+    await tap(page, 'Tell me more about The Machine');
     await tap(page, 'What does it connect to?');
     const rec = await page.evaluate(() => window.__rec);
-    const vis = await page.$$eval('#agentThread .xpanel li', els => els.map(e => +getComputedStyle(e).opacity));
+    const vis = await page.$$eval('#agentThread .xpanel', els => {
+      const last = els[els.length - 1];
+      return last ? [...last.children].map(e => +getComputedStyle(e).opacity) : [];
+    });
     ok(vis.length === 4 && vis.every(v => v === 1), 'the rows are simply there (' + vis.join(',') + ')');
     ok(rec.rows.length === 0, '   and nothing animated at all (' + rec.rows.length + ' events)');
     await ctx.close();
@@ -219,9 +251,13 @@ try {
     const { ctx, page } = await open('no-preference');
     await page.evaluate(() => { window.IntersectionObserver = undefined; });
     await toCard(page);
+    await tap(page, 'Tell me more about The Machine');
     await tap(page, 'What does it connect to?');
     await page.waitForTimeout(1600);
-    const vis = await page.$$eval('#agentThread .xpanel li', els => els.map(e => +getComputedStyle(e).opacity));
+    const vis = await page.$$eval('#agentThread .xpanel', els => {
+      const last = els[els.length - 1];
+      return last ? [...last.children].map(e => +getComputedStyle(e).opacity) : [];
+    });
     ok(vis.length === 4 && vis.every(v => v === 1), 'with no IntersectionObserver the rows still arrive (' + vis.join(',') + ')');
     await ctx.close();
   }
@@ -231,6 +267,23 @@ try {
      on screen, used to be judged as an answer to it: "I need the web address
      itself — like acme.com — so I can look it up" (client, 2026-09-17). The
      matcher already knew the name; nothing asked it. */
+  console.log('\n▶ asked as the OPENING message: answered, not funnelled');
+  {
+    const { ctx, page, state } = await open();
+    await say(page, 'i want more information about the machine');
+    const s = await st(page);
+    ok(s.uiAction === 'EXPLORE' && s.explore.node === 'root', 'the question is answered first (' + s.uiAction + ')');
+    ok(!/work email/i.test(s.message), '   not answered with "what\'s your work email?": "' + String(s.message).slice(0, 60) + '…"');
+    ok(/operating system for marketing/i.test(s.message), '   it says what The Machine IS');
+    ok((await rows(page)).length === 3, '   and shows the three differentiators without being asked again');
+    /* …and the funnel picks up the moment they are done */
+    await tap(page, 'Carry on');
+    const after = await st(page);
+    ok(after.uiAction === 'ASK' && after.suggestions.length >= 4, 'the conversation then starts properly (' + (after.question && after.question.id) + ')');
+    ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+    await ctx.close();
+  }
+
   console.log('\n▶ a product asked about by name opens the detour, from wherever the conversation is');
   {
     const { ctx, page, state } = await open();
@@ -247,9 +300,10 @@ try {
     ok(s.uiAction === 'EXPLORE', 'the question is understood as a question (' + s.uiAction + ')');
     ok(s.explore && s.explore.productId === 'machines_family', '   and opens on the product they NAMED: ' + (s.explore && s.explore.productId));
     ok(!/web address itself/.test(s.message), '   not answered with "I need the web address itself"');
-    ok(s.suggestions.length === 4, '   with its ways in: ' + s.suggestions.map(x => x.label).join(' | '));
+    ok(s.suggestions.length === 3, '   with its ways on: ' + s.suggestions.map(x => x.label).join(' | '));
+    ok(/operating system for marketing/i.test(s.message), '   and it answers what The Machine IS');
 
-    await tap(page, 'What does it connect to?');
+    await tap(page, 'What does it connect to?');   /* already inside the detour */
     ok((await rows(page)).length === 4, '   and it goes deep from there');
     await tap(page, 'Carry on');
     s = await st(page);
@@ -288,6 +342,7 @@ try {
   {
     const { ctx, page } = await open();
     await toCard(page);
+    await tap(page, 'Tell me more about The Machine');
     await tap(page, 'What do teams use it for?');
     await tap(page, 'Creative and content');
     await tap(page, 'Carry on');

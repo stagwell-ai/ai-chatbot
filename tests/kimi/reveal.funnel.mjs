@@ -163,7 +163,11 @@ try {
     ok(!end.caret, '   the caret is gone');
     ok(Math.abs(end.height - mid.height) < 2, '   and the bubble never changed height while writing (' + Math.round(mid.height) + ' → ' + Math.round(end.height) + ')');
     await page.waitForTimeout(500);
-    ok(await page.$eval('#agentThread .turnb--ai .turnb__chips', e => parseFloat(getComputedStyle(e).opacity) > .9), '   the pills arrive after it');
+    /* the pills wait for the last word — when the question has any. A typed
+       question carries no pill row at all now (2026-09-17). */
+    const pills = await page.$('#agentThread .turnb--ai .turnb__chips');
+    if (pills) ok(await pills.evaluate(e => parseFloat(getComputedStyle(e).opacity) > .9), '   the pills arrive after it');
+    else ok(true, '   this question is typed: no pill row to wait for');
     ok(end.text.length > 8, '   the words read as written ("' + end.text.slice(0, 60) + '…")');
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
     await ctx.close();

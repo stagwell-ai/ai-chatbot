@@ -397,7 +397,7 @@
         a.addEventListener('click', () => { if (state.site) { try { sessionStorage.setItem('sai-lead-site', state.site); } catch (e) {} } });
         t.appendChild(a);
       }
-      if (chips) t.appendChild(chipsRow(chips, onChip));
+      if (chips && chips.length) t.appendChild(chipsRow(chips, onChip));   /* [] is truthy: a typed question was getting an empty pill row */
       add(t);
       typeIn(t);        /* the button and the pills wait for the last word (home.css) */
       return t;

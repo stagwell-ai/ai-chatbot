@@ -11,7 +11,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { DATA, R, ROOT } from './_data.mjs';
+import { DATA, R, CARDS, ROOT } from './_data.mjs';
 
 const EX = DATA.explainers.products;
 const esc = x => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -68,6 +68,34 @@ test('answerOnly never reaches a page: the does-NOT-do list is for questions, no
       assert.equal(html.indexOf(esc(n.claim)), -1, id + ' page prints a does-not-do claim: ' + n.claim);
     });
   });
+});
+
+test('a visitor never sees a routing label: every product renders a name meant for people', () => {
+  R.activeProducts(DATA).forEach(p => {
+    const shown = p.displayName || p.name;
+    assert.ok(!/\(|\)|family frame|internal/i.test(shown), p.id + ' would show "' + shown + '"');
+  });
+  /* the one entry whose catalog name IS a routing label carries a display name */
+  const m = R.productById('machines_family', DATA);
+  assert.equal(m.displayName, 'The Machine');
+  assert.match(m.name, /family frame/, 'the routing label is kept for the engine');
+  /* and the card builds both its title and its why-line from the display name */
+  const reco = R.recommend({ intents: [{ id: 'marketing_operations', explicit: true }] }, DATA);
+  assert.equal(reco.primary, 'machines_family');
+  const card = CARDS.buildCards(reco, reco.signals, DATA, DATA.kimi.copy, {})[0];
+  assert.equal(card.productName, 'The Machine');
+  assert.ok(!/family frame/.test(card.whyThisFits), 'why-line: ' + card.whyThisFits);
+  assert.match(card.whyThisFits, /^The Machine/);
+});
+
+test('the detour answers before it asks: the root carries a summary, not a question back', () => {
+  Object.keys(EX).forEach(id => {
+    const x = EX[id];
+    assert.ok(x.summary && x.summary.length > 80, id + ' needs a summary to lead with');
+    assert.ok(!/\?\s*$/.test(x.summary), id + ' summary should answer, not ask: ' + x.summary.slice(-40));
+  });
+  assert.equal(DATA.kimi.copy.explore.root, '{summary}', 'the root step says the summary');
+  assert.ok(DATA.kimi.copy.explore.rootAfter, 'and leads into the differentiators');
 });
 
 test('The Machine carries everything the product team sent', () => {

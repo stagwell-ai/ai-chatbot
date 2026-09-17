@@ -75,14 +75,14 @@
        benchmarking and campaign impact" — the card's one-liner is not repeated */
     const caps = list(p.capabilityTags || p.valueProps).slice(0, 3).map(lowerFirst);
     const capabilities = caps.length ? joinAnd(caps) : desc.replace(/[.!]\s*$/, '');
-    const vars = { product: p.name, need, capability: desc, capabilities };
+    const vars = { product: p.displayName || p.name, need, capability: desc, capabilities };   /* never the routing label */
     let why;
     if (badge === 'BEST_FIT') why = override || tpl(need ? copy.whyFits : copy.whyFitsNoNeed, vars);
     else why = override || tpl(copy.whySecondary, vars);
     const learn = { type: 'LEARN_MORE', label: labels.LEARN_MORE || 'Learn more', url: (p.urls && p.urls.productPage) || '/s/' + encodeURIComponent(p.id) };
     return {
       productId: p.id,
-      productName: p.name,
+      productName: p.displayName || p.name,      /* never the routing label */
       logoUrl: (p.visual && p.visual.lockup) || p.lockup || null,
       badge,
       description: desc,

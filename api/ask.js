@@ -396,7 +396,7 @@ const VOCAB = {
 };
 
 const ABOUT = clean((KIMI_FILE && KIMI_FILE.copy && KIMI_FILE.copy.about) || 'Stagwell AI is a portfolio of agentic marketing solutions.');
-const PRODUCT_NAMES = SOLUTIONS.filter(s => s.active !== false).map(s => s.name).join(', ');
+const PRODUCT_NAMES = SOLUTIONS.filter(s => s.active !== false).map(s => s.displayName || s.name).join(', ');
 
 const INTERPRET_SYSTEM = [
   'You normalise what a visitor to a marketing-technology website says into a fixed vocabulary for a routing system.',
@@ -464,7 +464,7 @@ async function interpretMode(body, res) {
 function explainPrompts(solution, body) {
   const props = (Array.isArray(solution.capabilityTags) ? solution.capabilityTags : (solution.valueProps || [])).map(p => clean(p)).filter(Boolean).slice(0, 6);
   const facts = [
-    `Product: ${f(solution.name, 80)}.`,
+    `Product: ${f(solution.displayName || solution.name, 80)}.`,
     solution.cardDescription ? `What it does: ${f(solution.cardDescription, 400)}` : '',
     solution.positioning ? `Positioning: ${f(solution.positioning, 500)}` : '',
     props.length ? `Capabilities: ${props.join('; ')}.` : ''

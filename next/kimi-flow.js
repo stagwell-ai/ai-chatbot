@@ -561,10 +561,10 @@ function preview(reco) {
   st.previewed = true;
   const low = !reco.confidence || reco.confidence.level === 'low';
   st.cardsIntro = (low ? c.showcaseIntroLow : c.showcaseIntro) || c.recommendationIntroOpen || '';
-  st.after = c.showcaseAfter || null;
+  st.after = null;   /* the question under the card already says what is wanted */
   /* the card is on screen: the detour into its detail is offered here and
      nowhere else, so it can never start before there is a product to go into */
-  st.exploreOffer = exFor(reco.primary) ? { productId: reco.primary, label: tpl(c.exploreInvite || 'Want to go deeper on {product}?', { product: exName(reco.primary, exFor(reco.primary)) }) } : null;
+  st.exploreOffer = exFor(reco.primary) ? { productId: reco.primary, label: tpl(c.exploreInvite || 'Tell me more about {product}', { product: exName(reco.primary, exFor(reco.primary)) }) } : null;
   track('kimi_showcase_shown', Object.assign({ cards: cards.length, email_given: !!st.email }, recoProps()));
   return true;
 }
@@ -614,7 +614,8 @@ function advance(ack) {
 const EXPLORE_PREFIX = '__x__';
 const exData = () => (data().explainers && data().explainers.products) || {};
 const exFor = id => exData()[id] || null;
-const exName = (id, ex) => (ex && ex.name) || ((R() && R().productById(id, data()) || {}).name) || 'this';
+const pName = p => (p && (p.displayName || p.name)) || null;   /* never the routing label */
+const exName = (id, ex) => (ex && ex.name) || pName(R() && R().productById(id, data())) || 'this';
 const exCopy = () => Object.assign({
   root: 'What would you like to know about {product}?',
   differentiators: 'Three things set it apart:',
@@ -642,7 +643,14 @@ function exploreNode(pid, node) {
   if (has('useCaseGroups')) top.push(chip('usecases', c.chipUsecases));
   if (has('connectsTo')) top.push(chip('connects', c.chipConnects));
 
-  if (node === 'root') return { say: fill(c.root), panel: null, chips: top };
+  /* the first step ANSWERS: what it is, then the three things that set it
+     apart, and only then what else they might want (client, 2026-09-17) */
+  if (node === 'root') {
+    const summary = ex.summary || (R() && R().productById(pid, data()) || {}).cardDescription || '';
+    return { say: fill(c.root, { summary }) || summary,
+      panel: has('differentiators') ? { kind: 'diff', after: c.rootAfter, items: list(ex.differentiators).map(d => ({ title: d.title, line: d.line })) } : null,
+      chips: top.filter(x => x.id !== EXPLORE_PREFIX + 'differentiators') };
+  }
   if (node === 'differentiators') {
     return { say: fill(c.differentiators),
       panel: { kind: 'diff', items: list(ex.differentiators).map(d => ({ title: d.title, line: d.line })) },
@@ -771,6 +779,19 @@ async function start(opts) {
     st.rawProblemText = text.slice(0, 600);
     track('kimi_free_text_submitted', { length: text.length });
     noteHuman(text);
+    /* ── ANSWERING BEATS QUALIFYING ──
+       "i want more information about the machine", typed as the FIRST thing,
+       used to be read as a need and answered with "what's your work email?"
+       (client, 2026-09-17). A question about a named product is answered first;
+       the funnel picks up the moment they are done, through exploreDone(). */
+    if (flags().exploreMaxDepth !== 0) {
+      const named = askedAboutProduct(text);
+      if (named) {
+        track('kimi_explore_asked', { product: named, at: 'opening' });
+        explore('root', { productId: named });
+        return state();
+      }
+    }
     const before = knowledge();
     const read = await interpret(text);
     if (stale(e)) return state();
@@ -1341,7 +1362,7 @@ function book() {
   const c = copy();
   const r = st.reco || {};
   const p = r.primary && R() ? R().productById(r.primary, data()) : null;
-  const vars = { email: st.lead ? st.lead.email : '', phone: st.lead && st.lead.phone ? st.lead.phone : '', product: p ? p.name : 'the right product' };
+  const vars = { email: st.lead ? st.lead.email : '', phone: st.lead && st.lead.phone ? st.lead.phone : '', product: pName(p) || 'the right product' };
   st.status = 'BOOK'; st.uiAction = 'BOOK';
   st.message = tpl(c.bookIntro || 'Last thing — pick a time and a Stagwell AI specialist will walk you through {product}.', vars);
   st.action = { label: c.bookCta || 'Book a call', cta: 'demo' };

@@ -616,6 +616,23 @@ than a page:
   rendered on a page. They exist so a direct question gets an honest answer instead of an
   overclaim, and they are the guardrail the voice agent needs most.
 
+**One ask per screen.** The card used to carry its own line *and* three pills while the question
+underneath asked for something else entirely — "now I have conflicting funnels… I feel a little
+lost" (client, 2026-09-17). The way deeper is now a **single chip on the question's own row**
+(`copy.exploreInvite`, appended in `drawAsk`), the card's `showcaseAfter` line is gone because
+the question below already says what is wanted, and `H.ai()` no longer appends an EMPTY pill row
+for a typed question (`[]` is truthy — that dead div had been there all along).
+
+**The first step answers.** It used to reply "What would you like to know about The Machine?" —
+a question answered with a question. It now leads with the explainer's own `summary` and deals
+out the three differentiators straight away, then offers what else there is.
+
+**A visitor never sees a routing label.** `solutions.json` `name` may carry a qualifier for the
+engine — "Stagwell's Machines (family frame)" tells the scorer what the entry IS — and that
+string reached the recommendation card, as its title *and* inside its why-line. `displayName` is
+what people are allowed to see, and every render path uses it: the card, the why-line template,
+the way-finding, and the facts handed to the explain model.
+
 **Asked for in words.** `"i want to know about the machine"`, typed while the website question
 was on screen, used to be judged as an answer to it — "I need the web address itself, like
 acme.com" (client, 2026-09-17). The matcher already knew the name (`nameMentions()`); nothing
@@ -644,6 +661,9 @@ The fix itself is two parts: the step is head-aligned like the recommendation (`
 as it crosses into view, so a burst arriving together deals out together and a row scrolled to
 later simply appears. A 1.2s net shows any row that nothing ever observed, and that net has its
 own test with `IntersectionObserver` deleted.
+
+**Contentsquare** (funnel analysis and heatmaps) is a one-line tag before `</head>` on all 26
+pages. The product-page builder copies the homepage's head, so regenerated pages keep it.
 
 Covered by `npm run test:explore` (iterative, capped, comes back, never says the does-not-do
 list, dealt out on a stagger and simply shown when motion is off) and by the unit file above,

@@ -5,6 +5,8 @@
     "machines_family": {
       "name": "The Machine",
       "_nameNote": "What to call it on the page and in the chat. The catalog's own name for this entry is \"Stagwell's Machines (family frame)\", which is a routing label, not something to say to a visitor.",
+      "summary": "The Machine is Stagwell's operating system for marketing: it sits on top of the tools teams already use — Slack, Figma, Adobe, analytics platforms and project systems — and connects them into one system with shared memory, so context carries forward instead of being lost at every handoff.",
+      "_summaryNote": "The answer to \"what is it?\", said BEFORE anything is asked back. The detour's first step used to reply \"What would you like to know about The Machine?\", which answers a question with a question (client, 2026-09-17: \"there really isn't enough info about the machine\").",
       "source": "The Machine: EXTERNAL demo deck (the three differentiators, stated twice), the Machine Use Case Library, and the seller playbook's does-NOT-do table (client, 2026-09-17). Nothing here names a client, a price, a roadmap date or a person.",
       "differentiators": [
         {
