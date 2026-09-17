@@ -79,3 +79,10 @@ body.hc-b .hcb-trust .hc-clients__logo{position:absolute;inset:0;background:#0B1
   body.hc-b .hcb-trust .hc-clients__cell{height:84px}
   body.hc-b .hcb-trust .hc-clients__reel{width:78%;height:42%}
 }
+
+/* closing Book a demo tile: the tracked crowd behind it, darkened so the label reads */
+body.hc-b .ask-end .ask-end__ways .btn[data-cta]:not(#_){
+  background:linear-gradient(180deg,rgba(11,18,32,.72) 0%,rgba(11,18,32,.28) 60%,rgba(11,18,32,.5) 100%),url(/assets/img/cta/tracking-crowd.jpg) center 40% / cover no-repeat !important;
+  border-color:transparent !important;transition:background-size .6s cubic-bezier(.2,.7,.2,1)}
+body.hc-b .ask-end .ask-end__ways .btn[data-cta]:not(#_):hover{
+  background:linear-gradient(180deg,rgba(11,18,32,.6) 0%,rgba(11,18,32,.16) 60%,rgba(11,18,32,.4) 100%),url(/assets/img/cta/tracking-crowd.jpg) center 40% / cover no-repeat !important}
