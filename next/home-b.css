@@ -8,7 +8,7 @@
 @font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
 @font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Bold.ttf') format('truetype');font-weight:600 700;font-display:swap}
 @font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Heavy.ttf') format('truetype');font-weight:800 900;font-display:swap}
-body.hb-page{--display:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;--ui:'Roobert',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+body.hb-page{--display:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;--ui:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --sans:var(--ui);--hb-ink:#0B1220;--hb-mute:rgba(11,18,32,.48);--hb-line:rgba(11,18,32,.12);background:#FFFFFF;font-family:var(--ui)}
 .hb-wrap{max-width:1440px;margin-inline:auto;padding-inline:clamp(24px,4vw,64px)}
 
@@ -512,7 +512,7 @@ html.hb-intro .hero,html.hb-intro .hero *{animation-play-state:paused !important
    references"). Built at a fixed 400px, scaled to the picture by home-b.js; no drop shadow; no purple. */
 .hb-stack__media,.hb-card__media{position:relative;container:mk / inline-size}
 .mk{position:absolute;left:24px;bottom:24px;z-index:2;display:block;width:400px;box-sizing:border-box;padding:20px;border-radius:22px;background:#FFFFFF;
-  transform-origin:0 100%;pointer-events:none;text-align:left;color:#111318;font-family:var(--ui,'Roobert'),-apple-system,system-ui,sans-serif;
+  transform-origin:0 100%;pointer-events:none;text-align:left;color:#111318;font-family:var(--ui,'Montserrat'),-apple-system,system-ui,sans-serif;
   font-size:14px;line-height:1.3;letter-spacing:-.005em}
 .mk span,.mk b,.mk i,.mk u,.mk em{font-style:normal}
 .mk svg{display:block;width:16px;height:16px;flex-shrink:0}

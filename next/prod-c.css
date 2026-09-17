@@ -437,7 +437,7 @@ body.pc-page{--hc-rule:rgba(11,18,32,.16)}
 
 /* the page title is set in the serif, exactly as the homepage sets its own */
 .pc-page .pp-title,.pc-page .pp-title *,.pl-c .pl-hero .pp-title,.pl-c .pl-hero .pp-title *{
-  font-family:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',serif !important;
+  font-family:'Montserrat','Montserrat',Georgia,'Times New Roman',serif !important;
   font-weight:400 !important;letter-spacing:-.02em}
 /* the two ways in sit side by side, on the title's left edge */
 .pl-c .pl-hero .pp-acts{display:flex !important;flex-direction:row !important;flex-wrap:nowrap;

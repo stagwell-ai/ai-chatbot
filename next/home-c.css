@@ -79,7 +79,7 @@ body.hc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:
   src:url(./assets/fonts/v26-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2) format('woff2');
   unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
 
-body.hc-page{--hc-serif:'Newsreader',Georgia,'Times New Roman',serif}
+body.hc-page{--hc-serif:'Montserrat',Georgia,'Times New Roman',serif}
 
 /* ── every big title in the serif, sentence case, quiet weight ────────────────────────────────── */
 .hc-page .display,.hc-page .display--hero,.hc-page .display--intro,.hc-page .display--port,
@@ -209,7 +209,7 @@ body.hc-page{--hc-serif:'Newsreader',Georgia,'Times New Roman',serif}
   src:url(./assets/fonts/tiro-tamil-italic.woff2) format('woff2');
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 
-body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',serif}
+body.hc-page{--hc-serif:'Montserrat','Montserrat',Georgia,'Times New Roman',serif}
 /* one weight only: the markup asks some titles for 600, which would fake-bold them */
 .hc-page .display,.hc-page .display *{font-weight:400 !important}
 
@@ -696,7 +696,7 @@ body.hc-page{--hc-serif:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',seri
 
 /* ═══ the dashboard mockups, copied from option B and scoped to C so B is never touched ═══ */
 .hc-page .mk{position:absolute;left:24px;bottom:24px;z-index:2;display:block;width:400px;box-sizing:border-box;padding:20px;border-radius:22px;background:#FFFFFF;
-  transform-origin:0 100%;pointer-events:none;text-align:left;color:#111318;font-family:var(--ui,'Roobert'),-apple-system,system-ui,sans-serif;
+  transform-origin:0 100%;pointer-events:none;text-align:left;color:#111318;font-family:var(--ui,'Montserrat'),-apple-system,system-ui,sans-serif;
   font-size:14px;line-height:1.3;letter-spacing:-.005em}
 .hc-page .mk span,.hc-page .mk b,.hc-page .mk i,.hc-page .mk u,.hc-page .mk em{font-style:normal}
 .hc-page .mk svg{display:block;width:16px;height:16px;flex-shrink:0}
@@ -1115,7 +1115,7 @@ body.hc-page{--hc-ground:#FBFBFA;--hc-edge:#E7E7E3}
 @font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
 @font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Bold.ttf') format('truetype');font-weight:600 700;font-display:swap}
 @font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Heavy.ttf') format('truetype');font-weight:800 900;font-display:swap}
-body.hc-page{--hc-title:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
+body.hc-page{--hc-title:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page .display,.hc-page .display *,
 .hc-page .hero .display,.hc-page .hero .display *,
 .hc-page .chat-over__title,.hc-page .chat-over__title *,
@@ -1629,12 +1629,12 @@ body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
 
 /* nothing on this page falls back to a serif: the token itself now points at the title face, so
    even a rule we missed lands on Roobert */
-body.hc-page{--hc-serif:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif}
+body.hc-page{--hc-serif:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif}
 .hc-page h1,.hc-page h2,.hc-page h3,.hc-page .display,.hc-page .display *,
 .hc-page .hero .display,.hc-page .hero .display *{font-family:var(--hc-title) !important}
 
 /* the main title goes back to the serif it had — Tiro Tamil — and nothing else follows it */
-body.hc-page{--hc-head:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',serif}
+body.hc-page{--hc-head:'Montserrat','Montserrat',Georgia,'Times New Roman',serif}
 .hc-page .hero .display--hero,.hc-page .hero .display--hero *{font-family:var(--hc-head) !important;
   font-weight:400 !important;letter-spacing:-.015em}
 /* the Why heading joins the hero in the serif */
@@ -1642,8 +1642,8 @@ body.hc-page{--hc-head:'Tiro Tamil','Newsreader',Georgia,'Times New Roman',serif
   font-weight:400 !important;letter-spacing:-.015em}
 
 /* ═══ every sans on this page is Roobert; the serif stays on the two titles ═════════════════════ */
-body.hc-page{--ui:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
-  --sans:'Roobert','Helvetica Neue',Helvetica,Arial,sans-serif;
+body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --sans:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
   font-family:var(--ui)}
 .hc-page p,.hc-page li,.hc-page a,.hc-page button,.hc-page input,.hc-page select,.hc-page textarea,
 .hc-page span,.hc-page .btn,.hc-page .tag,.hc-page .hcs__desc,.hc-page .why__d,
