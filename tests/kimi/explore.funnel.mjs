@@ -29,11 +29,27 @@ const ok = (cond, msg) => { if (cond) console.log('  ok   ' + msg); else { failu
 
 const browser = await chromium.launch({ args: ['--no-sandbox'] });
 
-async function open(motion) {
-  const ctx = await browser.newContext({ viewport: { width: 1360, height: 1000 }, reducedMotion: motion || 'reduce' });
+/* records what the reader actually saw: every animationstart / animationend on
+   a panel row, with the row's position in the viewport at that instant */
+const RECORDER = () => {
+  window.__rec = { t0: performance.now(), rows: [] };
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => {
+    if (n.nodeType !== 1 || !n.classList || !n.classList.contains('xpanel')) return;
+    Array.prototype.forEach.call(n.children, (li, i) => ['animationstart', 'animationend'].forEach(ev =>
+      li.addEventListener(ev, () => {
+        const r = li.getBoundingClientRect();
+        window.__rec.rows.push({ i, ev: ev.slice(9), t: performance.now() - window.__rec.t0,
+          top: Math.round(r.top), inView: r.top < innerHeight && r.bottom > 0 });
+      })));
+  }))).observe(document.querySelector('#agentThread'), { childList: true, subtree: true });
+};
+
+async function open(motion, viewport, cpu) {
+  const ctx = await browser.newContext({ viewport: viewport || { width: 1360, height: 1000 }, reducedMotion: motion || 'reduce' });
   const page = await ctx.newPage();
   const state = { errors: [] };
   page.on('pageerror', e => state.errors.push(String(e.message)));
+  if (cpu && cpu > 1) { const cdp = await ctx.newCDPSession(page); await cdp.send('Emulation.setCPUThrottlingRate', { rate: cpu }); }
   await page.route('**/api/ask', r => {
     const b = JSON.parse(r.request().postData() || '{}');
     if (b.mode === 'research') return r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"known":false}' });
@@ -148,28 +164,65 @@ try {
     await ctx.close();
   }
 
-  console.log('\n▶ animated: the rows are dealt out, and motion-off simply shows them');
-  {
-    const { ctx, page, state } = await open('no-preference');
+  /* ── ANIMATION, MEASURED RATHER THAN DECLARED ──
+     This suite used to read animationName and animationDelay off the computed
+     style and call that "animated". It passed while every row of a
+     second-level panel dealt itself out BELOW THE FOLD on both a desktop and a
+     phone — the panel is appended while the thread is still travelling to it,
+     so the stagger played to an empty room. A declaration is not a reveal.
+     What follows records real animationstart / animationend events with the
+     row's position at that instant, and asserts what the reader actually saw. */
+  for (const [label, vp, cpu] of [['desktop', { width: 1360, height: 1000 }, 1],
+                                  ['phone', { width: 390, height: 844 }, 1],
+                                  ['phone on a slow processor', { width: 390, height: 844 }, 4]]) {
+    console.log('\n▶ animated, ' + label + ': every row deals out where it can be seen');
+    const { ctx, page, state } = await open('no-preference', vp, cpu);
     await toCard(page);
-    await tap(page, 'What does it connect to?');
-    const anim = await page.$$eval('#agentThread .xpanel li', els => els.map(e => ({
-      name: getComputedStyle(e).animationName, delay: getComputedStyle(e).animationDelay
-    })));
-    ok(anim.length === 4 && anim.every(a => a.name === 'xrow'), 'every row is dealt in (' + anim.length + ' rows)');
-    ok(new Set(anim.map(a => a.delay)).size === anim.length, '   one after another, not all at once: ' + anim.map(a => a.delay).join(' '));
-    await page.waitForTimeout(900);
-    const shown = await page.$$eval('#agentThread .xpanel li', els => els.every(e => +getComputedStyle(e).opacity === 1));
-    ok(shown, '   and they all end up visible');
+    await page.evaluate(RECORDER);
+    await tap(page, 'What do teams use it for?');
+    await page.evaluate(() => { window.__rec.t0 = performance.now(); window.__rec.rows = []; });
+    await page.click('#agentThread .tag:not([disabled]):text-is("Creative and content")');
+    await page.waitForTimeout(2600 * cpu);
+    const rec = await page.evaluate(() => window.__rec);
+    const starts = rec.rows.filter(r => r.ev === 'start').sort((a, b) => a.t - b.t);
+    const ends = rec.rows.filter(r => r.ev === 'end');
+    ok(starts.length === 4, 'all four rows animate (' + starts.length + ')');
+    const unseen = starts.filter(r => !r.inView);
+    ok(unseen.length === 0, 'every row is ON SCREEN when it deals in' +
+      (unseen.length ? ' — ' + unseen.length + ' were not: tops ' + unseen.map(r => r.top).join(',') + ' in a ' + vp.height + 'px viewport' : ''));
+    ok(starts.every((r, i) => i === 0 || r.i !== starts[i - 1].i), '   they are distinct rows');
+    const gaps = starts.slice(1).map((r, i) => r.t - starts[i].t);
+    ok(gaps.every(g => g > 20), '   one after another, not all at once: ' + gaps.map(g => Math.round(g) + 'ms').join(' '));
+    ok(gaps.every(g => g < 400 * cpu), '   and close enough together to read as one list');
+    ok(ends.length === 4, '   every row finishes its reveal (' + ends.length + ')');
+    const opacity = await page.$$eval('#agentThread .xpanel li', els => els.map(e => +getComputedStyle(e).opacity));
+    ok(opacity.every(v => v === 1), '   and ends up visible: ' + opacity.join(','));
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
     await ctx.close();
   }
+
+  console.log('\n▶ motion off: no animation at all, the rows are simply there');
   {
     const { ctx, page } = await open('reduce');
     await toCard(page);
+    await page.evaluate(RECORDER);
     await tap(page, 'What does it connect to?');
+    const rec = await page.evaluate(() => window.__rec);
     const vis = await page.$$eval('#agentThread .xpanel li', els => els.map(e => +getComputedStyle(e).opacity));
-    ok(vis.length === 4 && vis.every(v => v === 1), 'motion off: the rows are simply there (' + vis.join(',') + ')');
+    ok(vis.length === 4 && vis.every(v => v === 1), 'the rows are simply there (' + vis.join(',') + ')');
+    ok(rec.rows.length === 0, '   and nothing animated at all (' + rec.rows.length + ' events)');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the safety net: a row nothing ever observes is still shown');
+  {
+    const { ctx, page } = await open('no-preference');
+    await page.evaluate(() => { window.IntersectionObserver = undefined; });
+    await toCard(page);
+    await tap(page, 'What does it connect to?');
+    await page.waitForTimeout(1600);
+    const vis = await page.$$eval('#agentThread .xpanel li', els => els.map(e => +getComputedStyle(e).opacity));
+    ok(vis.length === 4 && vis.every(v => v === 1), 'with no IntersectionObserver the rows still arrive (' + vis.join(',') + ')');
     await ctx.close();
   }
 

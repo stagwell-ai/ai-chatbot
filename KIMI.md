@@ -619,6 +619,22 @@ than a page:
 `answer()` reads an explore chip **before** its status guards: once the detour is open the
 uiAction is `EXPLORE`, and those guards would otherwise drop every tap after the first.
 
+**How the animation is tested.** The first version of this suite read `animationName` and
+`animationDelay` off the computed style and called that "animated" — and it passed while every
+row of a second-level panel dealt itself out BELOW THE FOLD, on a desktop and on a phone. A
+declaration is not a reveal. The suite now installs a recorder that captures real
+`animationstart` / `animationend` events together with the row's position at that instant, and
+asserts what the reader actually saw: every row on screen when it deals in, distinct rows, gaps
+above 20ms and under 400ms, all four finishing. It runs on three profiles — desktop, phone, and
+a phone at 4× CPU throttling through CDP — because the bug only appeared when the scroll won the
+race, which a fast machine hides. Reverting the fix fails it six times.
+
+The fix itself is two parts: the step is head-aligned like the recommendation (`H.settle(bubble,
+{ head: true })`), and the stagger is gated on being seen — `dealIn()` hands each row its `--d`
+as it crosses into view, so a burst arriving together deals out together and a row scrolled to
+later simply appears. A 1.2s net shows any row that nothing ever observed, and that net has its
+own test with `IntersectionObserver` deleted.
+
 Covered by `npm run test:explore` (iterative, capped, comes back, never says the does-not-do
 list, dealt out on a stagger and simply shown when motion is off) and by the unit file above,
 which also checks nothing restricted — a client, a price, a person, a credential, a roadmap

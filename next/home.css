@@ -1751,8 +1751,14 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
    the same stagger the product pages use, and the words type in above them. */
 .xpanel{margin:12px 0 0;padding:0;list-style:none;border-top:1px solid rgba(11,18,32,.12)}
 .xpanel li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 12px;padding:13px 0;
-  border-bottom:1px solid rgba(11,18,32,.12);opacity:0;transform:translateY(6px);
-  animation:xrow .42s cubic-bezier(.22,.9,.3,1) forwards;animation-delay:calc(var(--i,0) * .085s + .12s)}
+  border-bottom:1px solid rgba(11,18,32,.12);opacity:0;transform:translateY(6px)}
+/* the rows deal out when they are actually SEEN, not on a blind timer: the
+   panel arrives while the thread is still scrolling to it, and a stagger that
+   starts on append plays itself out below the fold — measured 4 of 4 rows
+   revealed off-screen on both desktop and a phone (2026-09-17). hero-agent.js
+   hands each row its --d as it crosses into view, so a row that arrives late
+   deals in immediately rather than waiting out a stagger nobody watched. */
+.xpanel li.is-in{animation:xrow .42s cubic-bezier(.22,.9,.3,1) forwards;animation-delay:var(--d,0s)}
 @keyframes xrow{to{opacity:1;transform:none}}
 .xpanel__n{font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--teal);padding-top:4px}
 .xpanel b{display:block;font-family:var(--display);font-size:15.5px;font-weight:600;line-height:1.3;color:var(--ink)}
@@ -1763,5 +1769,5 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .chat-over--live .xpanel b{color:#F1FAFF}
 .chat-over--live .xpanel span{color:rgba(241,250,255,.72)}
 @media (prefers-reduced-motion:reduce){
-  .xpanel li{opacity:1;transform:none;animation:none}
+  .xpanel li,.xpanel li.is-in{opacity:1;transform:none;animation:none}
 }

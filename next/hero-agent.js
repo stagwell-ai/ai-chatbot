@@ -212,7 +212,11 @@ function render(st) {
       const bubble = H.ai(askText(st.message || ''), null, null, null);
       if (x.panel && x.panel.items && x.panel.items.length) bubble.appendChild(panelEl(x.panel));
       if (chips.length) H.chips(bubble, chips, onChip);
-      H.settle(bubble);
+      /* head-aligned, like the recommendation: an explore step is an ANSWER,
+         and the reader should be at its first line. settle() alone left the
+         panel below the fold — measured, every row of a second-level panel
+         dealt itself out where nobody could see it (2026-09-17). */
+      H.settle(bubble, { head: true });
     } else if (chips.length && window.SAIVOICE.offerChips) {
       window.SAIVOICE.offerChips(chips, chip => send(chip.value, chip.label));
     }
@@ -475,8 +479,19 @@ function drawForm(st) {
 }
 
 /* ── the recommendation (brief §20–§23): cards from view models ─────────── */
-/* the rows of an explore panel. They are dealt out by CSS on a stagger, so the
-   list arrives a line at a time under the words that introduce it. */
+/* ── the rows of an explore panel ──
+   They deal out one after another — but only once they are actually on screen.
+   The panel is appended while the thread is still scrolling down to it, so a
+   stagger that starts on append plays out below the fold: measured, every row
+   of a second-level panel revealed itself where nobody could see it, on a
+   desktop and on a phone (2026-09-17). Each row is handed its delay as it
+   crosses into view instead, so a burst that arrives together deals out
+   together, and a row scrolled to later simply appears.
+
+   BURST_GAP is how long a burst stays open: rows that come into view within
+   that window share one stagger, and a row arriving after it starts at zero
+   rather than waiting out a queue nobody watched. */
+const ROW_STEP = 85, BURST_GAP = 400;
 function panelEl(panel) {
   const ul = document.createElement('ul');
   ul.className = 'xpanel xpanel--' + (panel.kind || 'rows');
@@ -487,7 +502,29 @@ function panelEl(panel) {
       '<div><b>' + H.esc(it.title) + '</b><span>' + H.esc(it.line) + '</span></div>';
     ul.appendChild(li);
   });
+  dealIn(ul);
   return ul;
+}
+/* every row ends up visible whatever happens: no observer, a hidden thread, a
+   panel that never intersects — the net below shows them anyway */
+function dealIn(ul) {
+  const rows = Array.prototype.slice.call(ul.children);
+  const show = (li, d) => { li.style.setProperty('--d', (d || 0) + 'ms'); li.classList.add('is-in'); };
+  if (REDUCED || typeof IntersectionObserver !== 'function') { rows.forEach(li => show(li, 0)); return; }
+  let n = 0, last = 0;
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      const now = Date.now();
+      if (now - last > BURST_GAP) n = 0;      /* a new burst: start the stagger again */
+      last = now;
+      show(e.target, n++ * ROW_STEP);
+    });
+  }, { threshold: .2 });
+  rows.forEach(li => io.observe(li));
+  /* …and if none of that ever fires, they are shown a second later regardless */
+  setTimeout(() => rows.forEach(li => { if (!li.classList.contains('is-in')) { io.unobserve(li); show(li, 0); } }), 1200);
 }
 
 /* the first look: the same cards, in their own bubble, with the composer left
