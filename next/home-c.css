@@ -2558,3 +2558,9 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 /* New Voices, drawn: the voice canvas standing in for its picture */
 .call__voice--pic{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;border-radius:inherit}
 .pc-page .pp-more__media{position:relative;overflow:hidden}
+
+/* phones: the film takes more of the screen (was 4:5, ~480px) — tall, not full-screen */
+@media (max-width:760px){
+  .hc-page .intro__media:not(#_){aspect-ratio:auto !important;height:clamp(520px,72svh,680px) !important}
+  .hc-page .intro__media:not(#_) .intro__pic{width:100%;height:100%;object-fit:cover}
+}
