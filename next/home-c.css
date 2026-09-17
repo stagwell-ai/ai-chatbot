@@ -2482,3 +2482,15 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (min-width:1024px){
   .hc-page #why .why__item:not(#_) > .why__d{max-width:340px !important}
 }
+
+/* Experience: the logos travel through a short window in the middle of the box, not
+   the whole height; the window crops them as they pass */
+.hc-page #why .why__reel{position:absolute;inset:0;margin:auto;width:52%;height:18%;overflow:hidden}
+.hc-page #why .why__reel .why__logo{width:100%;height:100%;animation-name:whyReel}
+@keyframes whyReel{
+  0%{transform:translateY(100%)}
+  4%{transform:translateY(0)}
+  13%{transform:translateY(0)}
+  17.3%{transform:translateY(-100%)}
+  100%{transform:translateY(-100%)}
+}
