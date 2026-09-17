@@ -2371,3 +2371,6 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (min-width:1024px){
   .hc-page .intro__over .display--intro{width:min(100%,1092px) !important;max-width:none !important}
 }
+
+/* ── H1: Medium (500), not Regular, not Black ─────────────────────────────── */
+.hc-page h1:not(#_),.hc-page h1:not(#_) *{font-weight:500 !important}
