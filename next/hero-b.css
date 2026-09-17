@@ -128,3 +128,8 @@ body.hc-b #why .display--cos:not(#_) *{font-size:clamp(40px,1rem + 3.9vw,78px) !
   letter-spacing:-.02em !important;font-weight:400 !important;text-transform:none !important;text-align:center !important}
 body.hc-b #why .display--cos:not(#_){display:block !important;width:100% !important;max-width:none !important;margin:0 auto clamp(48px,6vw,96px) !important}
 body.hc-b #why .display--cos:not(#_) .ln{display:block !important}
+
+/* Experience: the event picture, darkened, with the turning logos small and white on top */
+body.hc-b #why .why__slot--logos:not(#_){background:linear-gradient(rgba(11,18,32,.42),rgba(11,18,32,.42)),#0B1220 url(/assets/img/why/experience-event.jpg) center / cover no-repeat !important}
+body.hc-b #why .why__slot--logos:not(#_) .why__reel{width:30% !important;height:10% !important;z-index:1}
+body.hc-b #why .why__slot--logos:not(#_) .why__logo{background:#FFFFFF !important}
