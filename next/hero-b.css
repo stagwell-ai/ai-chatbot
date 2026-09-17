@@ -19,7 +19,6 @@ body.hc-b .chat-over .chat-over__title:not(#_) em,
 body.hc-b .chat-over .chat-over__title:not(#_) em *{color:inherit !important}
 body.hc-b #why .display--cos:not(#_){color:#0B1220 !important}
 body.hc-b .ask-end .hc-clients__t:not(#_){color:rgba(11,18,32,.56) !important}
-body.hc-b .hc-inlink:not(#_),
 body.hc-b .call__edit:not(#_),
 body.hc-b .stat__n span:not(#_){color:#0B1220 !important}
 
@@ -86,3 +85,10 @@ body.hc-b .ask-end .ask-end__ways .btn[data-cta]:not(#_){
   border-color:transparent !important;transition:background-size .6s cubic-bezier(.2,.7,.2,1)}
 body.hc-b .ask-end .ask-end__ways .btn[data-cta]:not(#_):hover{
   background:linear-gradient(180deg,rgba(11,18,32,.68) 0%,rgba(11,18,32,.24) 55%,rgba(11,18,32,.45) 100%),url(/assets/img/cta/crosswalk-woman.jpg) center 45% / cover no-repeat !important}
+
+/* "Our solutions" (Extensible) keeps its blue: the words match their underline */
+body.hc-b .hc-inlink:not(#_){color:#009CBD !important}
+
+/* the hero title a touch heavier: Roobert has no Medium, so a fine stroke adds the weight */
+body.hc-b .hero .display--hero:not(#_),
+body.hc-b .hero .display--hero:not(#_) *{-webkit-text-stroke:.5px #0B1220;paint-order:stroke fill}
