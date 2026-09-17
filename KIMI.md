@@ -590,6 +590,19 @@ test's floor is 42 so a stray keyword cannot pass unnoticed. What changed:
   `askEmail()` also offers `copy.emailSkipChip` as a pill, so the way out never depends on the
   matcher reading their words. `order.funnel.mjs` holds both halves — four refusals, the pill,
   and three typos that must still be treated as typos.
+- **The Stagwell network is PRE-FETCHED** (client, 2026-09-17: "here are some list of companies
+  that we should just have pre fetched"). `data/network.json` is the client's research document —
+  53 domains, with where each is based and what it does, in its own words. `research(domain)` now
+  answers from it BEFORE it asks a model: no call, no two-second wait, and nothing that can be
+  invented about a colleague. A match sets `findings.network`, and the agent says so rather than
+  reciting a guess: *"Anomaly — so you're inside the network."* Sub-domains match
+  (`mail.assemblyglobal.com` → Assembly); look-alikes do not (`notanomaly.com` is somebody else).
+  The file carries no headcount and no competitors because the document gives none, so the flow
+  asks about size exactly as it would for anyone.
+  The document is not the whole network — its own caveat says so, and two domains the site sells
+  from are missing from it (`harrisquest.com`, `newvoices.ai`). A product's own site is a colleague
+  whatever the list says, so `netFor()` falls back to the catalog, which already carries approved
+  words for every product. `network.test.mjs` names that pair, and fails if a third appears.
 - **The model** (`api/ask.js` INTERPRET_SYSTEM) is shown the sheet's prompts as worked examples
   under each intent (`taxonomy.json` `examples`, "match by meaning, not by wording"). It still
   only ever names intents; the scorer names the product.

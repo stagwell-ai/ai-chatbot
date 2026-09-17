@@ -13,7 +13,7 @@ window.STAGDATA = (() => {
      product-discovery conversation — next/kimi-flow.js and the pure core it
      runs on (recommend.js, select-question.js) */
   const FILES = ['questions', 'routing', 'solutions', 'campaigns', 'brand', 'messaging',
-    'goals', 'taxonomy', 'scoring', 'kimi', 'explainers'];
+    'goals', 'taxonomy', 'scoring', 'kimi', 'explainers', 'network'];
   const grab = name => fetch(`/data/${name}.json`)
     .then(r => (r.ok ? r.json() : null))
     .catch(() => null);

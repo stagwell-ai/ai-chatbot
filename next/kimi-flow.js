@@ -425,8 +425,55 @@ function bandFromEmployees(n) {
   return B[B.length - 1].id;
 }
 
+/* ── THE NETWORK, PRE-FETCHED ────────────────────────────────────────────────
+   "here are some list of companies that we should just have pre fetched and we
+   can use this to provide info if they use the product" (client, 2026-09-17).
+
+   data/network.json is the client's own research document, 53 Stagwell domains.
+   A visitor whose address is one of them is not a prospect to be looked up —
+   they are inside the network, and we already know who they are. So the lookup
+   answers from the file: no model call, no two-second wait, and nothing that
+   can be invented about a colleague. It carries no headcount and no
+   competitors, so those stay null and the flow asks about size as it always
+   would. The catalog's own products live here too (BERA.ai, UNICEPTA, IMAI…)
+   — a visitor from one of those is a colleague as well. */
+const netList = () => list((data().network || {}).companies);
+const bareHost = x => String(x || '').toLowerCase().replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '');
+/* their domain, or a sub-domain of it — but never a look-alike that merely
+   ends with it ("notanomaly.com" is somebody else) */
+const hostIs = (theirs, given) => {
+  const n = bareHost(theirs), d = bareHost(given);
+  return !!n && !!d && (n === d || d.slice(-(n.length + 1)) === '.' + n);
+};
+function netFor(domain) {
+  if (!bareHost(domain)) return null;
+  const hit = netList().find(c => hostIs(c.domain, domain));
+  if (hit) return { id: hit.id, name: hit.name, domain: bareHost(hit.domain), based: hit.based || null, summary: hit.summary || null };
+  /* THE RESEARCH DOCUMENT IS NOT THE WHOLE NETWORK — its own caveat says so,
+     and two domains the site sells from (harrisquest.com, newvoices.ai) are
+     not in it. A product's own site is a colleague whatever the list says, and
+     the catalog already carries approved words for it, so it answers from
+     there rather than from a model. */
+  const r = R(); if (!r) return null;
+  const p = list(r.activeProducts(data())).find(x =>
+    hostIs(x.url, domain) || hostIs((x.urls || {}).externalWebsite, domain) || hostIs(x.signupUrl, domain));
+  if (!p) return null;
+  /* `based` is a PLACE and only the document has one. The catalog's whoFor is
+     an audience — "Insights and brand leaders" is not a head office. */
+  return { id: p.id, name: p.displayName || p.name, domain: bareHost(p.url || (p.urls || {}).externalWebsite || p.signupUrl),
+    based: null, audience: p.whoFor || null, summary: p.cardDescription || p.positioning || null };
+}
+
 async function research(domain) {
   const S = eng();
+  /* the network first: we already know these, so nothing is asked of a model */
+  const inside = netFor(domain);
+  if (inside) {
+    track('kimi_site_read', { domain, known: true, network: true, company: inside.id });
+    return { domain: inside.domain, name: inside.name, industry: null, employees: null,
+      companySize: null, competitors: [], network: true, based: inside.based || null,
+      audience: inside.audience || null, summary: inside.summary };
+  }
   if (!flags().llm || !S || typeof S._ask !== 'function' || !domain) return null;
   try {
     const j = await withTimeout(S._ask({ mode: 'research', domain }, RESEARCH_MS), RESEARCH_MS + 500);
@@ -451,7 +498,8 @@ function absorbFindings(f) {
   if (f.companySize && !st.companySize) { st.companySize = f.companySize; setSlot('size_tier', sizeTier(f.companySize), 'research'); }
   if (f.industry && !st.industry) st.industry = f.industry;
   if (f.name) setSlot('company', f.name, 'research');
-  track('kimi_site_read', { domain: f.domain, known: true, industry: f.industry || null, size: f.companySize || null, competitors: (f.competitors || []).length });
+  if (f.network) setSlot('stagwell_network', f.domain, 'research');
+  track('kimi_site_read', { domain: f.domain, known: true, network: !!f.network, industry: f.industry || null, size: f.companySize || null, competitors: (f.competitors || []).length });
 }
 
 /* ── THE FAST TRACK ──

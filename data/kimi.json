@@ -291,6 +291,7 @@
       "reading": "Reading {domain}…",
       "foundHeader": "Here's what I can see about {name}:",
       "foundHeaderNoName": "Here's what I can see about {domain}:",
+      "foundNetwork": "{name} — so you're inside the network. Here's what I have:",
       "notFound": "I couldn't find much on {domain} from here — no matter, let's carry on.",
       "skipped": "No problem.",
       "needDomain": "I need the web address itself — like acme.com — so I can look it up.",
@@ -298,7 +299,10 @@
       "labels": {
         "industry": "Industry",
         "size": "Size",
-        "competitors": "Compared with"
+        "competitors": "Compared with",
+        "based": "Based",
+        "does": "What they do",
+        "audience": "Who it's for"
       },
       "sizeBands": {
         "micro": "under 20 people",

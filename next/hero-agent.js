@@ -104,7 +104,15 @@ function drawFindings(st) {
   if (f.industry) rows.push([L.industry || 'Industry', f.industry]);
   if (f.companySize) rows.push([L.size || 'Size', (r.sizeBands || {})[f.companySize] || f.companySize]);
   if (f.competitors && f.competitors.length) rows.push([L.competitors || 'Compared with', f.competitors.join(', ')]);
-  const head = f.name ? tpl(r.foundHeader, { name: f.name }) : tpl(r.foundHeaderNoName, { domain: f.domain });
+  /* a Stagwell address: we already knew them, and what we know is their own
+     words from data/network.json, not a guess about a colleague */
+  if (f.network) {
+    if (f.based) rows.push([L.based || 'Based', f.based]);
+    if (f.audience) rows.push([L.audience || "Who it's for", f.audience]);
+    if (f.summary) rows.push([L.does || 'What they do', f.summary]);
+  }
+  const head = f.network ? tpl(r.foundNetwork || r.foundHeader, { name: f.name, domain: f.domain })
+    : f.name ? tpl(r.foundHeader, { name: f.name }) : tpl(r.foundHeaderNoName, { domain: f.domain });
   const bubble = H.ai(H.esc(head), null, null, null);
   if (rows.length) {
     bubble.insertAdjacentHTML('beforeend',
