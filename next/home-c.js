@@ -754,3 +754,88 @@
     }).observe(cv);
   } else { on = true; start(); }
 })();
+
+/* closing "Call my phone": a voice made of small squares, talking. Columns of tiles rise
+   above and below a centre line; the envelope is loud in the middle and quiet at the ends,
+   and the loudness comes in syllable-like bursts. call.js builds the button, so wait for it. */
+(() => {
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TINTS = ['0,156,189', '119,227,246', '255,109,36', '255,184,28'];
+
+  const mount = btn => {
+    if (btn.querySelector('.call__voice')) return;
+    const cv = document.createElement('canvas');
+    cv.className = 'call__voice';
+    cv.setAttribute('aria-hidden', 'true');
+    btn.prepend(cv);
+    const ctx = cv.getContext('2d');
+    let W = 0, H = 0, T = 6, G = 2, cols = [], raf = 0, on = false, lastPick = 0;
+
+    const size = () => {
+      const r = cv.getBoundingClientRect();
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      W = r.width; H = r.height;
+      if (!W || !H) return;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      T = H > 140 ? 4 : 3; G = 2;
+      const n = Math.floor((W * 0.7) / (T + G));
+      cols = Array.from({ length: n }, (_, i) => {
+        const u = i / (n - 1);
+        /* loud in the middle, a thin tail at each end */
+        const env = Math.pow(Math.sin(Math.PI * u), 1.6) * (0.75 + 0.25 * Math.sin(u * 17));
+        return { env, up: 0, dn: 0, tu: 0, td: 0, seed: (i * 2654435761) >>> 0 };
+      });
+    };
+
+    const pick = t => {
+      /* syllables: a loudness that swells and breaks off, never quite silent */
+      const s = t / 1000;
+      const amp = 0.25 + 0.75 * Math.abs(Math.sin(s * 5.3) * Math.sin(s * 1.7 + 1.1));
+      for (const c of cols) {
+        c.tu = c.env * amp * (0.35 + Math.random() * 0.65);
+        c.td = c.env * amp * (0.25 + Math.random() * 0.6);
+      }
+    };
+
+    const draw = t => {
+      if (t - lastPick > 95) { pick(t); lastPick = t; }
+      ctx.clearRect(0, 0, W, H);
+      const mid = Math.round(H * 0.58 - T / 2), rows = Math.floor((H * 0.42 - 8) / (T + G));
+      const x0 = W - 24 - cols.length * (T + G);
+      cols.forEach((c, i) => {
+        c.up += (c.tu - c.up) * 0.28; c.dn += (c.td - c.dn) * 0.28;
+        const x = x0 + i * (T + G);
+        const nu = Math.round(c.up * rows), nd = Math.round(c.dn * rows);
+        for (let k = -nd; k <= nu; k++) {
+          const y = mid - k * (T + G);
+          const h = (c.seed ^ (k * 40503)) >>> 0;
+          const far = Math.abs(k) / (rows + 1);
+          const tint = h % 9 === 0 ? TINTS[h % TINTS.length] : '255,255,255';
+          const a = (k === 0 ? 0.75 : 0.35 + 0.5 * (1 - far)) * (0.6 + (h % 5) * 0.1);
+          ctx.fillStyle = `rgba(${tint},${Math.min(1, a).toFixed(3)})`;
+          ctx.fillRect(x, y, T, T);
+        }
+      });
+    };
+
+    const loop = t => { raf = 0; draw(t); if (on && !still) raf = requestAnimationFrame(loop); };
+    size(); pick(1200); cols.forEach(c => { c.up = c.tu; c.dn = c.td; }); draw(1200);
+    new ResizeObserver(() => { size(); pick(performance.now()); draw(performance.now()); }).observe(cv);
+    new IntersectionObserver(es => {
+      on = es[0].isIntersecting;
+      if (on && !still && !raf) raf = requestAnimationFrame(loop);
+      else if (!on && raf) { cancelAnimationFrame(raf); raf = 0; }
+    }).observe(cv);
+  };
+
+  const find = () => {
+    const btns = document.querySelectorAll('.hc-page .ask-end .call__btn');
+    btns.forEach(mount);
+    return btns.length;
+  };
+  if (!find()) {
+    const mo = new MutationObserver(() => { if (find()) mo.disconnect(); });
+    mo.observe(document.body, { childList: true, subtree: true });
+  }
+})();
