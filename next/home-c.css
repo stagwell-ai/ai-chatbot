@@ -2425,3 +2425,10 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-page #why .why__item:not(#_) > .why__d:not(.why__d--lead){grid-column:1 / 2 !important;grid-row:3 !important}
   .hc-page #why .why__item:not(#_) > .why__slot{grid-column:2 / 3 !important;grid-row:1 / 4 !important;margin-top:0;align-self:center !important;width:100%;height:auto !important;min-height:0 !important;aspect-ratio:16/9 !important}
 }
+/* no numbers; the slot is square-cornered and as tall as the words beside it */
+.hc-page #why .why__item:not(#_)::after{content:none !important;display:none !important}
+.hc-page #why .why__item:not(#_){padding-right:0 !important}
+.hc-page #why .why__slot:not(#_){border-radius:0 !important}
+@media (min-width:720px){
+  .hc-page #why .why__item:not(#_) > .why__slot{align-self:stretch !important;aspect-ratio:auto !important;height:auto !important;min-height:160px !important}
+}
