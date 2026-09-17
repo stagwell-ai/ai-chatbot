@@ -72,3 +72,6 @@
 #hcLaunchBtn:not(#_){background:#009CBD !important;color:#FFFFFF !important}
 #hcLaunchBtn:not(#_) svg{color:#FFFFFF !important}
 #hcLaunchBtn:not(#_):hover{background:#0E5F8E !important}
+
+/* ── H1: tighter letter-spacing on every page (client, 2026-09-17) ── */
+h1:not(#_),h1:not(#_) *{letter-spacing:-.035em !important}
