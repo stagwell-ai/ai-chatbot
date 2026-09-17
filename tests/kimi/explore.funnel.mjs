@@ -30,19 +30,29 @@ const ok = (cond, msg) => { if (cond) console.log('  ok   ' + msg); else { failu
 const browser = await chromium.launch({ args: ['--no-sandbox'] });
 
 /* records what the reader actually saw: every animationstart / animationend on
-   a panel row, with the row's position in the viewport at that instant */
+   a panel row, with the row's position in the viewport at that instant.
+
+   `xrow` ONLY. Animation events bubble, and every word of a row now types in
+   with a `wordIn` of its own, so an unfiltered listener on the <li> reports two
+   hundred "rows" — the words of the row it is watching. The row's own reveal is
+   the one named xrow; the words are counted separately, below. */
 const RECORDER = () => {
-  window.__rec = { t0: performance.now(), rows: [] };
+  window.__rec = { t0: performance.now(), rows: [], words: 0 };
   new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => {
     if (n.nodeType !== 1 || !n.classList || !n.classList.contains('xpanel')) return;
     Array.prototype.forEach.call(n.children, (li, i) => ['animationstart', 'animationend'].forEach(ev =>
-      li.addEventListener(ev, () => {
+      li.addEventListener(ev, e => {
+        if (e.animationName === 'wordIn') { if (ev === 'animationstart') window.__rec.words++; return; }
+        if (e.animationName !== 'xrow' || e.target !== li) return;
         const r = li.getBoundingClientRect();
         window.__rec.rows.push({ i, ev: ev.slice(9), t: performance.now() - window.__rec.t0,
           top: Math.round(r.top), inView: r.top < innerHeight && r.bottom > 0 });
       })));
   }))).observe(document.querySelector('#agentThread'), { childList: true, subtree: true });
 };
+/* the answer is finished writing itself */
+const written = page => page.waitForFunction(
+  () => !document.querySelector('#agentThread .turnb--ai.is-typing'), null, { timeout: 20000 });
 
 async function open(motion, viewport, cpu) {
   const ctx = await browser.newContext({ viewport: viewport || { width: 1360, height: 1000 }, reducedMotion: motion || 'reduce' });
@@ -61,7 +71,7 @@ async function open(motion, viewport, cpu) {
   await page.evaluate(() => { const a = window.SAIANALYTICS; window.__tracked = []; if (a && a.track) { const o = a.track.bind(a); a.track = (n, p) => { window.__tracked.push([n, p || {}]); return o(n, p); }; } });
   return { ctx, page, state };
 }
-const settle = async page => { await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait'), null, { timeout: 15000 }); await page.waitForTimeout(400); };
+const settle = async page => { await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait'), null, { timeout: 15000 }); await written(page); await page.waitForTimeout(400); };
 const st = page => page.evaluate(() => window.SAIKIMI.state());
 const tap = async (page, label) => { await page.click(`#agentThread .tag:not([disabled]):text-is("${label}")`); await settle(page); await page.waitForTimeout(300); };
 /* the rows of the MOST RECENT panel — the thread holds one per step now */
@@ -205,9 +215,15 @@ try {
     await page.evaluate(RECORDER);
     await tap(page, 'Tell me more about The Machine');
     await tap(page, 'What do teams use it for?');
-    await page.evaluate(() => { window.__rec.t0 = performance.now(); window.__rec.rows = []; });
+    await page.evaluate(() => { window.__rec.t0 = performance.now(); window.__rec.rows = []; window.__rec.words = 0; });
     await page.click('#agentThread .tag:not([disabled]):text-is("Creative and content")');
-    await page.waitForTimeout(2600 * cpu);
+    /* mid-stream: the answer is still being written and the last row has not
+       arrived — the whole point of typing it rather than posting it */
+    await page.waitForSelector('#agentThread .turnb--ai.is-typing', { timeout: 15000 });
+    const mid = await page.evaluate(() => window.__rec.rows.filter(r => r.ev === 'start').length);
+    ok(mid < 4, 'the rows arrive WHILE it writes, not before it starts (' + mid + ' of 4 at the first frame)');
+    await written(page);
+    await page.waitForTimeout(600 * cpu);
     const rec = await page.evaluate(() => window.__rec);
     const starts = rec.rows.filter(r => r.ev === 'start').sort((a, b) => a.t - b.t);
     const ends = rec.rows.filter(r => r.ev === 'end');
@@ -216,10 +232,15 @@ try {
     ok(unseen.length === 0, 'every row is ON SCREEN when it deals in' +
       (unseen.length ? ' — ' + unseen.length + ' were not: tops ' + unseen.map(r => r.top).join(',') + ' in a ' + vp.height + 'px viewport' : ''));
     ok(starts.every((r, i) => i === 0 || r.i !== starts[i - 1].i), '   they are distinct rows');
+    ok(starts.every((r, i) => i === 0 || r.i > starts[i - 1].i), '   in reading order, the way the answer is written');
     const gaps = starts.slice(1).map((r, i) => r.t - starts[i].t);
-    ok(gaps.every(g => g > 20), '   one after another, not all at once: ' + gaps.map(g => Math.round(g) + 'ms').join(' '));
-    ok(gaps.every(g => g < 400 * cpu), '   and close enough together to read as one list');
+    /* a row rises as the typing reaches it, so the gap is that row's own words:
+       long enough to read as writing, short enough to still be one list */
+    ok(gaps.every(g => g > 120), '   one after another, not all at once: ' + gaps.map(g => Math.round(g) + 'ms').join(' '));
+    ok(gaps.every(g => g < 2000 * cpu), '   and close enough together to read as one list');
     ok(ends.length === 4, '   every row finishes its reveal (' + ends.length + ')');
+    /* the words of the rows are part of the stream, not posted under it */
+    ok(rec.words > 40, '   and the rows TYPE in, word by word (' + rec.words + ' words)');
     const opacity = await page.$$eval('#agentThread .xpanel', els => {
       const last = els[els.length - 1];
       return last ? [...last.children].map(e => +getComputedStyle(e).opacity) : [];
@@ -253,7 +274,7 @@ try {
     await toCard(page);
     await tap(page, 'Tell me more about The Machine');
     await tap(page, 'What does it connect to?');
-    await page.waitForTimeout(1600);
+    await page.waitForTimeout(600);
     const vis = await page.$$eval('#agentThread .xpanel', els => {
       const last = els[els.length - 1];
       return last ? [...last.children].map(e => +getComputedStyle(e).opacity) : [];

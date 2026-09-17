@@ -354,35 +354,69 @@
       return i;
     };
     const typeIn = (bubble) => {
-      if (!bubble || REDUCED) return;
-      const texts = $$('.turnb__text', bubble).filter(t => !t.dataset.typed);
-      if (!texts.length) return;
+      if (!bubble || REDUCED) return false;
+      /* .turnb__text is the bubble's own prose; .turnb__typed is anything a
+         caller hung underneath it that belongs to the SAME answer — the lead
+         line and the panel rows of an explore step (hero-agent.js) */
+      const texts = $$('.turnb__text, .turnb__typed', bubble).filter(t => !t.dataset.typed);
+      if (!texts.length) return false;
       let n = 0;
       texts.forEach(t => { t.dataset.typed = '1'; n = wrapWords(t, n); });
-      if (!n) return;
-      /* a one-line ack should not crawl and a long recommendation should not
-         take all day: the whole reveal lands inside ~1.4s either way */
-      const step = Math.max(9, Math.min(30, 1400 / n));
+      if (!n) return false;
+      /* an LLM writes at a roughly steady pace, so this one does too: ~26 words
+         a second, floored so a one-line ack does not crawl and capped in TOTAL
+         so a long explainer streams in about four seconds rather than a minute.
+         It used to land every answer inside ~1.4s whatever its length, which
+         read as appearing rather than being written (client, 2026-09-17). */
+      const step = Math.max(12, Math.min(38, 4200 / n));
       bubble.style.setProperty('--step', step + 'ms');
       bubble.classList.add('is-typing');
       const caret = document.createElement('span');
       caret.className = 'turnb__caret'; caret.setAttribute('aria-hidden', 'true');
       const words = $$('.tw', bubble);
+      /* [data-cue]: a block that waits its turn — it is uncovered when the
+         typing reaches its first word, so a panel row rises as the sentence
+         naming it is written instead of the whole list landing at once */
+      const cues = $$('[data-cue]', bubble).map(el => {
+        const w = el.querySelector('.tw');
+        return { el, at: w ? (+w.style.getPropertyValue('--w') || 0) : 0, done: false };
+      });
       const WORD_FADE = 340;      /* home.css: wordIn */
+      /* the thread trails the caret. Without this a long answer writes its last
+         rows below the fold — the reader watches a blank panel while the words
+         land where nobody is looking. Instant, not smooth: a smooth scroll
+         restarted every frame never arrives. */
+      let trailed = 0;
+      const trail = () => {
+        const now = performance.now();
+        if (now - trailed < 120 || !caret.parentNode) return;
+        trailed = now;
+        const box = thread.getBoundingClientRect(), c = caret.getBoundingClientRect();
+        const over = c.bottom - (box.bottom - 24);
+        if (over > 1) thread.scrollTop += over;
+        more();
+        keepCardInView();
+      };
       const t0 = performance.now();
       const ride = () => {
         const ms = performance.now() - t0;
         const at = Math.floor(ms / step);
         const w = words[at];
+        cues.forEach(c => { if (!c.done && at >= c.at) { c.done = true; c.el.classList.add('is-in'); } });
         /* width 0, so moving it never reflows a single word */
         if (w && w.parentNode && caret.nextSibling !== w) w.parentNode.insertBefore(caret, w);
         else if (at >= n && caret.parentNode) caret.parentNode.removeChild(caret);
         /* the last word is still coming into focus after the last one STARTS:
            the pills wait for it to land, not for its cue */
-        if (ms >= n * step + WORD_FADE) { bubble.classList.remove('is-typing'); more(); return; }
+        if (ms >= n * step + WORD_FADE) {
+          cues.forEach(c => { if (!c.done) { c.done = true; c.el.classList.add('is-in'); } });
+          bubble.classList.remove('is-typing'); more(); return;
+        }
+        trail();
         requestAnimationFrame(ride);
       };
       requestAnimationFrame(ride);
+      return true;
     };
     const ai = (html, chips, go, onChip) => {
       const t = document.createElement('div'); t.className = 'turnb turnb--ai';

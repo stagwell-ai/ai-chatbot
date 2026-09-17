@@ -644,7 +644,7 @@
         "field": "email",
         "priority": 101,
         "first": true,
-        "prompt": "What's your work email? I'll read your company's site from it, so the rest of this is about you.",
+        "prompt": "What's your work email? I'll read your company's site from it, so I can tailor the conversation to your needs.",
         "suggestions": [],
         "askWhen": {
           "always": true
@@ -656,7 +656,7 @@
         "field": "website",
         "priority": 100,
         "first": true,
-        "prompt": "What's your website? I'll take a quick look so the rest of this is about you.",
+        "prompt": "What's your website? I'll take a quick look so I can tailor the conversation to your needs.",
         "suggestions": [],
         "askWhen": {
           "always": true

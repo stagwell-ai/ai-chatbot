@@ -216,7 +216,17 @@ function render(st) {
     const chips = st.suggestions.map(sg => ({ label: sg.label, value: sg.value }));
     const onChip = chip => send(chip.value, chip.label);
     if (!quiet) {
-      const bubble = H.ai(askText(st.message || ''), null, null, null);
+      /* the bubble is built EMPTY and typed once at the end, the way drawCards
+         does: H.ai() types whatever it is given at creation, so a lead line and
+         a panel appended afterwards used to appear all at once under a summary
+         that had already finished writing ("this text appears too quickly, it
+         should all type in, like an LLM response" — client, 2026-09-17) */
+      const bubble = H.ai(null, null, null, null);
+      const head = document.createElement('div');
+      head.className = 'turnb__text';
+      head.innerHTML = String(askText(st.message || '')).replace(/\?/g, '<span class="q">?</span>');
+      bubble.appendChild(head);
+      let ul = null;
       if (x.panel && x.panel.items && x.panel.items.length) {
         /* a line introducing the rows, where the step has one ("Three things
            set it apart:" over the differentiators) */
@@ -226,7 +236,8 @@ function render(st) {
           lead.textContent = x.panel.after;
           bubble.appendChild(lead);
         }
-        bubble.appendChild(panelEl(x.panel));
+        ul = panelEl(x.panel);
+        bubble.appendChild(ul);
       }
       if (chips.length) H.chips(bubble, chips, onChip);
       /* head-aligned, like the recommendation: an explore step is an ANSWER,
@@ -234,6 +245,10 @@ function render(st) {
          panel below the fold — measured, every row of a second-level panel
          dealt itself out where nobody could see it (2026-09-17). */
       H.settle(bubble, { head: true });
+      /* one stream, in reading order: the answer, the lead line, then each row
+         as its words are written. Each <li> carries data-cue, so typeIn rises
+         it at its first word; when nothing types, the rows deal themselves. */
+      if (!H.type(bubble) && ul) dealIn(ul);
     } else if (chips.length && window.SAIVOICE.offerChips) {
       window.SAIVOICE.offerChips(chips, chip => send(chip.value, chip.label));
     }
@@ -515,11 +530,13 @@ function panelEl(panel) {
   panel.items.forEach((it, i) => {
     const li = document.createElement('li');
     li.style.setProperty('--i', String(i));
+    li.setAttribute('data-cue', '');          /* home.js: rise at my first word */
+    /* turnb__typed: the row's words belong to the answer being written, so they
+       are part of the same stream. The number is not — it arrives with the row */
     li.innerHTML = '<span class="xpanel__n">' + String(i + 1).padStart(2, '0') + '</span>' +
-      '<div><b>' + H.esc(it.title) + '</b><span>' + H.esc(it.line) + '</span></div>';
+      '<div class="turnb__typed"><b>' + H.esc(it.title) + '</b><span class="xpanel__l">' + H.esc(it.line) + '</span></div>';
     ul.appendChild(li);
   });
-  dealIn(ul);
   return ul;
 }
 /* every row ends up visible whatever happens: no observer, a hidden thread, a

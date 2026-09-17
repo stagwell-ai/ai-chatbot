@@ -1115,7 +1115,8 @@ body.chat-open{overflow:hidden}
 @keyframes wordIn{from{opacity:0;filter:blur(5px);transform:translateY(.16em)}
   to{opacity:1;filter:blur(0);transform:none}}
 @keyframes caretBlink{0%,45%{opacity:1}55%,100%{opacity:0}}
-.askbox__thread .turnb--ai .turnb__text .tw{display:inline-block;
+.askbox__thread .turnb--ai .turnb__text .tw,
+.askbox__thread .turnb--ai .turnb__typed .tw{display:inline-block;
   animation:wordIn .34s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--w,0)*var(--step,18ms))}
 .askbox__thread .turnb__caret{display:inline-block;width:0;height:1em;position:relative;vertical-align:-.14em}
 .askbox__thread .turnb__caret::after{content:"";position:absolute;left:0;top:.04em;width:2px;height:.96em;
@@ -1129,7 +1130,8 @@ body.chat-open{overflow:hidden}
 .askbox__thread .turnb--ai .reco,
 .askbox__thread .turnb--ai .askform{transition:opacity .4s ease}
 @media (prefers-reduced-motion:reduce){
-  .askbox__thread .turnb--ai .turnb__text .tw{animation:none}
+  .askbox__thread .turnb--ai .turnb__text .tw,
+  .askbox__thread .turnb--ai .turnb__typed .tw{animation:none}
   .askbox__thread .turnb__caret{display:none}
   .askbox__thread .turnb--ai.is-typing .turnb__chips,
   .askbox__thread .turnb--ai.is-typing .turnb__go,
@@ -1752,22 +1754,26 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .xpanel{margin:12px 0 0;padding:0;list-style:none;border-top:1px solid rgba(11,18,32,.12)}
 .xpanel li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 12px;padding:13px 0;
   border-bottom:1px solid rgba(11,18,32,.12);opacity:0;transform:translateY(6px)}
-/* the rows deal out when they are actually SEEN, not on a blind timer: the
-   panel arrives while the thread is still scrolling to it, and a stagger that
-   starts on append plays itself out below the fold — measured 4 of 4 rows
-   revealed off-screen on both desktop and a phone (2026-09-17). hero-agent.js
-   hands each row its --d as it crosses into view, so a row that arrives late
-   deals in immediately rather than waiting out a stagger nobody watched. */
+/* a row rises when the typing REACHES it (home.js, [data-cue]): the answer is
+   one stream and the list is part of it, so the row arrives with the sentence
+   that names it rather than on a timer of its own. When nothing types — motion
+   off, or a voice turn — hero-agent.js deals the rows in on --d as each crosses
+   into view, because a stagger that starts on append plays itself out below the
+   fold (measured 4 of 4 rows revealed off-screen, desktop and phone, 2026-09-17). */
 .xpanel li.is-in{animation:xrow .42s cubic-bezier(.22,.9,.3,1) forwards;animation-delay:var(--d,0s)}
 @keyframes xrow{to{opacity:1;transform:none}}
 .xpanel__n{font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--teal);padding-top:4px}
 .xpanel b{display:block;font-family:var(--display);font-size:15.5px;font-weight:600;line-height:1.3;color:var(--ink)}
-.xpanel span{display:block;margin-top:3px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+/* the line is addressed by its own class, never as ".xpanel span": the typing
+   wraps every word in a span of its own inside it, and a descendant selector
+   would hand each word the line's size and colour — a title's words set in the
+   body size, mid-sentence */
+.xpanel__l{display:block;margin-top:3px;font-size:14px;line-height:1.55;color:var(--ink-2)}
 .xpanel--connects .xpanel__n{color:var(--teal)}
 /* the dark overlay (the full-screen chat on C) */
 .chat-over--live .xpanel,.chat-over--live .xpanel li{border-color:rgba(241,250,255,.16)}
 .chat-over--live .xpanel b{color:#F1FAFF}
-.chat-over--live .xpanel span{color:rgba(241,250,255,.72)}
+.chat-over--live .xpanel__l{color:rgba(241,250,255,.72)}
 @media (prefers-reduced-motion:reduce){
   .xpanel li,.xpanel li.is-in{opacity:1;transform:none;animation:none}
 }
