@@ -1174,3 +1174,7 @@ body.pc-page{--hc-ground:#FFFFFF}
 .pc-page .pp-proof__head,.pc-page .pp-proof .pp-sign,.pc-page .pp-proof .pp-h2,
 .pc-page .pp-proof__note{text-align:left !important;margin-inline:0 !important}
 .pc-page .pp-flag{margin-top:14px}
+
+/* the dark side card keeps its words inside it: the multi-group measure (488px) was outranking it */
+.pl-c .pc-side .prodcard__who:not(#_),.pl-c .pc-side .pc-foot__what:not(#_),
+.pl-c .pc-side .prodcard__who:not(#_) *{width:auto !important;max-width:100% !important;overflow-wrap:anywhere}
