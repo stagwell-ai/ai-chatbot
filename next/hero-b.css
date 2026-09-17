@@ -1,0 +1,81 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOMEPAGE VERSION B (/hero-b) only: Roobert throughout, and no colour.
+   Titles, icons, buttons and tiles go to ink and greys. The Stagwell logo and
+   the chat (launcher, voice buttons) keep their colour. Loaded after
+   home-c.css, and every rule is scoped to body.hc-b.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@font-face{font-family:'Roobert';font-style:normal;font-weight:100 350;font-display:swap;src:url(/next/assets/fonts/roobert/roobert-light.woff2) format('woff2')}
+@font-face{font-family:'Roobert';font-style:normal;font-weight:351 550;font-display:swap;src:url(/next/assets/fonts/roobert/roobert-regular.woff2) format('woff2')}
+@font-face{font-family:'Roobert';font-style:normal;font-weight:551 900;font-display:swap;src:url(/next/assets/fonts/roobert/roobert-bold.woff2) format('woff2')}
+
+body.hc-b:not(#_),
+body.hc-b:not(#_) *:not(svg):not(svg *){font-family:'Roobert',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important}
+
+/* titles: the colour wipe resolves to the title's own colour */
+body.hc-b .hl:not(#_){--hl:var(--hl-base,#0B1220) !important}
+body.hc-b #why .display--cos:not(#_),
+body.hc-b #why .display--cos:not(#_) *,
+body.hc-b .chat-over .chat-over__title:not(#_) em,
+body.hc-b .chat-over .chat-over__title:not(#_) em *{color:inherit !important}
+body.hc-b #why .display--cos:not(#_){color:#0B1220 !important}
+body.hc-b .ask-end .hc-clients__t:not(#_){color:rgba(11,18,32,.56) !important}
+body.hc-b .hc-inlink:not(#_),
+body.hc-b .call__edit:not(#_),
+body.hc-b .stat__n span:not(#_){color:#0B1220 !important}
+
+/* buttons: Book a demo goes ink; the demo button on the film goes white */
+body.hc-b .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_){background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important}
+body.hc-b .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_):hover{background:#3A3F47 !important;border-color:#3A3F47 !important}
+body.hc-b .intro__act .btn[data-cta]:not(#_){background:#FFFFFF !important;border-color:#FFFFFF !important;color:#0B1220 !important}
+body.hc-b .intro__act .btn[data-cta]:not(#_) *{color:#0B1220 !important}
+body.hc-b .intro__act .btn[data-cta]:not(#_):hover{background:#E6E6E3 !important;border-color:#E6E6E3 !important}
+
+/* icons: product marks and suite icons in dark grey, no tint */
+body.hc-b .nav__pmark:not(#_),
+body.hc-b .hcs__card .hcs__ic:not(#_){background:rgba(11,18,32,.05) !important;box-shadow:inset 0 0 0 1px rgba(11,18,32,.18) !important;color:#3A3F47 !important}
+body.hc-b .nav__pmark:not(#_) svg,
+body.hc-b .hcs__card .hcs__ic:not(#_) svg{color:#3A3F47 !important}
+body.hc-b .hcs__card:hover .hcs__go:not(#_),
+body.hc-b .hcs__card:focus-visible .hcs__go:not(#_){background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important}
+
+/* small marks inside the product mockups */
+body.hc-b .mk-wave i:not(#_){background:#3A3F47 !important}
+body.hc-b .mk-st i:not(#_),
+body.hc-b .ask-mini__dots i:not(#_){background:#8A8E95 !important}
+
+/* Why: the Edge box goes light grey */
+body.hc-b #why .why__slot--pair:not(#_){background:#EDEDEA !important}
+
+body.hc-b .call__hint:not(#_){color:rgba(11,18,32,.56) !important;background:transparent !important}
+body.hc-b .stat__n span:not(#_)::before{background:#8A8E95 !important;color:#8A8E95 !important}
+
+/* more air around the film */
+@media (min-width:761px){
+  body.hc-b .intro:not(#_){padding-top:clamp(80px,11vh,128px) !important;padding-bottom:clamp(72px,8vw,120px) !important}
+}
+@media (max-width:760px){
+  body.hc-b .intro:not(#_){padding-top:48px !important;padding-bottom:56px !important}
+}
+
+/* the clients row, straight after the film */
+body.hc-b .hcb-trust{padding:0 20px clamp(80px,9vw,136px)}
+body.hc-b .hcb-trust .hc-clients{max-width:1240px;margin:0 auto;text-align:center}
+body.hc-b .hcb-trust .hc-clients__t{margin:0 0 20px;font-size:15px;line-height:1.4;color:rgba(11,18,32,.62)}
+body.hc-b .hcb-trust .hc-clients__row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+body.hc-b .hcb-trust .hc-clients__cell{position:relative;height:clamp(64px,7vw,96px)}
+body.hc-b .hcb-trust .hc-clients__reel{position:absolute;inset:0;margin:auto;width:58%;height:34%;overflow:hidden}
+body.hc-b .hcb-trust .hc-clients__logo{position:absolute;inset:0;background:#0B1220;
+  -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat;
+  transform:translateY(112%);will-change:transform;
+  animation:whyReel calc(var(--n,7) * var(--step,2.4s)) cubic-bezier(.7,0,.3,1) calc(var(--i) * var(--step,2.4s) - var(--d,0s)) infinite both}
+@media (prefers-reduced-motion:reduce){
+  body.hc-b .hcb-trust .hc-clients__logo{animation:none}
+  body.hc-b .hcb-trust .hc-clients__logo[style^="--i:0;"]{transform:none}
+}
+@media (max-width:760px){
+  body.hc-b .hcb-trust{padding-inline:16px}
+  body.hc-b .hcb-trust .hc-clients__row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  body.hc-b .hcb-trust .hc-clients__cell:nth-child(n+4){display:none}
+  body.hc-b .hcb-trust .hc-clients__cell{height:84px}
+  body.hc-b .hcb-trust .hc-clients__reel{width:78%;height:42%}
+}

@@ -769,7 +769,7 @@
    and the loudness comes in syllable-like bursts. call.js builds the button, so wait for it. */
 (() => {
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const TINTS = ['0,156,189', '119,227,246', '255,109,36', '255,184,28'];
+  const TINTS = document.body.classList.contains('hc-b') ? ['255,255,255'] : ['0,156,189', '119,227,246', '255,109,36', '255,184,28'];
 
   /* o.center: the voice sits in the middle of a picture's place (New Voices, wherever its
      picture would be); o.bg paints the ground so it can stand in for that picture */
