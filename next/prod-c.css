@@ -1178,3 +1178,38 @@ body.pc-page{--hc-ground:#FFFFFF}
 /* the dark side card keeps its words inside it: the multi-group measure (488px) was outranking it */
 .pl-c .pc-side .prodcard__who:not(#_),.pl-c .pc-side .pc-foot__what:not(#_),
 .pl-c .pc-side .prodcard__who:not(#_) *{width:auto !important;max-width:100% !important;overflow-wrap:anywhere}
+
+/* ═══ tab films: the product's own video behind its cards ═══ */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]{position:relative;overflow:hidden}
+.pl-c .prodgroup__head .pc-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  z-index:0;opacity:0;transition:opacity .35s ease;pointer-events:none;background:#1B1B1C}
+.pl-c .prodgroup__head .pc-vid.is-on{opacity:1}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-cap,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-side{position:relative;z-index:2}
+@media (prefers-reduced-motion:reduce){.pl-c .prodgroup__head .pc-vid{transition:none}}
+
+/* phones: the picture (or film) is its own 16:9 strip on top; the two cards stack under it */
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head:not(#_){display:flex !important;flex-direction:column !important;
+    gap:12px !important;padding:calc(56.25vw + 16px) 20px 8px !important;min-height:0 !important;height:auto !important;
+    background-size:100% 56.25vw !important;background-position:top center !important;background-repeat:no-repeat !important;
+    background-color:transparent !important}
+  .pl-c .prodgroup__head .pc-vid:not(#_){bottom:auto;height:56.25vw}
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-cap.is-on:not(#_),
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-side.is-on:not(#_){position:relative !important;
+    grid-row:auto !important;grid-column:auto !important;width:100% !important;margin:0 !important;top:auto !important;left:auto !important}
+}
+/* tablets: one column, so the side card goes under the caption instead of on top of it */
+@media (min-width:761px) and (max-width:980px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-cap:not(#_){grid-row:1 !important;grid-column:1 !important}
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-side:not(#_){grid-row:2 !important;grid-column:1 !important}
+}
+/* phones: the listing's title and statement stack instead of squeezing into two columns */
+@media (max-width:760px){
+  .pc-page .pp-hero__in:not(#_){grid-template-columns:1fr !important;row-gap:20px !important}
+  .pc-page .pp-hero__in:not(#_) > *{grid-column:1 !important;grid-row:auto !important}
+}
+@media (max-width:760px){
+  .pc-page:not(.pl-c) .pp-hero__in:not(#_){grid-template-columns:minmax(0,1fr) !important}
+  .pc-page .pp-hero__in .pp-acts:not(#_){flex-wrap:wrap !important;row-gap:12px !important}
+}

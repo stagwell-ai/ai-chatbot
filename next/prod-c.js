@@ -186,8 +186,33 @@
         return cap;
       });
 
+      /* products with their own film play it behind their cards, from the top each time
+         their tab comes round (the motion lab loops, 1080p) */
+      const FILM = { 'The Media Machine': 'media-machine', 'NewIntel': 'newintel',
+        'Search+': 'search-plus', 'Stagwell ID Graph': 'id-graph' };
+      const vids = cards.map((card, ci) => {
+        const key = FILM[(tabs[ci] && tabs[ci].textContent || '').trim()];
+        if (!key || !head) return null;
+        const v = document.createElement('video');
+        v.className = 'pc-vid';
+        v.muted = true; v.loop = true; v.playsInline = true;
+        v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true');
+        v.preload = ci === 0 ? 'auto' : 'metadata';
+        v.poster = '/assets/video/lab/' + key + '-poster.jpg';
+        v.src = '/assets/video/lab/' + key + '.mp4';
+        head.insertBefore(v, head.firstChild);
+        head.dataset.pcFilm = '1';
+        return v;
+      });
+
       let at = 0, timer = 0, taken = false, seen = false;
       const still = matchMedia('(prefers-reduced-motion: reduce)');
+      const film = () => vids.forEach((v, n) => {
+        if (!v) return;
+        v.classList.toggle('is-on', n === at);
+        if (n === at && seen && !still.matches) { try { v.currentTime = 0; } catch (e) {} v.play().catch(() => {}); }
+        else v.pause();
+      });
       const arm = () => {
         const t = tabs[at];
         if (!t) return;
@@ -203,6 +228,7 @@
           c.classList.toggle('is-on', n === at);
           if (c.pcSide) c.pcSide.classList.toggle('is-on', n === at);
         });
+        film();
       };
       const stop = () => { if (timer) { clearInterval(timer); timer = 0; }
         tabs.forEach(t => t.classList.remove('is-timing')); };
@@ -215,8 +241,10 @@
       show(0);
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(es => {
+          const was = seen;
           seen = es[0].isIntersecting;
           seen ? start() : stop();
+          if (seen !== was) seen ? film() : vids.forEach(v => v && v.pause());
         }, { threshold: .25 }).observe(group);
       } else { seen = true; start(); }
     });
