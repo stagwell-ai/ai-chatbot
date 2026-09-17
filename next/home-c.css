@@ -2432,3 +2432,5 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (min-width:720px){
   .hc-page #why .why__item:not(#_) > .why__slot{align-self:stretch !important;aspect-ratio:auto !important;height:auto !important;min-height:160px !important}
 }
+.hc-page #why .why__slot--img{background:#0B0B0B;overflow:hidden}
+.hc-page #why .why__slot--img img{width:100%;height:100%;object-fit:cover;display:block}
