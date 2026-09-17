@@ -715,14 +715,14 @@
   const retarget = t => {
     hub.tx = W * (0.3 + Math.random() * 0.4);
     hub.ty = H * (0.3 + Math.random() * 0.4);
-    hub.next = t + 1600 + Math.random() * 1400;
+    hub.next = t + 900 + Math.random() * 700;
   };
 
   const draw = t => {
     ctx.clearRect(0, 0, W, H);
     const R = S * 4, LINK = S * 2.9;
     if (t > hub.next) retarget(t);
-    hub.x += (hub.tx - hub.x) * 0.03; hub.y += (hub.ty - hub.y) * 0.03;
+    hub.x += (hub.tx - hub.x) * 0.06; hub.y += (hub.ty - hub.y) * 0.06;
     ctx.lineWidth = 1;
     for (const d of dots) {
       const dist = Math.hypot(d.x - hub.x, d.y - hub.y);
@@ -733,7 +733,7 @@
     for (const d of dots) {
       const near = 1 - Math.hypot(d.x - hub.x, d.y - hub.y) / R;
       if (near <= -0.3) continue;
-      const a = Math.max(0.05, Math.min(1, near * 1.5 + 0.15));
+      const a = Math.max(0.04, Math.min(0.6, near * 0.9 + 0.1));
       const r = 0.8 + Math.max(0, near) * 3;
       ctx.fillStyle = `rgba(${DOT},${a.toFixed(3)})`;
       ctx.beginPath(); ctx.arc(d.x, d.y, r, 0, 6.2832); ctx.fill();
