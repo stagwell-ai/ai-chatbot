@@ -6,13 +6,13 @@ struct RNG { var s: UInt64
   mutating func next() -> Double { s = s &* 6364136223846793005 &+ 1442695040888963407; return Double((s >> 11) & ((1<<53)-1)) / Double(1<<53) }
   mutating func r(_ a: Double, _ b: Double) -> Double { a + (b - a) * next() } }
 
-func render(path: String, w: Int, h: Int, fps: Int, frames: Int, draw: (CGContext, Int) -> Void) {
+func render(path: String, w: Int, h: Int, fps: Int, frames: Int, bitrate: Int = 24_000_000, draw: (CGContext, Int) -> Void) {
   let url = URL(fileURLWithPath: path)
   try? FileManager.default.removeItem(at: url)
   let wr = try! AVAssetWriter(outputURL: url, fileType: .mp4)
   wr.shouldOptimizeForNetworkUse = true
   let settings: [String: Any] = [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: w, AVVideoHeightKey: h,
-    AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: 24_000_000, AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel, AVVideoMaxKeyFrameIntervalKey: fps * 2]]
+    AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: bitrate, AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel, AVVideoMaxKeyFrameIntervalKey: fps * 2]]
   let inp = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
   inp.expectsMediaDataInRealTime = false
   let ad = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: inp, sourcePixelBufferAttributes: [
