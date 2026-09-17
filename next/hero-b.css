@@ -92,3 +92,32 @@ body.hc-b .hc-inlink:not(#_){color:#009CBD !important}
 /* the hero title a touch heavier: Roobert has no Medium, so a fine stroke adds the weight */
 body.hc-b .hero .display--hero:not(#_),
 body.hc-b .hero .display--hero:not(#_) *{-webkit-text-stroke:.5px #0B1220;paint-order:stroke fill}
+
+/* Why Stagwell AI as alternating rows: a large picture beside its text, sides swapping
+   row by row, the text centred on the picture (the Manus feature-page grid) */
+body.hc-b #why .why__item:not(#_),
+body.hc-b #why .why__item:not(#_):last-child{border:0 !important;padding:0 !important;background:transparent !important}
+body.hc-b #why .why__item:not(#_) + .why__item{margin-top:clamp(64px,8vw,128px) !important}
+body.hc-b #why .why__grid:not(#_){margin-top:clamp(40px,5vw,72px) !important}
+body.hc-b #why .why__item:not(#_) .why__t{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important;letter-spacing:-.03em !important;margin:0 0 18px !important}
+body.hc-b #why .why__item:not(#_) > .why__d{max-width:520px !important;font-size:clamp(16px,.9rem + .3vw,19px) !important;line-height:1.55 !important}
+body.hc-b #why .why__item:not(#_) > .why__d--lead{color:#0B1220 !important;margin:0 0 6px !important}
+body.hc-b #why .why__item:not(#_) > .why__d:not(.why__d--lead){color:rgba(11,18,32,.6) !important}
+@media (min-width:900px){
+  body.hc-b #why .why__item:not(#_){display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;grid-template-rows:1fr auto auto auto 1fr !important;
+    column-gap:clamp(56px,7vw,112px) !important;row-gap:0 !important;align-items:start !important}
+  body.hc-b #why .why__item:not(#_) > .why__slot{grid-row:1 / 6 !important;grid-column:1 / 2 !important;align-self:stretch !important;
+    width:100% !important;aspect-ratio:11 / 10 !important;height:auto !important;max-height:600px;min-height:0 !important;margin:0 !important}
+  body.hc-b #why > .wrap:not(#_){max-width:1320px !important;padding-inline:40px !important;margin-inline:auto !important}
+  body.hc-b #why .why__item:not(#_) > .why__head{grid-row:2 !important;grid-column:2 / 3 !important}
+  body.hc-b #why .why__item:not(#_) > .why__d--lead{grid-row:3 !important;grid-column:2 / 3 !important}
+  body.hc-b #why .why__item:not(#_) > .why__d:not(.why__d--lead){grid-row:4 !important;grid-column:2 / 3 !important}
+  body.hc-b #why .why__item:not(#_):nth-child(even) > .why__slot{grid-column:2 / 3 !important}
+  body.hc-b #why .why__item:not(#_):nth-child(even) > :not(.why__slot){grid-column:1 / 2 !important}
+}
+@media (max-width:899px){
+  body.hc-b #why .why__item:not(#_){display:flex !important;flex-direction:column !important;align-items:stretch !important}
+  body.hc-b #why .why__item:not(#_) > .why__head{display:block !important;order:0 !important}
+  body.hc-b #why .why__item:not(#_) > .why__slot{order:-1 !important;width:100% !important;height:auto !important;min-height:0 !important;aspect-ratio:16 / 10 !important;margin:0 0 24px !important;align-self:stretch !important}
+}
