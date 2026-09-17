@@ -2366,3 +2366,8 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
    it opens, so the bar's own height never changes and nothing beside it moves */
 .hc-page .call--nav[data-state="phone"]{height:56px !important}
 .hc-page .call--nav[data-state="phone"] .call__form{height:56px}
+
+/* ── video title: 30% wider on desktop (840 → 1092) ───────────────────────── */
+@media (min-width:1024px){
+  .hc-page .intro__over .display--intro{width:min(100%,1092px) !important;max-width:none !important}
+}
