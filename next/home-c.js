@@ -635,10 +635,10 @@
     '/agent-cloud':
       '<path d="M7 18.5h9.5a4 4 0 0 0 .5-7.97A6 6 0 0 0 5.6 9.6 4.2 4.2 0 0 0 7 18.5z"/>'
   };
-  document.querySelectorAll('.hc-page .nav__pitem').forEach(a => {
+  document.querySelectorAll('.hc-page .nav__pitem, .hc-page .menu__sub a').forEach(a => {
     const path = (a.getAttribute('href') || '').replace(/[?#].*$/, '');
     const d = MARK[path];
-    const thumb = a.querySelector('.nav__pthumb');
+    const thumb = a.querySelector('.nav__pthumb, .menu__thumb');
     if (!d || !thumb || a.dataset.hcMark) return;
     a.dataset.hcMark = '1';
     const mark = document.createElement('span');

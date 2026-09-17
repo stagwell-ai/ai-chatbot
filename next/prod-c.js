@@ -287,10 +287,84 @@
   new MutationObserver(() => { build(); repic(); voice(); lift(); note(); tabify(); bleedSoon(); }).observe(root, { childList: true, subtree: true });
 })();
 
+/* ═══ the product page, re-laid (client, 2026-09-17) ═══════════════════════════════════════════
+   How it works becomes a list of steps that turns by itself beside one picture with a dark card
+   carrying the live step's words; the long use-case descriptions step back; a picture breaks
+   the run of text on The Machine. Nothing is rewritten: the words move, they do not change. */
+(() => {
+  const page = document.querySelector('.pc-page:not(.pl-c)');
+  if (!page) return;
+  const more = page.querySelector('.pp-more');
+  const steps = more && [...more.querySelectorAll('.pp-steps > li')];
+  const media = more && more.querySelector('.pp-more__media');
+  if (steps && steps.length > 1 && media && !more.dataset.pcHow) {
+    more.dataset.pcHow = '1';
+    const grid = more.querySelector('.pp-more__grid');
+    grid.classList.add('pc-how');
+    const list = document.createElement('div');
+    list.className = 'pc-how__list';
+    list.setAttribute('role', 'tablist');
+    const card = document.createElement('div');
+    card.className = 'pc-how__card';
+    card.setAttribute('aria-live', 'polite');
+    const btns = steps.map((li, i) => {
+      const n = (li.querySelector('b') || {}).textContent || String(i + 1).padStart(2, '0');
+      const h = (li.querySelector('h3') || {}).textContent || '';
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pc-how__tab';
+      b.setAttribute('role', 'tab');
+      b.innerHTML = '<span class="pc-how__n"></span><span class="pc-how__t"></span><i class="pc-how__bar" aria-hidden="true"></i>';
+      b.querySelector('.pc-how__n').textContent = n;
+      b.querySelector('.pc-how__t').textContent = h;
+      list.appendChild(b);
+      return b;
+    });
+    media.appendChild(card);
+    grid.insertBefore(list, grid.firstChild);
+    const ol = more.querySelector('.pp-steps');
+    if (ol) ol.hidden = true;
+    let at = 0, timer = 0, taken = false, seen = false;
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const show = i => {
+      at = (i + steps.length) % steps.length;
+      btns.forEach((b, n) => { b.classList.toggle('is-on', n === at); b.setAttribute('aria-selected', n === at ? 'true' : 'false'); });
+      const li = steps[at];
+      card.innerHTML = '';
+      const n = document.createElement('span'); n.className = 'pc-how__cn'; n.textContent = btns[at].querySelector('.pc-how__n').textContent;
+      const h = document.createElement('h3'); h.textContent = (li.querySelector('h3') || {}).textContent || '';
+      const p = document.createElement('p'); p.textContent = (li.querySelector('p') || {}).textContent || '';
+      card.append(n, h, p);
+      /* on a phone the steps are a sideways row: keep the live one in view (the row only, never the page) */
+      if (list.scrollWidth > list.clientWidth + 2) list.scrollTo({ left: Math.max(0, btns[at].offsetLeft - 20), behavior: still ? 'auto' : 'smooth' });
+      if (!taken && !still) { const bar = btns[at]; bar.classList.remove('is-timing'); void bar.offsetWidth; bar.classList.add('is-timing'); }
+    };
+    const run = () => { if (timer || taken || !seen || still) return; show(at); timer = setInterval(() => show(at + 1), 5500); };
+    const halt = () => { clearInterval(timer); timer = 0; btns.forEach(b => b.classList.remove('is-timing')); };
+    btns.forEach((b, i) => b.addEventListener('click', () => { taken = true; halt(); list.classList.add('is-taken'); show(i); }));
+    show(0);
+    btns[0].classList.remove('is-timing');
+    new IntersectionObserver(es => { seen = es[0].isIntersecting; seen ? run() : halt(); }, { threshold: .35 }).observe(grid);
+  }
+
+  /* a picture between the reasons and the uses, so the page is not text after text */
+  const uses = page.querySelector('.pp-uses');
+  const BREAK = { 'pp--the-machine': '/assets/img/tabs/machine-words.jpg' };
+  const key = Object.keys(BREAK).find(k => page.classList.contains(k));
+  if (uses && key && !page.querySelector('.pc-break')) {
+    const fig = document.createElement('figure');
+    fig.className = 'pc-break';
+    fig.setAttribute('aria-hidden', 'true');
+    fig.innerHTML = '<img alt="" loading="lazy" decoding="async">';
+    fig.querySelector('img').src = BREAK[key];
+    uses.insertAdjacentElement('beforebegin', fig);
+  }
+})();
+
 /* New Voices' own page shows its voice, talking, in place of the picture */
 (() => {
   const media = document.querySelector('.pc-page.pp--newvoices .pp-more__media');
-  if (media && window.hcVoice) window.hcVoice(media);
+  if (media && window.hcVoice) window.hcVoice(media, { mid: 0.3 });
 })();
 
 /* the closing block on every product page ends with the two ways in, as the homepage does.
