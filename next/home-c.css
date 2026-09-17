@@ -2628,3 +2628,9 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 /* the suite header is symmetric: the button keeps the same distance from the right edge
    as the title (and the first card) keep from the left */
 .hc-page .hcs__head:not(#_){padding-right:clamp(20px,6vw,120px) !important}
+
+/* the full-screen chat: a quieter title, and the block stays in the middle of any window
+   (the fixed 120px top/bottom padding pushed it to the top on shorter screens) */
+.hc-page .chat-over:not(#_){padding-block:clamp(72px,9vh,120px) clamp(24px,6vh,96px) !important;align-items:safe center !important;overflow-y:auto}
+.hc-page .chat-over:not(.chat-over--live) .chat-over__title:not(#_),
+.hc-page .chat-over:not(.chat-over--live) .chat-over__title:not(#_) *{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
