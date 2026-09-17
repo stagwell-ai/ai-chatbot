@@ -38,6 +38,7 @@ async function open(opts = {}) {
   });
   await page.goto(BASE + (opts.path || '/next/index.html'), { waitUntil: 'load' });
   await page.waitForFunction(() => window.SAIKIMI && window.SAI && window.SAI.data && window.SAI.data.kimi);
+  OPENERS = [startText].concat(await page.evaluate(() => (window.SAI.data.kimi.copy || {}).askExamples || []));
   return { ctx, page, state };
 }
 const say = async (page, text) => {
@@ -73,11 +74,16 @@ const snap = page => page.evaluate(() => {
   };
 });
 const startText = 'What do you need help solving?';
+/* an empty box writes its own example questions into the placeholder, a letter
+   at a time (home.js, ghost), so after Start over it is the opening hint OR the
+   beginning of one of them — never a question the flow left behind */
+let OPENERS = [startText];
+const opening = s => OPENERS.some(q => q === s || (q.indexOf(s) === 0 && s.length > 0)) || s === '';
 const isOpening = (s, label) => {
   ok(s.turns === 0, label + ': the thread is empty (' + s.turns + ' bubbles)');
   ok(s.btnHidden, label + ': the Start over button is hidden again');
   ok(!s.inputDisabled && !s.goHidden, label + ': the composer is typable and the send disc is back');
-  ok(s.placeholder === startText, label + ': the placeholder is the opening hint ("' + s.placeholder + '")');
+  ok(opening(s.placeholder), label + ': the box is back to asking, not mid-conversation ("' + s.placeholder + '")');
   ok(!s.chat && !s.closed, label + ': the card is out of chat/closed mode');
   ok(!s.form && s.cards === 0, label + ': no form, no cards');
   ok(s.pillsOff === 0, label + ': every starting-point pill is enabled');

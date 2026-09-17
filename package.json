@@ -21,6 +21,7 @@
     "test:reveal": "node tests/kimi/reveal.funnel.mjs",
     "test:homec": "node tests/kimi/homec.funnel.mjs",
     "test:story": "node tests/kimi/story.funnel.mjs",
-    "test:explore": "node tests/kimi/explore.funnel.mjs"
+    "test:explore": "node tests/kimi/explore.funnel.mjs",
+    "test:ghost": "node tests/kimi/ghost.funnel.mjs"
   }
 }

@@ -697,13 +697,13 @@
       },
       chips(bubble, chips, onChip, cls) { if (!bubble || !chips || !chips.length) return null; const row = chipsRow(chips, onChip, cls); bubble.appendChild(row); follow(); return row; },
       open() { agentSec.classList.add('is-chat'); },
-      placeholder(t) { miniInput.placeholder = t || ''; grow(); },
+      placeholder(t) { ghost.stop(); miniInput.placeholder = t || ''; grow(); },
       /* the field is sized to its words again — after a send has emptied it */
       grow,
       /* the chips of every earlier question stop taking taps */
       settleChips() { $$('.turnb__chips .tag', thread).forEach(o => { o.disabled = true; }); },
       /* the composer closes: the conversation ended on the form */
-      close(t) { miniInput.value = ''; miniInput.placeholder = t || ''; miniInput.disabled = true; miniInput.setAttribute('aria-disabled', 'true'); if (goBtn) goBtn.hidden = true; mini.classList.add('is-closed'); grow(); },
+      close(t) { ghost.stop(); miniInput.value = ''; miniInput.placeholder = t || ''; miniInput.disabled = true; miniInput.setAttribute('aria-disabled', 'true'); if (goBtn) goBtn.hidden = true; mini.classList.add('is-closed'); grow(); },
       focus() { miniInput.focus({ preventScroll: true }); },
       /* back to an empty box: the thread is emptied and the composer, which
          close() disabled when the conversation ended, takes typing again */
@@ -718,8 +718,85 @@
         if (goBtn) goBtn.hidden = false;
         mini.classList.remove('is-closed');
         agentSec.classList.remove('is-chat');
-      }
+        ghost.start();          /* an empty box again: the examples come back */
+      },
+      /* the empty box shows what it can be asked (see ghost, below) */
+      examples(list) { ghost.stop(); ghost.set(list); ghost.start(); }
     };
+
+    /* ── THE EMPTY BOX TYPES ITS OWN QUESTIONS ────────────────────────────
+       "I want it to be like it's typing something out. So each character
+       displays after the other, and then it sits there for a good couple of
+       beats, and then gets deleted, and then a different one gets typed out"
+       (client, 2026-09-17). Six real questions — each one routes somewhere
+       different in the catalog — written into the placeholder a letter at a
+       time, held, taken back out, then the next.
+
+       It runs ONLY while the box is genuinely empty and the conversation has
+       not started. The first keystroke stops it for good: a placeholder that
+       keeps moving under someone who is trying to type is a bug, not a
+       flourish. The <label> carries the field's name, so nothing a screen
+       reader announces changes while this runs. */
+    const TYPE = 42, HOLD = 2200, WIPE = 22, GAP = 420;
+    const ghost = (() => {
+      let lines = [], at = 0, timer = 0, on = false, done = false;
+      const K = () => ((((window.SAI || {}).data || {}).kimi || {}).copy || {});
+      const idle = () => !miniInput.disabled && !miniInput.value && !thread.firstChild
+        && !agentSec.classList.contains('is-chat');
+      const clear = () => { if (timer) clearTimeout(timer); timer = 0; };
+      const after = (ms, fn) => { clear(); timer = setTimeout(fn, ms); };
+      /* a human types unevenly; a metronome reads as a machine */
+      const beat = base => base + Math.round((Math.random() - 0.5) * base * 0.5);
+      /* i is how many letters are showing; it always starts at 1, so the box is
+         never left standing empty waiting for the first one */
+      function write(i) {
+        if (!on || !idle()) return stop();
+        const text = lines[at] || '';
+        if (i <= text.length) {
+          miniInput.placeholder = text.slice(0, i);
+          return after(beat(TYPE), () => write(i + 1));
+        }
+        after(HOLD, () => wipe(text.length - 1));
+      }
+      function wipe(i) {
+        if (!on || !idle()) return stop();
+        miniInput.placeholder = (lines[at] || '').slice(0, Math.max(0, i));
+        if (i > 0) return after(beat(WIPE), () => wipe(i - 1));
+        at = (at + 1) % lines.length;
+        after(GAP, () => write(1));      /* a breath on the empty box, then the next */
+      }
+      /* however it ends, it never ends mid-word: the box settles on the whole
+         question it was writing, or back on its own prompt. `full` is for a
+         visitor who interrupted it — the phrase they were half-reading is
+         finished for them rather than left as "What is The Machin" */
+      function stop(full) {
+        clear();
+        if (on && !done && idle()) miniInput.placeholder = full ? (lines[at] || FALLBACK) : FALLBACK;
+        on = false; done = true;
+      }
+      const FALLBACK = miniInput.placeholder || 'What do you need help solving?';
+      return {
+        set(v) { lines = (Array.isArray(v) ? v : []).map(s => String(s || '').trim()).filter(Boolean); at = 0; },
+        stop() { stop(true); },
+        start() {
+          clear(); on = false; done = false;
+          if (!lines.length) this.set(K().askExamples);
+          if (!lines.length || !idle()) return;
+          /* motion off: one example, standing still — it still says what the
+             box is for, which is the point of it */
+          if (REDUCED) { miniInput.placeholder = lines[0]; return; }
+          on = true;
+          after(900, () => write(1));
+        }
+      };
+    })();
+    /* the first keystroke ends it, and so does a tap on a starting point */
+    miniInput.addEventListener('input', () => ghost.stop());
+    miniInput.addEventListener('paste', () => ghost.stop());
+    if (agentSec) agentSec.addEventListener('submit', () => ghost.stop(), true);
+    /* the questions live in data/kimi.json, so it opens when the data lands */
+    Promise.resolve((window.SAI && window.SAI.ready) || null).then(() => ghost.start()).catch(() => {});
+
     const REAL = !!window.SAIFLOW;
 
     /* the panel is alive when you arrive: the dots come up first, then the
