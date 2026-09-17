@@ -113,7 +113,7 @@
   /* the four with their own landing pages show that page's cover (client,
      2026-09-10); the rest keep their stills for now */
   const PICTURE = {
-    questbrand: '/assets/img/questbrand.jpg',
+    questbrand: '/assets/img/tabs/questbrand.jpg',
     /* not hero-slide-4: that is the same photograph as targeting.jpg, and the
        two rows sit near each other on this page */
     questdiy: '/assets/img/glass.jpg',
@@ -122,7 +122,7 @@
     knowledge_machine: '/assets/img/agentic.jpg',
     unicepta: '/assets/img/newspaper.jpg',
     imai: '/assets/img/imai.jpg',
-    geopulse: '/assets/img/geopulse.jpg',
+    geopulse: '/assets/img/tabs/geopulse.jpg',
     targeting_machine: '/assets/img/products/targeting-machine-new.jpg',
     numetrix: '/assets/img/numetrix.jpg',
     newvoices: '/assets/img/products/newvoices-voice.jpg',

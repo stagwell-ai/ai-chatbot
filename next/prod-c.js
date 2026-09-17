@@ -89,12 +89,12 @@
     'p-leads':               '/assets/img/products/newvoices-voice.jpg',   /* New Voices: the voice, live below */
     'p-marketing_ops':       '/assets/img/products/your-data-walker.jpg',
     'p-ai_workspace':        '/assets/img/products/agent-cloud-code.jpg',
-    'p-brand_health':        '/assets/img/questbrand.jpg',
+    'p-brand_health':        '/assets/img/tabs/questbrand.jpg',
     'p-research':            '/assets/img/hero-film/2.jpg',
     'p-business_impact':     '/assets/img/brand-growth.jpg',
     'p-reputation':          '/assets/img/hero-film/4.jpg',
     'p-media_monitoring':    '/assets/img/hero-film/5.jpg',
-    'p-ai_visibility':       '/assets/img/geopulse.jpg',
+    'p-ai_visibility':       '/assets/img/tabs/geopulse.jpg',
     'p-real_world_behavior': '/assets/img/numetrix.jpg',
     'p-competitive':         '/assets/img/hero-film/agent-cloud.jpg',
     'p-newly_added':         '/assets/img/tabs/media-machine.jpg'
