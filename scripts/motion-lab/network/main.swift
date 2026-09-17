@@ -1,7 +1,7 @@
 import CoreGraphics
 import Foundation
 
-let W = 1920, H = 1080, FPS = 30, L = 15.0
+let W = 1920, H = 1080, FPS = 30, L = 10.0
 let FR = Int(L) * FPS
 let TAU = Double.pi * 2
 var rng = RNG(s: 7)
@@ -83,10 +83,10 @@ do {
   keyed.sort { $0.0 < $1.0 }
   for (rank, (_, i)) in keyed.enumerated() {
     let u = Double(rank) / Double(keyed.count - 1)
-    appear[i] = 0.4 + 7.2 * pow(u, 0.8)       // seconds
+    appear[i] = 0.15 + 4.1 * pow(u, 0.85)     // seconds: built by 5 s
   }
 }
-let BUILT = 8.4
+let BUILT = 5.0
 func ease(_ x: Double) -> Double { let c = max(0, min(1, x)); return 1 - pow(1 - c, 3) }
 func pop(_ x: Double) -> Double {           // 0 → overshoot → 1
   let c = max(0, min(1, x)); return c < 1 ? 1 + 2.2 * pow(c - 1, 3) + 1.2 * pow(c - 1, 2) : 1 }
@@ -97,16 +97,16 @@ render(path: CommandLine.arguments[1], w: W, h: H, fps: FPS, frames: FR) { ctx, 
   ctx.setFillColor(CGColor(red: 0.105, green: 0.105, blue: 0.11, alpha: 1))
   ctx.fill(CGRect(x: 0, y: 0, width: W, height: H))
   // the frame settles back as the picture fills: a slow pull-out, not a drift
-  let z = 1.22 - 0.22 * ease(sec / 11)
+  let z = 1.18 - 0.18 * ease(sec / 5.5)
   ctx.translateBy(x: Double(W) / 2, y: Double(H) / 2)
   ctx.scaleBy(x: z, y: z)
   ctx.translateBy(x: -Double(W) / 2, y: -Double(H) / 2)
-  let alive = max(0, min(1, (sec - BUILT + 1.5) / 1.5))
+  let alive = max(0, min(1, (sec - BUILT + 0.8) / 0.8))
 
   ctx.setLineWidth(0.9)
   for e in edges {
     let start = max(appear[e.a], appear[e.b]) + 0.15
-    let g = ease((sec - start) / 0.7)
+    let g = ease((sec - start) / 0.45)
     if g <= 0.01 { continue }
     let steps = 28, n = max(1, Int(Double(steps) * g))
     ctx.beginPath()
@@ -138,7 +138,7 @@ render(path: CommandLine.arguments[1], w: W, h: H, fps: FPS, frames: FR) { ctx, 
     }
   }
   for (i, n) in nodes.enumerated() {
-    let v = pop((sec - appear[i]) / 0.35)
+    let v = pop((sec - appear[i]) / 0.25)
     if sec < appear[i] { continue }
     let flash = max(0, 1 - (sec - appear[i]) / 0.5)          // born bright
     let breathe = 1 - alive * (0.22 - 0.22 * sin((t * 3 + n.ph) * TAU))

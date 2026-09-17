@@ -3,7 +3,7 @@ import Foundation
 
 // many small voices: one pops up, then another somewhere else, then another, quickly;
 // each speaks in its own way (width, height, envelope, rhythm, pauses, tint)
-let W = 1920, H = 1080, FPS = 30, L = 14.0
+let W = 1920, H = 1080, FPS = 30, L = 12.0
 let FR = Int(L) * FPS
 let TAU = Double.pi * 2
 var rng = RNG(s: 23)
@@ -20,29 +20,43 @@ struct Voice {
   var up: [Double], dn: [Double]
 }
 var voices: [Voice] = []
-// jittered 5×4 grid, cells used in a shuffled order so each new voice lands somewhere else
-var cells: [(Int, Int)] = []
-for j in 0..<4 { for i in 0..<5 { cells.append((i, j)) } }
-for k in stride(from: cells.count - 1, to: 0, by: -1) { let r = Int(rng.next() * Double(k + 1)); cells.swapAt(k, r) }
-for (idx, c) in cells.prefix(16).enumerated() {
-  let tile = [4.0, 5.0, 6.0][Int(rng.next() * 3)]
-  let cols = Int(rng.r(18, 42)), rows = Int(rng.r(5, 13))
-  let cw = Double(W) / 5, ch = Double(H) / 4
-  voices.append(Voice(
-    cx: (Double(c.0) + 0.5) * cw + rng.r(-cw * 0.18, cw * 0.18),
-    cy: (Double(c.1) + 0.5) * ch + rng.r(-ch * 0.15, ch * 0.15),
-    tile: tile, gap: tile < 5 ? 2 : 3, cols: cols, rows: rows,
-    born: 0.3 + Double(idx) * 0.42,
-    shape: Int(rng.next() * 5), f1: rng.r(3.5, 9), f2: rng.r(0.8, 2.4), ph: rng.r(0, 6),
-    talk: rng.r(1.2, 3.2), rest: rng.r(0.25, 0.9), tintBias: UInt64(rng.next() * 1000),
-    up: [Double](repeating: 0, count: cols), dn: [Double](repeating: 0, count: cols)))
+// a composed field: four bands, big and small voices alternating along each,
+// so the frame reads as a pattern before a single one speaks
+let bands: [(Double, [Int])] = [
+  (215, [1, 0, 0, 1, 0]),
+  (430, [0, 1, 0, 0, 1, 0]),
+  (650, [1, 0, 1, 0, 0]),
+  (865, [0, 0, 1, 0, 1, 0]),
+]
+var order: [(Int, Int)] = []
+for (bi, band) in bands.enumerated() {
+  let (y, kinds) = band
+  var widths: [Double] = [], specs: [(Double, Double, Int, Int)] = []
+  for k in kinds {
+    let big = k == 1
+    let tile = big ? 6.0 : 4.0, gap = big ? 3.0 : 2.0
+    let cols = big ? Int(rng.r(38, 52)) : Int(rng.r(16, 26))
+    let rows = big ? Int(rng.r(13, 17)) : Int(rng.r(5, 8))
+    specs.append((tile, gap, cols, rows)); widths.append(Double(cols) * (tile + gap))
+  }
+  let margin = 90.0
+  let free = Double(W) - 2 * margin - widths.reduce(0, +)
+  let space = free / Double(kinds.count - 1)
+  var x = margin
+  for (j, sp) in specs.enumerated() {
+    let cx = x + widths[j] / 2
+    x += widths[j] + space
+    voices.append(Voice(cx: cx, cy: y + rng.r(-14, 14), tile: sp.0, gap: sp.1, cols: sp.2, rows: sp.3,
+      born: 0, shape: [0, 1, 2, 4, 0, 1][Int(rng.next() * 6)], f1: rng.r(3.5, 9), f2: rng.r(0.8, 2.4), ph: rng.r(0, 6),
+      talk: rng.r(1.0, 2.6), rest: rng.r(0.2, 0.7), tintBias: UInt64(rng.next() * 1000),
+      up: [Double](repeating: 0, count: sp.2), dn: [Double](repeating: 0, count: sp.2)))
+    order.append((bi, j))
+  }
 }
-for i in voices.indices {   // keep every voice inside the frame
-  let half = Double(voices[i].cols) * (voices[i].tile + voices[i].gap) / 2
-  voices[i].cx = min(Double(W) - half - 60, max(half + 60, voices[i].cx))
-  let vh = Double(voices[i].rows) * (voices[i].tile + voices[i].gap)
-  voices[i].cy = min(Double(H) - vh - 50, max(vh + 50, voices[i].cy))
-}
+// they arrive fast, in a shuffled order, ~0.09 s apart: the whole field is up in two seconds
+var ids = Array(voices.indices)
+for k in stride(from: ids.count - 1, to: 0, by: -1) { let r = Int(rng.next() * Double(k + 1)); ids.swapAt(k, r) }
+for (n, i) in ids.enumerated() { voices[i].born = 0.2 + Double(n) * 0.09 }
 
 func envelope(_ v: Voice, _ u: Double) -> Double {
   switch v.shape {
@@ -67,11 +81,11 @@ render(path: CommandLine.arguments[1], w: W, h: H, fps: FPS, frames: FR) { ctx, 
     let age = sec - v.born
     if age < 0 { continue }
     // arrival: the line draws out from the centre in a quarter second, then the voice starts
-    let open = min(1, age / 0.25)
+    let open = min(1, age / 0.16)
     let cyc = v.talk + v.rest
     let inTalk = ((age + v.ph).truncatingRemainder(dividingBy: cyc)) < v.talk ? 1.0 : 0.12
     let s = age + v.ph
-    let amp = (0.3 + 0.7 * abs(sin(s * v.f1) * sin(s * v.f2 + 1.1))) * inTalk * min(1, age / 0.4)
+    let amp = (0.3 + 0.7 * abs(sin(s * v.f1) * sin(s * v.f2 + 1.1))) * inTalk * min(1, age / 0.25)
     let k = f / 3
     let step = Double(v.tile + v.gap)
     let x0 = v.cx - Double(v.cols) * step / 2
