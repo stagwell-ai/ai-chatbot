@@ -1429,3 +1429,85 @@ body.pc-page{--hc-ground:#FFFFFF}
   .pl-c .prodgroup[data-pc-multi] .pc-cap.is-on:not(#_),.pl-c .prodgroup[data-pc-multi] .pc-side.is-on:not(#_){border-radius:16px !important;margin:0 !important}
   .pl-c .prodgroup[data-pc-multi] .pc-pic:not(#_){width:100% !important;height:auto !important;aspect-ratio:4 / 3 !important;flex:0 0 auto;min-height:0}
 }
+
+/* ═══ product pages, round two (client, 2026-09-17) ═════════════════════════════════════════ */
+/* hero: centred like the homepage; the action and the link on one line */
+.pc-page:not(.pl-c) .pp-hero__in:not(#_){display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center !important;
+  max-width:980px !important;margin-inline:auto !important}
+.pc-page:not(.pl-c) .pp-hero__in:not(#_) > *{grid-column:auto !important;grid-row:auto !important;margin-inline:auto !important}
+.pc-page:not(.pl-c) .pp-hero .pp-title:not(#_){text-align:center !important;max-width:18ch}
+.pc-page:not(.pl-c) .pp-hero .pp-lede:not(#_){text-align:center !important;max-width:560px !important;margin-top:18px !important}
+.pc-page:not(.pl-c) .pp-acts:not(#_){flex-direction:row !important;align-items:center !important;justify-content:center !important;gap:28px !important;flex-wrap:wrap !important;margin-top:28px !important}
+.pc-page:not(.pl-c) .pp-acts:not(#_) .btn{width:auto !important}
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_){align-self:center !important;text-decoration:none !important;border-bottom:1px solid currentColor !important;padding-bottom:2px !important}
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_) .pp-site__ic{transform:none !important;width:13px !important;height:13px !important}
+
+/* how it works on phones: the homepage's tabs, with the fill */
+@media (max-width:860px){
+  .pc-page .pc-how__tab:not(#_){height:40px;padding:0 14px;border-radius:8px !important;border:1px solid rgba(11,18,32,.12) !important;background:#FFFFFF;
+    color:#0B1220;isolation:isolate}
+  .pc-page .pc-how__tab.is-on:not(#_){border-color:rgba(11,18,32,.12) !important}
+  .pc-page .pc-how__tab:not(#_) .pc-how__bar{top:0;bottom:0;height:auto;z-index:-1;background:#DCDCD7}
+  .pc-page .pc-how__list.is-taken .pc-how__tab.is-on .pc-how__bar{transform:scaleX(1)}
+  .pc-page .pc-how__n{display:none}
+}
+
+/* what sets it apart: the homepage's Why rows — a big name, the words beside it, a rule between */
+.pc-page .pp-diff__grid:not(#_){display:block !important}
+.pc-page .pp-diff__item:not(#_){display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,430px);column-gap:clamp(32px,5vw,96px);
+  align-items:start;background:none !important;border-radius:0 !important;padding:clamp(28px,3.4vw,44px) 0 !important;
+  border-top:1px solid rgba(11,18,32,.12) !important}
+.pc-page .pp-diff__item:not(#_):last-child{border-bottom:1px solid rgba(11,18,32,.12) !important}
+.pc-page .pp-diff__n:not(#_){display:none !important}
+.pc-page .pp-diff__item:not(#_) h3{margin:0 !important;font-size:clamp(32px,1.2rem + 2.6vw,60px) !important;font-weight:400;letter-spacing:-.03em;line-height:1.02}
+.pc-page .pp-diff__item:not(#_) p{margin:6px 0 0 !important;font-size:16px;line-height:1.55;color:rgba(11,18,32,.62)}
+
+/* use cases: group tabs, then the group's uses as rows */
+.pc-page .pc-utabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 clamp(20px,2.6vw,32px)}
+.pc-page .pc-utab{height:40px;padding:0 16px;border-radius:8px;border:1px solid rgba(11,18,32,.12);background:#FFFFFF;color:#0B1220;font:inherit;font-size:14px;cursor:pointer}
+.pc-page .pc-utab:hover{border-color:rgba(11,18,32,.34)}
+.pc-page .pc-utab.is-on{background:#DCDCD7;border-color:#DCDCD7}
+.pc-page .pc-uses:not(#_){display:block !important}
+.pc-page .pc-uses .pp-uses__group[hidden]{display:none !important}
+.pc-page .pc-uses .pp-uses__group:not(#_) > h3{display:none !important}
+.pc-page .pc-uses .pp-uses__list:not(#_) li{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,430px);column-gap:clamp(32px,5vw,96px);
+  padding:clamp(20px,2.4vw,28px) 0 !important;border-top:1px solid rgba(11,18,32,.12);border-bottom:0 !important}
+.pc-page .pc-uses .pp-uses__list:not(#_) li:last-child{border-bottom:1px solid rgba(11,18,32,.12) !important}
+.pc-page .pc-uses .pp-uses__list:not(#_) h4{font-size:clamp(22px,1rem + 1vw,32px) !important;font-weight:400 !important;letter-spacing:-.02em;line-height:1.12}
+.pc-page .pc-uses .pp-uses__list:not(#_) p{display:block !important;margin:4px 0 0 !important;font-size:15px;line-height:1.55;color:rgba(11,18,32,.62)}
+
+/* what it connects to: four quiet columns under a rule, the mark small and blue */
+.pc-page .pp-with__grid:not(#_) > li{background:none !important;border-radius:0 !important;padding:22px 0 0 !important;
+  border-top:1px solid rgba(11,18,32,.14) !important;gap:14px !important}
+.pc-page .pp-with__grid:not(#_) > li > svg{width:24px !important;height:24px !important;padding:0 !important;background:none !important;box-shadow:none !important;color:#009CBD}
+.pc-page .pp-with__grid:not(#_){gap:clamp(20px,2.4vw,36px) !important}
+
+/* proof: back on white; big ink numbers that count up, fine rules */
+.pc-page .pp-proof:not(#_){background:none !important;color:#0B1220 !important;margin:0 !important}
+.pc-page .pp-proof:not(#_) .pp-sign{color:rgba(11,18,32,.55) !important}
+.pc-page .pp-proof:not(#_) .pp-h2,.pc-page .pp-proof:not(#_) .pp-h2 *{color:#0B1220 !important}
+.pc-page .pp-proof:not(#_) .pp-flag{background:#F2F3F5 !important;color:rgba(11,18,32,.6) !important}
+.pc-page .pp-proof:not(#_) .pp-figs{border-top:1px solid rgba(11,18,32,.14) !important}
+.pc-page .pp-proof:not(#_) .pp-figs li + li{border-left:1px solid rgba(11,18,32,.14) !important}
+.pc-page .pp-proof:not(#_) .pp-figs strong{color:#0B1220 !important;font-variant-numeric:tabular-nums;font-weight:400 !important}
+.pc-page .pp-proof:not(#_) .pp-figs span{color:rgba(11,18,32,.6) !important}
+.pc-page .pp-proof:not(#_) .pp-proof__note{color:rgba(11,18,32,.45) !important}
+
+@media (max-width:860px){
+  .pc-page .pp-diff__item:not(#_),.pc-page .pc-uses .pp-uses__list:not(#_) li{grid-template-columns:1fr !important;row-gap:10px}
+  .pc-page .pc-utabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-20px;padding-inline:20px}
+  .pc-page .pc-utabs::-webkit-scrollbar{display:none}
+  .pc-page .pc-utab{flex:0 0 auto;white-space:nowrap}
+  .pc-page .pp-proof:not(#_) .pp-figs li,.pc-page .pp-proof:not(#_) .pp-figs li + li{border-left:0 !important;border-bottom:1px solid rgba(11,18,32,.14) !important}
+  .pc-page:not(.pl-c) .pp-acts:not(#_){gap:18px !important}
+}
+.pc-page:not(.pl-c) .pp-hero .pp-eyebrow:not(#_){text-align:center !important;width:auto !important}
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_){border-radius:0 !important}
+@media (max-width:860px){.pc-page .pc-how__list:not(#_){justify-content:flex-start !important}}
+
+/* proof: figures sit left, over their labels, at every width */
+.pp-proof .pp-figs li:not(#_){align-items:flex-start !important;text-align:left !important}
+@media (max-width:860px){
+  .pc-how__tab:not(#_){max-width:min(240px,64vw) !important}
+  .pc-how__tab:not(#_) .pc-how__t{display:block !important;min-width:0 !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important}
+}

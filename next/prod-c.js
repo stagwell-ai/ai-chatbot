@@ -394,7 +394,10 @@
       const p = document.createElement('p'); p.textContent = (li.querySelector('p') || {}).textContent || '';
       card.append(n, h, p);
       /* on a phone the steps are a sideways row: keep the live one in view (the row only, never the page) */
-      if (list.scrollWidth > list.clientWidth + 2) list.scrollTo({ left: Math.max(0, btns[at].offsetLeft - 20), behavior: still ? 'auto' : 'smooth' });
+      if (list.scrollWidth > list.clientWidth + 2) {
+        const x = btns[at].getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft - 20;
+        list.scrollTo({ left: Math.max(0, x), behavior: still ? 'auto' : 'smooth' });
+      }
       if (!taken && !still) { const bar = btns[at]; bar.classList.remove('is-timing'); void bar.offsetWidth; bar.classList.add('is-timing'); }
     };
     const run = () => { if (timer || taken || !seen || still) return; show(at); timer = setInterval(() => show(at + 1), 5500); };
@@ -403,6 +406,61 @@
     show(0);
     btns[0].classList.remove('is-timing');
     new IntersectionObserver(es => { seen = es[0].isIntersecting; seen ? run() : halt(); }, { threshold: .35 }).observe(grid);
+  }
+
+  /* use cases: the groups become tabs (the homepage's), one group's uses at a time */
+  const usesSec = page.querySelector('.pp-uses');
+  const groups = usesSec ? [...usesSec.querySelectorAll('.pp-uses__group')] : [];
+  if (groups.length > 1 && !usesSec.dataset.pcTabs) {
+    usesSec.dataset.pcTabs = '1';
+    const gridEl = usesSec.querySelector('.pp-uses__grid');
+    const strip = document.createElement('div');
+    strip.className = 'pc-utabs';
+    strip.setAttribute('role', 'tablist');
+    const tbs = groups.map((g, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'pc-utab'; b.setAttribute('role', 'tab');
+      b.textContent = ((g.querySelector('h3') || {}).textContent || '').trim();
+      b.addEventListener('click', () => pick(i));
+      strip.appendChild(b);
+      return b;
+    });
+    gridEl.parentElement.insertBefore(strip, gridEl);
+    gridEl.classList.add('pc-uses');
+    const pick = i => {
+      tbs.forEach((b, n) => { b.classList.toggle('is-on', n === i); b.setAttribute('aria-selected', n === i ? 'true' : 'false'); });
+      groups.forEach((g, n) => { g.hidden = n !== i; });
+      if (strip.scrollWidth > strip.clientWidth + 2) {
+        const x = tbs[i].getBoundingClientRect().left - strip.getBoundingClientRect().left + strip.scrollLeft - 24;
+        strip.scrollTo({ left: Math.max(0, x), behavior: 'smooth' });
+      }
+    };
+    pick(0);
+  }
+
+  /* proof: the figures count up once, when they are first seen */
+  const figs = [...page.querySelectorAll('.pp-proof .pp-figs strong')];
+  if (figs.length && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const parts = figs.map(el => {
+      const m = el.textContent.match(/^(\D*)(\d+(?:[.,]\d+)?)(?:([–-])(\d+(?:[.,]\d+)?))?(.*)$/);
+      return m ? { el, pre: m[1], a: parseFloat(m[2]), dash: m[3] || '', b: m[4] ? parseFloat(m[4]) : null, post: m[5], text: el.textContent } : null;
+    });
+    const io = new IntersectionObserver(es => {
+      if (!es.some(e => e.isIntersecting)) return;
+      io.disconnect();
+      const t0 = performance.now(), D = 1400;
+      const tick = now => {
+        const k = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - k, 3);
+        parts.forEach(p => {
+          if (!p) return;
+          if (k >= 1) { p.el.textContent = p.text; return; }
+          p.el.textContent = p.pre + Math.round(p.a * e) + (p.b !== null ? p.dash + Math.round(p.b * e) : '') + p.post;
+        });
+        if (k < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: .4 });
+    io.observe(figs[0].closest('.pp-figs'));
   }
 
   /* a picture between the reasons and the uses, so the page is not text after text */
