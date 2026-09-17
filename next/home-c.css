@@ -2549,3 +2549,8 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 @media (min-width:761px){
   .hc-page .foot .foot__in:not(#_){max-width:1240px !important;padding-inline:min(40px,4vw) !important;margin-inline:auto !important}
 }
+
+/* Products menu: the icon tiles in the palette blue, like the suite cards */
+.hc-page .nav__pmark:not(#_){background:rgba(0,156,189,.09) !important;box-shadow:inset 0 0 0 1px rgba(0,156,189,.42) !important;color:#009CBD !important}
+.hc-page .nav__pmark:not(#_) svg{color:#009CBD !important}
+.hc-page .nav__pitem:hover .nav__pmark:not(#_){background:rgba(0,156,189,.16) !important;box-shadow:inset 0 0 0 1px rgba(0,156,189,.7) !important}
