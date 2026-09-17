@@ -696,7 +696,7 @@
         });
       },
       chips(bubble, chips, onChip, cls) { if (!bubble || !chips || !chips.length) return null; const row = chipsRow(chips, onChip, cls); bubble.appendChild(row); follow(); return row; },
-      open() { agentSec.classList.add('is-chat'); },
+      open() { agentSec.classList.add('is-chat'); ghost.rest(); },
       placeholder(t) { ghost.stop(); miniInput.placeholder = t || ''; grow(); },
       /* the field is sized to its words again — after a send has emptied it */
       grow,
@@ -771,13 +771,29 @@
          finished for them rather than left as "What is The Machin" */
       function stop(full) {
         clear();
-        if (on && !done && idle()) miniInput.placeholder = full ? (lines[at] || FALLBACK) : FALLBACK;
+        /* NOT idle(): by the time a tick finds the conversation started, the
+           thread is no longer empty, and the strict test left a half-read
+           example standing in the box — after a voice turn, where the flow
+           never sets a placeholder of its own, "What is The Machine?" sat
+           under an agent that had just asked something else (2026-09-17). */
+        if (on && !done && !miniInput.disabled && !miniInput.value)
+          miniInput.placeholder = full ? (lines[at] || FALLBACK) : FALLBACK;
         on = false; done = true;
       }
       const FALLBACK = miniInput.placeholder || 'What do you need help solving?';
       return {
         set(v) { lines = (Array.isArray(v) ? v : []).map(s => String(s || '').trim()).filter(Boolean); at = 0; },
         stop() { stop(true); },
+        /* the conversation has opened. Whatever is in the box, if it is one of
+           OUR questions (whole or half-written) it is stale now — a voice turn
+           sets no placeholder of its own, and an example sat there under an
+           agent that had just asked something else. A prompt the flow put
+           there is left exactly as it is. */
+        rest() {
+          clear(); on = false; done = true;
+          const now = miniInput.placeholder || '';
+          if (!miniInput.disabled && !miniInput.value && lines.some(q => q.indexOf(now) === 0)) miniInput.placeholder = FALLBACK;
+        },
         start() {
           clear(); on = false; done = false;
           if (!lines.length) this.set(K().askExamples);
