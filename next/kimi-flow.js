@@ -101,7 +101,10 @@ function blank() {
     emailWhyGiven: false,        /* they turned the address down once and were told why it is asked for */
     emailDone: false,            /* the work email step is behind us — answered, dodged or declined */
     previewed: false,            /* the products have been shown once, before the business questions */
+    exploreOffer: null,          /* the card on screen can be gone into: { productId, label } */
     mentioned: [],               /* products the visitor named outright — the strongest signal there is */
+    explore: { productId: null, node: null, depth: 0, panel: null },   /* the detour into one product's detail */
+    resume: null,                /* the turn that was on screen when the detour began */
     phoneNudged: false,          /* asked once more for a number that looked wrong */
     action: null,                /* the BOOK step's button: { label, cta } */
     after: null,
@@ -559,6 +562,9 @@ function preview(reco) {
   const low = !reco.confidence || reco.confidence.level === 'low';
   st.cardsIntro = (low ? c.showcaseIntroLow : c.showcaseIntro) || c.recommendationIntroOpen || '';
   st.after = c.showcaseAfter || null;
+  /* the card is on screen: the detour into its detail is offered here and
+     nowhere else, so it can never start before there is a product to go into */
+  st.exploreOffer = exFor(reco.primary) ? { productId: reco.primary, label: tpl(c.exploreInvite || 'Want to go deeper on {product}?', { product: exName(reco.primary, exFor(reco.primary)) }) } : null;
   track('kimi_showcase_shown', Object.assign({ cards: cards.length, email_given: !!st.email }, recoProps()));
   return true;
 }
@@ -586,6 +592,126 @@ function advance(ack) {
   if (!reco || !reco.primary) { askGoal(); return; }
   readyForContact();
 }
+
+/* ── EXPLORE: going deeper on one product, a step at a time ──────────────────
+   "we dont want to simply reproduce the whole page in the chat window, we want
+   it to be dynamic, and iterative, and animated, and let the user click things
+   and ask questions" (client, 2026-09-17).
+
+   The tree lives in data/explainers.json — the same file the product page
+   renders from, so the two cannot drift. This walks it ONE NODE AT A TIME and
+   never shows a level it was not asked for: a node returns a short line, a
+   small panel, and the chips that lead on from it.
+
+   Three rules keep it from becoming the page:
+     · `depth` is capped (exploreMaxDepth) — after that only the way out is
+       offered, so a visitor cannot wander forever;
+     · every node carries a way back to the conversation, because the point is
+       still the recommendation and the address;
+     · `answerOnly` items (the does-NOT-do list) are NEVER offered as a chip.
+       They exist so a direct question gets an honest answer instead of an
+       overclaim — they are not something to read off a screen.                */
+const EXPLORE_PREFIX = '__x__';
+const exData = () => (data().explainers && data().explainers.products) || {};
+const exFor = id => exData()[id] || null;
+const exName = (id, ex) => (ex && ex.name) || ((R() && R().productById(id, data()) || {}).name) || 'this';
+const exCopy = () => Object.assign({
+  root: 'What would you like to know about {product}?',
+  differentiators: 'Three things set it apart:',
+  usecases: 'Fifteen use cases, in five groups. Which is closest to your world?',
+  group: '{label} — {n} of them:',
+  connects: 'It connects to what you already run, rather than replacing it:',
+  back: 'Something else about {product}?',
+  chipDifferentiators: 'How is it different?',
+  chipUsecases: 'What do teams use it for?',
+  chipConnects: 'What does it connect to?',
+  chipMore: 'Something else about it',
+  chipDone: 'Carry on',
+  capped: "That's the shape of it. Shall we carry on?"
+}, (copy().explore || {}));
+
+/* every node of the tree: what to say, what to draw, where it can go next */
+function exploreNode(pid, node) {
+  const ex = exFor(pid); if (!ex) return null;
+  const c = exCopy(), name = exName(pid, ex);
+  const fill = (s, v) => tpl(s, Object.assign({ product: name }, v || {}));
+  const chip = (id, label) => ({ id: EXPLORE_PREFIX + id, label, value: EXPLORE_PREFIX + id, kind: 'explore' });
+  const has = k => list(ex[k]).length;
+  const top = [];
+  if (has('differentiators')) top.push(chip('differentiators', c.chipDifferentiators));
+  if (has('useCaseGroups')) top.push(chip('usecases', c.chipUsecases));
+  if (has('connectsTo')) top.push(chip('connects', c.chipConnects));
+
+  if (node === 'root') return { say: fill(c.root), panel: null, chips: top };
+  if (node === 'differentiators') {
+    return { say: fill(c.differentiators),
+      panel: { kind: 'diff', items: list(ex.differentiators).map(d => ({ title: d.title, line: d.line })) },
+      chips: top.filter(x => x.id !== EXPLORE_PREFIX + 'differentiators') };
+  }
+  if (node === 'connects') {
+    return { say: fill(c.connects),
+      panel: { kind: 'connects', items: list(ex.connectsTo).map(d => ({ title: d.title, line: d.line })) },
+      chips: top.filter(x => x.id !== EXPLORE_PREFIX + 'connects') };
+  }
+  if (node === 'usecases') {
+    return { say: fill(c.usecases), panel: null,
+      chips: list(ex.useCaseGroups).map(g => chip('g:' + g.id, g.label)) };
+  }
+  if (node.indexOf('g:') === 0) {
+    const g = list(ex.useCaseGroups).find(x => x.id === node.slice(2));
+    if (!g) return null;
+    const others = list(ex.useCaseGroups).filter(x => x.id !== g.id).slice(0, 3).map(x => chip('g:' + x.id, x.label));
+    return { say: fill(c.group, { label: g.label, n: g.items.length }),
+      panel: { kind: 'cases', items: g.items.map(i => ({ title: i.name, line: i.line })) },
+      chips: others };
+  }
+  return null;
+}
+
+/* the visitor tapped one of those chips, or the model called show_me */
+function explore(topic, opts) {
+  const o = opts || {};
+  const pid = o.productId || st.explore.productId || (st.reco && st.reco.primary) || null;
+  const ex = pid ? exFor(pid) : null;
+  if (!ex) return state();
+  const c = exCopy();
+  const node = String(topic || 'root').replace(EXPLORE_PREFIX, '') || 'root';
+  const max = flags().exploreMaxDepth == null ? 4 : flags().exploreMaxDepth;
+  const step = exploreNode(pid, node);
+  if (!step) return state();
+  const depth = node === 'root' ? 0 : (st.explore.productId === pid ? st.explore.depth + 1 : 1);
+  st.explore = { productId: pid, node, depth, panel: step.panel };
+  /* the way on is always offered: deeper while there is room, and out of the
+     detour either way — the conversation is still going somewhere */
+  const onward = depth >= max ? [] : step.chips;
+  st.message = depth >= max ? tpl(c.capped, { product: exName(pid, ex) }) : step.say;
+  st.ack = null; st.prompt = st.message;
+  st.suggestions = onward.concat([{ id: EXPLORE_PREFIX + 'done', label: c.chipDone, value: EXPLORE_PREFIX + 'done', kind: 'explore' }]);
+  st.uiAction = 'EXPLORE';
+  st.hint = (copy().hints || {}).explore || 'Pick one, or ask me anything about it';
+  emit('explore_opened', { product: pid, node, depth });
+  track('kimi_explore', { product: pid, node, depth, items: step.panel ? step.panel.items.length : 0 });
+  notify();
+  return state();
+}
+
+/* leaving the detour: the conversation picks up exactly where it was */
+function exploreDone() {
+  const pid = st.explore.productId;
+  track('kimi_explore_done', { product: pid, depth: st.explore.depth });
+  st.explore = blankExplore();
+  st.holds = 0;
+  if (st.resume && st.resume.uiAction) {
+    /* the question that was on screen when they wandered off */
+    Object.assign(st, st.resume);
+    st.resume = null;
+  } else advance(null);
+  notify();
+  return state();
+}
+const blankExplore = () => ({ productId: null, node: null, depth: 0, panel: null });
+/* the chips this turn are explore chips, so answer() hands them here */
+const isExplore = text => String(text || '').indexOf(EXPLORE_PREFIX) === 0;
 
 /* ── opening ─────────────────────────────────────────────────────────────── */
 async function start(opts) {
@@ -650,6 +776,17 @@ function noteHuman(text) {
 
 /* ── one answer ──────────────────────────────────────────────────────────── */
 async function answer(input) {
+  /* ── a tap on an explore chip is a DETOUR, not an answer ──
+     It is valid whatever is on screen, so it is read before the guards below:
+     once the detour is open uiAction is 'EXPLORE', and those guards would
+     otherwise drop every tap after the first. The question that was showing is
+     remembered and handed straight back when they are done. */
+  if (isExplore(input)) {
+    const topic = String(input).slice(EXPLORE_PREFIX.length);
+    if (topic === 'done') return exploreDone();
+    if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
+    return explore(topic);
+  }
   /* after the recommendation the composer asks for the email, then the phone */
   if (st.status === 'CAPTURE_EMAIL') return captureEmail(String(input == null ? '' : input).trim());
   if (st.status === 'CAPTURE_PHONE') return capturePhone(String(input == null ? '' : input).trim());
@@ -675,6 +812,16 @@ async function answer(input) {
     if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600);
     st.currentQuestion = null;
     advance(read.ack); notify(); return state();
+  }
+
+  /* a tap on an explore chip is a detour into the product's detail, not an
+     answer to the question on screen: the question is remembered and handed
+     back when they are done (client, 2026-09-17) */
+  if (isExplore(text)) {
+    const topic = String(text).slice(EXPLORE_PREFIX.length);
+    if (topic === 'done') return exploreDone();
+    if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
+    return explore(topic);
   }
 
   /* the opening two questions are still a conversation: someone who answers
@@ -1194,6 +1341,8 @@ function state() {
     pointers: st.pointers ? { kind: st.pointers.kind, items: st.pointers.items.slice() } : null,
     researched: !!st.researched,
     previewed: !!st.previewed,
+    exploreOffer: st.exploreOffer || null,
+    explore: st.explore && st.explore.node ? { productId: st.explore.productId, node: st.explore.node, depth: st.explore.depth, panel: st.explore.panel } : null,
     findings: st.findings ? Object.assign({}, st.findings) : null,
     contact: st.contact ? Object.assign({}, st.contact) : null,
     contactRequest: st.contactRequest,
@@ -1281,7 +1430,7 @@ const tools = {
 };
 
 window.SAIKIMI = {
-  start, answer, contact, clicked, state, onChange, requestContact, tools, askWorkEmail,
+  start, answer, contact, clicked, state, onChange, requestContact, tools, askWorkEmail, explore, exploreDone,
   validate: lead => { const v = validate(lead || {}); return v.error ? { ok: false, error: v.error, message: v.message } : { ok: true, lead: v.lead }; },
   recommendation: () => st.reco,
   result: () => ({ state: state(), reco: st.reco, discovery: discoveryPayload() }),

@@ -197,6 +197,30 @@ function render(st) {
     refocus();
     return;
   }
+  /* ── EXPLORE: a detour into one product's detail ──
+     A short line, a small panel of two to five rows dealt out one after
+     another, and the chips that lead on from it. Never the whole page: the
+     flow hands over one node at a time (client, 2026-09-17). */
+  if (st.uiAction === 'EXPLORE') {
+    const x = st.explore || {};
+    const key = 'explore|' + x.productId + '|' + x.node + '|' + x.depth;
+    if (key === lastKey) return;
+    lastKey = key;
+    const chips = st.suggestions.map(sg => ({ label: sg.label, value: sg.value }));
+    const onChip = chip => send(chip.value, chip.label);
+    if (!quiet) {
+      const bubble = H.ai(askText(st.message || ''), null, null, null);
+      if (x.panel && x.panel.items && x.panel.items.length) bubble.appendChild(panelEl(x.panel));
+      if (chips.length) H.chips(bubble, chips, onChip);
+      H.settle(bubble);
+    } else if (chips.length && window.SAIVOICE.offerChips) {
+      window.SAIVOICE.offerChips(chips, chip => send(chip.value, chip.label));
+    }
+    inputMode('text');
+    H.placeholder(st.hint || 'Pick one, or ask me anything about it');
+    refocus();
+    return;
+  }
   if (st.uiAction === 'CAPTURE_CONTACT') {
     if (lastKey === 'contact') return;
     lastKey = 'contact';
@@ -451,6 +475,21 @@ function drawForm(st) {
 }
 
 /* ── the recommendation (brief §20–§23): cards from view models ─────────── */
+/* the rows of an explore panel. They are dealt out by CSS on a stagger, so the
+   list arrives a line at a time under the words that introduce it. */
+function panelEl(panel) {
+  const ul = document.createElement('ul');
+  ul.className = 'xpanel xpanel--' + (panel.kind || 'rows');
+  panel.items.forEach((it, i) => {
+    const li = document.createElement('li');
+    li.style.setProperty('--i', String(i));
+    li.innerHTML = '<span class="xpanel__n">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<div><b>' + H.esc(it.title) + '</b><span>' + H.esc(it.line) + '</span></div>';
+    ul.appendChild(li);
+  });
+  return ul;
+}
+
 /* the first look: the same cards, in their own bubble, with the composer left
    open and the conversation carrying on under them. It does not touch
    cardsDrawn — the full recommendation still draws itself at the end. */
@@ -467,6 +506,20 @@ function drawPreview(st) {
   b.querySelectorAll('[data-kimi-cta]').forEach(el => el.addEventListener('click', () => {
     try { K.clicked(el.dataset.kimiCta, el.dataset.kimiProduct, el.getAttribute('href')); } catch (e) {}
   }));
+  /* the way deeper, offered under the card and only there */
+  const off = st.exploreOffer;
+  if (off && copy().explore) {
+    const X = copy().explore;
+    const chips = [
+      { label: X.chipDifferentiators, value: '__x__differentiators' },
+      { label: X.chipUsecases, value: '__x__usecases' },
+      { label: X.chipConnects, value: '__x__connects' }
+    ];
+    const line = document.createElement('p');
+    line.className = 'reco__after'; line.textContent = off.label;
+    b.appendChild(line);
+    H.chips(b, chips, chip => send(chip.value, chip.label), 'turnb__chips--explore');
+  }
   H.type(b);
   H.settle(b, { head: true });
   try { const a = window.SAIANALYTICS; if (a) a.track('kimi_showcase_drawn', { cards: st.cards.length }); } catch (e) {}

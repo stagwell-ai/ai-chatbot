@@ -588,6 +588,42 @@ test's floor is 42 so a stray keyword cannot pass unnoticed. What changed:
   change / influence = Search+; how visible / am I cited = GEOPulse) and accept either until the
   authors rule. Not in the sheet at all: NewVoices, NewIntel, the ID Graph.
 
+## 5c. Going deeper on one product — the explore detour
+
+"we dont want to simply reproduce the whole page in the chat window, we want it to be dynamic,
+and iterative, and animated, and let the user click things and ask questions" (client,
+2026-09-17). The deep content — differentiators, the use-case library, what it connects to —
+lives in **`data/explainers.json`**, and that one file has two readers:
+
+- **the product page**, through `build-product-pages.py`'s `explainers_html()`, injected between
+  `<!-- explainers:start … -->` and `<!-- explainers:end -->`. Injection rather than
+  regeneration, because the five hand-themed pages lose Julian's theme if the builder writes
+  them whole — which is why the builder now has a `HAND_THEMED` set it refuses to overwrite.
+  That retires the long-standing CAUTION at the top of the script.
+- **the chat**, through `SAIKIMI.explore(node)`, which walks the same tree one node at a time.
+
+They cannot drift: `tests/kimi/explainers.test.mjs` asserts every item is on the page, in order.
+
+**The detour, in the chat.** The card offers three ways in (`copy.exploreInvite` + the chips).
+Each tap is a node: a short line, a panel of two to five rows dealt out on a CSS stagger
+(`.xpanel`, `home.css`), and the chips that lead on. Three rules keep it a conversation rather
+than a page:
+
+- `flags.exploreMaxDepth` (3) caps it — past that only the way out is offered;
+- every node carries "Carry on", and `exploreDone()` hands back **the exact turn that was on
+  screen** when the detour began (`st.resume`), so the question is not re-asked;
+- `answerOnly` items — the does-NOT-do list — are **never** offered as a chip and never
+  rendered on a page. They exist so a direct question gets an honest answer instead of an
+  overclaim, and they are the guardrail the voice agent needs most.
+
+`answer()` reads an explore chip **before** its status guards: once the detour is open the
+uiAction is `EXPLORE`, and those guards would otherwise drop every tap after the first.
+
+Covered by `npm run test:explore` (iterative, capped, comes back, never says the does-not-do
+list, dealt out on a stagger and simply shown when motion is off) and by the unit file above,
+which also checks nothing restricted — a client, a price, a person, a credential, a roadmap
+date — ever reached the file.
+
 ## 6. LLM broker and fallback chain
 
 `api/_lib/llm/broker.js`. Chain from env (§7). Per attempt 7 s for the Kimi gateway (a

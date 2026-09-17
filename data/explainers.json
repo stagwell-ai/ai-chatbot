@@ -1,0 +1,452 @@
+{
+  "_comment": "DEEP CONTENT, one source for the product page and the agents. The page renders these between HTML markers (next/build-product-pages.py explainers_html) and SAIKIMI.explore() walks the same tree in the chat, so the two can never drift. The model may CHOOSE and PHRASE items from here; it may never author a product fact. Items marked answerOnly are never offered as a chip — they exist so the agent can answer a direct question honestly instead of overclaiming.",
+  "version": "2026-09-17",
+  "products": {
+    "machines_family": {
+      "name": "The Machine",
+      "_nameNote": "What to call it on the page and in the chat. The catalog's own name for this entry is \"Stagwell's Machines (family frame)\", which is a routing label, not something to say to a visitor.",
+      "source": "The Machine: EXTERNAL demo deck (the three differentiators, stated twice), the Machine Use Case Library, and the seller playbook's does-NOT-do table (client, 2026-09-17). Nothing here names a client, a price, a roadmap date or a person.",
+      "differentiators": [
+        {
+          "id": "open_architecture",
+          "title": "An open architecture",
+          "line": "Built API-first, so it adapts at every layer, and platform-agnostic across models, cloud providers and front-end applications. It connects to your stack rather than asking you to replace it.",
+          "keywords": [
+            "open architecture",
+            "api",
+            "api-first",
+            "agnostic",
+            "lock-in",
+            "vendor lock",
+            "rip and replace",
+            "integrate",
+            "integration",
+            "swap",
+            "cloud"
+          ]
+        },
+        {
+          "id": "works_where_you_work",
+          "title": "Works where you work",
+          "line": "Beyond The Machine's own interface, Mini-Machines are custom plugins that let teams use its intelligence — and send information back to it — inside Figma, Slack, Adobe, Microsoft Teams and Workfront.",
+          "keywords": [
+            "mini-machine",
+            "mini machine",
+            "plugin",
+            "plugins",
+            "figma",
+            "slack",
+            "adobe",
+            "teams",
+            "workfront",
+            "where we work",
+            "inside our tools",
+            "another portal",
+            "another login"
+          ]
+        },
+        {
+          "id": "unified_intelligence",
+          "title": "A unified intelligence layer",
+          "line": "Custom-trained to ingest, interpret and act on large volumes of private, secure signals — your data, world knowledge, Stagwell's proprietary sources and trusted third parties.",
+          "keywords": [
+            "intelligence layer",
+            "our data",
+            "first-party",
+            "context",
+            "knowledge base",
+            "trained on",
+            "secure",
+            "private",
+            "proprietary data",
+            "grounded"
+          ]
+        }
+      ],
+      "useCaseGroups": [
+        {
+          "id": "strategy",
+          "label": "Strategy and planning",
+          "items": [
+            {
+              "id": "audience_research",
+              "name": "Audience & persona research",
+              "line": "Replaces weeks of fragmented desk research with continuously refreshed, evidence-grounded segments and personas tied to the actual brand objective.",
+              "keywords": [
+                "persona",
+                "personas",
+                "audience research",
+                "segments",
+                "segmentation",
+                "desk research",
+                "who our customers are"
+              ]
+            },
+            {
+              "id": "campaign_architecture",
+              "name": "Strategy & campaign architecture",
+              "line": "Turns business goals plus audience truth into a coherent architecture — objective, audience, message hierarchy, channel role, KPI framework — with options and trade-offs in hours instead of weeks.",
+              "keywords": [
+                "campaign architecture",
+                "campaign strategy",
+                "message hierarchy",
+                "channel role",
+                "kpi framework",
+                "planning a campaign"
+              ]
+            },
+            {
+              "id": "measurement_design",
+              "name": "Measurement design & experiment set-up",
+              "line": "Designs measurement up front: the right KPI framework, attribution method and clean experiments, so campaigns are provable rather than merely reportable.",
+              "keywords": [
+                "measurement design",
+                "experiment",
+                "holdout",
+                "incrementality",
+                "attribution",
+                "geo test",
+                "kpi"
+              ]
+            },
+            {
+              "id": "media_planning",
+              "name": "Media planning & budget allocation",
+              "line": "Builds and continuously re-optimises channel mix, budget allocation and flighting grounded in measurement rather than platform self-reporting.",
+              "keywords": [
+                "media planning",
+                "budget allocation",
+                "channel mix",
+                "flighting",
+                "where to spend",
+                "media mix"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "creative",
+          "label": "Creative and content",
+          "items": [
+            {
+              "id": "briefing",
+              "name": "Creative briefing",
+              "line": "Produces sharp, complete, on-strategy briefs that inherit audience, brand and objective context automatically — closing the vague-brief, wrong-work, redo loop.",
+              "keywords": [
+                "brief",
+                "briefs",
+                "briefing",
+                "creative brief",
+                "rebrief",
+                "redo"
+              ]
+            },
+            {
+              "id": "ideation",
+              "name": "Ideation, concepting & storyboarding",
+              "line": "Moves from approved brief to a slate of distinct, on-brand, channel-feasible concepts, checked against brand and channel reality before money is spent.",
+              "keywords": [
+                "ideation",
+                "concepting",
+                "concepts",
+                "storyboard",
+                "storyboarding",
+                "ideas"
+              ]
+            },
+            {
+              "id": "content_scaling",
+              "name": "Creative & content scaling",
+              "line": "Takes an approved hero asset and produces the full matrix of platform, format, dimension and locale variants — correctly resized, cropped, tagged and compliant.",
+              "keywords": [
+                "scaling",
+                "content scaling",
+                "variants",
+                "resize",
+                "resizing",
+                "versioning",
+                "formats",
+                "cut-downs",
+                "asset scaling"
+              ]
+            },
+            {
+              "id": "localisation",
+              "name": "Localisation & transcreation",
+              "line": "Adapts campaigns across markets and languages with cultural and regulatory fidelity, reusing approved layouts and respecting per-market claims.",
+              "keywords": [
+                "localisation",
+                "localization",
+                "transcreation",
+                "translate",
+                "translation",
+                "markets",
+                "languages",
+                "local"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "governance",
+          "label": "Governance and delivery",
+          "items": [
+            {
+              "id": "compliance",
+              "name": "Compliance checks",
+              "line": "Shifts compliance to the point of creation: every asset and line of copy checked against brand guardrails, platform ad policy and regulatory rules before it ships, with an auditable trail.",
+              "keywords": [
+                "compliance",
+                "governance",
+                "brand guardrails",
+                "regulatory",
+                "legal review",
+                "audit trail",
+                "on-brand",
+                "off-brand",
+                "ad policy"
+              ]
+            },
+            {
+              "id": "trafficking",
+              "name": "Trafficking, handoff & QA",
+              "line": "Automates the brittle manual handoff from approved creative to live media — placements, tags, naming and trafficking sheets correct the first time.",
+              "keywords": [
+                "trafficking",
+                "handoff",
+                "tags",
+                "naming convention",
+                "placements",
+                "launch errors",
+                "quality assurance",
+                "launch qa"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "performance",
+          "label": "Performance and learning",
+          "items": [
+            {
+              "id": "optimisation",
+              "name": "Mid-flight optimisation & DCO",
+              "line": "Watches live performance, diagnoses why something is moving and recommends or executes the next best action, compressing the signal-to-change loop from weeks to near real-time.",
+              "keywords": [
+                "optimisation",
+                "optimization",
+                "dco",
+                "mid-flight",
+                "in-flight",
+                "budget shift",
+                "creative rotation",
+                "live performance"
+              ]
+            },
+            {
+              "id": "reporting",
+              "name": "Campaign reporting & narrative",
+              "line": "Turns fragmented platform and measurement data into a single narrated performance story per stakeholder, with every number grounded in its source.",
+              "keywords": [
+                "reporting",
+                "report",
+                "dashboard",
+                "performance story",
+                "stakeholder",
+                "readout",
+                "wrap report"
+              ]
+            },
+            {
+              "id": "learning_loop",
+              "name": "Learning & pattern recognition",
+              "line": "Captures what worked, where and why into a living, queryable learnings library — turning the post-campaign retrospective into compounding institutional memory.",
+              "keywords": [
+                "learnings",
+                "retrospective",
+                "institutional memory",
+                "what worked",
+                "patterns",
+                "post-campaign"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "growth",
+          "label": "Growth and listening",
+          "items": [
+            {
+              "id": "new_business",
+              "name": "New business & RFP response",
+              "line": "Assembles tailored, on-strategy responses from the organisation's best prior work, credentials and capabilities — stronger pitches for far less senior time.",
+              "keywords": [
+                "rfp",
+                "new business",
+                "pitch",
+                "pitches",
+                "credentials",
+                "proposal"
+              ]
+            },
+            {
+              "id": "social_listening",
+              "name": "Social listening & community",
+              "line": "Continuously monitors brand, category and competitor conversation, surfaces risk, trend and opportunity, and routes the right action in time to matter.",
+              "keywords": [
+                "social listening",
+                "listening",
+                "community",
+                "conversation",
+                "trends",
+                "monitor"
+              ]
+            }
+          ]
+        }
+      ],
+      "connectsTo": [
+        {
+          "id": "creative_tools",
+          "title": "Adobe, Figma and your reporting suites",
+          "line": "Connects to them and makes their outputs smarter by cross-referencing the wider knowledge base.",
+          "keywords": [
+            "adobe",
+            "figma",
+            "genstudio",
+            "reporting suite",
+            "creative cloud",
+            "workfront"
+          ]
+        },
+        {
+          "id": "csc",
+          "title": "Your content supply chain",
+          "line": "Part of the factory: it orchestrates across the supply chain rather than replacing it.",
+          "keywords": [
+            "content supply chain",
+            "csc",
+            "supply chain",
+            "production pipeline"
+          ]
+        },
+        {
+          "id": "measurement",
+          "title": "Your measurement platforms",
+          "line": "Combines disparate platforms to deliver better strategic measurement and recommendations.",
+          "keywords": [
+            "measurement platform",
+            "analytics",
+            "ga4",
+            "mmm",
+            "attribution tool"
+          ]
+        },
+        {
+          "id": "flighting",
+          "title": "Flighting and distribution",
+          "line": "Connects to the platforms that do it, so approved work reaches live media without a manual rebuild.",
+          "keywords": [
+            "flighting",
+            "distribution",
+            "dsp",
+            "trade desk",
+            "ad server",
+            "activation"
+          ]
+        }
+      ],
+      "notDo": [
+        {
+          "id": "not_replace_tools",
+          "answerOnly": true,
+          "claim": "Replace Adobe, Figma, your reporting suites or other software.",
+          "instead": "It connects to them and makes their outputs smarter by cross-referencing the wider knowledge base.",
+          "keywords": [
+            "replace adobe",
+            "replace figma",
+            "get rid of",
+            "rip out",
+            "instead of adobe"
+          ]
+        },
+        {
+          "id": "not_generation",
+          "answerOnly": true,
+          "claim": "Generate content as a standalone capability.",
+          "instead": "It supports briefing and connects to the generation tools in your content supply chain.",
+          "keywords": [
+            "generate content",
+            "write copy",
+            "make the ad",
+            "content generation",
+            "does it write"
+          ]
+        },
+        {
+          "id": "not_csc",
+          "answerOnly": true,
+          "claim": "Be a content supply chain.",
+          "instead": "It is part of the factory — it connects to and orchestrates across the supply chain.",
+          "keywords": [
+            "is it a content supply chain",
+            "replace our csc"
+          ]
+        },
+        {
+          "id": "not_measurement_platform",
+          "answerOnly": true,
+          "claim": "Be an owned measurement or reporting platform.",
+          "instead": "It combines disparate platforms to deliver better strategic measurement and recommendations.",
+          "keywords": [
+            "is it a measurement platform",
+            "replace our analytics",
+            "replace ga"
+          ]
+        },
+        {
+          "id": "not_flighting",
+          "answerOnly": true,
+          "claim": "Do asset flighting and distribution itself.",
+          "instead": "It connects to the platforms that do.",
+          "keywords": [
+            "does it buy media",
+            "does it traffic",
+            "serve the ads",
+            "flight the assets"
+          ]
+        },
+        {
+          "id": "not_voice_video",
+          "answerOnly": true,
+          "claim": "Generate voice or video natively.",
+          "instead": "Image generation is live and well integrated; voice is on the roadmap, and video runs through partners rather than natively.",
+          "keywords": [
+            "voice generation",
+            "video generation",
+            "make video",
+            "generate video",
+            "generate voice",
+            "avatar"
+          ]
+        },
+        {
+          "id": "humans_in_loop",
+          "answerOnly": true,
+          "claim": "Replace human judgement on taste or breakthrough creative.",
+          "instead": "It is strong at matching and governance — on-brand or off-brand, pass or fail. Greenfield taste stays a human craft; it compresses the slow cycles so creative leaders spend their time where judgement matters.",
+          "keywords": [
+            "taste",
+            "replace creatives",
+            "replace our agency",
+            "disintermediate",
+            "human",
+            "creativity",
+            "judgement",
+            "judgment"
+          ]
+        }
+      ]
+    }
+  }
+}

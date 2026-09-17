@@ -18,7 +18,8 @@ export const DATA = {
   scoring: json('scoring'),
   questions: json('questions'),
   routing: json('routing'),
-  kimi: json('kimi')
+  kimi: json('kimi'),
+  explainers: json('explainers')
 };
 
 export const R = require(path.join(ROOT, 'next', 'recommend.js'));

@@ -733,6 +733,71 @@ def sync_chrome(home):
         f.write_text(s)
         print(f'next/{name}   bar and menu copied from the homepage')
 
+# ═══ DEEP CONTENT, RENDERED FROM data/explainers.json ════════════════════════
+# The three sections on a product page that go beyond the catalog entry — the
+# differentiators, the use-case library and what it connects to. They are
+# generated HERE from the same file SAIKIMI.explore() walks in the chat, so the
+# page and the agent can never drift apart.
+#
+# The five hand-themed pages cannot be regenerated whole (see the CAUTION
+# above), so these sections are INJECTED between markers instead: the builder
+# rewrites only what is between them and leaves Julian's theme alone.
+HAND_THEMED = {'the-machine', 'targeting-machine', 'newvoices', 'agent-cloud'}
+EXPLAINER_START = '<!-- explainers:start · generated from data/explainers.json by next/build-product-pages.py -->'
+EXPLAINER_END = '<!-- explainers:end -->'
+TICK = ('<svg class="pp-with__ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" '
+        'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>')
+
+
+def explainers_html(ex, name):
+    """The differentiators, the use-case library and the connects-to strip.
+    answerOnly items (the does-NOT-do list) are never rendered: they exist so
+    the agent can answer a direct question, not to be read off a page."""
+    out = []
+    diffs = ex.get('differentiators') or []
+    if diffs:
+        items = '\n'.join(
+            f'      <div class="pp-diff__item rv" style="--d:{i * .07:.2f}s"><span class="pp-diff__n">{i + 1:02d}</span>'
+            f'<h3>{t(d["title"])}</h3><p>{t(d["line"])}</p></div>' for i, d in enumerate(diffs))
+        out.append(
+            '<section class="pp-diff">\n  <div class="pp-wrap">\n    <div class="pp-more__head">\n'
+            '      <p class="pp-sign rv">Differentiators</p>\n'
+            f'      <h2 class="pp-h2 rv" style="--d:.1s">What sets {t(name)} apart</h2>\n'
+            '    </div>\n    <div class="pp-diff__grid">\n' + items + '\n    </div>\n  </div>\n</section>')
+    groups = ex.get('useCaseGroups') or []
+    if groups:
+        gs = []
+        for gi, g in enumerate(groups):
+            li = '\n'.join(f'          <li><h4>{t(c["name"])}</h4><p>{t(c["line"])}</p></li>' for c in g['items'])
+            gs.append(f'      <div class="pp-uses__group rv" style="--d:{gi * .05:.2f}s">\n'
+                      f'        <h3>{t(g["label"])}</h3>\n        <ul class="pp-uses__list">\n{li}\n        </ul>\n      </div>')
+        out.append('<section class="pp-uses">\n  <div class="pp-wrap">\n    <div class="pp-more__head">\n'
+                   '      <p class="pp-sign rv">Use cases</p>\n'
+                   '      <h2 class="pp-h2 rv" style="--d:.1s">What teams use it for</h2>\n    </div>\n'
+                   '    <div class="pp-uses__grid">\n' + '\n'.join(gs) + '\n    </div>\n  </div>\n</section>')
+    conn = ex.get('connectsTo') or []
+    if conn:
+        li = '\n'.join(f'      <li class="rv" style="--d:{i * .06:.2f}s">{TICK}<div><b>{t(c["title"])}</b>'
+                      f'<span>{t(c["line"])}</span></div></li>' for i, c in enumerate(conn))
+        out.append('<section class="pp-with">\n  <div class="pp-wrap">\n    <div class="pp-more__head">\n'
+                   '      <p class="pp-sign rv">No rip and replace</p>\n'
+                   '      <h2 class="pp-h2 rv" style="--d:.1s">What it connects to</h2>\n    </div>\n'
+                   '    <ul class="pp-with__grid">\n' + li + '\n    </ul>\n  </div>\n</section>')
+    return '\n\n'.join(out)
+
+
+def inject_explainers(html, ex, name):
+    """Rewrite only what sits between the markers, so a hand-themed page keeps
+    its theme. A page with no markers is returned untouched."""
+    if EXPLAINER_START not in html:
+        return html
+    must(html, EXPLAINER_START)
+    must(html, EXPLAINER_END)
+    head, rest = html.split(EXPLAINER_START, 1)
+    _, tail = rest.split(EXPLAINER_END, 1)
+    return head + EXPLAINER_START + '\n' + explainers_html(ex, name) + '\n' + EXPLAINER_END + tail
+
+
 def main():
     ix = NEXT / 'index.html'
     home = put_blocks(ix.read_text())
@@ -746,7 +811,8 @@ def main():
     ix.write_text(home)
     sync_chrome(home)
     (NEXT / 'book.html').write_text(book_page(home)); print('next/book.html    Book a demo page')
-    (NEXT / 'products.html').write_text(listing_page(home)); print('next/products.html  the listing, built like a product page')
+    # products.html carries the same hand theme; see HAND_THEMED
+    print('next/products.html  hand-themed — left alone')
     sols = json.loads((ROOT / 'data' / 'solutions.json').read_text())['solutions']
     by_id = {x['id']: x for x in sols}
     pics = sol_pictures()
@@ -756,8 +822,31 @@ def main():
         (NEXT / 's' / f"{x['id']}.html").write_text(solution_page(home, x, n, by_id, pics))
     print(f'next/s/*.html   {len(gen)} product pages: ' + ', '.join(x['id'] for x in gen))
     for slug, out in pages.items():
+        # HAND_THEMED pages were re-themed by hand after this script wrote them
+        # (home-c.css / prod-c.css, the hc-page classes, the hcLaunch widget).
+        # Overwriting them strips that theme, so the script leaves them alone
+        # and only rewrites what sits between the explainer markers below. Their
+        # copy is still kept in PRODUCTS above so the two agree; to rebuild one
+        # from scratch, take it out of this set and re-theme it afterwards.
+        if slug in HAND_THEMED:
+            print(f'next/{slug}.html  hand-themed — left alone (explainers still injected)')
+            continue
         (NEXT / f'{slug}.html').write_text(out)
         print(f'next/{slug}.html  {len(out):>6} bytes')
+    # the deep sections, into whichever pages carry the markers
+    ex_all = json.loads((ROOT / 'data' / 'explainers.json').read_text())['products']
+    own = {v.lstrip('/'): k for k, v in SOL_OWN.items()}      # 'the-machine' -> 'machines_family'
+    for f in sorted(NEXT.glob('*.html')) + sorted((NEXT / 's').glob('*.html')):
+        html = f.read_text()
+        if EXPLAINER_START not in html:
+            continue
+        pid = own.get(f.stem, f.stem)
+        ex = ex_all.get(pid)
+        if not ex:
+            continue
+        name = ex.get('name') or (by_id[pid]['name'] if pid in by_id else f.stem)
+        f.write_text(inject_explainers(html, ex, name))
+        print(f'next/{f.relative_to(NEXT)}   explainers injected ({pid})')
     print('next/index.html   dropdown updated')
 
 if __name__ == '__main__':

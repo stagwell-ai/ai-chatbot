@@ -15,7 +15,9 @@
     "showcaseAfterEmail": true,
     "secondaryRecommendations": true,
     "analytics": true,
-    "explainWithLlm": true
+    "explainWithLlm": true,
+    "exploreMaxDepth": 3,
+    "_exploreNote": "How many taps deep the product detour may go before only the way back is offered. 0 turns it off."
   },
   "copy": {
     "intro": "What are you trying to solve?",
@@ -65,6 +67,20 @@
     "showcaseIntro": "Here's where I'd start:",
     "showcaseIntroLow": "Here's the closest fit from what I know so far:",
     "showcaseAfter": "Two or three quick things about your business and I'll tighten this up.",
+    "_exploreNote": "GOING DEEPER ON ONE PRODUCT (client, 2026-09-17: 'we dont want to simply reproduce the whole page in the chat window, we want it to be dynamic, and iterative, and animated, and let the user click things and ask questions'). SAIKIMI.explore() walks data/explainers.json one node at a time — the same file the product page renders from. exploreInvite is the line under the cards that offers the detour; the chip* lines are the pills. flags.exploreMaxDepth caps how deep it goes before it offers only the way out.",
+    "exploreInvite": "Want to go deeper on {product}?",
+    "explore": {
+      "root": "What would you like to know about {product}?",
+      "differentiators": "Three things set it apart:",
+      "usecases": "Fifteen use cases, in five groups. Which is closest to your world?",
+      "group": "{label} — {n} of them:",
+      "connects": "It connects to what you already run, rather than replacing it:",
+      "chipDifferentiators": "How is it different?",
+      "chipUsecases": "What do teams use it for?",
+      "chipConnects": "What does it connect to?",
+      "chipDone": "Carry on",
+      "capped": "That's the shape of it. Shall we carry on?"
+    },
     "askPhone": "Thanks — I'll send it to {email}. And a number, if you'd rather we call?",
     "bookIntro": "Last thing — pick a time and a Stagwell AI specialist will walk you through {product} against your brand.",
     "bookCta": "Book a call",
@@ -131,10 +147,30 @@
         "flagship": "You're talking to one of the flagship AI products from Stagwell AI — and I'm in good company.",
         "openOn": "flagship",
         "products": [
-          { "id": "newintel", "icon": "radar", "line": "NewIntel — what your competitors did this week, not last quarter.", "img": "/assets/img/intro/4.jpg" },
-          { "id": "questbrand", "icon": "shield", "line": "QuestBrand — always-on brand tracking against the competitors you name.", "img": "/assets/img/questbrand.jpg" },
-          { "id": "targeting_machine", "icon": "crosshair", "line": "The Targeting Machine — your first-party data, turned into audiences you can buy.", "img": "/assets/img/targeting.jpg" },
-          { "id": "imai", "icon": "megaphone", "line": "IMAI — influencer programs end to end, from discovery to ROI.", "img": "/assets/img/imai.jpg" }
+          {
+            "id": "newintel",
+            "icon": "radar",
+            "line": "NewIntel — what your competitors did this week, not last quarter.",
+            "img": "/assets/img/intro/4.jpg"
+          },
+          {
+            "id": "questbrand",
+            "icon": "shield",
+            "line": "QuestBrand — always-on brand tracking against the competitors you name.",
+            "img": "/assets/img/questbrand.jpg"
+          },
+          {
+            "id": "targeting_machine",
+            "icon": "crosshair",
+            "line": "The Targeting Machine — your first-party data, turned into audiences you can buy.",
+            "img": "/assets/img/targeting.jpg"
+          },
+          {
+            "id": "imai",
+            "icon": "megaphone",
+            "line": "IMAI — influencer programs end to end, from discovery to ROI.",
+            "img": "/assets/img/imai.jpg"
+          }
         ],
         "more": "And that's four of them — plus over ten other AI services, to help with all your business needs.",
         "moreLabel": "10+ products",
@@ -149,8 +185,21 @@
         "land": "One thing before we dig in — what's your work email? I'll read your company's site from it, so everything I tell you next is about you, not about marketing in general.",
         "closeOnNote": "the words in `land` that lift the stage",
         "landSkip": "No problem — we can do it the other way round.",
-        "self": { "name": "NewVoices", "sub": "Stagwell AI's voice agent", "icon": "waveform", "img": "/assets/img/products/card-call.jpg", "logo": "/assets/img/companies/newvoices/logo-white.png" },
-        "burst": ["/assets/img/intro/1.jpg", "/assets/img/intro/2.jpg", "/assets/img/intro/3.jpg", "/assets/img/intro/5.jpg", "/assets/img/intro/6.jpg", "/assets/img/intro/7.jpg"],
+        "self": {
+          "name": "NewVoices",
+          "sub": "Stagwell AI's voice agent",
+          "icon": "waveform",
+          "img": "/assets/img/products/card-call.jpg",
+          "logo": "/assets/img/companies/newvoices/logo-white.png"
+        },
+        "burst": [
+          "/assets/img/intro/1.jpg",
+          "/assets/img/intro/2.jpg",
+          "/assets/img/intro/3.jpg",
+          "/assets/img/intro/5.jpg",
+          "/assets/img/intro/6.jpg",
+          "/assets/img/intro/7.jpg"
+        ],
         "closeOn": "what's your work email"
       },
       "typeIt": "Type it in the box below — spelling matters here",
