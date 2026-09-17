@@ -1274,7 +1274,9 @@ async function submitLead(payload) {
 function showRecommendation(why) {
   const c = copy();
   const r = st.reco || recompute();
-  const first = st.lead ? String(st.lead.name).split(/\s+/)[0] : '';
+  /* a lead can carry an email and no name at all: String(null) is "null", which
+     is truthy, and the recommendation opened "Thanks, null." (2026-09-17) */
+  const first = String((st.lead && st.lead.name) || '').trim().split(/\s+/)[0];
   const vars = { first: first || 'there', name: st.lead ? st.lead.name : '', email: st.lead ? st.lead.email : '', phone: st.lead ? st.lead.phone : '' };
   st.cards = C() ? C().buildCards(r, signals(), data(), c, { why: why || {}, secondary: flags().secondaryRecommendations !== false }) : [];
   const low = !r || !r.confidence || r.confidence.level === 'low';

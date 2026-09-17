@@ -80,13 +80,30 @@
     if (badge === 'BEST_FIT') why = override || tpl(need ? copy.whyFits : copy.whyFitsNoNeed, vars);
     else why = override || tpl(copy.whySecondary, vars);
     const learn = { type: 'LEARN_MORE', label: labels.LEARN_MORE || 'Learn more', url: (p.urls && p.urls.productPage) || '/s/' + encodeURIComponent(p.id) };
+    const v = p.visual || {};
     return {
       productId: p.id,
       productName: p.displayName || p.name,      /* never the routing label */
-      logoUrl: (p.visual && p.visual.lockup) || p.lockup || null,
+      logoUrl: v.lockup || p.lockup || null,
+      /* the product PAGE's own opening, brought into the card: its hero picture
+         where Julian set one, the white lockup that sits over it, and otherwise
+         the Stagwell ground that page stands on (client, 2026-09-17: "more
+         images and animation… use the content from the product pages") */
+      heroUrl: v.hero || null,
+      wordmarkUrl: v.wordmark || null,
+      /* "screen": a lockup drawn on black, so the black falls away on the dark
+         ground — next/product.css .pp-logo--screen, the same asset */
+      wordmarkBlend: v.wordmarkBlend || null,
+      markIconUrl: v.markIcon || null,
+      ground: v.ground || 'g1',
+      tagline: p.tagline || null,
+      audience: p.whoFor || null,
       badge,
       description: desc,
       whyThisFits: why,
+      /* the page's "How it works" steps: the Machines' proof points where the
+         messaging document gave them, the capability tags everywhere else */
+      proof: list(p.proofPoints).slice(0, 3),
       capabilities: list(p.capabilityTags || p.valueProps).slice(0, 3),
       primaryAction: badge === 'BEST_FIT' ? actionFor(p, copy) : null,
       secondaryAction: learn,
@@ -116,10 +133,50 @@
   const defaultEsc = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
   const safeUrl = u => { const s = String(u || ''); return /^(https?:\/\/|\/)/i.test(s) ? s : null; };
 
+  /* one of the five grounds the product pages stand on (next/product.css) */
+  const GROUND = { g1: 1, g2: 1, g3: 1, imai: 1, unicepta: 1, own: 1 };
+  const ground = g => (GROUND[g] ? g : 'g1');
+
+  /* THE BEST-FIT CARD IS THE PRODUCT'S PAGE, IN ONE BREATH
+     A band carrying that page's own hero — its picture where there is one, its
+     Stagwell ground where there is not — with the lockup and the tagline over
+     it; then why it fits, the page's own "How it works" lines, the capability
+     tags and the way on. Nothing here is invented: every string and every URL
+     comes out of data/solutions.json.
+
+     Each element carries its own --d, and the whole card waits for [data-cue]
+     (hero-agent.js / home.js): the stagger begins when the answer has finished
+     writing itself, not when the HTML is set — a card revealing itself under an
+     opacity of 0 is not a reveal. */
+  function bandHtml(vm, e, c) {
+    const shot = safeUrl(vm.heroUrl);
+    const mark = safeUrl(vm.wordmarkUrl);
+    const icon = safeUrl(vm.markIconUrl);
+    const cls = 'reco__band reco__band--' + e(ground(vm.ground)) + (shot ? ' reco__band--shot' : '');
+    /* the name, set the way its page sets it: its wordmark, its mark beside its
+       name, or its name alone. It is the card's ONE heading — the body used to
+       repeat it underneath, which on a gradient card was the same words twice.
+       A wordmark still carries the name in text, for a reader who cannot see it. */
+    const name = '<h3 class="reco__name reco__name--band">' + (mark
+      ? '<img class="reco__wordmark' + (vm.wordmarkBlend === 'screen' ? ' reco__wordmark--screen' : '') + '" src="' + e(mark) + '" alt="" loading="lazy" decoding="async"><span class="vh">' + e(vm.productName) + '</span>'
+      : (icon ? '<img class="reco__markicon" src="' + e(icon) + '" alt="" loading="lazy" decoding="async">' : '') +
+        '<span>' + e(vm.productName) + '</span>') + '</h3>';
+    return '<div class="' + cls + '">' +
+      (shot ? '<img class="reco__shot" src="' + e(shot) + '" alt="" loading="lazy" decoding="async">' : '') +
+      '<span class="reco__veil" aria-hidden="true"></span>' +
+      '<span class="reco__sheen" aria-hidden="true"></span>' +
+      '<div class="reco__bandin">' +
+        name +
+        (vm.tagline ? '<p class="reco__tagline">' + e(vm.tagline) + '</p>' : '') +
+      '</div>' +
+      '<p class="reco__badge">' + e(c.bestFit || 'Best fit') + '</p>' +
+    '</div>';
+  }
+
   function renderCards(vms, copy, esc) {
     const e = esc || defaultEsc;
     const c = copy || {};
-    return '<div class="reco">' + list(vms).map(vm => {
+    return '<div class="reco">' + list(vms).map((vm, ci) => {
       const best = vm.badge === 'BEST_FIT';
       const logo = safeUrl(vm.logoUrl);
       const learn = vm.secondaryAction && safeUrl(vm.secondaryAction.url);
@@ -133,17 +190,34 @@
       }
       const secondary = learn
         ? '<a class="' + (best ? 'btn btn--line reco__learn' : 'reco__learn reco__learn--quiet') + '" href="' + e(learn) + '" target="_blank" rel="noopener" data-kimi-cta="LEARN_MORE" data-kimi-product="' + e(vm.productId) + '">' + e(vm.secondaryAction.label) + '</a>' : '';
-      return '<article class="reco__card' + (best ? ' reco__card--best' : ' reco__card--also') + '" data-product="' + e(vm.productId) + '">' +
-        '<p class="reco__badge">' + e(best ? (c.bestFit || 'Best fit') : (c.alsoConsider || 'Also worth considering')) + '</p>' +
-        '<div class="reco__head">' +
-          (logo ? '<img class="reco__logo" src="' + e(logo) + '" alt="" loading="lazy" decoding="async">' : '<span class="reco__mark" aria-hidden="true"></span>') +
-          '<div class="reco__title"><h3 class="reco__name">' + e(vm.productName) + '</h3>' +
-          (best ? '<p class="reco__desc">' + e(vm.description) + '</p>' : '') + '</div>' +
+      /* the order things arrive in, as a step each */
+      let d = 0;
+      const at = () => ' style="--d:' + (d++ * 70) + 'ms"';
+      const proof = best && vm.proof.length
+        ? '<ul class="reco__proof">' + vm.proof.map(x => '<li class="reco__rv"' + at() + '><span class="reco__tick" aria-hidden="true"></span><span>' + e(x) + '</span></li>').join('') + '</ul>' : '';
+      if (!best) {
+        return '<article class="reco__card reco__card--also" data-cue data-product="' + e(vm.productId) + '" style="--cd:' + (ci * 140) + 'ms">' +
+          '<span class="reco__edge reco__edge--' + e(ground(vm.ground)) + '" aria-hidden="true"></span>' +
+          '<p class="reco__badge reco__badge--quiet">' + e(c.alsoConsider || 'Also worth considering') + '</p>' +
+          '<div class="reco__head">' +
+            (logo ? '<img class="reco__logo" src="' + e(logo) + '" alt="" loading="lazy" decoding="async">' : '<span class="reco__mark reco__mark--' + e(ground(vm.ground)) + '" aria-hidden="true"></span>') +
+            '<div class="reco__title"><h3 class="reco__name">' + e(vm.productName) + '</h3></div>' +
+          '</div>' +
+          '<p class="reco__why">' + e(vm.whyThisFits) + '</p>' +
+          '<div class="reco__acts">' + secondary + '</div>' +
+        '</article>';
+      }
+      return '<article class="reco__card reco__card--best" data-cue data-product="' + e(vm.productId) + '" style="--cd:' + (ci * 140) + 'ms">' +
+        bandHtml(vm, e, c) +
+        '<div class="reco__body">' +
+          '<p class="reco__desc reco__rv"' + at() + '>' + e(vm.description) + '</p>' +
+          (vm.audience ? '<p class="reco__who reco__rv"' + at() + '>' + e(vm.audience) + '</p>' : '') +
+          '<p class="reco__whylabel reco__rv"' + at() + '>' + e(c.whyLabel || 'Why this fits you') + '</p>' +
+          '<p class="reco__why reco__rv"' + at() + '>' + e(vm.whyThisFits) + '</p>' +
+          proof +
+          (vm.capabilities.length ? '<ul class="reco__caps reco__rv"' + at() + '>' + vm.capabilities.map(x => '<li>' + e(x) + '</li>').join('') + '</ul>' : '') +
+          '<div class="reco__acts reco__rv"' + at() + '>' + primary + secondary + '</div>' +
         '</div>' +
-        (best ? '<p class="reco__whylabel">Why this fits you</p>' : '') +
-        '<p class="reco__why">' + e(vm.whyThisFits) + '</p>' +
-        (best && vm.capabilities.length ? '<ul class="reco__caps">' + vm.capabilities.map(x => '<li>' + e(x) + '</li>').join('') + '</ul>' : '') +
-        '<div class="reco__acts">' + primary + secondary + '</div>' +
       '</article>';
     }).join('') + '</div>';
   }

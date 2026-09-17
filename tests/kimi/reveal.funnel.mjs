@@ -224,6 +224,126 @@ console.log('\n▶ turning the address down: the answer to what they said comes 
   await ctx.close();
 }
 
+/* ── THE CARD ARRIVES ──
+   "when this card comes out, id like to see more images and animation, it
+   should be exciting. use the content from the product pages" (client,
+   2026-09-17). Measured, not declared: the card is in the DOM long before it is
+   seen — .reco is held at opacity 0 for the whole of .is-typing — so a stagger
+   that starts on append plays to nobody. What follows records real
+   animationstart/-end events and asserts the order the reader saw them in.
+
+   Two runs: a product whose page has a picture (The Machine) and one that
+   stands on a Stagwell gradient, because the band is built from whichever the
+   product page itself uses. */
+const RECORD = () => {
+  window.__r = { t0: 0, ev: [], wrote: -1, lastWord: -1 };
+  const watch = card => {
+    if (card.__w) return; card.__w = 1;
+    /* the words of THE BUBBLE THIS CARD IS IN — the question that follows the
+       cards types too, and counting its words said the card had jumped the gun */
+    const turn = card.closest('.turnb');
+    if (turn && !turn.__ww) {
+      turn.__ww = 1;
+      turn.addEventListener('animationstart', e => {
+        if (e.animationName === 'wordIn' && window.__r.t0) window.__r.lastWord = performance.now() - window.__r.t0;
+      });
+    }
+    ['animationstart', 'animationend'].forEach(t => card.addEventListener(t, e => {
+      const el = e.target, r = el.getBoundingClientRect();
+      window.__r.ev.push({ n: e.animationName, t: performance.now() - window.__r.t0, ev: t.slice(9),
+        cls: String(el.className).split(' ')[0],
+        /* IN VIEW, not opaque: a fade-in is at zero on its first frame by
+           definition — what matters is that it played where it could be seen */
+        seen: r.top < innerHeight && r.bottom > 0 && r.width > 0 });
+    }));
+  };
+  new MutationObserver(ms => {
+    ms.forEach(m => {
+      if (m.type === 'attributes' && m.target.classList && m.target.classList.contains('turnb--ai')
+          && !m.target.classList.contains('is-typing') && window.__r.wrote < 0 && window.__r.t0)
+        window.__r.wrote = performance.now() - window.__r.t0;
+      (m.addedNodes || []).forEach(n => {
+        if (n.nodeType !== 1 || !n.querySelectorAll) return;
+        if (n.classList.contains('reco__card')) watch(n);
+        n.querySelectorAll('.reco__card').forEach(watch);
+      });
+    });
+  }).observe(document.querySelector('#agentThread'), { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+};
+
+for (const [what, goal, answer] of [['a product with a picture of its own', 'efficiency', 'connect our marketing tools and data, the teams work in silos'],
+                                    ['a product on a Stagwell ground', 'competition', null]]) {
+  console.log('\n▶ the card ARRIVES — ' + what + ': it waits for the last word, then opens picture first');
+  const { ctx, page, state } = await open('no-preference');
+  await page.evaluate(RECORD);
+  if (answer) { await say(page, answer); } else { await page.click('#agentTags .tag[data-goal="' + goal + '"]'); await settle(page); await done(page); }
+  /* answer whatever it asks until the recommendation lands. The clock is reset
+     before EVERY step, so the last reset is the one the cards are measured from */
+  for (let i = 0; i < 9; i++) {
+    if (await page.$('.reco__card--best')) break;
+    await page.evaluate(() => { window.__r.t0 = performance.now(); window.__r.ev = []; window.__r.wrote = -1; window.__r.lastWord = -1; });
+    const tags = await page.$$('#agentThread .turnb--ai:last-child .turnb__chips .tag:not([disabled])');
+    if (tags.length) { await tags[Math.min(1, tags.length - 1)].click(); await settle(page); await done(page); }
+    else await say(page, (await page.$eval('#agentInput', e => e.placeholder)).indexOf('@') !== -1 ? 'ada@acme-brands.com' : 'acme-brands.com');
+  }
+  await page.waitForSelector('.reco__card--best');
+  await done(page);
+  await page.waitForTimeout(2600);
+  const r = await page.evaluate(() => window.__r);
+  const first = n => r.ev.find(e => e.n === n && e.ev === 'start');
+  const rise = first('recoIn');
+  const has = await page.$$eval('.reco__card--best .reco__shot', e => e.length);
+  ok(!!rise, 'the card opens (recoIn' + (rise ? ' at ' + Math.round(rise.t) + 'ms' : ' NEVER') + ')');
+  /* the card waits for the LAST WORD of the line above it — not for the 340ms
+     of fade after it, which is when .is-typing finally comes off */
+  ok(r.lastWord > 0 && rise && rise.t >= r.lastWord - 40,
+    '   AFTER the last word of the answer above it (last word at ' + Math.round(r.lastWord) + 'ms, written out at ' + Math.round(r.wrote) + 'ms)');
+  const band = first('recoBand'), row = first('recoRow'), sheen = first('recoSheen'), shot = first('recoShot');
+  ok(!!band && band.t >= rise.t - 1, '   then the band opens (' + (band ? Math.round(band.t) + 'ms' : 'NEVER') + ')');
+  ok(!!row && row.t >= band.t - 1, '   then the words under it (' + (row ? Math.round(row.t) + 'ms' : 'NEVER') + ')');
+  ok(!!sheen, '   and a light passes over it (' + (sheen ? Math.round(sheen.t) + 'ms' : 'NEVER') + ')');
+  ok(has ? !!shot : !shot, has ? '   the picture drifts as it opens (' + (shot ? Math.round(shot.t) + 'ms' : 'NEVER') + ')'
+                               : '   no picture on this one, so nothing drifts — the ground carries it');
+  const unseen = r.ev.filter(e => e.ev === 'start' && !e.seen);
+  ok(unseen.length === 0, '   every part of it moved WHERE IT COULD BE SEEN' +
+    (unseen.length ? ' — ' + unseen.length + ' did not: ' + [...new Set(unseen.map(e => e.cls))].join(',') : ''));
+  const rows = r.ev.filter(e => e.n === 'recoRow' && e.ev === 'start').map(e => e.t).sort((a, b) => a - b);
+  ok(rows.length >= 5, '   the lines come one after another (' + rows.length + ' of them)');
+  ok(rows[rows.length - 1] - rows[0] > 200, '   spread over ' + Math.round(rows[rows.length - 1] - rows[0]) + 'ms, not all at once');
+  const shown = await page.$$eval('.reco__card--best, .reco__card--best .reco__rv, .reco__card--best .reco__bandin>*, .reco__card--best .reco__proof li',
+    els => els.map(e => +getComputedStyle(e).opacity));
+  ok(shown.length > 4 && shown.every(v => v === 1), '   and it all ends up visible (' + shown.length + ' parts)');
+  /* the band is the product PAGE's own opening, never something invented here */
+  const art = await page.$eval('.reco__card--best', e => ({
+    shot: (e.querySelector('.reco__shot') || {}).currentSrc || null,
+    ground: (e.querySelector('.reco__band').className.match(/reco__band--(\w+)/) || [])[1],
+    name: e.querySelector('.reco__name').textContent.trim(),
+    names: e.querySelectorAll('.reco__name').length,
+    proof: e.querySelectorAll('.reco__proof li').length
+  }));
+  ok(!!(art.shot || art.ground), 'the band carries that page\'s opening: ' + (art.shot ? art.shot.split('/').pop() : 'the ' + art.ground + ' ground'));
+  ok(art.names === 1 && art.name.length > 1, '   with the name on it once, not twice: "' + art.name + '"');
+  ok(!/\(|family frame/i.test(art.name), '   and it is a name for people, not a routing label');
+  ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+  await ctx.close();
+}
+
+console.log('\n▶ motion off: the card is simply there, picture and all');
+{
+  const { ctx, page } = await open('reduce');
+  await toCards(page);
+  await page.waitForSelector('.reco__card--best');
+  await page.waitForTimeout(400);
+  const moving = await page.$$eval('.reco__card--best *', els => els
+    .filter(e => getComputedStyle(e).display !== 'none')
+    .filter(e => getComputedStyle(e).animationName !== 'none' || +getComputedStyle(e).opacity < 1)
+    .map(e => String(e.className).split(' ')[0]));
+  ok(moving.length === 0, 'nothing on the card animates or is held back' + (moving.length ? ' — ' + [...new Set(moving)].join(',') : ''));
+  const clip = await page.$eval('.reco__card--best .reco__band', e => getComputedStyle(e).clipPath);
+  ok(clip === 'none', '   and the band is not left clipped shut (' + clip + ')');
+  await ctx.close();
+}
+
 } finally {
   await browser.close();
 }

@@ -376,10 +376,12 @@
       const words = $$('.tw', bubble);
       /* [data-cue]: a block that waits its turn — it is uncovered when the
          typing reaches its first word, so a panel row rises as the sentence
-         naming it is written instead of the whole list landing at once */
+         naming it is written instead of the whole list landing at once. A cue
+         with no words of its own (a recommendation card) waits for the LAST
+         word: the answer is written, and then the card arrives. */
       const cues = $$('[data-cue]', bubble).map(el => {
         const w = el.querySelector('.tw');
-        return { el, at: w ? (+w.style.getPropertyValue('--w') || 0) : 0, done: false };
+        return { el, at: w ? (+w.style.getPropertyValue('--w') || 0) : n, done: false };
       });
       const WORD_FADE = 340;      /* home.css: wordIn */
       /* the thread trails the caret. Without this a long answer writes its last

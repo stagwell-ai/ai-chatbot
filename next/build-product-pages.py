@@ -647,7 +647,12 @@ def solution_page(home, s, n, by_id, pics):
     # the Machines carry the messaging document's proof points (2026-09-16); the
     # rest keep their capability tags as the steps
     caps = s.get('proofPoints') or s.get('capabilityTags') or s.get('valueProps') or []
-    hero_cls = (f'sp-hero--{sid}' + (' pp-hero--light' if SOL_HERO[sid] == 'light' else '')) if sid in SOL_HERO else f'sp-hero--{SOL_GRADS[n % len(SOL_GRADS)]}'
+    # the ground is WRITTEN DOWN, in solutions.json visual.ground, because the
+    # chat's recommendation card stands on the same one: a position in this list
+    # would have moved the moment a product was added, and the card and the page
+    # it points at would quietly have become two different products.
+    ground = (s.get('visual') or {}).get('ground') or SOL_GRADS[n % len(SOL_GRADS)]
+    hero_cls = (f'sp-hero--{sid}' + (' pp-hero--light' if SOL_HERO[sid] == 'light' else '')) if sid in SOL_HERO else f'sp-hero--{ground}'
     steps = '\n'.join(f'        <li class="rv" style="--d:{0.06 * k:.2f}s"><b>{k + 1:02d}</b><div><h3>{t(c)}</h3></div></li>' for k, c in enumerate(caps))
     pic = pics.get(sid)
     media = (f'<img src="{a(pic)}" alt="" loading="lazy" decoding="async">' if pic else f'<span class="sp-tile">{t(name)}</span>')

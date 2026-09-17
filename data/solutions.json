@@ -65,7 +65,12 @@
       },
       "visual": {
         "logoKey": "questbrand",
-        "lockup": "/assets/img/lockups/questbrand.png"
+        "lockup": "/assets/img/lockups/questbrand.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "questbrand",
@@ -127,7 +132,12 @@
       },
       "visual": {
         "logoKey": "questdiy",
-        "lockup": "/assets/img/lockups/questdiy.png"
+        "lockup": "/assets/img/lockups/questdiy.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g2",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "questdiy",
@@ -196,7 +206,12 @@
       },
       "visual": {
         "logoKey": "bera",
-        "lockup": "/assets/img/lockups/bera.png"
+        "lockup": "/assets/img/lockups/bera.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g3",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "bera",
@@ -252,7 +267,12 @@
       },
       "visual": {
         "logoKey": "unlock",
-        "lockup": null
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
       }
     },
     {
@@ -310,7 +330,12 @@
       },
       "visual": {
         "logoKey": "knowledge_machine",
-        "lockup": "/assets/img/lockups/knowledge-machine.png"
+        "lockup": "/assets/img/lockups/knowledge-machine.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "solves": "You find out what audiences think after it shows up in the numbers, too late to act on.",
       "proofPoints": [
@@ -382,7 +407,12 @@
       },
       "visual": {
         "logoKey": "unicepta",
-        "lockup": "/assets/img/lockups/unicepta.png"
+        "lockup": "/assets/img/lockups/unicepta.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "unicepta",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "unicepta",
@@ -453,7 +483,12 @@
       },
       "visual": {
         "logoKey": "imai",
-        "lockup": "/assets/img/lockups/imai.png"
+        "lockup": "/assets/img/lockups/imai.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "imai",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "imai",
@@ -525,7 +560,12 @@
       },
       "visual": {
         "logoKey": "smb_platform",
-        "lockup": "/assets/img/lockups/smb-platform.png"
+        "lockup": "/assets/img/lockups/smb-platform.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "stagwell ai for smbs",
@@ -588,7 +628,12 @@
       },
       "visual": {
         "logoKey": "geopulse",
-        "lockup": "/assets/img/lockups/geopulse.png"
+        "lockup": "/assets/img/lockups/geopulse.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g2",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "geopulse",
@@ -651,7 +696,12 @@
       },
       "visual": {
         "logoKey": "targeting_machine",
-        "lockup": "/assets/img/lockups/targeting-machine.png"
+        "lockup": "/assets/img/lockups/targeting-machine.png",
+        "hero": "/assets/img/products/hero-targeting-machine.jpg",
+        "wordmark": "/assets/img/companies/targeting-machine/logo-lockup-teal.png",
+        "ground": "own",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "solves": "First-party data is fragmented, and lookalike models are educated guesses.",
       "proofPoints": [
@@ -717,7 +767,12 @@
       },
       "visual": {
         "logoKey": "numetrix",
-        "lockup": "/assets/img/lockups/numetrix.png"
+        "lockup": "/assets/img/lockups/numetrix.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g3",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "numetrix",
@@ -783,7 +838,12 @@
       },
       "visual": {
         "logoKey": "newvoices",
-        "lockup": null
+        "lockup": null,
+        "hero": "/assets/img/products/hero-newvoices-2.jpg",
+        "wordmark": "/assets/img/companies/newvoices/logo-white.png",
+        "ground": "own",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "newvoices",
@@ -850,7 +910,12 @@
       },
       "visual": {
         "logoKey": "machines_family",
-        "lockup": "/assets/img/lockups/the-machine.png"
+        "lockup": "/assets/img/lockups/the-machine.png",
+        "hero": "/assets/img/products/hero-the-machine.jpg",
+        "wordmark": "/assets/img/companies/the-machine/logo-wide.png",
+        "ground": "own",
+        "wordmarkBlend": "screen",
+        "markIcon": null
       },
       "solves": "Intelligence that is stagnant in the tool where it was created.",
       "proofPoints": [
@@ -922,7 +987,12 @@
       },
       "visual": {
         "logoKey": "agent_cloud",
-        "lockup": "/assets/img/lockups/agent-cloud.png"
+        "lockup": "/assets/img/lockups/agent-cloud.png",
+        "hero": "/assets/img/products/hero-agent-cloud.jpg",
+        "wordmark": null,
+        "ground": "own",
+        "wordmarkBlend": null,
+        "markIcon": "/assets/img/companies/agent-cloud/logo.svg"
       },
       "aliases": [
         "agent cloud",
@@ -987,7 +1057,12 @@
       },
       "visual": {
         "logoKey": "media_machine",
-        "lockup": null
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "solves": "Every platform holds its own audiences, signals and results. There is no single source of truth for media performance.",
       "proofPoints": [
@@ -1051,7 +1126,12 @@
       },
       "visual": {
         "logoKey": "newintel",
-        "lockup": null
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g2",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "newintel",
@@ -1114,7 +1194,12 @@
       },
       "visual": {
         "logoKey": "search_plus",
-        "lockup": null
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g3",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "sourceNote": "Positioning is the client's own words, 2026-09-10: \"Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity, Grok, etc.\" It supersedes the Stagwell Search+ ICP one-pager line used earlier the same day, kept here so nothing is lost: \"Stagwell Search+ is the enterprise OS for Brand Orchestration across Paid, Owned and Earned media. Its agentic architecture helps brands detect, predict, shape and prove performance across AI Search Experiences, including ChatGPT, Gemini, Claude, Grok, DeepSeek and emerging AI interfaces.\" Who it is for and the next step are still to come. Confirm before client use. Routing keeps brand_orchestration as a lead signal so the paid/owned/earned path still reaches Search+: the new line does not mention it, but the one-pager it replaces did, and no one has said the capability is gone. Say so and it comes out.",
       "aliases": [
@@ -1176,7 +1261,12 @@
       },
       "visual": {
         "logoKey": "id_graph",
-        "lockup": null
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
       },
       "aliases": [
         "stagwell id graph",

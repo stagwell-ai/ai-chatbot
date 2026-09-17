@@ -606,7 +606,11 @@ function drawCards(st, opts) {
      the FIRST of them. scrollIntoView used to do this, and took the window with
      it: the answer arrived and the page was already at the email line, past
      everything it had just been asked for (client, 2026-09-16). */
-  H.type(target);
+  /* the cards carry [data-cue], so they arrive when the last word of the intro
+     lands rather than while it is still being written. When nothing types —
+     motion off, or an intro that is already on the thread — they are simply
+     there, because a card nobody cues is a card nobody sees. */
+  if (!H.type(target)) target.querySelectorAll('.reco__card').forEach(el => el.classList.add('is-in'));
   H.settle(target, { head: true });
 }
 

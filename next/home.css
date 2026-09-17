@@ -1670,34 +1670,153 @@ body.menu-open .nav .nav__brand{--ink:#0B1220}
 .askform__go[disabled]{opacity:.6;cursor:progress}
 .askbox__thread .turnb--reco{padding-right:0}
 .reco{display:flex;flex-direction:column;gap:var(--s-5);margin-top:var(--s-6)}
-.reco__card{position:relative;background:#FFFFFF;border:1px solid var(--line);border-radius:18px;padding:18px 20px 18px;box-shadow:0 1px 0 rgba(11,18,32,.03)}
-.reco__card--best{border-color:var(--navy);box-shadow:0 12px 32px -18px rgba(0,51,73,.35)}
-.reco__card--also{padding:14px 18px;background:#F7F8F9}
+.reco__card{position:relative;background:#FFFFFF;border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 0 rgba(11,18,32,.03)}
+.reco__card--best{overflow:hidden;padding:0;border-color:var(--navy);box-shadow:0 18px 44px -22px rgba(0,51,73,.42)}
+.reco__card--also{padding:14px 18px 14px 20px;overflow:hidden;background:#F7F8F9}
+.reco__body{padding:18px 20px 20px}
 .reco__badge{margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
-.reco__card--also .reco__badge{color:var(--ink-3)}
+.reco__badge--quiet{color:var(--ink-3)}
 .reco__head{display:flex;align-items:flex-start;gap:14px}
 .reco__logo{flex:0 0 auto;width:44px;height:44px;object-fit:contain;border-radius:10px;background:#F1F2F4;padding:4px}
-.reco__mark{flex:0 0 auto;width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--teal) 0%,var(--navy) 100%)}
+.reco__mark{flex:0 0 auto;width:44px;height:44px;border-radius:10px;background:var(--gr-g1)}
 .reco__card--also .reco__logo,.reco__card--also .reco__mark{width:32px;height:32px}
 .reco__title{min-width:0}
 .reco__name{margin:0;font-family:var(--sans);font-size:19px;font-weight:700;line-height:1.25;color:var(--ink);letter-spacing:-.01em}
 .reco__card--also .reco__name{font-size:16px}
-.reco__desc{margin:4px 0 0;font-size:14px;line-height:1.5;color:var(--ink-2)}
-.reco__whylabel{margin:14px 0 4px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+.reco__desc{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}
+.reco__who{margin:8px 0 0;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--teal)}
+.reco__whylabel{margin:16px 0 4px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
 .reco__why{margin:0;font-size:15px;line-height:1.55;color:var(--ink)}
 .reco__card--also .reco__why{margin-top:8px;font-size:14px;color:var(--ink-2)}
-.reco__caps{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;padding:0;list-style:none}
+.reco__caps{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0;padding:0;list-style:none}
 .reco__caps li{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:#F1F2F4;color:var(--ink-2)}
-.reco__acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:14px}
+.reco__acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:16px}
 .reco__go{height:44px;padding:0 20px;font-size:14px}
 .reco__learn{height:44px;padding:0 18px;font-size:14px}
 .reco__learn--quiet{font-size:14px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .reco__learn--quiet:hover{color:var(--navy)}
 .reco__after{margin:var(--s-6) 0 0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+
+/* ═══ THE ANSWER ARRIVES AS THE PRODUCT'S OWN PAGE, IN ONE BREATH ═════════════
+   "when this card comes out, id like to see more images and animation, it
+   should be exciting. use the content from the product pages" (client,
+   2026-09-17). The band over the card is the opening of /the-machine (or
+   /s/{id}): its hero picture where Julian set one, and otherwise the very
+   gradient that page stands on — the five grounds below are next/product.css's
+   .pp-hero::before and .sp-hero--* verbatim, as tokens, so a card and the page
+   it points at are never two different products.
+
+   Nothing starts until the answer has finished writing itself: the card carries
+   [data-cue], and home.js adds .is-in when the last word lands. A stagger that
+   begins on append plays out under an opacity of 0 — the panel rows taught us
+   that on 2026-09-17, and the same trap is here, because .reco is held at
+   opacity 0 for the whole of .is-typing. */
+:root{
+  --gr-g1:linear-gradient(30deg,#003349 0%,#009CBD 55%,#FF6D24 100%);
+  --gr-g2:linear-gradient(20deg,#009CBD 0%,#035173 55%,#003349 100%);
+  --gr-g3:linear-gradient(210deg,#FF6D24 0%,#035173 48%,#003349 100%);
+  --gr-imai:radial-gradient(55% 75% at 0% 0%,rgba(150,228,220,.95) 0%,rgba(150,228,220,0) 70%),
+    radial-gradient(55% 80% at 100% 100%,rgba(206,190,247,.95) 0%,rgba(206,190,247,0) 70%),
+    linear-gradient(120deg,#B4EBE4 0%,#C9F0D3 48%,#D8CCF8 100%);
+  --gr-unicepta:radial-gradient(55% 75% at 0% 0%,rgba(255,206,178,.95) 0%,rgba(255,206,178,0) 70%),
+    radial-gradient(55% 80% at 100% 100%,rgba(184,234,196,.95) 0%,rgba(184,234,196,0) 70%),
+    linear-gradient(120deg,#FFDCC8 0%,#F3E6D2 45%,#CDEFD6 100%);
+}
+.reco__band{position:relative;overflow:hidden;aspect-ratio:16/6;display:flex;align-items:flex-end;
+  background:#003349;background-image:var(--gr-g1);color:#FFFFFF}
+.reco__band--g2{background-image:var(--gr-g2)}
+.reco__band--g3{background-image:var(--gr-g3)}
+.reco__band--imai{background-image:var(--gr-imai);color:var(--ink)}
+.reco__band--unicepta{background-image:var(--gr-unicepta);color:var(--ink)}
+/* a picture takes the ground's place; the veil keeps the lockup legible over
+   it without muddying the glow, the way the product pages do it.
+
+   NOTHING INSIDE THE BAND CARRIES A z-index. The picture, the veil, the light
+   and the words are all positioned and paint in the order they are written, so
+   the band is one stacking context — which is what lets a lockup drawn on
+   black blend its black away against the picture (mix-blend-mode only reaches
+   its own group; .reco__bandin with a z-index of its own left The Machine's
+   wordmark sitting in a black rectangle). .pp-hero__in does the same. */
+.reco__band--shot{background-image:none}
+.reco__shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:68% 52%;transform:scale(1.1);transform-origin:72% 58%}
+.reco__veil{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(190deg,rgba(0,34,49,.42) 0%,rgba(0,34,49,.06) 46%,rgba(0,34,49,.62) 100%)}
+.reco__band:not(.reco__band--shot) .reco__veil{display:none}
+.reco__bandin{position:relative;padding:0 20px 16px;max-width:100%}
+.reco__wordmark{display:block;height:26px;width:auto;max-width:74%;object-fit:contain;object-position:left center}
+.reco__wordmark--screen{mix-blend-mode:screen}   /* a lockup drawn on black, as on its page */
+/* the band's heading IS the card's heading: a wordmark, or the name in the
+   display face beside the product's mark */
+.reco__name--band{display:flex;align-items:center;gap:11px;margin:0;font-family:var(--display);
+  font-size:clamp(19px,3.2vw,25px);font-weight:600;letter-spacing:-.01em;line-height:1.1;color:inherit}
+.reco__markicon{flex:0 0 auto;width:30px;height:30px;object-fit:contain}
+.reco__tagline{margin:7px 0 0;font-size:14px;font-weight:600;line-height:1.35;color:inherit;opacity:.88}
+.reco__card--best .reco__badge{position:absolute;top:14px;left:20px;margin:0;color:#FFFFFF;
+  padding:5px 10px;border-radius:999px;background:rgba(0,34,49,.5);backdrop-filter:blur(6px)}
+.reco__band--imai .reco__badge,.reco__band--unicepta .reco__badge{color:var(--ink);background:rgba(255,255,255,.62)}
+/* the light that passes over the band once, as it opens */
+.reco__sheen{position:absolute;top:0;bottom:0;left:-40%;width:34%;pointer-events:none;opacity:0;
+  background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.34) 50%,rgba(255,255,255,0) 100%)}
+/* the page's "How it works" lines */
+.reco__proof{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.reco__proof li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 10px;align-items:start;
+  font-size:14px;line-height:1.5;color:var(--ink-2)}
+.reco__tick{position:relative;width:16px;height:16px;margin-top:3px;border-radius:50%;background:rgba(0,156,189,.14)}
+.reco__tick::after{content:"";position:absolute;left:5px;top:4px;width:5px;height:8px;border:solid var(--teal);
+  border-width:0 2px 2px 0;transform:rotate(42deg)}
+/* the secondary cards keep their quiet, but wear the product's ground on the edge */
+.reco__edge{position:absolute;left:0;top:0;bottom:0;width:4px;background-image:var(--gr-g1)}
+.reco__edge--g2{background-image:var(--gr-g2)}
+.reco__edge--g3{background-image:var(--gr-g3)}
+.reco__edge--imai{background-image:var(--gr-imai)}
+.reco__edge--unicepta{background-image:var(--gr-unicepta)}
+.reco__mark--g2{background-image:var(--gr-g2)}
+.reco__mark--g3{background-image:var(--gr-g3)}
+.reco__mark--imai{background-image:var(--gr-imai)}
+.reco__mark--unicepta{background-image:var(--gr-unicepta)}
+
+/* ── the reveal, kicked by .is-in ──────────────────────────────────────── */
+@keyframes recoIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes recoBand{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes recoShot{from{transform:scale(1.1)}to{transform:scale(1)}}
+@keyframes recoSheen{0%{opacity:0;transform:translateX(0) skewX(-12deg)}
+  16%{opacity:1}100%{opacity:0;transform:translateX(420%) skewX(-12deg)}}
+@keyframes recoRow{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.reco__card{opacity:0}
+.reco__card.is-in{animation:recoIn .58s cubic-bezier(.2,.8,.25,1) both;animation-delay:var(--cd,0s)}
+.reco__card .reco__band{clip-path:inset(0 0 100% 0)}
+.reco__card.is-in .reco__band{animation:recoBand .66s cubic-bezier(.22,.9,.3,1) both;animation-delay:calc(var(--cd,0s) + .12s)}
+.reco__card.is-in .reco__shot{animation:recoShot 7s cubic-bezier(.16,.6,.3,1) both;animation-delay:calc(var(--cd,0s) + .12s)}
+.reco__card.is-in .reco__sheen{animation:recoSheen 1.15s cubic-bezier(.3,.6,.3,1) both;animation-delay:calc(var(--cd,0s) + .42s)}
+.reco__card .reco__bandin>*{opacity:0}
+.reco__card.is-in .reco__bandin>*{animation:recoRow .5s cubic-bezier(.2,.8,.25,1) both}
+.reco__card.is-in .reco__bandin>:first-child{animation-delay:calc(var(--cd,0s) + .40s)}
+.reco__card.is-in .reco__bandin>:nth-child(2){animation-delay:calc(var(--cd,0s) + .50s)}
+.reco__rv{opacity:0}
+.reco__card.is-in .reco__rv{animation:recoRow .48s cubic-bezier(.2,.8,.25,1) both;
+  animation-delay:calc(var(--cd,0s) + .46s + var(--d,0ms))}
+.reco__card.is-in .reco__proof li{animation:recoRow .48s cubic-bezier(.2,.8,.25,1) both;
+  animation-delay:calc(var(--cd,0s) + .46s + var(--d,0ms))}
 @media (max-width:640px){
-  .reco__card{padding:16px}
+  .reco__body{padding:16px}
+  .reco__card--also{padding:14px 16px 14px 18px}
+  .reco__band{aspect-ratio:16/8}
   .reco__acts .btn{flex:1 1 100%;justify-content:center}
   .reco__learn--quiet{flex:1 1 100%;text-align:center}
+}
+/* motion off: the card is simply there, picture and all. Every selector below
+   MATCHES the one it is turning off — a media query adds no specificity, and a
+   bare .reco__rv here lost to .reco__card.is-in .reco__rv above, so the whole
+   card animated for a reader who had asked it not to (measured, 2026-09-17). */
+@media (prefers-reduced-motion:reduce){
+  .reco__card,.reco__card.is-in,
+  .reco__rv,.reco__card.is-in .reco__rv,
+  .reco__card .reco__bandin>*,.reco__card.is-in .reco__bandin>*,
+  .reco__card.is-in .reco__bandin>:first-child,.reco__card.is-in .reco__bandin>:nth-child(2),
+  .reco__card.is-in .reco__proof li{opacity:1;animation:none}
+  .reco__card .reco__band,.reco__card.is-in .reco__band{clip-path:none;animation:none}
+  .reco__shot,.reco__card.is-in .reco__shot{transform:scale(1);animation:none}
+  .reco__sheen,.reco__card.is-in .reco__sheen{display:none;animation:none}
 }
 /* the chat box stays a light island in dark mode (the form fields and the
    thread's ink are already re-scoped light there), so the cards keep their
