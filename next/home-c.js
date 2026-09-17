@@ -684,3 +684,80 @@
   addEventListener('resize', ask);
   paint();
 })();
+
+/* Extensible: a dot grid with two drifting hubs. Dots near a hub swell and wire to it;
+   the grid fades with distance, so the network seems to think its way across the box. */
+(() => {
+  const cv = document.querySelector('.hc-page .why__dots');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const INK = '11,18,32', HUB = '#009CBD';
+  let W = 0, H = 0, S = 20, dots = [], raf = 0, on = false, last = 0;
+  const hubs = [0, 1].map(k => ({ x: 0, y: 0, tx: 0, ty: 0, next: 0, k }));
+  const hash = (a, b) => ((a * 73856093) ^ (b * 19349663)) >>> 0;
+
+  const size = () => {
+    const r = cv.getBoundingClientRect();
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    W = r.width; H = r.height;
+    if (!W || !H) return;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    S = Math.max(16, Math.min(26, W / 16));
+    dots = [];
+    const ox = (W % S) / 2 + S / 2, oy = (H % S) / 2 + S / 2;
+    for (let j = 0; j * S + oy < H; j++)
+      for (let i = 0; i * S + ox < W; i++) dots.push({ x: ox + i * S, y: oy + j * S, h: hash(i, j) });
+    hubs.forEach((h, k) => {
+      h.x = h.tx = W * (k ? 0.7 : 0.3); h.y = h.ty = H * (k ? 0.6 : 0.4);
+    });
+  };
+
+  const retarget = (h, t) => {
+    /* each hub keeps to its own half, so the two never merge */
+    const x0 = h.k ? W * 0.52 : W * 0.1, x1 = h.k ? W * 0.9 : W * 0.48;
+    h.tx = x0 + Math.random() * (x1 - x0);
+    h.ty = H * 0.2 + Math.random() * H * 0.6;
+    h.next = t + 1400 + Math.random() * 1400;
+  };
+
+  const draw = t => {
+    ctx.clearRect(0, 0, W, H);
+    const R = S * 4.2, LINK = S * 2.9;
+    for (const h of hubs) {
+      if (t > h.next) retarget(h, t);
+      h.x += (h.tx - h.x) * 0.035; h.y += (h.ty - h.y) * 0.035;
+    }
+    /* wires first, under the dots */
+    ctx.lineWidth = 1;
+    for (const h of hubs) for (const d of dots) {
+      const dist = Math.hypot(d.x - h.x, d.y - h.y);
+      if (dist < S * 0.9 || dist > LINK || d.h % 3 === 0) continue;
+      ctx.strokeStyle = `rgba(${INK},${(0.55 * (1 - dist / LINK) + 0.12).toFixed(3)})`;
+      ctx.beginPath(); ctx.moveTo(h.x, h.y); ctx.lineTo(d.x, d.y); ctx.stroke();
+    }
+    for (const d of dots) {
+      let near = 0;
+      for (const h of hubs) near = Math.max(near, 1 - Math.hypot(d.x - h.x, d.y - h.y) / R);
+      if (near <= -0.25) continue;
+      const a = Math.max(0.06, Math.min(1, near * 1.4 + 0.12));
+      const r = 0.7 + Math.max(0, near) * 2.4;
+      ctx.fillStyle = `rgba(${INK},${a.toFixed(3)})`;
+      ctx.beginPath(); ctx.arc(d.x, d.y, r, 0, 6.2832); ctx.fill();
+    }
+    ctx.fillStyle = HUB;
+    for (const h of hubs) { ctx.beginPath(); ctx.arc(h.x, h.y, 5, 0, 6.2832); ctx.fill(); }
+  };
+
+  const loop = t => { raf = 0; draw(t); if (on && !still) raf = requestAnimationFrame(loop); };
+  const start = () => { if (!raf && !still) raf = requestAnimationFrame(loop); };
+  size(); draw(0);
+  new ResizeObserver(() => { size(); draw(performance.now()); }).observe(cv);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => {
+      on = es[0].isIntersecting;
+      if (on) start(); else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    }).observe(cv);
+  } else { on = true; start(); }
+})();

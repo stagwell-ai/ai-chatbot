@@ -2459,3 +2459,7 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page #why .why__mark{display:block;width:32%;aspect-ratio:4 / 1;background:#0B1220;
   -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat}
 .hc-page #why .why__sep{display:block;width:1px;height:30%;background:rgba(11,18,32,.24)}
+
+/* Extensible: a living dot network (canvas, home-c.js) instead of a picture */
+.hc-page #why .why__slot--dots{position:relative;overflow:hidden}
+.hc-page #why .why__dots{position:absolute;inset:0;width:100%;height:100%;display:block}
