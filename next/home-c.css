@@ -2623,3 +2623,4 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-b .intro__stage:not(#_){max-width:none !important}
 }
 .hc-b .intro__media:not(#_){border-radius:0 !important}
+.hc-page .hc-port.is-auto .hc-port__tab.is-on:not(.is-timing)::before{transform:scaleX(0);transition:none}

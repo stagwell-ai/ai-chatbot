@@ -142,7 +142,10 @@
   let taken = false;                       /* once the reader picks a tab, the run is theirs */
   const start = () => { if (timer || held || taken || !seen || still.matches) return; arm(); timer = setInterval(() => { show(at + 1); arm(); }, DWELL); };
   const stop = () => { if (timer) { clearInterval(timer); timer = 0; } tabs.forEach(t => t.classList.remove('is-timing')); };
-  const takeOver = () => { taken = true; stop(); };
+  /* while the tabs turn by themselves, the live tab starts empty and fills; only a tab the reader
+     picked shows full (it used to show full, drop to empty as its turn began, and fill again) */
+  sec.classList.add('is-auto');
+  const takeOver = () => { taken = true; stop(); sec.classList.remove('is-auto'); };
   tabs.forEach((t, n) => t.addEventListener('click', () => { show(n); takeOver(); }));
   /* only the tab strip itself holds the turn — hovering the picture used to freeze it, and a
      pointer that left by scrolling never reported leaving, so it never started again */
