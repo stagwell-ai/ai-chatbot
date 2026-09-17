@@ -2564,3 +2564,12 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hc-page .intro__media:not(#_){aspect-ratio:auto !important;height:clamp(520px,72svh,680px) !important}
   .hc-page .intro__media:not(#_) .intro__pic{width:100%;height:100%;object-fit:cover}
 }
+
+/* phones: three client logos, bigger; the Why boxes wide and low instead of square */
+@media (max-width:760px){
+  .hc-page .ask-end .hc-clients__row:not(#_){grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hc-page .ask-end .hc-clients__cell:nth-child(n+4){display:none}
+  .hc-page .ask-end .hc-clients__cell:not(#_){height:84px}
+  .hc-page .ask-end .hc-clients__reel:not(#_){width:78%;height:42%}
+  .hc-page #why .why__item:not(#_) > .why__slot{aspect-ratio:16 / 9 !important}
+}
