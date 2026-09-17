@@ -2554,3 +2554,7 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 .hc-page .nav__pmark:not(#_){background:rgba(0,156,189,.09) !important;box-shadow:inset 0 0 0 1px rgba(0,156,189,.42) !important;color:#009CBD !important}
 .hc-page .nav__pmark:not(#_) svg{color:#009CBD !important}
 .hc-page .nav__pitem:hover .nav__pmark:not(#_){background:rgba(0,156,189,.16) !important;box-shadow:inset 0 0 0 1px rgba(0,156,189,.7) !important}
+
+/* New Voices, drawn: the voice canvas standing in for its picture */
+.call__voice--pic{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;border-radius:inherit}
+.pc-page .pp-more__media{position:relative;overflow:hidden}

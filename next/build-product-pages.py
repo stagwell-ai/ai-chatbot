@@ -36,7 +36,7 @@ PRODUCTS = [
     dict(
         slug='the-machine', name='The Machine',
         kind='Enterprise agentic marketing operating system',
-        hero_bg='/assets/img/products/hero-the-machine.jpg',   # Julian's hero picture, 2026-09-10
+        hero_bg='/assets/img/products/your-data-walker.jpg',   # Julian's hero picture, 2026-09-10
         logo='<img class="pp-logo pp-logo--screen" src="/assets/img/companies/the-machine/logo-wide.png" alt="The Machine" width="570" height="100">',
         title='Turn your marketing stack into an intelligent system.',
         description="The Stagwell Machines is a family of agentic solutions for enterprise marketing organizations – each built for a specific job; all connected under one operating layer. Unlike point solutions that make individual tasks smarter, the Machines share context: every signal, decision, and result carries forward. The Machine is that operating layer: it sits on top of the tools teams already use – Slack, Figma, Adobe, analytics platforms and project systems – and connects them into one system with shared memory. Connected by design.",   # Stagwell AI Messaging FINAL, 2026-09-16
@@ -44,7 +44,7 @@ PRODUCTS = [
         # description moves under the film, whole
         summary="Stagwell's agentic operating system for marketing, built on the tools you already use.",
         url='https://machine.live/',
-        image=('/assets/img/products/the-machine.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
+        image=('/assets/img/products/your-data-walker.jpg', 1672, 941),   # one picture per product across the site (client, 2026-09-17)   # Julian's product image, 2026-09-10
         sections=[
             ('Works inside your existing workflows', 'Sits on top of Slack, Figma, Adobe, analytics platforms and project systems rather than replacing them – no rip and replace.'),
             ('One system of record', 'Insight, decision and result live in one place – strategy, creative, production, media and performance work from shared context instead of disconnected handoffs.'),
@@ -62,7 +62,7 @@ PRODUCTS = [
     dict(
         slug='targeting-machine', name='The Targeting Machine',
         kind='Privacy-first audience intelligence and activation',
-        hero_bg='/assets/img/products/hero-targeting-machine.jpg',   # Julian's hero picture, 2026-09-10
+        hero_bg='/assets/img/products/targeting-machine-new.jpg',   # Julian's hero picture, 2026-09-10
         # built 2026-09-10 to sit beside The Machine's as one family (client): the
         # four-petal mark lifted from Julian's product image, in the brand's sky so
         # it reads on the blue hero, and "THE TARGETING MACHINE" in Roobert — the
@@ -80,7 +80,7 @@ PRODUCTS = [
         # description moves under the film, whole
         summary='Privacy-first audience intelligence, from first-party data to activation.',
         url='https://www.themarketingcloud.com/marketplace/sats',
-        image=('/assets/img/products/targeting-machine.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
+        image=('/assets/img/products/targeting-machine-new.jpg', 2688, 1520),   # Julian's product image, 2026-09-10
         sections=[
             ('Audiences built from people already exhibiting the behavior', "Real behavioral signals from your first-party data and the Stagwell ID Graph – not a model's educated guess."),
             ('Attitudinal and behavioral layering', 'Proprietary intelligence from BERA.ai, The Harris Poll and more, layered on what people actually do, to expand addressable reach.'),
@@ -96,7 +96,7 @@ PRODUCTS = [
     dict(
         slug='newvoices', name='New Voices',
         kind='AI voice agents and insight campaigns',
-        hero_bg='/assets/img/products/hero-newvoices-2.jpg',   # Julian's "new voices hero 2", 2026-09-10 13:35 (new name: no stale cache)
+        hero_bg='/assets/img/products/newvoices-voice.jpg',   # Julian's "new voices hero 2", 2026-09-10 13:35 (new name: no stale cache)
         logo='<img class="pp-logo" src="/assets/img/companies/newvoices/logo-white.png" alt="New Voices" width="2560" height="441">',
         title='Hear why your customers act - at scale.',
         description='New Voices puts lifelike AI voice agents on your customer conversations, 24/7 and in any language. The same agents that qualify and book leads, resolve service and win back lapsing customers also interview customers at scale - capturing the nuance, emotion, language and context that written surveys and behavioral data miss, and converting it into decision-ready market intelligence.',
@@ -105,7 +105,7 @@ PRODUCTS = [
         summary='AI voice agents that interview your customers at scale and turn it into insight.',
         url='https://newvoices.ai/',
         # Julian's product image (mats/from stagwell/product imaages/new voices.png, 2026-09-10)
-        image=('/assets/img/products/newvoices.jpg', 1122, 1402),
+        image=('/assets/img/products/newvoices-voice.jpg', 1920, 1080),   # the voice; home-c.js draws it live over this
         sections=[
             ('Start with a business decision', 'Each campaign is framed around the decision you need to make; the questions, audience segments and interview flow are designed around it.'),
             ('Natural AI voice interviews', 'Scalable conversations that give respondents room to explain in their own words.'),
@@ -121,7 +121,7 @@ PRODUCTS = [
     dict(
         slug='agent-cloud', name='Agent Cloud',
         kind='Secure AI workspace and marketing agent toolkit',
-        hero_bg='/assets/img/products/hero-agent-cloud.jpg',   # Julian's hero picture, 2026-09-10
+        hero_bg='/assets/img/products/agent-cloud-code.jpg',   # Julian's hero picture, 2026-09-10
         hero_tone='light',   # the picture is pale sky blue: ink type and a dark bar, not white on white
         # only the "A" mark ships as a file; the name is set beside it in type
         logo='<span class="pp-logo pp-logo--mark"><img src="/assets/img/companies/agent-cloud/logo.svg" alt="" width="40" height="40">Agent Cloud</span>',
@@ -131,7 +131,7 @@ PRODUCTS = [
         # description moves under the film, whole
         summary='A secure AI workspace for marketers: leading LLMs and marketing agents in one place.',
         url='https://www.themarketingcloud.com/marketplace/agent-cloud',
-        image=('/assets/img/products/agent-cloud.jpg', 1122, 1402),   # Julian's product image, 2026-09-10
+        image=('/assets/img/products/agent-cloud-code.jpg', 1920, 1080),   # Julian's product image, 2026-09-10
         sections=[
             ('Leading AI models in one place', 'Enterprise access to the major multimodal models, so teams choose the best model for each task without separate subscriptions.'),
             ('Purpose-built marketing agents', 'Research, brand audits, creative briefs, image and video generation, social listening and search discoverability.'),
@@ -318,7 +318,7 @@ def page(p, home):
     # the ratio the phone crops to anyway (client, 2026-09-10); the others keep
     # the desktop picture, cropped
     import os
-    mob = f'/assets/img/products/{p["slug"]}-mobile.jpg'
+    mob = p['image'][0]   # the same picture on phones
     has_mob = os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', mob.lstrip('/')))
     pic = f'<img src="{src}" alt="" width="{w}" height="{h}" loading="lazy" decoding="async">'
     if has_mob:

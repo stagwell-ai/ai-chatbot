@@ -762,12 +762,14 @@
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TINTS = ['0,156,189', '119,227,246', '255,109,36', '255,184,28'];
 
-  const mount = btn => {
-    if (btn.querySelector('.call__voice')) return;
+  /* o.center: the voice sits in the middle of a picture's place (New Voices, wherever its
+     picture would be); o.bg paints the ground so it can stand in for that picture */
+  const mount = (btn, o = {}) => {
+    if (btn.querySelector(':scope > .call__voice')) return;
     const cv = document.createElement('canvas');
-    cv.className = 'call__voice';
+    cv.className = 'call__voice' + (o.center ? ' call__voice--pic' : '');
     cv.setAttribute('aria-hidden', 'true');
-    btn.prepend(cv);
+    if (o.after) o.after.insertAdjacentElement('afterend', cv); else btn.prepend(cv);
     const ctx = cv.getContext('2d');
     let W = 0, H = 0, T = 6, G = 2, cols = [], raf = 0, on = false, lastPick = 0;
 
@@ -778,8 +780,8 @@
       if (!W || !H) return;
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      T = H > 140 ? 3 : 2.5; G = 1.5;
-      const n = Math.floor((W * 0.6) / (T + G));
+      T = o.center ? (H > 420 ? 5 : H > 260 ? 4 : 3) : (H > 140 ? 3 : 2.5); G = o.center ? T * 0.5 : 1.5;
+      const n = Math.floor((W * (o.center ? 0.78 : 0.6)) / (T + G));
       cols = Array.from({ length: n }, (_, i) => {
         const u = i / (n - 1);
         /* loud in the middle, a thin tail at each end */
@@ -800,9 +802,10 @@
 
     const draw = t => {
       if (t - lastPick > 95) { pick(t); lastPick = t; }
-      ctx.clearRect(0, 0, W, H);
-      const mid = Math.round(H * 0.6 - T / 2), rows = Math.floor((H * 0.33 - 8) / (T + G));
-      const x0 = W - 24 - cols.length * (T + G);
+      if (o.bg) { ctx.fillStyle = o.bg; ctx.fillRect(0, 0, W, H); } else ctx.clearRect(0, 0, W, H);
+      const mid = Math.round(H * (o.center ? 0.5 : 0.6) - T / 2);
+      const rows = Math.floor((H * (o.center ? 0.36 : 0.33) - 8) / (T + G));
+      const x0 = o.center ? (W - cols.length * (T + G)) / 2 : W - 24 - cols.length * (T + G);
       cols.forEach((c, i) => {
         c.up += (c.tu - c.up) * 0.28; c.dn += (c.td - c.dn) * 0.28;
         const x = x0 + i * (T + G);
@@ -829,6 +832,7 @@
     }).observe(cv);
   };
 
+  window.hcVoice = (host, o) => mount(host, Object.assign({ center: true, bg: '#0B1220' }, o || {}));
   const find = () => {
     const btns = document.querySelectorAll('.hc-page .ask-end .call__btn');
     btns.forEach(mount);

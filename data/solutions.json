@@ -697,7 +697,7 @@
       "visual": {
         "logoKey": "targeting_machine",
         "lockup": "/assets/img/lockups/targeting-machine.png",
-        "hero": "/assets/img/products/hero-targeting-machine.jpg",
+        "hero": "/assets/img/products/targeting-machine-new.jpg",
         "wordmark": "/assets/img/companies/targeting-machine/logo-lockup-teal.png",
         "ground": "own",
         "wordmarkBlend": null,
@@ -839,7 +839,7 @@
       "visual": {
         "logoKey": "newvoices",
         "lockup": null,
-        "hero": "/assets/img/products/hero-newvoices-2.jpg",
+        "hero": "/assets/img/products/newvoices-voice.jpg",
         "wordmark": "/assets/img/companies/newvoices/logo-white.png",
         "ground": "own",
         "wordmarkBlend": null,
@@ -911,7 +911,7 @@
       "visual": {
         "logoKey": "machines_family",
         "lockup": "/assets/img/lockups/the-machine.png",
-        "hero": "/assets/img/products/hero-the-machine.jpg",
+        "hero": "/assets/img/products/your-data-walker.jpg",
         "wordmark": "/assets/img/companies/the-machine/logo-wide.png",
         "ground": "own",
         "wordmarkBlend": "screen",
@@ -988,7 +988,7 @@
       "visual": {
         "logoKey": "agent_cloud",
         "lockup": "/assets/img/lockups/agent-cloud.png",
-        "hero": "/assets/img/products/hero-agent-cloud.jpg",
+        "hero": "/assets/img/products/agent-cloud-code.jpg",
         "wordmark": null,
         "ground": "own",
         "wordmarkBlend": null,

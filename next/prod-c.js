@@ -86,8 +86,8 @@
   /* the pictures come from the set we shot for the film and the product stills */
   const PIC = {
     'p-audiences':           '/assets/img/products/targeting-machine-new.jpg',
-    'p-leads':               '/assets/img/products/new-voices-android.jpg',
-    'p-marketing_ops':       '/assets/img/products/the-machine-v2.jpg',
+    'p-leads':               '/assets/img/products/newvoices-voice.jpg',   /* New Voices: the voice, live below */
+    'p-marketing_ops':       '/assets/img/products/your-data-walker.jpg',
     'p-ai_workspace':        '/assets/img/products/agent-cloud-code.jpg',
     'p-brand_health':        '/assets/img/questbrand.jpg',
     'p-research':            '/assets/img/hero-film/2.jpg',
@@ -106,6 +106,16 @@
     });
   };
   repic();
+
+  /* New Voices is shown as its voice, talking, wherever its picture would be */
+  const voice = () => {
+    const pic = document.querySelector('.pl-c #p-leads .prodgroup__pic');
+    if (pic && window.hcVoice && !pic.dataset.pcVoice) {
+      pic.dataset.pcVoice = '1';
+      window.hcVoice(pic.parentElement, { after: pic });
+    }
+  };
+  voice();
 
   /* the closing block on these pages ends the way the homepage ends: the ask, then the two ways in.
      The pair lives inside the chat panel that only opens later, so it is lifted out once. */
@@ -186,33 +196,11 @@
         return cap;
       });
 
-      /* products with their own film play it behind their cards, from the top each time
-         their tab comes round (the motion lab loops, 1080p) */
-      const FILM = { 'The Media Machine': 'media-machine', 'NewIntel': 'newintel',
-        'Search+': 'search-plus', 'Stagwell ID Graph': 'id-graph' };
-      const vids = cards.map((card, ci) => {
-        const key = FILM[(tabs[ci] && tabs[ci].textContent || '').trim()];
-        if (!key || !head) return null;
-        const v = document.createElement('video');
-        v.className = 'pc-vid';
-        v.muted = true; v.loop = true; v.playsInline = true;
-        v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true');
-        v.preload = ci === 0 ? 'auto' : 'metadata';
-        v.poster = '/assets/video/lab/' + key + '-poster.jpg';
-        v.src = '/assets/video/lab/' + key + '.mp4';
-        head.insertBefore(v, head.firstChild);
-        head.dataset.pcFilm = '1';
-        return v;
-      });
+      const stage = null;   /* tab backgrounds stay the still (client, 2026-09-17) */
 
       let at = 0, timer = 0, taken = false, seen = false;
       const still = matchMedia('(prefers-reduced-motion: reduce)');
-      const film = () => vids.forEach((v, n) => {
-        if (!v) return;
-        v.classList.toggle('is-on', n === at);
-        if (n === at && seen && !still.matches) { try { v.currentTime = 0; } catch (e) {} v.play().catch(() => {}); }
-        else v.pause();
-      });
+      const film = () => { if (stage) { stage.show(names[at]); stage.play(seen && !still.matches); } };
       const arm = () => {
         const t = tabs[at];
         if (!t) return;
@@ -244,7 +232,7 @@
           const was = seen;
           seen = es[0].isIntersecting;
           seen ? start() : stop();
-          if (seen !== was) seen ? film() : vids.forEach(v => v && v.pause());
+          if (seen !== was && stage) stage.play(seen && !still.matches);
         }, { threshold: .25 }).observe(group);
       } else { seen = true; start(); }
     });
@@ -276,7 +264,13 @@
     acts.insertAdjacentElement('afterend', n);
   };
   note();
-  new MutationObserver(() => { build(); repic(); lift(); note(); tabify(); bleedSoon(); }).observe(root, { childList: true, subtree: true });
+  new MutationObserver(() => { build(); repic(); voice(); lift(); note(); tabify(); bleedSoon(); }).observe(root, { childList: true, subtree: true });
+})();
+
+/* New Voices' own page shows its voice, talking, in place of the picture */
+(() => {
+  const media = document.querySelector('.pc-page.pp--newvoices .pp-more__media');
+  if (media && window.hcVoice) window.hcVoice(media);
 })();
 
 /* the closing block on every product page ends with the two ways in, as the homepage does.
