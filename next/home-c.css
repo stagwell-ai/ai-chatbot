@@ -2494,3 +2494,9 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
   17.3%{transform:translateY(-100%)}
   100%{transform:translateY(-100%)}
 }
+/* desktop: wider paragraphs; the boxes 100px shorter than square */
+@media (min-width:1024px){
+  .hc-page #why .why__item:not(#_) > .why__d{max-width:430px !important}
+  .hc-page #why .why__item:not(#_){container-type:inline-size}
+  .hc-page #why .why__item:not(#_) > .why__slot{aspect-ratio:auto !important;height:calc(clamp(240px,36cqi,420px) - 100px) !important}
+}
