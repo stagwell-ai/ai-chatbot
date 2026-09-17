@@ -327,6 +327,8 @@ try {
     ok(!(k2.question && k2.question.field === 'email'), 'it lets them through (' + (k2.question ? k2.question.id : k2.status) + ')');
     ok(!k2.email, '   no address was invented (' + JSON.stringify(k2.email) + ')');
     ok(String(k2.message || '').startsWith(String(C.emailSkipped).slice(0, 20)), '   and it says so lightly: "' + String(k2.message).slice(0, 60) + '…"');
+    ok(/that's fine/i.test(k2.message || '') && /chance/i.test(k2.message || '') && !/does not look like/i.test(k2.message || ''),
+      '   …acknowledging the refusal and promising another chance, not pressing');
     ok((k2.suggestions || []).length >= 4, '   the problem comes next, with its pills: ' + (k2.suggestions || []).map(x => x.label).join(' | '));
 
     /* …and from there they are still shown a product, before anything else */

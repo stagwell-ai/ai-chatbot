@@ -169,7 +169,15 @@ function render(st) {
     /* the value before the qualification (client, 2026-09-16): the products
        that fit are shown as soon as the address step is behind us, and the
        questions about the business carry on underneath them */
-    if (st.previewed && st.cards.length && !previewDrawn) drawPreview(st);
+    if (st.previewed && st.cards.length && !previewDrawn) {
+      /* what they just said is answered BEFORE anything is shown — "that's
+         fine, you'll have the chance later" comes first, then the cards, then
+         the question on its own (client, 2026-09-17: "acknowledge … and only
+         after show the answer"). The ack is not repeated under the cards. */
+      if (st.ack && !quiet) H.ai(askText(st.ack), null, null, null);
+      drawPreview(st);
+      st = Object.assign({}, st, { ack: null, message: st.prompt || st.message });
+    }
     const key = 'ask|' + (st.question ? st.question.id : '') + '|' + st.message;
     if (key === lastKey) return;
     lastKey = key;

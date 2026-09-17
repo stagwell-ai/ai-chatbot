@@ -572,6 +572,13 @@ test's floor is 42 so a stray keyword cannot pass unnoticed. What changed:
   place: after the address, before the cards and before size/role. Never later: once size and
   role are in, the 2026-09-10 order stands and a level pair is shown as two cards.
   IMAI / SMB are deliberately not a pair — size decides, both are shown until it is known.
+- **Turning the address down is answered before anything is shown** (client, 2026-09-17: "the
+  chat should acknowledge that i dont want to give an email, say thats fine, and ill have a
+  chance later in the conversation to provide more info if relevant, and only after show the
+  answer"). `copy.emailSkipped` is that acknowledgement and nothing else; `hero-agent.js` draws
+  it as its own turn ahead of `drawPreview()`, then the cards, then the next question with the
+  ack stripped so it is not said twice. `copy.emailSkippedGoal` is the variant that carries the
+  goal question, used only when no goal is known yet. `reveal.funnel.mjs` asserts the order.
 - **The model** (`api/ask.js` INTERPRET_SYSTEM) is shown the sheet's prompts as worked examples
   under each intent (`taxonomy.json` `examples`, "match by meaning, not by wording"). It still
   only ever names intents; the scorer names the product.

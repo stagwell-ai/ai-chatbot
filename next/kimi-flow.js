@@ -742,7 +742,7 @@ async function answer(input) {
       /* advance() drops its ack when it falls through to the goal, and the
          goal's own line ("I didn't catch a problem in that") is the wrong
          thing to say to someone who just declined — so say ours instead */
-      if (!st.primaryGoal && !st.intents.length) { askGoal(c.emailSkipped || null); notify(); return state(); }
+      if (!st.primaryGoal && !st.intents.length) { askGoal(c.emailSkippedGoal || c.emailSkipped || null); notify(); return state(); }
       advance(c.emailSkipped || null);
       notify(); return state();
     }

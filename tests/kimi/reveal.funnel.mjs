@@ -190,6 +190,36 @@ try {
     ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
     await ctx.close();
   }
+/* ── THE ORDER OF THE THREE THINGS ──
+   "this response seems reversed. the chat should acknowledge that i dont want
+   to give an email, say thats fine, and ill have a chance later in the
+   conversation to provide more info if relevant, and only after show the
+   answer" (client, 2026-09-17). The acknowledgement is a turn of its own,
+   BEFORE the cards; the question that follows carries no second copy of it. */
+console.log('\n▶ turning the address down: the answer to what they said comes before what we show them');
+{
+  const { ctx, page, state } = await open('reduce');
+  await page.click('#agentTags .tag[data-goal="competition"]');
+  await settle(page); await done(page);
+  await say(page, "i'd rather not");
+  await say(page, 'no thanks');
+  await page.waitForFunction(() => window.SAIKIMI.state().previewed, null, { timeout: 15000 });
+  await done(page); await page.waitForTimeout(400);
+  const turns = await page.$$eval('#agentThread .turnb', els => els.map(e => ({
+    kind: e.classList.contains('turnb--me') ? 'me' : e.classList.contains('turnb--reco') ? 'cards' : 'ai',
+    text: e.textContent.replace(/\s+/g, ' ').trim()
+  })));
+  const iAck = turns.findIndex(t => t.kind === 'ai' && /that's fine/i.test(t.text));
+  const iCards = turns.findIndex(t => t.kind === 'cards');
+  ok(iAck !== -1, 'the refusal is answered in its own turn ("' + (turns[iAck] || {}).text?.slice(0, 60) + '…")');
+  ok(iCards !== -1 && iAck < iCards, 'and it comes BEFORE the cards (ack at ' + iAck + ', cards at ' + iCards + ')');
+  ok(/chance/i.test((turns[iAck] || {}).text || ''), '   it promises another chance to share more later');
+  const after = turns.slice(iCards + 1).filter(t => t.kind === 'ai');
+  ok(after.length >= 1 && !/that's fine/i.test(after[0].text), '   the question under the cards does not repeat it: "' + (after[0] || {}).text?.slice(0, 60) + '…"');
+  ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+  await ctx.close();
+}
+
 } finally {
   await browser.close();
 }
