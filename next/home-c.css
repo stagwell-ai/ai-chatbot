@@ -2374,3 +2374,6 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 
 /* ── H1: Medium (500), not Regular, not Black ─────────────────────────────── */
 .hc-page h1:not(#_),.hc-page h1:not(#_) *{font-weight:500 !important}
+
+/* ── video title: the dash is gone; the second half sits on its own line, quieter ── */
+.hc-page .intro__over .display--intro .intro__sub:not(#_){display:block;margin-top:1.1em;opacity:.82;font-size:.42em !important;line-height:1.35;letter-spacing:0 !important}
