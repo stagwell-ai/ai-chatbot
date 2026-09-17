@@ -34,7 +34,7 @@ let blocks: [Block] = [
   Block(x: 1120, y: 266, size: 18, snippets: [
     ["def reason(state):", "    goals = infer_goals(state)", "    plan = decompose(goals)", "    return plan"],
     ["def reason(state):", "    options = rank(state.goals)", "    return options[0]"]], ph: 0.30, alpha: 0.66),
-  Block(x: 1088, y: 440, size: 32, snippets: [
+  Block(x: 1090, y: 470, size: 19, snippets: [
     ["if confidence < threshold:", "   revised_plan = reason(state)", "   result = agent.run(revised_plan, context)", "else:", "   final_answer = synthesize(result)", "   return final_answer"],
     ["while not done:", "   step = planner.next(state)", "   result = agent.run(step, context)", "   state = observe(result)", "done = verify(result)", "return synthesize(result)"]], ph: 0.0, alpha: 0.74),
   Block(x: 80, y: 756, size: 22, snippets: [
