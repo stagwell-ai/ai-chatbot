@@ -778,8 +778,8 @@
       if (!W || !H) return;
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      T = H > 140 ? 4 : 3; G = 2;
-      const n = Math.floor((W * 0.7) / (T + G));
+      T = H > 140 ? 3 : 2.5; G = 1.5;
+      const n = Math.floor((W * 0.76) / (T + G));
       cols = Array.from({ length: n }, (_, i) => {
         const u = i / (n - 1);
         /* loud in the middle, a thin tail at each end */
