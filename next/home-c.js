@@ -779,7 +779,7 @@
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       T = H > 140 ? 3 : 2.5; G = 1.5;
-      const n = Math.floor((W * 0.76) / (T + G));
+      const n = Math.floor((W * 0.6) / (T + G));
       cols = Array.from({ length: n }, (_, i) => {
         const u = i / (n - 1);
         /* loud in the middle, a thin tail at each end */
@@ -801,7 +801,7 @@
     const draw = t => {
       if (t - lastPick > 95) { pick(t); lastPick = t; }
       ctx.clearRect(0, 0, W, H);
-      const mid = Math.round(H * 0.58 - T / 2), rows = Math.floor((H * 0.42 - 8) / (T + G));
+      const mid = Math.round(H * 0.6 - T / 2), rows = Math.floor((H * 0.33 - 8) / (T + G));
       const x0 = W - 24 - cols.length * (T + G);
       cols.forEach((c, i) => {
         c.up += (c.tu - c.up) * 0.28; c.dn += (c.td - c.dn) * 0.28;
