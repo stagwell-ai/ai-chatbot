@@ -2624,3 +2624,7 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 .hc-b .intro__media:not(#_){border-radius:0 !important}
 .hc-page .hc-port.is-auto .hc-port__tab.is-on:not(.is-timing)::before{transform:scaleX(0);transition:none}
+
+/* the suite header is symmetric: the button keeps the same distance from the right edge
+   as the title (and the first card) keep from the left */
+.hc-page .hcs__head:not(#_){padding-right:clamp(20px,6vw,120px) !important}
