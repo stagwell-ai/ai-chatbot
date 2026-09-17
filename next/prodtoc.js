@@ -201,7 +201,10 @@
     /* the header is sticky, so the section has to stop below it */
     const nav = document.querySelector('#nav,.nav');
     const off = (nav ? nav.getBoundingClientRect().height : 0) + 24;
-    const y = target.getBoundingClientRect().top + scrollY - off;
+    /* on a phone the section may sit sideways in a carousel: bring it into the carousel's view first */
+    const rail = target.closest('.pc-rail');
+    if (rail) rail.scrollTo({ left: target.offsetLeft - rail.offsetLeft - parseFloat(getComputedStyle(rail).paddingLeft || 0), behavior: 'auto' });
+    const y = (rail || target).getBoundingClientRect().top + scrollY - off;
     scrollTo({ top: y, behavior: REDUCED ? 'auto' : 'smooth' });
     cycling = false; stopCycle();
     setLabel(item.dataset.short || item.textContent.trim());

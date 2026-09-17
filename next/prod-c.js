@@ -246,6 +246,19 @@
         timer = setInterval(() => { show(at + 1); arm(); }, 4200);
       };
       tabs.forEach((t, i) => t.addEventListener('click', () => { taken = true; stop(); show(i); }));
+      /* phones read this section the homepage's way: the card, then the picture, then the arrows */
+      if (head && !head.querySelector('.pc-pic')) {
+        const pc = document.createElement('div');
+        pc.className = 'pc-pic';
+        pc.setAttribute('aria-hidden', 'true');
+        head.appendChild(pc);
+        const nav = document.createElement('div');
+        nav.className = 'pc-arrows';
+        nav.innerHTML = '<button type="button" class="pc-arrow" data-d="-1" aria-label="Previous product"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15 10H5M9 6l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+          '<button type="button" class="pc-arrow" data-d="1" aria-label="Next product"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 6l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+        head.insertAdjacentElement('afterend', nav);
+        nav.addEventListener('click', e => { const b = e.target.closest('.pc-arrow'); if (!b) return; taken = true; stop(); show(at + (+b.dataset.d)); });
+      }
       show(0);
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(es => {
@@ -258,6 +271,51 @@
     });
   };
   tabify();
+
+  /* phones: each run of single-product problems becomes one sideways carousel (the homepage's
+     suite rail), with the round arrows under it; wider screens get the list back untouched */
+  const railMQ = matchMedia('(max-width: 760px)');
+  const rails = () => {
+    const body = document.querySelector('.pl-c #productsRoot .prodbody');
+    if (!body) return;
+    if (railMQ.matches) {
+      if (body.querySelector(':scope > .pc-rail-wrap')) return;
+      let run = [];
+      const flush = () => {
+        if (run.length > 1) {
+          const wrap = document.createElement('div');
+          wrap.className = 'pc-rail-wrap';
+          const rail = document.createElement('div');
+          rail.className = 'pc-rail';
+          run[0].before(wrap);
+          wrap.appendChild(rail);
+          run.forEach(g => rail.appendChild(g));
+          const nav = document.createElement('div');
+          nav.className = 'pc-arrows pc-arrows--rail';
+          nav.innerHTML = '<button type="button" class="pc-arrow" data-d="-1" aria-label="Previous"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15 10H5M9 6l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+            '<button type="button" class="pc-arrow" data-d="1" aria-label="Next"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 6l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+          wrap.appendChild(nav);
+          nav.addEventListener('click', e => {
+            const b = e.target.closest('.pc-arrow'); if (!b) return;
+            const card = rail.querySelector('.prodgroup');
+            rail.scrollBy({ left: (+b.dataset.d) * ((card ? card.getBoundingClientRect().width : 300) + 12), behavior: 'smooth' });
+          });
+        }
+        run = [];
+      };
+      [...body.children].forEach(k => {
+        if (k.matches('.prodgroup:not([data-pc-multi])')) run.push(k); else flush();
+      });
+      flush();
+    } else {
+      body.querySelectorAll(':scope > .pc-rail-wrap').forEach(w => {
+        w.querySelectorAll('.pc-rail > .prodgroup').forEach(g => w.before(g));
+        w.remove();
+      });
+    }
+  };
+  rails();
+  railMQ.addEventListener('change', rails);
 
   /* the wide stills reach the true edges of the window, measured rather than assumed */
   const bleed = () => {
@@ -284,7 +342,7 @@
     acts.insertAdjacentElement('afterend', n);
   };
   note();
-  new MutationObserver(() => { build(); repic(); voice(); lift(); note(); tabify(); bleedSoon(); }).observe(root, { childList: true, subtree: true });
+  new MutationObserver(() => { build(); repic(); voice(); lift(); note(); tabify(); rails(); bleedSoon(); }).observe(root, { childList: true, subtree: true });
 })();
 
 /* ═══ the product page, re-laid (client, 2026-09-17) ═══════════════════════════════════════════
