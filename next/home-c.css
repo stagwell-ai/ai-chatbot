@@ -2406,3 +2406,22 @@ body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
   .hl.hl--armed:not(#_){transition:none !important;background-position:0 0 !important}
 }
 
+
+/* ── Why Stagwell AI (client, 2026-09-17) ──
+   the eyebrow is one colour, still; each point makes room on its right for an
+   image or partner logos (placeholders until the assets arrive) */
+.hc-page #why .display--cos:not(#_),.hc-page #why .display--cos:not(#_) *{color:#009CBD !important}
+.hc-page #why .why__slot{display:grid;place-items:center;aspect-ratio:16/9;border-radius:12px;
+  background:#F2F5F7;margin-top:20px}
+.hc-page #why .why__slot span{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(11,18,32,.38)}
+.hc-page #why .why__item:not(#_){padding-right:52px !important}
+.hc-page #why .why__item:not(#_) > .why__slot{grid-column:1 / -1 !important;width:100%;justify-self:stretch !important}
+@media (min-width:720px){
+  .hc-page #why .why__item:not(#_){display:grid !important;
+    grid-template-columns:minmax(0,1fr) clamp(240px,36%,420px) !important;grid-template-rows:auto auto 1fr !important;
+    column-gap:clamp(32px,4vw,64px) !important;align-items:start;padding-right:clamp(52px,5.3vw,76px) !important}
+  .hc-page #why .why__item:not(#_) > .why__head{display:block !important;grid-column:1 / 2 !important;grid-row:1 !important}
+  .hc-page #why .why__item:not(#_) > .why__d--lead{grid-column:1 / 2 !important;grid-row:2 !important}
+  .hc-page #why .why__item:not(#_) > .why__d:not(.why__d--lead){grid-column:1 / 2 !important;grid-row:3 !important}
+  .hc-page #why .why__item:not(#_) > .why__slot{grid-column:2 / 3 !important;grid-row:1 / 4 !important;margin-top:0;align-self:center !important;width:100%;height:auto !important;min-height:0 !important;aspect-ratio:16/9 !important}
+}
