@@ -1,72 +1,77 @@
-// Search+: how a brand is represented and recommended inside AI answers.
-// A question is asked; four assistants answer; "Your brand" climbs to the top of each.
+// Search+ (tab film): the ask and the answer live on the right; ghost answers stream under the cards.
 import CoreGraphics
-import Foundation
 import CoreText
+import Foundation
 let W = 1920, H = 1080, FPS = 30, L = 10.0
 var rng = RNG(s: 53)
-let q = "Which brand should I trust for this?"
-let cols = 4
-let colW = 380.0, gap = 40.0
-let x0 = (Double(W) - (Double(cols) * colW + Double(cols - 1) * gap)) / 2
-let listTop = 420.0, rowH = 64.0
-// each panel: 6 ranked rows; our brand starts at a different place and climbs to #1
-let starts = [5, 4, 5, 3]
-let climbAt = [3.2, 3.9, 4.6, 5.3]
+let q = "Which brand should I trust?"
+let px = 1370.0, pw = 500.0
+let rowTop = 380.0, rowH = 78.0
+let starts = [4, 5, 3, 4]
+let T0 = 0.9, EACH = 2.25
+struct Ghost { var x, y, w, speed: Double }
+var ghosts: [Ghost] = []
+for _ in 0..<70 { ghosts.append(Ghost(x: rng.r(60, 1300), y: rng.r(0, 1080), w: rng.r(60, 260), speed: rng.r(14, 34))) }
 render(path: CommandLine.arguments[1], w: W, h: H, fps: FPS, frames: Int(L) * FPS) { ctx, f in
   let s = Double(f) / Double(FPS)
   ground(ctx, W, H)
+  // answers streaming up, faint, across the rest of the frame
+  let ga = ease(s / 0.6)
+  for g in ghosts {
+    var y = g.y - s * g.speed
+    y = (y.truncatingRemainder(dividingBy: 1080) + 1080).truncatingRemainder(dividingBy: 1080)
+    ctx.setFillColor(white(0.07 * ga)); ctx.fill(CGRect(x: g.x, y: y, width: g.w, height: 6))
+  }
   // the ask
-  let bx = 460.0, by = 170.0, bw = 1000.0, bh = 84.0
-  let bg = ease(s / 0.35)
-  ctx.setStrokeColor(white(0.5 * bg)); ctx.setLineWidth(1.5)
-  let box = CGRect(x: bx + bw / 2 * (1 - bg), y: by, width: bw * bg, height: bh)
-  ctx.addPath(CGPath(roundedRect: box, cornerWidth: 42, cornerHeight: 42, transform: nil)); ctx.strokePath()
-  let typed = Int(Double(q.count) * min(1, max(0, (s - 0.3) / 1.0)))
-  let tw = text(ctx, String(q.prefix(typed)), bx + 48, by + 52, CTFontCreateWithName("HelveticaNeue" as CFString, 30, nil), white(0.95))
-  if s < 1.6 && Int(s * 4) % 2 == 0 { ctx.setFillColor(white(0.9)); ctx.fill(CGRect(x: bx + 52 + tw, y: by + 26, width: 2, height: 34)) }
-  // four assistants answer
-  for c in 0..<cols {
-    let px = x0 + Double(c) * (colW + gap)
-    let open = ease((s - 1.3 - Double(c) * 0.12) / 0.4)
-    if open <= 0 { continue }
-    ctx.setStrokeColor(white(0.2 * open)); ctx.setLineWidth(1)
-    let panel = CGRect(x: px, y: 330, width: colW, height: 560 * open)
-    ctx.addPath(CGPath(roundedRect: panel, cornerWidth: 14, cornerHeight: 14, transform: nil)); ctx.strokePath()
-    text(ctx, "ASSISTANT \(["A", "B", "C", "D"][c])", px + 24, 370, mono(14), white(0.6 * open), tracking: 1.5)
-    // streamed answer lines
+  let bg = ease(s / 0.3)
+  let box = CGRect(x: px + pw / 2 * (1 - bg), y: 170, width: pw * bg, height: 72)
+  ctx.setStrokeColor(white(0.55 * bg)); ctx.setLineWidth(1.5)
+  ctx.addPath(CGPath(roundedRect: box, cornerWidth: 36, cornerHeight: 36, transform: nil)); ctx.strokePath()
+  let typed = Int(Double(q.count) * min(1, max(0, (s - 0.2) / 0.7)))
+  let tw = text(ctx, String(q.prefix(typed)), px + 34, 216, CTFontCreateWithName("HelveticaNeue" as CFString, 26, nil), white(0.95))
+  if s < 1.2 && Int(s * 4) % 2 == 0 { ctx.setFillColor(white(0.9)); ctx.fill(CGRect(x: px + 38 + tw, y: 192, width: 2, height: 30)) }
+  // one panel; the assistants take turns answering
+  let open = ease((s - 0.6) / 0.35)
+  if open > 0 {
+    let panel = CGRect(x: px, y: 280, width: pw, height: 620 * open)
+    ctx.setStrokeColor(white(0.24 * open)); ctx.setLineWidth(1)
+    ctx.addPath(CGPath(roundedRect: panel, cornerWidth: 16, cornerHeight: 16, transform: nil)); ctx.strokePath()
+  }
+  let idx = max(0, min(3, Int((s - T0) / EACH)))
+  let local = s - T0 - Double(idx) * EACH
+  if open > 0.9 {
+    text(ctx, "ASSISTANT \(["A", "B", "C", "D"][idx])", px + 28, 326, mono(16), white(0.7), tracking: 1.5)
+    for k in 0..<4 {   // the four answered so far
+      let done = k < idx || (k == idx && local > 1.5)
+      let r = CGRect(x: px + pw - 28 - Double(3 - k) * 22, y: 314, width: 12, height: 12)
+      if done { ctx.setFillColor(ORANGE); ctx.fill(r) } else { ctx.setStrokeColor(white(0.4)); ctx.stroke(r) }
+    }
+    let start = starts[idx]
+    let climb = ease((local - 0.7) / 0.8)
     for r in 0..<6 {
-      let rowShow = ease((s - 1.6 - Double(c) * 0.12 - Double(r) * 0.12) / 0.3)
-      if rowShow <= 0 { continue }
-      // rank position of our brand in this panel
-      let climb = ease((s - climbAt[c]) / 0.9)
-      let ours = Double(starts[c]) * (1 - climb)            // 5 → 0
-      // other rows shift down as ours rises
+      let show = ease((local - Double(r) * 0.06) / 0.25)
+      if show <= 0 { continue }
       var slot = Double(r)
-      let isOurs = r == starts[c]
-      if isOurs { slot = ours } else if r < starts[c] { slot = Double(r) + climb * (Double(r) >= 0 ? 1 : 0) }
-      let y = listTop + slot * rowH
-      ctx.setFillColor(white(0.35 * rowShow))
-      text(ctx, "\(Int(slot.rounded()) + 1)", px + 24, y + 30, mono(15), white(0.4 * rowShow))
-      if isOurs {
-        let hot = climb
-        let chip = CGRect(x: px + 60, y: y + 12, width: 150 * rowShow, height: 28)
-        ctx.setFillColor((hot > 0.5 ? ORANGE : white(0.28)).copy(alpha: rowShow)!)
-        ctx.addPath(CGPath(roundedRect: chip, cornerWidth: 6, cornerHeight: 6, transform: nil)); ctx.fillPath()
-        if rowShow > 0.8 { text(ctx, "YOUR BRAND", px + 74, y + 31, mono(13, bold: true), white(1), tracking: 1.2) }
-        let lw = (colW - 250) * rowShow
-        ctx.setFillColor(white(0.22 * rowShow)); ctx.fill(CGRect(x: px + 222, y: y + 22, width: lw, height: 8))
-        if hot > 0.98 {
-          let tick = ease((s - climbAt[c] - 0.9) / 0.3)
-          ctx.setStrokeColor(ORANGE.copy(alpha: tick)!); ctx.setLineWidth(1.5)
-          ctx.stroke(CGRect(x: px + 14, y: y + 4, width: colW - 28, height: rowH - 16))
+      let ours = r == start
+      if ours { slot = Double(start) * (1 - climb) } else if r < start { slot = Double(r) + climb }
+      let y = rowTop + slot * rowH
+      text(ctx, "\(Int(slot.rounded()) + 1)", px + 28, y + 34, mono(17), white(0.45 * show))
+      if ours {
+        let chip = CGRect(x: px + 66, y: y + 12, width: 176 * show, height: 32)
+        ctx.setFillColor((climb > 0.5 ? ORANGE : white(0.3)).copy(alpha: show)!)
+        ctx.addPath(CGPath(roundedRect: chip, cornerWidth: 7, cornerHeight: 7, transform: nil)); ctx.fillPath()
+        if show > 0.8 { text(ctx, "YOUR BRAND", px + 82, y + 34, mono(15, bold: true), white(1), tracking: 1.2) }
+        ctx.setFillColor(white(0.22 * show)); ctx.fill(CGRect(x: px + 258, y: y + 24, width: (pw - 290) * show, height: 9))
+        if climb > 0.98 {
+          ctx.setStrokeColor(ORANGE.copy(alpha: ease((local - 1.5) / 0.25))!); ctx.setLineWidth(1.5)
+          ctx.stroke(CGRect(x: px + 14, y: y + 2, width: pw - 28, height: rowH - 14))
         }
       } else {
-        let w1 = (colW - 110) * (0.55 + 0.4 * Double((r * 37 + c * 11) % 10) / 10) * rowShow
-        ctx.setFillColor(white(0.28 * rowShow)); ctx.fill(CGRect(x: px + 60, y: y + 16, width: w1, height: 9))
-        ctx.setFillColor(white(0.14 * rowShow)); ctx.fill(CGRect(x: px + 60, y: y + 31, width: w1 * 0.7, height: 7))
+        let w1 = (pw - 120) * (0.55 + 0.4 * Double((r * 37 + idx * 11) % 10) / 10) * show
+        ctx.setFillColor(white(0.3 * show)); ctx.fill(CGRect(x: px + 66, y: y + 18, width: w1, height: 10))
+        ctx.setFillColor(white(0.15 * show)); ctx.fill(CGRect(x: px + 66, y: y + 36, width: w1 * 0.7, height: 8))
       }
     }
   }
-  text(ctx, "AI SEARCH · HOW YOUR BRAND IS RECOMMENDED", 120, 110, mono(15), white(0.7 * ease((s - 0.2) / 0.4)), tracking: 2)
+  text(ctx, "AI SEARCH", px, 140, mono(16), white(0.75 * ease((s - 0.1) / 0.3)), tracking: 2)
 }

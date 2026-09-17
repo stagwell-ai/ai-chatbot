@@ -1213,3 +1213,14 @@ body.pc-page{--hc-ground:#FFFFFF}
   .pc-page:not(.pl-c) .pp-hero__in:not(#_){grid-template-columns:minmax(0,1fr) !important}
   .pc-page .pp-hero__in .pp-acts:not(#_){flex-wrap:wrap !important;row-gap:12px !important}
 }
+/* a tab with films: no photo underneath, and the films cut, never cross-fade */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]:not(#_){background-image:none !important;background-color:#1B1B1C !important}
+.pl-c .prodgroup__head .pc-vid:not(#_){transition:none !important}
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]:not(#_){background-color:transparent !important}
+}
+/* phones: the films are composed for the right-hand side, so show that side bigger */
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]:not(#_){padding-top:calc(75vw + 16px) !important}
+  .pl-c .prodgroup__head[data-pc-film] .pc-vid:not(#_){height:75vw;object-position:94% 50%}
+}
