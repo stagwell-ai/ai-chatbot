@@ -112,6 +112,94 @@
     } catch (e) { /* the log is a demo aid — it never costs the visitor a CTA */ }
   }
 
+  /* ── WHICH ONES THEY WANT TO HEAR ABOUT ───────────────────────────────
+     The catalog, as a set of toggles. Names come from data/solutions.json and
+     nothing else — `displayName` where there is one, so a routing label
+     ("Stagwell's Machines (family frame)") can never reach a visitor — and only
+     products that are active. A product the conversation already landed on is
+     ticked on arrival, because being asked to choose the thing you were just
+     shown is a strange way to be treated. */
+  let CATALOG = null, catalogPromise = null;
+  const asProducts = d => {
+    const list = Array.isArray(d) ? d : (d && d.solutions) || [];
+    return list.filter(p => p && p.active !== false && p.id)
+      .map(p => ({ id: p.id, name: p.displayName || p.name }));
+  };
+  function catalog() {
+    if (CATALOG) return CATALOG;
+    try {
+      const d = window.SAI && window.SAI.data && window.SAI.data.solutions;
+      if (d) { CATALOG = asProducts(d); return CATALOG; }
+    } catch (e) { /* engine not on this page */ }
+    return [];
+  }
+  /* /book and /ads do not load engine.js at all, so there is no catalog in
+     memory there — fetched the same way the copy is, and warmed before the
+     first click so the modal never opens without its products */
+  function catalogReady() {
+    if (CATALOG) return Promise.resolve(CATALOG);
+    if (!catalogPromise) {
+      catalogPromise = Promise.resolve()
+        .then(() => { const c = catalog(); return c.length ? c : fetch('/data/solutions.json').then(r => (r.ok ? r.json() : null)).then(asProducts); })
+        .catch(() => [])
+        .then(list => { CATALOG = list || []; return CATALOG; });
+    }
+    return catalogPromise;
+  }
+  catalogReady();
+  /* whatever the visitor was looking at when they clicked: the product on the
+     recommendation card, the CTA's own data-kimi-product, or the product page */
+  function wanted(prefill) {
+    const p = prefill || {};
+    const out = [];
+    const add = id => { if (id && out.indexOf(id) === -1) out.push(id); };
+    (Array.isArray(p.products) ? p.products : []).forEach(add);
+    add(p.product);
+    try {
+      /* what the conversation actually put in front of them: state() publishes
+         the cards, not the raw recommendation, and the best fit is the first */
+      const k = window.SAIKIMI && window.SAIKIMI.state && window.SAIKIMI.state();
+      (((k || {}).cards) || []).forEach(card => add(card && card.productId));
+      if (k && k.exploreOffer) add(k.exploreOffer.productId);
+    } catch (e) { /* no conversation on this page */ }
+    /* …the product whose page they are on… */
+    try {
+      const own = document.body && String(document.body.className).match(/\bsp--([a-z0-9_]+)/);
+      if (own) add(own[1]);
+      const meta = document.querySelector('meta[name="sai-product"]');
+      if (meta) add(meta.content);
+    } catch (e) { /* not a product page */ }
+    /* …and whatever the click that got them here was about. Most CTAs on this
+       site NAVIGATE to /book rather than opening the panel in place, and the
+       conversation does not survive that trip, so the product rides along in
+       the URL or in sessionStorage. Ids only — never anything about a person. */
+    try {
+      const q = new URLSearchParams(location.search).get('p');
+      if (q) q.split(',').forEach(x => add(x.trim()));
+      const kept = sessionStorage.getItem('sai-lead-products');
+      if (kept) kept.split(',').forEach(x => add(x.trim()));
+    } catch (e) { /* private mode, or no storage */ }
+    return out;
+  }
+  function productsHtml(c, prefill) {
+    const all = catalog();
+    if (all.length < 2) return '';               /* nothing to choose between */
+    const on = wanted(prefill);
+    const label = (c.fields && c.fields.products) || 'Which of these would you like to hear more about?';
+    const note = (c.fields && c.fields.productsNote) || '';
+    return `
+        <fieldset class="lead__picks">
+          <legend class="lead__lbl">${esc(label)}</legend>
+          ${note ? `<p class="lead__pickshint">${esc(note)}</p>` : ''}
+          <div class="lead__pickrow">
+            ${all.map(p => `<label class="lead__pick">
+              <input type="checkbox" name="products" value="${esc(p.id)}"${on.indexOf(p.id) !== -1 ? ' checked' : ''}>
+              <span>${esc(p.name)}</span>
+            </label>`).join('')}
+          </div>
+        </fieldset>`;
+  }
+
   function slots() {
     try { return (window.SAI && window.SAI.session && window.SAI.session.slots) || {}; }
     catch (e) { return {}; }
@@ -219,6 +307,7 @@
                  placeholder="${inline ? '' : esc(c.fields.role)}" aria-label="${esc(c.fields.role)}"
                  value="${esc(role)}">
         </label>
+        ${productsHtml(c, prefill)}
         <button class="btn btn--dark" type="submit">${esc(c.kinds[kind].submit)}</button>
       </form>
       <p class="modal__fine">${esc(c.fine)}</p>
@@ -298,7 +387,10 @@
            the truest thing to show there, and it carries no personal data */
         emit('human_requested', { kind, text: c.kinds[kind].title });
       }
-      emit('journey_converted', { kind });
+      /* the products they ticked, by id, so the brief says what to talk about */
+      const picked = [].slice.call(form.querySelectorAll('input[name=products]:checked')).map(x => x.value);
+      if (picked.length) emit('products_requested', { kind, products: picked, count: picked.length });
+      emit('journey_converted', { kind, products: picked });
 
       const brand = (prefill && prefill.brand) || slots().company || null;
       root.innerHTML = successHtml(c, brand, inline);
@@ -349,6 +441,10 @@
         return;
       }
       emit('cta_clicked', { kind, to: 'book' });
+      /* the form is on ANOTHER PAGE, so what this click was about has to travel
+         with it: the product page they were on, the card the conversation put
+         in front of them, whatever the CTA named. Ids only. */
+      remember(wanted(prefill));
       location.href = '/book';
       return;
     }
@@ -357,10 +453,10 @@
       ? document.activeElement : null;
     const k = String(kind || 'expert');
 
-    if (COPY) { render(COPY, k, prefill); return; }
+    if (COPY && CATALOG) { render(COPY, k, prefill); return; }
     /* first click before the JSON has landed: show the panel now and fill it
        the instant the copy resolves — never a dead CTA, never a blank frame */
-    copy().then(c => render(c, k, prefill));
+    Promise.all([copy(), catalogReady()]).then(r => render(r[0], k, prefill));
   }
 
   function close() {
@@ -396,13 +492,30 @@
       root.innerHTML = formHtml(c, k, null, true);
       wireForm(c, k, null, root, true);
     };
-    if (COPY) go(COPY); else copy().then(go);
+    if (COPY && CATALOG) go(COPY); else Promise.all([copy(), catalogReady()]).then(r => go(r[0]));
   }
   const bookRoot = document.getElementById('bookForm');
   if (bookRoot) mount(bookRoot, bookRoot.dataset.kind || 'session');
 
+  /* a CTA that is about to navigate says what it was about, so the form on the
+     other side arrives with it ticked */
+  function remember(ids) {
+    try {
+      const list = (Array.isArray(ids) ? ids : [ids]).filter(Boolean);
+      if (list.length) sessionStorage.setItem('sai-lead-products', list.join(','));
+    } catch (e) { /* nothing is lost that matters */ }
+  }
+  /* every CTA anywhere that names its product does it without being asked */
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-kimi-product],[data-product]');
+    if (!t) return;
+    const cta = t.closest('[data-cta],[data-kimi-cta]') || (t.hasAttribute('data-cta') || t.hasAttribute('data-kimi-cta') ? t : null);
+    if (cta) remember(t.dataset.kimiProduct || t.dataset.product);
+  }, true);
+
   window.SAILEAD = {
     open,
+    remember,
     mount,
     close,
     isOpen: () => !!(el && !el.hidden),
