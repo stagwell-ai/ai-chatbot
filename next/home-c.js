@@ -648,7 +648,7 @@
 })();
 
 /* title highlights: the hero's paints in once its lines have risen; every other one
-   is scrubbed by the scroll, filling on the way down and emptying on the way up */
+   is filled by the scroll on the way down, and stays filled */
 (() => {
   const hls = [...document.querySelectorAll('.hc-page .hl')];
   if (!hls.length) return;
@@ -676,7 +676,8 @@
       const r = el.getBoundingClientRect();
       if (!r.height) return;
       const p = Math.min(1, Math.max(0, (vh * 0.88 - r.top) / (vh * 0.36)));
-      el.style.setProperty('--hl-p', p.toFixed(3));
+      /* it only ever fills: scrolling back up leaves the colour where it got to */
+      if (p > (el._hlp || 0)) { el._hlp = p; el.style.setProperty('--hl-p', p.toFixed(3)); }
     });
   };
   const ask = () => { if (!raf) raf = requestAnimationFrame(paint); };
