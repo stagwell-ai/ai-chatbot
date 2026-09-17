@@ -647,7 +647,8 @@
   });
 })();
 
-/* title highlights: arm each .hl with its title's colour, paint it in when it comes into view */
+/* title highlights: the hero's paints in once its lines have risen; every other one
+   is scrubbed by the scroll, filling on the way down and emptying on the way up */
 (() => {
   const hls = [...document.querySelectorAll('.hc-page .hl')];
   if (!hls.length) return;
@@ -655,9 +656,31 @@
     el.style.setProperty('--hl-base', getComputedStyle(el).color);
     el.classList.add('hl--armed');
   });
-  if (!('IntersectionObserver' in window)) { hls.forEach(el => el.classList.add('is-in')); return; }
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
-  }), { threshold: 0.6, rootMargin: '0px 0px -10% 0px' });
-  hls.forEach(el => io.observe(el));
+  const timed = hls.filter(el => el.closest('.display--hero'));
+  const scrub = hls.filter(el => !el.closest('.display--hero'));
+
+  timed.forEach(el => el.classList.add('hl--timed'));
+  const root = document.documentElement;
+  const go = () => setTimeout(() => timed.forEach(el => el.classList.add('is-in')), 1150);
+  if (root.classList.contains('is-ready')) go();
+  else new MutationObserver((m, o) => {
+    if (root.classList.contains('is-ready')) { o.disconnect(); go(); }
+  }).observe(root, { attributes: true, attributeFilter: ['class'] });
+
+  /* 0 when the title's top is at 88% of the viewport, 1 by 52% */
+  let raf = 0;
+  const paint = () => {
+    raf = 0;
+    const vh = innerHeight;
+    scrub.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (!r.height) return;
+      const p = Math.min(1, Math.max(0, (vh * 0.88 - r.top) / (vh * 0.36)));
+      el.style.setProperty('--hl-p', p.toFixed(3));
+    });
+  };
+  const ask = () => { if (!raf) raf = requestAnimationFrame(paint); };
+  addEventListener('scroll', ask, { passive: true });
+  addEventListener('resize', ask);
+  paint();
 })();
