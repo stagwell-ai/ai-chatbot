@@ -62,6 +62,8 @@
     "_emailRefusalNote": "Asked once more, with the reason, and then never again (client, 2026-09-16: 'if the user refuses to give an email, we ask again one more time, with a justification that we can provide customized services based on your email domain. if they refuse we let them continue and try and find the right product for them'). emailWhy is that second ask; emailSkipped acknowledges the second no (it is said BEFORE anything is shown — client, 2026-09-17: 'acknowledge that i dont want to give an email, say thats fine, and ill have a chance later in the conversation to provide more info if relevant, and only after show the answer'); emailSkippedGoal is the same followed by the goal question, for when no goal is known yet. The address is still asked for at the end, by the form, when they want the write-up.",
     "emailWhy": "I'll only use the domain — it tells me what your company does, so what I show you is built around your business instead of marketing in general. Worth ten seconds?",
     "emailSkipped": "That's fine — we'll carry on without it. If it would help later on, you'll have the chance to share more.",
+    "emailSkippedLate": "No problem — I won't ask again.",
+    "emailSkipChip": "Not right now",
     "emailSkippedGoal": "That's fine — we'll carry on without it. If it would help later on, you'll have the chance to share more. So: what are you trying to solve? Pick one of these, or tell me in a sentence.",
     "_showcaseCopyNote": "The first look at the products, shown before the business questions (flags.showcaseAfterEmail). showcaseAfter sets the expectation that it gets sharper — the full recommendation follows at the end.",
     "showcaseIntro": "Here's where I'd start:",

@@ -579,6 +579,17 @@ test's floor is 42 so a stray keyword cannot pass unnoticed. What changed:
   it as its own turn ahead of `drawPreview()`, then the cards, then the next question with the
   ack stripped so it is not said twice. `copy.emailSkippedGoal` is the variant that carries the
   goal question, used only when no goal is known yet. `reveal.funnel.mjs` asserts the order.
+- **…and turning it down at the SECOND ask is a no too** (2026-09-17). The address is asked for
+  twice: once mid-conversation, and again at the end when there is something to send. The late
+  step (`captureEmail`) ran every non-address through the address validator, so "no", "skip",
+  "I'd rather not" and "I already said no" all came back as *"That does not look like a business
+  email — check the address"* — measured eight refusals in a row, with no pill, no skip link and
+  no exit but Start over, and no lead captured either. It now makes the same distinction the
+  first ask makes: something shaped like an address is asked about again, anything else is taken
+  as a no (`copy.emailSkippedLate`, then straight to the booking step, which needs no address).
+  `askEmail()` also offers `copy.emailSkipChip` as a pill, so the way out never depends on the
+  matcher reading their words. `order.funnel.mjs` holds both halves — four refusals, the pill,
+  and three typos that must still be treated as typos.
 - **The model** (`api/ask.js` INTERPRET_SYSTEM) is shown the sheet's prompts as worked examples
   under each intent (`taxonomy.json` `examples`, "match by meaning, not by wording"). It still
   only ever names intents; the scorer names the product.

@@ -1374,23 +1374,56 @@ const leadPayload = () => ({
   ts: new Date().toISOString(), source: 'stagwell-ai · kimi'
 });
 
+const EMAIL_SKIP = '__noemail__';
+
 function askEmail() {
   const c = copy();
   st.status = 'CAPTURE_EMAIL'; st.uiAction = 'CAPTURE_EMAIL';
   st.message = c.askEmail || 'Where should I send this? Your work email:';
   st.ack = null; st.prompt = st.message;
   st.hint = (c.hints || {}).email || 'you@company.com';
-  st.suggestions = []; st.currentQuestion = null; st.holds = 0;
+  /* a way past it that does not depend on the matcher reading their words */
+  st.suggestions = [{ id: EMAIL_SKIP, label: c.emailSkipChip || 'Not right now', value: EMAIL_SKIP, kind: 'skip' }];
+  st.currentQuestion = null; st.holds = 0;
   track('kimi_contact_viewed', Object.assign({ mode: 'open', ask: 'email' }, recoProps()));
+}
+
+/* THEY SAID NO. Take it as a no.
+   This step used to run every non-address through the address validator, so
+   "no", "no thanks", "I'd rather not", "skip", "I already said no" all came
+   back as "That does not look like a business email — check the address",
+   forever: no pill, no skip, no exit but Start over, and no lead captured
+   either. Measured over eight refusals in a row (2026-09-17). */
+function emailDeclined() {
+  const c = copy();
+  st.holds = 0;
+  st.emailDone = true;
+  st.suggestions = [];
+  emit('answer_given', { id: 'work_email', slot: 'work_email', text: '__skip__', chip: null });
+  track('kimi_email_skipped', Object.assign({ at: 'late', declined: true }, recoProps()));
+  book();
+  /* book() writes its own opening line; this goes in front of it, so the first
+     thing they read is that the answer was heard */
+  st.message = (c.emailSkippedLate || "No problem — I won't ask again.") + ' ' + st.message;
+  st.prompt = st.message;
+  notify(); return state();
 }
 
 async function captureEmail(text) {
   const c = copy();
-  if (!emailDomain(text)) {
+  const raw = String(text == null ? '' : text).trim();
+  if (raw === EMAIL_SKIP) return emailDeclined();
+  if (!emailDomain(raw)) {
+    /* a typo and a refusal are not the same turn — the same distinction the
+       first ask makes (see the work_email step above): something shaped like an
+       address is asked about again, anything else is taken as a no */
+    const tried = /@/.test(raw) || /[a-z0-9][a-z0-9-]*\.[a-z]{2,}/i.test(raw);
+    if (!tried) return emailDeclined();
     st.holds++;
     st.message = (c.contactErrors || {}).email || 'That does not look like an email address.'; st.prompt = st.message;
     notify(); return state();
   }
+  text = raw;
   const email = text.trim();
   st.lead = { name: null, email, phone: null, company: st.company || null };
   st.error = null;

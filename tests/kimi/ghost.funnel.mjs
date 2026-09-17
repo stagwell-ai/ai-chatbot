@@ -96,7 +96,11 @@ console.log('\n▶ the first keystroke ends it');
   const at = await ph(page); await page.waitForTimeout(2600); const later = await ph(page);
   ok(mid.length > 0 && mid.length < 40, 'it was mid-word when the visitor started typing ("' + mid + '")');
   ok(at === later, '   and the placeholder froze on the first keystroke ("' + later + '")');
-  ok(!/^What is The Mach/.test(later) || later === 'What is The Machine?', '   nothing kept animating under them');
+  /* interrupted mid-word, it finishes the question rather than freezing on a
+     truncation the visitor would meet again when they clear the box */
+  const EXQ = await page.evaluate(() => window.SAI.data.kimi.copy.askExamples);
+  ok(EXQ.indexOf(later) !== -1 || later === 'What do you need help solving?',
+    '   and it settles on a WHOLE question, not a half-typed one ("' + later + '")');
   await page.fill('#agentInput', '');
   await page.waitForTimeout(2600);
   ok((await ph(page)) === later, '   and emptying the box again does NOT restart it mid-thought');

@@ -776,7 +776,11 @@
            example standing in the box — after a voice turn, where the flow
            never sets a placeholder of its own, "What is The Machine?" sat
            under an agent that had just asked something else (2026-09-17). */
-        if (on && !done && !miniInput.disabled && !miniInput.value)
+        /* `full` writes even when the box already has text in it: the
+           placeholder is hidden behind what they are typing, but it is what
+           they will see again if they clear the box, and "What is The Machin"
+           is not a question anybody asked */
+        if (on && !done && !miniInput.disabled && (full || !miniInput.value))
           miniInput.placeholder = full ? (lines[at] || FALLBACK) : FALLBACK;
         on = false; done = true;
       }

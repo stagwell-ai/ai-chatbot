@@ -259,6 +259,76 @@ try {
     ok(state.leads.length === 1 && state.leads[0].lead.name === 'Test Visitor' && state.leads[0].lead.phone === '+1 212 555 0100', 'one lead, complete');
     await ctx.close();
   }
+/* ── SAYING NO AT THE SECOND ASK ──
+   The address is asked for twice: once mid-conversation, and again at the end
+   when there is something to send. The first ask took a refusal properly. The
+   second ran EVERY non-address through the address validator, so "no", "no
+   thanks", "I'd rather not", "skip" and "I already said no" all came back as
+   "That does not look like a business email — check the address" — measured
+   eight times in a row, with no pill, no skip and no exit but Start over, and
+   no lead captured either (2026-09-17). A typo is still a typo. */
+async function toLateEmail(page) {
+  await say(page, 'I want to make a survey');
+  await say(page, 'maybe later');                 /* refuse the first ask */
+  await say(page, 'no thanks');                   /* …and again: it is dropped */
+  await say(page, 'acme-brands.com');
+  for (let i = 0; i < 6; i++) {
+    const s = await st(page);
+    if (s.uiAction === 'CAPTURE_EMAIL') return s;
+    const cs = await chips(page);
+    if (cs.filter(c => !/not right now/i.test(c)).length) await chip(page, cs.find(c => !/not right now/i.test(c)));
+    else await say(page, 'mid');
+  }
+  return st(page);
+}
+
+for (const word of ['no', "i'd rather not", 'skip', 'I already said no']) {
+  console.log('\n▶ the second ask, turned down with "' + word + '"');
+  const { ctx, page, state } = await open(KNOWN);
+  const before = await toLateEmail(page);
+  ok(before.uiAction === 'CAPTURE_EMAIL', 'the address is asked for again at the end');
+  ok((await chips(page)).some(c => /not right now/i.test(c)), '   with a way past it that needs no guessing: ' + (await chips(page)).join(' | '));
+  await say(page, word);
+  const after = await st(page);
+  ok(after.uiAction !== 'CAPTURE_EMAIL', '"' + word + '" is taken as a no (' + after.uiAction + ')');
+  ok(/won't ask again|wont ask again/i.test(after.message), '   and it says so: "' + String(after.message).slice(0, 48) + '…"');
+  ok(!/does not look like/i.test(after.message), '   never "check the address"');
+  ok((await composer(page)).disabled || after.uiAction === 'BOOK', '   the conversation still ends somewhere (' + after.uiAction + ')');
+  ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+  await ctx.close();
+}
+
+console.log('\n▶ …but the pill does it without any words at all');
+{
+  const { ctx, page, state } = await open(KNOWN);
+  await toLateEmail(page);
+  await chip(page, 'Not right now');
+  const after = await st(page);
+  ok(after.uiAction === 'BOOK', 'the pill carries them past it (' + after.uiAction + ')');
+  ok(/won't ask again/i.test(after.message), '   with the same line');
+  ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+  await ctx.close();
+}
+
+console.log('\n▶ a TYPO is still a typo: it asks about the address, it does not give up');
+{
+  const { ctx, page, state } = await open(KNOWN);
+  await toLateEmail(page);
+  for (const typo of ['ada@acme', 'ada.acme-brands.com', 'ada@@acme-brands.com']) {
+    await say(page, typo);
+    const s = await st(page);
+    ok(s.uiAction === 'CAPTURE_EMAIL', '"' + typo + '" keeps the question open');
+    ok(/does not look like/i.test(s.message), '   and asks them to check it');
+  }
+  /* and the real address still goes through from there */
+  await say(page, 'ada@acme-brands.com');
+  const done = await st(page);
+  ok(done.uiAction !== 'CAPTURE_EMAIL', 'a good address still lands (' + done.uiAction + ')');
+  ok(state.leads.length >= 1 && /ada@acme-brands\.com/.test(JSON.stringify(state.leads)), '   and the lead carries it');
+  ok(!state.errors.length, 'no page errors' + (state.errors[0] ? ': ' + state.errors[0] : ''));
+  await ctx.close();
+}
+
 } finally {
   await browser.close();
 }

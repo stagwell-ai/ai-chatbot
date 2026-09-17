@@ -280,7 +280,13 @@ function render(st) {
     const key = st.uiAction + '|' + st.message + '|' + (st.holds || 0);
     if (key === lastKey) return;
     lastKey = key;
-    if (!quiet) H.ai(askText(st.message || ''), null, null, null);
+    /* the way past this step, as a pill. Typing "no" is understood too, but a
+       visitor should never have to guess the words: this step used to run every
+       non-address through the address validator and told them to check their
+       typing, over and over, with nothing to click (2026-09-17). */
+    const skip = st.suggestions.map(sg => ({ label: sg.label, value: sg.value }));
+    if (!quiet) H.ai(askText(st.message || ''), skip, null, ch => send(ch.value, ch.label));
+    else if (skip.length && window.SAIVOICE.offerChips) window.SAIVOICE.offerChips(skip, ch => send(ch.value, ch.label));
     inputMode(st.uiAction === 'CAPTURE_EMAIL' ? 'email' : 'tel');
     H.placeholder(st.hint || '');
     refocus();
