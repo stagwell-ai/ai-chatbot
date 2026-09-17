@@ -110,3 +110,8 @@ body.hc-b #why .display--cos:not(#_) .ln{display:block !important}
 body.hc-b #why .why__slot--logos:not(#_){background:linear-gradient(rgba(11,18,32,.42),rgba(11,18,32,.42)),#0B1220 url(/assets/img/why/experience-event.jpg) center / cover no-repeat !important}
 body.hc-b #why .why__slot--logos:not(#_) .why__reel{width:30% !important;height:10% !important;z-index:1}
 body.hc-b #why .why__slot--logos:not(#_) .why__logo{background:#FFFFFF !important}
+
+/* Expertise: the tunnel picture, with the Code and Theory wordmark smaller on top
+   (screen blend drops the wordmark's black ground, leaving the white letters) */
+body.hc-b #why .why__slot--img:not(#_){background:radial-gradient(ellipse 34% 11% at 50% 50%,rgba(0,0,0,.92) 0%,rgba(0,0,0,.75) 45%,rgba(0,0,0,0) 100%),#0B0B0B url(/assets/img/why/expertise-tunnel.jpg) center / cover no-repeat !important;isolation:isolate}
+body.hc-b #why .why__slot--img:not(#_) img{width:46% !important;height:auto !important;object-fit:contain !important;mix-blend-mode:screen;margin:auto}
