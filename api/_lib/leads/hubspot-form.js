@@ -140,14 +140,22 @@ export function formFields(lead, data) {
 export async function submitForm(lead, data, opts) {
   const o = opts || {};
   const mode = o.mode || formMode();
-  if (mode !== 'live') return { ok: true, mode, action: 'skipped' };
+  if (mode !== 'live') {
+    /* WHY it is not live, since "off" was indistinguishable from "worked" in
+       the log and cost an evening */
+    const why = mode === 'mock' ? 'HUBSPOT_MOCK=true'
+      : !/^\d+$/.test(env('HUBSPOT_PORTAL_ID')) ? 'HUBSPOT_PORTAL_ID is not a number'
+      : 'HUBSPOT_FORM_GUID is not a 36-character guid';
+    return { ok: true, mode, action: 'skipped', why, sent: [] };
+  }
 
   const portal = env('HUBSPOT_PORTAL_ID');
   const guid = env('HUBSPOT_FORM_GUID');
   const a = lead.attribution || {};
+  const fields = formFields(lead, data);
   const body = {
     submittedAt: Date.now(),
-    fields: formFields(lead, data),
+    fields,
     context: {
       pageUri: a.landingPage ? 'https://stagwell-ai-prototypes.vercel.app' + a.landingPage : undefined,
       pageName: 'Stagwell AI — book a demo',
@@ -167,12 +175,12 @@ export async function submitForm(lead, data, opts) {
       body: JSON.stringify(body)
     });
     const text = await r.text();
-    if (r.ok) return { ok: true, mode, action: 'submitted' };
+    if (r.ok) return { ok: true, mode, action: 'submitted', sent: fields.map(f => f.name) };
     /* the two that actually happen: a field the form does not define, and a
        dropdown value that is not one of its options. Both name themselves. */
     return { ok: false, mode, status: r.status, error: 'form_' + r.status, detail: text.slice(0, 600),
-      retryable: r.status === 429 || r.status >= 500 };
+      sent: fields.map(f => f.name), retryable: r.status === 429 || r.status >= 500 };
   } catch (e) {
-    return { ok: false, mode, status: 0, error: e && e.name === 'AbortError' ? 'timeout' : 'network', retryable: true };
+    return { ok: false, mode, status: 0, error: e && e.name === 'AbortError' ? 'timeout' : 'network', sent: fields.map(f => f.name), retryable: true };
   } finally { clearTimeout(bail); }
 }

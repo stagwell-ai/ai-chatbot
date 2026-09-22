@@ -111,10 +111,14 @@ export async function submitLead(lead, data, opts) {
      the form fails we carry on regardless — a lead in the CRM unrouted beats
      no lead at all. */
   const form = await submitForm(lead, data, o);
-  if (form.mode === 'live') {
-    if (!form.ok) console.error('[hubspot] the form submission failed, falling back to the Contacts API alone:', form.error, form.detail || '');
-    results.push(Object.assign({ destination: 'hubspot-form' }, form));
-  }
+  /* SAY WHAT HAPPENED, NOT ONLY WHAT WENT WRONG. Logging failures alone left
+     us reading tea leaves when a submission produced no error and no form
+     entry either: silence meant both "it worked" and "it never ran". It now
+     always reports, with the field NAMES it sent — never the values, which
+     are a person's details. */
+  console.log('[hubspot] form ' + form.mode + ': ' + (form.ok ? (form.action || 'ok') : 'FAILED ' + form.error)
+    + ' fields=' + JSON.stringify((form.sent || [])) + (form.ok ? '' : ' ' + (form.detail || '')));
+  if (form.mode === 'live') results.push(Object.assign({ destination: 'hubspot-form' }, form));
 
   const hubspotOn = env('KIMI_HUBSPOT_ENABLED').toLowerCase() !== 'false';
   if (hubspotOn) {

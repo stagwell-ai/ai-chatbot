@@ -50,6 +50,9 @@ export default async function handler(req, res) {
     destination: out.destination,
     action: out.action,
     retryable: out.retryable,
+    /* enough to tell "the form ran and worked" from "the form never ran",
+       which the log alone could not. Names and codes only. */
+    form: (out.results.find(r => r.destination === 'hubspot-form') || { mode: out.formMode }),
     recommendation: { primary: v.lead.discovery.primary, secondary: v.lead.discovery.secondary, confidence: v.lead.discovery.confidence && v.lead.discovery.confidence.level }
   });
 }
