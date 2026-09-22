@@ -99,6 +99,11 @@ export function validateLeadBody(body, data) {
       roleText: str(D.roleText, 80),
       website: str(D.website, 160),
       siteKnown: D.siteKnown === true,
+      /* what they ticked on the booking form. IDS ONLY, and only ids that are
+         really products — this reaches the CRM, so it is checked here rather
+         than trusted from the page. */
+      productsRequested: (Array.isArray(D.productsRequested) ? D.productsRequested : []).slice(0, 24)
+        .map(x => str(x, 60)).filter(x => x && RECOMMEND.productById(x, data)),
       /* server-side truth */
       primary: reco.primary,
       secondary: reco.secondary,

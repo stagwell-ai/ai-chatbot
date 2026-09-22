@@ -46,6 +46,9 @@
   /* ── the copy, mirrored from data/cta.json for the fetch-failed case ───── */
   const FALLBACK = {
     fine: 'Prototype only — nothing is submitted or stored.',
+    fineLive: 'Sent to the Stagwell AI team — someone will be in touch.',
+    fineHeld: 'Recorded. HubSpot is not connected yet, so this is held on our side for now.',
+    fineFailed: 'We could not reach the CRM just now — your details were logged and nothing is lost.',
     fields: { name: 'Full name', email: 'Work email', phone: 'Phone — so we can reach you faster', role: 'Role — e.g. CMO, VP Marketing' },
     emailHint: 'That does not look like a work email — check the address.',
     success: {
@@ -83,6 +86,12 @@
     if (!loaded || typeof loaded !== 'object') return FALLBACK;
     return {
       fine: loaded.fine || FALLBACK.fine,
+      /* what the small print says once the server has answered: delivered,
+         held on our side, or not reached. merge() whitelists, so these have to
+         be named or cta.json's versions are dropped on the floor. */
+      fineLive: loaded.fineLive || FALLBACK.fineLive,
+      fineHeld: loaded.fineHeld || FALLBACK.fineHeld,
+      fineFailed: loaded.fineFailed || FALLBACK.fineFailed,
       fields: Object.assign({}, FALLBACK.fields, loaded.fields || {}),
       emailHint: loaded.emailHint || FALLBACK.emailHint,
       success: Object.assign({}, FALLBACK.success, loaded.success || {}),
@@ -198,6 +207,49 @@
             </label>`).join('')}
           </div>
         </fieldset>`;
+  }
+
+  /* ── IT ACTUALLY GOES SOMEWHERE NOW ──────────────────────────────────────
+     This form used to be scenery: it emitted its events for the demo console,
+     showed the success panel and threw the answers away ("Prototype only —
+     nothing is submitted or stored"). The chat has POSTed to /api/lead since
+     the lead service was built; this now does too, in the same shape, so both
+     roads end at the same contact in the same CRM.
+
+     It does NOT make the visitor wait. The panel turns over at once and the
+     POST runs behind it — the server keeps its own record of anything it
+     could not deliver (leadService LEAD_UNDELIVERED), so a slow CRM costs a
+     visitor nothing. The fine print under the panel says what really happened. */
+  function leadPayload(form, kind, prefill) {
+    const s = slots();
+    const val = n => String((form.elements[n] && form.elements[n].value) || '').trim();
+    const k = (() => { try { return window.SAIKIMI && window.SAIKIMI.state && window.SAIKIMI.state(); } catch (e) { return null; } })();
+    const d = (k && k.discovery) || {};
+    const picked = [].slice.call(form.querySelectorAll('input[name=products]:checked')).map(x => x.value);
+    return {
+      lead: { name: val('name') || null, email: val('email'), phone: val('phone') || null,
+              company: (prefill && prefill.brand) || s.company || null },
+      discovery: Object.assign({}, d, {
+        sessionId: (k && k.sessionId) || s.sessionId || null,
+        contactRequest: kind === 'expert' ? 'expert' : kind === 'demo' || kind === 'session' ? 'demo' : kind,
+        roleText: val('role') || null,
+        website: s.company_domain || d.website || null,
+        productsRequested: picked
+      }),
+      page: location.pathname + location.search,
+      ts: new Date().toISOString(),
+      source: 'stagwell-ai · book a demo'
+    };
+  }
+  function postLead(payload) {
+    if (typeof fetch !== 'function') return Promise.resolve({ ok: false });
+    const ac = typeof AbortController === 'function' ? new AbortController() : null;
+    const t = ac ? setTimeout(() => ac.abort(), 12000) : 0;
+    return fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload), signal: ac ? ac.signal : undefined, keepalive: true })
+      .then(r => r.json().catch(() => null).then(j => ({ ok: r.ok, status: r.status, body: j })))
+      .catch(() => ({ ok: false }))
+      .then(r => { if (t) clearTimeout(t); return r; });
   }
 
   function slots() {
@@ -392,10 +444,20 @@
       if (picked.length) emit('products_requested', { kind, products: picked, count: picked.length });
       emit('journey_converted', { kind, products: picked });
 
+      const payload = leadPayload(form, kind, prefill);
       const brand = (prefill && prefill.brand) || slots().company || null;
       root.innerHTML = successHtml(c, brand, inline);
       const back = root.querySelector('[data-lead-close]');
       if (back) back.focus();
+      /* …and the truth about it, once the server answers */
+      postLead(payload).then(r => {
+        const j = (r && r.body) || {};
+        const line = root.querySelector('.modal__ok .modal__fine');
+        const live = r && r.ok && j.delivered && j.mode !== 'mock';
+        emit('lead_delivered', { kind, delivered: !!(r && r.ok && j.delivered), mode: j.mode || null, destination: j.destination || null });
+        if (line) line.textContent = live ? (c.fineLive || 'Sent to the Stagwell AI team.')
+          : (r && r.ok) ? (c.fineHeld || c.fine) : (c.fineFailed || c.fine);
+      });
     });
 
     /* Focus the first EMPTY field: a visitor deep in the flow whose role and

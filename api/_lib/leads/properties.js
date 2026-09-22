@@ -33,7 +33,11 @@ export const PROPERTIES = [
   { name: 'stagwell_ai_utm_campaign', label: 'Stagwell AI · UTM campaign', type: 'string', fieldType: 'text' },
   { name: 'stagwell_ai_utm_content', label: 'Stagwell AI · UTM content', type: 'string', fieldType: 'text' },
   { name: 'stagwell_ai_llm_mode', label: 'Stagwell AI · model mode', type: 'string', fieldType: 'text' },
-  { name: 'stagwell_ai_last_submitted', label: 'Stagwell AI · last submitted', type: 'string', fieldType: 'text' }
+  { name: 'stagwell_ai_last_submitted', label: 'Stagwell AI · last submitted', type: 'string', fieldType: 'text' },
+  /* what they TICKED on the booking form, as opposed to what the engine
+     recommended — the two are worth telling apart when a rep reads the record */
+  { name: 'stagwell_ai_products_requested', label: 'Stagwell AI · products they asked about', type: 'string', fieldType: 'textarea' },
+  { name: 'stagwell_ai_source', label: 'Stagwell AI · came from', type: 'string', fieldType: 'text' }
 ];
 
 const CONF = { high: 0.9, medium: 0.6, low: 0.3 };
@@ -70,7 +74,9 @@ export function toHubSpotProperties(lead, summary) {
     stagwell_ai_utm_campaign: a.utmCampaign,
     stagwell_ai_utm_content: a.utmContent,
     stagwell_ai_llm_mode: d.llmStatus ? d.llmStatus + (d.llmProvider ? ' · ' + d.llmProvider : '') : null,
-    stagwell_ai_last_submitted: lead.receivedAt
+    stagwell_ai_last_submitted: lead.receivedAt,
+    stagwell_ai_products_requested: (d.productsRequested || []).join('; ') || null,
+    stagwell_ai_source: lead.source || null
   };
   Object.keys(props).forEach(k => { if (props[k] == null || props[k] === '') delete props[k]; });
   return props;
