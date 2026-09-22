@@ -708,7 +708,7 @@
       const named = [1, 5, 8];
       pts.forEach((p, i) => { if (!named.includes(i)) g += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.6" fill="' + MID + '"/>'; });
       g += '<circle cx="' + hub[0].toFixed(1) + '" cy="' + hub[1].toFixed(1) + '" r="20" fill="' + INK + '" fill-opacity=".08"/><circle cx="' + hub[0].toFixed(1) + '" cy="' + hub[1].toFixed(1) + '" r="10" fill="' + INK + '"/>';
-      const tags = c.items.map((t, i) => { const p = pts[named[i]]; const x = Math.min(w - 44, Math.max(44, 22 + p[0])), y = Math.min(top + ch - 14, Math.max(top + 14, top + p[1])); return '<span class="sx-tag" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px">' + esc(t) + '</span>'; }).join('');
+      const tags = c.items.map((t, i) => { const p = pts[named[i]]; const x = Math.min(w - 44, Math.max(44, 22 + p[0])), y = Math.min(top + ch - 24, Math.max(top + 14, top + p[1])); return '<span class="sx-tag" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px">' + esc(t) + '</span>'; }).join('');
       return headH(c.title) + '<svg class="sx-net" viewBox="0 0 ' + cw + ' ' + ch + '" width="' + cw + '" height="' + ch + '" aria-hidden="true">' + g + '</svg>' + tags;
     },
     flight(c, w, h) {
