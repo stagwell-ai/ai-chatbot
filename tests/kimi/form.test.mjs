@@ -322,3 +322,22 @@ test('the page can be withheld entirely, so there is no domain to quarantine', a
   assert.equal(p.posts[0].body.fields.length > 0, true, 'and the lead itself is untouched');
   delete process.env.HUBSPOT_FORM_SEND_PAGE;
 });
+
+test('the outcome carries the product VALUE, so nobody has to infer it from a field name', async () => {
+  const none = BODY();
+  none.discovery.productsRequested = [];
+  const p = portal();
+  const r = await submitForm(validateLeadBody(none, DATA).lead, DATA, { fetch: p.fetch });
+  assert.equal(r.product, 'Not Sure', 'answerable by reading, not by reasoning');
+
+  const p2 = portal();
+  const r2 = await submitForm(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: p2.fetch });
+  assert.equal(r2.product, 'BERA.ai;GEOPulse');
+
+  /* and still no trace of the person */
+  const p3 = portal({ status: 400 });
+  const r3 = await submitForm(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: p3.fetch });
+  const logged = JSON.stringify({ sent: r3.sent, product: r3.product });
+  ['ada@example-brand.com', 'Ada', 'Lovelace', '2125550100'].forEach(pii =>
+    assert.equal(logged.indexOf(pii), -1, 'no personal detail reaches the log: ' + pii));
+});

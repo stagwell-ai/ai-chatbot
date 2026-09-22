@@ -184,6 +184,8 @@ export async function submitForm(lead, data, opts) {
   const guid = env('HUBSPOT_FORM_GUID');
   const a = lead.attribution || {};
   const fields = formFields(lead, data);
+  /* safe to carry into a log: one of the field's fixed options, never a person */
+  const product = productFieldValue(lead, data);
   const body = {
     submittedAt: Date.now(),
     fields,
@@ -219,12 +221,12 @@ export async function submitForm(lead, data, opts) {
       body: JSON.stringify(body)
     });
     const text = await r.text();
-    if (r.ok) return { ok: true, mode, action: 'submitted', sent: fields.map(f => f.name) };
+    if (r.ok) return { ok: true, mode, action: 'submitted', sent: fields.map(f => f.name), product };
     /* the two that actually happen: a field the form does not define, and a
        dropdown value that is not one of its options. Both name themselves. */
     return { ok: false, mode, status: r.status, error: 'form_' + r.status, detail: text.slice(0, 600),
-      sent: fields.map(f => f.name), retryable: r.status === 429 || r.status >= 500 };
+      sent: fields.map(f => f.name), product, retryable: r.status === 429 || r.status >= 500 };
   } catch (e) {
-    return { ok: false, mode, status: 0, error: e && e.name === 'AbortError' ? 'timeout' : 'network', sent: fields.map(f => f.name), retryable: true };
+    return { ok: false, mode, status: 0, error: e && e.name === 'AbortError' ? 'timeout' : 'network', sent: fields.map(f => f.name), product, retryable: true };
   } finally { clearTimeout(bail); }
 }

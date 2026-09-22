@@ -116,8 +116,16 @@ export async function submitLead(lead, data, opts) {
      entry either: silence meant both "it worked" and "it never ran". It now
      always reports, with the field NAMES it sent — never the values, which
      are a person's details. */
+  /* The product field's VALUE is logged, not just its name. Everything else
+     in a submission is somebody's name, email and phone and stays out of the
+     log — but this one is a choice from a fixed list of eighteen, it is the
+     field the whole routing turns on, and "the name appeared in the payload,
+     therefore it had a value" is a chain of reasoning nobody should have to
+     follow to answer "did it send Not Sure?". */
   console.log('[hubspot] form ' + form.mode + ': ' + (form.ok ? (form.action || 'ok') : 'FAILED ' + form.error)
-    + ' fields=' + JSON.stringify((form.sent || [])) + (form.ok ? '' : ' ' + (form.detail || '')));
+    + ' fields=' + JSON.stringify((form.sent || []))
+    + ' product=' + JSON.stringify(form.product || null)
+    + (form.ok ? '' : ' ' + (form.detail || '')));
   if (form.mode === 'live') results.push(Object.assign({ destination: 'hubspot-form' }, form));
 
   const hubspotOn = env('KIMI_HUBSPOT_ENABLED').toLowerCase() !== 'false';
