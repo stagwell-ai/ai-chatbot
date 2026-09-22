@@ -790,6 +790,19 @@ change.
 
 ## 10. HubSpot integration
 
+**The form submission comes first** (`api/_lib/leads/hubspot-form.js`, added 2026-09-22 at the
+request of the person who runs the portal). A Contacts API write raises no event, so a workflow
+that triggers on a form submission never sees it and the lead never enrols or routes. So each
+lead is POSTed to `api.hsforms.com/submissions/v3/integration/submit/{portal}/{guid}` first —
+that event enrols and routes it — and the Contacts API upsert follows with the 22 discovery
+properties, which a form can only carry if they are fields on that form. The two are the event
+and the detail, not alternatives. `HUBSPOT_FORM_GUID` unset means no form is posted and nothing
+else changes. The product dropdown's values are derived from `solutions.json` display names,
+which is what the portal's options literally are, so a rename cannot silently start sending an
+option the dropdown has never heard of; a value that cannot be matched is sent as nothing rather
+than as a guess, because an unknown option is what breaks the routing.
+
+
 `api/_lib/leads/hubspot.js`, server-only, raw CRM v3 (search by email → PATCH, else POST;
 409 → PATCH the existing id). **A lead is never silent.** A property write raises nothing in HubSpot: no timeline entry, no
 feed item, no notification, and for a contact that already existed, not even a place among

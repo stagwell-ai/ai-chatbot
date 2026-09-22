@@ -17,6 +17,7 @@ import { upsertContact, hubspotMode, redactForLog, createNote, createTask, addTo
 import { toHubSpotProperties } from './properties.js';
 import { salesSummary } from './schema.js';
 import RECOMMEND from '../../../next/recommend.js';
+import { submitForm, formMode } from './hubspot-form.js';
 
 const env = k => (process.env[k] || '').trim();
 
@@ -104,6 +105,17 @@ export async function submitLead(lead, data, opts) {
   const summary = salesSummary(lead, data);
   const results = [];
 
+  /* THE FORM FIRST. Her workflow triggers on a form submission event, so that
+     event is what enrols and routes the lead; the Contacts API write that
+     follows only adds detail to a record the form has already announced. If
+     the form fails we carry on regardless — a lead in the CRM unrouted beats
+     no lead at all. */
+  const form = await submitForm(lead, data, o);
+  if (form.mode === 'live') {
+    if (!form.ok) console.error('[hubspot] the form submission failed, falling back to the Contacts API alone:', form.error, form.detail || '');
+    results.push(Object.assign({ destination: 'hubspot-form' }, form));
+  }
+
   const hubspotOn = env('KIMI_HUBSPOT_ENABLED').toLowerCase() !== 'false';
   if (hubspotOn) {
     const props = toHubSpotProperties(lead, summary);
@@ -120,7 +132,7 @@ export async function submitLead(lead, data, opts) {
   /* A note or a task is not a delivery: the contact is. Only destinations
      that actually CARRY the lead count, or a failed upsert whose note somehow
      succeeded would report the lead as delivered. */
-  const carriers = results.filter(r => r.destination === 'hubspot' || r.destination === 'webhook');
+  const carriers = results.filter(r => r.destination === 'hubspot' || r.destination === 'webhook' || r.destination === 'hubspot-form');
   const delivered = carriers.some(r => r.ok && r.mode !== 'mock');
   const mocked = carriers.some(r => r.ok && r.mode === 'mock');
   const primary = results.find(r => r.destination === 'hubspot') || results[0] || null;
@@ -135,6 +147,7 @@ export async function submitLead(lead, data, opts) {
     ok: true,
     delivered,
     mode: hubspotOn ? hubspotMode() : 'off',
+    formMode: formMode(),
     destination: primary ? primary.destination + (primary.mode === 'mock' ? '-mock' : '') : null,
     hubspotId: primary && primary.destination === 'hubspot' && primary.ok ? primary.id : null,
     action: primary && primary.action || null,
