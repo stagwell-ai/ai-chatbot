@@ -53,7 +53,9 @@
     emailHint: 'That does not look like a work email — check the address.',
     success: {
       title: 'Stagwell AI has your brief.',
-      line: 'Someone who already knows the account will be in touch — not an SDR reading a script. While you are here, three faster ways in:',
+      /* no number in this line: the calendar card only appears when
+         cta.json carries a url, so a count would be wrong two ways */
+      line: 'Someone who already knows the account will be in touch — not an SDR reading a script. Faster ways in, while you are here:',
       close: 'Close',
       next: {
         call:     { title: 'Talk to someone now', line: 'We ring your phone in about a minute.' },

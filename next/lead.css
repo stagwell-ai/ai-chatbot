@@ -177,3 +177,13 @@ body.lead-open{overflow:hidden}
   .modal.lead{padding:14px}
   .modal.lead .modal__panel{padding:28px 20px}
 }
+
+/* Close is a real button. .btn's fill lives in styles.css, which /book does
+   not load, so on that page it rendered as bare uppercase text floating under
+   the cards — a dismissal nobody would find. */
+.modal.lead .modal__ok > .btn--dark{
+  background:var(--ink,#0B1B24);border:1px solid var(--ink,#0B1B24);color:#FFFFFF;
+  border-radius:999px;padding:11px 24px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.modal.lead .modal__ok > .btn--dark:hover{opacity:.88}
