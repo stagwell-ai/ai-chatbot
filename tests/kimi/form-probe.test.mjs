@@ -59,37 +59,89 @@ test('and it works out the mapping we would otherwise have had to ask for', asyn
   assert.equal(r.suggestion.indexOf('stagwell_ai_form_solution_drop_down:'), -1);
 });
 
-test('no definition: the required names are read out of a rejection instead', async () => {
+/* the real portal, 2026-09-22: firstname, work_email and jobtitle required;
+   the product dropdown present but optional; phone and company not on the
+   form at all */
+function realPortal() {
   const sent = [];
   const fetch = async (url, init) => {
     if (String(url).indexOf('/embed/v3/') !== -1) return reply(false, 404, 'no');
-    sent.push(JSON.parse(init.body));
-    return reply(false, 400, { status: 'error', errors: [
-      { message: "Error in 'fields.work_email'. Required field 'work_email' is missing", errorType: 'REQUIRED_FIELD' },
-      { message: "Error in 'fields.lastname'. Required field 'lastname' is missing", errorType: 'REQUIRED_FIELD' }
-    ] });
+    const body = JSON.parse(init.body);
+    sent.push(body);
+    const names = body.fields.map(f => f.name);
+    const errs = [];
+    ['firstname', 'work_email', 'jobtitle'].forEach(n => {
+      if (names.indexOf(n) === -1) errs.push({ message: "Error in 'fields." + n + "'. Required field '" + n + "' is missing", errorType: 'REQUIRED_FIELD' });
+    });
+    ['phone', 'company', 'email', 'lastname'].forEach(n => {
+      if (n !== 'lastname' && n !== 'email' && names.indexOf(n) !== -1) errs.push({ message: "Error in 'fields." + n + "'. The field \"" + n + "\" does not exist", errorType: 'INVALID_FIELD' });
+      if ((n === 'email') && names.indexOf(n) !== -1) errs.push({ message: "Error in 'fields.email'. The field \"email\" does not exist", errorType: 'INVALID_FIELD' });
+    });
+    return reply(false, 400, { status: 'error', errors: errs });
   };
-  const r = await describeForm({ portalId: PORTAL, guid: GUID, fetch });
+  return { fetch, sent };
+}
+
+test('no definition: required names come from a rejection, optional ones from a second pass', async () => {
+  const p = realPortal();
+  const r = await describeForm({ portalId: PORTAL, guid: GUID, fetch: p.fetch });
   assert.equal(r.ok, true);
   assert.equal(r.source, 'probe');
-  assert.equal(r.partial, true, 'and it says so — optional fields are invisible this way');
-  assert.deepEqual(r.fields.map(f => f.name).sort(), ['lastname', 'work_email']);
-  assert.ok(r.suggestion.indexOf('email:work_email') !== -1);
-  assert.match(r.help, /REQUIRED fields/);
+  assert.equal(r.partial, true);
+  assert.equal(p.sent.length, 2, 'two probes: what is required, then what exists');
+
+  const req = r.fields.filter(f => f.required).map(f => f.name).sort();
+  assert.deepEqual(req, ['firstname', 'jobtitle', 'work_email']);
+
+  assert.ok(r.absent.indexOf('phone') !== -1 && r.absent.indexOf('company') !== -1,
+    'the form refused these, so they are proven absent: ' + JSON.stringify(r.absent));
+  assert.ok(r.fields.some(f => f.name === 'stagwell_ai_form_solution_drop_down' && !f.required),
+    'and the dropdown is found, optional — the field the whole integration turns on');
+  assert.match(r.help, /Nothing was created/);
 });
 
-test('THE PROBE CANNOT CREATE ANYTHING: no email, and a field no form defines', async () => {
+/* ── THE BUG THIS EXISTS TO PREVENT ─────────────────────────────────────────
+   The first version read only the REQUIRED fields, did not find the product
+   dropdown among them — because it is optional, not because it is absent —
+   and suggested dropping it. That field is the entire point of the
+   integration: without it nothing routes. */
+test('a field that is merely unseen is NEVER suggested for dropping', () => {
+  const onlyRequired = ['firstname', 'work_email', 'jobtitle'].map(name => ({ name, required: true }));
+  const s = suggestMap(onlyRequired, { partial: true });
+  assert.ok(s.map.indexOf('email:work_email') !== -1, 'a rename we can see is still made');
+  assert.equal(s.map.indexOf('stagwell_ai_form_solution_drop_down:'), -1,
+    'the dropdown must not be dropped on the strength of a partial reading');
+  assert.equal(s.map.indexOf('phone:'), -1);
+  assert.deepEqual(s.unsure.sort(), ['company', 'lastname', 'phone', 'stagwell_ai_form_solution_drop_down'],
+    'they are handed to a human instead');
+});
+
+test('but a field HubSpot has actually refused IS dropped', () => {
+  const s = suggestMap(['firstname', 'work_email'].map(name => ({ name, required: true })),
+    { partial: true, absent: ['phone', 'company'] });
+  assert.ok(s.map.indexOf('phone:') !== -1);
+  assert.ok(s.map.indexOf('company:') !== -1);
+  assert.equal(s.unsure.indexOf('phone'), -1);
+});
+
+test('NEITHER PROBE CAN CREATE ANYTHING', async () => {
   const sent = [];
   const fetch = async (url, init) => {
     if (String(url).indexOf('/embed/v3/') !== -1) return reply(false, 500, 'nope');
     sent.push(JSON.parse(init.body));
-    return reply(false, 400, { errors: [{ message: "Required field 'work_email' is missing" }] });
+    return reply(false, 400, { errors: [{ message: "Error in 'fields.work_email'. Required field 'work_email' is missing" }] });
   };
   await describeForm({ portalId: PORTAL, guid: GUID, fetch });
-  assert.equal(sent.length, 1);
-  const names = sent[0].fields.map(f => f.name);
-  assert.deepEqual(names, ['__stagwell_ai_probe__'], 'one field, and no form has it');
-  assert.equal(names.some(n => /email/i.test(n)), false, 'no email means no contact can be made');
+  assert.equal(sent.length, 2);
+
+  const first = sent[0].fields.map(f => f.name);
+  assert.deepEqual(first, ['__stagwell_ai_probe__'], 'one field, and no form has it');
+
+  const second = sent[1].fields.map(f => f.name);
+  assert.equal(second.indexOf('work_email'), -1,
+    'the one field we KNOW is required is withheld, so this rejection is certain too');
+  assert.equal(second.some(n => /^email$|work_email/.test(n) && n === 'work_email'), false);
+  sent.forEach(s2 => s2.fields.forEach(f => assert.equal(f.value, 'probe', 'nothing real is ever sent')));
 });
 
 test('a probe that somehow succeeds is reported as wrong, not as a result', async () => {
@@ -120,5 +172,5 @@ test('with nothing configured it asks for nothing', async () => {
 test('a form that already matches us needs no mapping at all', () => {
   const same = ['email', 'firstname', 'lastname', 'jobtitle', 'phone', 'company', 'stagwell_ai_form_solution_drop_down']
     .map(name => ({ name, required: false }));
-  assert.equal(suggestMap(same), '');
+  assert.equal(suggestMap(same).map, '');
 });

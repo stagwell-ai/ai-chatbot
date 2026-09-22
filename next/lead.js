@@ -51,6 +51,12 @@
     fineFailed: 'We could not reach the CRM just now — your details were logged and nothing is lost.',
     fields: { firstname: 'First name', lastname: 'Last name', name: 'Full name', email: 'Work email', phone: 'Phone — so we can reach you faster', role: 'Role — e.g. CMO, VP Marketing' },
     emailHint: 'That does not look like a work email — check the address.',
+    /* jobtitle is REQUIRED on the HubSpot form these are submitted to, so a
+       blank role is not a smaller lead, it is a rejected submission and a
+       workflow that never fires (found 2026-09-22). Data, so the day that
+       form changes this is one edit and no deploy. */
+    require: ['email', 'role'],
+    roleHint: 'We need your role — the CRM form will not accept a submission without it.',
     success: {
       title: 'Stagwell AI has your brief.',
       /* no number in this line: the calendar card only appears when
@@ -101,6 +107,8 @@
       fineFailed: loaded.fineFailed || FALLBACK.fineFailed,
       fields: Object.assign({}, FALLBACK.fields, loaded.fields || {}),
       emailHint: loaded.emailHint || FALLBACK.emailHint,
+      require: Array.isArray(loaded.require) ? loaded.require : FALLBACK.require,
+      roleHint: loaded.roleHint || FALLBACK.roleHint,
       success: Object.assign({}, FALLBACK.success, loaded.success || {}),
       human: Array.isArray(loaded.human) ? loaded.human : FALLBACK.human,
       kinds: Object.assign({}, FALLBACK.kinds, loaded.kinds || {})
@@ -383,12 +391,13 @@
                  placeholder="${inline ? '' : esc(phoneLabel(c))}" aria-label="${esc(phoneLabel(c))}"
                  value="${esc(p.phone || s.phone || '')}">
         </label>
-        <label class="lead__row">
+        <label class="lead__row" id="saiLeadRoleRow">
           <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(c.fields.role)}</span>
           <input type="text" name="role" autocomplete="organization-title"
                  placeholder="${inline ? '' : esc(c.fields.role)}" aria-label="${esc(c.fields.role)}"
-                 value="${esc(role)}">
+                 aria-describedby="saiLeadRoleHint" value="${esc(role)}">
         </label>
+        <p class="lead__hint" id="saiLeadRoleHint" role="alert" hidden>${esc(c.roleHint || 'We need your role.')}</p>
         ${productsHtml(c, prefill)}
         <button class="btn btn--dark" type="submit">${esc(c.kinds[kind].submit)}</button>
       </form>
@@ -534,6 +543,14 @@
       if (hint && !hint.hidden && validEmail(emailInput.value)) hint.hidden = true;
     });
 
+    const roleRow = root.querySelector('#saiLeadRoleRow');
+    const roleHint = root.querySelector('#saiLeadRoleHint');
+    const roleInput = form.elements.role;
+    const needs = k => (c.require || ['email']).indexOf(k) !== -1;
+    if (roleInput) roleInput.addEventListener('input', () => {
+      if (roleHint && !roleHint.hidden && String(roleInput.value || '').trim()) roleHint.hidden = true;
+    });
+
     form.addEventListener('submit', e => {
       e.preventDefault();
       const email = String(emailInput.value || '').trim();
@@ -542,6 +559,13 @@
            hint, the same idiom the prompt field uses */
         shake(emailRow, hint);
         emailInput.focus();
+        return;
+      }
+      /* an empty role is not a thinner lead — the CRM form requires jobtitle
+         and rejects the whole submission without it */
+      if (needs('role') && roleInput && !String(roleInput.value || '').trim()) {
+        shake(roleRow, roleHint);
+        roleInput.focus();
         return;
       }
 

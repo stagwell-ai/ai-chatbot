@@ -106,6 +106,13 @@
       show('good', (j.fields || []).length + ' field(s) on the form, read from its ' +
         (j.source === 'probe' ? 'rejection of a probe — REQUIRED fields only' : 'public definition') + '.' +
         (j.help ? ' ' + j.help : ''));
+      if (j.unsure && j.unsure.length) {
+        var u = document.createElement('div');
+        u.className = 'banner bad';
+        u.textContent = 'Not decided for you: ' + j.unsure.join(', ') +
+          '. A partial reading cannot tell an optional field from a missing one, and dropping the wrong one breaks the routing. Check these by hand before adding them to the map.';
+        banner.parentNode.insertBefore(u, list);
+      }
       if (j.suggestion) {
         var m = document.createElement('div');
         m.className = 'map';

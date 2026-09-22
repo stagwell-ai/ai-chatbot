@@ -56,6 +56,7 @@ async function fillAndSend(page) {
   await page.fill('#saiLeadForm input[name=lastname]', 'Lovelace');
   await page.fill('#saiLeadForm input[name=email]', 'ada@example-brand.com');
   await page.fill('#saiLeadForm input[name=phone]', '+1 212 555 0100');
+  await page.fill('#saiLeadForm input[name=role]', 'VP Marketing');
   await page.click('#saiLeadForm button[type=submit]');
   await page.waitForTimeout(900);
 }
@@ -210,6 +211,7 @@ try {
   await page.fill('#saiLeadForm input[name=firstname]', 'Mary Jane');
   await page.fill('#saiLeadForm input[name=lastname]', 'Watson');
   await page.fill('#saiLeadForm input[name=email]', 'mj@example-brand.com');
+  await page.fill('#saiLeadForm input[name=role]', 'CMO');
   await page.click('#saiLeadForm button[type=submit]');
   await page.waitForTimeout(900);
 
@@ -223,6 +225,47 @@ try {
 } catch (e) {
   failures++;
   console.log('  FAIL the name-split checks threw: ' + e.message);
+}
+
+/* ── A BLANK ROLE IS A REJECTED SUBMISSION ──────────────────────────────────
+   jobtitle is required on the HubSpot form these are posted to, so leaving
+   the role empty does not make a thinner lead — it makes no lead at all, and
+   a workflow that never fires. */
+try {
+  const b3 = await chromium.launch({ args: ['--no-sandbox'] });
+  console.log('\n▶ the role is required, because the CRM form requires it');
+  const ctx = await b3.newContext({ viewport: { width: 1100, height: 900 } });
+  const page = await ctx.newPage();
+  const sent = [];
+  await page.route('**/api/lead', r => {
+    sent.push(1);
+    r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"delivered":true,"mode":"live"}' });
+  });
+  await page.goto(BASE + '/book', { waitUntil: 'load' });
+  await page.waitForTimeout(1800);
+
+  await page.fill('#saiLeadForm input[name=firstname]', 'Ada');
+  await page.fill('#saiLeadForm input[name=lastname]', 'Lovelace');
+  await page.fill('#saiLeadForm input[name=email]', 'ada@example-brand.com');
+  await page.click('#saiLeadForm button[type=submit]');
+  await page.waitForTimeout(700);
+
+  ok(sent.length === 0, 'nothing is posted with the role empty');
+  ok(!(await page.$eval('#saiLeadRoleHint', n => n.hidden)), 'and it says why, in the page');
+  ok(!!(await page.$('#saiLeadForm')), 'the form is still there to finish');
+  const focused = await page.evaluate(() => document.activeElement && document.activeElement.name);
+  ok(focused === 'role', 'with the caret in the field that needs filling (' + focused + ')');
+
+  await page.fill('#saiLeadForm input[name=role]', 'VP Marketing');
+  ok(await page.$eval('#saiLeadRoleHint', n => n.hidden), 'the warning clears as soon as they type');
+  await page.click('#saiLeadForm button[type=submit]');
+  await page.waitForTimeout(800);
+  ok(sent.length === 1, 'and then it goes');
+  await ctx.close();
+  await b3.close();
+} catch (e) {
+  failures++;
+  console.log('  FAIL the role checks threw: ' + e.message);
 }
 
 console.log(failures ? '\n' + failures + ' FAILED\n' : '\nall good\n');
