@@ -621,3 +621,12 @@ body.hc-b.pc-page .sp-tabs__pic:not(#_) video{position:absolute;inset:0;width:10
 @media (max-width:760px){
   body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{font-size:clamp(28px,8.6vw,40px) !important;letter-spacing:-.04em !important}
 }
+/* /products hero: the same rhythm as the product pages; the buttons never ride up on the paragraph */
+body.hc-b.pl-c .pl-hero .pp-title:not(#_){margin-bottom:28px !important}
+body.hc-b.pl-c .pl-hero .pp-acts:not(#_){margin-top:0 !important;position:static !important;transform:none !important}
+@media (max-width:760px){
+  body.hc-b.pl-c .pl-hero .pp-hero__in:not(#_){display:flex !important;flex-direction:column !important;gap:0 !important}
+  body.hc-b.pl-c .pl-hero .pp-title:not(#_){margin-bottom:20px !important}
+  body.hc-b.pl-c .pl-hero .pl-say:not(#_){margin:0 0 28px !important;order:0}
+  body.hc-b.pl-c .pl-hero .pp-acts:not(#_){order:1}
+}
