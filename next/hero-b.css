@@ -321,3 +321,40 @@ body.hc-b.pc-page .sp-hero__pic:not(#_) img{display:block;width:100%;aspect-rati
   body.hc-b.pc-page .sp-hero__pic:not(#_){padding:0 16px;margin-top:36px}
   body.hc-b.pc-page .sp-hero__pic:not(#_) img{aspect-ratio:4 / 3;border-radius:12px}
 }
+
+/* solution pages: How it works as tabs over one card (after the Manus solutions pages) */
+body.hc-b.pc-page .sp-tabs:not(#_){padding-block:clamp(72px,9vw,136px) clamp(24px,3vw,48px) !important}
+body.hc-b.pc-page .sp-tabs__head:not(#_){text-align:center}
+body.hc-b.pc-page .sp-tabs__head:not(#_) .pp-more__head{max-width:none !important;margin:0 auto !important;text-align:center !important}
+body.hc-b.pc-page .sp-tabs:not(#_) .pp-h2,
+body.hc-b.pc-page .sp-tabs:not(#_) .pp-h2 *{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
+body.hc-b.pc-page .sp-tabs__bar:not(#_){display:flex;justify-content:center;gap:6px;margin:clamp(28px,3vw,44px) auto clamp(20px,2.4vw,32px);
+  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+body.hc-b.pc-page .sp-tabs__bar:not(#_)::-webkit-scrollbar{display:none}
+body.hc-b.pc-page .sp-tabs__tab:not(#_){flex:0 0 auto;height:44px;padding:0 20px;border:0;border-radius:999px;background:transparent;color:rgba(11,18,32,.62);
+  font:inherit;font-size:16px;letter-spacing:-.005em;cursor:pointer;white-space:nowrap;transition:background .2s ease,color .2s ease}
+body.hc-b.pc-page .sp-tabs__tab:not(#_):hover{color:#0B1220}
+body.hc-b.pc-page .sp-tabs__tab.is-on:not(#_){background:#E9E9E6;color:#0B1220}
+body.hc-b.pc-page .sp-tabs__tab:not(#_):focus-visible{outline:2px solid #0B1220;outline-offset:2px}
+body.hc-b.pc-page .sp-tabs__panel:not(#_){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:clamp(420px,42vw,580px);
+  border-radius:20px;overflow:hidden;background:#F1F1EF}
+body.hc-b.pc-page .sp-tabs__panel:not(#_) + .sp-tabs__panel{margin-top:20px}
+body.hc-b.pc-page .sp-tabs.is-tabbed .sp-tabs__panel:not(#_) + .sp-tabs__panel{margin-top:0}
+body.hc-b.pc-page .sp-tabs__panel[hidden]:not(#_){display:none !important}
+body.hc-b.pc-page .sp-tabs__txt:not(#_){display:flex;flex-direction:column;justify-content:center;padding:clamp(32px,5vw,88px)}
+body.hc-b.pc-page .sp-tabs__n:not(#_){margin:0 0 16px;font-size:15px;color:rgba(11,18,32,.5);letter-spacing:.02em}
+body.hc-b.pc-page .sp-tabs__txt:not(#_) h3{margin:0 0 18px;font-size:clamp(28px,1rem + 1.6vw,44px);font-weight:400;letter-spacing:-.035em;line-height:1.1;color:#0B1220}
+body.hc-b.pc-page .sp-tabs__txt:not(#_) p:not(.sp-tabs__n){margin:0;max-width:460px;font-size:clamp(16px,.9rem + .3vw,19px);line-height:1.55;color:rgba(11,18,32,.6)}
+body.hc-b.pc-page .sp-tabs__pic:not(#_){position:relative;background:#0B1220}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+body.hc-b.pc-page .sp-tabs:not(#_) .pp-mid{text-align:center !important;margin:clamp(32px,4vw,48px) 0 0 !important;display:flex;justify-content:center}
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-tabs__bar:not(#_){justify-content:flex-start;margin-inline:-20px;padding-inline:20px}
+  body.hc-b.pc-page .sp-tabs__panel:not(#_){grid-template-columns:1fr;min-height:0;border-radius:16px}
+  body.hc-b.pc-page .sp-tabs__pic:not(#_){order:-1;aspect-ratio:16 / 10}
+  body.hc-b.pc-page .sp-tabs__txt:not(#_){padding:28px 24px 32px}
+}
+body.hc-b.pc-page .sp-tabs__head:not(#_) :is(.pp-sign,.pp-h2){text-align:center !important;margin-inline:auto !important}
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-tabs__tab:not(#_){max-width:min(260px,68vw);overflow:hidden;text-overflow:ellipsis;font-size:15px}
+}

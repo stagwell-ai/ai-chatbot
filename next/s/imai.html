@@ -43,7 +43,7 @@ d.setAttribute('data-theme',t||sys);})();
 <link rel="stylesheet" href="/next/product.css">
 <link rel="stylesheet" href="/next/home-c.css?v=237">
 <link rel="stylesheet" href="/next/prod-c.css?v=121">
-<link rel="stylesheet" href="/next/hero-b.css?v=37">
+<link rel="stylesheet" href="/next/hero-b.css?v=40">
 <!-- Contentsquare: funnel analysis and heatmaps (client, 2026-09-17) -->
 <script src="https://t.contentsquare.net/uxa/f6c5bb82a83a7.js" defer></script>
 </head>
@@ -184,24 +184,62 @@ d.setAttribute('data-theme',t||sys);})();
   </div>
 </section>
 
-<section class="pp-more sp-how">
-  <div class="pp-wrap sp-how__in">
-    <div class="sp-how__pic"><img src="/assets/img/tabs/imai-crowd.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="sp-how__txt">
-      <div class="pp-more__head">
+<section class="pp-more sp-tabs">
+  <div class="pp-wrap">
+    <div class="sp-tabs__head"><div class="pp-more__head">
       <p class="pp-sign rv">How it works</p>
       <h2 class="pp-h2 rv" style="--d:.1s">What <span>IMAI</span> does</h2>
+    </div></div>
+    <div class="sp-tabs__bar" role="tablist" aria-label="What it does">
+      <button type="button" class="sp-tabs__tab is-on" role="tab" id="spt-imai-0" aria-controls="spp-imai-0" aria-selected="true">Creator discovery</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-imai-1" aria-controls="spp-imai-1" aria-selected="false" tabindex="-1">Campaign management</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-imai-2" aria-controls="spp-imai-2" aria-selected="false" tabindex="-1">LLM visibility</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-imai-3" aria-controls="spp-imai-3" aria-selected="false" tabindex="-1">UGC video ads</button>
     </div>
-      <ol class="pp-steps sp-caps">
-        <li class="rv" style="--d:0.00s"><b>01</b><div><h3>Creator discovery</h3></div></li>
-        <li class="rv" style="--d:0.06s"><b>02</b><div><h3>Campaign management</h3></div></li>
-        <li class="rv" style="--d:0.12s"><b>03</b><div><h3>LLM visibility</h3></div></li>
-        <li class="rv" style="--d:0.18s"><b>04</b><div><h3>UGC video ads</h3></div></li>
-      </ol>
-      <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
+    <div class="sp-tabs__panels">
+      <article class="sp-tabs__panel is-on" role="tabpanel" id="spp-imai-0" aria-labelledby="spt-imai-0">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">01 / 04</p><h3>Creator discovery</h3><p>Search a 400M+ creator database, then vet audiences and check for fraud before anyone is signed.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/mosaic-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-imai-1" aria-labelledby="spt-imai-1">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">02 / 04</p><h3>Campaign management</h3><p>Outreach, contracts, approvals and tracking through to ROI in one workflow, instead of spreadsheets and DMs.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/plexus-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-imai-2" aria-labelledby="spt-imai-2">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">03 / 04</p><h3>LLM visibility</h3><p>See how AI search tools talk about your brand, and act on it from the same platform as your creator programs.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/lanes-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-imai-3" aria-labelledby="spt-imai-3">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">04 / 04</p><h3>UGC video ads</h3><p>Produce AI-generated, UGC-style video ads from the same workspace as your creator campaigns.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/converge-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
     </div>
+    <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
   </div>
 </section>
+<script>
+(function () {
+  var sec = document.currentScript && document.currentScript.previousElementSibling;
+  if (!sec || !sec.classList.contains('sp-tabs')) return;
+  var tabs = [].slice.call(sec.querySelectorAll('.sp-tabs__tab')), panels = [].slice.call(sec.querySelectorAll('.sp-tabs__panel'));
+  var bar = sec.querySelector('.sp-tabs__bar');
+  function pick(i, focus) {
+    tabs.forEach(function (t, n) { var on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); });
+    if (focus) tabs[i].focus();
+    if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { pick(i); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % tabs.length, true); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); pick((i - 1 + tabs.length) % tabs.length, true); }
+    });
+  });
+  sec.classList.add('is-tabbed');
+  pick(0);
+})();
+</script>
 
 <section class="sp-also">
   <div class="pp-wrap">

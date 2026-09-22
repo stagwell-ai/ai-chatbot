@@ -59,6 +59,38 @@ PIC = {
     'search_plus': '/assets/img/tabs/geopulse.jpg', 'id_graph': '/assets/img/tabs/id-graph.jpg',
 }
 
+NOTAB = ' tabindex="-1"'
+# the paragraphs under each capability: DRAFTS for review (see the file's _status)
+DRAFTS = json.loads((ROOT / 'data' / 'capability-drafts.json').read_text())['products']
+# the tab stills: frames of the text-free motion-lab loops, a different one per tab
+STILLS = [f'/assets/video/lab/loops/{k}-poster.jpg' for k in
+          ('orbits', 'pulses', 'circuit', 'terrain', 'globe', 'streams', 'mosaic', 'plexus',
+           'lanes', 'converge', 'charts', 'clusters', 'tunnel', 'block-rain')]
+# the tabs' behaviour: without it every panel simply shows, one under another
+TABS_JS = '''<script>
+(function () {
+  var sec = document.currentScript && document.currentScript.previousElementSibling;
+  if (!sec || !sec.classList.contains('sp-tabs')) return;
+  var tabs = [].slice.call(sec.querySelectorAll('.sp-tabs__tab')), panels = [].slice.call(sec.querySelectorAll('.sp-tabs__panel'));
+  var bar = sec.querySelector('.sp-tabs__bar');
+  function pick(i, focus) {
+    tabs.forEach(function (t, n) { var on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); });
+    if (focus) tabs[i].focus();
+    if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { pick(i); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % tabs.length, true); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); pick((i - 1 + tabs.length) % tabs.length, true); }
+    });
+  });
+  sec.classList.add('is-tabbed');
+  pick(0);
+})();
+</script>'''
+
 # solution_page() hands its parts to frame(); catch them instead of building the old frame
 bpp.frame = lambda home, **kw: kw
 
@@ -73,19 +105,31 @@ def main():
     for n, x in enumerate(gen):
         kw = bpp.solution_page('', x, n, by_id, pics)
         body = kw['body']
-        # "How it works" in two columns: the product's square picture on the left; the
-        # heading and the capabilities as a numbered list on the right (no tabs: there is
-        # one picture and no step descriptions to rotate through)
+        # "How it works" as tabs (the Manus solutions pages): the capabilities across the
+        # top; under them one card, the capability and its paragraph on the left, a still
+        # on the right. Paragraphs are DRAFTS from data/capability-drafts.json.
         more = re.search(r'<section class="pp-more">\s*<div class="pp-wrap">\s*(<div class="pp-more__head">.*?</div>)\s*'
                          r'<div class="pp-more__grid">\s*<div class="pp-more__media">(.*?)</div>\s*(<ol class="pp-steps">.*?</ol>)\s*</div>\s*'
                          r'(<p class="pp-mid">.*?</p>)\s*</div>\s*</section>', body, re.S)
         assert more, x['id']
-        head_html, media_html, ol_html, mid_html = more.groups()
-        ol_html = ol_html.replace('<ol class="pp-steps">', '<ol class="pp-steps sp-caps">', 1)
-        how = ('<section class="pp-more sp-how">\n  <div class="pp-wrap sp-how__in">\n'
-               f'    <div class="sp-how__pic">{media_html}</div>\n'
-               f'    <div class="sp-how__txt">\n      {head_html}\n      {ol_html}\n      {mid_html}\n    </div>\n'
-               '  </div>\n</section>')
+        head_html, _media, ol_html, mid_html = more.groups()
+        caps = [bpp.html.unescape(c) for c in re.findall(r'<h3>(.*?)</h3>', ol_html)]
+        texts = DRAFTS[x['id']]
+        assert all(c in texts for c in caps), (x['id'], [c for c in caps if c not in texts])
+        sid = x['id']
+        tabs = '\n'.join(
+            f'      <button type="button" class="sp-tabs__tab{" is-on" if k == 0 else ""}" role="tab" id="spt-{sid}-{k}" aria-controls="spp-{sid}-{k}" '
+            f'aria-selected="{"true" if k == 0 else "false"}"{"" if k == 0 else NOTAB}>{bpp.t(c)}</button>' for k, c in enumerate(caps))
+        panels = '\n'.join(
+            f'      <article class="sp-tabs__panel{" is-on" if k == 0 else ""}" role="tabpanel" id="spp-{sid}-{k}" aria-labelledby="spt-{sid}-{k}">\n'
+            f'        <div class="sp-tabs__txt"><p class="sp-tabs__n">{k + 1:02d} / {len(caps):02d}</p><h3>{bpp.t(c)}</h3><p>{bpp.t(texts[c])}</p></div>\n'
+            f'        <div class="sp-tabs__pic"><img src="{STILLS[(n * 4 + k) % len(STILLS)]}" alt="" loading="lazy" decoding="async"></div>\n'
+            f'      </article>' for k, c in enumerate(caps))
+        how = ('<section class="pp-more sp-tabs">\n  <div class="pp-wrap">\n'
+               f'    <div class="sp-tabs__head">{head_html}</div>\n'
+               f'    <div class="sp-tabs__bar" role="tablist" aria-label="What it does">\n{tabs}\n    </div>\n'
+               f'    <div class="sp-tabs__panels">\n{panels}\n    </div>\n'
+               f'    {mid_html}\n  </div>\n</section>\n' + TABS_JS)
         body = body[:more.start()] + how + body[more.end():]
         body = re.sub(r'<section class="pp-hero sp-hero [^"]*">', '<section class="pp-hero sp-hero">', body, count=1)
         # the hero as on the reference: the words, then the product's picture wide below them

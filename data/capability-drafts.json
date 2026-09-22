@@ -1,0 +1,79 @@
+{
+  "_status": "DRAFT — written by Claude on 2026-09-22 for the \"How it works\" tabs on the /s/ solution pages, to be reviewed and corrected. Sources: data/solutions.json (positioning, card, who it's for) and the client's TMC Product Overview PDF (description and 'Why we win'). Edit the text here, then run: python3 next/build-solution-pages-c.py",
+  "products": {
+    "questbrand": {
+      "Brand tracking": "Always-on tracking of awareness, consideration and momentum, powered by the Harris Poll: a live read on brand health instead of a static quarterly tracker.",
+      "Competitive benchmarking": "See your numbers side by side with the competitors you name, across up to 24 markets, and spot where the gap is opening or closing.",
+      "Campaign impact": "Watch a campaign move the numbers while it is still running, so you can see what is working before the budget is spent.",
+      "Emotional drivers": "Go beyond awareness to the feelings behind it: what people associate with your brand, and how those associations change over time."
+    },
+    "questdiy": {
+      "AI-drafted surveys": "Describe what you want to learn and AI drafts the questionnaire for you to edit. No agency brief, no weeks of back and forth.",
+      "Respondents in 100+ countries": "A built-in global panel fields your study in more than 100 countries, so national and multi-market research runs from one place.",
+      "Concept & message testing": "Put concepts, messages and ads in front of real consumers before launch and see which one lands.",
+      "Same-day reads": "Studies are built, fielded and analysed in as little as four hours, so the answer arrives before the deadline."
+    },
+    "bera": {
+      "Brand ROI tracking": "Links brand performance directly to business outcomes, pricing power and revenue, so you can show which brand investments pay.",
+      "Audience prioritization": "Engagement-based segmentation separates loyals, switchers, prospects and win-backs, and shows which audiences are worth growing.",
+      "Competitive intelligence": "Weekly, census-matched tracking across 5,000+ brands benchmarks you against category rivals and everything else competing for attention.",
+      "Media planning": "More than ten years of historical data feed media mix modelling, quantifying brand impact alongside media, pricing and distribution."
+    },
+    "knowledge_machine": {
+      "Real-time sentiment across owned, earned and competitive channels": "Emotional and market signals from your own channels, earned coverage and competitors, read together as they happen.",
+      "Historical pattern matching against prior market moments": "Each new signal is compared with earlier moments that looked like it, so you can see how similar shifts played out before.",
+      "Full audience profile surfaced with the signal": "Every signal arrives with who is driving it, not just what is shifting, so the response can be aimed at the right people."
+    },
+    "unicepta": {
+      "Global monitoring": "Connects 460M+ sources across news, social, broadcast and AI answers, in 187 languages, into one decision-ready view.",
+      "Daily briefings & alerts": "Curated daily media reviews and real-time alerts, shaped around what your brand needs to know.",
+      "Narrative analysis": "Analysts and AI look past the metrics to the narratives, positioning and reputational risks your stakeholders are forming.",
+      "Social listening": "Conversation across social platforms, tracked alongside media coverage, so reputation is read across every channel that shapes it."
+    },
+    "imai": {
+      "Creator discovery": "Search a 400M+ creator database, then vet audiences and check for fraud before anyone is signed.",
+      "Campaign management": "Outreach, contracts, approvals and tracking through to ROI in one workflow, instead of spreadsheets and DMs.",
+      "LLM visibility": "See how AI search tools talk about your brand, and act on it from the same platform as your creator programs.",
+      "UGC video ads": "Produce AI-generated, UGC-style video ads from the same workspace as your creator campaigns."
+    },
+    "smb_platform": {
+      "Creator discovery": "Find creators who fit your brand, without a dedicated influencer team.",
+      "Audience validation": "Check that a creator's audience is real and matches the people you want to reach before you spend.",
+      "ROI tracking": "See what each creator and campaign returned, so the next budget goes where it worked.",
+      "One dashboard": "Listen, understand, execute and measure from one place, built for brands and agencies of 10 to 250 people."
+    },
+    "geopulse": {
+      "AI visibility intelligence": "Tracks how ChatGPT, Gemini, Perplexity and other AI systems mention and describe your brand, topic by topic, refreshed daily.",
+      "Prompt optimization": "Persona- and journey-based prompts reflect how real people ask, not generic keyword lists.",
+      "Competitive benchmarking": "See where AI answers recommend a rival instead of you, and on which topics.",
+      "Content simulation": "Test changes to your content before publishing, and see how they are likely to shift what AI says about you."
+    },
+    "numetrix": {
+      "Audience measurement": "Measures who actually saw and visited, anchored in verified visitation behaviour rather than estimates.",
+      "Brand lift & ad impact": "Connects audience impressions with brand lift, so out-of-home and place-based media can be judged alongside CTV and TV.",
+      "Location intelligence": "Foot traffic and dwell-time trends show how people really move, and whether your advertising changed where they went."
+    },
+    "media_machine": {
+      "Scores every platform and channel against evidence of what works": "Every platform and channel is scored against evidence of what has worked, so spend starts from proof rather than habit.",
+      "Drafts the plan and flighting": "Drafts the media plan and flighting for your team to review and adjust, instead of starting from a blank spreadsheet.",
+      "Models spend and projected lift": "Models spend scenarios and the lift each one is projected to deliver, before a dollar goes live."
+    },
+    "newintel": {
+      "Pricing moves": "See when competitors change their prices as it happens, not in next quarter's deck.",
+      "Hiring signals": "New roles and teams show where a competitor is investing before they announce it.",
+      "Earned coverage": "What the press is saying about your competitors, week by week.",
+      "Creator activity": "Which creators your competitors are working with, and what they are posting."
+    },
+    "search_plus": {
+      "AI search representation": "See how your brand is represented inside AI search tools today, and where the description falls short.",
+      "Influence how AI recommends you": "Shape the content and signals AI tools draw on, so your brand is recommended more often and more accurately.",
+      "ChatGPT, Gemini, Perplexity, Grok": "One program across the AI assistants people now ask first: ChatGPT, Gemini, Perplexity and Grok."
+    },
+    "id_graph": {
+      "First-party data onboarding": "Bring your own customer data in and match it against 260 million US consumers and 123 million households.",
+      "Third-party media data": "Connect media data from outside partners to the same identity spine, so audiences reach the channels you buy.",
+      "Proprietary consumer intelligence": "Enrich audiences with Stagwell's own data, from BERA, the Harris Poll and The People Platform, on what people think and do.",
+      "Privacy-safe activation": "Build and activate audiences without exposing any individual's identity."
+    }
+  }
+}

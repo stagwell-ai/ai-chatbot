@@ -43,7 +43,7 @@ d.setAttribute('data-theme',t||sys);})();
 <link rel="stylesheet" href="/next/product.css">
 <link rel="stylesheet" href="/next/home-c.css?v=237">
 <link rel="stylesheet" href="/next/prod-c.css?v=121">
-<link rel="stylesheet" href="/next/hero-b.css?v=37">
+<link rel="stylesheet" href="/next/hero-b.css?v=40">
 <!-- Contentsquare: funnel analysis and heatmaps (client, 2026-09-17) -->
 <script src="https://t.contentsquare.net/uxa/f6c5bb82a83a7.js" defer></script>
 </head>
@@ -184,23 +184,57 @@ d.setAttribute('data-theme',t||sys);})();
   </div>
 </section>
 
-<section class="pp-more sp-how">
-  <div class="pp-wrap sp-how__in">
-    <div class="sp-how__pic"><img src="/assets/img/agentic.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="sp-how__txt">
-      <div class="pp-more__head">
+<section class="pp-more sp-tabs">
+  <div class="pp-wrap">
+    <div class="sp-tabs__head"><div class="pp-more__head">
       <p class="pp-sign rv">How it works</p>
       <h2 class="pp-h2 rv" style="--d:.1s">What <span>The Knowledge Machine</span> does</h2>
+    </div></div>
+    <div class="sp-tabs__bar" role="tablist" aria-label="What it does">
+      <button type="button" class="sp-tabs__tab is-on" role="tab" id="spt-knowledge_machine-0" aria-controls="spp-knowledge_machine-0" aria-selected="true">Real-time sentiment across owned, earned and competitive channels</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-knowledge_machine-1" aria-controls="spp-knowledge_machine-1" aria-selected="false" tabindex="-1">Historical pattern matching against prior market moments</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-knowledge_machine-2" aria-controls="spp-knowledge_machine-2" aria-selected="false" tabindex="-1">Full audience profile surfaced with the signal</button>
     </div>
-      <ol class="pp-steps sp-caps">
-        <li class="rv" style="--d:0.00s"><b>01</b><div><h3>Real-time sentiment across owned, earned and competitive channels</h3></div></li>
-        <li class="rv" style="--d:0.06s"><b>02</b><div><h3>Historical pattern matching against prior market moments</h3></div></li>
-        <li class="rv" style="--d:0.12s"><b>03</b><div><h3>Full audience profile surfaced with the signal</h3></div></li>
-      </ol>
-      <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
+    <div class="sp-tabs__panels">
+      <article class="sp-tabs__panel is-on" role="tabpanel" id="spp-knowledge_machine-0" aria-labelledby="spt-knowledge_machine-0">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">01 / 03</p><h3>Real-time sentiment across owned, earned and competitive channels</h3><p>Emotional and market signals from your own channels, earned coverage and competitors, read together as they happen.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/tunnel-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-knowledge_machine-1" aria-labelledby="spt-knowledge_machine-1">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">02 / 03</p><h3>Historical pattern matching against prior market moments</h3><p>Each new signal is compared with earlier moments that looked like it, so you can see how similar shifts played out before.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/block-rain-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-knowledge_machine-2" aria-labelledby="spt-knowledge_machine-2">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">03 / 03</p><h3>Full audience profile surfaced with the signal</h3><p>Every signal arrives with who is driving it, not just what is shifting, so the response can be aimed at the right people.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/orbits-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
     </div>
+    <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
   </div>
 </section>
+<script>
+(function () {
+  var sec = document.currentScript && document.currentScript.previousElementSibling;
+  if (!sec || !sec.classList.contains('sp-tabs')) return;
+  var tabs = [].slice.call(sec.querySelectorAll('.sp-tabs__tab')), panels = [].slice.call(sec.querySelectorAll('.sp-tabs__panel'));
+  var bar = sec.querySelector('.sp-tabs__bar');
+  function pick(i, focus) {
+    tabs.forEach(function (t, n) { var on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); });
+    if (focus) tabs[i].focus();
+    if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { pick(i); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % tabs.length, true); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); pick((i - 1 + tabs.length) % tabs.length, true); }
+    });
+  });
+  sec.classList.add('is-tabbed');
+  pick(0);
+})();
+</script>
 
 <section class="sp-also">
   <div class="pp-wrap">

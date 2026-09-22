@@ -43,7 +43,7 @@ d.setAttribute('data-theme',t||sys);})();
 <link rel="stylesheet" href="/next/product.css">
 <link rel="stylesheet" href="/next/home-c.css?v=237">
 <link rel="stylesheet" href="/next/prod-c.css?v=121">
-<link rel="stylesheet" href="/next/hero-b.css?v=37">
+<link rel="stylesheet" href="/next/hero-b.css?v=40">
 <!-- Contentsquare: funnel analysis and heatmaps (client, 2026-09-17) -->
 <script src="https://t.contentsquare.net/uxa/f6c5bb82a83a7.js" defer></script>
 </head>
@@ -178,23 +178,57 @@ d.setAttribute('data-theme',t||sys);})();
   <figure class="sp-hero__pic"><img src="/assets/img/tabs/geopulse.jpg" alt="" decoding="async" fetchpriority="high"></figure>
 </section>
 
-<section class="pp-more sp-how">
-  <div class="pp-wrap sp-how__in">
-    <div class="sp-how__pic"><img src="/assets/img/tabs/geopulse.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="sp-how__txt">
-      <div class="pp-more__head">
+<section class="pp-more sp-tabs">
+  <div class="pp-wrap">
+    <div class="sp-tabs__head"><div class="pp-more__head">
       <p class="pp-sign rv">How it works</p>
       <h2 class="pp-h2 rv" style="--d:.1s">What <span>Search+</span> does</h2>
+    </div></div>
+    <div class="sp-tabs__bar" role="tablist" aria-label="What it does">
+      <button type="button" class="sp-tabs__tab is-on" role="tab" id="spt-search_plus-0" aria-controls="spp-search_plus-0" aria-selected="true">AI search representation</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-search_plus-1" aria-controls="spp-search_plus-1" aria-selected="false" tabindex="-1">Influence how AI recommends you</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-search_plus-2" aria-controls="spp-search_plus-2" aria-selected="false" tabindex="-1">ChatGPT, Gemini, Perplexity, Grok</button>
     </div>
-      <ol class="pp-steps sp-caps">
-        <li class="rv" style="--d:0.00s"><b>01</b><div><h3>AI search representation</h3></div></li>
-        <li class="rv" style="--d:0.06s"><b>02</b><div><h3>Influence how AI recommends you</h3></div></li>
-        <li class="rv" style="--d:0.12s"><b>03</b><div><h3>ChatGPT, Gemini, Perplexity, Grok</h3></div></li>
-      </ol>
-      <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
+    <div class="sp-tabs__panels">
+      <article class="sp-tabs__panel is-on" role="tabpanel" id="spp-search_plus-0" aria-labelledby="spt-search_plus-0">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">01 / 03</p><h3>AI search representation</h3><p>See how your brand is represented inside AI search tools today, and where the description falls short.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/circuit-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-search_plus-1" aria-labelledby="spt-search_plus-1">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">02 / 03</p><h3>Influence how AI recommends you</h3><p>Shape the content and signals AI tools draw on, so your brand is recommended more often and more accurately.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/terrain-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-search_plus-2" aria-labelledby="spt-search_plus-2">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">03 / 03</p><h3>ChatGPT, Gemini, Perplexity, Grok</h3><p>One program across the AI assistants people now ask first: ChatGPT, Gemini, Perplexity and Grok.</p></div>
+        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/globe-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+      </article>
     </div>
+    <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
   </div>
 </section>
+<script>
+(function () {
+  var sec = document.currentScript && document.currentScript.previousElementSibling;
+  if (!sec || !sec.classList.contains('sp-tabs')) return;
+  var tabs = [].slice.call(sec.querySelectorAll('.sp-tabs__tab')), panels = [].slice.call(sec.querySelectorAll('.sp-tabs__panel'));
+  var bar = sec.querySelector('.sp-tabs__bar');
+  function pick(i, focus) {
+    tabs.forEach(function (t, n) { var on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); });
+    if (focus) tabs[i].focus();
+    if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { pick(i); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % tabs.length, true); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); pick((i - 1 + tabs.length) % tabs.length, true); }
+    });
+  });
+  sec.classList.add('is-tabbed');
+  pick(0);
+})();
+</script>
 
 <section class="ask-end" id="start">
   <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
