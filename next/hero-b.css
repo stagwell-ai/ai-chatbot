@@ -650,3 +650,7 @@ body.hc-b.pc-page .sp-tabs__pic:not(#_) > img{position:absolute;inset:0;width:10
 .sx-prompt{height:auto;justify-content:flex-start}
 .sx-note{min-height:150px}
 .sx-list li:last-child{padding-bottom:0}
+/* mockups: every card as tall as its content; the charts take their height from the width */
+.sx-wave{height:90px}
+.sx-scale{width:100%;max-width:220px}
+.sx-tile__viz{position:absolute}
