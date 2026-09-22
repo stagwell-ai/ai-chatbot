@@ -221,3 +221,46 @@ body.hc-b.pc-page .sp-also__w:not(#_){display:block !important;margin-top:8px !i
 body.hc-b.pc-page .sp-also__item:not(#_) svg{width:22px !important;height:22px !important;flex:0 0 auto !important;margin-top:6px !important;color:#0B1220 !important;transition:transform .25s ease}
 body.hc-b.pc-page .sp-also__item:not(#_):hover svg{transform:translateX(4px)}
 body.hc-b.pc-page .sp-mark:not(#_){border:0 !important;background:none !important;box-shadow:none !important;padding:0 !important;border-radius:0 !important}
+
+/* solution pages, round two: the product's picture is the hero's ground (a darkened card
+   inset 20px, like the homepage film), white type on it */
+body.hc-b.pc-page .sp-hero--pic:not(#_){position:relative !important;margin:clamp(72px,9vh,88px) 20px 0 !important;min-height:min(80vh,760px) !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;padding-block:clamp(72px,10vh,120px) !important;
+  background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(11,18,32,.42),rgba(11,18,32,0) 100%),linear-gradient(180deg,rgba(11,18,32,.66) 0%,rgba(11,18,32,.5) 50%,rgba(11,18,32,.72) 100%),#0B1220 var(--sp-pic) center / cover no-repeat !important;border-radius:0 !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) :is(.sp-mark,.pp-eyebrow,.pp-title,.pp-title *,.pp-lede){color:#FFFFFF !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) :is(.pp-title,.pp-title *){-webkit-text-stroke-color:#FFFFFF !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .pp-eyebrow{color:rgba(255,255,255,.72) !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .pp-lede{color:rgba(255,255,255,.86) !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .btn[data-cta]{background:#FFFFFF !important;border-color:#FFFFFF !important;color:#0B1220 !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .btn[data-cta] *{color:#0B1220 !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .btn[data-cta]:hover{background:#E6E6E3 !important;border-color:#E6E6E3 !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .pp-site{color:#FFFFFF !important;border-color:rgba(255,255,255,.7) !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .pp-site *{color:#FFFFFF !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .sp-hero--pic:not(#_){margin:72px 16px 0 !important;min-height:min(86svh,680px) !important;padding-inline:4px !important}
+}
+
+/* "What it does": the capabilities as a plain numbered list, two columns */
+body.hc-b.pc-page .pp-more__grid:not(#_):has(> .sp-caps){display:block !important}
+body.hc-b.pc-page .sp-caps:not(#_){display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:0 clamp(24px,4vw,64px) !important;
+  list-style:none !important;padding:0 !important;margin:clamp(32px,4vw,56px) 0 0 !important;counter-reset:none}
+body.hc-b.pc-page .sp-caps:not(#_) > li{display:flex !important;align-items:baseline !important;gap:20px !important;border:0 !important;border-top:1px solid rgba(11,18,32,.16) !important;
+  padding:24px 0 30px !important;margin:0 !important;background:none !important;opacity:1}
+body.hc-b.pc-page .sp-caps:not(#_) > li > b{flex:0 0 32px !important;font-size:13px !important;font-weight:400 !important;letter-spacing:.04em !important;color:rgba(11,18,32,.4) !important;background:none !important;width:auto !important;height:auto !important;border:0 !important}
+body.hc-b.pc-page .sp-caps:not(#_) h3{margin:0 !important;font-size:clamp(24px,.9rem + 1.4vw,36px) !important;font-weight:400 !important;letter-spacing:-.03em !important;line-height:1.12 !important;color:#0B1220 !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .sp-caps:not(#_){grid-template-columns:1fr !important}
+}
+
+/* Related: each product as a picture card */
+body.hc-b.pc-page .sp-also__item:not(#_){display:grid !important;grid-template-columns:minmax(0,1fr) auto !important;grid-template-areas:"pic pic" "txt go" !important;
+  align-items:start !important;border-top:0 !important;padding:0 0 28px !important;column-gap:20px !important}
+body.hc-b.pc-page .sp-also__pic:not(#_){grid-area:pic;display:block;width:100%;aspect-ratio:16 / 10;margin:0 0 20px;background:#0B1220 var(--sp-pic) center / cover no-repeat;transition:opacity .3s ease}
+body.hc-b.pc-page .sp-also__item:not(#_) > span:not(.sp-also__pic){grid-area:txt;display:block}
+body.hc-b.pc-page .sp-also__item:not(#_) > svg{grid-area:go}
+body.hc-b.pc-page .sp-also__item:not(#_):hover .sp-also__pic{opacity:.88}
+body.hc-b.pc-page .sp-also__list:not(#_){grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr)) !important}
+body.hc-b.pc-page .sp-caps:not(#_) > li > b{position:static !important;inset:auto !important;order:-1 !important;transform:none !important}
+body.hc-b.pc-page .sp-caps:not(#_) > li > b::before,
+body.hc-b.pc-page .sp-caps:not(#_) > li > b::after{content:none !important}
+body.hc-b.pc-page .sp-hero .sp-mark:not(#_){order:-2 !important}
