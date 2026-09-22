@@ -589,3 +589,31 @@ body.hc-b.pc-page .sx-gauge{margin-top:2px}
 body.hc-b.pc-page .pc-collage__card.sx--tile.is-pic{padding:0;border:0;background:#0B1220}
 .sx--tile.is-pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 body.hc-b.pc-page .pc-collage--phone .sx-tile__viz{display:none}
+
+/* proof, again: off the black. Figures on white in soft cards, the label beneath */
+body.hc-b.pc-page .pp-proof .pp-wrap:not(#_){background:transparent !important;padding:0 20px !important;border-radius:0 !important}
+body.hc-b.pc-page .pp-proof:not(#_) .pp-h2,
+body.hc-b.pc-page .pp-proof:not(#_) .pp-h2 *{color:#0B1220 !important}
+body.hc-b.pc-page .pp-proof .pp-flag:not(#_){border-color:rgba(11,18,32,.18) !important;color:rgba(11,18,32,.56) !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_){grid-template-columns:repeat(auto-fit,minmax(240px,1fr)) !important;gap:20px !important;margin-top:clamp(32px,4vw,48px) !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{border:0 !important;background:#F4F4F1 !important;border-radius:20px !important;padding:32px 28px 30px !important;display:flex !important;flex-direction:column !important;justify-content:flex-end !important;min-height:220px}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{color:#0B1220 !important;font-size:clamp(48px,1.5rem + 3.6vw,88px) !important;font-weight:300 !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{color:rgba(11,18,32,.6) !important;margin-top:14px !important}
+body.hc-b.pc-page .pp-proof .pp-proof__note:not(#_){color:rgba(11,18,32,.5) !important;margin-top:24px !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-proof .pp-wrap:not(#_){padding:0 16px !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_){grid-template-columns:1fr 1fr !important;gap:12px !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{padding:20px 18px 18px !important;min-height:150px;border-radius:16px !important}
+}
+
+/* What it connects to: the same soft cards, a small ink disc for the check */
+body.hc-b.pc-page .pp-with__grid:not(#_){gap:20px !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) li{border:0 !important;background:#F4F4F1 !important;border-radius:20px !important;padding:28px 26px 30px !important;display:flex !important;flex-direction:column !important;gap:18px !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) svg{width:16px !important;height:16px !important;color:#FFFFFF !important;background:#0B1220;border-radius:50%;padding:9px;box-sizing:content-box;flex:0 0 auto}
+body.hc-b.pc-page .pp-with__grid:not(#_) b{display:block;margin:0 0 8px !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-with__grid:not(#_){gap:12px !important}
+  body.hc-b.pc-page .pp-with__grid:not(#_) li{padding:22px 20px !important;border-radius:16px !important}
+}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{justify-content:flex-start !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) svg.pp-with__ic{background:#0B1220 !important;color:#FFFFFF !important;padding:9px !important;border-radius:50% !important;width:16px !important;height:16px !important;margin:0 !important}
