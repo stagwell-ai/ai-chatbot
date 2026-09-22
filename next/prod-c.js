@@ -355,6 +355,62 @@
   const more = page.querySelector('.pp-more');
   const steps = more && [...more.querySelectorAll('.pp-steps > li')];
   const media = more && more.querySelector('.pp-more__media');
+  /* approved B look (body.hc-b): How it works as tabs over one card, as on the solution
+     pages. The first tab keeps the product's own picture (New Voices: its live voice); the
+     others take stills from the text-free motion-lab loops. */
+  if (document.body.classList.contains('hc-b') && steps && steps.length > 1 && media && !more.dataset.pcHow) {
+    more.dataset.pcHow = '1';
+    const STILLS = ['orbits', 'pulses', 'circuit', 'terrain', 'globe', 'streams', 'mosaic', 'plexus', 'lanes', 'converge', 'charts', 'clusters', 'tunnel', 'block-rain']
+      .map(k => '/assets/video/lab/loops/' + k + '-poster.jpg');
+    const slug = (document.body.className.match(/pp--([\w-]+)/) || ['', ''])[1];
+    const seed = [...slug].reduce((a, c) => a + c.charCodeAt(0), 0);
+    const grid = more.querySelector('.pp-more__grid');
+    const head = more.querySelector('.pp-more__head');
+    more.classList.add('sp-tabs');
+    if (head) { const hb = document.createElement('div'); hb.className = 'sp-tabs__head'; head.parentNode.insertBefore(hb, head); hb.appendChild(head); }
+    const bar = document.createElement('div');
+    bar.className = 'sp-tabs__bar'; bar.setAttribute('role', 'tablist'); bar.setAttribute('aria-label', 'How it works');
+    const box = document.createElement('div'); box.className = 'sp-tabs__panels';
+    const tabs = [], panels = [];
+    steps.forEach((li, k) => {
+      const h = ((li.querySelector('h3') || {}).textContent || '').trim();
+      const d = ((li.querySelector('p') || {}).textContent || '').trim();
+      const t = document.createElement('button');
+      t.type = 'button'; t.className = 'sp-tabs__tab'; t.setAttribute('role', 'tab');
+      t.id = 'pht-' + k; t.setAttribute('aria-controls', 'php-' + k); t.textContent = h;
+      bar.appendChild(t); tabs.push(t);
+      const a = document.createElement('article');
+      a.className = 'sp-tabs__panel'; a.setAttribute('role', 'tabpanel'); a.id = 'php-' + k; a.setAttribute('aria-labelledby', 'pht-' + k);
+      const txt = document.createElement('div'); txt.className = 'sp-tabs__txt';
+      const n = document.createElement('p'); n.className = 'sp-tabs__n';
+      n.textContent = String(k + 1).padStart(2, '0') + ' / ' + String(steps.length).padStart(2, '0');
+      const h3 = document.createElement('h3'); h3.textContent = h;
+      txt.append(n, h3);
+      if (d) { const pp = document.createElement('p'); pp.textContent = d; txt.append(pp); }
+      const pic = document.createElement('div'); pic.className = 'sp-tabs__pic';
+      if (k === 0) pic.appendChild(media);
+      else { const im = new Image(); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.src = STILLS[(seed + k) % STILLS.length]; pic.appendChild(im); }
+      a.append(txt, pic); box.appendChild(a); panels.push(a);
+    });
+    grid.parentNode.insertBefore(bar, grid);
+    grid.parentNode.insertBefore(box, grid);
+    grid.hidden = true;
+    const pick = (i, focus) => {
+      tabs.forEach((t, n) => { const on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+      panels.forEach((p, n) => { p.hidden = n !== i; p.classList.toggle('is-on', n === i); });
+      if (focus) tabs[i].focus();
+      if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => pick(i));
+      t.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % tabs.length, true); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); pick((i - 1 + tabs.length) % tabs.length, true); }
+      });
+    });
+    more.classList.add('is-tabbed');
+    pick(0);
+  }
   if (steps && steps.length > 1 && media && !more.dataset.pcHow) {
     more.dataset.pcHow = '1';
     const grid = more.querySelector('.pp-more__grid');

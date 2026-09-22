@@ -358,3 +358,48 @@ body.hc-b.pc-page .sp-tabs__head:not(#_) :is(.pp-sign,.pp-h2){text-align:center 
 @media (max-width:860px){
   body.hc-b.pc-page .sp-tabs__tab:not(#_){max-width:min(260px,68vw);overflow:hidden;text-overflow:ellipsis;font-size:15px}
 }
+
+/* ── inner pages, polish round ───────────────────────────────────────────── */
+/* no eyebrows over section titles: the title says it */
+body.hc-b.pc-page .pp-sign:not(#_){display:none !important}
+
+/* hero rhythm: label, title, lede, buttons on even steps */
+body.hc-b.pc-page .pp-hero :is(.pp-eyebrow,.sp-mark):not(#_){margin:0 0 20px !important}
+body.hc-b.pc-page .pp-hero .pp-title:not(#_){margin:0 0 24px !important}
+body.hc-b.pc-page .pp-hero .pp-lede:not(#_){margin:0 0 36px !important}
+body.hc-b.pc-page .pp-hero .pp-acts:not(#_){margin:0 !important}
+/* solution pages: the product's name is the one small label over the title */
+body.hc-b.pc-page .sp-hero .pp-eyebrow:not(#_){display:none !important}
+body.hc-b.pc-page .sp-hero .sp-mark:not(#_){font-size:12px !important;letter-spacing:1.6px !important;text-transform:uppercase !important;color:rgba(11,18,32,.56) !important;font-weight:400 !important}
+
+/* product pages: the product's own picture (New Voices: the live voice) fills the first tab */
+body.hc-b.pc-page .sp-tabs__pic:not(#_) > .pp-more__media{position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;
+  margin:0 !important;border-radius:0 !important;aspect-ratio:auto !important;max-height:none !important;overflow:hidden !important}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) > .pp-more__media :is(img,picture){position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+body.hc-b.pc-page .sp-tabs:not(#_) .pp-more__head .pp-h2{max-width:none !important}
+
+/* proof: one ink card, the figures large and light in white, quiet labels */
+body.hc-b.pc-page .pp-proof:not(#_){padding-inline:20px !important;padding-block:clamp(56px,7vw,112px) !important}
+body.hc-b.pc-page .pp-proof .pp-wrap:not(#_){max-width:1240px !important;margin-inline:auto !important;padding:clamp(40px,6vw,88px) clamp(28px,5.5vw,80px) !important;
+  background:#0B1220 !important;border-radius:20px !important}
+body.hc-b.pc-page .pp-proof:not(#_) .pp-h2,
+body.hc-b.pc-page .pp-proof:not(#_) .pp-h2 *{color:#FFFFFF !important;font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
+body.hc-b.pc-page .pp-proof .pp-flag:not(#_){border-color:rgba(255,255,255,.28) !important;color:rgba(255,255,255,.7) !important;background:none !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{border-top-color:rgba(255,255,255,.18) !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{color:#FFFFFF !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{color:rgba(255,255,255,.64) !important}
+body.hc-b.pc-page .pp-proof .pp-proof__note:not(#_){color:rgba(255,255,255,.46) !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-proof:not(#_){padding-inline:16px !important}
+  body.hc-b.pc-page .pp-proof .pp-wrap:not(#_){border-radius:16px !important}
+}
+body.hc-b.pc-page .sp-tabs .pp-more__grid[hidden]:not(#_){display:none !important}
+@media (min-width:861px){
+  body.hc-b.pc-page .sp-tabs__bar:not(#_){flex-wrap:wrap;overflow:visible;justify-content:center;row-gap:6px}
+}
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-tabs__bar:not(#_){justify-content:flex-start !important}
+}
+@media (min-width:861px){
+  body.hc-b.pc-page .sp-tabs__tab:not(#_){padding:0 16px;font-size:15px}
+}
