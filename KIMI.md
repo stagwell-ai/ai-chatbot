@@ -807,6 +807,14 @@ instead; a rejected submission creates nothing, which is what makes that safe ag
 form. Note for whoever is next: `api.hubapi.com` and `hsforms.com` are both unreachable from the
 build sandbox, which is why this runs as a function and not a script.
 
+**The site's domain must be on HubSpot's tracking list.** A submission whose `context.pageUri`
+carries a domain the portal does not know is answered **200** and then quarantined as
+"Unregistered Site Domain" in Marketing → Forms → Spam Submissions: no contact, no workflow, no
+error anywhere. Two leads were lost that way on 2026-09-22 before anyone looked at that screen.
+`SITE_ORIGIN` sets the origin we report, and whatever it says has to be added at HubSpot →
+Settings → Tracking & Analytics → Tracking Code → Domains. Held submissions can be released from
+that screen, which does create the contact and fire the workflow.
+
 **The form submission comes first** (`api/_lib/leads/hubspot-form.js`, added 2026-09-22 at the
 request of the person who runs the portal). A Contacts API write raises no event, so a workflow
 that triggers on a form submission never sees it and the lead never enrols or routes. So each

@@ -157,7 +157,13 @@ export async function submitForm(lead, data, opts) {
     submittedAt: Date.now(),
     fields,
     context: {
-      pageUri: a.landingPage ? 'https://stagwell-ai-prototypes.vercel.app' + a.landingPage : undefined,
+      /* HubSpot reads the SITE DOMAIN off this, and quarantines a submission
+         whose domain is not on the portal's tracking list — "Unregistered
+         Site Domain", which it does AFTER answering 200, so it looks like a
+         success from here (2026-09-22: two leads held in Spam Submissions
+         with no error anywhere). Hard-coding the host would make this lie the
+         day the site moves, so it is configuration. */
+      pageUri: a.landingPage ? (env('SITE_ORIGIN') || 'https://stagwell-ai-prototypes.vercel.app') + a.landingPage : undefined,
       pageName: 'Stagwell AI — book a demo',
       /* HubSpot's own visitor cookie, when the page had the tracking code and
          passed it through. Without it the submission still counts; it simply
