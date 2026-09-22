@@ -579,17 +579,19 @@
 
   /* arrangements on a 1080×480 stage: [main, screen 1, screen 2, screen 3] as x, y, w, h */
   const LAYOUT = {
-    A: [[250, 20, 580, 420], [0, 170, 330, 260], [860, 20, 220, 200], [790, 236, 290, 220]],
-    C: [[310, 0, 460, 480], [0, 40, 330, 214], [30, 272, 300, 200], [750, 140, 330, 230]],
-    D: [[170, 40, 740, 380], [0, 250, 300, 220], [790, 0, 290, 200], [770, 272, 310, 200]],
-    E: [[0, 30, 660, 420], [620, 0, 300, 236], [800, 256, 280, 214], [510, 272, 270, 204]]
+    A: [[280, 30, 500, 400], [20, 170, 330, 260], [740, 20, 300, 220], [780, 260, 290, 200]],
+    C: [[320, 0, 440, 460], [20, 40, 330, 220], [60, 280, 300, 190], [740, 140, 320, 240]],
+    D: [[240, 40, 560, 360], [20, 240, 320, 220], [760, 10, 300, 200], [740, 260, 320, 200]],
+    E: [[40, 30, 560, 400], [560, 10, 300, 230], [790, 240, 280, 210], [500, 290, 270, 190]],
+    /* the voice: a wide, short bar, the way it sits on the homepage's closing tile */
+    V: [[230, 90, 600, 300], [20, 200, 330, 250], [790, 30, 270, 200], [730, 270, 330, 200]]
   };
   const mirror = l => l.map(([x, y, w, h]) => [1080 - x - w, y, w, h]);
   LAYOUT.B = mirror(LAYOUT.A); LAYOUT.F = mirror(LAYOUT.E);
   const PLAN = {
     'the-machine': ['A', { t: 'chat', q: 'Brief the Q3 launch for the team', a: 'Done. The brief, the audience and last quarter’s learnings are in one place, shared in Slack and Figma.' }, { t: 'network', title: 'Shared context', items: ['Slack', 'Figma', 'Adobe'] }, { t: 'list', title: 'Agents at work', items: ['Brief drafted', 'Audience refreshed', 'Assets resized'], metas: ['Now', 'Today', 'Today'] }],
     'targeting-machine': ['E', { t: 'prompt', chips: ['Explore', 'Expand', 'Activate'], q: 'Find people already shopping for an electric car' }, { t: 'network', title: 'Identity graph', items: ['People', 'Households', 'Devices'] }, { t: 'donut', title: 'Audience mix', items: ['High intent', 'Lookalikes', 'Re-engage'] }],
-    'newvoices': ['A', { t: 'chat', agent: true, q: 'I switched because setup took five minutes.', a: 'What made you look for something new in the first place?' }, { t: 'note', ink: true, q: 'Interview 200 customers about why they switched' }, { t: 'list', title: 'Themes emerging', items: ['Price clarity', 'Onboarding', 'Support speed'], metas: ['Rising', 'Steady', 'New'] }],
+    'newvoices': ['V', { t: 'chat', agent: true, q: 'I switched because setup took five minutes.', a: 'What made you look for something new in the first place?' }, { t: 'note', ink: true, q: 'Interview 200 customers about why they switched' }, { t: 'list', title: 'Themes emerging', items: ['Price clarity', 'Onboarding', 'Support speed'], metas: ['Rising', 'Steady', 'New'] }],
     'agent-cloud': ['D', { t: 'prompt', chips: ['Claude', 'ChatGPT', 'Gemini'], q: 'Draft three headlines for the spring campaign' }, { t: 'list', title: 'Marketing agents', items: ['Copywriter', 'Campaign planner', 'Message tester'], metas: ['Ready', 'Ready', 'Running'], faces: true }, { t: 'chat', q: 'Test these two messages with parents', a: 'Message B lands better. Parents called it clearer and more honest.' }],
     questbrand: ['E', { t: 'trend', title: 'Brand health', sub: 'Awareness · last six months', legend: ['Your brand', 'Competitor'] }, { t: 'bars', title: 'Consideration', sub: 'By week' }, { t: 'donut', title: 'Emotional drivers', items: ['Trust', 'Joy', 'Pride'] }],
     questdiy: ['F', { t: 'survey', title: 'Which name do you prefer?', items: ['Option A', 'Option B', 'Option C'] }, { t: 'map', title: 'Respondents', pin: 'Fielding now' }, { t: 'bars', title: 'Responses', sub: 'By day' }],
