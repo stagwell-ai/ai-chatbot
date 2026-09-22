@@ -811,10 +811,25 @@ mock, which is still nowhere durable — see §17.
    Copy the access token.
 2. From a clone of this repo, Node 22+, **once**:
    `HUBSPOT_ACCESS_TOKEN=pat-… node scripts/hubspot-setup.mjs`
-   It checks the token first, creates the group and the properties, skips any that already
-   exist, and is safe to run again. `--dry-run` prints the plan without a token.
+   It checks the token first, creates the group and the properties, and **reconciles** any
+   that already exist — comparing `groupName` and `fieldType` against the definition and
+   PATCHing them back into shape (labels and descriptions are left alone; name and type
+   cannot be changed on an existing property). Safe to run again, and safe over a portal
+   someone has edited by hand. `--dry-run` prints the plan without a token.
 3. Vercel → the project → Settings → Environment Variables → add `HUBSPOT_ACCESS_TOKEN`,
    marked **Sensitive**, for Production, Preview and Development. Redeploy.
+4. Optional, same place: `HUBSPOT_OWNER_ID` (a numeric owner id — the contact owner a new
+   record is assigned to) and `HUBSPOT_LIFECYCLE_STAGE` (e.g. `marketingqualifiedlead`).
+   Both are applied **only when a contact is created**, never on an update, so a rep's later
+   work is not overwritten. Changing them later is an env-var edit and a redeploy, no code.
+
+**The HubSpot MCP connector cannot do step 2.** Tried on 2026-09-22: `manage_custom_properties`
+accepts `groupName: 'stagwell_ai'` and `fieldType: 'textarea'` and then silently writes
+`custom_information` and `text` instead — so the properties land ungrouped, and the long-text
+fields become single-line boxes. Two (`stagwell_ai_session_id`,
+`stagwell_ai_conversation_summary`) were created that way before it was caught; the setup
+script repairs them on its next run. The token route is the only one that produces the
+organised section.
 
 That is the whole switch: `hubspotMode()` returns `live` as soon as the token exists, so no code
 or flag changes. `HUBSPOT_MOCK=true` forces mock again if it ever needs turning off in a hurry.
@@ -831,7 +846,7 @@ stand-in portal that rejects unknown properties, exactly as HubSpot does: 17 cre
 present, a wrong token fails fast, a missing scope stops at the first property with the fix
 named, and a lead creates once then updates on the same email without duplicating.
 
-Creates group `stagwell_ai` and:
+Creates group `stagwell_ai` ("Stagwell AI discovery") and 22 properties:
 
 `stagwell_ai_primary_goal` (select) · `stagwell_ai_contact_request` (select: call / demo /
 trial / expert / pricing) · `stagwell_ai_role` (select) · `stagwell_ai_site_known` ·
@@ -841,7 +856,8 @@ trial / expert / pricing) · `stagwell_ai_role` (select) · `stagwell_ai_site_kn
 `stagwell_ai_conversation_summary` (textarea) · `stagwell_ai_conversation_steps` (number) ·
 `stagwell_ai_session_id` · `stagwell_ai_landing_page` · `stagwell_ai_utm_source` ·
 `stagwell_ai_utm_medium` · `stagwell_ai_utm_campaign` · `stagwell_ai_utm_content` ·
-`stagwell_ai_llm_mode` · `stagwell_ai_last_submitted`. Standard: `email firstname lastname
+`stagwell_ai_llm_mode` · `stagwell_ai_last_submitted` · `stagwell_ai_products_requested`
+(textarea — the Book a demo multi-select) · `stagwell_ai_source`. Standard: `email firstname lastname
 phone company website jobtitle`. Private-app scopes: `crm.objects.contacts.read`, `crm.objects.contacts.write`
 (+ `crm.schemas.contacts.write` for the setup script only).
 
@@ -850,8 +866,8 @@ phone company website jobtitle`. Private-app scopes: `crm.objects.contacts.read`
 See `.env.example`. Set today on **stagwell-ai-prototypes** (production, preview, development):
 `OPENAI_API_KEY` (sensitive), `KIMI_SECONDARY_MODEL=openai/gpt-4o-mini`, `KIMI_HEALTH_TOKEN`
 (sensitive). Already there: `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`. Not set (so mock /
-off): `HUBSPOT_ACCESS_TOKEN`, `HUBSPOT_PORTAL_ID`, `LEAD_WEBHOOK_URL`, `ANTHROPIC_API_KEY`,
-`XAI_API_KEY`. The **stagwell.vercel.app** project is a separate Vercel project this session
+off): `HUBSPOT_ACCESS_TOKEN`, `HUBSPOT_PORTAL_ID`, `HUBSPOT_OWNER_ID`,
+`HUBSPOT_LIFECYCLE_STAGE`, `LEAD_WEBHOOK_URL`, `ANTHROPIC_API_KEY`, `XAI_API_KEY`. The **stagwell.vercel.app** project is a separate Vercel project this session
 cannot reach; its variables must be set by Julian for the fallback and the health token to
 work there.
 
