@@ -654,3 +654,5 @@ body.hc-b.pc-page .sp-tabs__pic:not(#_) > img{position:absolute;inset:0;width:10
 .sx-wave{height:90px}
 .sx-scale{width:100%;max-width:220px}
 .sx-tile__viz{position:absolute}
+.sx--network{padding-bottom:22px}
+.sx-net{margin-bottom:0}
