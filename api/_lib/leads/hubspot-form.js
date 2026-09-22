@@ -194,7 +194,14 @@ export async function submitForm(lead, data, opts) {
          success from here (2026-09-22: two leads held in Spam Submissions
          with no error anywhere). Hard-coding the host would make this lie the
          day the site moves, so it is configuration. */
-      pageUri: a.landingPage ? originFor(o.host) + a.landingPage : undefined,
+      /* SENDING NO PAGE AT ALL is the escape hatch. HubSpot only quarantines
+         an "Unregistered Site Domain" when there is a domain to object to,
+         and it reads that off this field. We keep the page ourselves in
+         stagwell_ai_landing_page, so dropping it costs attribution inside
+         HubSpot and nothing else — a fair trade against leads going to a spam
+         queue nobody reads. HUBSPOT_FORM_SEND_PAGE=false turns it off. */
+      pageUri: (env('HUBSPOT_FORM_SEND_PAGE').toLowerCase() !== 'false' && a.landingPage)
+        ? originFor(o.host) + a.landingPage : undefined,
       pageName: 'Stagwell AI — book a demo',
       /* HubSpot's own visitor cookie, when the page had the tracking code and
          passed it through. Without it the submission still counts; it simply

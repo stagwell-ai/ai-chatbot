@@ -313,3 +313,12 @@ test('the pageUri that actually goes to HubSpot carries that host', async () => 
   await submitForm(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: p.fetch, host: 'beta.stagwell.ai' });
   assert.equal(p.posts[0].body.context.pageUri, 'https://beta.stagwell.ai/book');
 });
+
+test('the page can be withheld entirely, so there is no domain to quarantine', async () => {
+  process.env.HUBSPOT_FORM_SEND_PAGE = 'false';
+  const p = portal();
+  await submitForm(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: p.fetch, host: 'beta.stagwell.ai' });
+  assert.equal(p.posts[0].body.context.pageUri, undefined, 'no page, so no site domain');
+  assert.equal(p.posts[0].body.fields.length > 0, true, 'and the lead itself is untouched');
+  delete process.env.HUBSPOT_FORM_SEND_PAGE;
+});
