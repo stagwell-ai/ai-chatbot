@@ -628,7 +628,7 @@
 
   const SCREEN = {
     trend(c, w, h) {
-      const cw = w - 44, ch = h - 148, n = 6, a = series(n, 0.15, 0.95, true), b = series(n, 0.1, 0.7, false);
+      const cw = w - 44, ch = Math.round(w * 0.42), n = 6, a = series(n, 0.15, 0.95, true), b = series(n, 0.1, 0.7, false);
       const P = s => s.map((v, i) => [(i * cw / (n - 1)), ch - v * ch]);
       const path = pts => pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
       const A = P(a), B = P(b), last = A[n - 1];
@@ -646,7 +646,7 @@
       const days = c.labels ? c.labels : c.sub === 'By day' ? ['M', 'T', 'W', 'T', 'F', 'S', 'S'] : c.sub === 'By type' ? ['Price', 'Hire', 'Press', 'Social', 'Web'] : ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'];
       const top = Math.floor(rnd() * days.length);
       let b = ''; days.forEach((d, i) => { const v = i === top ? 0.95 : 0.25 + rnd() * 0.6; b += '<div class="sx-bar' + (i === top ? ' is-top' : '') + '"><i style="height:' + (v * 100).toFixed(0) + '%"></i><em>' + d + '</em></div>'; });
-      return headH(c.title, c.sub) + '<div class="sx-bars" style="height:' + (h - 112) + 'px">' + b + '</div>';
+      return headH(c.title, c.sub) + '<div class="sx-bars" style="height:' + Math.round(w * 0.36) + 'px">' + b + '</div>';
     },
     donut(c, w, h) {
       const r = 38, C = 2 * Math.PI * r, p = [0.46 + rnd() * 0.1, 0.24 + rnd() * 0.06]; p.push(1 - p[0] - p[1] - 0.03);
@@ -682,7 +682,7 @@
       return '<div class="sx-q">' + esc(c.title) + '</div><ul class="sx-survey">' + c.items.map((t, i) => '<li' + (i === 1 ? ' class="is-on"' : '') + '><i></i><span>' + esc(t) + '</span><b style="width:' + (i === 1 ? 72 : 30 + rnd() * 30).toFixed(0) + '%"></b></li>').join('') + '</ul><div class="sx-next"><span>Continue</span></div>';
     },
     map(c, w, h) {
-      const mw = w - 36, mh = h - 76; let dots = '';
+      const mw = w - 44, mh = Math.round(w * 0.5); let dots = '';
       const land = [[0.18, 0.4, 0.17, 0.3], [0.3, 0.72, 0.08, 0.2], [0.52, 0.35, 0.1, 0.22], [0.56, 0.68, 0.08, 0.22], [0.74, 0.38, 0.17, 0.26], [0.86, 0.78, 0.07, 0.12]];
       for (let y = 6; y < mh; y += 9) for (let x = 4; x < mw; x += 9) { const u = x / mw, v = y / mh; if (land.some(l => ((u - l[0]) / l[2]) ** 2 + ((v - l[1]) / l[3]) ** 2 < 1)) dots += '<circle cx="' + x + '" cy="' + y + '" r="1.7" fill="' + SOFT + '"/>'; }
       const pins = [[0.2, 0.42], [0.55, 0.36], [0.76, 0.42], [0.31, 0.7]].map((p, i) => '<circle cx="' + (p[0] * mw).toFixed(0) + '" cy="' + (p[1] * mh).toFixed(0) + '" r="' + (i ? 3.5 : 5) + '" fill="' + INK + '"/>' + (i ? '' : '<circle cx="' + (p[0] * mw).toFixed(0) + '" cy="' + (p[1] * mh).toFixed(0) + '" r="12" fill="' + INK + '" fill-opacity=".12"/>')).join('');
@@ -700,7 +700,7 @@
     },
     network(c, w, h) {
       /* a hub in ink, a ring of nodes wired to it, and the three named nodes as pills */
-      const top = 64, cw = w - 44, ch = h - top - 26, hub = [cw / 2, ch / 2 + 2];
+      const top = 64, cw = w - 44, ch = Math.round(w * 0.55), hub = [cw / 2, ch / 2 + 2];
       const pts = []; const n = 11;
       for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i / n * Math.PI * 2 + (rnd() - 0.5) * 0.25, d = 0.62 + rnd() * 0.36; pts.push([hub[0] + Math.cos(a) * cw * 0.46 * d, hub[1] + Math.sin(a) * ch * 0.46 * d]); }
       let g = '';
@@ -708,7 +708,7 @@
       const named = [1, 5, 8];
       pts.forEach((p, i) => { if (!named.includes(i)) g += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.6" fill="' + MID + '"/>'; });
       g += '<circle cx="' + hub[0].toFixed(1) + '" cy="' + hub[1].toFixed(1) + '" r="20" fill="' + INK + '" fill-opacity=".08"/><circle cx="' + hub[0].toFixed(1) + '" cy="' + hub[1].toFixed(1) + '" r="10" fill="' + INK + '"/>';
-      const tags = c.items.map((t, i) => { const p = pts[named[i]]; const x = Math.min(w - 44, Math.max(44, 18 + p[0])), y = Math.min(h - 18, Math.max(top + 12, top + p[1])); return '<span class="sx-tag" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px">' + esc(t) + '</span>'; }).join('');
+      const tags = c.items.map((t, i) => { const p = pts[named[i]]; const x = Math.min(w - 44, Math.max(44, 22 + p[0])), y = Math.min(top + ch - 10, Math.max(top + 12, top + p[1])); return '<span class="sx-tag" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px">' + esc(t) + '</span>'; }).join('');
       return headH(c.title) + '<svg class="sx-net" viewBox="0 0 ' + cw + ' ' + ch + '" width="' + cw + '" height="' + ch + '" aria-hidden="true">' + g + '</svg>' + tags;
     },
     flight(c, w, h) {
@@ -752,7 +752,7 @@
       const fan = FANS[SCENE[slug][2] || 'left'];
       const lay = small ? [[10, 0, 240, 150, -5], [130, 110, 260, 320, 4]] : fan;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
-      lay.forEach(([x, y, w, h, r], k) => { const c = cs[k]; let m = card('pc-collage__ui pc-collage__ui--' + (k + 1) + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h), r); if (['prompt', 'list', 'survey', 'rank', 'creators', 'chat'].includes(c.t)) m = m.replace('height:' + h + 'px', 'height:auto'); html += m; });
+      lay.forEach(([x, y, w, h, r], k) => { const c = cs[k]; let m = card('pc-collage__ui pc-collage__ui--' + (k + 1) + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h), r); if (c.t !== 'note') m = m.replace('height:' + h + 'px', 'height:auto'); html += m; });
     } else if (kind === 'tiles') {
       const cfg = SCENE[slug][1]; const cols = small ? 2 : 3, tw = small ? 190 : 340, th = small ? 150 : 220, gap = small ? 20 : 30;
       SW = small ? 400 : 1080; SH = small ? 320 : 470;
@@ -771,7 +771,7 @@
       const lay = small ? [[0, 0, 400, 270], [18, 206, 364, 230]] : L;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
       html += card('pc-collage__main', ...lay[0], '');
-      for (let k = 1; k < lay.length; k++) { const [x, y, w, h] = lay[k], c = plan[k]; let m = card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h)); if (['prompt', 'list', 'survey', 'rank', 'creators', 'chat', 'note'].includes(c.t)) m = m.replace('height:' + h + 'px', 'height:auto'); html += m; }
+      for (let k = 1; k < lay.length; k++) { const [x, y, w, h] = lay[k], c = plan[k]; let m = card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h)); if (c.t !== 'note') m = m.replace('height:' + h + 'px', 'height:auto'); html += m; }
     }
     next.className = 'pc-collage pc-collage--' + kind + (small ? ' pc-collage--phone' : ' pc-collage--' + plan[0]);
     next.innerHTML = '<div class="pc-collage__stage" style="width:' + SW + 'px;height:' + SH + 'px">' + html + '</div>';
@@ -800,7 +800,7 @@
       else { const im = new Image(); im.src = centreSrc; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; pic.appendChild(im); }
     } else if (v.startsWith('screen:')) {
       const c = plan[+v.slice(7)] || plan[1]; const w = 340, h = 250;
-      pic.innerHTML = '<div class="sx-in"><div class="pc-collage__card sx sx--' + c.t + '" style="position:relative;width:' + w + 'px;height:' + (['prompt', 'list', 'chat', 'survey', 'rank', 'creators'].includes(c.t) ? 'auto' : h + 'px') + '">' + SCREEN[c.t](c, w, h) + '</div></div>';
+      pic.innerHTML = '<div class="sx-in"><div class="pc-collage__card sx sx--' + c.t + '" style="position:relative;width:' + w + 'px;height:auto">' + SCREEN[c.t](c, w, h) + '</div></div>';
     }
   });
 
