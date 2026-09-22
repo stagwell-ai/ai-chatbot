@@ -75,5 +75,82 @@
       "Proprietary consumer intelligence": "Enrich audiences with Stagwell's own data, from BERA, the Harris Poll and The People Platform, on what people think and do.",
       "Privacy-safe activation": "Build and activate audiences without exposing any individual's identity."
     }
-  }
+  },
+  "tabs": {
+    "questbrand": {
+      "Brand tracking": "Tracking",
+      "Competitive benchmarking": "Benchmarks",
+      "Campaign impact": "Campaigns",
+      "Emotional drivers": "Emotion"
+    },
+    "questdiy": {
+      "AI-drafted surveys": "Surveys",
+      "Respondents in 100+ countries": "Global panel",
+      "Concept & message testing": "Testing",
+      "Same-day reads": "Speed"
+    },
+    "bera": {
+      "Brand ROI tracking": "Brand ROI",
+      "Audience prioritization": "Audiences",
+      "Competitive intelligence": "Competitors",
+      "Media planning": "Media"
+    },
+    "knowledge_machine": {
+      "Real-time sentiment across owned, earned and competitive channels": "Sentiment",
+      "Historical pattern matching against prior market moments": "Patterns",
+      "Full audience profile surfaced with the signal": "Audiences"
+    },
+    "unicepta": {
+      "Global monitoring": "Monitoring",
+      "Daily briefings & alerts": "Briefings",
+      "Narrative analysis": "Narratives",
+      "Social listening": "Social"
+    },
+    "imai": {
+      "Creator discovery": "Discovery",
+      "Campaign management": "Campaigns",
+      "LLM visibility": "AI search",
+      "UGC video ads": "UGC video"
+    },
+    "smb_platform": {
+      "Creator discovery": "Discovery",
+      "Audience validation": "Validation",
+      "ROI tracking": "ROI",
+      "One dashboard": "Dashboard"
+    },
+    "geopulse": {
+      "AI visibility intelligence": "Visibility",
+      "Prompt optimization": "Prompts",
+      "Competitive benchmarking": "Benchmarks",
+      "Content simulation": "Simulation"
+    },
+    "numetrix": {
+      "Audience measurement": "Measurement",
+      "Brand lift & ad impact": "Brand lift",
+      "Location intelligence": "Location"
+    },
+    "media_machine": {
+      "Scores every platform and channel against evidence of what works": "Scoring",
+      "Drafts the plan and flighting": "Planning",
+      "Models spend and projected lift": "Forecasting"
+    },
+    "newintel": {
+      "Pricing moves": "Pricing",
+      "Hiring signals": "Hiring",
+      "Earned coverage": "Coverage",
+      "Creator activity": "Creators"
+    },
+    "search_plus": {
+      "AI search representation": "Representation",
+      "Influence how AI recommends you": "Influence",
+      "ChatGPT, Gemini, Perplexity, Grok": "Assistants"
+    },
+    "id_graph": {
+      "First-party data onboarding": "First-party",
+      "Third-party media data": "Third-party",
+      "Proprietary consumer intelligence": "Intelligence",
+      "Privacy-safe activation": "Activation"
+    }
+  },
+  "_tabs_note": "Short tab labels (DRAFT). The four product pages carry theirs as data-tab on each step in next/{slug}.html."
 }

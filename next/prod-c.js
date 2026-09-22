@@ -377,7 +377,7 @@
       const d = ((li.querySelector('p') || {}).textContent || '').trim();
       const t = document.createElement('button');
       t.type = 'button'; t.className = 'sp-tabs__tab'; t.setAttribute('role', 'tab');
-      t.id = 'pht-' + k; t.setAttribute('aria-controls', 'php-' + k); t.textContent = h;
+      t.id = 'pht-' + k; t.setAttribute('aria-controls', 'php-' + k); t.textContent = li.dataset.tab || h;
       bar.appendChild(t); tabs.push(t);
       const a = document.createElement('article');
       a.className = 'sp-tabs__panel'; a.setAttribute('role', 'tabpanel'); a.id = 'php-' + k; a.setAttribute('aria-labelledby', 'pht-' + k);
@@ -551,4 +551,186 @@
   acts.appendChild(ways);
   const note = document.querySelector('.pc-page .prodfoot');
   if (note && !note.dataset.pcMoved) { note.dataset.pcMoved = '1'; acts.insertAdjacentElement('afterend', note); }
+})();
+
+
+/* approved B look: under the hero, a composed picture after the Manus solution pages. The page's
+   own image sits in a rounded card (a product page's film, which plays in place; a solution
+   page's picture), with three small product screens around it, each designed for what that
+   product does: a live interview, a prompt, a ranking in AI answers, a creator shortlist, a
+   flighting plan… Every page gets its own arrangement and its own screens. The screens carry
+   labels, not results: no invented figures. */
+(function () {
+  'use strict';
+  const body = document.body;
+  if (!body.classList.contains('hc-b') || !body.classList.contains('pc-page') || body.classList.contains('pl-c')) return;
+  const hero = document.querySelector('.pp-hero');
+  if (!hero || hero.querySelector('.pc-collage')) return;
+  const film = document.querySelector('.pp-film');
+  const fig = hero.querySelector('.sp-hero__pic');
+  const pic = fig && fig.querySelector('img');
+  if (!film && !pic) return;
+  const slug = (body.className.match(/(?:pp|sp)--([\w-]+)/) || ['', 'x'])[1];
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  /* arrangements on a 1080×480 stage: [main, screen 1, screen 2, screen 3] as x, y, w, h */
+  const LAYOUT = {
+    A: [[250, 20, 580, 420], [0, 170, 330, 260], [860, 20, 220, 200], [790, 236, 290, 220]],
+    C: [[310, 0, 460, 480], [0, 40, 330, 214], [30, 272, 300, 200], [750, 140, 330, 230]],
+    D: [[170, 40, 740, 380], [0, 250, 300, 220], [790, 0, 290, 200], [770, 272, 310, 200]],
+    E: [[0, 30, 660, 420], [620, 0, 300, 236], [800, 256, 280, 214], [510, 272, 270, 204]]
+  };
+  const mirror = l => l.map(([x, y, w, h]) => [1080 - x - w, y, w, h]);
+  LAYOUT.B = mirror(LAYOUT.A); LAYOUT.F = mirror(LAYOUT.E);
+  const PLAN = {
+    'the-machine': ['A', { t: 'chat', q: 'Brief the Q3 launch for the team', a: 'Done. The brief, the audience and last quarter’s learnings are in one place, shared in Slack and Figma.' }, { t: 'network', title: 'Shared context', items: ['Slack', 'Figma', 'Adobe'] }, { t: 'list', title: 'Agents at work', items: ['Brief drafted', 'Audience refreshed', 'Assets resized'], metas: ['Now', 'Today', 'Today'] }],
+    'targeting-machine': ['E', { t: 'prompt', chips: ['Explore', 'Expand', 'Activate'], q: 'Find people already shopping for an electric car' }, { t: 'network', title: 'Identity graph', items: ['People', 'Households', 'Devices'] }, { t: 'donut', title: 'Audience mix', items: ['High intent', 'Lookalikes', 'Re-engage'] }],
+    'newvoices': ['F', { t: 'wave', title: 'Customer interview', status: 'Live' }, { t: 'chat', agent: true, q: 'I switched because setup took five minutes.', a: 'What made you look for something new in the first place?' }, { t: 'list', title: 'Themes emerging', items: ['Price clarity', 'Onboarding', 'Support speed'], metas: ['Rising', 'Steady', 'New'] }],
+    'agent-cloud': ['D', { t: 'prompt', chips: ['Claude', 'ChatGPT', 'Gemini'], q: 'Draft three headlines for the spring campaign' }, { t: 'list', title: 'Marketing agents', items: ['Copywriter', 'Campaign planner', 'Message tester'], metas: ['Ready', 'Ready', 'Running'], faces: true }, { t: 'chat', q: 'Test these two messages with parents', a: 'Message B lands better. Parents called it clearer and more honest.' }],
+    questbrand: ['E', { t: 'trend', title: 'Brand health', sub: 'Awareness · last six months', legend: ['Your brand', 'Competitor'] }, { t: 'bars', title: 'Consideration', sub: 'By week' }, { t: 'donut', title: 'Emotional drivers', items: ['Trust', 'Joy', 'Pride'] }],
+    questdiy: ['F', { t: 'survey', title: 'Which name do you prefer?', items: ['Option A', 'Option B', 'Option C'] }, { t: 'map', title: 'Respondents', pin: 'Fielding now' }, { t: 'bars', title: 'Responses', sub: 'By day' }],
+    bera: ['A', { t: 'trend', title: 'Brand to business', sub: 'Brand strength and revenue', legend: ['Brand strength', 'Revenue'] }, { t: 'gauge', title: 'Pricing power', sub: 'Versus category' }, { t: 'donut', title: 'Audience priority', items: ['Loyals', 'Switchers', 'Prospects'] }],
+    knowledge_machine: ['C', { t: 'network', title: 'Signal map', items: ['Owned', 'Earned', 'Competitor'] }, { t: 'trend', title: 'Sentiment', sub: 'Across channels', legend: ['Positive', 'Negative'] }, { t: 'list', title: 'Who is driving it', items: ['Investors', 'Employees', 'Trade press'], metas: ['Rising', 'Steady', 'New'], faces: true }],
+    unicepta: ['D', { t: 'list', title: 'Morning briefing', items: ['Narrative shift in trade press', 'Executive interview picked up', 'Policy debate trending'], metas: ['06:00', '06:00', '06:00'] }, { t: 'map', title: 'Coverage', pin: 'Live' }, { t: 'gauge', title: 'Reputation risk', sub: 'This week' }],
+    imai: ['E', { t: 'creators', title: 'Creator shortlist', sub: 'Vetted · fraud-checked' }, { t: 'bars', title: 'Campaign reach', sub: 'By week' }, { t: 'chat', q: 'Find beauty creators in Austin with real audiences', a: 'Here is a vetted shortlist. Every audience passed the fraud check.' }],
+    smb_platform: ['B', { t: 'creators', title: 'Creators for you', sub: 'Matched to your brand' }, { t: 'donut', title: 'Audience quality', items: ['Real', 'Suspicious', 'Inactive'] }, { t: 'trend', title: 'Campaign return', sub: 'Return and spend', legend: ['Return', 'Spend'] }],
+    geopulse: ['F', { t: 'rank', title: 'AI answer share', items: ['ChatGPT', 'Gemini', 'Perplexity', 'Claude'] }, { t: 'prompt', chips: ['Topic', 'Persona', 'Region'], q: 'Best running shoes for flat feet' }, { t: 'trend', title: 'Visibility', sub: 'You and rivals', legend: ['You', 'Rivals'] }],
+    numetrix: ['C', { t: 'map', title: 'Store visits', pin: 'Exposed audience' }, { t: 'bars', title: 'Foot traffic', sub: 'By day' }, { t: 'donut', title: 'Brand lift', items: ['Exposed', 'Control', 'Baseline'] }],
+    media_machine: ['D', { t: 'flight', title: 'Flighting plan', items: ['Search', 'Social', 'CTV', 'Audio', 'OOH'] }, { t: 'bars', title: 'Channel scores', sub: 'Evidence of what works', labels: ['Search', 'Social', 'CTV', 'Audio', 'OOH'] }, { t: 'trend', title: 'Projected lift', sub: 'Plan and current', legend: ['Plan', 'Current'] }],
+    newintel: ['E', { t: 'list', title: 'This week', items: ['Pricing change', 'New hires in AI', 'Coverage spike', 'Creator launch'], metas: ['Mon', 'Tue', 'Wed', 'Thu'] }, { t: 'trend', title: 'Share of voice', sub: 'You and a competitor', legend: ['You', 'Competitor'] }, { t: 'bars', title: 'Signals', sub: 'By type' }],
+    search_plus: ['A', { t: 'prompt', chips: ['ChatGPT', 'Gemini', 'Perplexity'], q: 'Which CRM is best for a small agency?' }, { t: 'rank', title: 'Recommended in answers', items: ['ChatGPT', 'Gemini', 'Perplexity', 'Grok'] }, { t: 'donut', title: 'Mentions', items: ['Recommended', 'Mentioned', 'Absent'] }],
+    id_graph: ['B', { t: 'network', title: 'Identity spine', items: ['People', 'Households', 'Media'] }, { t: 'map', title: 'Coverage', pin: 'United States' }, { t: 'list', title: 'Audiences', items: ['Commuters', 'New parents', 'Home movers'], metas: ['Ready', 'Ready', 'Building'], faces: true }]
+  };
+  const plan = PLAN[slug] || ['A', { t: 'trend', title: 'Performance', sub: 'Last six months', legend: ['This year', 'Last year'] }, { t: 'bars', title: 'Activity', sub: 'By week' }, { t: 'donut', title: 'Mix', items: ['One', 'Two', 'Three'] }];
+  const L = LAYOUT[plan[0]];
+
+  let seed = [...slug].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  const INK = '#0B1220', MID = '#8A8E95', SOFT = '#D6D7D3', FAINT = '#EFEFEC';
+  const face = n => { n = ((n % 20) + 20) % 20; return '<i class="sx-face" style="background-position:' + (n % 4) * 100 / 3 + '% ' + Math.floor(n / 4) * 25 + '%"></i>'; };
+  const headH = (title, sub) => '<div class="sx-h"><b>' + esc(title) + '</b>' + (sub ? '<span>' + esc(sub) + '</span>' : '') + '</div>';
+  const series = (n, lo, hi, up) => { const a = []; let v = lo + rnd() * (hi - lo) * 0.4; for (let i = 0; i < n; i++) { v = Math.min(hi, Math.max(lo, v + (rnd() - (up ? 0.3 : 0.5)) * (hi - lo) * 0.35)); a.push(v); } return a; };
+
+  const SCREEN = {
+    trend(c, w, h) {
+      const cw = w - 36, ch = h - 118, n = 6, a = series(n, 0.15, 0.95, true), b = series(n, 0.1, 0.7, false);
+      const P = s => s.map((v, i) => [(i * cw / (n - 1)), ch - v * ch]);
+      const path = pts => pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+      const A = P(a), B = P(b), last = A[n - 1];
+      let grid = ''; for (let i = 0; i < 4; i++) grid += '<line x1="0" x2="' + cw + '" y1="' + (i * ch / 3).toFixed(1) + '" y2="' + (i * ch / 3).toFixed(1) + '" stroke="' + FAINT + '"/>';
+      return headH(c.title, c.sub) +
+        '<div class="sx-legend"><span><i style="background:' + INK + '"></i>' + esc(c.legend[0]) + '</span><span><i style="background:' + MID + '"></i>' + esc(c.legend[1]) + '</span></div>' +
+        '<svg class="sx-plot" viewBox="-4 -6 ' + (cw + 8) + ' ' + (ch + 12) + '" width="' + cw + '" height="' + ch + '" aria-hidden="true">' + grid +
+        '<path d="' + path(A) + ' L' + cw + ' ' + ch + ' L0 ' + ch + ' Z" fill="' + INK + '" fill-opacity=".06"/>' +
+        '<path d="' + path(B) + '" fill="none" stroke="' + MID + '" stroke-width="1.6" stroke-dasharray="4 4"/>' +
+        '<path d="' + path(A) + '" fill="none" stroke="' + INK + '" stroke-width="2.2" stroke-linejoin="round"/>' +
+        '<circle cx="' + last[0] + '" cy="' + last[1].toFixed(1) + '" r="7" fill="' + INK + '" fill-opacity=".12"/><circle cx="' + last[0] + '" cy="' + last[1].toFixed(1) + '" r="3.6" fill="' + INK + '"/></svg>' +
+        '<div class="sx-axis"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>';
+    },
+    bars(c, w, h) {
+      const days = c.labels ? c.labels : c.sub === 'By day' ? ['M', 'T', 'W', 'T', 'F', 'S', 'S'] : c.sub === 'By type' ? ['Price', 'Hire', 'Press', 'Social', 'Web'] : ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'];
+      const top = Math.floor(rnd() * days.length);
+      let b = ''; days.forEach((d, i) => { const v = i === top ? 0.95 : 0.25 + rnd() * 0.6; b += '<div class="sx-bar' + (i === top ? ' is-top' : '') + '"><i style="height:' + (v * 100).toFixed(0) + '%"></i><em>' + d + '</em></div>'; });
+      return headH(c.title, c.sub) + '<div class="sx-bars" style="height:' + (h - 100) + 'px">' + b + '</div>';
+    },
+    donut(c, w, h) {
+      const r = 38, C = 2 * Math.PI * r, p = [0.46 + rnd() * 0.1, 0.24 + rnd() * 0.06]; p.push(1 - p[0] - p[1] - 0.03);
+      const cols = [INK, MID, SOFT]; let off = 0, ring = '';
+      p.forEach((v, i) => { ring += '<circle cx="50" cy="50" r="' + r + '" fill="none" stroke="' + cols[i] + '" stroke-width="12" stroke-dasharray="' + (v * C).toFixed(1) + ' ' + C.toFixed(1) + '" stroke-dashoffset="' + (-off * C).toFixed(1) + '" transform="rotate(-90 50 50)" stroke-linecap="butt"/>'; off += v + 0.01; });
+      return headH(c.title) + '<div class="sx-donut"><svg viewBox="0 0 100 100" width="104" height="104" aria-hidden="true"><circle cx="50" cy="50" r="' + r + '" fill="none" stroke="' + FAINT + '" stroke-width="12"/>' + ring + '</svg>' +
+        '<ul>' + c.items.map((t, i) => '<li><i style="background:' + cols[i] + '"></i>' + esc(t) + '</li>').join('') + '</ul></div>';
+    },
+    gauge(c, w, h) {
+      const v = 0.62 + rnd() * 0.22, R = 58, cx = 70, cy = 66;
+      const pt = a => [cx + R * Math.cos(Math.PI * (1 - a)), cy - R * Math.sin(Math.PI * (1 - a))];
+      const arc = (a0, a1) => { const s = pt(a0), e = pt(a1); return 'M' + s[0].toFixed(1) + ' ' + s[1].toFixed(1) + ' A' + R + ' ' + R + ' 0 0 1 ' + e[0].toFixed(1) + ' ' + e[1].toFixed(1); };
+      const tip = [cx + (R - 18) * Math.cos(Math.PI * (1 - v)), cy - (R - 18) * Math.sin(Math.PI * (1 - v))];
+      return headH(c.title, c.sub) + '<div class="sx-gauge"><svg viewBox="0 0 140 80" width="190" height="108" aria-hidden="true"><path d="' + arc(0, 1) + '" fill="none" stroke="' + FAINT + '" stroke-width="12" stroke-linecap="round"/><path d="' + arc(0, v) + '" fill="none" stroke="' + INK + '" stroke-width="12" stroke-linecap="round"/><line x1="' + cx + '" y1="' + cy + '" x2="' + tip[0].toFixed(1) + '" y2="' + tip[1].toFixed(1) + '" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/><circle cx="' + cx + '" cy="' + cy + '" r="5" fill="' + INK + '"/></svg>' +
+        '<div class="sx-scale"><span>Low</span><span>High</span></div></div>';
+    },
+    chat(c) {
+      const me = '<div class="sx-msg is-me">' + esc(c.q) + '</div>', ai = '<div class="sx-msg"><span class="sx-av">' + (c.agent ? face(7) : '<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="#fff" d="M12 2.8l1.7 4.8 4.8 1.7-4.8 1.7L12 15.8l-1.7-4.8L5.5 9.3l4.8-1.7z"/></svg>') + '</span><p>' + esc(c.a) + '</p></div>';
+      return '<div class="sx-chat">' + (c.agent ? ai + me : me + ai) + '<div class="sx-typing"><i></i><i></i><i></i></div></div>';
+    },
+    prompt(c) {
+      return '<div class="sx-prompt"><div class="sx-chips">' + c.chips.map((t, i) => '<span' + (i ? '' : ' class="is-on"') + '>' + esc(t) + '</span>').join('') + '</div>' +
+        '<div class="sx-field"><p>' + esc(c.q) + '<i class="sx-caret"></i></p><div class="sx-field__bar"><span class="sx-plus">+</span><span class="sx-send"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div></div>';
+    },
+    list(c, w, h) {
+      const n = Math.max(1, Math.min(c.items.length, Math.floor((h - 64) / 44)));
+      return headH(c.title) + '<ul class="sx-list">' + c.items.slice(0, n).map((t, i) => '<li>' + (c.faces ? face(3 + i * 5) : '<i class="sx-ico' + (i ? '' : ' is-on') + '"></i>') + '<span><b>' + esc(t) + '</b></span><em' + (i ? '' : ' class="is-on"') + '>' + esc((c.metas || [])[i] || '') + '</em></li>').join('') + '</ul>';
+    },
+    rank(c, w, h) {
+      return headH(c.title) + '<ul class="sx-rank">' + c.items.slice(0, Math.max(2, Math.floor((h - 58) / 40))).map((t, i) => '<li><em' + (i ? '' : ' class="is-on"') + '>' + esc(t.charAt(0)) + '</em><span>' + esc(t) + '</span><i><b style="width:' + (92 - i * 17 - rnd() * 6).toFixed(0) + '%"' + (i ? '' : ' class="is-on"') + '></b></i></li>').join('') + '</ul>';
+    },
+    survey(c) {
+      return '<div class="sx-q">' + esc(c.title) + '</div><ul class="sx-survey">' + c.items.map((t, i) => '<li' + (i === 1 ? ' class="is-on"' : '') + '><i></i><span>' + esc(t) + '</span><b style="width:' + (i === 1 ? 72 : 30 + rnd() * 30).toFixed(0) + '%"></b></li>').join('') + '</ul><div class="sx-next"><span>Continue</span></div>';
+    },
+    map(c, w, h) {
+      const mw = w - 36, mh = h - 76; let dots = '';
+      const land = [[0.18, 0.4, 0.17, 0.3], [0.3, 0.72, 0.08, 0.2], [0.52, 0.35, 0.1, 0.22], [0.56, 0.68, 0.08, 0.22], [0.74, 0.38, 0.17, 0.26], [0.86, 0.78, 0.07, 0.12]];
+      for (let y = 6; y < mh; y += 9) for (let x = 4; x < mw; x += 9) { const u = x / mw, v = y / mh; if (land.some(l => ((u - l[0]) / l[2]) ** 2 + ((v - l[1]) / l[3]) ** 2 < 1)) dots += '<circle cx="' + x + '" cy="' + y + '" r="1.7" fill="' + SOFT + '"/>'; }
+      const pins = [[0.2, 0.42], [0.55, 0.36], [0.76, 0.42], [0.31, 0.7]].map((p, i) => '<circle cx="' + (p[0] * mw).toFixed(0) + '" cy="' + (p[1] * mh).toFixed(0) + '" r="' + (i ? 3.5 : 5) + '" fill="' + INK + '"/>' + (i ? '' : '<circle cx="' + (p[0] * mw).toFixed(0) + '" cy="' + (p[1] * mh).toFixed(0) + '" r="12" fill="' + INK + '" fill-opacity=".12"/>')).join('');
+      return headH(c.title) + '<div class="sx-map"><svg viewBox="0 0 ' + mw + ' ' + mh + '" width="' + mw + '" height="' + mh + '" aria-hidden="true">' + dots + pins + '</svg><span class="sx-pin">' + esc(c.pin) + '</span></div>';
+    },
+    wave(c, w, h) {
+      let bars = ''; const n = Math.floor((w - 40) / 6);
+      for (let i = 0; i < n; i++) { const u = i / (n - 1), env = Math.pow(Math.sin(Math.PI * u), 0.9); bars += '<i style="height:' + (8 + env * 70 * (0.3 + 0.7 * Math.abs(Math.sin(i * 1.3 + rnd())))).toFixed(0) + '%"></i>'; }
+      return '<div class="sx-call">' + face(9) + '<span><b>' + esc(c.title) + '</b><em><i></i>' + esc(c.status) + ' · 04:12</em></span></div><div class="sx-wave">' + bars + '</div>' +
+        '<div class="sx-call__acts"><span></span><span class="is-end"></span><span></span></div>';
+    },
+    creators(c) {
+      let g = ''; for (let i = 0; i < 6; i++) g += '<li>' + face([1, 6, 11, 14, 17, 2][i]) + (i % 3 === 0 ? '<b class="sx-ok"></b>' : '') + '</li>';
+      return headH(c.title, c.sub) + '<ul class="sx-creators">' + g + '</ul>';
+    },
+    network(c, w, h) {
+      /* a hub in ink, a ring of nodes wired to it, and the three named nodes as pills */
+      const top = 58, cw = w - 36, ch = h - top - 16, hub = [cw / 2, ch / 2 + 4];
+      const pts = []; const n = 11;
+      for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i / n * Math.PI * 2 + (rnd() - 0.5) * 0.25, d = 0.62 + rnd() * 0.36; pts.push([hub[0] + Math.cos(a) * cw * 0.46 * d, hub[1] + Math.sin(a) * ch * 0.46 * d]); }
+      let g = '';
+      pts.forEach((p, i) => { g += '<line x1="' + hub[0].toFixed(1) + '" y1="' + hub[1].toFixed(1) + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="#CFD0CC" stroke-width="1.1"/>'; const q = pts[(i + 2) % n]; if (i % 3 === 0) g += '<line x1="' + p[0].toFixed(1) + '" y1="' + p[1].toFixed(1) + '" x2="' + q[0].toFixed(1) + '" y2="' + q[1].toFixed(1) + '" stroke="#E4E4E0" stroke-width="1"/>'; });
+      const named = [1, 5, 8];
+      pts.forEach((p, i) => { if (!named.includes(i)) g += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.6" fill="' + MID + '"/>'; });
+      g += '<circle cx="' + hub[0].toFixed(1) + '" cy="' + hub[1].toFixed(1) + '" r="20" fill="' + INK + '" fill-opacity=".08"/><circle cx="' + hub[0].toFixed(1) + '" cy="' + hub[1].toFixed(1) + '" r="10" fill="' + INK + '"/>';
+      const tags = c.items.map((t, i) => { const p = pts[named[i]]; const x = Math.min(w - 44, Math.max(44, 18 + p[0])), y = Math.min(h - 18, Math.max(top + 12, top + p[1])); return '<span class="sx-tag" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px">' + esc(t) + '</span>'; }).join('');
+      return headH(c.title) + '<svg class="sx-net" viewBox="0 0 ' + cw + ' ' + ch + '" width="' + cw + '" height="' + ch + '" aria-hidden="true">' + g + '</svg>' + tags;
+    },
+    flight(c, w, h) {
+      const rows = c.items.map((t, i) => { const s = rnd() * 45, l = 25 + rnd() * (100 - s - 25); return '<li><span>' + esc(t) + '</span><i><b style="left:' + s.toFixed(0) + '%;width:' + l.toFixed(0) + '%"' + (i === 1 ? ' class="is-on"' : '') + '></b></i></li>'; }).join('');
+      return headH(c.title) + '<div class="sx-weeks"><span></span><span>W1</span><span>W2</span><span>W3</span><span>W4</span><span>W5</span><span>W6</span></div><ul class="sx-flight">' + rows + '</ul>';
+    }
+  };
+
+  /* desktop: the full arrangement on a 1080×480 stage. Phone: the picture with the first
+     screen overlapping it, on a 400×440 stage, so the screen stays readable. */
+  const narrow = matchMedia('(max-width: 700px)');
+  const PHONE = [[0, 0, 400, 270], [18, 206, 364, 230]];
+  const content = film || (() => { const im = new Image(); im.src = pic.getAttribute('src'); im.alt = ''; im.decoding = 'async'; fig.hidden = true; return im; })();
+  let wrap = null, ro = null;
+  const build = () => {
+    const small = narrow.matches, lay = small ? PHONE : L, SW = small ? 400 : 1080, SH = small ? 440 : 480;
+    const box = k => { const [x, y, w, h] = lay[k]; return 'left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px'; };
+    const next = document.createElement('div');
+    next.className = 'pc-collage pc-collage--' + (small ? 'phone' : plan[0]);
+    let html = '<div class="pc-collage__ground"></div><div class="pc-collage__stage" style="width:' + SW + 'px;height:' + SH + 'px"><div class="pc-collage__card pc-collage__main" style="' + box(0) + '"></div>';
+    for (let k = 1; k < lay.length; k++) { const [, , w, h] = lay[k], c = plan[k]; html += '<div class="pc-collage__card pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t + '" style="' + box(k) + '">' + SCREEN[c.t](c, w, h) + '</div>'; }
+    next.innerHTML = html + '</div>';
+    const main = next.querySelector('.pc-collage__main');
+    main.appendChild(content); if (film) main.classList.add('has-film');
+    if (wrap) { wrap.replaceWith(next); if (ro) ro.disconnect(); } else hero.appendChild(next);
+    wrap = next;
+    const stage = wrap.querySelector('.pc-collage__stage');
+    const pad = small ? 32 : 80;
+    const fit = () => { const W = wrap.clientWidth, k = Math.min(1, (W - pad) / SW), t = (small ? 16 : 40) * Math.min(1, k + 0.2); stage.style.setProperty('--k', k.toFixed(4)); stage.style.left = ((W - SW * k) / 2).toFixed(1) + 'px'; stage.style.top = t.toFixed(1) + 'px'; wrap.style.height = Math.round(SH * k + t * 2) + 'px'; };
+    fit();
+    ro = new ResizeObserver(fit); ro.observe(wrap);
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+      wrap.classList.add('is-armed');
+      const w0 = wrap;
+      new IntersectionObserver((es, io) => { if (es[0].isIntersecting) { w0.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.2 }).observe(w0);
+    }
+  };
+  build();
+  narrow.addEventListener('change', build);
 })();

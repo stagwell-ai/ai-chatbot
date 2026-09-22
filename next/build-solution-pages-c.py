@@ -61,7 +61,8 @@ PIC = {
 
 NOTAB = ' tabindex="-1"'
 # the paragraphs under each capability: DRAFTS for review (see the file's _status)
-DRAFTS = json.loads((ROOT / 'data' / 'capability-drafts.json').read_text())['products']
+_D = json.loads((ROOT / 'data' / 'capability-drafts.json').read_text())
+DRAFTS, SHORT = _D['products'], _D['tabs']
 # the tab stills: frames of the text-free motion-lab loops, a different one per tab
 STILLS = [f'/assets/video/lab/loops/{k}-poster.jpg' for k in
           ('orbits', 'pulses', 'circuit', 'terrain', 'globe', 'streams', 'mosaic', 'plexus',
@@ -119,7 +120,7 @@ def main():
         sid = x['id']
         tabs = '\n'.join(
             f'      <button type="button" class="sp-tabs__tab{" is-on" if k == 0 else ""}" role="tab" id="spt-{sid}-{k}" aria-controls="spp-{sid}-{k}" '
-            f'aria-selected="{"true" if k == 0 else "false"}"{"" if k == 0 else NOTAB}>{bpp.t(c)}</button>' for k, c in enumerate(caps))
+            f'aria-selected="{"true" if k == 0 else "false"}"{"" if k == 0 else NOTAB}>{bpp.t(SHORT[x["id"]].get(c, c))}</button>' for k, c in enumerate(caps))
         panels = '\n'.join(
             f'      <article class="sp-tabs__panel{" is-on" if k == 0 else ""}" role="tabpanel" id="spp-{sid}-{k}" aria-labelledby="spt-{sid}-{k}">\n'
             f'        <div class="sp-tabs__txt"><p class="sp-tabs__n">{k + 1:02d} / {len(caps):02d}</p><h3>{bpp.t(c)}</h3><p>{bpp.t(texts[c])}</p></div>\n'
