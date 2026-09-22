@@ -491,8 +491,8 @@ func globe(_ ctx: CGContext, _ p: Double) {
     let beat = 0.5 + 0.5 * sin(TAU * p * 3)
     dot(ctx, q.0, q.1, 6 * K, ORANGE); ctx.setStrokeColor(tint(ORANGE, 0.6 * (1 - beat))); ctx.setLineWidth(1.5 * K)
     ctx.addEllipse(in: CGRect(x: q.0 - (10 + 18 * beat) * K, y: q.1 - (10 + 18 * beat) * K, width: (20 + 36 * beat) * K, height: (20 + 36 * beat) * K)); ctx.strokePath()
-    ctx.setFillColor(white(0.95)); ctx.fill(CGRect(x: q.0 + 16 * K, y: q.1 - 12 * K, width: 110 * K, height: 24 * K))
-    ctx.setFillColor(NAVY); ctx.fill(CGRect(x: q.0 + 26 * K, y: q.1 - 3 * K, width: 70 * K, height: 6 * K))
+    ctx.setFillColor(white(0.95)); ctx.fill(CGRect(x: q.0 + 16 * K, y: q.1 - 14 * K, width: 132 * K, height: 28 * K))
+    label(ctx, "Toronto", q.0 + 28 * K, q.1 + 5 * K, 13 * K, NAVY)
   }
 }
 
@@ -742,13 +742,13 @@ func activity(_ ctx: CGContext, _ p: Double) {
   let bw = Double(cols) * (cell + gap) - gap, x0 = (Wd - bw) / 2
   ctx.setStrokeColor(white(0.35)); ctx.setLineWidth(1.2 * K)
   ctx.stroke(CGRect(x: x0 - 20 * K, y: Hd * 0.04, width: bw * 0.34, height: 64 * K))
-  ctx.setFillColor(white(0.85)); ctx.fill(CGRect(x: x0, y: Hd * 0.04 + 27 * K, width: bw * 0.14, height: 10 * K))
+  label(ctx, "Activity", x0, Hd * 0.04 + 28 * K, 15 * K, white(0.9)); label(ctx, "Week by week, every source", x0, Hd * 0.04 + 50 * K, 11 * K, white(0.5))
   for bank in 0..<2 {
     let y0 = Hd * (bank == 0 ? 0.2 : 0.6), busy = bank == 0 ? 0.62 : 0.3
-    ctx.setFillColor(white(0.85)); ctx.fill(CGRect(x: x0, y: y0 - 30 * K, width: bw * 0.06, height: 8 * K))
-    ctx.setFillColor(white(0.35)); ctx.fill(CGRect(x: x0 + bw * 0.08, y: y0 - 34 * K, width: 1, height: 16 * K))
-    ctx.setFillColor(GREEN); ctx.fill(CGRect(x: x0 + bw * 0.1, y: y0 - 30 * K, width: bw * 0.05, height: 8 * K))
-    ctx.setFillColor(white(0.7)); ctx.fill(CGRect(x: x0 + bw * 0.17, y: y0 - 30 * K, width: bw * 0.04, height: 8 * K))
+    label(ctx, bank == 0 ? "Brand mentions" : "Competitor mentions", x0, y0 - 24 * K, 13 * K, white(0.9))
+    ctx.setFillColor(white(0.35)); ctx.fill(CGRect(x: x0 + bw * 0.1, y: y0 - 36 * K, width: 1, height: 18 * K))
+    dot(ctx, x0 + bw * 0.12, y0 - 28 * K, 4 * K, GREEN); label(ctx, "Live", x0 + bw * 0.12 + 10 * K, y0 - 24 * K, 12 * K, GREEN)
+    label(ctx, bank == 0 ? "Owned and earned" : "Earned only", x0 + bw * 0.17, y0 - 24 * K, 12 * K, white(0.55))
     for r in 0..<rows { for c in 0..<cols {
       let x = x0 + Double(c) * (cell + gap), y = y0 + Double(r) * (cell + gap)
       let h = hash(c + bank * 100, r)
@@ -860,14 +860,15 @@ func world(_ ctx: CGContext, _ p: Double) {
     y += sp; j += 1 }
   // a tooltip: an orange block and a white card with a line of type, drifting between places
   let cyc = fract(p), which = Int(p * 3) % 3
-  let spots: [(Double, Double)] = [(0.31, 0.44), (0.52, 0.34), (0.74, 0.42)]
+  let spots: [(Double, Double)] = [(0.2944, 0.274), (0.4997, 0.214), (0.788, 0.493)]
+  let names = ["New York", "London", "Singapore"]
   let sp2 = spots[which], fade = smooth((fract(cyc * 3)) / 0.1) * smooth((1 - fract(cyc * 3)) / 0.1)
-  let tx = mx + sp2.0 * mapW, tyy = my + sp2.1 * mapH
   let tw = 250 * K, th = 56 * K
+  let tx = mx + sp2.0 * mapW - th / 2, tyy = my + sp2.1 * mapH - th / 2
   ctx.setFillColor(ORANGE.copy(alpha: fade)!); ctx.fill(CGRect(x: tx, y: tyy, width: th, height: th))
   dot(ctx, tx + th / 2, tyy + th / 2, 8 * K, CGColor(red: 0.45, green: 0.1, blue: 0.1, alpha: fade))
   ctx.setFillColor(white(0.95 * fade)); ctx.fill(CGRect(x: tx + th, y: tyy, width: tw, height: th))
-  ctx.setFillColor(CGColor(gray: 0.1, alpha: fade)); ctx.fill(CGRect(x: tx + th + 18 * K, y: tyy + th / 2 - 5 * K, width: tw * 0.7, height: 10 * K))
+  label(ctx, names[which], tx + th + 18 * K, tyy + 25 * K, 15 * K, CGColor(gray: 0.1, alpha: fade)); label(ctx, "Coverage rising", tx + th + 18 * K, tyy + 43 * K, 11 * K, CGColor(gray: 0.45, alpha: fade))
 }
 
 // 25 · timeline: years as dotted columns, people appearing along them
@@ -1130,8 +1131,18 @@ func globeBlue(_ ctx: CGContext, _ p: Double) {
   }
   let bw = Wd * 0.56, bh = 56 * K, bx0 = CX - bw / 2, by0 = CY - bh / 2
   ctx.addPath(CGPath(roundedRect: CGRect(x: bx0, y: by0, width: bw, height: bh), cornerWidth: bh / 2, cornerHeight: bh / 2, transform: nil)); ctx.setFillColor(CGColor(gray: 1, alpha: 1)); ctx.fillPath()
-  dot(ctx, bx0 + bh / 2, CY, 14 * K, CGColor(red: 0.0, green: 0.612, blue: 0.741, alpha: 1))
-  ctx.setFillColor(CGColor(gray: 0.55, alpha: 1)); ctx.fill(CGRect(x: bx0 + bw - 130 * K, y: CY - 5 * K, width: 100 * K, height: 10 * K))
+  let TEAL = CGColor(red: 0.0, green: 0.612, blue: 0.741, alpha: 1)
+  // a magnifier, the query typed in over the loop, the button
+  ctx.setStrokeColor(TEAL); ctx.setLineWidth(2.5 * K); ctx.addEllipse(in: CGRect(x: bx0 + 22 * K, y: CY - 12 * K, width: 17 * K, height: 17 * K)); ctx.strokePath()
+  line(ctx, bx0 + 36 * K, CY + 3 * K, bx0 + 44 * K, CY + 11 * K, TEAL, 2.5 * K)
+  let query = "which running shoes do people recommend"
+  let typed = Int(Double(query.count) * max(0, min(1, (p - 0.06) / 0.5)))
+  let shown = p < 0.94 ? String(query.prefix(typed)) : ""
+  label(ctx, shown, bx0 + 60 * K, CY + 6 * K, 17 * K, CGColor(gray: 0.15, alpha: 1))
+  if fract(p * 5) < 0.5 && p < 0.94 { ctx.setFillColor(CGColor(gray: 0.15, alpha: 1)); ctx.fill(CGRect(x: bx0 + 60 * K + Double(shown.count) * 10.25 * K + 2 * K, y: CY - 10 * K, width: 2 * K, height: 20 * K)) }
+  let pw = 108 * K, ph = 38 * K
+  ctx.addPath(CGPath(roundedRect: CGRect(x: bx0 + bw - pw - 10 * K, y: CY - ph / 2, width: pw, height: ph), cornerWidth: ph / 2, cornerHeight: ph / 2, transform: nil)); ctx.setFillColor(TEAL); ctx.fillPath()
+  label(ctx, "Search", bx0 + bw - pw - 10 * K + 27 * K, CY + 5 * K, 14 * K, CGColor(gray: 1, alpha: 1))
 }
 
 let SCENES: [String: (CGContext, Double) -> Void] = [
