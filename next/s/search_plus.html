@@ -43,7 +43,7 @@ d.setAttribute('data-theme',t||sys);})();
 <link rel="stylesheet" href="/next/product.css">
 <link rel="stylesheet" href="/next/home-c.css?v=237">
 <link rel="stylesheet" href="/next/prod-c.css?v=121">
-<link rel="stylesheet" href="/next/hero-b.css?v=61">
+<link rel="stylesheet" href="/next/hero-b.css?v=63">
 <!-- Contentsquare: funnel analysis and heatmaps (client, 2026-09-17) -->
 <script src="https://t.contentsquare.net/uxa/f6c5bb82a83a7.js" defer></script>
 </head>
@@ -192,15 +192,15 @@ d.setAttribute('data-theme',t||sys);})();
     <div class="sp-tabs__panels">
       <article class="sp-tabs__panel is-on" role="tabpanel" id="spp-search_plus-0" aria-labelledby="spt-search_plus-0">
         <div class="sp-tabs__txt"><p class="sp-tabs__n">01 / 03</p><h3>AI search representation</h3><p>See how your brand is represented inside AI search tools today, and where the description falls short.</p></div>
-        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/circuit-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+        <div class="sp-tabs__pic"><video src="/assets/video/lab/search-plus.mp4" poster="/assets/video/lab/search-plus-poster.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video></div>
       </article>
       <article class="sp-tabs__panel" role="tabpanel" id="spp-search_plus-1" aria-labelledby="spt-search_plus-1">
         <div class="sp-tabs__txt"><p class="sp-tabs__n">02 / 03</p><h3>Influence how AI recommends you</h3><p>Shape the content and signals AI tools draw on, so your brand is recommended more often and more accurately.</p></div>
-        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/terrain-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+        <div class="sp-tabs__pic"><video src="/assets/video/lab/loops/converge.mp4" poster="/assets/video/lab/loops/converge-poster.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video></div>
       </article>
       <article class="sp-tabs__panel" role="tabpanel" id="spp-search_plus-2" aria-labelledby="spt-search_plus-2">
         <div class="sp-tabs__txt"><p class="sp-tabs__n">03 / 03</p><h3>ChatGPT, Gemini, Perplexity, Grok</h3><p>One program across the AI assistants people now ask first: ChatGPT, Gemini, Perplexity and Grok.</p></div>
-        <div class="sp-tabs__pic"><img src="/assets/video/lab/loops/globe-poster.jpg" alt="" loading="lazy" decoding="async"></div>
+        <div class="sp-tabs__pic"><video src="/assets/video/lab/loops/orbits.mp4" poster="/assets/video/lab/loops/orbits-poster.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video></div>
       </article>
     </div>
     <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
@@ -214,7 +214,7 @@ d.setAttribute('data-theme',t||sys);})();
   var bar = sec.querySelector('.sp-tabs__bar');
   function pick(i, focus) {
     tabs.forEach(function (t, n) { var on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
-    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); });
+    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); var v = p.querySelector('video'); if (v) { if (n === i) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); } });
     if (focus) tabs[i].focus();
     if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
   }
@@ -391,6 +391,6 @@ d.setAttribute('data-theme',t||sys);})();
   </button>
 </div>
 <script src="/next/home-c.js?v=203"></script>
-<script src="/next/prod-c.js?v=59"></script>
+<script src="/next/prod-c.js?v=60"></script>
 </body>
 </html>

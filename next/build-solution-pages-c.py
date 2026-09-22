@@ -62,7 +62,12 @@ PIC = {
 NOTAB = ' tabindex="-1"'
 # the paragraphs under each capability: DRAFTS for review (see the file's _status)
 _D = json.loads((ROOT / 'data' / 'capability-drafts.json').read_text())
-DRAFTS, SHORT = _D['products'], _D['tabs']
+DRAFTS, SHORT, LOOPS = _D['products'], _D['tabs'], _D.get('loops', {})
+STILL_NAMES = ('orbits', 'pulses', 'circuit', 'terrain', 'globe', 'streams', 'mosaic', 'plexus', 'lanes', 'converge', 'charts', 'clusters', 'tunnel', 'block-rain')
+ROOT_LOOPS = {'voice-squares', 'media-machine', 'newintel', 'search-plus', 'id-graph'}
+def loop_video(name):
+    base = '/assets/video/lab/' + ('' if name in ROOT_LOOPS else 'loops/') + name
+    return f'<video src="{base}.mp4" poster="{base}-poster.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>'
 # the tab stills: frames of the text-free motion-lab loops, a different one per tab
 STILLS = [f'/assets/video/lab/loops/{k}-poster.jpg' for k in
           ('orbits', 'pulses', 'circuit', 'terrain', 'globe', 'streams', 'mosaic', 'plexus',
@@ -76,7 +81,7 @@ TABS_JS = '''<script>
   var bar = sec.querySelector('.sp-tabs__bar');
   function pick(i, focus) {
     tabs.forEach(function (t, n) { var on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
-    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); });
+    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); var v = p.querySelector('video'); if (v) { if (n === i) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); } });
     if (focus) tabs[i].focus();
     if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
   }
@@ -124,7 +129,7 @@ def main():
         panels = '\n'.join(
             f'      <article class="sp-tabs__panel{" is-on" if k == 0 else ""}" role="tabpanel" id="spp-{sid}-{k}" aria-labelledby="spt-{sid}-{k}">\n'
             f'        <div class="sp-tabs__txt"><p class="sp-tabs__n">{k + 1:02d} / {len(caps):02d}</p><h3>{bpp.t(c)}</h3><p>{bpp.t(texts[c])}</p></div>\n'
-            f'        <div class="sp-tabs__pic"><img src="{STILLS[(n * 4 + k) % len(STILLS)]}" alt="" loading="lazy" decoding="async"></div>\n'
+            f'        <div class="sp-tabs__pic">{loop_video(LOOPS.get(x["id"], {}).get(c) or STILL_NAMES[(n * 4 + k) % len(STILL_NAMES)])}</div>\n'
             f'      </article>' for k, c in enumerate(caps))
         how = ('<section class="pp-more sp-tabs">\n  <div class="pp-wrap">\n'
                f'    <div class="sp-tabs__head">{head_html}</div>\n'

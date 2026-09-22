@@ -152,5 +152,82 @@
       "Privacy-safe activation": "Activation"
     }
   },
-  "_tabs_note": "Short tab labels (DRAFT). The four product pages carry theirs as data-tab on each step in next/{slug}.html."
+  "_tabs_note": "Short tab labels (DRAFT). The four product pages carry theirs as data-tab on each step in next/{slug}.html.",
+  "loops": {
+    "questbrand": {
+      "Brand tracking": "charts",
+      "Competitive benchmarking": "clusters",
+      "Campaign impact": "lanes",
+      "Emotional drivers": "pulses"
+    },
+    "questdiy": {
+      "AI-drafted surveys": "block-rain",
+      "Respondents in 100+ countries": "globe",
+      "Concept & message testing": "clusters",
+      "Same-day reads": "streams"
+    },
+    "bera": {
+      "Brand ROI tracking": "charts",
+      "Audience prioritization": "clusters",
+      "Competitive intelligence": "radar",
+      "Media planning": "media-machine"
+    },
+    "knowledge_machine": {
+      "Real-time sentiment across owned, earned and competitive channels": "pulses",
+      "Historical pattern matching against prior market moments": "terrain",
+      "Full audience profile surfaced with the signal": "clusters"
+    },
+    "unicepta": {
+      "Global monitoring": "globe",
+      "Daily briefings & alerts": "lanes",
+      "Narrative analysis": "plexus",
+      "Social listening": "streams"
+    },
+    "imai": {
+      "Creator discovery": "clusters",
+      "Campaign management": "lanes",
+      "LLM visibility": "search-plus",
+      "UGC video ads": "mosaic"
+    },
+    "smb_platform": {
+      "Creator discovery": "clusters",
+      "Audience validation": "radar",
+      "ROI tracking": "charts",
+      "One dashboard": "circuit"
+    },
+    "geopulse": {
+      "AI visibility intelligence": "search-plus",
+      "Prompt optimization": "circuit",
+      "Competitive benchmarking": "clusters",
+      "Content simulation": "terrain"
+    },
+    "numetrix": {
+      "Audience measurement": "charts",
+      "Brand lift & ad impact": "pulses",
+      "Location intelligence": "globe"
+    },
+    "media_machine": {
+      "Scores every platform and channel against evidence of what works": "charts",
+      "Drafts the plan and flighting": "lanes",
+      "Models spend and projected lift": "terrain"
+    },
+    "newintel": {
+      "Pricing moves": "charts",
+      "Hiring signals": "clusters",
+      "Earned coverage": "globe",
+      "Creator activity": "newintel"
+    },
+    "search_plus": {
+      "AI search representation": "search-plus",
+      "Influence how AI recommends you": "converge",
+      "ChatGPT, Gemini, Perplexity, Grok": "orbits"
+    },
+    "id_graph": {
+      "First-party data onboarding": "id-graph",
+      "Third-party media data": "plexus",
+      "Proprietary consumer intelligence": "pulses",
+      "Privacy-safe activation": "lanes"
+    }
+  },
+  "_loops_note": "The motion-lab loop shown beside each capability in How it works (assets/video/lab/loops/<name>.mp4, or assets/video/lab/<name>.mp4 for voice-squares, media-machine, newintel, search-plus, id-graph)."
 }

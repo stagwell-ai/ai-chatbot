@@ -388,7 +388,12 @@
       txt.append(n, h3);
       if (d) { const pp = document.createElement('p'); pp.textContent = d; txt.append(pp); }
       const pic = document.createElement('div'); pic.className = 'sp-tabs__pic';
-      { const im = new Image(); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.src = STILLS[(seed + k) % STILLS.length]; pic.appendChild(im); }
+      if (li.dataset.loop) {
+        const ROOT = ['voice-squares', 'media-machine', 'newintel', 'search-plus', 'id-graph'];
+        const base = '/assets/video/lab/' + (ROOT.includes(li.dataset.loop) ? '' : 'loops/') + li.dataset.loop;
+        const v = document.createElement('video'); v.src = base + '.mp4'; v.poster = base + '-poster.jpg';
+        v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata'; v.setAttribute('aria-hidden', 'true'); pic.appendChild(v);
+      } else { const im = new Image(); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.src = STILLS[(seed + k) % STILLS.length]; pic.appendChild(im); }
       a.append(txt, pic); box.appendChild(a); panels.push(a);
     });
     grid.parentNode.insertBefore(bar, grid);
@@ -396,7 +401,7 @@
     grid.hidden = true;
     const pick = (i, focus) => {
       tabs.forEach((t, n) => { const on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
-      panels.forEach((p, n) => { p.hidden = n !== i; p.classList.toggle('is-on', n === i); });
+      panels.forEach((p, n) => { p.hidden = n !== i; p.classList.toggle('is-on', n === i); const v = p.querySelector('video'); if (v) { if (n === i) { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); } else v.pause(); } });
       if (focus) tabs[i].focus();
       if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
     };
