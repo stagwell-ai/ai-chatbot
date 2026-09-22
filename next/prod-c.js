@@ -388,8 +388,7 @@
       txt.append(n, h3);
       if (d) { const pp = document.createElement('p'); pp.textContent = d; txt.append(pp); }
       const pic = document.createElement('div'); pic.className = 'sp-tabs__pic';
-      if (k === 0) pic.appendChild(media);
-      else { const im = new Image(); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.src = STILLS[(seed + k) % STILLS.length]; pic.appendChild(im); }
+      { const im = new Image(); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.src = STILLS[(seed + k) % STILLS.length]; pic.appendChild(im); }
       a.append(txt, pic); box.appendChild(a); panels.push(a);
     });
     grid.parentNode.insertBefore(bar, grid);
@@ -567,10 +566,15 @@
   const hero = document.querySelector('.pp-hero');
   if (!hero || hero.querySelector('.pc-collage')) return;
   const film = document.querySelector('.pp-film');
+  if (film) film.hidden = true;                       /* the AI films are not used here */
   const fig = hero.querySelector('.sp-hero__pic');
   const pic = fig && fig.querySelector('img');
-  if (!film && !pic) return;
   const slug = (body.className.match(/(?:pp|sp)--([\w-]+)/) || ['', 'x'])[1];
+  /* the product pages' centre piece: the product's picture; New Voices its live voice */
+  const CENTRE = { 'the-machine': '/assets/img/products/your-data-walker.jpg', 'targeting-machine': '/assets/img/products/targeting-machine-new.jpg',
+    'agent-cloud': '/assets/img/products/agent-cloud-code.jpg', 'newvoices': 'voice' };
+  const centreSrc = pic ? pic.getAttribute('src') : CENTRE[slug];
+  if (!centreSrc) return;
   const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   /* arrangements on a 1080×480 stage: [main, screen 1, screen 2, screen 3] as x, y, w, h */
@@ -585,7 +589,7 @@
   const PLAN = {
     'the-machine': ['A', { t: 'chat', q: 'Brief the Q3 launch for the team', a: 'Done. The brief, the audience and last quarter’s learnings are in one place, shared in Slack and Figma.' }, { t: 'network', title: 'Shared context', items: ['Slack', 'Figma', 'Adobe'] }, { t: 'list', title: 'Agents at work', items: ['Brief drafted', 'Audience refreshed', 'Assets resized'], metas: ['Now', 'Today', 'Today'] }],
     'targeting-machine': ['E', { t: 'prompt', chips: ['Explore', 'Expand', 'Activate'], q: 'Find people already shopping for an electric car' }, { t: 'network', title: 'Identity graph', items: ['People', 'Households', 'Devices'] }, { t: 'donut', title: 'Audience mix', items: ['High intent', 'Lookalikes', 'Re-engage'] }],
-    'newvoices': ['F', { t: 'wave', title: 'Customer interview', status: 'Live' }, { t: 'chat', agent: true, q: 'I switched because setup took five minutes.', a: 'What made you look for something new in the first place?' }, { t: 'list', title: 'Themes emerging', items: ['Price clarity', 'Onboarding', 'Support speed'], metas: ['Rising', 'Steady', 'New'] }],
+    'newvoices': ['A', { t: 'chat', agent: true, q: 'I switched because setup took five minutes.', a: 'What made you look for something new in the first place?' }, { t: 'note', ink: true, q: 'Interview 200 customers about why they switched' }, { t: 'list', title: 'Themes emerging', items: ['Price clarity', 'Onboarding', 'Support speed'], metas: ['Rising', 'Steady', 'New'] }],
     'agent-cloud': ['D', { t: 'prompt', chips: ['Claude', 'ChatGPT', 'Gemini'], q: 'Draft three headlines for the spring campaign' }, { t: 'list', title: 'Marketing agents', items: ['Copywriter', 'Campaign planner', 'Message tester'], metas: ['Ready', 'Ready', 'Running'], faces: true }, { t: 'chat', q: 'Test these two messages with parents', a: 'Message B lands better. Parents called it clearer and more honest.' }],
     questbrand: ['E', { t: 'trend', title: 'Brand health', sub: 'Awareness · last six months', legend: ['Your brand', 'Competitor'] }, { t: 'bars', title: 'Consideration', sub: 'By week' }, { t: 'donut', title: 'Emotional drivers', items: ['Trust', 'Joy', 'Pride'] }],
     questdiy: ['F', { t: 'survey', title: 'Which name do you prefer?', items: ['Option A', 'Option B', 'Option C'] }, { t: 'map', title: 'Respondents', pin: 'Fielding now' }, { t: 'bars', title: 'Responses', sub: 'By day' }],
@@ -702,27 +706,60 @@
     }
   };
 
-  /* desktop: the full arrangement on a 1080×480 stage. Phone: the picture with the first
-     screen overlapping it, on a 400×440 stage, so the screen stays readable. */
+  /* three kinds of scene, as the Manus solution pages vary theirs: a picture with screens
+     round it, a fan of tilted cards, or a grid of tiles. Each page names its kind. */
+  const SCENE = {
+    'agent-cloud': ['fan', [{ t: 'note', ink: true, q: 'Draft three headlines for the spring campaign' }, { t: 'prompt', chips: ['Claude', 'ChatGPT', 'Gemini'], q: 'Draft three headlines for the spring campaign' }, { t: 'list', title: 'Marketing agents', items: ['Copywriter', 'Campaign planner', 'Message tester'], metas: ['Ready', 'Ready', 'Running'], faces: true }, { t: 'note', q: 'Test these two messages with parents' }]],
+    questdiy: ['fan', [{ t: 'note', ink: true, q: 'Which name do you prefer?' }, { t: 'survey', title: 'Which name do you prefer?', items: ['Option A', 'Option B', 'Option C'] }, { t: 'map', title: 'Respondents', pin: 'Fielding now' }, { t: 'note', q: 'Field it in 100+ countries' }]],
+    search_plus: ['fan', [{ t: 'note', ink: true, q: 'Which CRM is best for a small agency?' }, { t: 'rank', title: 'Recommended in answers', items: ['ChatGPT', 'Gemini', 'Perplexity', 'Grok'] }, { t: 'chat', q: 'Which CRM is best for a small agency?', a: 'Three names come up first. Yours is one of them in two of the three assistants.' }, { t: 'note', q: 'Recommended, not just mentioned' }]],
+    smb_platform: ['fan', [{ t: 'note', ink: true, q: 'Find creators who fit my brand' }, { t: 'creators', title: 'Creators for you', sub: 'Matched to your brand' }, { t: 'donut', title: 'Audience quality', items: ['Real', 'Suspicious', 'Inactive'] }, { t: 'note', q: 'Prove ROI without a big team' }]],
+    'targeting-machine': ['tiles', { sub: 'Ready to activate', items: ['High intent', 'Lookalikes', 'In market', 'Households', 'Lapsed', 'Loyal'] }],
+    media_machine: ['tiles', { sub: 'Scored', items: ['Search', 'Social', 'CTV', 'Audio', 'OOH', 'Retail'] }],
+    newintel: ['tiles', { sub: 'This week', items: ['Pricing', 'Hiring', 'Coverage', 'Creators', 'Product', 'Partnerships'] }],
+    geopulse: ['tiles', { sub: 'Answers tracked', items: ['ChatGPT', 'Gemini', 'Perplexity', 'Claude', 'Grok', 'Copilot'] }]
+  };
+  SCREEN.note = c => '<div class="sx-note' + (c.ink ? ' is-ink' : '') + '"><span class="sx-note__mark"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2.8l1.7 4.8 4.8 1.7-4.8 1.7L12 15.8l-1.7-4.8L5.5 9.3l4.8-1.7z"/></svg></span><p>' + esc(c.q) + '</p></div>';
+  const spark = () => { const v = series(8, 0.15, 0.95, true); return '<svg viewBox="0 0 120 40" width="120" height="40" aria-hidden="true"><polyline points="' + v.map((y, i) => (i * 120 / 7).toFixed(1) + ',' + (38 - y * 34).toFixed(1)).join(' ') + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="120" cy="' + (38 - v[7] * 34).toFixed(1) + '" r="3.5" fill="currentColor"/></svg>'; };
+  const TONES = ['is-ink', 'is-dark', 'is-light', 'is-white', 'is-light', 'is-ink'];
+
   const narrow = matchMedia('(max-width: 700px)');
-  const PHONE = [[0, 0, 400, 270], [18, 206, 364, 230]];
-  const content = film || (() => { const im = new Image(); im.src = pic.getAttribute('src'); im.alt = ''; im.decoding = 'async'; fig.hidden = true; return im; })();
+  const kind = SCENE[slug] ? SCENE[slug][0] : 'collage';
+  const content = centreSrc === 'voice' ? null : (() => { const im = new Image(); im.src = centreSrc; im.alt = ''; im.decoding = 'async'; return im; })();
+  if (fig) fig.hidden = true;
   let wrap = null, ro = null;
   const build = () => {
-    const small = narrow.matches, lay = small ? PHONE : L, SW = small ? 400 : 1080, SH = small ? 440 : 480;
-    const box = k => { const [x, y, w, h] = lay[k]; return 'left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px'; };
+    const small = narrow.matches;
     const next = document.createElement('div');
-    next.className = 'pc-collage pc-collage--' + (small ? 'phone' : plan[0]);
-    let html = '<div class="pc-collage__ground"></div><div class="pc-collage__stage" style="width:' + SW + 'px;height:' + SH + 'px"><div class="pc-collage__card pc-collage__main" style="' + box(0) + '"></div>';
-    for (let k = 1; k < lay.length; k++) { const [, , w, h] = lay[k], c = plan[k]; html += '<div class="pc-collage__card pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t + '" style="' + box(k) + '">' + SCREEN[c.t](c, w, h) + '</div>'; }
-    next.innerHTML = html + '</div>';
+    let SW = 1080, SH = 480, html = '';
+    const card = (cls, x, y, w, h, inner, rot) => '<div class="pc-collage__card ' + cls + '" style="left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px' + (rot ? ';rotate:' + rot + 'deg' : '') + '">' + inner + '</div>';
+    if (kind === 'fan') {
+      const cs = SCENE[slug][1];
+      const lay = small ? [[10, 0, 240, 150, -5], [130, 110, 260, 320, 4]] : [[20, 150, 280, 190, -7], [300, 10, 330, 420, 4], [640, 70, 330, 310, -4], [860, 220, 220, 180, 6]];
+      SW = small ? 400 : 1080; SH = small ? 440 : 480;
+      lay.forEach(([x, y, w, h, r], k) => { const c = cs[k]; html += card('pc-collage__ui pc-collage__ui--' + (k + 1) + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h), r); });
+    } else if (kind === 'tiles') {
+      const cfg = SCENE[slug][1]; const cols = small ? 2 : 3, tw = small ? 190 : 340, th = small ? 150 : 220, gap = small ? 20 : 30;
+      SW = small ? 400 : 1080; SH = small ? 320 : 470;
+      cfg.items.slice(0, small ? 4 : 6).forEach((t, k) => {
+        const x = (k % cols) * (tw + gap), y = Math.floor(k / cols) * (th + gap);
+        html += card('pc-collage__ui sx sx--tile ' + TONES[(k + seed) % TONES.length], x, y, tw, th,
+          '<span class="sx-tile__ico"><i></i></span><div class="sx-tile__body"><b>' + esc(t) + '</b><span>' + esc(cfg.sub) + '</span></div><div class="sx-tile__spark">' + spark() + '</div>');
+      });
+    } else {
+      const lay = small ? [[0, 0, 400, 270], [18, 206, 364, 230]] : L;
+      SW = small ? 400 : 1080; SH = small ? 440 : 480;
+      html += card('pc-collage__main', ...lay[0], '');
+      for (let k = 1; k < lay.length; k++) { const [x, y, w, h] = lay[k], c = plan[k]; html += card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h)); }
+    }
+    next.className = 'pc-collage pc-collage--' + kind + (small ? ' pc-collage--phone' : ' pc-collage--' + plan[0]);
+    next.innerHTML = '<div class="pc-collage__stage" style="width:' + SW + 'px;height:' + SH + 'px">' + html + '</div>';
     const main = next.querySelector('.pc-collage__main');
-    main.appendChild(content); if (film) main.classList.add('has-film');
+    if (main) { if (content) main.appendChild(content); else if (window.hcVoice) { main.classList.add('has-voice'); window.hcVoice(main, { mid: 0.3 }); } }
     if (wrap) { wrap.replaceWith(next); if (ro) ro.disconnect(); } else hero.appendChild(next);
     wrap = next;
     const stage = wrap.querySelector('.pc-collage__stage');
-    const pad = small ? 32 : 80;
-    const fit = () => { const W = wrap.clientWidth, k = Math.min(1, (W - pad) / SW), t = (small ? 16 : 40) * Math.min(1, k + 0.2); stage.style.setProperty('--k', k.toFixed(4)); stage.style.left = ((W - SW * k) / 2).toFixed(1) + 'px'; stage.style.top = t.toFixed(1) + 'px'; wrap.style.height = Math.round(SH * k + t * 2) + 'px'; };
+    const pad = small ? 32 : 40;
+    const fit = () => { const W = wrap.clientWidth, k = Math.min(1, (W - pad) / SW); stage.style.setProperty('--k', k.toFixed(4)); stage.style.left = ((W - SW * k) / 2).toFixed(1) + 'px'; stage.style.top = '0px'; wrap.style.height = Math.round(SH * k) + 'px'; };
     fit();
     ro = new ResizeObserver(fit); ro.observe(wrap);
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {

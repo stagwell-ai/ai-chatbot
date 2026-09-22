@@ -133,6 +133,8 @@ def main():
                f'    {mid_html}\n  </div>\n</section>\n' + TABS_JS)
         body = body[:more.start()] + how + body[more.end():]
         body = re.sub(r'<section class="pp-hero sp-hero [^"]*">', '<section class="pp-hero sp-hero">', body, count=1)
+        body = re.sub(r'(data-product-site>)Visit [^<]+? website(<svg)', r'\1Visit website\2', body)
+        body = re.sub(r'(data-product-site>)Get started with [^<]+?(<svg)', r'\1Get started\2', body)
         # the hero as on the reference: the words, then the product's picture wide below them
         src = pics.get(x['id'])
         if src:
