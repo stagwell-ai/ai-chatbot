@@ -557,6 +557,9 @@ def listing_page(home):
 # │ this script rewrites them WITHOUT that theme. Until it is taught the C theme,
 # │ run it for the /s/ pages only and `git checkout` the five afterwards, or
 # │ edit those five directly. Their copy is kept in sync here so the two agree.
+# │ 2026-09-22: the /s/ pages are now written by next/build-solution-pages-c.py,
+# │ which takes their content from solution_page() here and wraps it in the
+# │ approved homepage-B frame cut from the-machine.html. Run that one for /s/.
 # └───────────────────────────────────────────────────────────────────────────
 SOL_OWN = {'targeting_machine': '/targeting-machine', 'newvoices': '/newvoices',
            'machines_family': '/the-machine', 'agent_cloud': '/agent-cloud'}

@@ -209,3 +209,14 @@ body.hc-b.pc-page :is(.pp-more__head,.pp-proof__head):not(#_){max-width:1040px !
   body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{font-size:clamp(38px,11vw,56px) !important}
   body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{margin-top:12px !important;font-size:14px !important}
 }
+
+/* solution pages (/s/…): the product's name over the hero, in ink */
+body.hc-b.pc-page .sp-mark:not(#_){color:#0B1220 !important;font-size:clamp(20px,.9rem + .6vw,26px) !important;font-weight:400 !important;letter-spacing:-.02em !important;margin:0 0 14px !important;text-shadow:none !important}
+body.hc-b.pc-page .sp-also:not(#_){padding-block:clamp(72px,9vw,136px) clamp(24px,3vw,48px) !important;background:transparent !important}
+body.hc-b.pc-page .sp-also__list:not(#_){display:grid !important;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)) !important;gap:0 clamp(24px,3vw,48px) !important;margin-top:clamp(32px,4vw,56px) !important;padding:0 !important;list-style:none !important}
+body.hc-b.pc-page .sp-also__item:not(#_){display:flex !important;align-items:flex-start !important;justify-content:space-between !important;gap:20px !important;
+  background:none !important;border:0 !important;border-top:1px solid rgba(11,18,32,.16) !important;border-radius:0 !important;box-shadow:none !important;padding:24px 0 28px !important;color:#0B1220 !important;text-decoration:none !important}
+body.hc-b.pc-page .sp-also__n:not(#_){display:block !important;font-size:clamp(22px,.9rem + 1vw,30px) !important;font-weight:400 !important;letter-spacing:-.025em !important;line-height:1.15 !important;color:#0B1220 !important}
+body.hc-b.pc-page .sp-also__w:not(#_){display:block !important;margin-top:8px !important;font-size:clamp(15px,.85rem + .25vw,17px) !important;line-height:1.45 !important;color:rgba(11,18,32,.6) !important}
+body.hc-b.pc-page .sp-also__item:not(#_) svg{width:22px !important;height:22px !important;flex:0 0 auto !important;margin-top:6px !important;color:#0B1220 !important;transition:transform .25s ease}
+body.hc-b.pc-page .sp-also__item:not(#_):hover svg{transform:translateX(4px)}
