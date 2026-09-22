@@ -984,32 +984,53 @@ func sankey(_ ctx: CGContext, _ p: Double) {
   ctx.setFillColor(INKC); ctx.fill(CGRect(x: x0 - 20 * K, y: Hd * 0.05, width: 4 * K, height: Hd * 0.9))
   for g in 0..<groups { ctx.setFillColor(gcols[g]); ctx.fill(CGRect(x: x1 + 16 * K, y: Hd * (0.1 + 0.8 * Double(g) / Double(groups)) + 6 * K, width: 6 * K, height: Hd * 0.8 / Double(groups) - 12 * K)) }
 }
-// 30 · radial: a ring larger than the frame; strands sweep into a colour band on its left; bars radiate on its right
+// 30 · radial: the reference. A huge ring, its centre off the right edge; a dark band with a tiny
+// id per row; bars radiate inward from the band; the lower rows carry colour, and strands sweep in
+// from the left into those rows' chips on the band's outer edge
 func radial(_ ctx: CGContext, _ p: Double) {
-  ground(ctx, CGColor(red: 0.07, green: 0.07, blue: 0.08, alpha: 1))
-  let cx = Wd * 0.56, cy = CY, R = Hd * 0.34
-  let bandCols: [CGColor] = [CYAN, LCYANC, YELLOWC, ORANGE, CGColor(red: 0.85, green: 0.3, blue: 0.35, alpha: 1), CGColor(red: 0.6, green: 0.4, blue: 0.85, alpha: 1), CGColor(gray: 0.9, alpha: 1)]
-  for i in 0..<140 {
-    let a = Double.pi * (0.78 + 0.44 * (Double(i) + 0.5) / 140)
-    let ex = cx + cos(a) * R, ey = cy + sin(a) * R
-    let y0 = Hd * (-0.1 + 1.2 * hash(i, 711))
-    let col = bandCols[Int(hash(i, 712) * Double(bandCols.count))]
-    ctx.setStrokeColor(col.copy(alpha: 0.28)!); ctx.setLineWidth(1.2 * K)
-    ctx.move(to: CGPoint(x: -10, y: y0)); ctx.addCurve(to: CGPoint(x: ex, y: ey), control1: CGPoint(x: ex * 0.5, y: y0), control2: CGPoint(x: ex * 0.75, y: ey)); ctx.strokePath()
-    ctx.setStrokeColor(col); flow(ctx, p, 30 * K, 300 * K, 1.5 + hash(i, 713))
-    ctx.move(to: CGPoint(x: -10, y: y0)); ctx.addCurve(to: CGPoint(x: ex, y: ey), control1: CGPoint(x: ex * 0.5, y: y0), control2: CGPoint(x: ex * 0.75, y: ey)); ctx.strokePath(); noFlow(ctx)
-    ctx.setFillColor(col); ctx.fill(CGRect(x: ex - 4 * K, y: ey - 3 * K, width: 30 * K, height: 6 * K))
+  ground(ctx, CGColor(red: 0.075, green: 0.075, blue: 0.08, alpha: 1))
+  let R = Hd * 0.85, cx = Wd * 0.4 + R, cy = CY, band = 78 * K
+  let n = 112, span = 1.34
+  let pal: [CGColor] = [CGColor(red: 0.21, green: 0.82, blue: 0.85, alpha: 1), CGColor(red: 0.84, green: 0.2, blue: 0.52, alpha: 1), CGColor(red: 0.3, green: 0.69, blue: 0.31, alpha: 1), CGColor(red: 0.94, green: 0.9, blue: 0.78, alpha: 1), CGColor(red: 0.9, green: 0.22, blue: 0.21, alpha: 1), CGColor(red: 1, green: 0.54, blue: 0.24, alpha: 1), CGColor(red: 0.61, green: 0.42, blue: 0.87, alpha: 1), CGColor(red: 0.71, green: 0.91, blue: 0.33, alpha: 1), CGColor(red: 0.23, green: 0.51, blue: 0.96, alpha: 1), CGColor(red: 1, green: 0.84, blue: 0.31, alpha: 1), CGColor(red: 0.94, green: 0.38, blue: 0.57, alpha: 1)]
+  func ang(_ i: Int) -> Double { Double.pi - span / 2 + span * (Double(i) + 0.5) / Double(n) }
+  func hot(_ i: Int) -> Bool { i >= 8 && i < 44 }
+  func col(_ i: Int) -> CGColor { pal[Int(hash(i, 721) * Double(pal.count))] }
+  // strands from the left into the band's outer edge
+  for i in 0..<n {
+    let a = ang(i), ex = cx + cos(a) * (R + band), ey = cy + sin(a) * (R + band)
+    let cnt = hot(i) ? 4 : 1
+    for k in 0..<cnt {
+      let y0 = Hd * (-0.2 + 1.4 * hash(i * 7 + k, 722))
+      let c = hot(i) ? col(i) : pal[Int(hash(i, 723) * Double(pal.count))]
+      ctx.setStrokeColor(tint(c, hot(i) ? 0.55 : 0.1)); ctx.setLineWidth(1.1 * K)
+      ctx.move(to: CGPoint(x: -10, y: y0))
+      ctx.addCurve(to: CGPoint(x: ex, y: ey), control1: CGPoint(x: ex * 0.5, y: y0), control2: CGPoint(x: ex + cos(a) * 260 * K, y: ey + sin(a) * 260 * K)); ctx.strokePath()
+      if hot(i) {
+        ctx.setStrokeColor(c); flow(ctx, p, 36 * K, 380 * K, 1.2 + hash(i, k + 724))
+        ctx.move(to: CGPoint(x: -10, y: y0))
+        ctx.addCurve(to: CGPoint(x: ex, y: ey), control1: CGPoint(x: ex * 0.5, y: y0), control2: CGPoint(x: ex + cos(a) * 260 * K, y: ey + sin(a) * 260 * K)); ctx.strokePath(); noFlow(ctx)
+      }
+    }
   }
-  ctx.setStrokeColor(CGColor(red: 0.16, green: 0.16, blue: 0.18, alpha: 1)); ctx.setLineWidth(56 * K)
-  ctx.addEllipse(in: CGRect(x: cx - R - 28 * K, y: cy - R - 28 * K, width: 2 * R + 56 * K, height: 2 * R + 56 * K)); ctx.strokePath()
-  for k in 0..<160 {
-    let a = -Double.pi * 0.36 + Double.pi * 0.72 * Double(k) / 159
-    let base = (40 + 240 * pow(hash(k, 714), 1.3)) * K
-    let len = base * (0.8 + 0.2 * sin(TAU * (p * 2 + hash(k, 715))))
-    let low = a > Double.pi * 0.16
-    let col: CGColor = low ? bandCols[Int(hash(k, 716) * Double(bandCols.count))] : CGColor(gray: 0.92, alpha: 1)
-    let r0 = R + 62 * K
-    line(ctx, cx + cos(a) * r0, cy + sin(a) * r0, cx + cos(a) * (r0 + len), cy + sin(a) * (r0 + len), col, 5 * K)
+  // the band, its light outer edge
+  ctx.setStrokeColor(CGColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1)); ctx.setLineWidth(band)
+  ctx.addEllipse(in: CGRect(x: cx - R - band / 2, y: cy - R - band / 2, width: 2 * R + band, height: 2 * R + band)); ctx.strokePath()
+  ctx.setStrokeColor(white(0.35)); ctx.setLineWidth(1.5 * K)
+  ctx.addEllipse(in: CGRect(x: cx - R - band, y: cy - R - band, width: 2 * (R + band), height: 2 * (R + band))); ctx.strokePath()
+  // rows: chip, id, bar (in a frame whose x runs inward from the band's outer edge)
+  let pitch = R * span / Double(n)
+  for i in 0..<n {
+    let a = ang(i)
+    ctx.saveGState()
+    ctx.translateBy(x: cx + cos(a) * (R + band), y: cy + sin(a) * (R + band)); ctx.rotate(by: a + Double.pi)
+    let c = hot(i) ? col(i) : white(hash(i, 725) > 0.25 ? 0.9 : 0.5)
+    if hot(i) { ctx.setFillColor(c); ctx.fill(CGRect(x: -2 * K, y: -pitch * 0.42, width: 14 * K, height: pitch * 0.84)) }
+    label(ctx, String(format: "%04d-%@", 1000 + Int(hash(i, 726) * 8999), ["A", "B", "C", "D"][Int(hash(i, 727) * 4)]), 18 * K, 2.6 * K, 6.5 * K, white(hot(i) ? 0.85 : 0.5))
+    let len = (90 + 560 * pow(hash(i, 728), 1.3)) * K * (0.94 + 0.06 * sin(TAU * (p + hash(i, 729))))
+    let x0 = band + 4 * K
+    ctx.setFillColor(CGColor(red: 0.3, green: 0.3, blue: 0.32, alpha: 1)); ctx.fill(CGRect(x: x0, y: -pitch * 0.34 + 2.5 * K, width: len * (0.85 + 0.3 * hash(i, 730)), height: pitch * 0.68))
+    ctx.setFillColor(c); ctx.fill(CGRect(x: x0, y: -pitch * 0.34, width: len, height: pitch * 0.68))
+    ctx.restoreGState()
   }
 }
 // 31 · circuit blocks: traces between clusters of small squares
