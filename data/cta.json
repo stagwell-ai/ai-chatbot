@@ -1,6 +1,6 @@
 {
   "_comment": "Lead-capture modal copy. The kit's rule: copy lives in data. machine/lead.js fetches this once and renders every CTA from it; the same strings are mirrored as a built-in fallback inside lead.js so a failed fetch never dead-ends a call to action. `kinds` keys are the data-cta values used across the site. `human` lists the kinds that are literally a request for a person — lead.js emits human_requested for those. {brand} in success.line is replaced with the visitor's company where the session knows it.",
-  "fine": "Prototype only — nothing is submitted or stored.",
+  "fine": "Your details go to the Stagwell AI team.",
   "fineLive": "Sent to the Stagwell AI team — someone will be in touch.",
   "fineHeld": "Recorded. HubSpot is not connected yet, so this is held on our side for now.",
   "fineFailed": "We could not reach the CRM just now — your details were logged and nothing is lost.",
@@ -15,9 +15,27 @@
   "phoneRule": "asked every time an email is asked, on every surface — never required, so a visitor who will not give it still converts",
   "emailHint": "That does not look like a work email — check the address.",
   "success": {
-    "title": "Stagwell.AI has your brief.",
-    "line": "In the live product your {brand} snapshot would travel with it, and someone who already understands the account would be in touch — not an SDR reading a script. This is a prototype: nothing was sent.",
-    "close": "Back to the page"
+    "title": "Stagwell AI has your brief.",
+    "line": "Someone who already knows the account will be in touch — not an SDR reading a script. While you are here, three faster ways in:",
+    "close": "Close",
+    "next": {
+      "call": {
+        "title": "Talk to someone now",
+        "line": "We ring your phone in about a minute."
+      },
+      "calendar": {
+        "title": "Pick a time",
+        "line": "Choose a slot that suits you.",
+        "action": "Open the calendar",
+        "url": ""
+      },
+      "chat": {
+        "title": "Ask the AI first",
+        "line": "Keep exploring what fits your brand.",
+        "action": "Back to the agent",
+        "url": "/"
+      }
+    }
   },
   "human": [
     "session",

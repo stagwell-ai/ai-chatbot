@@ -45,7 +45,7 @@
 
   /* ── the copy, mirrored from data/cta.json for the fetch-failed case ───── */
   const FALLBACK = {
-    fine: 'Prototype only — nothing is submitted or stored.',
+    fine: 'Your details go to the Stagwell AI team.',
     fineLive: 'Sent to the Stagwell AI team — someone will be in touch.',
     fineHeld: 'Recorded. HubSpot is not connected yet, so this is held on our side for now.',
     fineFailed: 'We could not reach the CRM just now — your details were logged and nothing is lost.',
@@ -53,8 +53,13 @@
     emailHint: 'That does not look like a work email — check the address.',
     success: {
       title: 'Stagwell AI has your brief.',
-      line: 'In the live product your {brand} snapshot would travel with it, and someone who already understands the account would be in touch — not an SDR reading a script. This is a prototype: nothing was sent.',
-      close: 'Back to the page'
+      line: 'Someone who already knows the account will be in touch — not an SDR reading a script. While you are here, three faster ways in:',
+      close: 'Close',
+      next: {
+        call:     { title: 'Talk to someone now', line: 'We ring your phone in about a minute.' },
+        calendar: { title: 'Pick a time', line: 'Choose a slot that suits you.', action: 'Open the calendar', url: '' },
+        chat:     { title: 'Ask the AI first', line: 'Keep exploring what fits your brand.', action: 'Back to the agent', url: '/' }
+      }
     },
     human: ['session', 'expert', 'callback', 'demo'],
     kinds: {
@@ -378,12 +383,100 @@
     return `
       <div class="modal__ok">
         <span class="modal__tick"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <h3 id="saiLeadTitle">${esc(c.success.title)}</h3>
+        <!-- the modal's thank-you carries saiLeadTitle; this one sits on the
+             page at the same time, and two of an id is a broken label -->
+        <h3>${esc(c.success.title)}</h3>
         <p>${esc(line)}</p>
         ${inline ? '<a class="btn btn--dark" href="/">Back to Stagwell AI</a>'
                  : `<button class="btn btn--dark" type="button" data-lead-close>${esc(c.success.close)}</button>`}
         <p class="modal__fine">${esc(c.fine)}</p>
       </div>`;
+  }
+
+  /* ── THE THANK-YOU, AS A DISMISSIBLE PANEL ──────────────────────────────
+     What used to happen on /book: the tall form was replaced in place by a
+     short confirmation, the page lost most of its height, and the viewport —
+     which does not move — ended up parked on the footer. The visitor's own
+     words for it were "the screen jumped weirdly. It came down low."
+
+     So the confirmation now arrives as the modal this file already owns:
+     nothing under it moves, Escape and the X and the scrim all dismiss it,
+     and the page behind is left scrolled where the form was.
+
+     It also stops being a dead end. Someone who has just asked for a demo is
+     the single most willing person on the site, and the old panel's only verb
+     was "Back to the page". Three ways forward instead, in the order of how
+     soon they get a human: a call now, a slot in the calendar, or more of the
+     agent. The calendar is data, not a guess — with no url in cta.json that
+     card is not drawn at all, because an "Open the calendar" button that goes
+     nowhere is worse than one less option. */
+  function nextHtml(c, kind) {
+    const n = (c.success && c.success.next) || {};
+    const cards = [];
+
+    if (n.call && window.SAICALL) {
+      cards.push(`<li class="lead__opt" data-opt="call">
+        <h4>${esc(n.call.title)}</h4>
+        <p>${esc(n.call.line)}</p>
+        <div data-lead-call></div>
+      </li>`);
+    }
+    const url = String((n.calendar && n.calendar.url) || '').trim();
+    if (n.calendar && /^(https:\/\/|\/)/.test(url)) {
+      cards.push(`<li class="lead__opt" data-opt="calendar">
+        <h4>${esc(n.calendar.title)}</h4>
+        <p>${esc(n.calendar.line)}</p>
+        <a class="btn btn--ghost" href="${esc(url)}" target="_blank" rel="noopener"
+           data-thanks="calendar">${esc(n.calendar.action || 'Open the calendar')}</a>
+      </li>`);
+    }
+    if (n.chat) {
+      const to = String(n.chat.url || '/').trim() || '/';
+      cards.push(`<li class="lead__opt" data-opt="chat">
+        <h4>${esc(n.chat.title)}</h4>
+        <p>${esc(n.chat.line)}</p>
+        <a class="btn btn--ghost" href="${esc(to)}" data-thanks="chat">${esc(n.chat.action || 'Back to the agent')}</a>
+      </li>`);
+    }
+    return cards.length ? `<ul class="lead__next">${cards.join('')}</ul>` : '';
+  }
+
+  function thanksHtml(c, brand, kind) {
+    const line = String(c.success.line).replace('{brand}', brand || 'brand');
+    return `
+      <div class="modal__ok lead__thanks">
+        <span class="modal__tick"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3 id="saiLeadTitle">${esc(c.success.title)}</h3>
+        <p>${esc(line)}</p>
+        ${nextHtml(c, kind)}
+        <button class="btn btn--dark" type="button" data-lead-close>${esc(c.success.close)}</button>
+        <p class="modal__fine">${esc(c.fine)}</p>
+      </div>`;
+  }
+
+  /* Show it. The modal is built on demand, so this works from /book — which
+     never opens the modal for anything else — as well as from the panel. */
+  function openThanks(c, brand, kind) {
+    build();
+    openKind = kind;
+    body.innerHTML = thanksHtml(c, brand, kind);
+    el.hidden = false;
+    document.body.classList.add('lead-open');
+    wireThanks(body, c, kind);
+    const done = body.querySelector('[data-lead-close]');
+    if (done) { try { done.focus(); } catch (e) { panel.focus(); } } else { panel.focus(); }
+    return body;
+  }
+
+  function wireThanks(root, c, kind) {
+    const host = root.querySelector('[data-lead-call]');
+    if (host && window.SAICALL && !host.children.length) {
+      window.SAICALL.create(host, { variant: 'alt', placement: 'thanks-' + kind });
+    }
+    root.addEventListener('click', e => {
+      const a = e.target.closest('[data-thanks]');
+      if (a) emit('cta_clicked', { kind, to: a.dataset.thanks });
+    });
   }
 
   /* ── behaviour ────────────────────────────────────────────────────────── */
@@ -446,17 +539,36 @@
 
       const payload = leadPayload(form, kind, prefill);
       const brand = (prefill && prefill.brand) || slots().company || null;
-      root.innerHTML = successHtml(c, brand, inline);
-      const back = root.querySelector('[data-lead-close]');
-      if (back) back.focus();
+
+      /* In the panel we ARE the modal, so the thank-you simply replaces it.
+         On /book the modal opens over the page, and the form underneath is
+         swapped for the short confirmation it leaves behind — anchored, so
+         dismissing does not drop the visitor into the footer. */
+      const shown = [];
+      if (inline) {
+        root.innerHTML = successHtml(c, brand, inline);
+        shown.push(root);
+        shown.push(openThanks(c, brand, kind));
+        try { root.scrollIntoView({ block: 'center', behavior: 'auto' }); } catch (e) { /* ancient */ }
+      } else {
+        root.innerHTML = thanksHtml(c, brand, kind);
+        wireThanks(root, c, kind);
+        shown.push(root);
+        const done = root.querySelector('[data-lead-close]');
+        if (done) done.focus();
+      }
+
       /* …and the truth about it, once the server answers */
       postLead(payload).then(r => {
         const j = (r && r.body) || {};
-        const line = root.querySelector('.modal__ok .modal__fine');
         const live = r && r.ok && j.delivered && j.mode !== 'mock';
         emit('lead_delivered', { kind, delivered: !!(r && r.ok && j.delivered), mode: j.mode || null, destination: j.destination || null });
-        if (line) line.textContent = live ? (c.fineLive || 'Sent to the Stagwell AI team.')
+        const text = live ? (c.fineLive || 'Sent to the Stagwell AI team.')
           : (r && r.ok) ? (c.fineHeld || c.fine) : (c.fineFailed || c.fine);
+        shown.forEach(where => {
+          const line = where && where.querySelector('.modal__ok .modal__fine');
+          if (line) line.textContent = text;
+        });
       });
     });
 

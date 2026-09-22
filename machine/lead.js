@@ -82,10 +82,17 @@
   function merge(loaded) {
     if (!loaded || typeof loaded !== 'object') return FALLBACK;
     return {
-      fine: loaded.fine || FALLBACK.fine,
+      /* `fine` and `success` are deliberately NOT taken from cta.json here.
+         This copy of the modal serves /ads, which is still the prototype it
+         says it is: it collects and sends nothing. The live site's lead.js
+         (next/lead.js) does post to /api/lead and into HubSpot, so from
+         2026-09-22 those two strings in cta.json promise a human will be in
+         touch. Inheriting them here would put a promise on a page that keeps
+         no record of anyone. Everything else still comes from the data. */
+      fine: FALLBACK.fine,
       fields: Object.assign({}, FALLBACK.fields, loaded.fields || {}),
       emailHint: loaded.emailHint || FALLBACK.emailHint,
-      success: Object.assign({}, FALLBACK.success, loaded.success || {}),
+      success: FALLBACK.success,
       human: Array.isArray(loaded.human) ? loaded.human : FALLBACK.human,
       kinds: Object.assign({}, FALLBACK.kinds, loaded.kinds || {})
     };
