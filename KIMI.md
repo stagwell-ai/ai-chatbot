@@ -833,7 +833,12 @@ than as a guess, because an unknown option is what breaks the routing. The field
 multi-checkbox and HubSpot reads it as one semicolon-separated string, so **the number of values
 is load-bearing**: the portal routes several selections to a catch-all owner and one selection to
 that product's owner. Sending only the first tick would route a three-product lead to one
-product's owner as though they had asked for one thing.
+product's owner as though they had asked for one thing. A visitor who ticks NOTHING sends the
+portal's own **"Not Sure"** option rather than the engine's recommendation: one value routes to
+that product's owner, so a guess there would hand someone to a specialist they never asked for.
+`tests/kimi/form.test.mjs` holds the site's tick-box labels against the CRM field's 18 options
+in both directions, so a product renamed on one side and not the other fails a test rather than
+a submission nobody sees.
 
 
 `api/_lib/leads/hubspot.js`, server-only, raw CRM v3 (search by email → PATCH, else POST;

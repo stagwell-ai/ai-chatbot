@@ -23,7 +23,7 @@ import { submitLead } from '../../api/_lib/leads/leadService.js';
    reaches HubSpot and stops dead instead of routing. */
 const OPTIONS = ['QuestBrand', 'QuestDIY', 'BERA.ai', 'The Knowledge Machine', 'UNICEPTA', 'IMAI',
   'Stagwell AI for SMBs', 'GEOPulse', 'The Targeting Machine', 'Numetrix', 'NewVoices', 'The Machine',
-  'Agent Cloud', 'The Media Machine', 'NewIntel', 'Search+', 'Stagwell ID Graph'];
+  'Agent Cloud', 'The Media Machine', 'NewIntel', 'Search+', 'Stagwell ID Graph', 'Not Sure'];
 
 const GUID = '11111111-2222-3333-4444-555555555555';
 const BODY = () => ({
@@ -94,17 +94,40 @@ test('the same product ticked twice is still one selection', () => {
   assert.equal(productFieldValue(lead, DATA), 'BERA.ai', 'a duplicate must not read as "multiple"');
 });
 
-test('ticked nothing: our recommendation, as ONE value — or none at all if she prefers', () => {
+test('ticked nothing: the field says "Not Sure" rather than guessing for them', () => {
   const none = BODY();
   none.discovery.productsRequested = [];
   const lead = validateLeadBody(none, DATA).lead;
-  const v = productValues(lead, DATA);
-  assert.equal(v.length, 1, 'a guess is never allowed to look like a multi-select');
-  assert.ok(OPTIONS.indexOf(v[0]) !== -1, 'and it is a real option: ' + v[0]);
+  assert.equal(productFieldValue(lead, DATA), 'Not Sure');
+  /* and NOT the engine's own pick: one value routes to that product's owner,
+     so a guess there hands a visitor to a specialist they never asked for */
+  assert.equal(productFieldValue(lead, DATA), lead.discovery.primary ? 'Not Sure' : 'Not Sure');
+  assert.ok(OPTIONS.indexOf('Not Sure') !== -1, 'and the portal offers it');
 
   process.env.HUBSPOT_FORM_PRODUCT_FALLBACK = 'none';
-  assert.equal(productFieldValue(lead, DATA), null, 'turned off without a deploy');
+  assert.equal(productFieldValue(lead, DATA), null, 'or nothing at all, without a deploy');
+  process.env.HUBSPOT_FORM_PRODUCT_FALLBACK = 'Unsure';
+  assert.equal(productFieldValue(lead, DATA), 'Unsure', 'renamed in HubSpot is an env var, not a release');
   delete process.env.HUBSPOT_FORM_PRODUCT_FALLBACK;
+});
+
+/* ── THE WORDS ON THE PAGE ARE THE WORDS IN THE CRM ─────────────────────────
+   The tick-boxes on /book are labelled from solutions.json, and the value sent
+   to HubSpot is derived from the same field. This holds BOTH against the
+   portal's actual option list, read from property
+   stagwell_ai_form_solution_drop_down on 2026-09-22. A product renamed on the
+   site without being renamed in HubSpot fails here rather than in a rejected
+   submission nobody sees. */
+test('every name on the website is, verbatim, an option in HubSpot', () => {
+  const active = (DATA.solutions.solutions || DATA.solutions).filter(p => p.active !== false);
+  const shown = active.map(p => p.displayName || p.name);
+  shown.forEach(n => assert.ok(OPTIONS.indexOf(n) !== -1,
+    'the site offers "' + n + '", which the CRM field does not have'));
+  assert.equal(shown.length, OPTIONS.length - 1,
+    'and the two lists are the same length once "Not Sure" is set aside — ' +
+    'site ' + shown.length + ', CRM ' + (OPTIONS.length - 1));
+  OPTIONS.filter(o => o !== 'Not Sure').forEach(o => assert.ok(shown.indexOf(o) !== -1,
+    'HubSpot offers "' + o + '", which is on no tick-box'));
 });
 
 test('an unknown or retired product is dropped, never guessed at', () => {

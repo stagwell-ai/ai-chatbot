@@ -32,6 +32,9 @@ import RECOMMEND from '../../../next/recommend.js';
 const env = k => (process.env[k] || '').trim();
 const BASE = () => (env('HUBSPOT_FORMS_BASE_URL') || 'https://api.hsforms.com').replace(/\/+$/, '');
 
+/* the portal's own eighteenth option, for a visitor who ticked nothing */
+export const NOT_SURE = 'Not Sure';
+
 /* ── WHICH DOMAIN THE VISITOR WAS ACTUALLY ON ───────────────────────────────
    HubSpot reads the site domain off context.pageUri and quarantines anything
    whose domain is not on the portal's tracking list. The site answers on more
@@ -84,11 +87,15 @@ export function formMode() {
    though they had asked for one thing. HubSpot takes a checkbox field's
    values as one semicolon-separated string.
 
-   Their own ticks, in the order they ticked them. The engine's recommendation
-   is the fallback ONLY for a lead that ticked nothing at all — and that is a
-   single value, so under her rule it routes to that product's owner on our
-   say-so rather than theirs. HUBSPOT_FORM_PRODUCT_FALLBACK=none turns that
-   off and sends the field empty instead, without a deploy. */
+   Their own ticks, in the order they ticked them. For a lead that ticked
+   NOTHING the field says so: the portal added a "Not Sure" option for exactly
+   this, and it is the honest answer. We used to send the engine's own
+   recommendation there, which was worse than useless under the routing rule —
+   one value routes to that product's owner, so a visitor who asked for
+   nothing would have been handed to a specialist on our guess rather than
+   their request. HUBSPOT_FORM_PRODUCT_FALLBACK carries whatever that option
+   is called, so a rename in HubSpot is an env var; `none` sends the field
+   empty instead. */
 export function productValues(lead, data) {
   const d = lead.discovery || {};
   const name = id => {
@@ -101,9 +108,8 @@ export function productValues(lead, data) {
     if (n && out.indexOf(n) === -1) out.push(n);
   });
   if (out.length) return out;
-  if (env('HUBSPOT_FORM_PRODUCT_FALLBACK').toLowerCase() === 'none') return [];
-  const guess = d.primary ? name(d.primary) : null;
-  return guess ? [guess] : [];
+  const fallback = env('HUBSPOT_FORM_PRODUCT_FALLBACK') || NOT_SURE;
+  return fallback.toLowerCase() === 'none' ? [] : [fallback];
 }
 
 /* HubSpot reads a checkbox field as one semicolon-separated string */
