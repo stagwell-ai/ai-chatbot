@@ -73,15 +73,21 @@ def main():
     for n, x in enumerate(gen):
         kw = bpp.solution_page('', x, n, by_id, pics)
         body = kw['body']
-        # the product's picture leaves "What it does" and becomes the hero's ground; with no
-        # picture beside them the capabilities read as a plain numbered list (no tabs)
-        m = re.search(r'\n?\s*<div class="pp-more__media"><img src="([^"]+)"[^>]*></div>', body)
-        hero = '<section class="pp-hero sp-hero">'
-        if m:
-            body = body[:m.start()] + body[m.end():]
-            hero = f'<section class="pp-hero sp-hero sp-hero--pic" style="--sp-pic:url(\'{m.group(1)}\')">'
-        body = re.sub(r'<section class="pp-hero sp-hero [^"]*">', lambda _: hero, body, count=1)
-        body = body.replace('<ol class="pp-steps">', '<ol class="pp-steps sp-caps">', 1)
+        # "How it works" in two columns: the product's square picture on the left; the
+        # heading and the capabilities as a numbered list on the right (no tabs: there is
+        # one picture and no step descriptions to rotate through)
+        more = re.search(r'<section class="pp-more">\s*<div class="pp-wrap">\s*(<div class="pp-more__head">.*?</div>)\s*'
+                         r'<div class="pp-more__grid">\s*<div class="pp-more__media">(.*?)</div>\s*(<ol class="pp-steps">.*?</ol>)\s*</div>\s*'
+                         r'(<p class="pp-mid">.*?</p>)\s*</div>\s*</section>', body, re.S)
+        assert more, x['id']
+        head_html, media_html, ol_html, mid_html = more.groups()
+        ol_html = ol_html.replace('<ol class="pp-steps">', '<ol class="pp-steps sp-caps">', 1)
+        how = ('<section class="pp-more sp-how">\n  <div class="pp-wrap sp-how__in">\n'
+               f'    <div class="sp-how__pic">{media_html}</div>\n'
+               f'    <div class="sp-how__txt">\n      {head_html}\n      {ol_html}\n      {mid_html}\n    </div>\n'
+               '  </div>\n</section>')
+        body = body[:more.start()] + how + body[more.end():]
+        body = re.sub(r'<section class="pp-hero sp-hero [^"]*">', '<section class="pp-hero sp-hero">', body, count=1)
         # each related product shows its own picture
         def also(mm):
             href = mm.group(1)

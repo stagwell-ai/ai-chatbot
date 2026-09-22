@@ -264,3 +264,41 @@ body.hc-b.pc-page .sp-caps:not(#_) > li > b{position:static !important;inset:aut
 body.hc-b.pc-page .sp-caps:not(#_) > li > b::before,
 body.hc-b.pc-page .sp-caps:not(#_) > li > b::after{content:none !important}
 body.hc-b.pc-page .sp-hero .sp-mark:not(#_){order:-2 !important}
+
+/* solution pages, round three ───────────────────────────────────────────────
+   How it works: the square picture left, heading and numbered list right */
+body.hc-b.pc-page .sp-how__in:not(#_){display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;gap:clamp(40px,6vw,112px) !important;align-items:center !important}
+body.hc-b.pc-page .sp-how__pic:not(#_){aspect-ratio:1 / 1;overflow:hidden;background:#0B1220;border-radius:0}
+body.hc-b.pc-page .sp-how__pic:not(#_) img{width:100%;height:100%;object-fit:cover;display:block}
+body.hc-b.pc-page .sp-how:not(#_) .pp-more__head{max-width:none !important;margin:0 !important}
+body.hc-b.pc-page .sp-how:not(#_) .pp-h2,
+body.hc-b.pc-page .sp-how:not(#_) .pp-h2 *{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
+body.hc-b.pc-page .sp-how:not(#_) .sp-caps{grid-template-columns:1fr !important;margin-top:clamp(24px,3vw,40px) !important}
+body.hc-b.pc-page .sp-how:not(#_) .sp-caps > li{padding:20px 0 22px !important}
+body.hc-b.pc-page .sp-how:not(#_) .sp-caps h3{font-size:clamp(20px,.9rem + .8vw,26px) !important;letter-spacing:-.02em !important}
+body.hc-b.pc-page .sp-how:not(#_) .sp-caps > li:last-child{border-bottom:1px solid rgba(11,18,32,.16) !important}
+body.hc-b.pc-page .sp-how:not(#_) .pp-mid{text-align:left !important;margin:clamp(28px,3vw,40px) 0 0 !important;justify-content:flex-start !important}
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-how__in:not(#_){grid-template-columns:1fr !important;gap:32px !important}
+  body.hc-b.pc-page .sp-how__pic:not(#_){aspect-ratio:16 / 10}
+}
+
+/* Related: dark tiles like the closing Book a demo / Call my phone, the product's
+   picture darkened behind its name */
+body.hc-b.pc-page .sp-also__list:not(#_){grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)) !important;gap:20px !important}
+body.hc-b.pc-page .sp-also__item:not(#_){position:relative !important;display:flex !important;flex-direction:column !important;justify-content:flex-start !important;
+  grid-template-areas:none !important;min-height:230px !important;padding:22px 64px 22px 24px !important;border:0 !important;border-radius:10px !important;overflow:hidden !important;
+  background:#0B1220 !important;color:#FFFFFF !important;isolation:isolate}
+body.hc-b.pc-page .sp-also__pic:not(#_){position:absolute !important;inset:0 !important;width:auto !important;aspect-ratio:auto !important;margin:0 !important;z-index:-1;
+  background:linear-gradient(180deg,rgba(11,18,32,.8) 0%,rgba(11,18,32,.38) 58%,rgba(11,18,32,.58) 100%),#0B1220 var(--sp-pic) center / cover no-repeat !important;transition:opacity .3s ease}
+body.hc-b.pc-page .sp-also__item:not(#_) > span:not(.sp-also__pic){display:block !important}
+body.hc-b.pc-page .sp-also__item:not(#_) .sp-also__n{font-size:22px !important;font-weight:500 !important;letter-spacing:-.01em !important;text-transform:uppercase !important;color:#FFFFFF !important;line-height:1.15 !important}
+body.hc-b.pc-page .sp-also__item:not(#_) .sp-also__w{margin-top:10px !important;max-width:340px !important;font-size:15px !important;color:rgba(255,255,255,.78) !important}
+body.hc-b.pc-page .sp-also__item:not(#_) > svg{position:absolute !important;top:22px !important;right:24px !important;margin:0 !important;color:#FFFFFF !important}
+body.hc-b.pc-page .sp-also__item:not(#_):hover .sp-also__pic{opacity:.9}
+@media (max-width:760px){
+  body.hc-b.pc-page .sp-also__item:not(#_){min-height:180px !important}
+}
+body.hc-b.pc-page .sp-also__list:not(#_){grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr)) !important}
+body.hc-b.pc-page .sp-also:not(#_) .pp-h2,
+body.hc-b.pc-page .sp-also:not(#_) .pp-h2 *{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
