@@ -130,3 +130,82 @@ body.hc-b :is(.display,.hcs__h,.why__t):not(#_) *{letter-spacing:-.035em !import
 body.hc-b #why :is(.display--cos,.why__t):not(#_),
 body.hc-b #why :is(.display--cos,.why__t):not(#_) *{letter-spacing:-.035em !important}
 body.hc-b #why .why__item:not(#_) .why__t:not(#_){letter-spacing:-.035em !important}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INNER PAGES (/products and the product pages) on the approved homepage B look.
+   Same grid, type scale, colours and pictures as the homepage. Scoped to .pc-page.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* one grid with the homepage and the footer: 1240px of content, 20px gutters */
+body.hc-b.pc-page .pp-wrap:not(.pp-hero__in):not(#_){max-width:1280px !important;padding-inline:20px !important;margin-inline:auto !important}
+
+/* titles: the homepage H1 and section-title scale, all at -0.035em */
+body.hc-b.pc-page .pp-title:not(#_),
+body.hc-b.pc-page .pp-title:not(#_) *{font-size:clamp(32px,1rem + 3.1vw,60px) !important;line-height:1.08 !important;letter-spacing:-.035em !important;font-weight:500 !important}
+body.hc-b.pc-page .pp-title:not(#_),
+body.hc-b.pc-page .pp-title:not(#_) *{-webkit-text-stroke:.5px #0B1220;paint-order:stroke fill}
+body.hc-b.pc-page .pp-h2:not(#_),
+body.hc-b.pc-page .pp-h2:not(#_) *,
+body.hc-b.pc-page .prodgroup > .prodgroup__words .prodgroup__h:not(#_){font-size:clamp(40px,1rem + 3.9vw,78px) !important;line-height:1.06 !important;letter-spacing:-.035em !important;font-weight:400 !important;max-width:none !important}
+body.hc-b.pc-page .pp-diff__item:not(#_) h3,
+body.hc-b.pc-page .pc-row__h:not(#_){font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important;letter-spacing:-.035em !important;font-weight:400 !important}
+body.hc-b.pc-page .pp-uses__list:not(#_) h4{font-size:clamp(22px,.9rem + 1vw,30px) !important;line-height:1.15 !important;letter-spacing:-.025em !important;font-weight:400 !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) b{font-size:clamp(18px,.9rem + .4vw,21px) !important;line-height:1.3 !important;letter-spacing:-.01em !important;font-weight:400 !important}
+
+/* body copy: the homepage paragraph size, grey under an ink lead */
+body.hc-b.pc-page :is(.pp-diff__item p,.pp-uses__list p,.pp-with__grid span,.pc-how__card p):not(#_){font-size:clamp(16px,.9rem + .3vw,19px) !important;line-height:1.55 !important;letter-spacing:0 !important}
+body.hc-b.pc-page :is(.pp-diff__item p,.pp-uses__list p,.pp-with__grid span):not(#_){color:rgba(11,18,32,.6) !important}
+body.hc-b.pc-page .pp-sign:not(#_),
+body.hc-b.pc-page .pp-eyebrow:not(#_){font-size:12px !important;letter-spacing:1.6px !important;text-transform:uppercase !important;font-weight:400 !important;color:rgba(11,18,32,.56) !important}
+
+/* no colour: steps, bars, icons and small numbers in ink and grey; one white ground */
+body.hc-b.pc-page .pc-how__n:not(#_),
+body.hc-b.pc-page .pc-how__cn:not(#_),
+body.hc-b.pc-page .ptoc__num:not(#_),
+body.hc-b.pc-page .pp-diff__n:not(#_){color:rgba(11,18,32,.4) !important}
+body.hc-b.pc-page .pc-how__card .pc-how__cn:not(#_){color:rgba(255,255,255,.6) !important}
+body.hc-b.pc-page .pc-how__tab.is-on:not(#_) .pc-how__n{color:#0B1220 !important}
+body.hc-b.pc-page .pc-how__bar:not(#_),
+body.hc-b.pc-page .pc-how__bar:not(#_)::before,
+body.hc-b.pc-page .pc-how__bar:not(#_)::after{background-color:#0B1220 !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) svg{color:#0B1220 !important;stroke:currentColor}
+body.hc-b.pc-page .pp-uses:not(#_){background:transparent !important}
+body.hc-b.pc-page .pp-hero:not(#_)::before{content:none !important}
+
+/* Explore sits on pictures and dark cards: white with ink, like the demo button on the film */
+body.hc-b.pc-page .prodcard__link:not(#_),
+body.hc-b.pc-page .prodcard__link.pc-go:not(#_){background:#FFFFFF !important;border-color:#FFFFFF !important;color:#0B1220 !important}
+body.hc-b.pc-page .prodcard__link:not(#_) *{color:#0B1220 !important}
+body.hc-b.pc-page .prodcard__link:not(#_):hover{background:#E6E6E3 !important;border-color:#E6E6E3 !important}
+
+/* pictures and film square-cornered like the homepage's; the film inset 20px like B's */
+body.hc-b.pc-page .pp-film:not(#_){padding-inline:20px !important}
+body.hc-b.pc-page .pp-film__frame:not(#_),
+body.hc-b.pc-page .pp-film__frame:not(#_) video,
+body.hc-b.pc-page .pp-more__media:not(#_),
+body.hc-b.pc-page .pc-break:not(#_),
+body.hc-b.pc-page .pc-break:not(#_) img{border-radius:0 !important}
+
+/* the closing tiles at the homepage's width */
+body.hc-b.pc-page .ask-end .ask-end__ways:not(#_){max-width:1180px !important;width:100% !important;gap:20px !important;margin-inline:auto !important}
+
+/* proof: big light figures on a fine top rule, the labels quiet beneath */
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_){display:grid !important;grid-template-columns:repeat(auto-fit,minmax(200px,1fr)) !important;gap:0 clamp(24px,3vw,48px) !important;
+  margin-top:clamp(40px,5vw,72px) !important;border:0 !important;background:none !important;padding:0 !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{border:0 !important;border-top:1px solid rgba(11,18,32,.16) !important;background:none !important;padding:28px 0 0 !important;margin:0 !important;display:block !important;text-align:left !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{display:block !important;font-size:clamp(56px,1.5rem + 4.4vw,112px) !important;line-height:.95 !important;font-weight:300 !important;
+  letter-spacing:-.045em !important;color:#0B1220 !important;font-variant-numeric:tabular-nums;white-space:nowrap}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{display:block !important;margin-top:18px !important;max-width:260px !important;font-size:clamp(15px,.85rem + .25vw,17px) !important;line-height:1.45 !important;color:rgba(11,18,32,.6) !important;letter-spacing:0 !important}
+body.hc-b.pc-page .pp-proof .pp-flag:not(#_){background:none !important;border:1px solid rgba(11,18,32,.18) !important;color:rgba(11,18,32,.56) !important}
+body.hc-b.pc-page .pp-proof .pp-proof__note:not(#_){margin-top:clamp(32px,4vw,56px) !important;color:rgba(11,18,32,.5) !important}
+body.hc-b.pc-page :is(.pp-more__head,.pp-proof__head):not(#_){max-width:1040px !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-title:not(#_),
+  body.hc-b.pc-page .pp-title:not(#_) *{font-size:clamp(36px,10.7vw,46px) !important}
+}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_){grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:0 20px !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{padding:20px 0 32px !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{font-size:clamp(38px,11vw,56px) !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{margin-top:12px !important;font-size:14px !important}
+}
