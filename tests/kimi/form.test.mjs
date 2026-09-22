@@ -203,3 +203,48 @@ test('mock mode posts no form anywhere', async () => {
   assert.equal(r.action, 'skipped');
   delete process.env.HUBSPOT_MOCK;
 });
+
+/* ── THE FORM NAMES ITS OWN FIELDS ──────────────────────────────────────────
+   The first live submission was rejected outright:
+     Error in 'fields.work_email'. Required field 'work_email' is missing
+   That form calls the email field `work_email`. Nothing about that is
+   knowable from this side, so it is configuration. */
+test('a field can be renamed to whatever the form calls it', () => {
+  process.env.HUBSPOT_FORM_FIELD_MAP = 'email:work_email,jobtitle:title';
+  const f = formFields(validateLeadBody(BODY(), DATA).lead, DATA);
+  const names = f.map(x => x.name);
+  assert.ok(names.indexOf('work_email') !== -1, 'sent under the form’s name');
+  assert.equal(names.indexOf('email'), -1, 'and not under ours as well');
+  assert.equal(f.find(x => x.name === 'work_email').value, 'ada@example-brand.com');
+  assert.ok(names.indexOf('title') !== -1 && names.indexOf('jobtitle') === -1);
+  assert.ok(names.indexOf('firstname') !== -1, 'anything unmapped keeps its own name');
+  delete process.env.HUBSPOT_FORM_FIELD_MAP;
+});
+
+test('a field mapped to nothing is dropped, for a form that has no such field', () => {
+  process.env.HUBSPOT_FORM_FIELD_MAP = 'phone:,company:';
+  const names = formFields(validateLeadBody(BODY(), DATA).lead, DATA).map(x => x.name);
+  assert.equal(names.indexOf('phone'), -1);
+  assert.equal(names.indexOf('company'), -1);
+  assert.ok(names.indexOf('email') !== -1, 'the rest are untouched');
+  delete process.env.HUBSPOT_FORM_FIELD_MAP;
+});
+
+test('a malformed map is ignored rather than silently renaming things', () => {
+  process.env.HUBSPOT_FORM_FIELD_MAP = 'nonsense,,:orphan,email:work_email';
+  const names = formFields(validateLeadBody(BODY(), DATA).lead, DATA).map(x => x.name);
+  assert.ok(names.indexOf('work_email') !== -1, 'the good pair still applies');
+  assert.ok(names.indexOf('firstname') !== -1);
+  delete process.env.HUBSPOT_FORM_FIELD_MAP;
+});
+
+test('a one-word name sends no lastname — which a form requiring one will reject', () => {
+  /* exactly what happened on 2026-09-22: "TEST" typed into a single Full name
+     box, no surname to send, and the form requires one. Recorded here so the
+     day somebody changes the name field, this test says what it was for. */
+  const body = BODY();
+  body.lead.name = 'TEST';
+  const f = formFields(validateLeadBody(body, DATA).lead, DATA);
+  assert.equal(f.find(x => x.name === 'firstname').value, 'TEST');
+  assert.equal(f.find(x => x.name === 'lastname'), undefined);
+});

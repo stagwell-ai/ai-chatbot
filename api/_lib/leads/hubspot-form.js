@@ -87,13 +87,46 @@ export function productFieldValue(lead, data) {
   return v.length ? v.join(';') : null;
 }
 
-/* the fields Eriel asked for, and only those: a form submission writes what
-   the form defines, so sending more is how you get a 400 that names a field
-   nobody added */
+/* ── THE FORM'S OWN FIELD NAMES ─────────────────────────────────────────────
+   A submission is validated against the form, not against the contact
+   schema, and the form's fields are named by whoever built it. The first
+   live one came back:
+
+     Error in 'fields.work_email'. Required field 'work_email' is missing
+     Error in 'fields.lastname'.   Required field 'lastname' is missing
+
+   — the email field on that form is a custom property called `work_email`,
+   not `email`. Nothing about that is knowable from here, and the next form
+   will differ again, so the mapping is configuration rather than code:
+
+     HUBSPOT_FORM_FIELD_MAP=email:work_email,jobtitle:title
+
+   reads "send what we call email under the name work_email". Anything
+   unmapped goes out under its own name. A mapping to an empty name drops
+   that field entirely, for a form that does not define it — because a field
+   the form has never heard of fails the whole submission just as surely as a
+   missing one. */
+function fieldMap() {
+  const out = {};
+  env('HUBSPOT_FORM_FIELD_MAP').split(',').forEach(pair => {
+    const bits = pair.split(':');
+    if (bits.length !== 2) return;
+    const from = bits[0].trim();
+    if (from) out[from] = bits[1].trim();
+  });
+  return out;
+}
+
 export function formFields(lead, data) {
   const d = lead.discovery || {};
+  const map = fieldMap();
   const out = [];
-  const put = (name, value) => { if (value != null && String(value).trim() !== '') out.push({ objectTypeId: '0-1', name, value: String(value) }); };
+  const put = (name, value) => {
+    const as = Object.prototype.hasOwnProperty.call(map, name) ? map[name] : name;
+    if (!as) return;                                   /* mapped to nothing: this form has no such field */
+    if (value == null || String(value).trim() === '') return;
+    out.push({ objectTypeId: '0-1', name: as, value: String(value) });
+  };
   put('email', lead.email);
   put('firstname', lead.firstname);
   put('lastname', lead.lastname);
