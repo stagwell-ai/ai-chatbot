@@ -49,7 +49,7 @@
     fineLive: 'Sent to the Stagwell AI team — someone will be in touch.',
     fineHeld: 'Recorded. HubSpot is not connected yet, so this is held on our side for now.',
     fineFailed: 'We could not reach the CRM just now — your details were logged and nothing is lost.',
-    fields: { name: 'Full name', email: 'Work email', phone: 'Phone — so we can reach you faster', role: 'Role — e.g. CMO, VP Marketing' },
+    fields: { firstname: 'First name', lastname: 'Last name', name: 'Full name', email: 'Work email', phone: 'Phone — so we can reach you faster', role: 'Role — e.g. CMO, VP Marketing' },
     emailHint: 'That does not look like a work email — check the address.',
     success: {
       title: 'Stagwell AI has your brief.',
@@ -234,7 +234,11 @@
     const d = (k && k.discovery) || {};
     const picked = [].slice.call(form.querySelectorAll('input[name=products]:checked')).map(x => x.value);
     return {
-      lead: { name: val('name') || null, email: val('email'), phone: val('phone') || null,
+      /* both: `name` is what the hero form and the older payload shape send,
+         and the two parts are what the visitor actually typed */
+      lead: { name: [val('firstname'), val('lastname')].filter(Boolean).join(' ') || val('name') || null,
+              firstname: val('firstname') || null, lastname: val('lastname') || null,
+              email: val('email'), phone: val('phone') || null,
               company: (prefill && prefill.brand) || s.company || null },
       discovery: Object.assign({}, d, {
         sessionId: (k && k.sessionId) || s.sessionId || null,
@@ -336,17 +340,36 @@
     const email = p.email || s.work_email || '';
     const role = p.role || s.role_seniority || '';
 
+    /* ── TWO NAME FIELDS, NOT ONE ────────────────────────────────────────
+       The HubSpot form these leads are submitted to requires `lastname`, and
+       a single "Full name" box cannot promise one: the first live test typed
+       "TEST", there was no surname to send, and HubSpot rejected the whole
+       submission. Splitting it fixes that at the source rather than asking
+       the CRM to relax a requirement its routing depends on — and it also
+       ends the guessing, since "Mary Jane Watson" is no longer filed under
+       the surname "Jane Watson". */
+    const first = p.firstname || String(name).trim().split(/\s+/)[0] || '';
+    const last = p.lastname || String(name).trim().split(/\s+/).slice(1).join(' ') || '';
+
     return `
       ${inline ? '' : `${brandHtml()}
       <h3 id="saiLeadTitle">${esc(c.kinds[kind].title)}</h3>
       <p>${esc(c.kinds[kind].line)}</p>`}
       <form class="modal__form lead__form" id="saiLeadForm" novalidate autocomplete="on">
-        <label class="lead__row">
-          <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(c.fields.name)}</span>
-          <input type="text" name="name" autocomplete="name"
-                 placeholder="${inline ? '' : esc(c.fields.name)}" aria-label="${esc(c.fields.name)}"
-                 value="${esc(name)}">
-        </label>
+        <div class="lead__pair">
+          <label class="lead__row">
+            <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(c.fields.firstname || 'First name')}</span>
+            <input type="text" name="firstname" autocomplete="given-name"
+                   placeholder="${inline ? '' : esc(c.fields.firstname || 'First name')}"
+                   aria-label="${esc(c.fields.firstname || 'First name')}" value="${esc(first)}">
+          </label>
+          <label class="lead__row">
+            <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(c.fields.lastname || 'Last name')}</span>
+            <input type="text" name="lastname" autocomplete="family-name"
+                   placeholder="${inline ? '' : esc(c.fields.lastname || 'Last name')}"
+                   aria-label="${esc(c.fields.lastname || 'Last name')}" value="${esc(last)}">
+          </label>
+        </div>
         <label class="lead__row" id="saiLeadEmailRow">
           <span class="${inline ? 'lead__lbl' : 'vh'}">${esc(c.fields.email)}</span>
           <input type="email" name="email" autocomplete="email" inputmode="email"

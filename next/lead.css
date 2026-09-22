@@ -187,3 +187,8 @@ body.lead-open{overflow:hidden}
   display:inline-flex;align-items:center;justify-content:center;
 }
 .modal.lead .modal__ok > .btn--dark:hover{opacity:.88}
+
+/* first and last name sit side by side where there is room; the HubSpot form
+   these go to requires a surname, so one box could not be enough */
+.lead__pair{display:grid;gap:10px;min-width:0}
+@media (min-width:520px){ .lead__pair{grid-template-columns:1fr 1fr} }

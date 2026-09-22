@@ -52,7 +52,8 @@ async function open(url, opts) {
 }
 
 async function fillAndSend(page) {
-  await page.fill('#saiLeadForm input[name=name]', 'Ada Lovelace');
+  await page.fill('#saiLeadForm input[name=firstname]', 'Ada');
+  await page.fill('#saiLeadForm input[name=lastname]', 'Lovelace');
   await page.fill('#saiLeadForm input[name=email]', 'ada@example-brand.com');
   await page.fill('#saiLeadForm input[name=phone]', '+1 212 555 0100');
   await page.click('#saiLeadForm button[type=submit]');
@@ -176,6 +177,52 @@ try {
   }
 } finally {
   await browser.close();
+}
+
+/* ── A SURNAME, BECAUSE THE CRM REQUIRES ONE ────────────────────────────────
+   The HubSpot form these leads are submitted to requires `lastname`. A single
+   "Full name" box cannot promise one — the first live test typed "TEST", and
+   HubSpot rejected the whole submission. So the booking form asks for both. */
+try {
+  const browser2 = await chromium.launch({ args: ['--no-sandbox'] });
+  console.log('\n▶ the booking form asks for a first AND last name');
+  const ctx = await browser2.newContext({ viewport: { width: 1100, height: 900 } });
+  const page = await ctx.newPage();
+  const sent = [];
+  await page.route('**/api/lead', r => {
+    sent.push(JSON.parse(r.request().postData() || '{}'));
+    r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"delivered":true,"mode":"live"}' });
+  });
+  await page.goto(BASE + '/book', { waitUntil: 'load' });
+  await page.waitForTimeout(1800);
+
+  ok(!!(await page.$('#saiLeadForm input[name=firstname]')), 'there is a first name field');
+  ok(!!(await page.$('#saiLeadForm input[name=lastname]')), 'and a last name field');
+  ok(!(await page.$('#saiLeadForm input[name=name]')), 'and no single Full name box left over');
+
+  const auto = await page.$$eval('#saiLeadForm input[name=firstname], #saiLeadForm input[name=lastname]',
+    n => n.map(x => x.getAttribute('autocomplete')));
+  ok(auto.join(',') === 'given-name,family-name', 'a password manager can fill both: ' + auto.join(','));
+
+  const side = await page.$$eval('#saiLeadForm .lead__pair .lead__row', n => n.map(x => Math.round(x.getBoundingClientRect().top)));
+  ok(new Set(side).size === 1, 'they sit on one line with room to spare (' + side.join(',') + ')');
+
+  await page.fill('#saiLeadForm input[name=firstname]', 'Mary Jane');
+  await page.fill('#saiLeadForm input[name=lastname]', 'Watson');
+  await page.fill('#saiLeadForm input[name=email]', 'mj@example-brand.com');
+  await page.click('#saiLeadForm button[type=submit]');
+  await page.waitForTimeout(900);
+
+  ok(sent.length === 1, 'the lead was posted');
+  const L = (sent[0] || {}).lead || {};
+  ok(L.firstname === 'Mary Jane', 'the first name is what they typed, not the first word: ' + L.firstname);
+  ok(L.lastname === 'Watson', 'and the surname is theirs alone: ' + L.lastname);
+  ok(L.name === 'Mary Jane Watson', 'the joined name still travels for the older payload shape');
+  await ctx.close();
+  await browser2.close();
+} catch (e) {
+  failures++;
+  console.log('  FAIL the name-split checks threw: ' + e.message);
 }
 
 console.log(failures ? '\n' + failures + ' FAILED\n' : '\nall good\n');

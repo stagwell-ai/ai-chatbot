@@ -5,6 +5,8 @@
   "fineHeld": "Recorded. HubSpot is not connected yet, so this is held on our side for now.",
   "fineFailed": "We could not reach the CRM just now — your details were logged and nothing is lost.",
   "fields": {
+    "firstname": "First name",
+    "lastname": "Last name",
     "name": "Full name",
     "email": "Work email",
     "phone": "Phone — so we can reach you faster",

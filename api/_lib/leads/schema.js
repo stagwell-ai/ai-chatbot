@@ -79,7 +79,11 @@ export function validateLeadBody(body, data) {
 
   const lead = {
     name, email, phone,
-    firstname: splitName(name).firstname, lastname: splitName(name).lastname,
+    /* the booking form sends the two parts because the HubSpot form requires
+       a surname; splitName is the fallback for the hero form and the older
+       flat payload, which still send one string */
+    firstname: str(L.firstname, 60) || splitName(name).firstname,
+    lastname: str(L.lastname, 60) || splitName(name).lastname,
     company: str(L.company, 160) || str(b.company, 160),
     website: str((D && D.website), 160) || str(b.website, 160),
     discovery: {

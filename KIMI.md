@@ -790,6 +790,23 @@ change.
 
 ## 10. HubSpot integration
 
+**The booking form asks for a first and last name separately.** The HubSpot form these leads
+are submitted to requires `lastname`, and a single "Full name" box cannot promise one — the
+first live test typed "TEST", there was no surname to send, and HubSpot rejected the whole
+submission. Splitting it fixes that at the source rather than asking the CRM to relax a
+requirement its routing depends on, and it ends the guessing too: "Mary Jane Watson" is no
+longer filed under the surname "Jane Watson". `schema.js` prefers the two parts when they are
+sent and falls back to `splitName()` for the hero form and the older flat payload, which still
+send one string.
+
+**`/hubspot-setup` can read the form itself** (second button). A HubSpot form's definition is
+public — it is what the embed script downloads — so rather than asking whoever built it for the
+field names, it fetches them, and prints the exact `HUBSPOT_FORM_FIELD_MAP` that follows. If the
+definition is not served it reads the required names out of a deliberately impossible submission
+instead; a rejected submission creates nothing, which is what makes that safe against a live
+form. Note for whoever is next: `api.hubapi.com` and `hsforms.com` are both unreachable from the
+build sandbox, which is why this runs as a function and not a script.
+
 **The form submission comes first** (`api/_lib/leads/hubspot-form.js`, added 2026-09-22 at the
 request of the person who runs the portal). A Contacts API write raises no event, so a workflow
 that triggers on a form submission never sees it and the lead never enrols or routes. So each
