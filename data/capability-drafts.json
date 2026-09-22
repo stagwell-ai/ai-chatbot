@@ -155,79 +155,79 @@
   "_tabs_note": "Short tab labels (DRAFT). The four product pages carry theirs as data-tab on each step in next/{slug}.html.",
   "loops": {
     "questbrand": {
-      "Brand tracking": "charts",
-      "Competitive benchmarking": "clusters",
-      "Campaign impact": "lanes",
+      "Brand tracking": "pathways",
+      "Competitive benchmarking": "wave-dots",
+      "Campaign impact": "circuit",
       "Emotional drivers": "pulses"
     },
     "questdiy": {
-      "AI-drafted surveys": "block-rain",
+      "AI-drafted surveys": "mosaic",
       "Respondents in 100+ countries": "globe",
-      "Concept & message testing": "clusters",
-      "Same-day reads": "streams"
+      "Concept & message testing": "wave-dots",
+      "Same-day reads": "pulses"
     },
     "bera": {
-      "Brand ROI tracking": "charts",
-      "Audience prioritization": "clusters",
+      "Brand ROI tracking": "pathways",
+      "Audience prioritization": "wave-dots",
       "Competitive intelligence": "radar",
-      "Media planning": "media-machine"
+      "Media planning": "media-flow"
     },
     "knowledge_machine": {
       "Real-time sentiment across owned, earned and competitive channels": "pulses",
-      "Historical pattern matching against prior market moments": "terrain",
-      "Full audience profile surfaced with the signal": "clusters"
+      "Historical pattern matching against prior market moments": "ripples",
+      "Full audience profile surfaced with the signal": "wave-dots"
     },
     "unicepta": {
       "Global monitoring": "globe",
-      "Daily briefings & alerts": "lanes",
+      "Daily briefings & alerts": "circuit",
       "Narrative analysis": "plexus",
-      "Social listening": "streams"
+      "Social listening": "pulses"
     },
     "imai": {
-      "Creator discovery": "clusters",
-      "Campaign management": "lanes",
-      "LLM visibility": "search-plus",
+      "Creator discovery": "wave-dots",
+      "Campaign management": "circuit",
+      "LLM visibility": "orbits",
       "UGC video ads": "mosaic"
     },
     "smb_platform": {
-      "Creator discovery": "clusters",
+      "Creator discovery": "wave-dots",
       "Audience validation": "radar",
-      "ROI tracking": "charts",
+      "ROI tracking": "pathways",
       "One dashboard": "circuit"
     },
     "geopulse": {
-      "AI visibility intelligence": "search-plus",
+      "AI visibility intelligence": "orbits",
       "Prompt optimization": "circuit",
-      "Competitive benchmarking": "clusters",
-      "Content simulation": "terrain"
+      "Competitive benchmarking": "wave-dots",
+      "Content simulation": "ripples"
     },
     "numetrix": {
-      "Audience measurement": "charts",
+      "Audience measurement": "pathways",
       "Brand lift & ad impact": "pulses",
       "Location intelligence": "globe"
     },
     "media_machine": {
-      "Scores every platform and channel against evidence of what works": "charts",
-      "Drafts the plan and flighting": "lanes",
-      "Models spend and projected lift": "terrain"
+      "Scores every platform and channel against evidence of what works": "pathways",
+      "Drafts the plan and flighting": "circuit",
+      "Models spend and projected lift": "ripples"
     },
     "newintel": {
-      "Pricing moves": "charts",
-      "Hiring signals": "clusters",
+      "Pricing moves": "pathways",
+      "Hiring signals": "wave-dots",
       "Earned coverage": "globe",
-      "Creator activity": "newintel"
+      "Creator activity": "radar"
     },
     "search_plus": {
-      "AI search representation": "search-plus",
+      "AI search representation": "orbits",
       "Influence how AI recommends you": "converge",
       "ChatGPT, Gemini, Perplexity, Grok": "orbits"
     },
     "id_graph": {
-      "First-party data onboarding": "id-graph",
+      "First-party data onboarding": "id-spine",
       "Third-party media data": "plexus",
       "Proprietary consumer intelligence": "pulses",
-      "Privacy-safe activation": "lanes"
+      "Privacy-safe activation": "circuit"
     }
   },
-  "_loops_note": "The motion-lab loop shown beside each capability in How it works (assets/video/lab/loops/<name>.mp4, or assets/video/lab/<name>.mp4 for voice-squares, media-machine, newintel, search-plus, id-graph)."
+  "_loops_note": "The motion-lab loop shown beside a How-it-works tab (assets/video/lab/loops/<name>.mp4; voice-squares sits in assets/video/lab/)."
 }

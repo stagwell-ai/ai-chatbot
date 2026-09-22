@@ -645,3 +645,8 @@ body.hc-b.pc-page .sp-tabs__pic .sx-in .pc-collage__card{max-width:100%;border-r
 body.hc-b.pc-page .sp-tabs__pic.is-voice{background:#0B1220}
 body.hc-b.pc-page .sp-tabs__pic:not(#_) > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 @media (max-width:860px){ body.hc-b.pc-page .sp-tabs__pic .sx-in{padding:16px} body.hc-b.pc-page .sp-tabs__pic .sx-in .pc-collage__card{transform:scale(.9)} }
+/* mockups: one padding, content-sized cards; the note keeps a minimum so its words breathe */
+.sx-chat{height:auto;justify-content:flex-start}
+.sx-prompt{height:auto;justify-content:flex-start}
+.sx-note{min-height:150px}
+.sx-list li:last-child{padding-bottom:0}

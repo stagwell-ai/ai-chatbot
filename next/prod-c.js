@@ -360,7 +360,7 @@
      others take stills from the text-free motion-lab loops. */
   if (document.body.classList.contains('hc-b') && steps && steps.length > 1 && media && !more.dataset.pcHow) {
     more.dataset.pcHow = '1';
-    const STILLS = ['orbits', 'pulses', 'circuit', 'terrain', 'globe', 'streams', 'mosaic', 'plexus', 'lanes', 'converge', 'charts', 'clusters', 'tunnel', 'block-rain']
+    const STILLS = ['orbits', 'pulses', 'circuit', 'ripples', 'globe', 'halo', 'mosaic', 'plexus', 'pathways', 'converge', 'wave-dots', 'media-flow', 'id-spine', 'radar']
       .map(k => '/assets/video/lab/loops/' + k + '-poster.jpg');
     const slug = (document.body.className.match(/pp--([\w-]+)/) || ['', ''])[1];
     const seed = [...slug].reduce((a, c) => a + c.charCodeAt(0), 0);
@@ -390,7 +390,7 @@
       const pic = document.createElement('div'); pic.className = 'sp-tabs__pic';
       if (li.dataset.vis) { pic.dataset.vis = li.dataset.vis; }
       else if (li.dataset.loop) {
-        const ROOT = ['voice-squares', 'media-machine', 'newintel', 'search-plus', 'id-graph'];
+        const ROOT = ['voice-squares'];
         const base = '/assets/video/lab/' + (ROOT.includes(li.dataset.loop) ? '' : 'loops/') + li.dataset.loop;
         const v = document.createElement('video'); v.src = base + '.mp4'; v.poster = base + '-poster.jpg';
         v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata'; v.setAttribute('aria-hidden', 'true'); pic.appendChild(v);
@@ -672,7 +672,7 @@
         '<div class="sx-field"><p>' + esc(c.q) + '<i class="sx-caret"></i></p><div class="sx-field__bar"><span class="sx-plus">+</span><span class="sx-send"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div></div>';
     },
     list(c, w, h) {
-      const n = Math.max(1, Math.min(c.items.length, Math.floor((h - 80) / 46)));
+      const n = Math.min(c.items.length, 4);   /* the card is as tall as its rows */
       return headH(c.title) + '<ul class="sx-list">' + c.items.slice(0, n).map((t, i) => '<li>' + (c.faces ? face(3 + i * 5) : '<i class="sx-ico' + (i ? '' : ' is-on') + '"></i>') + '<span><b>' + esc(t) + '</b></span><em' + (i ? '' : ' class="is-on"') + '>' + esc((c.metas || [])[i] || '') + '</em></li>').join('') + '</ul>';
     },
     rank(c, w, h) {
@@ -771,7 +771,7 @@
       const lay = small ? [[0, 0, 400, 270], [18, 206, 364, 230]] : L;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
       html += card('pc-collage__main', ...lay[0], '');
-      for (let k = 1; k < lay.length; k++) { const [x, y, w, h] = lay[k], c = plan[k]; html += card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h)); }
+      for (let k = 1; k < lay.length; k++) { const [x, y, w, h] = lay[k], c = plan[k]; let m = card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h)); if (['prompt', 'list', 'survey', 'rank', 'creators', 'chat', 'note'].includes(c.t)) m = m.replace('height:' + h + 'px', 'height:auto'); html += m; }
     }
     next.className = 'pc-collage pc-collage--' + kind + (small ? ' pc-collage--phone' : ' pc-collage--' + plan[0]);
     next.innerHTML = '<div class="pc-collage__stage" style="width:' + SW + 'px;height:' + SH + 'px">' + html + '</div>';
