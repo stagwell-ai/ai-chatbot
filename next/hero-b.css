@@ -119,3 +119,14 @@ body.hc-b #why .why__slot--img:not(#_) img{width:62% !important;height:auto !imp
 /* Edge: the Adobe and Palantir marks a size down */
 body.hc-b #why .why__slot--pair:not(#_) .why__mark{width:24% !important}
 body.hc-b #why .why__slot--pair:not(#_) .why__sep{height:22% !important}
+
+/* Expertise: the wordmark's letters sit 3.8% above the middle of its own image, so it is
+   nudged down by that much to land on the centre of the box (on the dark band) */
+body.hc-b #why .why__slot--img:not(#_) img{transform:translateY(3.8%)}
+
+/* every big title carries the H1's letter spacing */
+body.hc-b :is(.display,.hcs__h,.why__t):not(#_),
+body.hc-b :is(.display,.hcs__h,.why__t):not(#_) *{letter-spacing:-.035em !important}
+body.hc-b #why :is(.display--cos,.why__t):not(#_),
+body.hc-b #why :is(.display--cos,.why__t):not(#_) *{letter-spacing:-.035em !important}
+body.hc-b #why .why__item:not(#_) .why__t:not(#_){letter-spacing:-.035em !important}
