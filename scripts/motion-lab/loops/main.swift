@@ -742,10 +742,10 @@ func activity(_ ctx: CGContext, _ p: Double) {
   let bw = Double(cols) * (cell + gap) - gap, x0 = (Wd - bw) / 2
   ctx.setStrokeColor(white(0.35)); ctx.setLineWidth(1.2 * K)
   ctx.stroke(CGRect(x: x0 - 20 * K, y: Hd * 0.04, width: bw * 0.34, height: 64 * K))
-  label(ctx, "Activity", x0, Hd * 0.04 + 28 * K, 15 * K, white(0.9)); label(ctx, "Week by week, every source", x0, Hd * 0.04 + 50 * K, 11 * K, white(0.5))
+  label(ctx, "Sentiment", x0, Hd * 0.04 + 28 * K, 15 * K, white(0.9)); label(ctx, "Owned, earned and competitive, as it happens", x0, Hd * 0.04 + 50 * K, 11 * K, white(0.5))
   for bank in 0..<2 {
     let y0 = Hd * (bank == 0 ? 0.2 : 0.6), busy = bank == 0 ? 0.62 : 0.3
-    label(ctx, bank == 0 ? "Brand mentions" : "Competitor mentions", x0, y0 - 24 * K, 13 * K, white(0.9))
+    label(ctx, bank == 0 ? "Your brand" : "Competitors", x0, y0 - 24 * K, 13 * K, white(0.9))
     ctx.setFillColor(white(0.35)); ctx.fill(CGRect(x: x0 + bw * 0.1, y: y0 - 36 * K, width: 1, height: 18 * K))
     dot(ctx, x0 + bw * 0.12, y0 - 28 * K, 4 * K, GREEN); label(ctx, "Live", x0 + bw * 0.12 + 10 * K, y0 - 24 * K, 12 * K, GREEN)
     label(ctx, bank == 0 ? "Owned and earned" : "Earned only", x0 + bw * 0.17, y0 - 24 * K, 12 * K, white(0.55))
@@ -903,7 +903,7 @@ func graph(_ ctx: CGContext, _ p: Double) {
   ground(ctx, CGColor(red: 0.93, green: 0.93, blue: 0.92, alpha: 1))
   let INKC = CGColor(red: 0.16, green: 0.17, blue: 0.19, alpha: 1)
   let RED = CGColor(red: 0.8, green: 0.2, blue: 0.2, alpha: 1), GREEN = CGColor(red: 0.3, green: 0.65, blue: 0.35, alpha: 1), BLUE = CGColor(red: 0.2, green: 0.45, blue: 0.85, alpha: 1)
-  let hubs: [(Double, Double, Int, CGColor, String)] = [(0.14, 0.34, 26, ORANGE, "1"), (0.42, 0.2, 18, BLUE, "3"), (0.66, 0.24, 22, RED, "4"), (0.3, 0.62, 14, INKC, "5"), (0.58, 0.7, 34, INKC, "1"), (0.84, 0.5, 16, GREEN, "2"), (0.86, 0.8, 12, GREEN, "4"), (0.12, 0.76, 10, ORANGE, "2")]
+  let hubs: [(Double, Double, Int, CGColor, String)] = [(0.14, 0.34, 26, ORANGE, "CTV"), (0.42, 0.2, 18, BLUE, "Social"), (0.66, 0.24, 22, RED, "Search"), (0.3, 0.62, 14, INKC, "Audio"), (0.58, 0.7, 34, INKC, "Retail"), (0.84, 0.5, 16, GREEN, "OOH"), (0.86, 0.8, 12, GREEN, "Print"), (0.12, 0.76, 10, ORANGE, "Radio")]
   let links = [(0, 1), (1, 2), (0, 3), (3, 4), (2, 4), (4, 5), (1, 4), (5, 6), (3, 7), (2, 5)]
   for (i, l) in links.enumerated() {
     let a = hubs[l.0], b = hubs[l.1]
@@ -925,7 +925,7 @@ func graph(_ ctx: CGContext, _ p: Double) {
     dot(ctx, cx, cy, 15 * K, CGColor(red: 0.93, green: 0.93, blue: 0.92, alpha: 1))
     ctx.setStrokeColor(hub.3); ctx.setLineWidth(2.4 * K)
     ctx.addEllipse(in: CGRect(x: cx - 15 * K, y: cy - 15 * K, width: 30 * K, height: 30 * K)); ctx.strokePath()
-    label(ctx, hub.4, cx - 5 * K, cy + 6 * K, 17 * K, hub.3)
+    label(ctx, hub.4, cx - Double(hub.4.count) * 0.602 * 15 * K / 2, cy + 82 * K, 15 * K, hub.3)
   }
   for k in 0..<90 { let col: CGColor = [INKC, ORANGE, BLUE, GREEN, RED][Int(hash(k, 623) * 5)]; dot(ctx, Wd * hash(k, 621), Hd * hash(k, 622), 3 * K, col.copy(alpha: 0.75)!) }
 }
@@ -960,7 +960,7 @@ func records(_ ctx: CGContext, _ p: Double) {
       let x = colx + Double(r) * 12 * K * hash(c, 802), y = Hd * 0.04 + Double(r) * (bh * 0.82)
       ctx.setFillColor(CGColor(gray: 0, alpha: a)); ctx.fill(CGRect(x: x, y: y, width: bw, height: bh))
       ctx.setStrokeColor(white(0.9 * a)); ctx.setLineWidth(1.2 * K); ctx.stroke(CGRect(x: x, y: y, width: bw, height: bh))
-      label(ctx, String(format: "%02d%02d%02d", c + 1, r + 1, 1 + Int(hash(c * 20 + r, 803) * 9)), x + 18 * K, y + bh * 0.66, 24 * K, white(0.9 * a))
+      label(ctx, String(format: "%@ %02d%02d", ["PRICE", "HIRE", "PRESS", "CREATOR", "LAUNCH"][Int(hash(c * 20 + r, 803) * 5)], c + 1, r + 1), x + 18 * K, y + bh * 0.66, 20 * K, white(0.9 * a))
     }
   }
 }
@@ -1027,7 +1027,7 @@ func radial(_ ctx: CGContext, _ p: Double) {
     ctx.translateBy(x: cx + cos(a) * R, y: cy + sin(a) * R); ctx.rotate(by: a)
     let c = hot(i) ? col(i) : white(hash(i, 725) > 0.25 ? 0.9 : 0.5)
     if hot(i) { ctx.setFillColor(c); ctx.fill(CGRect(x: -2 * K, y: -pitch * 0.42, width: 14 * K, height: pitch * 0.84)) }
-    label(ctx, String(format: "%04d-%@", 1000 + Int(hash(i, 726) * 8999), ["A", "B", "C", "D"][Int(hash(i, 727) * 4)]), 18 * K, 2.6 * K, 6.5 * K, white(hot(i) ? 0.85 : 0.5))
+    label(ctx, String(format: "brand %04d  %@", 1000 + Int(hash(i, 726) * 8999), ["UK", "US", "DE", "FR", "JP", "BR", "AU", "CA"][Int(hash(i, 727) * 8)]), 18 * K, 2.6 * K, 6.5 * K, white(hot(i) ? 0.85 : 0.5))
     let len = (90 + 560 * pow(hash(i, 728), 1.3)) * K * (0.94 + 0.06 * sin(TAU * (p + hash(i, 729))))
     let x0 = band + 4 * K
     ctx.setFillColor(CGColor(red: 0.3, green: 0.3, blue: 0.32, alpha: 1)); ctx.fill(CGRect(x: x0, y: -pitch * 0.34 + 2.5 * K, width: len * (0.85 + 0.3 * hash(i, 730)), height: pitch * 0.68))
@@ -1135,7 +1135,7 @@ func globeBlue(_ ctx: CGContext, _ p: Double) {
   // a magnifier, the query typed in over the loop, the button
   ctx.setStrokeColor(TEAL); ctx.setLineWidth(2.5 * K); ctx.addEllipse(in: CGRect(x: bx0 + 22 * K, y: CY - 12 * K, width: 17 * K, height: 17 * K)); ctx.strokePath()
   line(ctx, bx0 + 36 * K, CY + 3 * K, bx0 + 44 * K, CY + 11 * K, TEAL, 2.5 * K)
-  let query = "which running shoes do people recommend"
+  let query = "which running shoes do AI assistants recommend"
   let typed = Int(Double(query.count) * max(0, min(1, (p - 0.06) / 0.5)))
   let shown = p < 0.94 ? String(query.prefix(typed)) : ""
   label(ctx, shown, bx0 + 60 * K, CY + 6 * K, 17 * K, CGColor(gray: 0.15, alpha: 1))
