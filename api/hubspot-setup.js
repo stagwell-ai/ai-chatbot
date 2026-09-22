@@ -25,6 +25,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { ensureProperties } from './_lib/leads/setup.js';
+import { describeForm } from './_lib/leads/form-probe.js';
 import { limited } from './_lib/ratelimit.js';
 
 const env = k => (process.env[k] || '').trim();
@@ -66,6 +67,15 @@ export default async function handler(req, res) {
 
   if (!sameKey(offered(req, body), real)) {
     res.status(401).json({ ok: false, error: 'unauthorized', help: 'That is not the key this deployment is using. Copy it again from HubSpot → Development → Keys → Service keys, or check that Vercel has the same one.' });
+    return;
+  }
+
+  /* Same door, second question: what is actually on the HubSpot form we post
+     to. Read-only, writes nothing, and needs no key of its own — only the
+     right to ask, which the check above already established. */
+  if (String(body.action || '') === 'form') {
+    const f = await describeForm({ portalId: env('HUBSPOT_PORTAL_ID'), guid: env('HUBSPOT_FORM_GUID') });
+    res.status(f.ok ? 200 : 502).json(Object.assign({ action: 'form', current: env('HUBSPOT_FORM_FIELD_MAP') || null }, f));
     return;
   }
 

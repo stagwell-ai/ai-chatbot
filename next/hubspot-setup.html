@@ -28,6 +28,10 @@
   input:focus { outline:none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(119,227,246,.18); }
   button { margin-top:16px; padding:13px 22px; border:0; border-radius:999px; background:var(--orange);
            color:#003349; font:600 15px Montserrat,sans-serif; cursor:pointer; }
+  #formBtn { margin-left:10px; background:transparent; border:1px solid var(--raised); color:var(--ink); }
+  #formBtn:hover { border-color: var(--cyan); }
+  .map { margin-top:14px; padding:12px 14px; border-radius:10px; background:#061620;
+         font:400 13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--cyan); word-break:break-all; }
   button[disabled] { opacity:.5; cursor:default; }
   .note { font-size:13px; color:var(--dim); margin-top:14px; }
   .out { margin-top:24px; display:none; }
@@ -57,6 +61,7 @@
     <input id="k" name="k" type="password" spellcheck="false" autocomplete="off"
            placeholder="paste the key you put in Vercel">
     <button id="go" type="submit">Run setup</button>
+    <button id="formBtn" type="button">Check the HubSpot form</button>
     <p class="note">The key is only checked against the one this site already holds — it proves
        you are an admin. It is not saved here, never appears in the address bar, and is not
        written to any log.</p>
@@ -74,6 +79,42 @@
   var out = document.getElementById('out'), banner = document.getElementById('banner'), list = document.getElementById('list');
 
   function show(cls, text) { out.style.display = 'block'; banner.className = 'banner ' + cls; banner.textContent = text; }
+
+  /* "what is on that form?" — asked of HubSpot rather than of a colleague */
+  document.getElementById('formBtn').addEventListener('click', function () {
+    var key = k.value.trim();
+    if (!key) { k.focus(); return; }
+    list.innerHTML = '';
+    show('good', 'Asking HubSpot what is on the form…');
+
+    fetch('/api/hubspot-setup', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ key: key, action: 'form' })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      k.value = '';
+      if (!j.ok) { show('bad', j.help || j.error || 'Could not read the form.'); return; }
+      (j.fields || []).forEach(function (fl) {
+        var li = document.createElement('li');
+        li.className = fl.required ? 'created' : 'ok';
+        li.innerHTML = '<b></b><span class="nm"></span>';
+        li.querySelector('b').textContent = fl.required ? 'required' : 'optional';
+        li.querySelector('.nm').textContent = fl.name + (fl.type ? ' · ' + fl.type : '') + (fl.label ? ' · “' + fl.label + '”' : '');
+        list.appendChild(li);
+      });
+      show('good', (j.fields || []).length + ' field(s) on the form, read from its ' +
+        (j.source === 'probe' ? 'rejection of a probe — REQUIRED fields only' : 'public definition') + '.' +
+        (j.help ? ' ' + j.help : ''));
+      if (j.suggestion) {
+        var m = document.createElement('div');
+        m.className = 'map';
+        m.textContent = 'HUBSPOT_FORM_FIELD_MAP=' + j.suggestion;
+        banner.parentNode.insertBefore(m, list);
+      }
+    })
+    .catch(function () { show('bad', 'Could not reach the setup endpoint.'); });
+  });
 
   f.addEventListener('submit', function (e) {
     e.preventDefault();
