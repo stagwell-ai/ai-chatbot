@@ -88,6 +88,11 @@ def main():
                '  </div>\n</section>')
         body = body[:more.start()] + how + body[more.end():]
         body = re.sub(r'<section class="pp-hero sp-hero [^"]*">', '<section class="pp-hero sp-hero">', body, count=1)
+        # the hero as on the reference: the words, then the product's picture wide below them
+        src = pics.get(x['id'])
+        if src:
+            i = body.index('<section class="pp-hero sp-hero">'); j = body.index('</section>', i)
+            body = body[:j] + f'  <figure class="sp-hero__pic"><img src="{src}" alt="" decoding="async" fetchpriority="high"></figure>\n' + body[j:]
         # each related product shows its own picture
         def also(mm):
             href = mm.group(1)
