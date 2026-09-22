@@ -791,7 +791,18 @@ change.
 ## 10. HubSpot integration
 
 `api/_lib/leads/hubspot.js`, server-only, raw CRM v3 (search by email → PATCH, else POST;
-409 → PATCH the existing id). **A missing property never costs a lead**: HubSpot answers a
+409 → PATCH the existing id). **A lead is never silent.** A property write raises nothing in HubSpot: no timeline entry, no
+feed item, no notification, and for a contact that already existed, not even a place among
+recently-created — the first real lead sat in the CRM for an hour unseen. So every live upsert
+is followed by a **note** on the contact's timeline (`POST /crm/v3/objects/notes`, association
+202) and a **task** due now (`/tasks`, association 204), assigned to `HUBSPOT_OWNER_ID` when one
+is set so it lands in that person's queue and their HubSpot reminder email. Both are best effort
+— a note that fails is logged with the scope it needed and never changes what the visitor is
+told, and neither counts towards `delivered`. `HUBSPOT_NOTE_ENABLED` / `HUBSPOT_TASK_ENABLED`
+turn either off without a deploy. The key needs `crm.objects.notes.*` and `crm.objects.tasks.*`;
+`/hubspot-setup` probes both and says so rather than letting it fail on a Friday.
+
+**A missing property never costs a lead**: HubSpot answers a
 400 `PROPERTY_DOESNT_EXIST` by refusing the whole contact, name and email included, so a
 lead that arrives before the schema setup has run would reach nobody. On that one error the
 offending property names are read out of the response, dropped, and the rest sent again —

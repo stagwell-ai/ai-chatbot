@@ -131,6 +131,36 @@ test('one property failing makes the whole run not-ok, and says so', async () =>
   assert.match(r.help, /run this again/i);
 });
 
+test('the setup says up front whether the key can also raise notes and tasks', async () => {
+  /* a portal that knows properties but refuses engagements — the shape of a
+     key created with the three CRM scopes and nothing else */
+  const p = portal([]);
+  const inner = p.fetch;
+  const fetch = async (url, init) => {
+    if (/\/crm\/v3\/objects\/(notes|tasks)/.test(String(url)))
+      return { ok: false, status: 403, text: async () => '{"message":"missing scope"}' };
+    return inner(url, init);
+  };
+  const r = await ensureProperties({ token: KEY, fetch });
+  assert.equal(r.ok, true, 'the properties are still fine');
+  assert.deepEqual(r.reach, { notes: 'denied', tasks: 'denied' });
+  assert.match(r.reachHelp, /crm\.objects\.notes\.read and \.write/);
+  assert.match(r.reachHelp, /Leads will still land/);
+});
+
+test('a key that can reach them says so, and offers no scary advice', async () => {
+  const p = portal([]);
+  const inner = p.fetch;
+  const fetch = async (url, init) => {
+    if (/\/crm\/v3\/objects\/(notes|tasks)/.test(String(url)))
+      return { ok: true, status: 200, text: async () => '{"results":[]}' };
+    return inner(url, init);
+  };
+  const r = await ensureProperties({ token: KEY, fetch });
+  assert.deepEqual(r.reach, { notes: 'ok', tasks: 'ok' });
+  assert.equal(r.reachHelp, null);
+});
+
 /* ── the endpoint ───────────────────────────────────────────────────────── */
 function res() {
   const o = { code: 0, body: null, headers: {} };

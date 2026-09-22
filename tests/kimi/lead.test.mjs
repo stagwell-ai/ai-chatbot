@@ -318,3 +318,121 @@ test('an owner that is not a number is ignored rather than sent as junk', async 
     assert.equal(post.body.properties.hubspot_owner_id, undefined);
   } finally { process.env.HUBSPOT_OWNER_ID = env; }
 });
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   "IT SHOULDN'T JUST SILENTLY UPDATE."
+
+   A property write raises nothing in HubSpot — no timeline entry, no feed,
+   no notification, and for a contact that already existed, not even a place
+   among recently-created. The first real lead sat there for an hour and the
+   person who should have called it had no way to know. So every live lead
+   also writes a note on the contact's timeline and a task in someone's
+   queue. Neither may ever cost us the lead itself.
+   ═══════════════════════════════════════════════════════════════════════════ */
+function crmWithEngagements(over) {
+  const seen = { contacts: [], notes: [], tasks: [] };
+  const reply = (status, body) => ({ ok: status < 300, status, text: async () => JSON.stringify(body || {}) });
+  const fetch = async (url, init) => {
+    const path = String(url).replace('https://api.hubapi.com', '');
+    const body = init && init.body ? JSON.parse(init.body) : null;
+    if (path.indexOf('/contacts/search') !== -1) return reply(200, { results: [] });
+    if (path === '/crm/v3/objects/contacts') { seen.contacts.push(body); return reply(201, { id: '901' }); }
+    if (path === '/crm/v3/objects/notes') {
+      if (over && over.note) return reply(over.note, { message: 'no' });
+      seen.notes.push(body); return reply(201, { id: 'n1' });
+    }
+    if (path === '/crm/v3/objects/tasks') {
+      if (over && over.task) return reply(over.task, { message: 'no' });
+      seen.tasks.push(body); return reply(201, { id: 't1' });
+    }
+    return reply(404, {});
+  };
+  return { fetch, seen };
+}
+
+const liveEnv = fn => async () => {
+  const prev = { t: process.env.HUBSPOT_ACCESS_TOKEN, o: process.env.HUBSPOT_OWNER_ID,
+    n: process.env.HUBSPOT_NOTE_ENABLED, k: process.env.HUBSPOT_TASK_ENABLED };
+  process.env.HUBSPOT_ACCESS_TOKEN = 'pat-test';
+  try { await fn(); } finally {
+    Object.entries({ HUBSPOT_ACCESS_TOKEN: prev.t, HUBSPOT_OWNER_ID: prev.o,
+      HUBSPOT_NOTE_ENABLED: prev.n, HUBSPOT_TASK_ENABLED: prev.k })
+      .forEach(([k, v]) => { if (v) process.env[k] = v; else delete process.env[k]; });
+  }
+};
+
+test('a live lead raises a timeline note and a task, both tied to the contact', liveEnv(async () => {
+  const c = crmWithEngagements();
+  const lead = validateLeadBody(BODY(), DATA).lead;
+  const out = await submitLead(lead, DATA, { fetch: c.fetch });
+
+  assert.equal(out.delivered, true);
+  assert.equal(c.seen.notes.length, 1, 'one note');
+  assert.equal(c.seen.tasks.length, 1, 'one task');
+
+  const note = c.seen.notes[0];
+  assert.equal(note.associations[0].to.id, '901', 'the note hangs off the contact');
+  assert.equal(note.associations[0].types[0].associationTypeId, 202, 'note → contact');
+  assert.match(note.properties.hs_note_body, /New lead from the Stagwell AI site/);
+  assert.match(note.properties.hs_note_body, /Ada@example-brand\.com/i, 'who it was');
+  assert.match(note.properties.hs_note_body, /NewIntel/, 'and what we recommended');
+  assert.ok(note.properties.hs_timestamp, 'HubSpot refuses a note with no timestamp');
+
+  const task = c.seen.tasks[0];
+  assert.equal(task.associations[0].types[0].associationTypeId, 204, 'task → contact');
+  assert.equal(task.properties.hs_task_status, 'NOT_STARTED');
+  assert.match(task.properties.hs_task_subject, /Ada Lovelace/);
+  assert.match(task.properties.hs_task_body, /Example Brand/);
+
+  const kinds = out.results.map(r => r.destination);
+  assert.ok(kinds.indexOf('hubspot-note') !== -1 && kinds.indexOf('hubspot-task') !== -1, 'both are reported');
+}));
+
+test('the task goes to HUBSPOT_OWNER_ID when one is set, and to nobody when it is not', liveEnv(async () => {
+  let c = crmWithEngagements();
+  await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+  assert.equal('hubspot_owner_id' in c.seen.tasks[0].properties, false, 'unassigned rather than wrongly assigned');
+
+  process.env.HUBSPOT_OWNER_ID = '29286122';
+  c = crmWithEngagements();
+  await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+  assert.equal(c.seen.tasks[0].properties.hubspot_owner_id, '29286122');
+}));
+
+test('whatever the visitor typed cannot become markup in the note', liveEnv(async () => {
+  const c = crmWithEngagements();
+  const body = BODY();
+  body.lead.name = 'Ada <script>alert(1)</script> Lovelace';
+  body.lead.company = 'Example & "Brand"';
+  await submitLead(validateLeadBody(body, DATA).lead, DATA, { fetch: c.fetch });
+  const html = c.seen.notes[0].properties.hs_note_body;
+  assert.equal(html.indexOf('<script>'), -1, 'no raw tag survives');
+  assert.match(html, /&lt;script&gt;/);
+  assert.match(html, /Example &amp; &quot;Brand&quot;/);
+}));
+
+test('a note or a task that fails does NOT cost us the lead', liveEnv(async () => {
+  for (const over of [{ note: 403 }, { task: 500 }, { note: 403, task: 403 }]) {
+    const c = crmWithEngagements(over);
+    const out = await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+    assert.equal(out.delivered, true, 'the contact landed: ' + JSON.stringify(over));
+    assert.equal(out.retryable, false, 'and the visitor is not asked to try again');
+    assert.equal(c.seen.contacts.length, 1);
+  }
+}));
+
+test('either one can be turned off without a deploy', liveEnv(async () => {
+  process.env.HUBSPOT_NOTE_ENABLED = 'false';
+  const c = crmWithEngagements();
+  await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+  assert.equal(c.seen.notes.length, 0, 'no note');
+  assert.equal(c.seen.tasks.length, 1, 'the task still goes');
+}));
+
+test('mock mode raises nothing at all — no note, no task, no network', async () => {
+  delete process.env.HUBSPOT_ACCESS_TOKEN;
+  const c = crmWithEngagements();
+  const out = await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+  assert.equal(out.mode, 'mock');
+  assert.equal(c.seen.notes.length + c.seen.tasks.length + c.seen.contacts.length, 0);
+});

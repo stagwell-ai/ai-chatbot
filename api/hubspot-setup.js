@@ -76,6 +76,8 @@ export default async function handler(req, res) {
     help: r.help || null,
     group: r.group,
     tally: r.tally,
+    reach: r.reach || null,
+    reachHelp: r.reachHelp || null,
     properties: r.properties
   });
 }

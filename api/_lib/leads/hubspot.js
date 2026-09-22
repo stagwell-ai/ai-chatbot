@@ -90,6 +90,78 @@ function onCreateProps() {
   return p;
 }
 
+/* ── A LEAD MUST NOT ARRIVE SILENTLY ────────────────────────────────────────
+   "It shouldn't just silently update." (client, 2026-09-22.) It was: the
+   upsert writes properties, and a property write raises nothing in HubSpot —
+   no timeline entry, no feed item, no notification, and for a contact that
+   already existed, not even a place in "recently created". The first real
+   lead sat in the CRM for an hour and the person who should have called it
+   had no way of knowing.
+
+   So every live lead now also writes two things HubSpot *does* surface:
+
+     a NOTE   on the contact's timeline, so the record itself shows what
+              happened and when, and the activity feed carries it
+     a TASK   due now, assigned to HUBSPOT_OWNER_ID when one is set, which
+              lands in that person's HubSpot task queue and in the task
+              reminder email HubSpot already sends
+
+   Both are best-effort by design. A CRM that took the lead but refused the
+   note is still a CRM that took the lead, so a failure here is logged and
+   returned, never thrown, and never changes what the visitor is told.
+
+   Association type ids are HubSpot's own defaults: note→contact 202,
+   task→contact 204. */
+const NOTE_TO_CONTACT = 202;
+const TASK_TO_CONTACT = 204;
+
+function assoc(contactId, typeId) {
+  return [{ to: { id: String(contactId) }, types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: typeId }] }];
+}
+
+/* HubSpot renders a note body as limited HTML, so anything a visitor typed
+   has to be escaped before it goes in one */
+export function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+export async function createNote(contactId, html, fetchImpl) {
+  const r = await call('/crm/v3/objects/notes', {
+    method: 'POST',
+    body: JSON.stringify({
+      properties: { hs_timestamp: new Date().toISOString(), hs_note_body: String(html).slice(0, 65000) },
+      associations: assoc(contactId, NOTE_TO_CONTACT)
+    })
+  }, fetchImpl);
+  if (r.ok) return { ok: true, id: String(r.data && r.data.id) };
+  return { ok: false, status: r.status, error: r.error || 'note_' + r.status, detail: r.raw };
+}
+
+export async function createTask(contactId, t, fetchImpl) {
+  const props = {
+    hs_timestamp: new Date().toISOString(),
+    hs_task_subject: String(t.subject || 'New Stagwell AI lead').slice(0, 250),
+    hs_task_body: String(t.body || '').slice(0, 65000),
+    hs_task_status: 'NOT_STARTED',
+    hs_task_priority: t.priority || 'HIGH',
+    hs_task_type: 'TODO'
+  };
+  if (/^\d+$/.test(String(t.ownerId || ''))) props.hubspot_owner_id = String(t.ownerId);
+  const r = await call('/crm/v3/objects/tasks', {
+    method: 'POST', body: JSON.stringify({ properties: props, associations: assoc(contactId, TASK_TO_CONTACT) })
+  }, fetchImpl);
+  if (r.ok) return { ok: true, id: String(r.data && r.data.id) };
+  return { ok: false, status: r.status, error: r.error || 'task_' + r.status, detail: r.raw };
+}
+
+export function announceScopeHelp(status) {
+  return status === 403
+    ? 'The HubSpot key needs crm.objects.notes.write and crm.objects.tasks.write to raise the timeline note and the task. Add them at Development → Keys → Service keys → your key → Scopes.'
+    : null;
+}
+
 /* ── A LEAD IS NEVER LOST TO A MISSING FIELD ─────────────────────────────────
    If the schema setup has not run — or someone deletes a property in HubSpot —
    the CRM answers a perfectly good lead with 400 PROPERTY_DOESNT_EXIST and

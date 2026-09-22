@@ -106,6 +106,14 @@
         var t = j.tally || {};
         show('good', 'Done. ' + (t.created || 0) + ' created · ' + (t.fixed || 0) + ' repaired · ' +
           (t.ok || 0) + ' already correct. HubSpot is ready for live leads.');
+        /* the properties can all be right and the key still be unable to
+           raise the note and the task that make a lead noticeable */
+        if (j.reachHelp) {
+          var warn = document.createElement('div');
+          warn.className = 'banner bad';
+          warn.textContent = j.reachHelp;
+          banner.parentNode.insertBefore(warn, list);
+        }
       } else {
         show('bad', (j.help || j.error || ('HTTP ' + res.status)) );
       }

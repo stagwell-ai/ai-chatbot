@@ -47,7 +47,7 @@ export async function ensureProperties(opts) {
   const empty = { group: null, properties: [], tally: { created: 0, fixed: 0, ok: 0, failed: 0 } };
 
   if (o.dry) {
-    return Object.assign({ ok: true, dry: true }, empty, {
+    return Object.assign({ ok: true, dry: true, reach: {}, reachHelp: null }, empty, {
       group: { state: 'would-create', name: GROUP.name, label: GROUP.label },
       properties: PROPERTIES.map(p => ({ name: p.name, state: 'would-create', detail: p.type + '/' + p.fieldType }))
     });
@@ -125,6 +125,24 @@ export async function ensureProperties(opts) {
 
   await Promise.all(Array.from({ length: Math.min(LANES, PROPERTIES.length) }, lane));
 
+  /* ── CAN THIS KEY ALSO SPEAK UP? ──────────────────────────────────────────
+     Every live lead writes a note on the contact's timeline and a task in
+     someone's queue, because a property write raises nothing in HubSpot and a
+     lead nobody hears about is a lead nobody works. Those need their own
+     scopes (crm.objects.notes.* and crm.objects.tasks.*), and without them
+     the lead still lands and the announcement quietly does not — the worst
+     kind of failure to find out about on a Friday.
+
+     So ask now, while an admin is watching. A list read is not the same
+     permission as a write, and HubSpot grants them as separate ticks; but a
+     403 here is conclusive, and it is the case that actually happens — the
+     scope was never added at all. Reported as a hint, never as a failure. */
+  const reach = {};
+  for (const [what, path] of [['notes', '/crm/v3/objects/notes?limit=1'], ['tasks', '/crm/v3/objects/tasks?limit=1']]) {
+    const r = await api(path);
+    reach[what] = r.status === 403 ? 'denied' : r.ok ? 'ok' : 'unknown';
+  }
+
   const properties = [];
   for (let i = 0; i < PROPERTIES.length; i++) {
     properties.push(out[i] || { name: PROPERTIES[i].name, label: PROPERTIES[i].label, state: 'failed', detail: 'not attempted' });
@@ -133,7 +151,14 @@ export async function ensureProperties(opts) {
   properties.forEach(r => { tally[r.state]++; });
   if (group.state === 'failed') tally.failed++;
 
+  const missing = Object.keys(reach).filter(k => reach[k] === 'denied');
   return {
+    reach,
+    reachHelp: missing.length
+      ? 'The key cannot reach ' + missing.join(' or ') + '. Leads will still land, but nothing will '
+        + 'announce them: add ' + missing.map(m => 'crm.objects.' + m + '.read and .write').join(', ')
+        + ' at Development → Keys → Service keys → your key → Scopes.'
+      : null,
     ok: tally.failed === 0,
     error: tally.failed === 0 ? null : scopeDenied ? 'forbidden' : 'partial',
     help: tally.failed === 0 ? null : scopeDenied ? SCOPE_HELP
