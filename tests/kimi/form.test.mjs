@@ -15,7 +15,7 @@ import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { DATA } from './_data.mjs';
 import { validateLeadBody } from '../../api/_lib/leads/schema.js';
-import { submitForm, formFields, dropdownValue, formMode } from '../../api/_lib/leads/hubspot-form.js';
+import { submitForm, formFields, productValues, productFieldValue, formMode } from '../../api/_lib/leads/hubspot-form.js';
 import { submitLead } from '../../api/_lib/leads/leadService.js';
 
 /* stagwell_ai_form_solution_drop_down, read from portal 24060959 on
@@ -51,38 +51,67 @@ beforeEach(() => {
   delete process.env.HUBSPOT_FORM_PRODUCT_FIELD;
 });
 
-test('every value the dropdown can be sent is one the portal actually offers', () => {
+test('every value the field can be sent is one the portal actually offers', () => {
   const seen = new Set();
   (DATA.solutions.solutions || DATA.solutions).forEach(p => {
     if (p.active === false) return;
     const body = BODY();
     body.discovery.productsRequested = [p.id];
-    const v = dropdownValue(validateLeadBody(body, DATA).lead, DATA);
-    if (v) seen.add(v);
-    assert.ok(v === null || OPTIONS.indexOf(v) !== -1,
-      p.id + ' would send "' + v + '", which the dropdown has never heard of');
+    productValues(validateLeadBody(body, DATA).lead, DATA).forEach(v => {
+      seen.add(v);
+      assert.ok(OPTIONS.indexOf(v) !== -1,
+        p.id + ' would send "' + v + '", which the field has never heard of');
+    });
   });
   assert.ok(seen.size >= 15, 'and nearly all of them map to something (' + seen.size + ')');
 });
 
-test('the value is what they ticked first, falling back to what we recommended', () => {
+/* ── THE COUNT IS LOAD-BEARING ───────────────────────────────────────────────
+   "Multiple selections route to our catch-all owner, single selection routes
+   to that product's owner." So how many values we send decides who picks up
+   the phone. Sending only the first tick would route a three-product lead to
+   one product's owner as though they had asked for one thing. */
+test('all of their ticks go, semicolon separated, in the order they ticked them', () => {
   const body = BODY();
-  assert.equal(dropdownValue(validateLeadBody(body, DATA).lead, DATA), 'BERA.ai', 'their first tick wins');
+  body.discovery.productsRequested = ['bera', 'smb_platform', 'geopulse'];
+  const lead = validateLeadBody(body, DATA).lead;
+  assert.deepEqual(productValues(lead, DATA), ['BERA.ai', 'Stagwell AI for SMBs', 'GEOPulse']);
+  assert.equal(productFieldValue(lead, DATA), 'BERA.ai;Stagwell AI for SMBs;GEOPulse');
+});
 
+test('one tick is ONE value, so a single-product lead still reaches that product’s owner', () => {
+  const body = BODY();
+  body.discovery.productsRequested = ['bera'];
+  const lead = validateLeadBody(body, DATA).lead;
+  assert.equal(productFieldValue(lead, DATA), 'BERA.ai');
+  assert.equal(productFieldValue(lead, DATA).indexOf(';'), -1, 'a stray separator would route this to catch-all');
+});
+
+test('the same product ticked twice is still one selection', () => {
+  const body = BODY();
+  body.discovery.productsRequested = ['bera', 'bera'];
+  const lead = validateLeadBody(body, DATA).lead;
+  assert.equal(productFieldValue(lead, DATA), 'BERA.ai', 'a duplicate must not read as "multiple"');
+});
+
+test('ticked nothing: our recommendation, as ONE value — or none at all if she prefers', () => {
   const none = BODY();
   none.discovery.productsRequested = [];
   const lead = validateLeadBody(none, DATA).lead;
-  const v = dropdownValue(lead, DATA);
-  assert.ok(OPTIONS.indexOf(v) !== -1, 'ticked nothing → the engine’s own pick, still a real option: ' + v);
+  const v = productValues(lead, DATA);
+  assert.equal(v.length, 1, 'a guess is never allowed to look like a multi-select');
+  assert.ok(OPTIONS.indexOf(v[0]) !== -1, 'and it is a real option: ' + v[0]);
+
+  process.env.HUBSPOT_FORM_PRODUCT_FALLBACK = 'none';
+  assert.equal(productFieldValue(lead, DATA), null, 'turned off without a deploy');
+  delete process.env.HUBSPOT_FORM_PRODUCT_FALLBACK;
 });
 
-test('an unknown or retired product is sent as nothing, never as a guess', () => {
+test('an unknown or retired product is dropped, never guessed at', () => {
   const body = BODY();
   body.discovery.productsRequested = ['not_a_product'];
   const lead = validateLeadBody(body, DATA).lead;
-  /* validation drops it before it ever gets here; the fallback must also be real */
-  const v = dropdownValue(lead, DATA);
-  assert.ok(v === null || OPTIONS.indexOf(v) !== -1);
+  productValues(lead, DATA).forEach(v => assert.ok(OPTIONS.indexOf(v) !== -1));
 });
 
 test('the fields are the six she asked for, by internal name, and no others', () => {

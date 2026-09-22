@@ -800,7 +800,11 @@ and the detail, not alternatives. `HUBSPOT_FORM_GUID` unset means no form is pos
 else changes. The product dropdown's values are derived from `solutions.json` display names,
 which is what the portal's options literally are, so a rename cannot silently start sending an
 option the dropdown has never heard of; a value that cannot be matched is sent as nothing rather
-than as a guess, because an unknown option is what breaks the routing.
+than as a guess, because an unknown option is what breaks the routing. The field is a
+multi-checkbox and HubSpot reads it as one semicolon-separated string, so **the number of values
+is load-bearing**: the portal routes several selections to a catch-all owner and one selection to
+that product's owner. Sending only the first tick would route a three-product lead to one
+product's owner as though they had asked for one thing.
 
 
 `api/_lib/leads/hubspot.js`, server-only, raw CRM v3 (search by email → PATCH, else POST;

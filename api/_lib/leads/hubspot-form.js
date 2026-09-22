@@ -37,27 +37,54 @@ export function formMode() {
   return /^[0-9a-f-]{36}$/i.test(env('HUBSPOT_FORM_GUID')) && /^\d+$/.test(env('HUBSPOT_PORTAL_ID')) ? 'live' : 'off';
 }
 
-/* ── THE DROPDOWN ───────────────────────────────────────────────────────────
-   "It's a dropdown. The form has to send the exact internal values, not the
-   labels, or the lead won't route."
+/* ── THE PRODUCT FIELD ──────────────────────────────────────────────────────
+   "The form has to send the exact internal values, not the labels, or the
+   lead won't route."
 
    On `stagwell_ai_form_solution_drop_down` the internal values ARE the
    display names — "BERA.ai", "GEOPulse", "UNICEPTA" — so the only thing that
    can go wrong is casing, and the only safe source for them is the catalog
-   the site already draws the tick-boxes from. Deriving it from
-   solutions.json means a product renamed there cannot silently start sending
-   a value the dropdown has never heard of; it means the two rot together or
-   not at all. A value we cannot match is sent as nothing rather than as a
-   guess, because an unknown option is what actually breaks her routing. */
-export function dropdownValue(lead, data) {
+   the site already draws the tick-boxes from. Deriving it from solutions.json
+   means a product renamed there cannot silently start sending a value the
+   field has never heard of; the two rot together or not at all. A value we
+   cannot match is left out rather than guessed at, because an unknown option
+   is what actually breaks her routing.
+
+   MULTIPLE, SINCE 2026-09-22. The property became a multi-checkbox because
+   the site's own form is a multi-select and people use it — the first real
+   submission ticked three. Her routing rule is now: several selections go to
+   the catch-all owner, one selection goes to that product's owner. Which
+   makes the count load-bearing, not cosmetic: sending only the first tick
+   would have routed a three-product lead to a single product's owner as
+   though they had asked for one thing. HubSpot takes a checkbox field's
+   values as one semicolon-separated string.
+
+   Their own ticks, in the order they ticked them. The engine's recommendation
+   is the fallback ONLY for a lead that ticked nothing at all — and that is a
+   single value, so under her rule it routes to that product's owner on our
+   say-so rather than theirs. HUBSPOT_FORM_PRODUCT_FALLBACK=none turns that
+   off and sends the field empty instead, without a deploy. */
+export function productValues(lead, data) {
   const d = lead.discovery || {};
-  /* what they ticked comes first: it is the thing they asked to hear about.
-     The engine's own pick is the fallback for a lead that ticked nothing. */
-  const id = (d.productsRequested || [])[0] || d.primary || null;
-  if (!id) return null;
-  const p = RECOMMEND.productById(id, data);
-  if (!p || p.active === false) return null;
-  return p.displayName || p.name || null;
+  const name = id => {
+    const p = RECOMMEND.productById(id, data);
+    return (p && p.active !== false && (p.displayName || p.name)) || null;
+  };
+  const out = [];
+  (d.productsRequested || []).forEach(id => {
+    const n = name(id);
+    if (n && out.indexOf(n) === -1) out.push(n);
+  });
+  if (out.length) return out;
+  if (env('HUBSPOT_FORM_PRODUCT_FALLBACK').toLowerCase() === 'none') return [];
+  const guess = d.primary ? name(d.primary) : null;
+  return guess ? [guess] : [];
+}
+
+/* HubSpot reads a checkbox field as one semicolon-separated string */
+export function productFieldValue(lead, data) {
+  const v = productValues(lead, data);
+  return v.length ? v.join(';') : null;
 }
 
 /* the fields Eriel asked for, and only those: a form submission writes what
@@ -73,7 +100,7 @@ export function formFields(lead, data) {
   put('jobtitle', d.roleText || lead.jobtitle);
   put('phone', lead.phone);
   put('company', lead.company);
-  put(env('HUBSPOT_FORM_PRODUCT_FIELD') || 'stagwell_ai_form_solution_drop_down', dropdownValue(lead, data));
+  put(env('HUBSPOT_FORM_PRODUCT_FIELD') || 'stagwell_ai_form_solution_drop_down', productFieldValue(lead, data));
   return out;
 }
 
