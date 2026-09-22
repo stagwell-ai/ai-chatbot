@@ -388,7 +388,8 @@
       txt.append(n, h3);
       if (d) { const pp = document.createElement('p'); pp.textContent = d; txt.append(pp); }
       const pic = document.createElement('div'); pic.className = 'sp-tabs__pic';
-      if (li.dataset.loop) {
+      if (li.dataset.vis) { pic.dataset.vis = li.dataset.vis; }
+      else if (li.dataset.loop) {
         const ROOT = ['voice-squares', 'media-machine', 'newintel', 'search-plus', 'id-graph'];
         const base = '/assets/video/lab/' + (ROOT.includes(li.dataset.loop) ? '' : 'loops/') + li.dataset.loop;
         const v = document.createElement('video'); v.src = base + '.mp4'; v.poster = base + '-poster.jpg';
@@ -500,6 +501,7 @@
 
   /* proof: the figures count up once, when they are first seen */
   const figs = [...page.querySelectorAll('.pp-proof .pp-figs strong')];
+  figs.forEach(el => el.classList.add(/\d/.test(el.textContent) ? 'is-num' : 'is-words'));
   if (figs.length && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
     const parts = figs.map(el => {
       const m = el.textContent.match(/^(\D*)(\d+(?:[.,]\d+)?)(?:([–-])(\d+(?:[.,]\d+)?))?(.*)$/);
@@ -588,7 +590,7 @@
     A: [[190, 0, 700, 400], [0, 200, 310, 240], [820, 20, 260, 190], [790, 240, 290, 210]],
     C: [[300, 0, 480, 470], [10, 50, 320, 210], [50, 280, 300, 190], [750, 140, 320, 240]],
     D: [[170, 20, 740, 400], [0, 240, 300, 220], [800, 0, 280, 190], [780, 250, 300, 200]],
-    E: [[0, 0, 640, 420], [600, 10, 300, 220], [800, 250, 280, 210], [560, 290, 270, 180]],
+    E: [[220, 10, 640, 420], [0, 40, 300, 220], [800, 20, 280, 210], [740, 260, 320, 190]],
     /* the voice: a wide, short bar, the way it sits on the homepage's closing tile */
     V: [[230, 90, 600, 300], [20, 200, 330, 250], [790, 30, 270, 200], [730, 270, 330, 200]]
   };
@@ -750,7 +752,7 @@
       const fan = FANS[SCENE[slug][2] || 'left'];
       const lay = small ? [[10, 0, 240, 150, -5], [130, 110, 260, 320, 4]] : fan;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
-      lay.forEach(([x, y, w, h, r], k) => { const c = cs[k]; html += card('pc-collage__ui pc-collage__ui--' + (k + 1) + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h), r); });
+      lay.forEach(([x, y, w, h, r], k) => { const c = cs[k]; let m = card('pc-collage__ui pc-collage__ui--' + (k + 1) + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h), r); if (['prompt', 'list', 'survey', 'rank', 'creators', 'chat'].includes(c.t)) m = m.replace('height:' + h + 'px', 'height:auto'); html += m; });
     } else if (kind === 'tiles') {
       const cfg = SCENE[slug][1]; const cols = small ? 2 : 3, tw = small ? 190 : 340, th = small ? 150 : 220, gap = small ? 20 : 30;
       SW = small ? 400 : 1080; SH = small ? 320 : 470;
@@ -790,4 +792,16 @@
   };
   build();
   narrow.addEventListener('change', build);
+  /* the How-it-works tabs: a mockup, a loop, the picture, a mockup, a loop (data-vis) */
+  document.querySelectorAll('.sp-tabs__pic[data-vis]').forEach(pic => {
+    const v = pic.dataset.vis;
+    if (v === 'pic') {
+      if (centreSrc === 'voice') { if (window.hcVoice) window.hcVoice(pic, { mid: 0.5 }); pic.classList.add('is-voice'); }
+      else { const im = new Image(); im.src = centreSrc; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; pic.appendChild(im); }
+    } else if (v.startsWith('screen:')) {
+      const c = plan[+v.slice(7)] || plan[1]; const w = 340, h = 250;
+      pic.innerHTML = '<div class="sx-in"><div class="pc-collage__card sx sx--' + c.t + '" style="position:relative;width:' + w + 'px;height:' + (['prompt', 'list', 'chat', 'survey', 'rank', 'creators'].includes(c.t) ? 'auto' : h + 'px') + '">' + SCREEN[c.t](c, w, h) + '</div></div>';
+    }
+  });
+
 })();

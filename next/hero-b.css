@@ -630,3 +630,18 @@ body.hc-b.pl-c .pl-hero .pp-acts:not(#_){margin-top:0 !important;position:static
   body.hc-b.pl-c .pl-hero .pl-say:not(#_){margin:0 0 28px !important;order:0}
   body.hc-b.pl-c .pl-hero .pp-acts:not(#_){order:1}
 }
+
+/* proof: numbers stay on one line at a size that fits; word figures wrap at a title size */
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong.is-num{font-size:clamp(40px,1.2rem + 3vw,72px) !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong.is-words{font-size:clamp(24px,1rem + 1.1vw,32px) !important;line-height:1.15 !important;white-space:normal !important;font-weight:400 !important;letter-spacing:-.02em !important}
+/* fan cards are as tall as their content */
+body.hc-b.pc-page .pc-collage--fan .sx-prompt{justify-content:flex-start;height:auto}
+/* hero titles on two lines */
+body.hc-b.pc-page .pp-hero__in:not(#_){max-width:1120px !important}
+body.hc-b.pc-page .pp-hero .pp-title:not(#_){max-width:30ch !important;margin-inline:auto !important}
+/* a mockup inside a How-it-works tab */
+body.hc-b.pc-page .sp-tabs__pic .sx-in{position:absolute;inset:0;display:grid;place-items:center;padding:24px;background:#E7E7E3}
+body.hc-b.pc-page .sp-tabs__pic .sx-in .pc-collage__card{max-width:100%;border-radius:18px}
+body.hc-b.pc-page .sp-tabs__pic.is-voice{background:#0B1220}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+@media (max-width:860px){ body.hc-b.pc-page .sp-tabs__pic .sx-in{padding:16px} body.hc-b.pc-page .sp-tabs__pic .sx-in .pc-collage__card{transform:scale(.9)} }
