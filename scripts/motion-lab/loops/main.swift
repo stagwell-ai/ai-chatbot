@@ -769,7 +769,10 @@ func workflow(_ ctx: CGContext, _ p: Double) {
   ctx.saveGState(); ctx.translateBy(x: CX, y: CY); ctx.rotate(by: -0.09); ctx.scaleBy(x: 1.1, y: 1.04); ctx.translateBy(x: -CX, y: -CY)
   var gy = 20 * K; while gy < Hd { var gx = 20 * K; while gx < Wd { dot(ctx, gx, gy, 1 * K, white(0.07)); gx += 40 * K }; gy += 40 * K }
   let CARD = CGColor(red: 0.16, green: 0.18, blue: 0.22, alpha: 1)
-  let nodes: [(Double, Double, Double, Double)] = [(0.04, 0.42, 0.14, 0.14), (0.24, 0.14, 0.15, 0.2), (0.24, 0.46, 0.15, 0.14), (0.24, 0.7, 0.15, 0.16), (0.47, 0.32, 0.17, 0.3), (0.72, 0.16, 0.15, 0.16), (0.72, 0.46, 0.15, 0.2), (0.72, 0.74, 0.15, 0.12)]
+  let names = ["Brief received", "Audience", "Draft copy", "Assets", "Review", "Publish", "Send to Slack", "Delay 10 s"]
+  let rowsT = [["Source  CRM", "Trigger  New brief"], ["Segment  High intent", "Size  Households"], ["Model  Claude", "Tone  Plain"], ["Format  Social", "Sizes  All"], ["Owner  Team lead", "Status  Waiting", "Due  Today"], ["Channel  Meta", "When  On approve"], ["Room  #launch", "Mention  @team"], ["Then  Report", "Wait  10 s"]]
+  // card height from its rows: 14 over the title, 26 per row, 18 under the last
+  let nodes: [(Double, Double, Double, Double)] = [(0.04, 0.42, 0.14, 0), (0.24, 0.14, 0.15, 0), (0.24, 0.46, 0.15, 0), (0.24, 0.7, 0.15, 0), (0.47, 0.32, 0.17, 0), (0.72, 0.16, 0.15, 0), (0.72, 0.46, 0.15, 0), (0.72, 0.74, 0.15, 0)].enumerated().map { (i, nd) in (nd.0, nd.1, nd.2, (44 + 26 * Double(rowsT[i].count) + 18) * K / Hd) }
   let wires: [(Int, Int, Int)] = [(0, 1, 0), (0, 2, 1), (0, 3, 1), (1, 4, 0), (2, 4, 1), (3, 4, 1), (4, 5, 0), (4, 6, 0), (4, 7, 1)]
   func port(_ n: Int, _ out: Bool, _ k: Int) -> (Double, Double) { let nd = nodes[n]; return (Wd * (nd.0 + (out ? nd.2 : 0)), Hd * (nd.1 + nd.3 * (0.35 + 0.3 * Double(k)))) }
   for (i, w) in wires.enumerated() {
@@ -793,8 +796,6 @@ func workflow(_ ctx: CGContext, _ p: Double) {
     ctx.addPath(path); ctx.setStrokeColor(white(0.14)); ctx.setLineWidth(1.2 * K); ctx.strokePath()
     // a title bar and a few rows
     dot(ctx, x + 22 * K, y + 22 * K, 5 * K, n == 4 ? ORANGE : CYAN)
-    let names = ["Brief received", "Audience", "Draft copy", "Assets", "Review", "Publish", "Send to Slack", "Delay 10 s"]
-    let rowsT = [["Source  CRM", "Trigger  New brief"], ["Segment  High intent", "Size  Households"], ["Model  Claude", "Tone  Plain"], ["Format  Social", "Sizes  All"], ["Owner  Team lead", "Status  Waiting", "Due  Today"], ["Channel  Meta"], ["Room  #launch"], ["Then  Report"]]
     label(ctx, names[n], x + 34 * K, y + 27 * K, 15 * K, white(0.92))
     for (ri, rt) in rowsT[n].enumerated() { label(ctx, rt, x + 22 * K, y + 56 * K + Double(ri) * 26 * K, 12.5 * K, white(0.55)) }
     let rows = 1
