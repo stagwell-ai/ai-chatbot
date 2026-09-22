@@ -69,6 +69,25 @@ export async function updateContact(id, properties, fetchImpl) {
   return { ok: false, status: r.status, error: r.error || 'update_' + r.status, detail: r.raw, retryable: r.status === 0 || r.status === 429 || r.status >= 500 };
 }
 
+/* ── ON ARRIVAL, NOT ON EVERY TOUCH ──────────────────────────────────────────
+   Who owns the contact and what stage it lands at are set ONLY when the
+   contact is created. Writing them on every update would hand an account back
+   to the website's default owner every time that person returned, and would
+   drag somebody who is already an Opportunity — or a Customer — back to
+   Marketing Qualified Lead because they booked a second demo. Both are set in
+   Vercel, so they change without a deploy of this file:
+
+     HUBSPOT_OWNER_ID          the HubSpot user id of the owner (a number)
+     HUBSPOT_LIFECYCLE_STAGE   e.g. marketingqualifiedlead                     */
+function onCreateProps() {
+  const p = {};
+  const owner = env('HUBSPOT_OWNER_ID');
+  const stage = env('HUBSPOT_LIFECYCLE_STAGE');
+  if (/^\d+$/.test(owner)) p.hubspot_owner_id = owner;
+  if (stage) p.lifecyclestage = stage;
+  return p;
+}
+
 /* brief §33: find by email → update, else create. One function, HubSpot's
    details stay inside it. */
 export async function upsertContact(properties, opts) {
@@ -76,12 +95,13 @@ export async function upsertContact(properties, opts) {
   const mode = o.mode || hubspotMode();
   if (mode === 'mock') {
     const id = 'mock-' + Math.abs(hash(properties.email || '')).toString(36);
-    console.log('[hubspot:mock] would upsert contact', JSON.stringify(redactForLog(properties)));
+    console.log('[hubspot:mock] would upsert contact', JSON.stringify(redactForLog(Object.assign({}, properties, onCreateProps()))));
     return { ok: true, mode, action: 'mocked', id };
   }
   const found = await findContactByEmail(properties.email, o.fetch);
   if (!found.ok) return Object.assign({ mode }, found);
-  const r = found.id ? await updateContact(found.id, properties, o.fetch) : await createContact(properties, o.fetch);
+  const r = found.id ? await updateContact(found.id, properties, o.fetch)
+    : await createContact(Object.assign({}, properties, onCreateProps()), o.fetch);
   if (r.ok && r.action === 'exists') {
     const u = await updateContact(r.id, properties, o.fetch);
     return Object.assign({ mode }, u);

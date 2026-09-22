@@ -253,3 +253,68 @@ test('the group and every property definition is well formed for the HubSpot API
     if (p.type === 'enumeration') assert.ok(p.options && p.options.length, p.name + ' needs options');
   });
 });
+
+/* ── THE OWNER AND THE STAGE ARE SET ON ARRIVAL, NOT ON EVERY TOUCH ──
+   Writing hubspot_owner_id on every update hands the account back to the
+   website's default owner each time that person returns; writing
+   lifecyclestage on every update drags somebody who is already an Opportunity
+   — or a Customer — back to Marketing Qualified Lead because they booked a
+   second demo. Both are create-only, and both come from Vercel so they change
+   without a deploy (2026-09-22). */
+test('a NEW contact arrives owned and staged', async () => {
+  const env = { HUBSPOT_OWNER_ID: process.env.HUBSPOT_OWNER_ID, HUBSPOT_LIFECYCLE_STAGE: process.env.HUBSPOT_LIFECYCLE_STAGE };
+  process.env.HUBSPOT_OWNER_ID = '11223344';
+  process.env.HUBSPOT_LIFECYCLE_STAGE = 'marketingqualifiedlead';
+  try {
+    const seen = [];
+    const fetchImpl = async (url, init) => {
+      seen.push({ url: String(url), method: init.method, body: JSON.parse(init.body || '{}') });
+      const body = String(url).includes('/search') ? { results: [] } : { id: '999' };
+      return { ok: true, status: 200, text: async () => JSON.stringify(body) };
+    };
+    const r = await upsertContact({ email: 'ada@acme.com', firstname: 'Ada' }, { mode: 'live', fetch: fetchImpl });
+    assert.equal(r.ok, true);
+    assert.equal(r.action, 'created');
+    const post = seen.find(c => c.method === 'POST' && !c.url.includes('/search'));
+    assert.equal(post.body.properties.hubspot_owner_id, '11223344');
+    assert.equal(post.body.properties.lifecyclestage, 'marketingqualifiedlead');
+  } finally { Object.assign(process.env, env); }
+});
+
+test('…and a RETURNING contact keeps the owner and the stage it already had', async () => {
+  const env = { HUBSPOT_OWNER_ID: process.env.HUBSPOT_OWNER_ID, HUBSPOT_LIFECYCLE_STAGE: process.env.HUBSPOT_LIFECYCLE_STAGE };
+  process.env.HUBSPOT_OWNER_ID = '11223344';
+  process.env.HUBSPOT_LIFECYCLE_STAGE = 'marketingqualifiedlead';
+  try {
+    const seen = [];
+    const fetchImpl = async (url, init) => {
+      seen.push({ url: String(url), method: init.method, body: JSON.parse(init.body || '{}') });
+      /* this one is already in the CRM */
+      const body = String(url).includes('/search') ? { results: [{ id: '777' }] } : { id: '777' };
+      return { ok: true, status: 200, text: async () => JSON.stringify(body) };
+    };
+    const r = await upsertContact({ email: 'ada@acme.com', firstname: 'Ada' }, { mode: 'live', fetch: fetchImpl });
+    assert.equal(r.action, 'updated');
+    const patch = seen.find(c => c.method === 'PATCH');
+    assert.ok(patch, 'it updates rather than creating a second contact');
+    assert.equal(patch.body.properties.hubspot_owner_id, undefined, 'the owner was overwritten on a return visit');
+    assert.equal(patch.body.properties.lifecyclestage, undefined, 'the lifecycle stage was dragged backwards on a return visit');
+    assert.equal(patch.body.properties.email, undefined, 'the identifier is not rewritten');
+  } finally { Object.assign(process.env, env); }
+});
+
+test('an owner that is not a number is ignored rather than sent as junk', async () => {
+  const env = process.env.HUBSPOT_OWNER_ID;
+  process.env.HUBSPOT_OWNER_ID = 'eriel@stagwell.com';   /* an email is not an owner id */
+  try {
+    const seen = [];
+    const fetchImpl = async (url, init) => {
+      seen.push({ url: String(url), method: init.method, body: JSON.parse(init.body || '{}') });
+      const body = String(url).includes('/search') ? { results: [] } : { id: '999' };
+      return { ok: true, status: 200, text: async () => JSON.stringify(body) };
+    };
+    await upsertContact({ email: 'ada@acme.com' }, { mode: 'live', fetch: fetchImpl });
+    const post = seen.find(c => c.method === 'POST' && !c.url.includes('/search'));
+    assert.equal(post.body.properties.hubspot_owner_id, undefined);
+  } finally { process.env.HUBSPOT_OWNER_ID = env; }
+});
