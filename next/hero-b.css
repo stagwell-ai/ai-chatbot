@@ -570,3 +570,6 @@ body.hc-b.pc-page .pc-collage{overflow:clip}
 body.hc-b.pc-page .pc-collage--phone .sx-tile__spark{display:none}
 body.hc-b.pc-page .pc-collage--phone .sx--tile{padding:18px}
 body.hc-b.pc-page .pc-collage--phone .sx-tile__body b{font-size:18px}
+/* nothing off-screen may widen the page (a hidden state of the call tile was doing it on Agent Cloud) */
+html:has(body.hc-b.pc-page),body.hc-b.pc-page{overflow-x:clip}
+body.hc-b.pc-page .sx-gauge{margin-top:2px}

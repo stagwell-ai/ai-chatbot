@@ -611,6 +611,7 @@
   const L = LAYOUT[plan[0]];
 
   let seed = [...slug].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const seed0 = seed % 6;
   const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
   const INK = '#0B1220', MID = '#8A8E95', SOFT = '#D6D7D3', FAINT = '#EFEFEC';
   const face = n => { n = ((n % 20) + 20) % 20; return '<i class="sx-face" style="background-position:' + (n % 4) * 100 / 3 + '% ' + Math.floor(n / 4) * 25 + '%"></i>'; };
@@ -619,7 +620,7 @@
 
   const SCREEN = {
     trend(c, w, h) {
-      const cw = w - 36, ch = h - 118, n = 6, a = series(n, 0.15, 0.95, true), b = series(n, 0.1, 0.7, false);
+      const cw = w - 44, ch = h - 148, n = 6, a = series(n, 0.15, 0.95, true), b = series(n, 0.1, 0.7, false);
       const P = s => s.map((v, i) => [(i * cw / (n - 1)), ch - v * ch]);
       const path = pts => pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
       const A = P(a), B = P(b), last = A[n - 1];
@@ -637,7 +638,7 @@
       const days = c.labels ? c.labels : c.sub === 'By day' ? ['M', 'T', 'W', 'T', 'F', 'S', 'S'] : c.sub === 'By type' ? ['Price', 'Hire', 'Press', 'Social', 'Web'] : ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'];
       const top = Math.floor(rnd() * days.length);
       let b = ''; days.forEach((d, i) => { const v = i === top ? 0.95 : 0.25 + rnd() * 0.6; b += '<div class="sx-bar' + (i === top ? ' is-top' : '') + '"><i style="height:' + (v * 100).toFixed(0) + '%"></i><em>' + d + '</em></div>'; });
-      return headH(c.title, c.sub) + '<div class="sx-bars" style="height:' + (h - 100) + 'px">' + b + '</div>';
+      return headH(c.title, c.sub) + '<div class="sx-bars" style="height:' + (h - 112) + 'px">' + b + '</div>';
     },
     donut(c, w, h) {
       const r = 38, C = 2 * Math.PI * r, p = [0.46 + rnd() * 0.1, 0.24 + rnd() * 0.06]; p.push(1 - p[0] - p[1] - 0.03);
@@ -647,11 +648,11 @@
         '<ul>' + c.items.map((t, i) => '<li><i style="background:' + cols[i] + '"></i>' + esc(t) + '</li>').join('') + '</ul></div>';
     },
     gauge(c, w, h) {
-      const v = 0.62 + rnd() * 0.22, R = 58, cx = 70, cy = 66;
+      const v = 0.62 + rnd() * 0.22, R = 52, cx = 70, cy = 62;
       const pt = a => [cx + R * Math.cos(Math.PI * (1 - a)), cy - R * Math.sin(Math.PI * (1 - a))];
       const arc = (a0, a1) => { const s = pt(a0), e = pt(a1); return 'M' + s[0].toFixed(1) + ' ' + s[1].toFixed(1) + ' A' + R + ' ' + R + ' 0 0 1 ' + e[0].toFixed(1) + ' ' + e[1].toFixed(1); };
       const tip = [cx + (R - 18) * Math.cos(Math.PI * (1 - v)), cy - (R - 18) * Math.sin(Math.PI * (1 - v))];
-      return headH(c.title, c.sub) + '<div class="sx-gauge"><svg viewBox="0 0 140 80" width="190" height="108" aria-hidden="true"><path d="' + arc(0, 1) + '" fill="none" stroke="' + FAINT + '" stroke-width="12" stroke-linecap="round"/><path d="' + arc(0, v) + '" fill="none" stroke="' + INK + '" stroke-width="12" stroke-linecap="round"/><line x1="' + cx + '" y1="' + cy + '" x2="' + tip[0].toFixed(1) + '" y2="' + tip[1].toFixed(1) + '" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/><circle cx="' + cx + '" cy="' + cy + '" r="5" fill="' + INK + '"/></svg>' +
+      return headH(c.title, c.sub) + '<div class="sx-gauge"><svg viewBox="0 0 140 72" width="170" height="88" aria-hidden="true"><path d="' + arc(0, 1) + '" fill="none" stroke="' + FAINT + '" stroke-width="12" stroke-linecap="round"/><path d="' + arc(0, v) + '" fill="none" stroke="' + INK + '" stroke-width="12" stroke-linecap="round"/><line x1="' + cx + '" y1="' + cy + '" x2="' + tip[0].toFixed(1) + '" y2="' + tip[1].toFixed(1) + '" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/><circle cx="' + cx + '" cy="' + cy + '" r="5" fill="' + INK + '"/></svg>' +
         '<div class="sx-scale"><span>Low</span><span>High</span></div></div>';
     },
     chat(c) {
@@ -663,7 +664,7 @@
         '<div class="sx-field"><p>' + esc(c.q) + '<i class="sx-caret"></i></p><div class="sx-field__bar"><span class="sx-plus">+</span><span class="sx-send"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div></div>';
     },
     list(c, w, h) {
-      const n = Math.max(1, Math.min(c.items.length, Math.floor((h - 64) / 44)));
+      const n = Math.max(1, Math.min(c.items.length, Math.floor((h - 80) / 46)));
       return headH(c.title) + '<ul class="sx-list">' + c.items.slice(0, n).map((t, i) => '<li>' + (c.faces ? face(3 + i * 5) : '<i class="sx-ico' + (i ? '' : ' is-on') + '"></i>') + '<span><b>' + esc(t) + '</b></span><em' + (i ? '' : ' class="is-on"') + '>' + esc((c.metas || [])[i] || '') + '</em></li>').join('') + '</ul>';
     },
     rank(c, w, h) {
@@ -691,7 +692,7 @@
     },
     network(c, w, h) {
       /* a hub in ink, a ring of nodes wired to it, and the three named nodes as pills */
-      const top = 58, cw = w - 36, ch = h - top - 16, hub = [cw / 2, ch / 2 + 4];
+      const top = 64, cw = w - 44, ch = h - top - 26, hub = [cw / 2, ch / 2 + 2];
       const pts = []; const n = 11;
       for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i / n * Math.PI * 2 + (rnd() - 0.5) * 0.25, d = 0.62 + rnd() * 0.36; pts.push([hub[0] + Math.cos(a) * cw * 0.46 * d, hub[1] + Math.sin(a) * ch * 0.46 * d]); }
       let g = '';
@@ -712,8 +713,8 @@
      round it, a fan of tilted cards, or a grid of tiles. Each page names its kind. */
   const SCENE = {
     'agent-cloud': ['fan', [{ t: 'note', ink: true, q: 'Draft three headlines for the spring campaign' }, { t: 'prompt', chips: ['Claude', 'ChatGPT', 'Gemini'], q: 'Draft three headlines for the spring campaign' }, { t: 'list', title: 'Marketing agents', items: ['Copywriter', 'Campaign planner', 'Message tester'], metas: ['Ready', 'Ready', 'Running'], faces: true }, { t: 'note', q: 'Test these two messages with parents' }]],
-    questdiy: ['fan', [{ t: 'note', ink: true, q: 'Which name do you prefer?' }, { t: 'survey', title: 'Which name do you prefer?', items: ['Option A', 'Option B', 'Option C'] }, { t: 'map', title: 'Respondents', pin: 'Fielding now' }, { t: 'note', q: 'Field it in 100+ countries' }]],
-    search_plus: ['fan', [{ t: 'note', ink: true, q: 'Which CRM is best for a small agency?' }, { t: 'rank', title: 'Recommended in answers', items: ['ChatGPT', 'Gemini', 'Perplexity', 'Grok'] }, { t: 'chat', q: 'Which CRM is best for a small agency?', a: 'Three names come up first. Yours is one of them in two of the three assistants.' }, { t: 'note', q: 'Recommended, not just mentioned' }]],
+    questdiy: ['fan', [{ t: 'note', ink: true, q: 'Which name do you prefer?' }, { t: 'survey', title: 'Which name do you prefer?', items: ['Option A', 'Option B', 'Option C'] }, { t: 'map', title: 'Respondents', pin: 'Fielding now' }, { t: 'note', q: 'Field it in 100+ countries' }], 'right'],
+    search_plus: ['fan', [{ t: 'note', ink: true, q: 'Which CRM is best for a small agency?' }, { t: 'rank', title: 'Recommended in answers', items: ['ChatGPT', 'Gemini', 'Perplexity', 'Grok'] }, { t: 'chat', q: 'Which CRM is best for a small agency?', a: 'Three names come up first. Yours is one of them in two of the three assistants.' }, { t: 'note', q: 'Recommended, not just mentioned' }], 'stack'],
     smb_platform: ['fan', [{ t: 'note', ink: true, q: 'Find creators who fit my brand' }, { t: 'creators', title: 'Creators for you', sub: 'Matched to your brand' }, { t: 'donut', title: 'Audience quality', items: ['Real', 'Suspicious', 'Inactive'] }, { t: 'note', q: 'Prove ROI without a big team' }]],
     'targeting-machine': ['tiles', { sub: 'Ready to activate', items: ['High intent', 'Lookalikes', 'In market', 'Households', 'Lapsed', 'Loyal'] }],
     media_machine: ['tiles', { sub: 'Scored', items: ['Search', 'Social', 'CTV', 'Audio', 'OOH', 'Retail'] }],
@@ -736,7 +737,13 @@
     const card = (cls, x, y, w, h, inner, rot) => '<div class="pc-collage__card ' + cls + '" style="left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px' + (rot ? ';rotate:' + rot + 'deg' : '') + '">' + inner + '</div>';
     if (kind === 'fan') {
       const cs = SCENE[slug][1];
-      const lay = small ? [[10, 0, 240, 150, -5], [130, 110, 260, 320, 4]] : [[20, 150, 280, 190, -7], [300, 10, 330, 420, 4], [640, 70, 330, 310, -4], [860, 220, 220, 180, 6]];
+      const FANS = {
+        left: [[20, 150, 280, 190, -7], [300, 10, 330, 420, 4], [640, 70, 330, 310, -4], [860, 220, 220, 180, 6]],
+        right: [[780, 150, 280, 190, 7], [450, 10, 330, 420, -4], [110, 70, 330, 310, 4], [0, 220, 220, 180, -6]],
+        stack: [[60, 40, 300, 200, -5], [330, 30, 360, 400, 2], [690, 90, 320, 300, 5], [120, 270, 260, 170, 3]]
+      };
+      const fan = FANS[SCENE[slug][2] || 'left'];
+      const lay = small ? [[10, 0, 240, 150, -5], [130, 110, 260, 320, 4]] : fan;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
       lay.forEach(([x, y, w, h, r], k) => { const c = cs[k]; html += card('pc-collage__ui pc-collage__ui--' + (k + 1) + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h), r); });
     } else if (kind === 'tiles') {
@@ -744,7 +751,7 @@
       SW = small ? 400 : 1080; SH = small ? 320 : 470;
       cfg.items.slice(0, small ? 4 : 6).forEach((t, k) => {
         const x = (k % cols) * (tw + gap), y = Math.floor(k / cols) * (th + gap);
-        html += card('pc-collage__ui sx sx--tile ' + TONES[(k + seed) % TONES.length], x, y, tw, th,
+        html += card('pc-collage__ui sx sx--tile ' + TONES[(k + seed0) % TONES.length], x, y, tw, th,
           '<span class="sx-tile__ico"><i></i></span><div class="sx-tile__body"><b>' + esc(t) + '</b><span>' + esc(cfg.sub) + '</span></div><div class="sx-tile__spark">' + spark() + '</div>');
       });
     } else {
