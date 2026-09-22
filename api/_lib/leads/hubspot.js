@@ -156,9 +156,31 @@ export async function createTask(contactId, t, fetchImpl) {
   return { ok: false, status: r.status, error: r.error || 'task_' + r.status, detail: r.raw };
 }
 
+/* ── AND INTO THE LIST SHE ACTUALLY WATCHES ─────────────────────────────────
+   HubSpot has no public API for a saved CRM view, and the kind of list this
+   portal can be given through a connector is STATIC — a frozen snapshot that
+   never gains a row on its own. Which would be useless, except that a static
+   list is exactly the kind you can push into: the site adds each contact as
+   it lands, so the list collects without anybody maintaining it and without
+   needing Marketing Hub for an active list.
+
+   HUBSPOT_LIST_ID names it. Unset, this does nothing at all. Adding a contact
+   that is already a member is a no-op at HubSpot's end, so a returning visitor
+   costs nothing and duplicates nothing. */
+export async function addToList(listId, contactId, fetchImpl) {
+  const r = await call('/crm/v3/lists/' + encodeURIComponent(listId) + '/memberships/add', {
+    method: 'PUT', body: JSON.stringify([String(contactId)])
+  }, fetchImpl);
+  if (r.ok) {
+    const added = (r.data && Array.isArray(r.data.recordIdsAdded) && r.data.recordIdsAdded.length) ? 'added' : 'already there';
+    return { ok: true, id: String(listId), action: added };
+  }
+  return { ok: false, status: r.status, error: r.error || 'list_' + r.status, detail: r.raw };
+}
+
 export function announceScopeHelp(status) {
   return status === 403
-    ? 'The HubSpot key needs crm.objects.notes.write and crm.objects.tasks.write to raise the timeline note and the task. Add them at Development → Keys → Service keys → your key → Scopes.'
+    ? 'The HubSpot key needs crm.objects.notes.write, crm.objects.tasks.write and crm.lists.write to raise the timeline note, the task and the list membership. Add them at Development → Keys → Service keys → your key → Scopes.'
     : null;
 }
 

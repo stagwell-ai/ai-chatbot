@@ -142,6 +142,13 @@ export async function ensureProperties(opts) {
     const r = await api(path);
     reach[what] = r.status === 403 ? 'denied' : r.ok ? 'ok' : 'unknown';
   }
+  /* the list is checked by id, so this also catches a HUBSPOT_LIST_ID that
+     points at nothing — a typo there would lose every membership silently */
+  const listId = String(process.env.HUBSPOT_LIST_ID || '').trim();
+  if (/^\d+$/.test(listId)) {
+    const r = await api('/crm/v3/lists/' + listId);
+    reach.lists = r.status === 403 ? 'denied' : r.status === 404 ? 'missing' : r.ok ? 'ok' : 'unknown';
+  }
 
   const properties = [];
   for (let i = 0; i < PROPERTIES.length; i++) {
@@ -152,13 +159,20 @@ export async function ensureProperties(opts) {
   if (group.state === 'failed') tally.failed++;
 
   const missing = Object.keys(reach).filter(k => reach[k] === 'denied');
+  const scopeOf = m => (m === 'lists' ? 'crm.lists.read and .write' : 'crm.objects.' + m + '.read and .write');
+  const help = [];
+  if (missing.length) {
+    help.push('The key cannot reach ' + missing.join(' or ') + '. Leads will still land, but nothing will '
+      + 'announce them: add ' + missing.map(scopeOf).join(', ')
+      + ' at Development → Keys → Service keys → your key → Scopes.');
+  }
+  if (reach.lists === 'missing') {
+    help.push('HUBSPOT_LIST_ID points at a list this portal does not have (' + listId + '). '
+      + 'Every lead would quietly fail to join it — check the id in Vercel.');
+  }
   return {
     reach,
-    reachHelp: missing.length
-      ? 'The key cannot reach ' + missing.join(' or ') + '. Leads will still land, but nothing will '
-        + 'announce them: add ' + missing.map(m => 'crm.objects.' + m + '.read and .write').join(', ')
-        + ' at Development → Keys → Service keys → your key → Scopes.'
-      : null,
+    reachHelp: help.length ? help.join(' ') : null,
     ok: tally.failed === 0,
     error: tally.failed === 0 ? null : scopeDenied ? 'forbidden' : 'partial',
     help: tally.failed === 0 ? null : scopeDenied ? SCOPE_HELP

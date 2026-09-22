@@ -801,6 +801,10 @@ is set so it lands in that person's queue and their HubSpot reminder email. Both
 told, and neither counts towards `delivered`. `HUBSPOT_NOTE_ENABLED` / `HUBSPOT_TASK_ENABLED`
 turn either off without a deploy. The key needs `crm.objects.notes.*` and `crm.objects.tasks.*`;
 `/hubspot-setup` probes both and says so rather than letting it fail on a Friday.
+Every lead also joins the list named by `HUBSPOT_LIST_ID` (`PUT /crm/v3/lists/{id}/memberships/add`,
+`crm.lists.write`): HubSpot has no public API for a saved CRM view and a connector can only make a
+STATIC list, so the site does the collecting the list cannot do for itself. The probe checks that
+id exists, because a typo there would lose every membership silently.
 
 **A missing property never costs a lead**: HubSpot answers a
 400 `PROPERTY_DOESNT_EXIST` by refusing the whole contact, name and email included, so a

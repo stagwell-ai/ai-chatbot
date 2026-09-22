@@ -330,7 +330,7 @@ test('an owner that is not a number is ignored rather than sent as junk', async 
    queue. Neither may ever cost us the lead itself.
    ═══════════════════════════════════════════════════════════════════════════ */
 function crmWithEngagements(over) {
-  const seen = { contacts: [], notes: [], tasks: [] };
+  const seen = { contacts: [], notes: [], tasks: [], lists: [] };
   const reply = (status, body) => ({ ok: status < 300, status, text: async () => JSON.stringify(body || {}) });
   const fetch = async (url, init) => {
     const path = String(url).replace('https://api.hubapi.com', '');
@@ -345,6 +345,12 @@ function crmWithEngagements(over) {
       if (over && over.task) return reply(over.task, { message: 'no' });
       seen.tasks.push(body); return reply(201, { id: 't1' });
     }
+    const m = path.match(/^\/crm\/v3\/lists\/(\d+)\/memberships\/add$/);
+    if (m) {
+      if (over && over.list) return reply(over.list, { message: 'no' });
+      seen.lists.push({ listId: m[1], ids: body });
+      return reply(200, { recordIdsAdded: body });
+    }
     return reply(404, {});
   };
   return { fetch, seen };
@@ -352,11 +358,11 @@ function crmWithEngagements(over) {
 
 const liveEnv = fn => async () => {
   const prev = { t: process.env.HUBSPOT_ACCESS_TOKEN, o: process.env.HUBSPOT_OWNER_ID,
-    n: process.env.HUBSPOT_NOTE_ENABLED, k: process.env.HUBSPOT_TASK_ENABLED };
+    n: process.env.HUBSPOT_NOTE_ENABLED, k: process.env.HUBSPOT_TASK_ENABLED, l: process.env.HUBSPOT_LIST_ID };
   process.env.HUBSPOT_ACCESS_TOKEN = 'pat-test';
   try { await fn(); } finally {
     Object.entries({ HUBSPOT_ACCESS_TOKEN: prev.t, HUBSPOT_OWNER_ID: prev.o,
-      HUBSPOT_NOTE_ENABLED: prev.n, HUBSPOT_TASK_ENABLED: prev.k })
+      HUBSPOT_NOTE_ENABLED: prev.n, HUBSPOT_TASK_ENABLED: prev.k, HUBSPOT_LIST_ID: prev.l })
       .forEach(([k, v]) => { if (v) process.env[k] = v; else delete process.env[k]; });
   }
 };
@@ -436,3 +442,35 @@ test('mock mode raises nothing at all — no note, no task, no network', async (
   assert.equal(out.mode, 'mock');
   assert.equal(c.seen.notes.length + c.seen.tasks.length + c.seen.contacts.length, 0);
 });
+
+test('every lead joins the list the site keeps, when one is named', liveEnv(async () => {
+  let c = crmWithEngagements();
+  await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+  assert.equal(c.seen.lists.length, 0, 'no list configured, no membership call');
+
+  process.env.HUBSPOT_LIST_ID = '4242';
+  c = crmWithEngagements();
+  const out = await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+  assert.equal(c.seen.lists.length, 1);
+  assert.equal(c.seen.lists[0].listId, '4242');
+  assert.deepEqual(c.seen.lists[0].ids, ['901'], 'the contact we just wrote');
+  assert.ok(out.results.some(r => r.destination === 'hubspot-list' && r.ok));
+}));
+
+test('a list id that is not a number is ignored rather than guessed at', liveEnv(async () => {
+  for (const bad of ['', 'Stagwell AI leads', 'list-42', ' ']) {
+    process.env.HUBSPOT_LIST_ID = bad;
+    const c = crmWithEngagements();
+    await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+    assert.equal(c.seen.lists.length, 0, JSON.stringify(bad) + ' is not a list id');
+  }
+}));
+
+test('a list that refuses the contact does not cost us the lead either', liveEnv(async () => {
+  process.env.HUBSPOT_LIST_ID = '4242';
+  const c = crmWithEngagements({ list: 403 });
+  const out = await submitLead(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: c.fetch });
+  assert.equal(out.delivered, true);
+  assert.equal(out.retryable, false);
+  assert.ok(out.results.some(r => r.destination === 'hubspot-list' && !r.ok));
+}));

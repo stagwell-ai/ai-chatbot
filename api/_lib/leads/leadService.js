@@ -13,7 +13,7 @@
    replayed, and the response says delivered:false so the client can offer a
    retry. The recommendation is shown regardless (brief §36).
    ═══════════════════════════════════════════════════════════════════════════ */
-import { upsertContact, hubspotMode, redactForLog, createNote, createTask, escapeHtml, announceScopeHelp } from './hubspot.js';
+import { upsertContact, hubspotMode, redactForLog, createNote, createTask, addToList, escapeHtml, announceScopeHelp } from './hubspot.js';
 import { toHubSpotProperties } from './properties.js';
 import { salesSummary } from './schema.js';
 import RECOMMEND from '../../../next/recommend.js';
@@ -89,6 +89,12 @@ async function announce(id, lead, data, summary, opts) {
     const r = await createTask(id, { subject: t.subject, body: t.body, ownerId: env('HUBSPOT_OWNER_ID') }, o.fetch);
     if (!r.ok) console.error('[hubspot] the lead landed but no task was raised:', r.error, announceScopeHelp(r.status) || '');
     out.push(Object.assign({ destination: 'hubspot-task' }, r));
+  }
+  const list = env('HUBSPOT_LIST_ID');
+  if (/^\d+$/.test(list)) {
+    const r = await addToList(list, id, o.fetch);
+    if (!r.ok) console.error('[hubspot] the lead landed but did not join list ' + list + ':', r.error, announceScopeHelp(r.status) || '');
+    out.push(Object.assign({ destination: 'hubspot-list' }, r));
   }
   return out;
 }
