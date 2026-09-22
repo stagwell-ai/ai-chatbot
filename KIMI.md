@@ -805,10 +805,19 @@ mock, which is still nowhere durable — see §17.
 **Turning HubSpot on, start to finish** (2026-09-10; the sandbox this was built in cannot reach
 `api.hubapi.com`, so the one-time property creation is run from a machine that can):
 
-1. HubSpot → Settings → Integrations → Private apps → **Create a private app**, name it
-   "Stagwell AI website". Scopes: `crm.objects.contacts.read`, `crm.objects.contacts.write`,
-   `crm.schemas.contacts.write` (the last one only for step 2; it can be removed afterwards).
-   Copy the access token.
+1. HubSpot → Settings → Integrations → **Development → Keys → Service keys** → *Create a
+   service key*, name it "Stagwell AI website". Scopes: `crm.objects.contacts.read`,
+   `crm.objects.contacts.write`, `crm.schemas.contacts.write` (the last one only for step 2;
+   it can be removed afterwards). *Show* → *Copy*.
+
+   **Private apps moved (seen 2026-09-22).** `app.hubspot.com/private-apps/{portal}` now says
+   "Your private apps have moved" and sends you to **Legacy Apps**; creating one there warns it
+   will get no new scopes or features and offers *Use Service Keys instead*. Take the service
+   key — it is the supported path for account-level system-to-system access, it carries the same
+   scopes, and it is sent the same way (`Authorization: Bearer …`), so nothing in
+   `api/_lib/leads/hubspot.js` changes. `HUBSPOT_ACCESS_TOKEN` holds it either way. Service keys
+   do **not** support webhooks; this integration only calls the CRM v3 API outbound, so that
+   limit does not touch us. Existing legacy private apps keep working.
 2. From a clone of this repo, Node 22+, **once**:
    `HUBSPOT_ACCESS_TOKEN=pat-… node scripts/hubspot-setup.mjs`
    It checks the token first, creates the group and the properties, and **reconciles** any
