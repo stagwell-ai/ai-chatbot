@@ -716,7 +716,6 @@
     questdiy: ['fan', [{ t: 'note', ink: true, q: 'Which name do you prefer?' }, { t: 'survey', title: 'Which name do you prefer?', items: ['Option A', 'Option B', 'Option C'] }, { t: 'map', title: 'Respondents', pin: 'Fielding now' }, { t: 'note', q: 'Field it in 100+ countries' }], 'right'],
     search_plus: ['fan', [{ t: 'note', ink: true, q: 'Which CRM is best for a small agency?' }, { t: 'rank', title: 'Recommended in answers', items: ['ChatGPT', 'Gemini', 'Perplexity', 'Grok'] }, { t: 'chat', q: 'Which CRM is best for a small agency?', a: 'Three names come up first. Yours is one of them in two of the three assistants.' }, { t: 'note', q: 'Recommended, not just mentioned' }], 'stack'],
     smb_platform: ['fan', [{ t: 'note', ink: true, q: 'Find creators who fit my brand' }, { t: 'creators', title: 'Creators for you', sub: 'Matched to your brand' }, { t: 'donut', title: 'Audience quality', items: ['Real', 'Suspicious', 'Inactive'] }, { t: 'note', q: 'Prove ROI without a big team' }]],
-    'targeting-machine': ['tiles', { sub: 'Ready to activate', items: ['High intent', 'Lookalikes', 'In market', 'Households', 'Lapsed', 'Loyal'] }],
     media_machine: ['tiles', { sub: 'Scored', items: ['Search', 'Social', 'CTV', 'Audio', 'OOH', 'Retail'] }],
     newintel: ['tiles', { sub: 'This week', items: ['Pricing', 'Hiring', 'Coverage', 'Creators', 'Product', 'Partnerships'] }],
     geopulse: ['tiles', { sub: 'Answers tracked', items: ['ChatGPT', 'Gemini', 'Perplexity', 'Claude', 'Grok', 'Copilot'] }]
@@ -749,11 +748,17 @@
     } else if (kind === 'tiles') {
       const cfg = SCENE[slug][1]; const cols = small ? 2 : 3, tw = small ? 190 : 340, th = small ? 150 : 220, gap = small ? 20 : 30;
       SW = small ? 400 : 1080; SH = small ? 320 : 470;
-      cfg.items.slice(0, small ? 4 : 6).forEach((t, k) => {
-        const x = (k % cols) * (tw + gap), y = Math.floor(k / cols) * (th + gap);
+      const picSlot = small ? 1 : 1 + (seed0 % 2) * 3;
+      const bars = () => { const v = series(6, 0.2, 1, true); return '<div class="sx-tile__bars">' + v.map((y, i) => '<i style="height:' + (y * 100).toFixed(0) + '%"' + (i === 5 ? ' class="is-on"' : '') + '></i>').join('') + '</div>'; };
+      let n = 0;
+      cfg.items.slice(0, small ? 3 : 5).forEach((t, k) => {
+        if (n === picSlot) n++;
+        const x = (n % cols) * (tw + gap), y = Math.floor(n / cols) * (th + gap);
         html += card('pc-collage__ui sx sx--tile ' + TONES[(k + seed0) % TONES.length], x, y, tw, th,
-          '<span class="sx-tile__ico"><i></i></span><div class="sx-tile__body"><b>' + esc(t) + '</b><span>' + esc(cfg.sub) + '</span></div><div class="sx-tile__spark">' + spark() + '</div>');
+          '<span class="sx-tile__pill">' + esc(cfg.sub) + '</span><div class="sx-tile__body"><b>' + esc(t) + '</b></div><div class="sx-tile__viz">' + (k % 2 ? spark() : bars()) + '</div>');
+        n++;
       });
+      if (centreSrc && centreSrc !== 'voice') { const x = (picSlot % cols) * (tw + gap), y = Math.floor(picSlot / cols) * (th + gap); html += card('pc-collage__ui sx--tile is-pic', x, y, tw, th, '<img src="' + centreSrc + '" alt="" decoding="async">'); }
     } else {
       const lay = small ? [[0, 0, 400, 270], [18, 206, 364, 230]] : L;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
