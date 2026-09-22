@@ -791,7 +791,11 @@ change.
 ## 10. HubSpot integration
 
 `api/_lib/leads/hubspot.js`, server-only, raw CRM v3 (search by email → PATCH, else POST;
-409 → PATCH the existing id). **Mock mode** whenever `HUBSPOT_ACCESS_TOKEN` is absent or
+409 → PATCH the existing id). **A missing property never costs a lead**: HubSpot answers a
+400 `PROPERTY_DOESNT_EXIST` by refusing the whole contact, name and email included, so a
+lead that arrives before the schema setup has run would reach nobody. On that one error the
+offending property names are read out of the response, dropped, and the rest sent again —
+the discovery detail degrades, the person does not. The function log names what fell off. **Mock mode** whenever `HUBSPOT_ACCESS_TOKEN` is absent or
 `HUBSPOT_MOCK=true`: the exact property payload is logged (person reduced to email domain)
 and a `mock-…` id returned. `LEAD_WEBHOOK_URL` remains a second destination. If nothing takes
 a lead, the function log carries `LEAD_UNDELIVERED` with the full discovery payload for replay.
@@ -818,9 +822,15 @@ mock, which is still nowhere durable — see §17.
    `api/_lib/leads/hubspot.js` changes. `HUBSPOT_ACCESS_TOKEN` holds it either way. Service keys
    do **not** support webhooks; this integration only calls the CRM v3 API outbound, so that
    limit does not touch us. Existing legacy private apps keep working.
-2. From a clone of this repo, Node 22+, **once**:
-   `HUBSPOT_ACCESS_TOKEN=pat-… node scripts/hubspot-setup.mjs`
-   It checks the token first, creates the group and the properties, and **reconciles** any
+2. Run the setup **once**. Two ways, same code (`api/_lib/leads/setup.js` — keep the logic
+   there so the two cannot drift):
+   - **No terminal:** set `HUBSPOT_ACCESS_TOKEN` in Vercel first (step 3), redeploy, then open
+     **`/hubspot-setup`**, paste the same key and press Run. The page reports every property.
+     The endpoint is POST-only, compares the key to the environment's in constant time over
+     SHA-256, is rate-limited to five attempts per ten minutes, and never returns or logs a key.
+   - **Terminal:** from a clone of this repo, Node 22+:
+     `HUBSPOT_ACCESS_TOKEN=… node scripts/hubspot-setup.mjs`
+   Either way it checks the key first, creates the group and the properties, and **reconciles** any
    that already exist — comparing `groupName` and `fieldType` against the definition and
    PATCHing them back into shape (labels and descriptions are left alone; name and type
    cannot be changed on an existing property). Safe to run again, and safe over a portal

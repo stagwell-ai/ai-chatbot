@@ -217,6 +217,15 @@
     {
       "source": "/platform",
       "destination": "/d.html"
+    },
+    {
+      "source": "/hubspot-setup",
+      "destination": "/next/hubspot-setup.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/hubspot-setup.js": {
+      "maxDuration": 60
+    }
+  }
 }

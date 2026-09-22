@@ -33,7 +33,9 @@ async function call(path, init, fetchImpl, timeoutMs) {
     }));
     const raw = await r.text();
     let data = null; try { data = raw ? JSON.parse(raw) : null; } catch (e) { data = null; }
-    return { status: r.status, ok: r.ok, data, raw: raw.slice(0, 300) };
+    /* enough of the body to read a validation error out of, and still
+       server-side only — nothing returns `raw` to a browser */
+    return { status: r.status, ok: r.ok, data, raw: raw.slice(0, 1200) };
   } catch (e) {
     return { status: 0, ok: false, error: e && e.name === 'AbortError' ? 'timeout' : 'network' };
   } finally { clearTimeout(bail); }
@@ -88,6 +90,43 @@ function onCreateProps() {
   return p;
 }
 
+/* ── A LEAD IS NEVER LOST TO A MISSING FIELD ─────────────────────────────────
+   If the schema setup has not run — or someone deletes a property in HubSpot —
+   the CRM answers a perfectly good lead with 400 PROPERTY_DOESNT_EXIST and
+   refuses the WHOLE contact, name and email included. A person who filled in
+   the form would reach nobody because of an admin step they never saw.
+
+   So: read which properties it objected to, drop exactly those, and send the
+   rest once more. The discovery detail is what degrades; the human being does
+   not. `dropped` comes back on the result so the function log says which
+   fields fell off and the setup can be run. */
+function missingProps(detail) {
+  const names = new Set();
+  const text = String(detail || '');
+  let m;
+  /* HubSpot double-encodes this: the body is JSON, and its `message` is itself
+     a JSON string, so the quotes around the property name arrive as \" or \\"
+     depending on how deep they sit. Allow any run of backslashes. */
+  const quoted = /Property\s+\\*"([A-Za-z0-9_]+)\\*"\s+does not exist/gi;
+  while ((m = quoted.exec(text))) names.add(m[1]);
+  const named = /\\*"name\\*"\s*:\s*\\*"([A-Za-z0-9_]+)/g;
+  if (/PROPERTY_DOESNT_EXIST/i.test(text)) { while ((m = named.exec(text))) names.add(m[1]); }
+  return [...names];
+}
+
+async function withoutMissing(r, properties, send) {
+  if (r.ok || r.status !== 400) return r;
+  const drop = missingProps(r.detail).filter(n => n in properties);
+  if (!drop.length) return r;
+  const slim = Object.assign({}, properties);
+  drop.forEach(n => { delete slim[n]; });
+  if (!slim.email) return r;
+  console.error('[hubspot] properties missing from the portal, sending the lead without them —',
+    'run scripts/hubspot-setup.mjs or open /hubspot-setup:', drop.join(', '));
+  const again = await send(slim);
+  return again.ok ? Object.assign({}, again, { dropped: drop }) : again;
+}
+
 /* brief §33: find by email → update, else create. One function, HubSpot's
    details stay inside it. */
 export async function upsertContact(properties, opts) {
@@ -100,10 +139,19 @@ export async function upsertContact(properties, opts) {
   }
   const found = await findContactByEmail(properties.email, o.fetch);
   if (!found.ok) return Object.assign({ mode }, found);
-  const r = found.id ? await updateContact(found.id, properties, o.fetch)
-    : await createContact(Object.assign({}, properties, onCreateProps()), o.fetch);
+
+  let r;
+  if (found.id) {
+    const send = props => updateContact(found.id, props, o.fetch);
+    r = await withoutMissing(await send(properties), properties, send);
+  } else {
+    const onCreate = Object.assign({}, properties, onCreateProps());
+    const send = props => createContact(props, o.fetch);
+    r = await withoutMissing(await send(onCreate), onCreate, send);
+  }
   if (r.ok && r.action === 'exists') {
-    const u = await updateContact(r.id, properties, o.fetch);
+    const send = props => updateContact(r.id, props, o.fetch);
+    const u = await withoutMissing(await send(properties), properties, send);
     return Object.assign({ mode }, u);
   }
   return Object.assign({ mode }, r);
