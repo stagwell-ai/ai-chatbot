@@ -32,6 +32,31 @@ import RECOMMEND from '../../../next/recommend.js';
 const env = k => (process.env[k] || '').trim();
 const BASE = () => (env('HUBSPOT_FORMS_BASE_URL') || 'https://api.hsforms.com').replace(/\/+$/, '');
 
+/* ── WHICH DOMAIN THE VISITOR WAS ACTUALLY ON ───────────────────────────────
+   HubSpot reads the site domain off context.pageUri and quarantines anything
+   whose domain is not on the portal's tracking list. The site answers on more
+   than one name — the vercel.app today, beta.stagwell.ai and stagwell.ai next
+   — so a single configured origin would be right on one of them and wrong on
+   the rest, silently, in the way that costs two days to notice.
+
+   So report the host the request actually arrived on. A Host header is
+   caller-controlled, and this one ends up in someone's CRM, so it is only
+   honoured when it is a host we already know: SITE_HOSTS, plus whatever
+   SITE_ORIGIN names. Anything else falls back rather than being believed. */
+export function siteHosts() {
+  const list = env('SITE_HOSTS') || 'stagwell.ai,beta.stagwell.ai,stagwell-ai-prototypes.vercel.app';
+  const out = list.split(',').map(h => h.trim().toLowerCase()).filter(Boolean);
+  const cfg = env('SITE_ORIGIN').replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+  if (cfg && out.indexOf(cfg) === -1) out.push(cfg);
+  return out;
+}
+
+export function originFor(host) {
+  const h = String(host || '').split(',')[0].trim().toLowerCase().replace(/:\d+$/, '');
+  if (h && siteHosts().indexOf(h) !== -1) return 'https://' + h;
+  return env('SITE_ORIGIN') || 'https://stagwell-ai-prototypes.vercel.app';
+}
+
 export function formMode() {
   if (env('HUBSPOT_MOCK').toLowerCase() === 'true') return 'mock';
   return /^[0-9a-f-]{36}$/i.test(env('HUBSPOT_FORM_GUID')) && /^\d+$/.test(env('HUBSPOT_PORTAL_ID')) ? 'live' : 'off';
@@ -163,7 +188,7 @@ export async function submitForm(lead, data, opts) {
          success from here (2026-09-22: two leads held in Spam Submissions
          with no error anywhere). Hard-coding the host would make this lie the
          day the site moves, so it is configuration. */
-      pageUri: a.landingPage ? (env('SITE_ORIGIN') || 'https://stagwell-ai-prototypes.vercel.app') + a.landingPage : undefined,
+      pageUri: a.landingPage ? originFor(o.host) + a.landingPage : undefined,
       pageName: 'Stagwell AI — book a demo',
       /* HubSpot's own visitor cookie, when the page had the tracking code and
          passed it through. Without it the submission still counts; it simply

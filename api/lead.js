@@ -42,7 +42,10 @@ export default async function handler(req, res) {
   const v = validateLeadBody(body, DATA);
   if (!v.ok) { res.status(400).json({ ok: false, error: v.error, field: v.field || null }); return; }
 
-  const out = await submitLead(v.lead, DATA);
+  /* the domain the visitor was actually on — the form submission is filed
+     under it, and HubSpot bins one it does not recognise */
+  const h = req.headers || {};
+  const out = await submitLead(v.lead, DATA, { host: h['x-forwarded-host'] || h.host || '' });
   res.status(200).json({
     ok: true,
     delivered: out.delivered,

@@ -811,8 +811,12 @@ build sandbox, which is why this runs as a function and not a script.
 carries a domain the portal does not know is answered **200** and then quarantined as
 "Unregistered Site Domain" in Marketing → Forms → Spam Submissions: no contact, no workflow, no
 error anywhere. Two leads were lost that way on 2026-09-22 before anyone looked at that screen.
-`SITE_ORIGIN` sets the origin we report, and whatever it says has to be added at HubSpot →
-Settings → Tracking & Analytics → Tracking Code → Domains. Held submissions can be released from
+The submission is filed under the host the visitor was actually on — the site answers to
+`stagwell.ai`, `beta.stagwell.ai` and the vercel.app, and a single configured origin would be
+right on one and wrong on two. `SITE_HOSTS` is that allowlist and `SITE_ORIGIN` the fallback; a
+Host header outside the list is ignored rather than believed, since it ends up in somebody's
+CRM. **Every host in it has to be added at HubSpot → Settings → Tracking & Analytics → Tracking
+Code → Domains**, or leads from that domain are binned. Held submissions can be released from
 that screen, which does create the contact and fire the workflow.
 
 **The form submission comes first** (`api/_lib/leads/hubspot-form.js`, added 2026-09-22 at the

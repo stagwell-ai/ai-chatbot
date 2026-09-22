@@ -248,3 +248,45 @@ test('a one-word name sends no lastname — which a form requiring one will reje
   assert.equal(f.find(x => x.name === 'firstname').value, 'TEST');
   assert.equal(f.find(x => x.name === 'lastname'), undefined);
 });
+
+/* ── THE DOMAIN DECIDES WHETHER THE LEAD IS BINNED ──────────────────────────
+   HubSpot files a submission under the site domain in context.pageUri and
+   quarantines one it does not recognise — after answering 200, so it looks
+   like success from here. The site answers on three names, so reporting a
+   single configured one would be right on one and wrong on two. */
+import { originFor, siteHosts } from '../../api/_lib/leads/hubspot-form.js';
+
+test('the submission is filed under the host the visitor was actually on', () => {
+  assert.equal(originFor('beta.stagwell.ai'), 'https://beta.stagwell.ai');
+  assert.equal(originFor('stagwell.ai'), 'https://stagwell.ai');
+  assert.equal(originFor('stagwell-ai-prototypes.vercel.app'), 'https://stagwell-ai-prototypes.vercel.app');
+  assert.equal(originFor('BETA.STAGWELL.AI'), 'https://beta.stagwell.ai', 'case is not a different domain');
+  assert.equal(originFor('beta.stagwell.ai:443'), 'https://beta.stagwell.ai', 'nor is a port');
+});
+
+test('a host we do not know is not believed — it would end up in the CRM', () => {
+  const fall = 'https://stagwell-ai-prototypes.vercel.app';
+  ['evil.example.com', 'stagwell.ai.evil.com', '', 'not a host', 'localhost:3000'].forEach(h => {
+    assert.equal(originFor(h), fall, JSON.stringify(h) + ' must not be reported as ours');
+  });
+});
+
+test('a forwarded list of hosts uses the first, as proxies write it', () => {
+  assert.equal(originFor('stagwell.ai, 10.0.0.1'), 'https://stagwell.ai');
+});
+
+test('the host list is configuration, and SITE_ORIGIN is always part of it', () => {
+  process.env.SITE_HOSTS = 'one.example.com';
+  process.env.SITE_ORIGIN = 'https://two.example.com';
+  const hosts = siteHosts();
+  assert.deepEqual(hosts.sort(), ['one.example.com', 'two.example.com']);
+  assert.equal(originFor('two.example.com'), 'https://two.example.com');
+  assert.equal(originFor('stagwell.ai'), 'https://two.example.com', 'no longer in the list, so not honoured');
+  delete process.env.SITE_HOSTS; delete process.env.SITE_ORIGIN;
+});
+
+test('the pageUri that actually goes to HubSpot carries that host', async () => {
+  const p = portal();
+  await submitForm(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: p.fetch, host: 'beta.stagwell.ai' });
+  assert.equal(p.posts[0].body.context.pageUri, 'https://beta.stagwell.ai/book');
+});
