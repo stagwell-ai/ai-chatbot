@@ -1,5 +1,6 @@
 import CoreGraphics
 import Foundation
+import ImageIO
 
 // Fifteen text-free tech loops in the motion-lab style: dark or blue grounds, fine white
 // marks, the odd orange or cyan accent. Every scene fills the whole frame (or sits on the
@@ -121,28 +122,30 @@ func pulses(_ ctx: CGContext, _ p: Double) {
   }
 }
 
-// 3 · orbits: rings round the centre, nodes gliding on them (on the blue ground)
+// 3 · orbits: rings of dots, a few of them large and soft, turning slowly on a warm ground
 func orbits(_ ctx: CGContext, _ p: Double) {
-  blueGround(ctx, p)
-  var r = 70 * K, ring = 0
-  while r < DIAG {
-    ctx.setStrokeColor(white(0.34)); ctx.setLineWidth(1.1 * K)
+  ground(ctx, CGColor(red: 0.957, green: 0.945, blue: 0.925, alpha: 1))
+  let INKC = CGColor(red: 0.16, green: 0.17, blue: 0.19, alpha: 1)
+  let SOFTB = CGColor(red: 0.0, green: 0.612, blue: 0.741, alpha: 0.28)
+  let R0 = Hd * 0.06, step = Hd * 0.055
+  var r = R0, ring = 0
+  while r < DIAG * 0.98 {
+    ctx.setStrokeColor(INKC.copy(alpha: 0.16)!); ctx.setLineWidth(1 * K)
     ctx.addEllipse(in: CGRect(x: CX - r, y: CY - r, width: 2 * r, height: 2 * r)); ctx.strokePath()
-    let n = 2 + Int(hash(ring, 21) * 4)
-    let dir = hash(ring, 22) > 0.5 ? 1.0 : -1.0
-    let a0 = hash(ring, 23) * TAU
+    let n = 4 + ring * 3
+    let dir = ring % 2 == 0 ? 1.0 : -1.0
     for k in 0..<n {
-      let a = a0 + TAU * Double(k) / Double(n) + dir * p * TAU / Double(n)
-      let arc = (0.05 + 0.1 * hash(ring, 30)) * 300 * K / r
-      ctx.setStrokeColor(white(0.95)); ctx.setLineWidth(3 * K); ctx.setLineCap(.round)
-      ctx.addArc(center: CGPoint(x: CX, y: CY), radius: r, startAngle: a - arc, endAngle: a, clockwise: false); ctx.strokePath()
-      let hx = CX + cos(dir > 0 ? a : a - arc) * r, hy = CY + sin(dir > 0 ? a : a - arc) * r
-      dot(ctx, hx, hy, 4.2 * K, (ring + k) % 7 == 0 ? ORANGE : white(1))
+      let a = TAU * Double(k) / Double(n) + hash(ring, 41 + k) * 0.5 + dir * p * TAU / Double(2 + ring % 3)
+      let x = CX + cos(a) * r, y = CY + sin(a) * r
+      let h = hash(ring * 40 + k, 42)
+      if h > 0.9 { dot(ctx, x, y, (14 + 22 * hash(ring * 40 + k, 43)) * K, SOFTB); dot(ctx, x, y, 3.5 * K, INKC) }
+      else if h > 0.72 { dot(ctx, x, y, 7 * K, SOFTB); dot(ctx, x, y, 2.6 * K, INKC) }
+      else { dot(ctx, x, y, 2.4 * K, INKC.copy(alpha: 0.8)!) }
     }
-    r += 34 * K; ring += 1
+    r += step; ring += 1
   }
+  dot(ctx, CX, CY, 4 * K, INKC)
 }
-
 // 4 · block rain: columns of small squares falling at their own pace
 func blockRain(_ ctx: CGContext, _ p: Double) {
   ground(ctx, INK)
@@ -474,19 +477,6 @@ func globe(_ ctx: CGContext, _ p: Double) {
   }
   ctx.setStrokeColor(white(0.14)); ctx.setLineWidth(1 * K)
   ctx.addEllipse(in: CGRect(x: CX - R, y: CY - R, width: 2 * R, height: 2 * R)); ctx.strokePath()
-  // a few places light up on the surface, each on its own slow beat
-  for a in 0..<9 {
-    let lat = (hash(a, 161) - 0.5) * 2.2, lon = hash(a, 162) * TAU + Double(a % 3) * TAU / 3
-    let q = proj(cos(lat / 2) * cos(lon), sin(lat / 2), cos(lat / 2) * sin(lon))
-    if q.2 < 0.05 { continue }
-    let beat = 0.5 + 0.5 * sin(TAU * (p * 2 + hash(a, 163)))
-    let front = (q.2 + 1) / 2
-    let cs = CGColorSpaceCreateDeviceRGB()
-    let c = a % 4 == 0 ? ORANGE : CGColor(gray: 1, alpha: 1)
-    let g = CGGradient(colorsSpace: cs, colors: [c.copy(alpha: 0.55 * beat * front)!, c.copy(alpha: 0)!] as CFArray, locations: [0, 1])!
-    ctx.drawRadialGradient(g, startCenter: CGPoint(x: q.0, y: q.1), startRadius: 0, endCenter: CGPoint(x: q.0, y: q.1), endRadius: (26 + 30 * beat) * K, options: [])
-    dot(ctx, q.0, q.1, (3.5 + 2 * beat) * K, a % 4 == 0 ? ORANGE : CGColor(gray: 1, alpha: 1))
-  }
 }
 
 // 15 · tunnel: squares rushing out of the centre
@@ -519,9 +509,9 @@ func tunnel(_ ctx: CGContext, _ p: Double) {
 
 // 16 · media flow: channels on the left run along soft curves into one point, no words
 func mediaFlow(_ ctx: CGContext, _ p: Double) {
-  blueGround(ctx, p)
-  let n = 8, x0 = Wd * 0.22, x1 = Wd * 0.72, hy = Hd / 2
-  let top = Hd * 0.26, step = (Hd * 0.48) / Double(n - 1)
+  ground(ctx, CGColor(red: 0.949, green: 0.949, blue: 0.937, alpha: 1))
+  let n = 8, x0 = Wd * 0.12, x1 = Wd * 0.86, hy = Hd / 2
+  let top = Hd * 0.14, step = (Hd * 0.72) / Double(n - 1)
   let INKC = CGColor(red: 0.043, green: 0.071, blue: 0.125, alpha: 1)
   func at(_ i: Int, _ t: Double) -> (Double, Double) {
     let y0 = top + Double(i) * step, u = 1 - t
@@ -529,58 +519,73 @@ func mediaFlow(_ ctx: CGContext, _ p: Double) {
     return (u*u*u*x0 + 3*u*u*t*c1x + 3*u*t*t*c2x + t*t*t*x1, u*u*u*y0 + 3*u*u*t*y0 + 3*u*t*t*hy + t*t*t*hy)
   }
   for i in 0..<n {
-    ctx.setStrokeColor(INKC.copy(alpha: 0.22)!); ctx.setLineWidth(1.4 * K)
+    ctx.setStrokeColor(INKC.copy(alpha: 0.2)!); ctx.setLineWidth(2 * K)
     var q = at(i, 0); ctx.move(to: CGPoint(x: q.0, y: q.1))
     for k in 1...80 { q = at(i, Double(k) / 80); ctx.addLine(to: CGPoint(x: q.0, y: q.1)) }
     ctx.strokePath()
-    dot(ctx, x0, top + Double(i) * step, 5 * K, INKC)
+    dot(ctx, x0, top + Double(i) * step, 9 * K, INKC)
   }
   for i in 0..<n { for m in 0..<7 {
     let u = fract(hash(i, 200 + m) + p * Double(1 + m % 2))
     let q = at(i, smooth(u)); let a = smooth(u / 0.12) * smooth((1 - u) / 0.15)
     let acc = (i + m) % 5 == 0
     ctx.setFillColor(acc ? tint(ORANGE, a) : INKC.copy(alpha: 0.9 * a)!)
-    ctx.fill(CGRect(x: q.0 - 9 * K, y: q.1 - 2.5 * K, width: 18 * K, height: 5 * K))
+    ctx.fill(CGRect(x: q.0 - 16 * K, y: q.1 - 4 * K, width: 32 * K, height: 8 * K))
   } }
   let beat = 0.5 + 0.5 * sin(TAU * p * 3)
-  ctx.setStrokeColor(INKC.copy(alpha: 0.5)!); ctx.setLineWidth(1.6 * K)
-  ctx.addEllipse(in: CGRect(x: x1 - (26 + 6 * beat) * K, y: hy - (26 + 6 * beat) * K, width: (52 + 12 * beat) * K, height: (52 + 12 * beat) * K)); ctx.strokePath()
-  dot(ctx, x1, hy, 11 * K, INKC)
+  ctx.setStrokeColor(INKC.copy(alpha: 0.5)!); ctx.setLineWidth(2 * K)
+  let rr = (44 + 10 * beat) * K
+  ctx.addEllipse(in: CGRect(x: x1 - rr, y: hy - rr, width: 2 * rr, height: 2 * rr)); ctx.strokePath()
+  dot(ctx, x1, hy, 20 * K, INKC)
 }
-// 17 · identity spine: people gather into households; the households join one clean line
+// 17 · identity spine: many strands gather into one bar, then fan out into audience dots
 func idSpine(_ ctx: CGContext, _ p: Double) {
-  ground(ctx, NAVY)
-  let sx = CX, top = Hd * 0.2, bot = Hd * 0.8
-  ctx.setStrokeColor(white(0.9)); ctx.setLineWidth(3 * K)
-  ctx.move(to: CGPoint(x: sx, y: top)); ctx.addLine(to: CGPoint(x: sx, y: bot)); ctx.strokePath()
-  var y = top; while y <= bot { dot(ctx, sx, y, 4 * K, white(0.9)); y += (bot - top) / 10 }
-  let n = 44
+  ground(ctx, INK)
+  let bx = Wd * 0.46, top = Hd * 0.22, bot = Hd * 0.78
+  let n = 90
+  // strands from the left edge into the bar
   for i in 0..<n {
-    let side = i % 2 == 0 ? -1.0 : 1.0
-    let hx = CX + side * (140 + hash(i, 301) * (Wd * 0.4 - 140)) * (Wd / 1920)
-    let hy = Hd * 0.12 + hash(i, 302) * Hd * 0.76
-    let ph = hash(i, 303)
-    let cycle = fract(p + ph)                     // each household lights on its own beat
-    let lit = cycle < 0.18 ? smooth(cycle / 0.05) * smooth((0.18 - cycle) / 0.06) : 0
-    let m = 2 + Int(hash(i, 304) * 4)
+    let y0 = Hd * (0.05 + 0.9 * hash(i, 501)) + 14 * K * sin(TAU * (p + hash(i, 502)))
+    let y1 = top + (bot - top) * (Double(i) + 0.5) / Double(n)
+    let acc = i % 9 == 0
+    ctx.setStrokeColor(acc ? tint(ORANGE, 0.8) : (i % 3 == 0 ? tint(CYAN, 0.55) : white(0.3)))
+    ctx.setLineWidth(1.6 * K)
+    ctx.move(to: CGPoint(x: -10, y: y0))
+    ctx.addCurve(to: CGPoint(x: bx, y: y1), control1: CGPoint(x: bx * 0.5, y: y0), control2: CGPoint(x: bx * 0.55, y: y1))
+    ctx.strokePath()
+  }
+  ctx.setFillColor(white(0.95)); ctx.fill(CGRect(x: bx - 3 * K, y: top, width: 6 * K, height: bot - top))
+  // four branches out of the bar, each splitting into a spray of dots
+  let groups = 4
+  for g in 0..<groups {
+    let gy = top + (bot - top) * (Double(g) + 0.5) / Double(groups)
+    let col: CGColor = g == 0 ? ORANGE : (g == 1 ? CYAN : (g == 2 ? CGColor(gray: 1, alpha: 1) : CGColor(red: 1, green: 0.722, blue: 0.11, alpha: 1)))
+    let x2 = Wd * 0.66
+    ctx.setStrokeColor(col.copy(alpha: 0.85)!); ctx.setLineWidth(2 * K)
+    ctx.move(to: CGPoint(x: bx, y: gy)); ctx.addLine(to: CGPoint(x: x2, y: gy)); ctx.strokePath()
+    dot(ctx, bx, gy, 6 * K, col)
+    let m = 14
     for k in 0..<m {
-      let a = TAU * Double(k) / Double(m) + hash(i, 305) * TAU
-      let d = (16 + 6 * sin(TAU * p * 2 + Double(k))) * K
-      let px = hx + cos(a) * d, py = hy + sin(a) * d
-      ctx.setStrokeColor(white(0.55 + 0.4 * lit)); ctx.setLineWidth(1.2 * K)
-      ctx.addEllipse(in: CGRect(x: px - 4 * K, y: py - 4 * K, width: 8 * K, height: 8 * K)); ctx.strokePath()
-    }
-    dot(ctx, hx, hy, 4.5 * K, lit > 0 ? tint(i % 5 == 0 ? ORANGE : CYAN, 0.6 + 0.4 * lit) : white(0.8))
-    if lit > 0 {
-      let ty = min(bot, max(top, hy))
-      ctx.setStrokeColor((i % 5 == 0 ? ORANGE : CYAN).copy(alpha: 0.85 * lit)!); ctx.setLineWidth(1.6 * K)
-      ctx.move(to: CGPoint(x: hx, y: hy))
-      ctx.addCurve(to: CGPoint(x: sx, y: ty), control1: CGPoint(x: hx + (sx - hx) * 0.5, y: hy), control2: CGPoint(x: hx + (sx - hx) * 0.5, y: ty))
+      let ex = Wd * (0.72 + 0.22 * hash(g * 50 + k, 511)), ey = gy + (hash(g * 50 + k, 512) - 0.5) * Hd * 0.26
+      ctx.setStrokeColor(col.copy(alpha: 0.35)!); ctx.setLineWidth(1.1 * K)
+      ctx.move(to: CGPoint(x: x2, y: gy))
+      ctx.addCurve(to: CGPoint(x: ex, y: ey), control1: CGPoint(x: x2 + (ex - x2) * 0.5, y: gy), control2: CGPoint(x: x2 + (ex - x2) * 0.5, y: ey))
       ctx.strokePath()
-      let q = smooth(cycle / 0.18)
-      let bx = hx + (sx - hx) * q, by = hy + (ty - hy) * (q * q * (3 - 2 * q))
-      dot(ctx, bx, by, 4 * K, i % 5 == 0 ? ORANGE : CYAN)
+      let beat = 0.5 + 0.5 * sin(TAU * (p * 2 + hash(g * 50 + k, 513)))
+      dot(ctx, ex, ey, (3 + 4 * beat) * K, col.copy(alpha: 0.5 + 0.5 * beat)!)
     }
+    // packets along the branch
+    for m2 in 0..<3 {
+      let u = fract(hash(g, 520 + m2) + p)
+      let x = bx + (x2 - bx) * u
+      dot(ctx, x, gy, 4 * K, col)
+    }
+  }
+  // the loose audience dots beyond the branches
+  for k in 0..<120 {
+    let x = Wd * (0.74 + 0.24 * hash(k, 531)), y = Hd * (0.06 + 0.88 * hash(k, 532))
+    let beat = 0.5 + 0.5 * sin(TAU * (p + hash(k, 533)))
+    dot(ctx, x, y, (2 + 5 * hash(k, 534) * beat) * K, white(0.25 + 0.5 * beat))
   }
 }
 // 18 · wave dots: a field of dots lifted by two slow waves crossing it
@@ -666,11 +671,216 @@ func halo(_ ctx: CGContext, _ p: Double) {
   dot(ctx, CX, CY, 12 * K, INKC)
 }
 
+// the faces: the 4×5 grid of portraits the site already uses (assets/img/brand-growth.jpg)
+let FACES: CGImage? = {
+  let path = ProcessInfo.processInfo.environment["FACES"] ?? "/Users/user/Projects/stagwell-ai/assets/img/brand-growth.jpg"
+  guard let src = CGImageSourceCreateWithURL(URL(fileURLWithPath: path) as CFURL, nil) else { return nil }
+  return CGImageSourceCreateImageAtIndex(src, 0, nil)
+}()
+func face(_ ctx: CGContext, _ n: Int, _ x: Double, _ y: Double, _ r: Double) {
+  guard let img = FACES else { dot(ctx, x, y, r, CGColor(gray: 0.55, alpha: 1)); return }
+  let cw = img.width / 4, ch = img.height / 5, i = ((n % 20) + 20) % 20
+  guard let crop = img.cropping(to: CGRect(x: (i % 4) * cw, y: (i / 4) * ch, width: cw, height: ch)) else { return }
+  ctx.saveGState()
+  ctx.addEllipse(in: CGRect(x: x - r, y: y - r, width: 2 * r, height: 2 * r)); ctx.clip()
+  ctx.translateBy(x: x - r, y: y + r); ctx.scaleBy(x: 1, y: -1)
+  ctx.draw(crop, in: CGRect(x: 0, y: 0, width: 2 * r, height: 2 * r * Double(ch) / Double(cw)))
+  ctx.restoreGState()
+}
+
+// 22 · activity: two banks of small squares, cells lighting through the day
+func activity(_ ctx: CGContext, _ p: Double) {
+  ground(ctx, INK)
+  let cols = 44, rows = 7, cell = 22 * K, gap = 8 * K
+  let bw = Double(cols) * (cell + gap) - gap
+  let x0 = (Wd - bw) / 2
+  for bank in 0..<2 {
+    let y0 = Hd * (bank == 0 ? 0.14 : 0.57)
+    let busy = bank == 0 ? 0.62 : 0.3
+    for r in 0..<rows { for c in 0..<cols {
+      let x = x0 + Double(c) * (cell + gap), y = y0 + Double(r) * (cell + gap)
+      let h = hash(c + bank * 100, r)
+      let wave = 0.5 + 0.5 * sin(TAU * (p * 2 - Double(c) / 18 + Double(r) / 9 + h))
+      let on = h < busy * (0.5 + wave)
+      if on {
+        let strong = hash(c * 7 + bank, r * 3) > 0.4
+        ctx.setFillColor(strong ? CYAN : CGColor(red: 0.467, green: 0.89, blue: 0.965, alpha: 0.55))
+        ctx.fill(CGRect(x: x, y: y, width: cell, height: cell))
+      } else { dot(ctx, x + cell / 2, y + cell / 2, 1.4 * K, white(0.22)) }
+    } }
+    // hour ticks under each bank
+    for t in 0...8 { let x = x0 + Double(t) * bw / 8; ctx.setFillColor(white(0.25)); ctx.fill(CGRect(x: x - 1, y: y0 + Double(rows) * (cell + gap) + 8 * K, width: 2, height: 10 * K)) }
+  }
+}
+
+// 23 · workflow: node cards wired left to right, packets riding the wires
+func workflow(_ ctx: CGContext, _ p: Double) {
+  ground(ctx, GRAPH)
+  let CARD = CGColor(red: 0.16, green: 0.18, blue: 0.22, alpha: 1)
+  let nodes: [(Double, Double, Double, Double)] = [(0.06, 0.4, 0.15, 0.13), (0.29, 0.22, 0.16, 0.2), (0.29, 0.6, 0.16, 0.16), (0.53, 0.36, 0.17, 0.24), (0.77, 0.24, 0.16, 0.14), (0.77, 0.6, 0.16, 0.18)]
+  let wires: [(Int, Int, Int)] = [(0, 1, 0), (0, 2, 1), (1, 3, 0), (2, 3, 1), (3, 4, 0), (3, 5, 1)]
+  func port(_ n: Int, _ out: Bool, _ k: Int) -> (Double, Double) { let nd = nodes[n]; return (Wd * (nd.0 + (out ? nd.2 : 0)), Hd * (nd.1 + nd.3 * (0.35 + 0.3 * Double(k)))) }
+  for (i, w) in wires.enumerated() {
+    let a = port(w.0, true, w.2), b = port(w.1, false, 0)
+    let col = i % 3 == 0 ? CYAN : (i % 3 == 1 ? ORANGE : CGColor(red: 0.6, green: 0.62, blue: 0.68, alpha: 1))
+    ctx.setStrokeColor(col.copy(alpha: 0.6)!); ctx.setLineWidth(2 * K)
+    ctx.move(to: CGPoint(x: a.0, y: a.1))
+    ctx.addCurve(to: CGPoint(x: b.0, y: b.1), control1: CGPoint(x: a.0 + (b.0 - a.0) * 0.5, y: a.1), control2: CGPoint(x: a.0 + (b.0 - a.0) * 0.5, y: b.1))
+    ctx.strokePath()
+    for m in 0..<2 {
+      let t = fract(p * 1.5 + Double(m) * 0.5 + Double(i) * 0.13), u = 1 - t
+      let c1 = (a.0 + (b.0 - a.0) * 0.5, a.1), c2 = (a.0 + (b.0 - a.0) * 0.5, b.1)
+      let x = u*u*u*a.0 + 3*u*u*t*c1.0 + 3*u*t*t*c2.0 + t*t*t*b.0, y = u*u*u*a.1 + 3*u*u*t*c1.1 + 3*u*t*t*c2.1 + t*t*t*b.1
+      dot(ctx, x, y, 5 * K, col)
+    }
+  }
+  for (n, nd) in nodes.enumerated() {
+    let x = Wd * nd.0, y = Hd * nd.1, w = Wd * nd.2, h = Hd * nd.3
+    let path = CGPath(roundedRect: CGRect(x: x, y: y, width: w, height: h), cornerWidth: 14 * K, cornerHeight: 14 * K, transform: nil)
+    ctx.addPath(path); ctx.setFillColor(CARD); ctx.fillPath()
+    ctx.addPath(path); ctx.setStrokeColor(white(0.14)); ctx.setLineWidth(1.2 * K); ctx.strokePath()
+    // a title bar and a few rows
+    ctx.setFillColor(white(0.8)); ctx.fill(CGRect(x: x + 18 * K, y: y + 18 * K, width: w * 0.5, height: 8 * K))
+    let rows = Int(h / (34 * K)) - 1
+    for r in 0..<max(1, rows) {
+      let ry = y + 44 * K + Double(r) * 30 * K
+      ctx.setFillColor(white(0.3)); ctx.fill(CGRect(x: x + 18 * K, y: ry, width: w * (0.3 + 0.3 * hash(n, r)), height: 6 * K))
+      if r == 0 { let on = fract(p * 2 + hash(n, 9)) < 0.5
+        ctx.setFillColor(on ? CYAN : white(0.2)); let pw = 34 * K, ph = 18 * K
+        ctx.addPath(CGPath(roundedRect: CGRect(x: x + w - 18 * K - pw, y: ry - 6 * K, width: pw, height: ph), cornerWidth: ph / 2, cornerHeight: ph / 2, transform: nil)); ctx.fillPath()
+        dot(ctx, x + w - 18 * K - pw + (on ? pw - ph / 2 : ph / 2), ry + 3 * K, 6 * K, CGColor(gray: 1, alpha: 1)) }
+    }
+    for k in 0..<2 { let pi = port(n, false, k), po = port(n, true, k); dot(ctx, pi.0, pi.1, 4 * K, white(0.7)); dot(ctx, po.0, po.1, 4 * K, white(0.7)) }
+  }
+}
+
+// 24 · world: a dotted world map, places lighting up in orange
+let LAND: [[(Double, Double)]] = [
+  [(-168,66),(-140,70),(-95,72),(-75,62),(-55,50),(-66,44),(-80,30),(-97,25),(-105,20),(-120,32),(-125,48),(-150,60)],
+  [(-80,10),(-60,5),(-50,-2),(-35,-8),(-40,-22),(-52,-33),(-65,-45),(-72,-52),(-75,-30),(-80,-10)],
+  [(-10,36),(0,44),(10,54),(25,60),(30,70),(40,68),(45,50),(30,45),(20,38),(5,37)],
+  [(-17,15),(-10,32),(10,36),(32,31),(42,12),(50,10),(40,-10),(35,-25),(20,-35),(15,-20),(10,-2),(0,5)],
+  [(45,50),(60,70),(100,75),(140,72),(170,66),(160,58),(140,50),(125,38),(110,22),(105,10),(95,15),(80,10),(72,22),(60,25),(48,30),(35,40)],
+  [(115,-22),(130,-12),(145,-15),(153,-28),(147,-38),(135,-35),(118,-34)]]
+func onLand(_ lon: Double, _ lat: Double) -> Bool {
+  for poly in LAND { var inside = false; var j = poly.count - 1
+    for i in 0..<poly.count { let a = poly[i], b = poly[j]
+      if (a.1 > lat) != (b.1 > lat) && lon < (b.0 - a.0) * (lat - a.1) / (b.1 - a.1) + a.0 { inside.toggle() }
+      j = i }
+    if inside { return true } }
+  return false
+}
+func world(_ ctx: CGContext, _ p: Double) {
+  ground(ctx, CGColor(red: 0.09, green: 0.09, blue: 0.1, alpha: 1))
+  let cell = 14 * K, sp = 18 * K
+  let mapW = Wd * 0.92, mapH = mapW / 2, mx = (Wd - mapW) / 2, my = (Hd - mapH) / 2 + Hd * 0.04
+  var y = my, j = 0
+  while y < my + mapH { var x = mx, i = 0
+    while x < mx + mapW {
+      let lon = (x - mx) / mapW * 360 - 180, lat = 90 - (y - my) / mapH * 180
+      if onLand(lon, lat) {
+        let h = hash(i, j)
+        let cyc = fract(p * 2 + h * 7)
+        let lit = h > 0.93 && cyc < 0.5 ? smooth(cyc / 0.08) * smooth((0.5 - cyc) / 0.15) : 0
+        ctx.setFillColor(lit > 0 ? tint(ORANGE, 0.35 + 0.65 * lit) : white(0.16))
+        ctx.fill(CGRect(x: x, y: y, width: cell, height: cell))
+      }
+      x += sp; i += 1 }
+    y += sp; j += 1 }
+}
+
+// 25 · timeline: years as dotted columns, people appearing along them
+func timeline(_ ctx: CGContext, _ p: Double) {
+  ground(ctx, CGColor(red: 0.957, green: 0.945, blue: 0.925, alpha: 1))
+  let INKC = CGColor(red: 0.16, green: 0.17, blue: 0.19, alpha: 1)
+  let cols = 14, x0 = Wd * 0.06, x1 = Wd * 0.94
+  for c in 0..<cols {
+    let x = x0 + (x1 - x0) * Double(c) / Double(cols - 1)
+    var y = Hd * 0.08; while y < Hd * 0.88 { dot(ctx, x, y, 1.2 * K, INKC.copy(alpha: 0.35)!); y += 10 * K }
+    ctx.setFillColor(INKC.copy(alpha: 0.5)!); ctx.fill(CGRect(x: x - 14 * K, y: Hd * 0.9, width: 28 * K, height: 4 * K))
+  }
+  let cols3: [CGColor] = [ORANGE, CYAN, CGColor(red: 0.16, green: 0.17, blue: 0.19, alpha: 1)]
+  for k in 0..<34 {
+    let c = k % cols, x = x0 + (x1 - x0) * Double(c) / Double(cols - 1)
+    let y = Hd * (0.12 + 0.7 * hash(k, 601))
+    let born = hash(k, 602), life = 0.55
+    let age = fract(p - born)
+    if age > life { continue }
+    let sc = smooth(age / 0.08) * smooth((life - age) / 0.08)
+    let r = (30 + 14 * hash(k, 603)) * K * sc
+    if r < 1 { continue }
+    face(ctx, k, x, y, r)
+    ctx.setStrokeColor(cols3[k % 3]); ctx.setLineWidth(3 * K)
+    ctx.addEllipse(in: CGRect(x: x - r, y: y - r, width: 2 * r, height: 2 * r)); ctx.strokePath()
+  }
+}
+
+// 26 · graph: clusters of dots round numbered-looking hubs, linked, on the light ground
+func graph(_ ctx: CGContext, _ p: Double) {
+  ground(ctx, CGColor(red: 0.949, green: 0.949, blue: 0.937, alpha: 1))
+  let INKC = CGColor(red: 0.16, green: 0.17, blue: 0.19, alpha: 1)
+  let hubs: [(Double, Double, Int, CGColor)] = [(0.2, 0.32, 26, ORANGE), (0.5, 0.2, 18, INKC), (0.74, 0.34, 22, CYAN), (0.36, 0.7, 14, INKC), (0.68, 0.72, 30, INKC), (0.88, 0.62, 12, ORANGE)]
+  let links = [(0, 1), (1, 2), (0, 3), (3, 4), (2, 4), (4, 5), (1, 4)]
+  for (i, l) in links.enumerated() {
+    let a = hubs[l.0], b = hubs[l.1]
+    line(ctx, a.0 * Wd, a.1 * Hd, b.0 * Wd, b.1 * Hd, INKC.copy(alpha: 0.18)!, 1.2 * K)
+    let u = fract(p + Double(i) * 0.17)
+    dot(ctx, (a.0 + (b.0 - a.0) * u) * Wd, (a.1 + (b.1 - a.1) * u) * Hd, 4 * K, INKC)
+  }
+  for (h, hub) in hubs.enumerated() {
+    let cx = hub.0 * Wd, cy = hub.1 * Hd
+    for k in 0..<hub.2 {
+      let a = TAU * Double(k) / Double(hub.2) + p * TAU / 6 * (h % 2 == 0 ? 1 : -1), rr = (40 + 22 * hash(h * 40 + k, 611)) * K
+      let x = cx + cos(a) * rr, y = cy + sin(a) * rr * 0.9
+      line(ctx, cx, cy, x, y, INKC.copy(alpha: 0.12)!, 1 * K)
+      dot(ctx, x, y, (3 + 2 * hash(h * 40 + k, 612)) * K, hub.3.copy(alpha: 0.85)!)
+    }
+    ctx.setStrokeColor(hub.3); ctx.setLineWidth(3 * K)
+    ctx.addEllipse(in: CGRect(x: cx - 16 * K, y: cy - 16 * K, width: 32 * K, height: 32 * K)); ctx.strokePath()
+    dot(ctx, cx, cy, 5 * K, hub.3)
+  }
+  for k in 0..<40 { dot(ctx, Wd * hash(k, 621), Hd * hash(k, 622), 2.6 * K, INKC.copy(alpha: 0.3)!) }
+}
+
+// 27 · quadtree: squares subdividing where the field is busy, black and white
+func quad(_ ctx: CGContext, _ x: Double, _ y: Double, _ s: Double, _ d: Int, _ p: Double) {
+  let f = 0.5 + 0.5 * sin(x * 0.004 + p * TAU) * cos(y * 0.005 - p * TAU * 0.7) + 0.3 * sin((x + y) * 0.003 + p * TAU * 1.3)
+  if d < 6 && f > 0.55 + Double(d) * 0.05 && s > 20 * K {
+    let h = s / 2
+    quad(ctx, x, y, h, d + 1, p); quad(ctx, x + h, y, h, d + 1, p); quad(ctx, x, y + h, h, d + 1, p); quad(ctx, x + h, y + h, h, d + 1, p)
+  } else {
+    ctx.setStrokeColor(white(0.9)); ctx.setLineWidth(1 * K); ctx.stroke(CGRect(x: x, y: y, width: s, height: s))
+  }
+}
+func quadtree(_ ctx: CGContext, _ p: Double) {
+  ground(ctx, CGColor(gray: 0, alpha: 1))
+  let s = Hd / 4
+  var y = 0.0; while y < Hd { var x = -s / 2; while x < Wd { quad(ctx, x, y, s, 0, p); x += s }; y += s }
+}
+
+// 28 · records: outlined boxes cascading in, like a ledger filling up
+func records(_ ctx: CGContext, _ p: Double) {
+  ground(ctx, INK)
+  let cols = 5, rows = 9
+  let bw = Wd * 0.15, bh = Hd * 0.06, gx = Wd * 0.035, gy = Hd * 0.035
+  let x0 = (Wd - Double(cols) * bw - Double(cols - 1) * gx) / 2, y0 = (Hd - Double(rows) * bh - Double(rows - 1) * gy) / 2
+  for r in 0..<rows { for c in 0..<cols {
+    let born = hash(c, r) * 0.6, age = fract(p - born)
+    if age > 0.85 { continue }
+    let a = smooth(age / 0.06) * smooth((0.85 - age) / 0.1)
+    let x = x0 + Double(c) * (bw + gx) + (1 - a) * 30 * K, y = y0 + Double(r) * (bh + gy)
+    ctx.setStrokeColor(white(0.85 * a)); ctx.setLineWidth(1.4 * K); ctx.stroke(CGRect(x: x, y: y, width: bw, height: bh))
+    let n = 4 + Int(hash(c * 3, r * 5) * 5)
+    for k in 0..<n { ctx.setFillColor(k == 0 && (c + r) % 4 == 0 ? tint(ORANGE, a) : white(0.7 * a)); ctx.fill(CGRect(x: x + 12 * K + Double(k) * 14 * K, y: y + bh / 2 - 4 * K, width: 8 * K, height: 8 * K)) }
+  } }
+}
+
 let SCENES: [String: (CGContext, Double) -> Void] = [
   "streams": streams, "pulses": pulses, "orbits": orbits, "block-rain": blockRain, "plexus": plexus,
   "lanes": lanes, "radar": radar, "circuit": circuit, "terrain": terrain, "mosaic": mosaic,
   "converge": converge, "charts": charts, "clusters": clusters, "globe": globe, "tunnel": tunnel,
   "media-flow": mediaFlow, "id-spine": idSpine, "wave-dots": waveDots, "ripples": ripples, "pathways": pathways, "halo": halo,
+  "activity": activity, "workflow": workflow, "world": world, "timeline": timeline, "graph": graph, "quadtree": quadtree, "records": records,
 ]
 guard let scene = SCENES[SCENE] else { print("unknown scene", SCENE); exit(1) }
 if SCENE == "circuit" { buildRoutes() }

@@ -360,7 +360,7 @@
      others take stills from the text-free motion-lab loops. */
   if (document.body.classList.contains('hc-b') && steps && steps.length > 1 && media && !more.dataset.pcHow) {
     more.dataset.pcHow = '1';
-    const STILLS = ['orbits', 'pulses', 'circuit', 'ripples', 'globe', 'halo', 'mosaic', 'plexus', 'pathways', 'converge', 'wave-dots', 'media-flow', 'id-spine', 'radar']
+    const STILLS = ['orbits', 'pulses', 'circuit', 'activity', 'globe', 'workflow', 'mosaic', 'plexus', 'world', 'converge', 'wave-dots', 'graph', 'timeline', 'radar']
       .map(k => '/assets/video/lab/loops/' + k + '-poster.jpg');
     const slug = (document.body.className.match(/pp--([\w-]+)/) || ['', ''])[1];
     const seed = [...slug].reduce((a, c) => a + c.charCodeAt(0), 0);

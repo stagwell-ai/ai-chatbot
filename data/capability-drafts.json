@@ -155,7 +155,7 @@
   "_tabs_note": "Short tab labels (DRAFT). The four product pages carry theirs as data-tab on each step in next/{slug}.html.",
   "loops": {
     "questbrand": {
-      "Brand tracking": "pathways",
+      "Brand tracking": "workflow",
       "Competitive benchmarking": "wave-dots",
       "Campaign impact": "circuit",
       "Emotional drivers": "pulses"
@@ -167,14 +167,14 @@
       "Same-day reads": "pulses"
     },
     "bera": {
-      "Brand ROI tracking": "pathways",
+      "Brand ROI tracking": "workflow",
       "Audience prioritization": "wave-dots",
       "Competitive intelligence": "radar",
       "Media planning": "media-flow"
     },
     "knowledge_machine": {
       "Real-time sentiment across owned, earned and competitive channels": "pulses",
-      "Historical pattern matching against prior market moments": "ripples",
+      "Historical pattern matching against prior market moments": "activity",
       "Full audience profile surfaced with the signal": "wave-dots"
     },
     "unicepta": {
@@ -192,27 +192,27 @@
     "smb_platform": {
       "Creator discovery": "wave-dots",
       "Audience validation": "radar",
-      "ROI tracking": "pathways",
+      "ROI tracking": "workflow",
       "One dashboard": "circuit"
     },
     "geopulse": {
       "AI visibility intelligence": "orbits",
       "Prompt optimization": "circuit",
       "Competitive benchmarking": "wave-dots",
-      "Content simulation": "ripples"
+      "Content simulation": "activity"
     },
     "numetrix": {
-      "Audience measurement": "pathways",
+      "Audience measurement": "workflow",
       "Brand lift & ad impact": "pulses",
       "Location intelligence": "globe"
     },
     "media_machine": {
-      "Scores every platform and channel against evidence of what works": "pathways",
+      "Scores every platform and channel against evidence of what works": "workflow",
       "Drafts the plan and flighting": "circuit",
-      "Models spend and projected lift": "ripples"
+      "Models spend and projected lift": "activity"
     },
     "newintel": {
-      "Pricing moves": "pathways",
+      "Pricing moves": "workflow",
       "Hiring signals": "wave-dots",
       "Earned coverage": "globe",
       "Creator activity": "radar"

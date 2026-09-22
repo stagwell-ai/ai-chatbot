@@ -63,7 +63,7 @@ NOTAB = ' tabindex="-1"'
 # the paragraphs under each capability: DRAFTS for review (see the file's _status)
 _D = json.loads((ROOT / 'data' / 'capability-drafts.json').read_text())
 DRAFTS, SHORT, LOOPS = _D['products'], _D['tabs'], _D.get('loops', {})
-STILL_NAMES = ('orbits', 'pulses', 'circuit', 'ripples', 'globe', 'halo', 'mosaic', 'plexus', 'pathways', 'converge', 'wave-dots', 'media-flow', 'id-spine', 'radar')
+STILL_NAMES = ('orbits', 'pulses', 'circuit', 'activity', 'globe', 'workflow', 'mosaic', 'plexus', 'world', 'converge', 'wave-dots', 'graph', 'timeline', 'radar')
 VIS_ATTR = [' data-vis="screen:1"', '', ' data-vis="pic"', ' data-vis="screen:2"', '']
 ROOT_LOOPS = {'voice-squares'}
 def loop_video(name):
