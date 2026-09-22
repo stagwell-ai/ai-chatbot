@@ -116,7 +116,13 @@ export function validateLeadBody(body, data) {
     },
     attribution: {
       utmSource: str(A.utmSource, 120), utmMedium: str(A.utmMedium, 120), utmCampaign: str(A.utmCampaign, 120), utmContent: str(A.utmContent, 120),
-      landingPage: str(A.landingPage, 300) || str(b.page, 300), referrer: str(A.referrer, 300)
+      landingPage: str(A.landingPage, 300) || str(b.page, 300), referrer: str(A.referrer, 300),
+      /* HubSpot's visitor cookie, exactly 32 hex characters. It is what ties a
+         form submission to the browser that made it — and to whoever HubSpot
+         already knows is using that browser. Anything that is not that shape
+         is dropped rather than forwarded: a malformed hutk makes HubSpot
+         reject the whole submission. */
+      hutk: /^[0-9a-f]{32}$/i.test(String(A.hutk || b.hutk || '')) ? String(A.hutk || b.hutk).toLowerCase() : null
     },
     submittedAt: str(b.ts, 40),
     receivedAt: new Date().toISOString(),

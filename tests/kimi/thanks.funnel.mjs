@@ -268,5 +268,54 @@ try {
   console.log('  FAIL the role checks threw: ' + e.message);
 }
 
+/* ── HUBSPOT'S TRACKING SCRIPT, AND THE COOKIE IT SETS ──────────────────────
+   Without it there is no hubspotutk, and HubSpot cannot tie a submission to
+   the browser that made it. The site had never carried one. */
+try {
+  const b4 = await chromium.launch({ args: ['--no-sandbox'] });
+  console.log('\n▶ the HubSpot tracker loads, and its cookie rides along');
+  const ctx = await b4.newContext({ viewport: { width: 1100, height: 900 } });
+  const page = await ctx.newPage();
+  const asked = [];
+  /* never actually fetch HubSpot from a test; just record that we asked */
+  await page.route('**js.hs-scripts.com/**', r => { asked.push(r.request().url()); r.fulfill({ status: 200, contentType: 'application/javascript', body: '/* stub */' }); });
+  const sent = [];
+  await page.route('**/api/lead', r => {
+    sent.push(JSON.parse(r.request().postData() || '{}'));
+    r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"delivered":true,"mode":"live"}' });
+  });
+  await page.goto(BASE + '/book', { waitUntil: 'load' });
+  await page.waitForTimeout(1800);
+
+  ok(asked.length > 0, 'the tracker is requested' + (asked[0] ? ': ' + asked[0] : ''));
+  ok(asked.every(u => /\/24060959\.js$/.test(u)), 'for the right portal');
+  ok(!!(await page.$('#hs-script-loader')), 'and it is injected once, with an id so it cannot double-load');
+  await page.evaluate(() => {
+    const s = document.createElement('script'); s.id = 'x';
+    document.head.appendChild(s);
+  });
+  ok((await page.$$('#hs-script-loader')).length === 1, 'still one loader on the page');
+
+  /* HubSpot's real script sets this; stand in for it */
+  await ctx.addCookies([{ name: 'hubspotutk', value: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6', url: BASE }]);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForTimeout(1500);
+  await page.fill('#saiLeadForm input[name=firstname]', 'Ada');
+  await page.fill('#saiLeadForm input[name=lastname]', 'Lovelace');
+  await page.fill('#saiLeadForm input[name=email]', 'ada@example-brand.com');
+  await page.fill('#saiLeadForm input[name=role]', 'CMO');
+  await page.click('#saiLeadForm button[type=submit]');
+  await page.waitForTimeout(900);
+
+  ok(sent.length === 1, 'the lead was posted');
+  ok((sent[0] || {}).hutk === 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6',
+    'and it carries the cookie: ' + JSON.stringify((sent[0] || {}).hutk));
+  await ctx.close();
+  await b4.close();
+} catch (e) {
+  failures++;
+  console.log('  FAIL the tracker checks threw: ' + e.message);
+}
+
 console.log(failures ? '\n' + failures + ' FAILED\n' : '\nall good\n');
 process.exit(failures ? 1 : 0);

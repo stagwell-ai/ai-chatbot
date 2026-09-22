@@ -341,3 +341,43 @@ test('the outcome carries the product VALUE, so nobody has to infer it from a fi
   ['ada@example-brand.com', 'Ada', 'Lovelace', '2125550100'].forEach(pii =>
     assert.equal(logged.indexOf(pii), -1, 'no personal detail reaches the log: ' + pii));
 });
+
+/* ── THE COOKIE THAT LINKS A SUBMISSION TO A PERSON ─────────────────────────
+   "The cookie needed to link form submissions to existing contacts isn't
+   being sent." It was not being dropped — the site had no HubSpot tracking
+   script, so there was never a hubspotutk to send. */
+const HUTK = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6';
+
+test('a valid hutk travels from the browser into the submission context', async () => {
+  const body = BODY();
+  body.hutk = HUTK;
+  const p = portal();
+  await submitForm(validateLeadBody(body, DATA).lead, DATA, { fetch: p.fetch });
+  assert.equal(p.posts[0].body.context.hutk, HUTK);
+});
+
+test('anything that is not a 32-character hex cookie is dropped, not forwarded', () => {
+  /* a malformed hutk makes HubSpot reject the whole submission, which would
+     trade a missing link for a missing lead */
+  ['', 'not-a-cookie', HUTK.slice(0, 31), HUTK + 'ff', '<script>', 'null'].forEach(bad => {
+    const body = BODY();
+    body.hutk = bad;
+    assert.equal(validateLeadBody(body, DATA).lead.attribution.hutk, null, JSON.stringify(bad));
+  });
+});
+
+test('a cookie in either place is accepted, and normalised', () => {
+  const top = BODY(); top.hutk = HUTK.toUpperCase();
+  assert.equal(validateLeadBody(top, DATA).lead.attribution.hutk, HUTK, 'uppercase is the same cookie');
+
+  const nested = BODY(); nested.discovery.attribution.hutk = HUTK;
+  assert.equal(validateLeadBody(nested, DATA).lead.attribution.hutk, HUTK);
+});
+
+test('no cookie is not an error — the submission still goes, just unlinked', async () => {
+  const p = portal();
+  const r = await submitForm(validateLeadBody(BODY(), DATA).lead, DATA, { fetch: p.fetch });
+  assert.equal(r.ok, true);
+  assert.equal(p.posts[0].body.context.hutk, undefined);
+  assert.ok(p.posts[0].body.fields.length > 0);
+});

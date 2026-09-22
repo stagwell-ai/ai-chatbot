@@ -1,5 +1,9 @@
 {
   "_comment": "Lead-capture modal copy. The kit's rule: copy lives in data. machine/lead.js fetches this once and renders every CTA from it; the same strings are mirrored as a built-in fallback inside lead.js so a failed fetch never dead-ends a call to action. `kinds` keys are the data-cta values used across the site. `human` lists the kinds that are literally a request for a person — lead.js emits human_requested for those. {brand} in success.line is replaced with the visitor's company where the session knows it.",
+  "hubspot": {
+    "portalId": "24060959",
+    "track": true
+  },
   "fine": "Your details go to the Stagwell AI team.",
   "fineLive": "Sent to the Stagwell AI team — someone will be in touch.",
   "fineHeld": "Recorded. HubSpot is not connected yet, so this is held on our side for now.",

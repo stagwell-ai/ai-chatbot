@@ -43,8 +43,44 @@
 (() => {
   'use strict';
 
+  /* ── THE HUBSPOT COOKIE ─────────────────────────────────────────────────
+     A form submission carries `hutk`, HubSpot's own visitor cookie, and that
+     is what ties the submission to the browser that made it — and to whoever
+     HubSpot already knows is using that browser. Without it HubSpot says
+     "the cookie needed to link form submissions to existing contacts isn't
+     being sent".
+
+     We were not dropping it: it never existed. The cookie is set by HubSpot's
+     tracking script, and this site has never carried one. So load it, from
+     the portal id in cta.json, once, after the page is up — it is a
+     third-party script and no part of the site waits on it.
+
+     `track: false` in cta.json turns it off everywhere without a deploy, and
+     with it off nothing is injected and no cookie is read. Worth keeping,
+     because this IS site-wide visitor tracking and somebody may need to
+     switch it off for a region, a campaign or a privacy review. */
+  function hubspotTracker(cfg) {
+    if (!cfg || cfg.track === false) return;
+    const id = String(cfg.portalId || '').trim();
+    if (!/^\d+$/.test(id)) return;
+    if (document.getElementById('hs-script-loader')) return;
+    const s = document.createElement('script');
+    s.id = 'hs-script-loader';
+    s.async = true; s.defer = true;
+    s.src = 'https://js.hs-scripts.com/' + id + '.js';
+    document.head.appendChild(s);
+  }
+
+  function hutk() {
+    try {
+      const m = String(document.cookie || '').match(/(?:^|;\s*)hubspotutk=([0-9a-f]{32})/i);
+      return m ? m[1] : null;
+    } catch (e) { return null; }     /* cookies blocked: not an error, just no link */
+  }
+
   /* ── the copy, mirrored from data/cta.json for the fetch-failed case ───── */
   const FALLBACK = {
+    hubspot: { portalId: '24060959', track: true },
     fine: 'Your details go to the Stagwell AI team.',
     fineLive: 'Sent to the Stagwell AI team — someone will be in touch.',
     fineHeld: 'Recorded. HubSpot is not connected yet, so this is held on our side for now.',
@@ -107,6 +143,7 @@
       fineFailed: loaded.fineFailed || FALLBACK.fineFailed,
       fields: Object.assign({}, FALLBACK.fields, loaded.fields || {}),
       emailHint: loaded.emailHint || FALLBACK.emailHint,
+      hubspot: Object.assign({}, FALLBACK.hubspot, loaded.hubspot || {}),
       require: Array.isArray(loaded.require) ? loaded.require : FALLBACK.require,
       roleHint: loaded.roleHint || FALLBACK.roleHint,
       success: Object.assign({}, FALLBACK.success, loaded.success || {}),
@@ -257,7 +294,8 @@
       }),
       page: location.pathname + location.search,
       ts: new Date().toISOString(),
-      source: 'stagwell-ai · book a demo'
+      source: 'stagwell-ai · book a demo',
+      hutk: hutk()
     };
   }
   function postLead(payload) {
@@ -717,6 +755,11 @@
     };
     if (COPY && CATALOG) go(COPY); else Promise.all([copy(), catalogReady()]).then(r => go(r[0]));
   }
+  /* the tracker, as soon as we know the portal — the mirrored FALLBACK is
+     enough, so it does not wait on a fetch */
+  hubspotTracker(FALLBACK.hubspot);
+  copy().then(c => hubspotTracker(c.hubspot)).catch(() => {});
+
   const bookRoot = document.getElementById('bookForm');
   if (bookRoot) mount(bookRoot, bookRoot.dataset.kind || 'session');
 

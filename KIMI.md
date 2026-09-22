@@ -807,6 +807,17 @@ instead; a rejected submission creates nothing, which is what makes that safe ag
 form. Note for whoever is next: `api.hubapi.com` and `hsforms.com` are both unreachable from the
 build sandbox, which is why this runs as a function and not a script.
 
+**HubSpot's tracking script, and the cookie it sets.** A submission carries `hutk` — HubSpot's
+visitor cookie — and that is what ties it to the browser that made it and to whoever HubSpot
+already knows is using that browser; without it HubSpot reports "the cookie needed to link form
+submissions to existing contacts isn't being sent". We were not dropping it: the site had never
+carried a HubSpot tracking script, so no `hubspotutk` existed. `lead.js` now injects
+`js.hs-scripts.com/{portalId}.js` once (portal id from `cta.json`, `hubspot.track: false` turns
+it off everywhere without a deploy) and reads the cookie into the lead. `schema.js` forwards it
+only when it is exactly 32 hex characters — a malformed `hutk` makes HubSpot reject the whole
+submission, which would trade a missing link for a missing lead. **This is site-wide visitor
+tracking by a third party**; the privacy notice should say so.
+
 **The site's domain must be on HubSpot's tracking list.** A submission whose `context.pageUri`
 carries a domain the portal does not know is answered **200** and then quarantined as
 "Unregistered Site Domain" in Marketing → Forms → Spam Submissions: no contact, no workflow, no
