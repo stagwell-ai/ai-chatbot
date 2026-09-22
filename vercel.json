@@ -120,7 +120,7 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/next/home-c.html"
+      "destination": "/next/home-hero-b.html"
     },
     {
       "source": "/hero-b",

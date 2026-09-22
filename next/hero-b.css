@@ -403,3 +403,8 @@ body.hc-b.pc-page .sp-tabs .pp-more__grid[hidden]:not(#_){display:none !importan
 @media (min-width:861px){
   body.hc-b.pc-page .sp-tabs__tab:not(#_){padding:0 16px;font-size:15px}
 }
+/* hero rhythm, corrected: the container's own 20px gap was stacking on the margins */
+body.hc-b.pc-page .pp-hero__in:not(#_){gap:0 !important;row-gap:0 !important}
+body.hc-b.pc-page .pp-hero :is(.pp-eyebrow,.sp-mark):not(#_){margin:0 0 16px !important;max-width:none !important}
+body.hc-b.pc-page .pp-hero .pp-title:not(#_){margin:0 0 20px !important}
+body.hc-b.pc-page .pp-hero .pp-lede:not(#_){margin:0 0 28px !important;padding-top:0 !important}
