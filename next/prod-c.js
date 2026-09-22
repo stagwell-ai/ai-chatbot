@@ -591,7 +591,7 @@
   const PLAN = {
     'the-machine': ['A', { t: 'chat', q: 'Brief the Q3 launch for the team', a: 'Done. The brief, the audience and last quarter’s learnings are in one place, shared in Slack and Figma.' }, { t: 'network', title: 'Shared context', items: ['Slack', 'Figma', 'Adobe'] }, { t: 'list', title: 'Agents at work', items: ['Brief drafted', 'Audience refreshed', 'Assets resized'], metas: ['Now', 'Today', 'Today'] }],
     'targeting-machine': ['E', { t: 'prompt', chips: ['Explore', 'Expand', 'Activate'], q: 'Find people already shopping for an electric car' }, { t: 'network', title: 'Identity graph', items: ['People', 'Households', 'Devices'] }, { t: 'donut', title: 'Audience mix', items: ['High intent', 'Lookalikes', 'Re-engage'] }],
-    'newvoices': ['V', { t: 'chat', agent: true, q: 'I switched because setup took five minutes.', a: 'What made you look for something new in the first place?' }, { t: 'note', ink: true, q: 'Interview 200 customers about why they switched' }, { t: 'list', title: 'Themes emerging', items: ['Price clarity', 'Onboarding', 'Support speed'], metas: ['Rising', 'Steady', 'New'] }],
+    'newvoices': ['V', { t: 'chat', agent: true, q: 'I switched because setup took five minutes.', a: 'What made you look for something new in the first place?' }, { t: 'note', q: 'Interview 200 customers about why they switched' }, { t: 'list', title: 'Themes emerging', items: ['Price clarity', 'Onboarding', 'Support speed'], metas: ['Rising', 'Steady', 'New'] }],
     'agent-cloud': ['D', { t: 'prompt', chips: ['Claude', 'ChatGPT', 'Gemini'], q: 'Draft three headlines for the spring campaign' }, { t: 'list', title: 'Marketing agents', items: ['Copywriter', 'Campaign planner', 'Message tester'], metas: ['Ready', 'Ready', 'Running'], faces: true }, { t: 'chat', q: 'Test these two messages with parents', a: 'Message B lands better. Parents called it clearer and more honest.' }],
     questbrand: ['E', { t: 'trend', title: 'Brand health', sub: 'Awareness · last six months', legend: ['Your brand', 'Competitor'] }, { t: 'bars', title: 'Consideration', sub: 'By week' }, { t: 'donut', title: 'Emotional drivers', items: ['Trust', 'Joy', 'Pride'] }],
     questdiy: ['F', { t: 'survey', title: 'Which name do you prefer?', items: ['Option A', 'Option B', 'Option C'] }, { t: 'map', title: 'Respondents', pin: 'Fielding now' }, { t: 'bars', title: 'Responses', sub: 'By day' }],
@@ -756,7 +756,7 @@
     next.className = 'pc-collage pc-collage--' + kind + (small ? ' pc-collage--phone' : ' pc-collage--' + plan[0]);
     next.innerHTML = '<div class="pc-collage__stage" style="width:' + SW + 'px;height:' + SH + 'px">' + html + '</div>';
     const main = next.querySelector('.pc-collage__main');
-    if (main) { if (content) main.appendChild(content); else if (window.hcVoice) { main.classList.add('has-voice'); window.hcVoice(main, { mid: 0.3 }); } }
+    if (main) { if (content) main.appendChild(content); else if (window.hcVoice) { main.classList.add('has-voice'); window.hcVoice(main, { mid: 0.5 }); } }
     if (wrap) { wrap.replaceWith(next); if (ro) ro.disconnect(); } else hero.appendChild(next);
     wrap = next;
     const stage = wrap.querySelector('.pc-collage__stage');
