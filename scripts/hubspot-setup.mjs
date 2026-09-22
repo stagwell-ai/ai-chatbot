@@ -61,19 +61,50 @@ if (!dry) {
   console.log('  ' + (g.ok ? 'created' : g.status === 409 ? 'already there' : 'FAILED ' + g.status + ' ' + g.text));
 }
 
-const tally = { created: 0, existed: 0, failed: 0 };
+/* RECONCILE, DON'T JUST SKIP. A property that already exists may be the WRONG
+   property: the HubSpot MCP connector silently rewrites groupName to
+   'custom_information' and collapses fieldType 'textarea' to 'text', so two of
+   ours were created flat and ungrouped before we noticed (2026-09-22). Anything
+   already there is checked against the definition and PATCHed back into shape,
+   which is also what makes this safe to run after someone has edited a property
+   by hand. Labels and descriptions are left alone — those are a human's to
+   change. */
+const existing = dry ? {} : await (async () => {
+  const r = await api('/crm/v3/properties/contacts');
+  const out = {};
+  ((r.data && r.data.results) || []).forEach(x => { out[x.name] = x; });
+  return out;
+})();
+
+const tally = { created: 0, fixed: 0, ok: 0, failed: 0 };
 for (const p of PROPERTIES) {
   const body = { name: p.name, label: p.label, type: p.type, fieldType: p.fieldType, groupName: GROUP.name, options: p.options || undefined, description: 'Written by the Stagwell AI website discovery conversation.' };
   if (dry) { console.log('  would create ' + p.name + ' (' + p.type + '/' + p.fieldType + ')'); continue; }
+
+  const had = existing[p.name];
+  if (had) {
+    const wrong = [];
+    if (had.groupName !== GROUP.name) wrong.push('group ' + had.groupName + ' → ' + GROUP.name);
+    if (had.fieldType !== p.fieldType) wrong.push('field ' + had.fieldType + ' → ' + p.fieldType);
+    if (!wrong.length) { tally.ok++; console.log('  ' + p.name.padEnd(38) + 'already correct'); continue; }
+    /* name and type cannot change on an existing property; group and fieldType can */
+    const r = await api('/crm/v3/properties/contacts/' + encodeURIComponent(p.name),
+      { method: 'PATCH', body: JSON.stringify({ groupName: GROUP.name, fieldType: p.fieldType }) });
+    if (r.status === 403) { console.error('\n' + SCOPE_HELP); process.exit(1); }
+    if (r.ok) { tally.fixed++; console.log('  ' + p.name.padEnd(38) + 'fixed (' + wrong.join(', ') + ')'); }
+    else { tally.failed++; console.log('  ' + p.name.padEnd(38) + 'FAILED to fix ' + r.status + ' ' + r.text); }
+    continue;
+  }
+
   const r = await api('/crm/v3/properties/contacts', { method: 'POST', body: JSON.stringify(body) });
   /* one 403 means every one of them will 403: say why once and stop */
   if (r.status === 403) { console.error('\n' + SCOPE_HELP); process.exit(1); }
-  const state = r.ok ? 'created' : r.status === 409 ? 'already there' : 'FAILED ' + r.status + ' ' + r.text;
-  if (r.ok) tally.created++; else if (r.status === 409) tally.existed++; else tally.failed++;
-  console.log('  ' + p.name.padEnd(38) + state);
+  if (r.ok) { tally.created++; console.log('  ' + p.name.padEnd(38) + 'created'); }
+  else if (r.status === 409) { tally.ok++; console.log('  ' + p.name.padEnd(38) + 'already there'); }
+  else { tally.failed++; console.log('  ' + p.name.padEnd(38) + 'FAILED ' + r.status + ' ' + r.text); }
 }
 
 if (dry) { console.log('\n' + PROPERTIES.length + ' properties would be created. Re-run with a token to do it.'); process.exit(0); }
-console.log('\n' + tally.created + ' created · ' + tally.existed + ' already there · ' + tally.failed + ' failed');
+console.log('\n' + tally.created + ' created · ' + tally.fixed + ' fixed · ' + tally.ok + ' already correct · ' + tally.failed + ' failed');
 if (tally.failed) { console.error('\nSome properties were not created. Leads would silently drop those fields — fix and re-run (it is safe to run again).'); process.exit(1); }
 console.log('\nHubSpot is ready. Last step: set HUBSPOT_ACCESS_TOKEN on the Vercel project\n(stagwell-ai-prototypes → Settings → Environment Variables, mark it Sensitive,\nall three environments) and redeploy. Until then the site stays in mock mode.');
