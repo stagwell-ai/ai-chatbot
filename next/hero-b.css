@@ -903,3 +903,20 @@ body.hc-b.pl-c .ptoc:not(#_){margin-bottom:56px !important}
   body.hc-b.pl-c .pc-arrows--rail:not(#_){transition:opacity .25s ease}
   body.hc-b.pl-c .pc-arrows--rail.is-gone:not(#_){opacity:0;visibility:hidden}
 }
+
+/* ── hero starting points: on desktop the five sit in the open, wrapped and centred, no slider and no arrow;
+      solid on the hero ground so the decoration behind never shows through ── */
+body.hc-b .hcb-tags .chat__tags .tag:not(#_){background:#FAFAFA !important}
+@media (min-width:900px){
+  body.hc-b .hcb-tags:not(#_){width:min(100%,960px);max-width:960px}
+  body.hc-b .hcb-tags .chat__tags:not(#_){flex-wrap:wrap !important;justify-content:center !important;overflow:visible !important;scroll-snap-type:none !important;-webkit-mask-image:none !important;mask-image:none !important;row-gap:10px}
+  body.hc-b .hcb-tags__arw:not(#_){display:none !important}
+}
+@media (max-width:899px){
+  body.hc-b .hcb-tags__arw:not(#_){display:none !important}
+}
+/* the chat overlay on phones carried two rows of starting points: the old toggle row scrolled off to the left and
+   showed as a half-cut chip above the input. The row under the input (#agentTags) is the one that stays. */
+@media (max-width:899px){
+  body.hc-b .chat-over .ask__tags:not(#_){display:none !important}
+}
