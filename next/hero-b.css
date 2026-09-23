@@ -818,3 +818,11 @@ body.hc-b .foot .foot__big:not(#_){display:flex;flex-direction:column;gap:12px}
 body.hc-b .foot .foot__big a:not(#_),body.hc-b .foot .foot__small a:not(#_),body.hc-b .foot .foot__small button:not(#_){font-family:inherit;font-size:16px !important;font-weight:500;letter-spacing:0;line-height:1.3;color:#0B1220 !important;text-decoration:none;transition:color .2s ease}
 body.hc-b .foot .foot__big a:not(#_):hover,body.hc-b .foot .foot__small a:not(#_):hover,body.hc-b .foot .foot__small button:not(#_):hover{color:rgba(11,18,32,.55) !important;text-decoration:underline;text-underline-offset:4px}
 body.hc-b.pc-page .sp-tabs__panel:nth-child(3) .sp-tabs__pic .sx-in{background:#E6E5D9}
+
+/* ── /products Explore pills: white on the dark caption, ink text (children too); the hover only where there is a
+      pointer, so a tap on a phone does not leave the pill in its hover state with white text ── */
+body.hc-b.pl-c .pc-cap .pc-go:not(#_),body.hc-b.pl-c .pc-cap .prodcard__link:not(#_),body.hc-b.pl-c .prodgroup__words .prodcard__link:not(#_){background:#FFFFFF !important;border-color:#FFFFFF !important;color:#0B1220 !important}
+body.hc-b.pl-c .pc-cap .pc-go:not(#_) *,body.hc-b.pl-c .pc-cap .prodcard__link:not(#_) *,body.hc-b.pl-c .prodgroup__words .prodcard__link:not(#_) *{color:#0B1220 !important}
+@media (hover:hover){
+  body.hc-b.pl-c .pc-cap .pc-go:not(#_):hover,body.hc-b.pl-c .pc-cap .prodcard__link:not(#_):hover,body.hc-b.pl-c .prodgroup__words .prodcard__link:not(#_):hover{background:#E7E7E3 !important;border-color:#E7E7E3 !important;color:#0B1220 !important}
+}

@@ -65,6 +65,8 @@ _D = json.loads((ROOT / 'data' / 'capability-drafts.json').read_text())
 DRAFTS, SHORT, LOOPS = _D['products'], _D['tabs'], _D.get('loops', {})
 STILL_NAMES = ('orbits', 'pulses', 'circuit', 'activity', 'globe', 'workflow', 'mosaic', 'plexus', 'world', 'converge', 'wave-dots', 'graph', 'timeline', 'radar')
 VIS_ATTR = [' data-vis="screen:1"', '', ' data-vis="pic"', ' data-vis="screen:2"', '']
+# a product can swap its slots (BERA: the picture under Audiences, a loop under Competitors)
+VIS_BY = {'bera': [' data-vis="screen:1"', ' data-vis="pic"', '', ' data-vis="screen:2"', '']}
 ROOT_LOOPS = {'voice-squares'}
 def loop_video(name):
     base = '/assets/video/lab/' + ('' if name in ROOT_LOOPS else 'loops/') + name
@@ -130,7 +132,7 @@ def main():
         panels = '\n'.join(
             f'      <article class="sp-tabs__panel{" is-on" if k == 0 else ""}" role="tabpanel" id="spp-{sid}-{k}" aria-labelledby="spt-{sid}-{k}">\n'
             f'        <div class="sp-tabs__txt"><p class="sp-tabs__n">{k + 1:02d} / {len(caps):02d}</p><h3>{bpp.t(c)}</h3><p>{bpp.t(texts[c])}</p></div>\n'
-            f'        <div class="sp-tabs__pic"{VIS_ATTR[k % 5]}>{"" if VIS_ATTR[k % 5] else loop_video(LOOPS.get(x["id"], {}).get(c) or STILL_NAMES[(n * 4 + k) % len(STILL_NAMES)])}</div>\n'
+            f'        <div class="sp-tabs__pic"{VIS_BY.get(sid, VIS_ATTR)[k % 5]}>{"" if VIS_BY.get(sid, VIS_ATTR)[k % 5] else loop_video(LOOPS.get(x["id"], {}).get(c) or STILL_NAMES[(n * 4 + k) % len(STILL_NAMES)])}</div>\n'
             f'      </article>' for k, c in enumerate(caps))
         how = ('<section class="pp-more sp-tabs">\n  <div class="pp-wrap">\n'
                f'    <div class="sp-tabs__head">{head_html}</div>\n'

@@ -683,10 +683,10 @@
       return '<div class="sx-q">' + esc(c.title) + '</div><ul class="sx-survey">' + c.items.map((t, i) => '<li' + (i === 1 ? ' class="is-on"' : '') + '><i></i><span>' + esc(t) + '</span><b style="width:' + (i === 1 ? 72 : 30 + rnd() * 30).toFixed(0) + '%"></b></li>').join('') + '</ul><div class="sx-next"><span>Continue</span></div>';
     },
     map(c, w, h) {
-      const mw = w - 44, mh = Math.round(w * 0.5); let dots = '';
-      const land = [[0.18, 0.4, 0.17, 0.3], [0.3, 0.72, 0.08, 0.2], [0.52, 0.35, 0.1, 0.22], [0.56, 0.68, 0.08, 0.22], [0.74, 0.38, 0.17, 0.26], [0.86, 0.78, 0.07, 0.12]];
-      for (let y = 6; y < mh; y += 9) for (let x = 4; x < mw; x += 9) { const u = x / mw, v = y / mh; if (land.some(l => ((u - l[0]) / l[2]) ** 2 + ((v - l[1]) / l[3]) ** 2 < 1)) dots += '<circle cx="' + x + '" cy="' + y + '" r="1.7" fill="' + SOFT + '"/>'; }
-      const pins = [[0.2, 0.42], [0.55, 0.36], [0.76, 0.42], [0.31, 0.7]].map((p, i) => '<circle cx="' + (p[0] * mw).toFixed(0) + '" cy="' + (p[1] * mh).toFixed(0) + '" r="' + (i ? 3.5 : 5) + '" fill="' + INK + '"/>' + (i ? '' : '<circle cx="' + (p[0] * mw).toFixed(0) + '" cy="' + (p[1] * mh).toFixed(0) + '" r="12" fill="' + INK + '" fill-opacity=".12"/>')).join('');
+      /* a dotted world (72×32 land cells, cut from the motion lab's continents), pins on New York, London, Singapore and São Paulo */
+      const mw = w - 44, mh = Math.round(mw * 32 / 72), cell = mw / 72; let dots = '';
+      WORLD.forEach((row, y) => { const bits = BigInt('0x' + row); for (let x = 0; x < 72; x++) if ((bits >> BigInt(71 - x)) & 1n) dots += '<circle cx="' + ((x + 0.5) * cell).toFixed(1) + '" cy="' + ((y + 0.5) * cell).toFixed(1) + '" r="' + (cell * 0.32).toFixed(2) + '" fill="' + SOFT + '"/>'; });
+      const pins = [[21.2, 9.6], [36, 7.2], [56.8, 18.4], [26.7, 23.9]].map((p, i) => { const x = (p[0] * cell).toFixed(1), y = (p[1] * cell).toFixed(1); return '<circle cx="' + x + '" cy="' + y + '" r="' + (i ? 3 : 4.5) + '" fill="' + INK + '"/>' + (i ? '' : '<circle cx="' + x + '" cy="' + y + '" r="11" fill="' + INK + '" fill-opacity=".12"/>'); }).join('');
       return headH(c.title) + '<div class="sx-map"><svg viewBox="0 0 ' + mw + ' ' + mh + '" width="' + mw + '" height="' + mh + '" aria-hidden="true">' + dots + pins + '</svg><span class="sx-pin">' + esc(c.pin) + '</span></div>';
     },
     wave(c, w, h) {
@@ -741,6 +741,8 @@
   SCREEN.note = c => '<div class="sx-note' + (c.ink ? ' is-ink' : '') + '"><span class="sx-note__mark"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2.8l1.7 4.8 4.8 1.7-4.8 1.7L12 15.8l-1.7-4.8L5.5 9.3l4.8-1.7z"/></svg></span><p>' + esc(c.q) + '</p></div>';
   const spark = () => { const v = series(8, 0.15, 0.95, true); return '<svg viewBox="0 0 120 40" width="120" height="40" aria-hidden="true"><polyline points="' + v.map((y, i) => (i * 120 / 7).toFixed(1) + ',' + (38 - y * 34).toFixed(1)).join(' ') + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="120" cy="' + (38 - v[7] * 34).toFixed(1) + '" r="3.5" fill="currentColor"/></svg>'; };
   const TONES = ['is-ink', 'is-dark', 'is-light', 'is-white', 'is-light', 'is-ink'];
+  /* the world as 32 rows of 72 land bits (hex), 84°N to 60°S */
+  const WORLD = ["000000e00000000000", "000003fe0000000000", "000001ff000007f800", "1ffbc0fc01c1ffffff", "1ffff07003cbfffff0", "08fffe0007bbffff80", "003fff00127fffff00", "001fff000fffffff00", "001ffe000ffffffe00", "001ffc0035bffffc80", "000ff800241efff000", "0007f0003f0c7ff000", "000390007ffe7ff000", "000300007fef3fe000", "000080007ffe19c000", "000020007ff411c800", "00001e007ffc108800", "00000f803ffc008000", "00000fc003f8003000", "00000ff003f0000180", "00000ff803f0000040", "000007f801f0000280", "000003f003e4000f80", "000003f001e4001fc0", "000003e001e0001fe0", "000003c001c0001fe0", "0000038000000001c0", "000007000000000000", "000006000000000000", "000006000000000000", "000000000000000000", "000000000000000000"];
 
   const narrow = matchMedia('(max-width: 700px)');
   const kind = SCENE[slug] ? SCENE[slug][0] : 'collage';
