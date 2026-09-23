@@ -886,3 +886,6 @@ body.hc-b.pl-c .prodcard.is-more .pc-more__btn svg{transform:rotate(45deg)}
 body.hc-b.pl-c .pc-more{margin:14px 0 0;padding:18px;border-radius:14px;background:#F1F1EF;display:flex;flex-direction:column;gap:14px}
 body.hc-b.pl-c .pc-more .prodcard__who,body.hc-b.pl-c .pc-more .pc-foot__what{margin:0 !important}
 @media (prefers-reduced-motion:reduce){body.hc-b.pl-c .pc-more__btn,body.hc-b.pl-c .pc-more__btn svg{transition:none}}
+/* /products: air between the Show me dropdown and the first product (it was 8px on phones) */
+body.hc-b.pl-c .ptoc:not(#_){margin-bottom:56px !important}
+@media (max-width:760px){ body.hc-b.pl-c .ptoc:not(#_){margin-bottom:40px !important} }
