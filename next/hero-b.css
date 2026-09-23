@@ -1010,7 +1010,7 @@ body.hc-b #saiConsent:not(#_) .no:hover{border-color:#0B1220}
 @media (min-width:900px){
   /* the banner is only as tall as the two rows of links; the loop is cropped, not stretched */
   body.hc-b .nav__mega:not(#_){align-items:start}
-  body.hc-b .nav__mcta:not(#_){min-height:0;height:140px;align-self:start}
+  body.hc-b .nav__mcta:not(#_){min-height:0;height:122px;align-self:start}
   body.hc-b .nav__mcta__in:not(#_){padding:20px 22px}
   body.hc-b .nav__mcta__t:not(#_){font-size:20px}
   body.hc-b .nav__mcta__arw:not(#_){width:40px;height:40px}
