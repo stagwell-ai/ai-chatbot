@@ -826,3 +826,8 @@ body.hc-b.pl-c .pc-cap .pc-go:not(#_) *,body.hc-b.pl-c .pc-cap .prodcard__link:n
 @media (hover:hover){
   body.hc-b.pl-c .pc-cap .pc-go:not(#_):hover,body.hc-b.pl-c .pc-cap .prodcard__link:not(#_):hover,body.hc-b.pl-c .prodgroup__words .prodcard__link:not(#_):hover{background:#E7E7E3 !important;border-color:#E7E7E3 !important;color:#0B1220 !important}
 }
+
+/* ── the tab pane clips its own corners: a composited video did not honour the panel's radius (IMAI Campaigns) ── */
+body.hc-b.pc-page .sp-tabs__pic:not(#_){overflow:hidden;isolation:isolate;border-radius:0 20px 20px 0}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) video{border-radius:inherit}
+@media (max-width:860px){ body.hc-b.pc-page .sp-tabs__pic:not(#_){border-radius:16px 16px 0 0} }

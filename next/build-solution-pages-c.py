@@ -66,7 +66,8 @@ DRAFTS, SHORT, LOOPS = _D['products'], _D['tabs'], _D.get('loops', {})
 STILL_NAMES = ('orbits', 'pulses', 'circuit', 'activity', 'globe', 'workflow', 'mosaic', 'plexus', 'world', 'converge', 'wave-dots', 'graph', 'timeline', 'radar')
 VIS_ATTR = [' data-vis="screen:1"', '', ' data-vis="pic"', ' data-vis="screen:2"', '']
 # a product can swap its slots (BERA: the picture under Audiences, a loop under Competitors)
-VIS_BY = {'bera': [' data-vis="screen:1"', ' data-vis="pic"', '', ' data-vis="screen:2"', '']}
+VIS_BY = {'bera': [' data-vis="screen:1"', ' data-vis="pic"', '', ' data-vis="screen:2"', ''],
+          'geopulse': [' data-vis="screen:1"', ' data-vis="screen:2"', ' data-vis="pic"', '', '']}  # GEOPulse: the prompt card under Prompts, the orbits loop under Simulation
 ROOT_LOOPS = {'voice-squares'}
 def loop_video(name):
     base = '/assets/video/lab/' + ('' if name in ROOT_LOOPS else 'loops/') + name
