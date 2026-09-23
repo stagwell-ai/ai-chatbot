@@ -999,3 +999,11 @@ body.hc-b #saiConsent:not(#_) .no:hover{border-color:#0B1220}
   body.hc-b .nav__mega:not(#_){grid-template-columns:repeat(2,minmax(0,1fr)) minmax(240px,280px);gap:8px 16px}
   body.hc-b .nav__mcol .nav__pdesc:not(#_){display:block;-webkit-line-clamp:unset;overflow:visible;white-space:normal}
 }
+@media (min-width:900px){
+  /* the marks keep their containers, as in the phone menu: a 40px rounded square with a hairline, centred on the words */
+  body.hc-b .nav__mcol .nav__pitem:not(#_){align-items:center;gap:14px}
+  body.hc-b .nav__mcol .nav__pmark:not(#_){flex:0 0 40px;width:40px;height:40px;border-radius:11px;margin:0;display:grid;place-items:center;
+    box-shadow:inset 0 0 0 1px rgba(11,18,32,.16) !important;background:#FFFFFF !important;color:#0B1220}
+  body.hc-b .nav__mcol .nav__pmark:not(#_) svg{width:20px;height:20px}
+  body.hc-b .nav__mcol .nav__pitem:not(#_):hover .nav__pmark{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34) !important;background:#FFFFFF !important}
+}
