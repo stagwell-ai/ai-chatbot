@@ -831,3 +831,29 @@
   });
 
 })();
+
+/* /products on phones: the carousel cards keep the name and the line; "Who it's for" and "What it does" fold
+   behind a + that opens them under the line and closes again (client, 2026-09-23: too much text on the sliders) */
+(function () {
+  'use strict';
+  if (!document.body.classList.contains('pl-c')) return;
+  const fold = card => {
+    if (card.dataset.more) return;
+    const pos = card.querySelector('.prodcard__pos'), who = card.querySelector('.prodcard__who'), what = card.querySelector('.pc-foot__what');
+    if (!pos || (!who && !what)) return;
+    card.dataset.more = '1';
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'pc-more__btn'; btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-label', 'Who it’s for and what it does');
+    btn.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+    const panel = document.createElement('div'); panel.className = 'pc-more'; panel.hidden = true;
+    if (who) panel.appendChild(who); if (what) panel.appendChild(what);
+    pos.after(btn); btn.after(panel);
+    const open = o => { panel.hidden = !o; card.classList.toggle('is-more', o); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); };
+    btn.addEventListener('click', () => open(panel.hidden));
+    document.addEventListener('click', e => { if (!card.contains(e.target)) open(false); });
+    card.addEventListener('keydown', e => { if (e.key === 'Escape') { open(false); btn.focus(); } });
+  };
+  const scan = () => document.querySelectorAll('.pc-rail .prodcard').forEach(fold);
+  scan();
+  new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
+})();

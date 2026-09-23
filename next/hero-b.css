@@ -871,3 +871,18 @@ body.hc-b .foot .foot__brand:not(#_){margin-left:0}
 @media (max-width:1180px){
   body.hc-b.pc-page .pp-hero__in:not(#_),body.hc-b.pl-c .pl-hero .pp-hero__in:not(#_){padding-inline:20px !important}
 }
+
+/* ── /products phone carousel: more air between cards; who/what folded behind a + ── */
+@media (max-width:760px){
+  body.hc-b.pl-c .pc-rail:not(#_){gap:24px}
+  body.hc-b.pl-c .pc-rail > .prodgroup:not(#_){flex-basis:82%}
+}
+body.hc-b.pl-c .pc-more__btn{display:inline-grid;place-items:center;width:38px;height:38px;margin:14px 0 0;padding:0;border:1px solid rgba(11,18,32,.25);border-radius:50%;background:#FFFFFF;color:#0B1220;cursor:pointer;transition:transform .2s ease,background .2s ease,border-color .2s ease}
+body.hc-b.pl-c .pc-more__btn svg{width:18px;height:18px;transition:transform .2s ease}
+body.hc-b.pl-c .pc-more__btn:hover{border-color:#0B1220}
+body.hc-b.pl-c .pc-more__btn:focus-visible{outline:2px solid #0B1220;outline-offset:2px}
+body.hc-b.pl-c .prodcard.is-more .pc-more__btn{background:#0B1220;border-color:#0B1220;color:#FFFFFF}
+body.hc-b.pl-c .prodcard.is-more .pc-more__btn svg{transform:rotate(45deg)}
+body.hc-b.pl-c .pc-more{margin:14px 0 0;padding:18px;border-radius:14px;background:#F1F1EF;display:flex;flex-direction:column;gap:14px}
+body.hc-b.pl-c .pc-more .prodcard__who,body.hc-b.pl-c .pc-more .pc-foot__what{margin:0 !important}
+@media (prefers-reduced-motion:reduce){body.hc-b.pl-c .pc-more__btn,body.hc-b.pl-c .pc-more__btn svg{transition:none}}
