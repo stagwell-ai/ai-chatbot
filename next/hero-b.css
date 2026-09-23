@@ -993,3 +993,9 @@ body.hc-b #saiConsent:not(#_) .no:hover{border-color:#0B1220}
   body.hc-b .nav__mcol .nav__pmark:not(#_) svg{width:20px;height:20px}
   body.hc-b .nav__mcol .nav__pitem:not(#_):hover .nav__pmark{box-shadow:none !important;background:none !important}
 }
+@media (min-width:900px){
+  /* room for each line on one line: a wider panel, a narrower banner; the line only wraps when the screen is too small */
+  body.hc-b .nav__panel:not(#_){max-width:1180px}
+  body.hc-b .nav__mega:not(#_){grid-template-columns:repeat(2,minmax(0,1fr)) minmax(240px,280px);gap:8px 16px}
+  body.hc-b .nav__mcol .nav__pdesc:not(#_){display:block;-webkit-line-clamp:unset;overflow:visible;white-space:normal}
+}
