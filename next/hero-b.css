@@ -977,3 +977,12 @@ body.hc-b #saiConsent:not(#_) .no:hover{border-color:#0B1220}
   body.hc-b .nav__mcta__arw:not(#_){display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#0B1220;flex:0 0 auto;transition:transform .2s ease}
   body.hc-b .nav__mcta:not(#_):hover .nav__mcta__arw{transform:translateX(3px)}
 }
+
+@media (min-width:900px){
+  /* menu items: the thumbnail sits on the name's line, one size, the words in a tidy block */
+  body.hc-b .nav__mcol .nav__pitem:not(#_){align-items:flex-start;padding:10px 12px}
+  body.hc-b .nav__mcol .nav__pthumb:not(#_){width:40px;height:40px;border-radius:10px;margin-top:1px}
+  body.hc-b .nav__mcol .nav__pname:not(#_){font-size:15px;line-height:1.25}
+  body.hc-b .nav__mcol .nav__pdesc:not(#_){font-size:12.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  body.hc-b .nav__mcta:not(#_) video{opacity:.85}
+}
