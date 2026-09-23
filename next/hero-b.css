@@ -836,3 +836,34 @@ body.hc-b.pc-page .sp-tabs__pic:not(#_) video{border-radius:inherit}
 body.hc-b.pc-page .pp-hero__in:not(#_),body.hc-b.pl-c .pl-hero .pp-hero__in:not(#_){padding-inline:0 !important;margin-inline:auto !important}
 /* the About paragraph under the product heroes runs wider, so it takes fewer lines */
 body.hc-b.pc-page .pp-about .pp-wrap > p:not(#_),body.hc-b.pc-page .pp-about__text:not(#_){max-width:960px !important}
+
+/* ── footer: the two left links sit together at the top, and both bands share the same left edge ── */
+body.hc-b .foot .foot__in:not(#_){align-items:flex-start !important;padding-inline:40px !important}
+body.hc-b .foot .foot__big:not(#_){justify-content:flex-start !important;gap:14px !important;height:auto !important}
+body.hc-b .foot .foot__small:not(#_){gap:14px 28px !important}
+body.hc-b .foot .foot__band:not(#_){padding-inline:40px !important}
+body.hc-b .foot .foot__legal:not(#_),body.hc-b .foot .foot__social:not(#_){margin:0}
+body.hc-b .foot .foot__brand:not(#_){margin-left:0}
+@media (max-width:760px){
+  body.hc-b .foot .foot__in:not(#_),body.hc-b .foot .foot__band:not(#_){padding-inline:20px !important}
+}
+
+/* ── the products field on the lead forms: a dropdown that opens to a checklist (as many as they like), instead
+      of the seventeen pills in the open ── */
+.lead__picks.is-dd .lead__pickshint{display:none}
+.lead__picks.is-dd .lead__dd{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:52px;margin:6px 0 0;padding:0 16px;
+  border:0;border-radius:12px;background:#F1F1EF;font-family:inherit;font-size:16px;color:#0B1220;text-align:left;cursor:pointer}
+.lead__picks.is-dd .lead__dd:hover{box-shadow:inset 0 0 0 1px rgba(11,18,32,.25)}
+.lead__picks.is-dd .lead__dd:focus-visible{outline:none;box-shadow:inset 0 0 0 2px #0B1220}
+.lead__picks.is-dd .lead__dd__label.is-empty{color:rgba(11,18,32,.5)}
+.lead__picks.is-dd .lead__dd svg{width:16px;height:16px;flex:0 0 auto;transition:transform .2s ease}
+.lead__picks.is-dd.is-open .lead__dd svg{transform:rotate(180deg)}
+.lead__picks.is-dd .lead__pickrow{display:none;margin:8px 0 0;padding:6px;border:1px solid rgba(11,18,32,.12);border-radius:12px;background:#FFFFFF;max-height:240px;overflow:auto;flex-direction:column;flex-wrap:nowrap;gap:2px}
+.lead__picks.is-dd.is-open .lead__pickrow{display:flex}
+.lead__picks.is-dd .lead__pick{display:block}
+.lead__picks.is-dd .lead__pick span{display:flex;width:100%;padding:9px 10px;border-radius:8px;background:transparent;box-shadow:none;font-size:14px;font-weight:500;color:#0B1220}
+.lead__picks.is-dd .lead__pick:hover span{background:#F1F1EF}
+.lead__picks.is-dd .lead__pick input:checked + span{background:#F1F1EF;color:#0B1220;box-shadow:none}
+.lead__picks.is-dd .lead__pick input:checked + span::before{background:#0B1220;box-shadow:inset 0 0 0 1px #0B1220}
+.lead__picks.is-dd .lead__dd__hint{display:block;margin:8px 0 0;font-size:12.5px;line-height:1.45;color:rgba(11,18,32,.56)}
+@media (prefers-reduced-motion:reduce){.lead__picks.is-dd .lead__dd svg{transition:none}}

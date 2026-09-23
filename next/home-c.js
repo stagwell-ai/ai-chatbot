@@ -878,3 +878,35 @@
     mo.observe(document.body, { childList: true, subtree: true });
   }
 })();
+
+/* the products field on the lead forms (lead.js renders it as pills): shown as a dropdown that opens to a
+   checklist. The checkboxes stay exactly as lead.js made them, so what it sends does not change. */
+(function () {
+  'use strict';
+  const enhance = picks => {
+    if (picks.dataset.dd) return; picks.dataset.dd = '1';
+    const row = picks.querySelector('.lead__pickrow'); if (!row) return;
+    const hint = picks.querySelector('.lead__pickshint');
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'lead__dd'; btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '<span class="lead__dd__label"></span><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    row.before(btn);
+    if (hint) { const h = document.createElement('span'); h.className = 'lead__dd__hint'; h.textContent = hint.textContent; row.after(h); }
+    const label = btn.querySelector('.lead__dd__label');
+    const boxes = () => [...picks.querySelectorAll('.lead__pick input')];
+    const paint = () => {
+      const on = boxes().filter(b => b.checked).map(b => (b.nextElementSibling && b.nextElementSibling.textContent.trim()) || b.value);
+      label.textContent = on.length === 0 ? 'Select products' : on.length <= 2 ? on.join(', ') : on.length + ' selected';
+      label.classList.toggle('is-empty', on.length === 0);
+    };
+    const open = o => { picks.classList.toggle('is-open', o); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); };
+    btn.addEventListener('click', () => open(!picks.classList.contains('is-open')));
+    picks.addEventListener('change', paint);
+    document.addEventListener('click', e => { if (!picks.contains(e.target)) open(false); });
+    picks.addEventListener('keydown', e => { if (e.key === 'Escape') { open(false); btn.focus(); } });
+    picks.classList.add('is-dd'); paint();
+  };
+  const scan = () => document.querySelectorAll('.lead__picks:not([data-dd])').forEach(enhance);
+  scan();
+  new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });
+})();
