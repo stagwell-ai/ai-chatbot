@@ -51,7 +51,21 @@ beforeEach(() => {
   delete process.env.HUBSPOT_FORM_PRODUCT_FIELD;
 });
 
+test('an alias bridges a rename until the portal catches up', () => {
+  /* 2026-09-23: "The Machine" became "Machine OS" on the site; HubSpot still
+     had the old name, and an option it does not know fails the whole
+     submission rather than just that field */
+  process.env.HUBSPOT_FORM_PRODUCT_ALIASES = 'Machine OS:The Machine';
+  const body = BODY();
+  body.discovery.productsRequested = ['machines_family', 'bera'];
+  const v = productValues(validateLeadBody(body, DATA).lead, DATA);
+  assert.deepEqual(v, ['The Machine', 'BERA.ai'], 'sent under the name the portal has');
+  v.forEach(x => assert.ok(OPTIONS.indexOf(x) !== -1, x));
+  delete process.env.HUBSPOT_FORM_PRODUCT_ALIASES;
+});
+
 test('every value the field can be sent is one the portal actually offers', () => {
+  process.env.HUBSPOT_FORM_PRODUCT_ALIASES = 'Machine OS:The Machine';
   const seen = new Set();
   (DATA.solutions.solutions || DATA.solutions).forEach(p => {
     if (p.active === false) return;
@@ -64,6 +78,7 @@ test('every value the field can be sent is one the portal actually offers', () =
     });
   });
   assert.ok(seen.size >= 15, 'and nearly all of them map to something (' + seen.size + ')');
+  delete process.env.HUBSPOT_FORM_PRODUCT_ALIASES;
 });
 
 /* ── THE COUNT IS LOAD-BEARING ───────────────────────────────────────────────
@@ -119,10 +134,15 @@ test('ticked nothing: the field says "Not Sure" rather than guessing for them', 
    site without being renamed in HubSpot fails here rather than in a rejected
    submission nobody sees. */
 test('every name on the website is, verbatim, an option in HubSpot', () => {
+  /* the aliases are the CURRENT set of known mismatches. This test is the
+     thing that finds them: a product renamed on one side and not the other
+     fails here, loudly, instead of in a submission nobody is watching. Empty
+     the alias list when the portal catches up. */
+  const BRIDGED = { 'Machine OS': 'The Machine' };
   const active = (DATA.solutions.solutions || DATA.solutions).filter(p => p.active !== false);
-  const shown = active.map(p => p.displayName || p.name);
+  const shown = active.map(p => p.displayName || p.name).map(n => BRIDGED[n] || n);
   shown.forEach(n => assert.ok(OPTIONS.indexOf(n) !== -1,
-    'the site offers "' + n + '", which the CRM field does not have'));
+    'the site offers "' + n + '", which the CRM field does not have and no alias bridges'));
   assert.equal(shown.length, OPTIONS.length - 1,
     'and the two lists are the same length once "Not Sure" is set aside — ' +
     'site ' + shown.length + ', CRM ' + (OPTIONS.length - 1));

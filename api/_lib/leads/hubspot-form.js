@@ -96,11 +96,36 @@ export function formMode() {
    their request. HUBSPOT_FORM_PRODUCT_FALLBACK carries whatever that option
    is called, so a rename in HubSpot is an env var; `none` sends the field
    empty instead. */
+/* ── WHEN THE SITE RENAMES A PRODUCT AND THE CRM HAS NOT ────────────────────
+   The catalog is the site's, the option list is the portal's, and they are
+   edited by different people on different days. On 2026-09-23 "The Machine"
+   became "Machine OS" here; HubSpot still had the old name, so every lead
+   ticking it would have sent an option that field has never heard of — and
+   an invalid option fails the WHOLE submission, not just that field.
+
+   HUBSPOT_FORM_PRODUCT_ALIASES=Machine OS:The Machine keeps those leads
+   routing while the portal catches up, and disappears the day it does. It is
+   a bridge, not a mapping table: the names are supposed to match, and a test
+   fails when they do not. */
+function aliases() {
+  const out = {};
+  env('HUBSPOT_FORM_PRODUCT_ALIASES').split(',').forEach(pair => {
+    const i = pair.indexOf(':');
+    if (i < 1) return;
+    const from = pair.slice(0, i).trim();
+    const to = pair.slice(i + 1).trim();
+    if (from && to) out[from] = to;
+  });
+  return out;
+}
+
 export function productValues(lead, data) {
   const d = lead.discovery || {};
+  const alias = aliases();
   const name = id => {
     const p = RECOMMEND.productById(id, data);
-    return (p && p.active !== false && (p.displayName || p.name)) || null;
+    const n = (p && p.active !== false && (p.displayName || p.name)) || null;
+    return n && Object.prototype.hasOwnProperty.call(alias, n) ? alias[n] : n;
   };
   const out = [];
   (d.productsRequested || []).forEach(id => {
