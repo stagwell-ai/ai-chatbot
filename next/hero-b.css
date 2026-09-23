@@ -770,3 +770,16 @@ body.hc-b.pc-page .sx-logos .sx-logo{display:block;width:150px;height:44px;backg
   -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat}
 @keyframes sxLogos{0%{opacity:0;transform:scale(.94)} 5%{opacity:1;transform:none} 17%{opacity:1;transform:none} 21%{opacity:0;transform:scale(.94)} 100%{opacity:0;transform:scale(.94)}}
 @media (prefers-reduced-motion:reduce){body.hc-b.pc-page .sx-logos__item{animation:none} body.hc-b.pc-page .sx-logos__item[style*="--i:0"]{opacity:1;transform:none}}
+
+/* ── Why boxes: a CTA under each paragraph (client, 2026-09-23), ink pill on the white box ── */
+body.hc-b #why .why__cta:not(#_){display:inline-flex !important;align-items:center;justify-content:center;align-self:flex-start;margin-top:22px;height:44px;padding:0 22px;
+  border-radius:999px;border:1px solid #0B1220;background:#0B1220 !important;color:#FFFFFF !important;font-size:14px;font-weight:600;letter-spacing:0;text-transform:none;cursor:pointer}
+body.hc-b #why .why__cta:not(#_):hover{background:#3A3F47 !important;border-color:#3A3F47 !important;color:#FFFFFF !important}
+/* the Code and Theory mark as a transparent PNG (no black ground to blend, so no box round it), bigger */
+body.hc-b #why .why__slot--ct:not(#_) img.why__ctlogo{width:78% !important;aspect-ratio:auto;object-fit:contain !important;mix-blend-mode:normal;background:none}
+/* product and solution heroes: the words a little wider, so the paragraph sits in three lines */
+body.hc-b.pc-page .pp-hero .pp-title:not(#_){max-width:36ch !important}
+body.hc-b.pc-page:not(.pl-c) .pp-hero .pp-lede:not(#_){max-width:720px !important}
+/* the Why box is a grid (picture and slot in column 1, words in column 2): the CTA takes the last row of the words column, under the paragraph */
+body.hc-b #why .why__item > .why__cta:not(#_){grid-area:5 / 2 / 6 / 3;justify-self:start;align-self:start;margin-top:18px}
+@media (max-width:760px){ body.hc-b #why .why__item > .why__cta:not(#_){grid-area:auto;margin-top:18px} }
