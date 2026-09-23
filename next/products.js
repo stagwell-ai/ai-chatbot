@@ -304,7 +304,7 @@
       if (!a) return;
       try {
         if (window.SAI && window.SAI.events) {
-          window.SAI.events.emit('handoff_click', {
+          (window.SAIANALYTICS ? window.SAIANALYTICS.track : window.SAI.events.emit.bind(window.SAI.events))('handoff_click', {
             solution: a.getAttribute('data-solution') || null,
             url: a.getAttribute('data-url') || null,
             route: 'directory'

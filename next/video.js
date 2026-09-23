@@ -35,7 +35,12 @@ function openBox() {
     }
   } catch (e) { /* same */ }
   try { (closeBtn || box).focus({ preventScroll: true }); } catch (e) { /* fine */ }
-  try { if (window.SAI && window.SAI.events) window.SAI.events.emit('video_opened', { id: 'explainer' }); } catch (e) { /* fine */ }
+  /* the analytics layer when it is there, the bus when it is not — so this
+     reaches Mixpanel and GTM like every other event, not just the console */
+  try {
+    if (window.SAIANALYTICS) window.SAIANALYTICS.track('video_opened', { id: 'explainer' });
+    else if (window.SAI && window.SAI.events) window.SAI.events.emit('video_opened', { id: 'explainer' });
+  } catch (e) { /* fine */ }
 }
 
 function closeBox() {

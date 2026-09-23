@@ -109,6 +109,10 @@ try {
       else window.SAI = { events: { emit: (t, x) => window.__ev.push([t, x]) } }; });
     await page.click('.lead__pick:has-text("The Machine") input');
     await page.fill('#saiLeadForm [name=email]', 'ada@acme-brands.com');
+    /* the role is required now: the HubSpot form these are submitted to marks
+       jobtitle required, and a blank one is a rejected submission rather than
+       a thinner lead (2026-09-22) */
+    await page.fill('#saiLeadForm [name=role]', 'VP Marketing');
     await page.click('#saiLeadForm button[type=submit]');
     await page.waitForTimeout(900);
     const ev = await page.evaluate(() => window.__ev || []);

@@ -50,10 +50,22 @@ const wait = ms => new Promise(r => { if (ms > 0) setTimeout(r, ms); else r(); }
 
 const engine = () => (typeof window !== 'undefined' && window.SAI) || null;
 
+/* Through SAIANALYTICS when it is on the page, and only then to the bus.
+     This used to write STRAIGHT to the bus, which meant the demo console saw
+     every lead event and Mixpanel, GTM, gtag and Segment saw none of them —
+     the entire capture funnel was invisible to every tool outside this tab
+     (found 2026-09-23 by a test that checked what actually arrived, rather
+     than that a call was made). SAIANALYTICS emits to the bus itself, so this
+     is one destination or the other, never both. */
 function emit(type, payload) {
-  const SAI = engine();
-  try { if (SAI && SAI.events) SAI.events.emit(type, payload); }
-  catch (e) { /* an event bus that fails must not take the research with it */ }
+  try {
+    if (window.SAIANALYTICS && typeof window.SAIANALYTICS.track === 'function') {
+      window.SAIANALYTICS.track(type, payload); return;
+    }
+    if (window.SAI && window.SAI.events && typeof window.SAI.events.emit === 'function') {
+      window.SAI.events.emit(type, payload);
+    }
+  } catch (e) { /* analytics never costs the visitor a CTA */ }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

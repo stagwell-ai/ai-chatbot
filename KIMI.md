@@ -969,6 +969,28 @@ work there.
 
 ## 13. Analytics events
 
+**Mixpanel** (`next/mixpanel.js`, added 2026-09-23 with the vendor's SDK skill). Loads
+`cdn.mxpnl.com/libs/mixpanel-2/mixpanel.js` on every visitor-facing page and inits with
+`track_pageview`, `persistence:'localStorage'`, `batch_requests`, `autocapture:false` — the site
+already decides what matters, and capturing every click is noise. Super properties: `platform`,
+`site_area`, `session_id`. **No `identify()`**: the skill says use a stable database key and
+never an email, and we have neither — a session id there would make every visit a new person and
+every retention figure a lie. `analytics.js` translates the bus's names at the edge
+(`kimi_lead_delivery` → `lead_delivered`, `capture_email` → `email_captured`) and drops nulls,
+empties and numbers-as-strings, all three of which arrive silently and ruin a dataset months
+later. The project token is client-side by design and is not a secret. GPC, Do Not Track and
+`localStorage['sai-no-track']` all switch it off; `TRACK` in that file switches it off for
+everyone. **None of that is a consent banner** — an EU or California visitor should be asked
+before anything is sent, and this site has no way to ask yet.
+
+Two things this turned up, both older than Mixpanel: `/book`, `/agent`, `/campaign`, `/solution`
+and `/why` never loaded `analytics.js` at all, and `lead.js`, `research.js`, `snapshot-data.js`,
+`products.js` and `video.js` wrote **straight to the bus**, bypassing `SAIANALYTICS`. Between
+them, the entire lead-capture funnel — every email captured, every product requested, every
+conversion — was visible to the demo console and to nothing else. `npm run test:mixpanel` checks
+what actually arrives, which is how it was found.
+
+
 Voice (2026-09-11): `voice_session_started {model, resumed}`, `voice_session_ended {seconds,
 turns, reason: user|cap|dropped}`, `voice_unavailable {reason: denied|nomic|busy|unconfigured|
 network}`, `voice_reconnected {attempt}`, `voice_tool_call {name, status}`, `voice_barge_in`,

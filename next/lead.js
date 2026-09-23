@@ -165,12 +165,22 @@
 
   /* ── the demo bus. engine.js may not have booted yet, and on a page that
         doesn't load it at all the modal still has to work. ─────────────── */
+  /* Through SAIANALYTICS when it is on the page, and only then to the bus.
+     This used to write STRAIGHT to the bus, which meant the demo console saw
+     every lead event and Mixpanel, GTM, gtag and Segment saw none of them —
+     the entire capture funnel was invisible to every tool outside this tab
+     (found 2026-09-23 by a test that checked what actually arrived, rather
+     than that a call was made). SAIANALYTICS emits to the bus itself, so this
+     is one destination or the other, never both. */
   function emit(type, payload) {
     try {
+      if (window.SAIANALYTICS && typeof window.SAIANALYTICS.track === 'function') {
+        window.SAIANALYTICS.track(type, payload); return;
+      }
       if (window.SAI && window.SAI.events && typeof window.SAI.events.emit === 'function') {
         window.SAI.events.emit(type, payload);
       }
-    } catch (e) { /* the log is a demo aid — it never costs the visitor a CTA */ }
+    } catch (e) { /* analytics never costs the visitor a CTA */ }
   }
 
   /* ── WHICH ONES THEY WANT TO HEAR ABOUT ───────────────────────────────

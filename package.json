@@ -24,6 +24,7 @@
     "test:explore": "node tests/kimi/explore.funnel.mjs",
     "test:ghost": "node tests/kimi/ghost.funnel.mjs",
     "test:picks": "node tests/kimi/picks.funnel.mjs",
-    "test:thanks": "node tests/kimi/thanks.funnel.mjs"
+    "test:thanks": "node tests/kimi/thanks.funnel.mjs",
+    "test:mixpanel": "node tests/kimi/mixpanel.funnel.mjs"
   }
 }
