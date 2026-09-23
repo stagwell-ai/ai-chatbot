@@ -1511,3 +1511,11 @@ body.pc-page{--hc-ground:#FFFFFF}
   .pc-how__tab:not(#_){max-width:min(240px,64vw) !important}
   .pc-how__tab:not(#_) .pc-how__t{display:block !important;min-width:0 !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important}
 }
+
+/* the phone carousel of products: the groups were stretched by the rail, so the cards' height:100%
+   resolved to the whole group and ran 300px past its bottom; the rail then scrolled vertically too and
+   trapped the page. Content heights only, and the rail never scrolls vertically. */
+@media (max-width:760px){
+  .pl-c .pc-rail:not(#_){align-items:flex-start;overflow-y:hidden}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__cards,.pl-c .pc-rail > .prodgroup:not(#_) .prodcard{height:auto !important;min-height:0 !important}
+}
