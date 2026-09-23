@@ -224,7 +224,7 @@
     },
     "id_graph": {
       "First-party data onboarding": "id-spine",
-      "Third-party media data": "id-spine",
+      "Third-party media data": "sankey",
       "Proprietary consumer intelligence": "pulses",
       "Privacy-safe activation": "circuit"
     }

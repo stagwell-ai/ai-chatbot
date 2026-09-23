@@ -56,7 +56,8 @@ def meta(h, *, title, desc, path):
 PIC = {
     'imai': '/assets/img/tabs/imai-crowd.jpg', 'smb_platform': '/assets/img/tabs/smb-right.jpg',
     'media_machine': '/assets/img/tabs/media-machine.jpg', 'newintel': '/assets/img/tabs/newintel.jpg',
-    'search_plus': '/assets/img/tabs/geopulse.jpg', 'id_graph': '/assets/img/tabs/id-graph.jpg',
+    # Search+ and ID Graph carry their motion-lab stills (the GEOPulse picture read as a repeat, the people picture said nothing about a graph)
+    'search_plus': '/assets/video/lab/loops/globe-blue-poster.jpg', 'id_graph': '/assets/video/lab/loops/id-spine-poster.jpg',
 }
 
 NOTAB = ' tabindex="-1"'
@@ -67,7 +68,8 @@ STILL_NAMES = ('orbits', 'pulses', 'circuit', 'activity', 'globe', 'workflow', '
 VIS_ATTR = [' data-vis="screen:1"', '', ' data-vis="pic"', ' data-vis="screen:2"', '']
 # a product can swap its slots (BERA: the picture under Audiences, a loop under Competitors)
 VIS_BY = {'bera': [' data-vis="screen:1"', ' data-vis="pic"', '', ' data-vis="screen:2"', ''],
-          'geopulse': [' data-vis="screen:1"', ' data-vis="screen:2"', ' data-vis="pic"', '', '']}  # GEOPulse: the prompt card under Prompts, the orbits loop under Simulation
+          'geopulse': [' data-vis="screen:1"', ' data-vis="screen:2"', ' data-vis="pic"', '', ''],
+          'search_plus': [' data-vis="screen:1"', '', ' data-vis="screen:2"']}  # Search+: the ranked assistants under Assistants  # GEOPulse: the prompt card under Prompts, the orbits loop under Simulation
 ROOT_LOOPS = {'voice-squares'}
 def loop_video(name):
     base = '/assets/video/lab/' + ('' if name in ROOT_LOOPS else 'loops/') + name

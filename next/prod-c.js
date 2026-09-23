@@ -224,7 +224,7 @@
       /* each product in a group can bring its own still */
       const TAB_PIC = { 'IMAI': '/assets/img/tabs/imai-crowd.jpg', 'Stagwell AI for SMBs': '/assets/img/tabs/smb-right.jpg',
         'The Media Machine': '/assets/img/tabs/media-machine.jpg', 'NewIntel': '/assets/img/tabs/newintel.jpg',
-        'Search+': '/assets/img/tabs/geopulse.jpg', 'Stagwell ID Graph': '/assets/img/tabs/id-graph.jpg' };
+        'Search+': '/assets/video/lab/loops/globe-blue-poster.jpg', 'Stagwell ID Graph': '/assets/video/lab/loops/id-spine-poster.jpg' };
       const tabPics = tabs.map(t => TAB_PIC[(t.textContent || '').trim()] || null);
       tabPics.forEach(src => { if (src) { const im = new Image(); im.src = src; } });
       const show = i => {
