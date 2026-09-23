@@ -1519,3 +1519,12 @@ body.pc-page{--hc-ground:#FFFFFF}
   .pl-c .pc-rail:not(#_){align-items:flex-start;overflow-y:hidden}
   .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__cards,.pl-c .pc-rail > .prodgroup:not(#_) .prodcard{height:auto !important;min-height:0 !important}
 }
+
+/* the phone listing: more air between the tabs, the caption card, the picture and the side card */
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head:not(#_){gap:20px !important}
+  .pl-c .prodgroup[data-pc-multi] .pc-tabs:not(#_){margin-bottom:18px}
+  .pl-c .pc-cap.is-on:not(#_),.pl-c .pc-side.is-on:not(#_){padding:24px !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__head{margin-bottom:22px !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodcard{padding-top:4px !important}
+}

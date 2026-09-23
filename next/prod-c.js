@@ -764,8 +764,8 @@
         html += m;
       });
     } else if (kind === 'tiles') {
-      const cfg = SCENE[slug][1]; const cols = small ? 2 : 3, tw = small ? 190 : 340, th = small ? 150 : 220, gap = small ? 20 : 30;
-      SW = small ? 400 : 1080; SH = small ? 320 : 470;
+      const cfg = SCENE[slug][1]; const cols = small ? 2 : 3, tw = small ? 176 : 272, th = small ? 132 : 172, gap = small ? 16 : 22;
+      SW = cols * tw + (cols - 1) * gap; SH = 2 * th + gap;
       const picSlot = small ? 1 : 1 + (seed0 % 2) * 3;
       const bars = () => { const v = series(6, 0.2, 1, true); return '<div class="sx-tile__bars">' + v.map((y, i) => '<i style="height:' + (y * 100).toFixed(0) + '%"' + (i === 5 ? ' class="is-on"' : '') + '></i>').join('') + '</div>'; };
       let n = 0;

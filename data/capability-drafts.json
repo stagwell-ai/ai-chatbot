@@ -156,7 +156,7 @@
   "loops": {
     "questbrand": {
       "Brand tracking": "workflow",
-      "Competitive benchmarking": "wave-dots",
+      "Competitive benchmarking": "radial",
       "Campaign impact": "circuit",
       "Emotional drivers": "pulses"
     },
@@ -168,7 +168,7 @@
     },
     "bera": {
       "Brand ROI tracking": "workflow",
-      "Audience prioritization": "wave-dots",
+      "Audience prioritization": "sankey",
       "Competitive intelligence": "radar",
       "Media planning": "media-flow"
     },
@@ -179,55 +179,55 @@
     },
     "unicepta": {
       "Global monitoring": "globe",
-      "Daily briefings & alerts": "circuit",
+      "Daily briefings & alerts": "world",
       "Narrative analysis": "plexus",
       "Social listening": "pulses"
     },
     "imai": {
       "Creator discovery": "wave-dots",
-      "Campaign management": "circuit",
+      "Campaign management": "people-map",
       "LLM visibility": "orbits",
       "UGC video ads": "mosaic"
     },
     "smb_platform": {
       "Creator discovery": "wave-dots",
-      "Audience validation": "radar",
+      "Audience validation": "timeline",
       "ROI tracking": "workflow",
       "One dashboard": "circuit"
     },
     "geopulse": {
       "AI visibility intelligence": "orbits",
-      "Prompt optimization": "circuit",
+      "Prompt optimization": "orbits",
       "Competitive benchmarking": "wave-dots",
       "Content simulation": "activity"
     },
     "numetrix": {
       "Audience measurement": "workflow",
-      "Brand lift & ad impact": "pulses",
+      "Brand lift & ad impact": "quadtree",
       "Location intelligence": "globe"
     },
     "media_machine": {
       "Scores every platform and channel against evidence of what works": "workflow",
-      "Drafts the plan and flighting": "circuit",
+      "Drafts the plan and flighting": "media-flow",
       "Models spend and projected lift": "activity"
     },
     "newintel": {
       "Pricing moves": "workflow",
-      "Hiring signals": "wave-dots",
+      "Hiring signals": "records",
       "Earned coverage": "globe",
       "Creator activity": "radar"
     },
     "search_plus": {
       "AI search representation": "orbits",
-      "Influence how AI recommends you": "converge",
+      "Influence how AI recommends you": "globe-blue",
       "ChatGPT, Gemini, Perplexity, Grok": "orbits"
     },
     "id_graph": {
       "First-party data onboarding": "id-spine",
-      "Third-party media data": "plexus",
+      "Third-party media data": "id-spine",
       "Proprietary consumer intelligence": "pulses",
       "Privacy-safe activation": "circuit"
     }
   },
-  "_loops_note": "The motion-lab loop shown beside a How-it-works tab (assets/video/lab/loops/<name>.mp4; voice-squares sits in assets/video/lab/)."
+  "_loops_note": "The motion-lab loop shown beside a How-it-works tab (assets/video/lab/loops/<name>.mp4; voice-squares sits in assets/video/lab/). Tabs 2 and 5 carry loops; the others are mockups or the picture. Loops are named for their product on /motion-lab."
 }
