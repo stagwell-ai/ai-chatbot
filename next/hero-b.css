@@ -835,4 +835,4 @@ body.hc-b.pc-page .sp-tabs__pic:not(#_) video{border-radius:inherit}
 /* ── heroes: no inner side padding on the words block (it sat 44px in from the container on both sides) ── */
 body.hc-b.pc-page .pp-hero__in:not(#_),body.hc-b.pl-c .pl-hero .pp-hero__in:not(#_){padding-inline:0 !important;margin-inline:auto !important}
 /* the About paragraph under the product heroes runs wider, so it takes fewer lines */
-body.hc-b.pc-page .pp-about__text:not(#_){max-width:960px}
+body.hc-b.pc-page .pp-about .pp-wrap > p:not(#_),body.hc-b.pc-page .pp-about__text:not(#_){max-width:960px !important}
