@@ -586,15 +586,16 @@
 
   /* arrangements on a 1080×480 stage: [main, screen 1, screen 2, screen 3] as x, y, w, h */
   const LAYOUT = {
-    /* the picture carries the scene; the screens overlap its edges, not its subject */
-    A: [[190, 0, 700, 400], [0, 200, 310, 240], [820, 20, 260, 190], [790, 240, 290, 210]],
-    C: [[300, 0, 480, 470], [10, 50, 320, 210], [50, 280, 300, 190], [750, 140, 320, 240]],
-    D: [[170, 20, 740, 400], [0, 240, 300, 220], [800, 0, 280, 190], [780, 250, 300, 200]],
-    E: [[220, 10, 640, 420], [0, 40, 300, 220], [800, 20, 280, 210], [740, 260, 320, 190]],
+    /* the picture sits smaller in the middle; the screens sit apart from each other, each a little
+       turned, the way the Agent Cloud fan reads: air between the pieces, an edge of the picture under each */
+    A: [[320, 70, 440, 330, 0], [30, 60, 300, 0, -5], [770, 0, 290, 0, 4], [700, 280, 320, 0, -3]],
+    C: [[330, 30, 420, 320, 0], [10, 80, 310, 0, -4], [80, 300, 300, 0, 3], [760, 130, 310, 0, -3]],
+    D: [[290, 100, 480, 330, 0], [10, 20, 300, 0, -6], [790, 0, 280, 0, 5], [750, 270, 310, 0, -2]],
+    E: [[340, 50, 400, 360, 0], [20, 130, 300, 0, -3], [780, 30, 290, 0, 4], [690, 290, 330, 0, -5]],
     /* the voice: a wide, short bar, the way it sits on the homepage's closing tile */
-    V: [[230, 90, 600, 300], [20, 200, 330, 250], [790, 30, 270, 200], [730, 270, 330, 200]]
+    V: [[230, 90, 600, 300, 0], [20, 200, 330, 250, 0], [790, 30, 270, 200, 0], [730, 270, 330, 200, 0]]
   };
-  const mirror = l => l.map(([x, y, w, h]) => [1080 - x - w, y, w, h]);
+  const mirror = l => l.map(([x, y, w, h, r]) => [1080 - x - w, y, w, h, -(r || 0)]);
   LAYOUT.B = mirror(LAYOUT.A); LAYOUT.F = mirror(LAYOUT.E);
   const PLAN = {
     'the-machine': ['A', { t: 'chat', q: 'Brief the Q3 launch for the team', a: 'Done. The brief, the audience and last quarter’s learnings are in one place, shared in Slack and Figma.' }, { t: 'network', title: 'Shared context', items: ['Slack', 'Figma', 'Adobe'] }, { t: 'list', title: 'Agents at work', items: ['Brief drafted', 'Audience refreshed', 'Assets resized'], metas: ['Now', 'Today', 'Today'] }],
@@ -744,15 +745,24 @@
     const card = (cls, x, y, w, h, inner, rot) => '<div class="pc-collage__card ' + cls + '" style="left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px' + (rot ? ';rotate:' + rot + 'deg' : '') + '">' + inner + '</div>';
     if (kind === 'fan') {
       const cs = SCENE[slug][1];
+      /* the product's picture stands in the middle of the fan, a little turned like the cards round it */
       const FANS = {
-        left: [[20, 150, 280, 190, -7], [300, 10, 330, 420, 4], [640, 70, 330, 310, -4], [860, 220, 220, 180, 6]],
-        right: [[780, 150, 280, 190, 7], [450, 10, 330, 420, -4], [110, 70, 330, 310, 4], [0, 220, 220, 180, -6]],
-        stack: [[60, 40, 300, 200, -5], [330, 30, 360, 400, 2], [690, 90, 320, 300, 5], [120, 270, 260, 170, 3]]
+        left: [[370, 30, 340, 410, 3], [20, 70, 280, 190, -7], [60, 280, 300, 0, 4], [720, 40, 330, 0, -4], [800, 300, 240, 160, 6]],
+        stack: [[360, 20, 340, 400, -2], [40, 40, 300, 190, -5], [60, 270, 280, 0, 3], [720, 60, 320, 0, 5], [740, 300, 300, 160, -3]]
       };
+      FANS.right = FANS.left.map(([x, y, w, h, r]) => [1080 - x - w, y, w, h, -r]);
       const fan = FANS[SCENE[slug][2] || 'left'];
-      const lay = small ? [[10, 0, 240, 150, -5], [130, 110, 260, 320, 4]] : fan;
+      const lay = small ? [[0, 0, 400, 270, 0], [10, 200, 250, 150, -4], [150, 240, 240, 0, 3]] : fan;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
-      lay.forEach(([x, y, w, h, r], k) => { const c = cs[k]; let m = card('pc-collage__ui pc-collage__ui--' + (k + 1) + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h), r); if (c.t !== 'note') m = m.replace('height:' + h + 'px', 'height:auto'); html += m; });
+      const hasPic = centreSrc && centreSrc !== 'voice';
+      lay.forEach(([x, y, w, h, r], k) => {
+        if (k === 0) { if (hasPic) html += card('pc-collage__main', x, y, w, h, '', r); return; }
+        const c = cs[k - 1]; if (!c) return;
+        const hh = h || 200;
+        let m = card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, hh, SCREEN[c.t](c, w, hh), r);
+        if (c.t !== 'note') m = m.replace('height:' + hh + 'px', 'height:auto');
+        html += m;
+      });
     } else if (kind === 'tiles') {
       const cfg = SCENE[slug][1]; const cols = small ? 2 : 3, tw = small ? 190 : 340, th = small ? 150 : 220, gap = small ? 20 : 30;
       SW = small ? 400 : 1080; SH = small ? 320 : 470;
@@ -770,8 +780,8 @@
     } else {
       const lay = small ? [[0, 0, 400, 270], [18, 206, 364, 230]] : L;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
-      html += card('pc-collage__main', ...lay[0], '');
-      for (let k = 1; k < lay.length; k++) { const [x, y, w, h] = lay[k], c = plan[k]; let m = card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h)); if (c.t !== 'note') m = m.replace('height:' + h + 'px', 'height:auto'); html += m; }
+      html += card('pc-collage__main', lay[0][0], lay[0][1], lay[0][2], lay[0][3], '', lay[0][4]);
+      for (let k = 1; k < lay.length; k++) { const [x, y, w, h0, r] = lay[k], c = plan[k], h = h0 || 200; let m = card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, h, SCREEN[c.t](c, w, h), small ? 0 : r); if (c.t !== 'note') m = m.replace('height:' + h + 'px', 'height:auto'); html += m; }
     }
     next.className = 'pc-collage pc-collage--' + kind + (small ? ' pc-collage--phone' : ' pc-collage--' + plan[0]);
     next.innerHTML = '<div class="pc-collage__stage" style="width:' + SW + 'px;height:' + SH + 'px">' + html + '</div>';
