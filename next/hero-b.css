@@ -656,3 +656,40 @@ body.hc-b.pc-page .sp-tabs__pic:not(#_) > img{position:absolute;inset:0;width:10
 .sx-tile__viz{position:absolute}
 .sx--network{padding-bottom:22px}
 .sx-net{margin-bottom:0}
+
+/* ── /book in the approved look: the same words and the same form (lead.js), set like the other
+      inner pages — centred title, the three points in a row, the form in one light-bordered card ── */
+body.hc-b.bk-page .bk-hero:not(#_){min-height:0;display:block;overflow:visible;background:#FFFFFF;color:#0B1220;
+  padding:calc(var(--nav-h,72px) + clamp(36px,5vw,72px)) 0 clamp(72px,9vw,136px)}
+body.hc-b.bk-page .bk-hero:not(#_)::before{display:none}
+body.hc-b.bk-page .bk__in:not(#_){display:flex;flex-direction:column;align-items:center;gap:0;max-width:1240px;margin:0 auto;padding:0 20px}
+body.hc-b.bk-page .bk__copy:not(#_){text-align:center;max-width:720px}
+body.hc-b.bk-page .bk__title:not(#_){font-family:'Roobert',var(--sans,ui-sans-serif),system-ui,sans-serif;font-weight:500;color:#0B1220;
+  font-size:clamp(40px,1rem + 3.4vw,68px);line-height:1.04;letter-spacing:-.035em;text-wrap:balance}
+body.hc-b.bk-page .bk__points:not(#_){margin:28px 0 0;padding:0;list-style:none;display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 32px}
+body.hc-b.bk-page .bk__points:not(#_) li{display:flex;align-items:center;gap:12px;max-width:none;font-size:17px;font-weight:500;line-height:1.3;color:#0B1220}
+body.hc-b.bk-page .bk__ic:not(#_){width:40px;height:40px;border-radius:50%;background:#F1F1EF;color:#0B1220;box-shadow:none;border:0}
+body.hc-b.bk-page .bk__ic:not(#_) svg{width:20px;height:20px}
+body.hc-b.bk-page .bk__card:not(#_){width:100%;max-width:640px;margin:clamp(36px,4vw,56px) auto 0;background:#FFFFFF;color:#0B1220;
+  border:1px solid rgba(11,18,32,.12);border-radius:24px;padding:clamp(24px,3.4vw,44px);box-shadow:none}
+body.hc-b.bk-page .bk__card .lead__lbl:not(#_){font-family:inherit;font-size:14px;font-weight:500;color:#0B1220}
+body.hc-b.bk-page .bk__card input:not(#_){height:52px;border:0;border-radius:12px;background:#F1F1EF;font-family:inherit;font-size:16px;color:#0B1220;box-shadow:none}
+body.hc-b.bk-page .bk__card input:not(#_):hover{box-shadow:inset 0 0 0 1px rgba(11,18,32,.25)}
+body.hc-b.bk-page .bk__card input:not(#_):focus{background:#FFFFFF;box-shadow:inset 0 0 0 2px #0B1220}
+body.hc-b.bk-page .bk__card .lead__pick span{font-family:inherit;font-weight:500;background:#F1F1EF;color:#0B1220}
+body.hc-b.bk-page .bk__card .lead__pick:hover span{background:#E7E7E3}
+body.hc-b.bk-page .bk__card .lead__pickshint{color:rgba(11,18,32,.56)}
+/* the submit: ink, as every Book a demo button is on B (lead.css paints it orange with an id-strength rule) */
+body.hc-b.bk-page .bk__card .lead__form .btn--dark:not(#_){background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important;
+  height:56px;border-radius:999px;font-weight:600}
+body.hc-b.bk-page .bk__card .lead__form .btn--dark:not(#_):hover{background:#000000 !important;border-color:#000000 !important;transform:none}
+body.hc-b.bk-page .bk__card .modal__fine:not(#_){color:rgba(11,18,32,.56)}
+body.hc-b.bk-page .bk__card .modal__ok h3:not(#_){font-family:inherit;font-weight:500;letter-spacing:-.02em}
+@media (max-width:760px){
+  body.hc-b.bk-page .bk-hero:not(#_){padding-top:calc(var(--nav-h,64px) + 32px)}
+  body.hc-b.bk-page .bk__title:not(#_){font-size:clamp(34px,10vw,44px)}
+  body.hc-b.bk-page .bk__copy:not(#_){width:100%}
+  body.hc-b.bk-page .bk__points:not(#_){flex-direction:column;align-items:flex-start;gap:12px;margin:24px 0 0;width:100%}
+  body.hc-b.bk-page .bk__points:not(#_) li{text-align:left;font-size:16px}
+  body.hc-b.bk-page .bk__card:not(#_){border-radius:20px;padding:20px}
+}

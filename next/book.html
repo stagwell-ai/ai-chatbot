@@ -41,10 +41,14 @@ d.setAttribute('data-theme',t||sys);})();
 <link rel="stylesheet" href="/next/call.css">
 <link rel="stylesheet" href="/next/home.css">
 <link rel="stylesheet" href="/next/product.css">
+<link rel="stylesheet" href="/next/home-c.css?v=237">
+<link rel="stylesheet" href="/next/prod-c.css?v=122">
+<link rel="stylesheet" href="/next/hero-b.css?v=69">
 <!-- Contentsquare: funnel analysis and heatmaps (client, 2026-09-17) -->
 <script src="https://t.contentsquare.net/uxa/f6c5bb82a83a7.js" defer></script>
 </head>
-<body class="home pp bk-page" data-lead-cta>
+<!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta] click -->
+<body class="home pp hc-page hc-b pc-page bk-page" data-lead-cta>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="sw-logo" viewBox="0 0 1870 153">
@@ -90,9 +94,9 @@ d.setAttribute('data-theme',t||sys);})();
     <div class="nav__acts">
       <!-- a chat bubble with the AI spark, not a magnifier: it opens the chat over the
            page, it is not a search (client, 2026-09-10) -->
-      <a class="nav__search" href="/#ask" aria-label="Ask Stagwell AI">
+      <button type="button" class="nav__search" id="navSearch" aria-label="Ask Stagwell AI" aria-haspopup="dialog" aria-expanded="false">
         <svg class="ic-ask" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M6 3.5h12A3.5 3.5 0 0 1 21.5 7v8a3.5 3.5 0 0 1-3.5 3.5h-6.6L7 21.8v-3.3H6A3.5 3.5 0 0 1 2.5 15V7A3.5 3.5 0 0 1 6 3.5zM12 6.6Q12.55 10.45 16.4 11Q12.55 11.55 12 15.4Q11.45 11.55 7.6 11Q11.45 10.45 12 6.6Z"/></svg>
-      </a>
+      </button>
       <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
       <!-- the phone's way in: the links and both buttons live in the sheet -->
       <button type="button" class="nav__burger" id="navBurger" aria-expanded="false" aria-controls="navMenu"><span class="nav__blbl">Menu</span><span class="nav__bl"></span><span class="nav__bl"></span><span class="nav__bl"></span></button>
@@ -120,14 +124,45 @@ d.setAttribute('data-theme',t||sys);})();
   </div>
   <div class="menu__acts">
     <!-- the Ask field at the foot, over Book a demo: in reach of a thumb (client) -->
-    <a class="menu__search" href="/#ask">
+    <button type="button" class="menu__search" id="menuSearch" aria-haspopup="dialog">
       <svg class="ic-ask" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M6 3.5h12A3.5 3.5 0 0 1 21.5 7v8a3.5 3.5 0 0 1-3.5 3.5h-6.6L7 21.8v-3.3H6A3.5 3.5 0 0 1 2.5 15V7A3.5 3.5 0 0 1 6 3.5zM12 6.6Q12.55 10.45 16.4 11Q12.55 11.55 12 15.4Q11.45 11.55 7.6 11Q11.45 10.45 12 6.6Z"/></svg>
       <span>Ask Stagwell</span>
-    </a>
+    </button>
     <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
   </div>
 </nav>
-<main class="bk">
+
+<!-- the chat, full screen over the page: the Ask Stagwell block itself,
+     in light. The magnifier opens it; the arrow or Enter sends to the agent. -->
+<div class="chat-over" id="chatOver" role="dialog" aria-modal="true" aria-label="Ask Stagwell" hidden>
+  <a class="chat-over__brand" href="/" aria-label="Stagwell AI — home"><svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg></a>
+  <button type="button" class="hero__disc chat-over__close" id="chatOverClose" aria-label="Close"><svg class="ic ic-x" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <div class="wrap ask__in chat-over__in">
+    <h2 class="display display--ask chat-over__title">How can we <em>help<span class="q">?</span></em></h2>
+    <p class="ask__lede">Ask anything. Stagwell AI finds the right expertise, <br>technology and people to solve it.</p>
+    <form class="ask__form" id="askFormOver" autocomplete="off">
+      <label class="vh" for="askInputOver">Ask Stagwell</label>
+      <div class="ask__field">
+        <input class="ask__input" id="askInputOver" name="q" type="text"
+               placeholder="Ask Stagwell" spellcheck="false">
+        <button class="ask__go" type="submit" aria-label="Ask Stagwell">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </form>
+    <ul class="ask__tags" role="group" aria-label="Pick a starting point">
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Increase brand awareness" data-domain="brand_health" data-goal="brand_awareness"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 13.5 7.5 9l3.5 3.5L17 6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 6.5h4v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Increase brand awareness</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Grow your audience" data-domain="audiences" data-goal="audience_growth"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="13.6" cy="8.4" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 15.4c.6-2.2 2.3-3.4 4.5-3.4s3.9 1.2 4.5 3.4M13.2 12.2c1.9 0 3.2 1 3.8 2.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Grow your audience</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Protect brand reputation" data-domain="reputation" data-goal="reputation"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.8 4 5.2v4.6c0 3.5 2.6 6.2 6 7.4 3.4-1.2 6-3.9 6-7.4V5.2L10 2.8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m7.4 10 1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Protect brand reputation</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Track your competition" data-domain="competitive" data-goal="competition"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.6" cy="8.6" r="4.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12.4 12.4 16.5 16.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Track your competition</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Measure brand impact" data-domain="business_impact" data-goal="brand_impact"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 16V9M8.5 16V5M13.5 16v-4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.5 16H2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Measure brand impact</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Scale business operations" data-domain="marketing_ops" data-goal="operations"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="3" y="3" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="11.5" y="3" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11.5" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14.25 11.5v5.5M11.5 14.25h5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Scale business operations</button></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Generated by next/build-book-c.py (frame: the-machine.html) — edit there, not here. -->
+<main class="bk" id="top">
   <section class="bk-hero">
     <div class="pp-wrap bk__in">
       <div class="bk__copy">
@@ -172,9 +207,58 @@ d.setAttribute('data-theme',t||sys);})();
   </div>
 </footer>
 
-<script src="/next/call.js"></script>
+<script src="/next/data-loader.js"></script>
+<script src="/next/engine.js"></script>
+<script src="/next/flow.js"></script>
+<script src="/next/research.js"></script>
 <script src="/next/lead.js"></script>
+<script src="/next/call.js"></script>
 <script src="/next/home.js"></script>
 <script src="/next/navdrop.js"></script>
+<script src="/next/recommend.js"></script>
+<script src="/next/select-question.js"></script>
+<script src="/next/cards.js"></script>
+<script src="/next/analytics.js"></script>
+<script src="/next/kimi-flow.js"></script>
+<script src="/next/voice-reducer.js"></script>
+<script src="/next/voice-wave.js"></script>
+<script src="/next/voice-stage.js"></script>
+<script src="/next/voice.js"></script>
+<script src="/next/hero-agent.js"></script>
+<script>
+/* the film: poster and a play disc until it is asked for; controls once it plays; back to
+   the poster when it ends */
+(function () {
+  const f = document.querySelector('.pp-film'); if (!f) return;
+  const v = f.querySelector('video'), b = f.querySelector('.pp-film__play'); if (!v || !b) return;
+  b.addEventListener('click', () => { v.controls = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); });
+  v.addEventListener('play', () => f.classList.add('is-playing'));
+  v.addEventListener('ended', () => { f.classList.remove('is-playing'); v.controls = false; v.load(); });
+})();
+</script>
+<script>
+/* the close's field on a product page: there is no hero chat to hand over to,
+   so the conversation opens right here, in place of the field */
+(function () {
+  const f = document.getElementById('ppAsk'), i = document.getElementById('ppAskInput'),
+        chat = document.getElementById('ask'), form = document.getElementById('agentForm'), input = document.getElementById('agentInput');
+  if (!f || !i || !chat || !form || !input) return;
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = i.value.trim(); if (!v) { i.focus(); return; }
+    f.hidden = true; chat.hidden = false; input.value = v; i.value = ''; form.requestSubmit();
+  });
+})();
+</script>
+<div class="hc-launch" id="hcLaunch" hidden>
+  <button type="button" class="hc-launch__x" aria-label="Hide this message"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <p class="hc-launch__say"><svg class="hc-launch__mic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="7.2" y="2.4" width="5.6" height="9.4" rx="2.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.6 9.4a5.4 5.4 0 0 0 10.8 0M10 14.8v2.6M7.6 17.4h4.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>I can talk, try my voice feature!</span></p>
+  <button type="button" class="hc-launch__btn" id="hcLaunchBtn">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2.8l1.7 4.8 4.8 1.7-4.8 1.7L12 15.8l-1.7-4.8L5.5 9.3l4.8-1.7z"/><path fill="currentColor" d="M18.6 14.6l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z"/></svg>
+    <span>Ask Stagwell AI</span>
+  </button>
+</div>
+<script src="/next/home-c.js?v=203"></script>
+<script src="/next/prod-c.js?v=69"></script>
 </body>
 </html>
