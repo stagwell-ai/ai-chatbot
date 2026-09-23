@@ -566,7 +566,8 @@ body.hc-b.pc-page .pc-collage--fan .pc-collage__ui--2{z-index:2}
 body.hc-b.pc-page .pc-collage--fan .pc-collage__ui--3{z-index:3}
 body.hc-b.pc-page .pc-collage--fan .pc-collage__ui--4{z-index:4}
 body.hc-b.pc-page .pc-collage__card.sx--note{border:0}
-body.hc-b.pc-page .pc-collage{overflow:clip}
+/* clip sideways only: the turned cards' borders were cut at the top and bottom of the stage */
+body.hc-b.pc-page .pc-collage{overflow-x:clip;overflow-y:visible}
 body.hc-b.pc-page .pc-collage--phone .sx-tile__spark{display:none}
 body.hc-b.pc-page .pc-collage--phone .sx--tile{padding:18px}
 body.hc-b.pc-page .pc-collage--phone .sx-tile__body b{font-size:18px}
@@ -760,3 +761,12 @@ body.hc-b.pc-page .sp-tabs__panel:nth-child(1) .sp-tabs__pic .sx-in{background:#
 body.hc-b.pc-page .sp-tabs__panel:nth-child(4) .sp-tabs__pic .sx-in{background:#DCEFF6}
 body.hc-b.pc-page:is(.sp--questdiy,.sp--unicepta,.sp--geopulse,.sp--media_machine,.sp--id_graph,.pp--targeting-machine,.pp--agent-cloud) .sp-tabs__panel:nth-child(1) .sp-tabs__pic .sx-in{background:#FFF3D2}
 body.hc-b.pc-page:is(.sp--bera,.sp--imai,.sp--numetrix,.sp--search_plus,.pp--newvoices) .sp-tabs__panel:nth-child(4) .sp-tabs__pic .sx-in{background:#FFF3D2}
+
+/* ── the Shared context card: the tools' logos, one after another, in ink ── */
+body.hc-b.pc-page .sx-logos{position:relative;height:150px}
+body.hc-b.pc-page .sx-logos__item{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.94);
+  animation:sxLogos calc(var(--n) * 2.2s) linear infinite;animation-delay:calc(var(--i) * 2.2s)}
+body.hc-b.pc-page .sx-logos .sx-logo{display:block;width:150px;height:44px;background:#0B1220;
+  -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat}
+@keyframes sxLogos{0%{opacity:0;transform:scale(.94)} 5%{opacity:1;transform:none} 17%{opacity:1;transform:none} 21%{opacity:0;transform:scale(.94)} 100%{opacity:0;transform:scale(.94)}}
+@media (prefers-reduced-motion:reduce){body.hc-b.pc-page .sx-logos__item{animation:none} body.hc-b.pc-page .sx-logos__item[style*="--i:0"]{opacity:1;transform:none}}

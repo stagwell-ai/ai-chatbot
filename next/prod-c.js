@@ -598,7 +598,7 @@
   const mirror = l => l.map(([x, y, w, h, r]) => [1080 - x - w, y, w, h, -(r || 0)]);
   LAYOUT.B = mirror(LAYOUT.A); LAYOUT.F = mirror(LAYOUT.E);
   const PLAN = {
-    'the-machine': ['A', { t: 'chat', q: 'Brief the Q3 launch for the team', a: 'Done. The brief, the audience and last quarter’s learnings are in one place, shared in Slack and Figma.' }, { t: 'network', title: 'Shared context', items: ['Slack', 'Figma', 'Adobe'] }, { t: 'list', title: 'Agents at work', items: ['Brief drafted', 'Audience refreshed', 'Assets resized'], metas: ['Now', 'Today', 'Today'] }],
+    'the-machine': ['A', { t: 'chat', q: 'Brief the Q3 launch for the team', a: 'Done. The brief, the audience and last quarter’s learnings are in one place, shared in Slack and Figma.' }, { t: 'logos', title: 'Shared context', sub: 'The tools your teams already use' }, { t: 'list', title: 'Agents at work', items: ['Brief drafted', 'Audience refreshed', 'Assets resized'], metas: ['Now', 'Today', 'Today'] }],
     'targeting-machine': ['E', { t: 'prompt', chips: ['Explore', 'Expand', 'Activate'], q: 'Find people already shopping for an electric car' }, { t: 'network', title: 'Identity graph', items: ['People', 'Households', 'Devices'] }, { t: 'donut', title: 'Audience mix', items: ['High intent', 'Lookalikes', 'Re-engage'] }],
     'newvoices': ['V', { t: 'chat', agent: true, q: 'I switched because setup took five minutes.', a: 'What made you look for something new in the first place?' }, { t: 'note', q: 'Interview 200 customers about why they switched' }, { t: 'list', title: 'Themes emerging', items: ['Price clarity', 'Onboarding', 'Support speed'], metas: ['Rising', 'Steady', 'New'] }],
     'agent-cloud': ['D', { t: 'prompt', chips: ['Claude', 'ChatGPT', 'Gemini'], q: 'Draft three headlines for the spring campaign' }, { t: 'list', title: 'Marketing agents', items: ['Copywriter', 'Campaign planner', 'Message tester'], metas: ['Ready', 'Ready', 'Running'], faces: true }, { t: 'chat', q: 'Test these two messages with parents', a: 'Message B lands better. Parents called it clearer and more honest.' }],
@@ -698,6 +698,17 @@
     creators(c) {
       let g = ''; for (let i = 0; i < 6; i++) g += '<li>' + face([1, 6, 11, 14, 17, 2][i]) + (i % 3 === 0 ? '<b class="sx-ok"></b>' : '') + '</li>';
       return headH(c.title, c.sub) + '<ul class="sx-creators">' + g + '</ul>';
+    },
+    logos(c, w, h) {
+      /* the tools, one logo after another, in ink (Slack and Figma marks drawn inline; the rest are the site's own logo files, used as masks) */
+      const marks = [
+        '<svg viewBox="0 0 122.8 122.8" width="44" height="44" aria-label="Slack"><path fill="#0B1220" d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9zm6.5 0c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V77.6zM45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9H45.2zm0 6.5c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9h32.3zM97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97V45.2zm-6.5 0c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3zM77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9zm0-6.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z"/></svg>',
+        '<svg viewBox="0 0 38 57" width="34" height="50" aria-label="Figma"><path fill="#0B1220" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/><path fill="#0B1220" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z"/><path fill="#0B1220" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z"/><path fill="#0B1220" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/><path fill="#0B1220" d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg>',
+        '<i class="sx-logo" role="img" aria-label="Adobe" style="--logo:url(/assets/img/why/logos/adobe.webp)"></i>',
+        '<i class="sx-logo" role="img" aria-label="Google" style="--logo:url(/assets/img/why/logos/google.webp)"></i>',
+        '<i class="sx-logo" role="img" aria-label="Microsoft" style="--logo:url(/assets/img/why/logos/microsoft.svg)"></i>'
+      ];
+      return '<div class="sx-h"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span>' + esc(c.sub) + '</span>' : '') + '</div><div class="sx-logos" style="--n:' + marks.length + '">' + marks.map((m, i) => '<span class="sx-logos__item" style="--i:' + i + '">' + m + '</span>').join('') + '</div>';
     },
     network(c, w, h) {
       /* a hub in ink, a ring of nodes wired to it, and the three named nodes as pills */
