@@ -1007,3 +1007,12 @@ body.hc-b #saiConsent:not(#_) .no:hover{border-color:#0B1220}
   body.hc-b .nav__mcol .nav__pmark:not(#_) svg{width:20px;height:20px}
   body.hc-b .nav__mcol .nav__pitem:not(#_):hover .nav__pmark{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34) !important;background:#FFFFFF !important}
 }
+@media (min-width:900px){
+  /* the banner is only as tall as the two rows of links; the loop is cropped, not stretched */
+  body.hc-b .nav__mega:not(#_){align-items:start}
+  body.hc-b .nav__mcta:not(#_){min-height:0;height:140px;align-self:start}
+  body.hc-b .nav__mcta__in:not(#_){padding:20px 22px}
+  body.hc-b .nav__mcta__t:not(#_){font-size:20px}
+  body.hc-b .nav__mcta__arw:not(#_){width:40px;height:40px}
+  body.hc-b .nav__panel:not(#_){padding:20px 20px 16px}
+}
