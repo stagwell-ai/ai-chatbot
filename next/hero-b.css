@@ -783,3 +783,31 @@ body.hc-b.pc-page:not(.pl-c) .pp-hero .pp-lede:not(#_){max-width:720px !importan
 /* the Why box is a grid (picture and slot in column 1, words in column 2): the CTA takes the last row of the words column, under the paragraph */
 body.hc-b #why .why__item > .why__cta:not(#_){grid-area:5 / 2 / 6 / 3;justify-self:start;align-self:start;margin-top:18px}
 @media (max-width:760px){ body.hc-b #why .why__item > .why__cta:not(#_){grid-area:auto;margin-top:18px} }
+
+/* ── QA pass (2026-09-23): the Why titles were touching their lead line on phones ── */
+body.hc-b #why .why__item .why__head:not(#_){margin-bottom:10px}
+/* proof figures on phones: two columns of big numbers ran edge to edge in their cards */
+@media (max-width:480px){
+  body.hc-b.pc-page .pp-proof .is-num:not(#_){font-size:clamp(28px,8.6vw,38px) !important;letter-spacing:-.03em}
+}
+/* How-it-works mockup panes on phones: the pane grows to its mockup instead of cropping it */
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-tabs__pic:has(.sx-in):not(#_){aspect-ratio:auto;height:auto;min-height:0}
+  body.hc-b.pc-page .sp-tabs__pic .sx-in:not(#_){position:relative;inset:auto;padding:20px;display:grid;place-items:center}
+  body.hc-b.pc-page .sp-tabs__pic .sx-in .pc-collage__card:not(#_){position:relative;left:auto !important;top:auto !important;transform:none;width:100% !important;max-width:420px;rotate:none}
+}
+/* tablets (761–899): the Why box stacks as a column, but the second paragraph kept its desktop centring */
+@media (max-width:899px){
+  body.hc-b #why .why__item:not(#_) > *{align-self:flex-start !important;margin-left:0 !important}
+  body.hc-b #why .why__item:not(#_) > .why__slot{align-self:stretch !important}
+}
+/* the About paragraph on product pages: a readable measure on tablets and up */
+body.hc-b.pc-page .pp-about .pp-wrap > p:not(#_),body.hc-b.pc-page .pp-about__text:not(#_){max-width:720px}
+/* /book on tablets: two columns left the words a sliver, so the page stacks up to 1000px */
+@media (max-width:1000px){
+  body.hc-b.bk-page .bk__in:not(#_){display:flex;flex-direction:column;gap:28px}
+  body.hc-b.bk-page .bk__copy:not(#_){width:100%;position:static;max-width:none}
+  body.hc-b.bk-page .bk__points:not(#_){flex-direction:column;align-items:flex-start;gap:12px;margin:24px 0 0;width:100%}
+  body.hc-b.bk-page .bk__points:not(#_) li{text-align:left}
+  body.hc-b.bk-page .bk__card:not(#_){max-width:640px}
+}
