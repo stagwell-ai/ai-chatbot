@@ -763,12 +763,15 @@
       };
       FANS.right = FANS.left.map(([x, y, w, h, r]) => [1080 - x - w, y, w, h, -r]);
       const fan = FANS[SCENE[slug][2] || 'left'];
-      const lay = small ? [[0, 0, 400, 270, 0], [16, 200, 244, 150, -4], [140, 240, 236, 0, 3]] : fan;
+      /* phones: the picture and one card (the first that is not a note), the way the picture scenes do it;
+         two turned cards on a 400px stage sat on each other and neither could be read */
+      const lay = small ? [[0, 0, 400, 270, 0], [18, 206, 364, 0, 0]] : fan;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
       const hasPic = centreSrc && centreSrc !== 'voice';
+      const phoneCard = cs.find(c => c.t !== 'note') || cs[0];
       lay.forEach(([x, y, w, h, r], k) => {
         if (k === 0) { if (hasPic) html += card('pc-collage__main', x, y, w, h, '', r); return; }
-        const c = cs[k - 1]; if (!c) return;
+        const c = small ? phoneCard : cs[k - 1]; if (!c) return;
         const hh = h || 200;
         let m = card('pc-collage__ui pc-collage__ui--' + k + ' sx sx--' + c.t, x, y, w, hh, SCREEN[c.t](c, w, hh), r);
         if (c.t !== 'note') m = m.replace('height:' + hh + 'px', 'height:auto');

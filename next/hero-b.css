@@ -756,11 +756,12 @@ body.hc-b #why .why__slot--ct:not(#_){display:block;position:relative;padding:0}
 body.hc-b #why .why__slot--ct:not(#_) img.why__ctlogo{position:absolute;left:50%;top:50%;translate:-50% -50%;width:62% !important;margin:0}
 body.hc-b #why .why__slot--ct:not(#_) .why__awards{position:absolute;left:0;right:0;bottom:clamp(14px,1.8vw,24px)}
 
-/* ── How it works: the mockup panes take the suite's pastel tones in turn, not grey on grey ── */
-body.hc-b.pc-page .sp-tabs__panel:nth-child(1) .sp-tabs__pic .sx-in{background:#FFE7D8}
-body.hc-b.pc-page .sp-tabs__panel:nth-child(4) .sp-tabs__pic .sx-in{background:#DCEFF6}
-body.hc-b.pc-page:is(.sp--questdiy,.sp--unicepta,.sp--geopulse,.sp--media_machine,.sp--id_graph,.pp--targeting-machine,.pp--agent-cloud) .sp-tabs__panel:nth-child(1) .sp-tabs__pic .sx-in{background:#FFF3D2}
-body.hc-b.pc-page:is(.sp--bera,.sp--imai,.sp--numetrix,.sp--search_plus,.pp--newvoices) .sp-tabs__panel:nth-child(4) .sp-tabs__pic .sx-in{background:#FFF3D2}
+/* ── How it works: the mockup panes take muted tones cut from the Stagwell palette (sand from the orange,
+      dusty blue from the blue, straw from the yellow, stone from the navy), the way Manus tints its panes ── */
+body.hc-b.pc-page .sp-tabs__panel:nth-child(1) .sp-tabs__pic .sx-in{background:#F3E7DA}
+body.hc-b.pc-page .sp-tabs__panel:nth-child(4) .sp-tabs__pic .sx-in{background:#CFDBDF}
+body.hc-b.pc-page:is(.sp--questdiy,.sp--unicepta,.sp--geopulse,.sp--media_machine,.sp--id_graph,.pp--targeting-machine,.pp--agent-cloud) .sp-tabs__panel:nth-child(1) .sp-tabs__pic .sx-in{background:#E6E5D9}
+body.hc-b.pc-page:is(.sp--bera,.sp--imai,.sp--numetrix,.sp--search_plus,.pp--newvoices) .sp-tabs__panel:nth-child(4) .sp-tabs__pic .sx-in{background:#EDE7D3}
 
 /* ── the Shared context card: the tools' logos, one after another, in ink ── */
 body.hc-b.pc-page .sx-logos{position:relative;height:150px}
