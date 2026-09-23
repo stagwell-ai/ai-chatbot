@@ -763,7 +763,7 @@
       };
       FANS.right = FANS.left.map(([x, y, w, h, r]) => [1080 - x - w, y, w, h, -r]);
       const fan = FANS[SCENE[slug][2] || 'left'];
-      const lay = small ? [[0, 0, 400, 270, 0], [10, 200, 250, 150, -4], [150, 240, 240, 0, 3]] : fan;
+      const lay = small ? [[0, 0, 400, 270, 0], [16, 200, 244, 150, -4], [140, 240, 236, 0, 3]] : fan;
       SW = small ? 400 : 1080; SH = small ? 440 : 480;
       const hasPic = centreSrc && centreSrc !== 'voice';
       lay.forEach(([x, y, w, h, r], k) => {

@@ -811,3 +811,8 @@ body.hc-b.pc-page .pp-about .pp-wrap > p:not(#_),body.hc-b.pc-page .pp-about__te
   body.hc-b.bk-page .bk__points:not(#_) li{text-align:left}
   body.hc-b.bk-page .bk__card:not(#_){max-width:640px}
 }
+
+/* ── footer links, one voice: same size, same ink, same quiet hover (no teal, no big pair) ── */
+body.hc-b .foot .foot__big:not(#_){display:flex;flex-direction:column;gap:12px}
+body.hc-b .foot .foot__big a:not(#_),body.hc-b .foot .foot__small a:not(#_),body.hc-b .foot .foot__small button:not(#_){font-family:inherit;font-size:16px !important;font-weight:500;letter-spacing:0;line-height:1.3;color:#0B1220 !important;text-decoration:none;transition:color .2s ease}
+body.hc-b .foot .foot__big a:not(#_):hover,body.hc-b .foot .foot__small a:not(#_):hover,body.hc-b .foot .foot__small button:not(#_):hover{color:rgba(11,18,32,.55) !important;text-decoration:underline;text-underline-offset:4px}
