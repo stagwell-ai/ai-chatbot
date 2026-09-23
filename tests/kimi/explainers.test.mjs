@@ -75,17 +75,24 @@ test('a visitor never sees a routing label: every product renders a name meant f
     const shown = p.displayName || p.name;
     assert.ok(!/\(|\)|family frame|internal/i.test(shown), p.id + ' would show "' + shown + '"');
   });
-  /* the one entry whose catalog name IS a routing label carries a display name */
+  /* The one entry whose catalog NAME is a routing label must carry a display
+     name. What that name says is the client's to change — it went from "The
+     Machine" to "Machine OS" on 2026-09-23 — so this asserts that one exists
+     and is fit to show a person, not what it happens to read today. Pinning
+     the literal made a copy edit look like a broken build. */
   const m = R.productById('machines_family', DATA);
-  assert.equal(m.displayName, 'The Machine');
+  assert.ok(m.displayName && m.displayName.trim(), 'machines_family must carry a display name');
+  assert.ok(!/\(|\)|family frame|internal/i.test(m.displayName),
+    'and it must be a name for people, not a routing label: ' + m.displayName);
   assert.match(m.name, /family frame/, 'the routing label is kept for the engine');
   /* and the card builds both its title and its why-line from the display name */
   const reco = R.recommend({ intents: [{ id: 'marketing_operations', explicit: true }] }, DATA);
   assert.equal(reco.primary, 'machines_family');
   const card = CARDS.buildCards(reco, reco.signals, DATA, DATA.kimi.copy, {})[0];
-  assert.equal(card.productName, 'The Machine');
+  assert.equal(card.productName, m.displayName, 'the card shows the display name, whatever it currently reads');
   assert.ok(!/family frame/.test(card.whyThisFits), 'why-line: ' + card.whyThisFits);
-  assert.match(card.whyThisFits, /^The Machine/);
+  assert.ok(card.whyThisFits.indexOf(m.displayName) === 0,
+    'and the why-line opens with it: ' + card.whyThisFits);
 });
 
 test('the detour answers before it asks: the root carries a summary, not a question back', () => {
@@ -98,9 +105,15 @@ test('the detour answers before it asks: the root carries a summary, not a quest
   assert.ok(DATA.kimi.copy.explore.rootAfter, 'and leads into the differentiators');
 });
 
-test('The Machine carries everything the product team sent', () => {
+test('the flagship explainer carries everything the product team sent', () => {
   const m = EX.machines_family;
-  assert.equal(m.name, 'The Machine');
+  /* Not pinned to a literal: the client renamed this from "The Machine" to
+     "Machine OS" on 2026-09-23 and three tests failed for a copy edit, which
+     is noise. What must hold is that the explainer and the catalog agree —
+     the agent reads one and the cards read the other, and a visitor told two
+     different names for the same product is a real fault. */
+  assert.equal(m.name, (R.productById('machines_family', DATA) || {}).displayName,
+    'the explainer and the catalog must call it the same thing');
   assert.equal(m.differentiators.length, 3);
   assert.equal(m.useCaseGroups.length, 5);
   assert.equal(m.useCaseGroups.reduce((n, g) => n + g.items.length, 0), 15, 'the Use Case Library is fifteen');

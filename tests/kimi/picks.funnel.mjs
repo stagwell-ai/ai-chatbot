@@ -107,7 +107,15 @@ try {
       const bus = window.SAI && window.SAI.events;
       if (bus) { const o = bus.emit.bind(bus); bus.emit = (t, x) => { window.__ev.push([t, x]); return o(t, x); }; }
       else window.SAI = { events: { emit: (t, x) => window.__ev.push([t, x]) } }; });
-    await page.click('.lead__pick:has-text("The Machine") input');
+    /* by id, from the catalog — the label is the client's to rename (it went
+       from "The Machine" to "Machine OS" on 2026-09-23) and a test that pins
+       the words fails on a copy edit, which teaches people to ignore it */
+    const MACHINE = (ACTIVE.find(p => p.id === 'machines_family') || {});
+    /* the picks became a collapsed dropdown in the 2026-09-23 client edits, so
+       the boxes are not clickable until it is opened */
+    const drop = await page.$('#saiLeadForm .lead__picks button');
+    if (drop) { await drop.click(); await page.waitForTimeout(300); }
+    await page.click('.lead__pick:has-text("' + (MACHINE.displayName || MACHINE.name) + '") input');
     await page.fill('#saiLeadForm [name=email]', 'ada@acme-brands.com');
     /* the role is required now: the HubSpot form these are submitted to marks
        jobtitle required, and a blank one is a rejected submission rather than
@@ -129,11 +137,23 @@ try {
   console.log('\n▶ reachable without a mouse');
   {
     const { ctx, page } = await open('/book');
+    /* The requirement is unchanged — a product can be chosen with the keyboard
+       alone — but the route to it is longer since the picks became a dropdown
+       in the 2026-09-23 client edits: the toggle is now the tab stop, and the
+       boxes only exist behind it. Worth checking precisely because collapsing
+       a list behind a button is the commonest way a form stops being usable
+       without a mouse. */
     await page.focus('#saiLeadForm [name=role]');
+    await page.keyboard.press('Tab');
+    const onToggle = await page.evaluate(() => (document.activeElement || {}).tagName === 'BUTTON');
+    ok(onToggle, 'tab from the role field lands on the picks toggle');
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(250);
     await page.keyboard.press('Tab');
     await page.keyboard.press('Space');
     await page.waitForTimeout(250);
-    ok((await picked(page)).length === 1, 'tab from the role field reaches the first one, space ticks it');
+    ok((await picked(page)).length === 1, 'and from there space ticks the first product: '
+      + JSON.stringify(await picked(page)));
     const ring = await page.$eval('.lead__pick input:checked', e => getComputedStyle(e.nextElementSibling).backgroundColor);
     ok(ring && ring !== 'rgba(0, 0, 0, 0)', '   and a ticked one looks different (' + ring + ')');
     await ctx.close();
