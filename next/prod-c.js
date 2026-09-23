@@ -711,16 +711,14 @@
       return '<div class="sx-h"><b>' + esc(c.title) + '</b>' + (c.sub ? '<span>' + esc(c.sub) + '</span>' : '') + '</div><div class="sx-logos" style="--n:' + marks.length + '">' + marks.map((m, i) => '<span class="sx-logos__item" style="--i:' + i + '">' + m + '</span>').join('') + '</div>';
     },
     network(c, w, h) {
-      /* a hub in ink, a ring of nodes wired to it, and the three named nodes as pills */
-      const top = 64, cw = w - 44, ch = Math.round(w * 0.55), hub = [cw / 2, ch / 2 + 2];
-      const pts = []; const n = 11;
-      for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i / n * Math.PI * 2 + (rnd() - 0.5) * 0.25, d = 0.62 + rnd() * 0.36; pts.push([hub[0] + Math.cos(a) * cw * 0.46 * d, hub[1] + Math.sin(a) * ch * 0.46 * d]); }
-      let g = '';
-      pts.forEach((p, i) => { g += '<line x1="' + hub[0].toFixed(1) + '" y1="' + hub[1].toFixed(1) + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="#CFD0CC" stroke-width="1.1"/>'; const q = pts[(i + 2) % n]; if (i % 3 === 0) g += '<line x1="' + p[0].toFixed(1) + '" y1="' + p[1].toFixed(1) + '" x2="' + q[0].toFixed(1) + '" y2="' + q[1].toFixed(1) + '" stroke="#E4E4E0" stroke-width="1"/>'; });
-      const named = [1, 5, 8];
-      pts.forEach((p, i) => { if (!named.includes(i)) g += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.6" fill="' + MID + '"/>'; });
-      g += '<circle cx="' + hub[0].toFixed(1) + '" cy="' + hub[1].toFixed(1) + '" r="20" fill="' + INK + '" fill-opacity=".08"/><circle cx="' + hub[0].toFixed(1) + '" cy="' + hub[1].toFixed(1) + '" r="10" fill="' + INK + '"/>';
-      const tags = c.items.map((t, i) => { const p = pts[named[i]]; const x = Math.min(w - 44, Math.max(44, 22 + p[0])), y = Math.min(top + ch - 24, Math.max(top + 14, top + p[1])); return '<span class="sx-tag" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px">' + esc(t) + '</span>'; }).join('');
+      /* a hub in ink on two faint rings; eight small nodes on the inner ring, the three named nodes on the outer ring as pills */
+      const top = 64, cw = w - 44, ch = Math.round(w * 0.58), hub = [cw / 2, ch / 2], r1 = cw * 0.2, r2 = cw * 0.36;
+      let g = '<circle cx="' + hub[0] + '" cy="' + hub[1] + '" r="' + r1.toFixed(1) + '" fill="none" stroke="#E4E4E0" stroke-width="1"/><circle cx="' + hub[0] + '" cy="' + hub[1] + '" r="' + r2.toFixed(1) + '" fill="none" stroke="#E4E4E0" stroke-width="1"/>';
+      const named = [-90, 30, 150].map(a => a * Math.PI / 180);
+      named.forEach(a => { const x = hub[0] + Math.cos(a) * r2, y = hub[1] + Math.sin(a) * r2 * 0.78; g += '<line x1="' + hub[0] + '" y1="' + hub[1] + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="#CFD0CC" stroke-width="1.2"/>'; });
+      for (let i = 0; i < 8; i++) { const a = -Math.PI / 2 + i / 8 * Math.PI * 2 + Math.PI / 8, x = hub[0] + Math.cos(a) * r1, y = hub[1] + Math.sin(a) * r1 * 0.78; g += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3.4" fill="' + (i % 3 === 0 ? INK : MID) + '"/>'; }
+      g += '<circle cx="' + hub[0] + '" cy="' + hub[1] + '" r="20" fill="' + INK + '" fill-opacity=".08"/><circle cx="' + hub[0] + '" cy="' + hub[1] + '" r="10" fill="' + INK + '"/>';
+      const tags = c.items.slice(0, 3).map((t, i) => { const a = named[i]; const x = 22 + hub[0] + Math.cos(a) * r2, y = top + hub[1] + Math.sin(a) * r2 * 0.78; return '<span class="sx-tag" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px">' + esc(t) + '</span>'; }).join('');
       return headH(c.title) + '<svg class="sx-net" viewBox="0 0 ' + cw + ' ' + ch + '" width="' + cw + '" height="' + ch + '" aria-hidden="true">' + g + '</svg>' + tags;
     },
     flight(c, w, h) {
@@ -805,7 +803,9 @@
     wrap = next;
     const stage = wrap.querySelector('.pc-collage__stage');
     const pad = small ? 32 : 40;
-    const fit = () => { const W = wrap.clientWidth, k = Math.min(1, (W - pad) / SW); stage.style.setProperty('--k', k.toFixed(4)); stage.style.left = ((W - SW * k) / 2).toFixed(1) + 'px'; stage.style.top = '0px'; wrap.style.height = Math.round(SH * k) + 'px'; };
+    const fit = () => { const W = wrap.clientWidth, k = Math.min(1, (W - pad) / SW); stage.style.setProperty('--k', k.toFixed(4)); stage.style.left = ((W - SW * k) / 2).toFixed(1) + 'px'; stage.style.top = '0px';
+      let bottom = small ? 0 : SH; stage.querySelectorAll('.pc-collage__card').forEach(el => { bottom = Math.max(bottom, el.offsetTop + el.offsetHeight); });
+      wrap.style.height = Math.round(bottom * k) + 'px'; };
     fit();
     ro = new ResizeObserver(fit); ro.observe(wrap);
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
