@@ -483,7 +483,7 @@ def book_page(home):
 LISTING_HERO = '''
       <section class="pp-hero pl-hero">
         <div class="pp-wrap pp-hero__in">
-          <p class="pp-eyebrow">The Stagwell Marketing Cloud</p>
+          <p class="pp-eyebrow">The Stagwell AI Suite</p>
           <h1 class="pp-title">Every product in the suite, grouped by the problem it solves.</h1>
           <p class="pp-lede">Start with the problem; the product follows.</p>
           <div class="pp-acts">
@@ -506,7 +506,7 @@ def listing_page(home):
     the chat and the thinking field) and footer, and products.js rendering the
     list into #productsRoot. listing.css styles the list on home.css's tokens."""
     head = home[:home.index('</head>')]
-    desc = 'Every product in the Stagwell Marketing Cloud, grouped by the problem it solves.'
+    desc = 'Every product in the Stagwell AI Suite, grouped by the problem it solves.'
     for old, new in [
         ('<title>Stagwell AI</title>', '<title>Every product | Stagwell AI</title>'),
         ('<meta name="description" content="Whatever the challenge, we deliver results">', f'<meta name="description" content="{desc}">'),
@@ -640,7 +640,7 @@ def solution_page(home, s, n, by_id, pics):
     ttl, crd = norm(title), norm(card)          # not t / c: t() is the escaper
     told = lambda x: x == crd or x in ttl or ttl in x
     about = ' '.join(x for x in sent if not told(norm(x)))
-    eyebrow = s.get('whoFor') or 'The Stagwell Marketing Cloud'
+    eyebrow = s.get('whoFor') or 'The Stagwell AI Suite'
     if s.get('url'):
         site = f'<a class="pp-site" href="{a(s["url"])}" target="_blank" rel="noopener" data-product-site>Visit {t(name)} website{ARROW}</a>'
     elif s.get('signupUrl'):

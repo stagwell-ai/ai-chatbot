@@ -735,3 +735,17 @@ body.hc-b .modal.lead:not(#_) .lead__opt{border-color:rgba(11,18,32,.12);border-
   body.hc-b .modal.lead:not(#_) .lead__body > h3{font-size:26px}
   body.hc-b .modal.lead:not(#_) .lead__pair{grid-template-columns:1fr}
 }
+
+/* ── Expertise: the Code and Theory logo on the tunnel, its awards running under it (client doc, 2026-09-23) ── */
+body.hc-b #why .why__slot--ct:not(#_){display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,1.4vw,20px);padding:0 0 clamp(14px,1.6vw,22px)}
+/* the wordmark is white on black (16:9, letters in the middle band): screen blend drops the black,
+   a 16:4 crop keeps the band */
+body.hc-b #why .why__slot--ct:not(#_) img.why__ctlogo{width:76% !important;height:auto !important;aspect-ratio:16 / 4;object-fit:cover !important;object-position:center;mix-blend-mode:screen;transform:none;margin:0;display:block}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards{width:100%;overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards__reel{display:flex;width:max-content;gap:0;animation:whyAwards 32s linear infinite;will-change:transform}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards__reel span{display:inline-flex;align-items:center;gap:18px;padding-right:18px;white-space:nowrap;font-size:13px;font-weight:500;letter-spacing:.01em;color:#FFFFFF}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards__reel span::after{content:"";width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.7)}
+@keyframes whyAwards{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){body.hc-b #why .why__slot--ct:not(#_) .why__awards__reel{animation:none}}
+/* the tiles no longer link: no pointer, no arrow, the same layout */
+body.hc-b .hc-port__cap:not(#_){cursor:default;text-decoration:none}

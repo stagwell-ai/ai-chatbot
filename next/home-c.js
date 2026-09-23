@@ -178,7 +178,9 @@
   'use strict';
   const rail = document.querySelector('.hc-page .hcs__rail');
   if (!rail) return;
-  document.querySelectorAll('.hc-page .hcs__round[data-rail]').forEach(b =>
+  /* under reduced motion there is no marquee, so the browser's own smooth scroll can do the nudge;
+     otherwise the marquee below owns scrollLeft every frame and does the nudge itself */
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelectorAll('.hc-page .hcs__round[data-rail]').forEach(b =>
     b.addEventListener('click', () => {
       const step = (rail.querySelector('li')?.getBoundingClientRect().width || 280) + 16;
       rail.scrollBy({ left: step * (+b.dataset.rail), behavior: 'smooth' });
@@ -569,11 +571,23 @@
   const SPEED = 26;                      /* pixels a second: a drift, not a slide */
   let last = 0, raf = 0, held = false, seen = true;
   const half = () => rail.scrollWidth / 2;
+  /* the round buttons: one card along, eased by this loop (a smooth scrollBy would be cancelled by
+     the drift's scrollLeft writes, so the arrows did nothing) */
+  let nudge = null;
+  document.querySelectorAll('.hc-page .hcs__round[data-rail]').forEach(b => b.addEventListener('click', () => {
+    const step = (rail.querySelector('li')?.getBoundingClientRect().width || 280) + 16;
+    nudge = (nudge === null ? rail.scrollLeft : nudge) + step * (+b.dataset.rail);
+    if (nudge < 0) { rail.scrollLeft += half(); nudge += half(); }
+  }));
   const step = now => {
     raf = 0;
     const dt = last ? Math.min(.05, (now - last) / 1000) : 0;
     last = now;
-    if (!held && seen) {
+    if (nudge !== null) {
+      const d = nudge - rail.scrollLeft;
+      if (Math.abs(d) < 1) { rail.scrollLeft = nudge; nudge = null; } else rail.scrollLeft += d * Math.min(1, dt * 9);
+      if (rail.scrollLeft >= half()) { rail.scrollLeft -= half(); if (nudge !== null) nudge -= half(); }
+    } else if (!held && seen) {
       rail.scrollLeft += SPEED * dt;
       if (rail.scrollLeft >= half()) rail.scrollLeft -= half();
     }
