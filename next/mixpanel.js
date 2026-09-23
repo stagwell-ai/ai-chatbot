@@ -58,6 +58,13 @@
   const no = refused();
   if (no) { window.SAIMIXPANEL = { on: false, why: no }; return; }
 
+  /* NOTHING BEFORE CONSENT. consent.js calls this back only once a visitor has
+     said yes; with no consent module on the page nothing loads at all, which
+     is the safe direction to fail in. */
+  if (!window.SAICONSENT) { window.SAIMIXPANEL = { on: false, why: 'no-consent-module' }; return; }
+  window.SAICONSENT.whenGranted(load);
+
+  function load() {
   const s = document.createElement('script');
   s.src = 'https://cdn.mxpnl.com/libs/mixpanel-2/mixpanel.js';
   s.async = true;
@@ -81,4 +88,5 @@
   };
   s.onerror = () => { window.SAIMIXPANEL = { on: false, why: 'blocked' }; };
   document.head.appendChild(s);
+  }
 })();

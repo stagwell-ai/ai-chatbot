@@ -64,6 +64,13 @@
     const id = String(cfg.portalId || '').trim();
     if (!/^\d+$/.test(id)) return;
     if (document.getElementById('hs-script-loader')) return;
+    /* not before consent — and with no consent module, not at all */
+    if (!window.SAICONSENT) return;
+    window.SAICONSENT.whenGranted(() => inject(id));
+  }
+
+  function inject(id) {
+    if (document.getElementById('hs-script-loader')) return;
     const s = document.createElement('script');
     s.id = 'hs-script-loader';
     s.async = true; s.defer = true;

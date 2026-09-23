@@ -35,6 +35,11 @@ async function open(url, opts) {
   const ctx = await browser.newContext(Object.assign({ viewport: { width: 1100, height: 900 } }, opts || {}));
   const page = await ctx.newPage();
   const errs = []; page.on('pageerror', e => errs.push(String(e.message)));
+  /* the gate is in front of every tracker now: say yes the way a visitor
+     would, before the page can load anything */
+  await page.addInitScript(() => {
+    try { localStorage.setItem('sai-consent', JSON.stringify({ granted: true, version: 1, at: new Date().toISOString() })); } catch (e) {}
+  });
   const asked = [];
   await page.route('**cdn.mxpnl.com/**', r => {
     asked.push(r.request().url());
@@ -93,9 +98,14 @@ try {
     await page.fill('#saiLeadForm input[name=lastname]', 'Lovelace');
     await page.fill('#saiLeadForm input[name=email]', 'ada@example-brand.com');
     await page.fill('#saiLeadForm input[name=role]', 'CMO');
-    const boxes = await page.$$('#saiLeadForm input[name=products]');
-    if (boxes[0]) await boxes[0].click();
-    if (boxes[1]) await boxes[1].click();
+    /* the picks are a dropdown: open it, then the labels are the controls
+       (the inputs themselves are visually hidden) */
+    const toggle = await page.$('#saiLeadForm .lead__picks button');
+    if (toggle) { await toggle.click(); await page.waitForTimeout(300); }
+    const picks = await page.$$('#saiLeadForm .lead__pick');
+    if (picks[0]) await picks[0].click();
+    if (picks[1]) await picks[1].click();
+    if (toggle) { await toggle.click(); await page.waitForTimeout(200); }
     await page.click('#saiLeadForm button[type=submit]');
     await page.waitForTimeout(1000);
 

@@ -969,6 +969,18 @@ work there.
 
 ## 13. Analytics events
 
+**Consent gates all three** (`next/consent.js`, 2026-09-23). Contentsquare, HubSpot and Mixpanel
+arrived within a day of each other and none of them asked anyone anything; Contentsquare was a
+hard-coded `<script>` in every page's head, so it ran before a question could even be posed. Now
+each of them calls `SAICONSENT.whenGranted(…)` and nothing is fetched, no cookie set and no
+script injected until a visitor says yes. A no is remembered, so is a yes, and `SAICONSENT.reset()`
+puts the question back for a privacy page. GPC and Do Not Track count as a no already given —
+asking again after that is nagging, not consent. Asked of everyone rather than by region: judging
+who is "in the EU" from a browser is guesswork, and the answer to "may we watch what you do here"
+should not depend on whose passport is asking. `MODE = 'off'` in that file kills all three at once.
+`npm run test:consent` watches the NETWORK, not the banner — a gate that renders while a tracker
+quietly loads is worse than no gate, because it looks like compliance.
+
 **Mixpanel** (`next/mixpanel.js`, added 2026-09-23 with the vendor's SDK skill). Loads
 `cdn.mxpnl.com/libs/mixpanel-2/mixpanel.js` on every visitor-facing page and inits with
 `track_pageview`, `persistence:'localStorage'`, `batch_requests`, `autocapture:false` — the site

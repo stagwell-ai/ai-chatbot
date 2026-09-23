@@ -38,6 +38,11 @@ async function open(url, opts) {
   const ctx = await browser.newContext({ viewport: (opts && opts.viewport) || { width: 1100, height: 900 } });
   const page = await ctx.newPage();
   const errs = []; page.on('pageerror', e => errs.push(String(e.message)));
+  /* the gate is in front of every tracker now: say yes the way a visitor
+     would, before the page can load anything */
+  await page.addInitScript(() => {
+    try { localStorage.setItem('sai-consent', JSON.stringify({ granted: true, version: 1, at: new Date().toISOString() })); } catch (e) {}
+  });
   const sent = [];
   await page.route('**/api/lead', r => {
     sent.push(JSON.parse(r.request().postData() || '{}'));
@@ -189,6 +194,9 @@ try {
   console.log('\n▶ the booking form asks for a first AND last name');
   const ctx = await browser2.newContext({ viewport: { width: 1100, height: 900 } });
   const page = await ctx.newPage();
+  await page.addInitScript(() => {
+    try { localStorage.setItem('sai-consent', JSON.stringify({ granted: true, version: 1, at: new Date().toISOString() })); } catch (e) {}
+  });
   const sent = [];
   await page.route('**/api/lead', r => {
     sent.push(JSON.parse(r.request().postData() || '{}'));
@@ -236,6 +244,9 @@ try {
   console.log('\n▶ the role is required, because the CRM form requires it');
   const ctx = await b3.newContext({ viewport: { width: 1100, height: 900 } });
   const page = await ctx.newPage();
+  await page.addInitScript(() => {
+    try { localStorage.setItem('sai-consent', JSON.stringify({ granted: true, version: 1, at: new Date().toISOString() })); } catch (e) {}
+  });
   const sent = [];
   await page.route('**/api/lead', r => {
     sent.push(1);
@@ -276,6 +287,9 @@ try {
   console.log('\n▶ the HubSpot tracker loads, and its cookie rides along');
   const ctx = await b4.newContext({ viewport: { width: 1100, height: 900 } });
   const page = await ctx.newPage();
+  await page.addInitScript(() => {
+    try { localStorage.setItem('sai-consent', JSON.stringify({ granted: true, version: 1, at: new Date().toISOString() })); } catch (e) {}
+  });
   const asked = [];
   /* never actually fetch HubSpot from a test; just record that we asked */
   await page.route('**js.hs-scripts.com/**', r => { asked.push(r.request().url()); r.fulfill({ status: 200, contentType: 'application/javascript', body: '/* stub */' }); });
