@@ -592,6 +592,18 @@
       window.SAICALL.create(altHost, { variant: 'alt', placement: (inline ? 'book-' : 'modal-') + kind });
     }
 
+    /* A FORM STARTED IS A FORM THAT CAN BE ABANDONED. Without this the funnel
+       jumps from "saw the form" to "submitted it" and every drop-off in
+       between is invisible — which is the single most useful number a
+       booking form has. Once per form, on the first keystroke, whichever
+       field it lands in. */
+    let began = false;
+    form.addEventListener('input', () => {
+      if (began) return;
+      began = true;
+      emit('lead_form_started', { kind, inline: !!inline });
+    }, { capture: true });
+
     /* the hint clears itself the moment the address becomes plausible — no
        second submit needed to find out you fixed it */
     emailInput.addEventListener('input', () => {

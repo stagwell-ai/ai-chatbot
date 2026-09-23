@@ -449,6 +449,25 @@ const events = {
   }
 };
 
+/* ── THE BUS IS NOT A DESTINATION ─────────────────────────────────────────
+   This file OWNS the bus, so events.emit() here is the bus talking to
+   itself: the demo console hears it and nothing else does. Six of the seven
+   things emitted below — a session starting, a person asking for a human,
+   how a visitor was routed, where they came from — are exactly what a
+   funnel is built out of, and none of them has ever reached Mixpanel, GTM
+   or anything else. note() sends them through the analytics layer when it
+   is on the page, which emits to this same bus itself, so the console loses
+   nothing. (2026-09-23; the third place this same fault was found today.) */
+function note(type, props) {
+  try {
+    if (window.SAIANALYTICS && typeof window.SAIANALYTICS.track === 'function') {
+      window.SAIANALYTICS.track(type, props); return;
+    }
+  } catch (e) { /* fall through to the bus */ }
+  try { events.emit(type, props); } catch (e) {}
+}
+
+
 /* ═══════════════════════════════════════════════════════════════════════════
    ATTRIBUTION — SPEC non-negotiable #4: captured silently on entry and it
    rides with every handoff after. Nothing here is ever shown or asked.
@@ -498,7 +517,7 @@ function captureAttribution() {
 
   if (!a.product_interest && prefill.product_interest) a.product_interest = prefill.product_interest;
 
-  events.emit('attribution_captured', Object.assign({}, a, {
+  note('attribution_captured', Object.assign({}, a, {
     campaign: campaign ? campaign.id : null
   }));
 
@@ -528,10 +547,10 @@ function setSlot(name, value, source) {
   session.slots[name] = value;
   session.slotSources[name] = src;
 
-  events.emit('slot_filled', { name, value, source: src });
+  note('slot_filled', { name, value, source: src });
 
   if (src === 'visitor' && !isEmpty(had) && !same(had, value)) {
-    events.emit('slot_corrected', { name, from: had, to: value, source: src });
+    note('slot_corrected', { name, from: had, to: value, source: src });
   }
   return value;
 }
@@ -642,7 +661,7 @@ function classify(text) {
   noteImpactLanguage(text);
   if (detectHumanAsk(text)) {
     session.humanAsk = true;
-    events.emit('human_requested', { text: String(text || '') });
+    note('human_requested', { text: String(text || '') });
   }
 
   const fallback = () => classifyKeywords(text);
@@ -734,7 +753,7 @@ function classifyFull(text) {
   const human = detectHumanAsk(raw);
   if (human) {
     session.humanAsk = true;
-    events.emit('human_requested', { text: raw });
+    note('human_requested', { text: raw });
   }
 
   const offline = () => ({
@@ -1061,7 +1080,7 @@ function route() {
   const key = JSON.stringify([decided, primaryDomain, tier, domains, override && override.order, softTrigger]);
   if (key !== lastDecisionKey) {
     lastDecisionKey = key;
-    events.emit('route_decided', decision);
+    note('route_decided', decision);
   }
 
   return decision;
@@ -1131,7 +1150,7 @@ SAI.ready = Promise.resolve(window.STAGDATA || {})
     session = blankSession();
     SAI.session = session;
     compileKeywords();
-    events.emit('session_started', { landing: (window.location && window.location.pathname) || null });
+    note('session_started', { landing: (window.location && window.location.pathname) || null });
     captureAttribution();
     return SAI;
   });

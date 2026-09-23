@@ -67,10 +67,17 @@
     try { localStorage.setItem(KEY, JSON.stringify({ granted: granted, version: VERSION, at: new Date().toISOString() })); } catch (e) {}
   }
 
-  function settle(granted) {
+  function settle(granted, how) {
     decided = granted;
     if (!granted) { waiting.length = 0; return; }
     while (waiting.length) { const fn = waiting.shift(); try { fn(); } catch (e) {} }
+    /* Only an ACCEPT is ever recorded, and only after the fact. A decline
+       cannot be counted without doing the very thing that was declined, so
+       the acceptance rate is unknowable from here by design — an analytics
+       gap that is the correct behaviour, not an oversight. */
+    if (how === 'click') {
+      try { if (window.SAIANALYTICS) window.SAIANALYTICS.track('consent_granted', { surface: 'bar' }); } catch (e) {}
+    }
   }
 
   /* ── the bar ──────────────────────────────────────────────────────────────
@@ -113,7 +120,7 @@
     const a = el.querySelector('a');
     a.textContent = COPY.more; a.href = PRIVACY;
 
-    const close = granted => { remember(granted); el.remove(); settle(granted); };
+    const close = granted => { remember(granted); el.remove(); settle(granted, 'click'); };
     el.querySelector('.yes').addEventListener('click', () => close(true));
     el.querySelector('.no').addEventListener('click', () => close(false));
     (document.body || document.documentElement).appendChild(el);
