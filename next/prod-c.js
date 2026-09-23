@@ -306,9 +306,9 @@
           const place = () => {
             const head = rail.querySelector('.prodgroup__head');
             if (head) nav.style.setProperty('--pic-mid', Math.round(head.offsetTop + head.offsetHeight / 2) + 'px');
-            const atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 8;
-            next.hidden = atEnd; prev.hidden = !atEnd;
-            nav.classList.toggle('is-end', atEnd);
+            /* the arrow is a hint to scroll: once they have moved the rail it goes, for good */
+            if (rail.scrollLeft > 12) { nav.classList.add('is-gone'); return; }
+            next.hidden = false; prev.hidden = true;
           };
           rail.addEventListener('scroll', place, { passive: true });
           new ResizeObserver(place).observe(rail);

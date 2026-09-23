@@ -898,3 +898,8 @@ body.hc-b.pl-c .ptoc:not(#_){margin-bottom:56px !important}
   body.hc-b.pl-c .pc-arrows--rail:not(#_) .pc-arrow{pointer-events:auto;width:44px;height:44px;background:#FFFFFF;color:#0B1220;border:1px solid rgba(11,18,32,.12)}
   body.hc-b.pl-c .pc-arrows--rail:not(#_) .pc-arrow[hidden]{display:none}
 }
+/* the gallery arrow is a scroll hint: it fades out the moment the rail has moved, and does not come back */
+@media (max-width:760px){
+  body.hc-b.pl-c .pc-arrows--rail:not(#_){transition:opacity .25s ease}
+  body.hc-b.pl-c .pc-arrows--rail.is-gone:not(#_){opacity:0;visibility:hidden}
+}
