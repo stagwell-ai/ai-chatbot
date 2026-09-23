@@ -695,3 +695,43 @@ body.hc-b.bk-page .bk__card .modal__ok h3:not(#_){font-family:inherit;font-weigh
   body.hc-b.bk-page .bk__points:not(#_) li{text-align:left;font-size:16px}
   body.hc-b.bk-page .bk__card:not(#_){border-radius:20px;padding:20px}
 }
+
+/* ── the lead panel (Talk to an AI expert, the strategy session) in the approved look: the same form
+      (lead.js), set like the /book card — clean panel, light fields, ink submit, no logo in the box ── */
+body.hc-b .modal.lead:not(#_) .modal__scrim{background:rgba(11,18,32,.55);backdrop-filter:blur(8px)}
+body.hc-b .modal.lead:not(#_) .modal__panel{max-width:600px;padding:40px;border-radius:24px;border:1px solid rgba(11,18,32,.12);background:#FFFFFF;color:#0B1220;box-shadow:none}
+body.hc-b .modal.lead:not(#_) .modal__brand{display:none}
+body.hc-b .modal.lead:not(#_) .modal__x{right:18px;top:18px;width:40px;height:40px;background:#F1F1EF;color:#0B1220}
+body.hc-b .modal.lead:not(#_) .modal__x:hover{background:#E7E7E3}
+body.hc-b .modal.lead:not(#_) .modal__x svg{width:16px;height:16px}
+body.hc-b .modal.lead:not(#_) .lead__body > h3{margin:0 48px 10px 0;font-family:inherit;font-size:30px;font-weight:500;line-height:1.1;letter-spacing:-.03em;color:#0B1220}
+body.hc-b .modal.lead:not(#_) .lead__body > p{margin:0 0 24px;font-size:16px;line-height:1.5;color:rgba(11,18,32,.62)}
+body.hc-b .modal.lead:not(#_) .lead__form{display:flex;flex-direction:column;gap:12px;margin:0}
+body.hc-b .modal.lead:not(#_) .lead__pair{grid-template-columns:1fr 1fr;gap:12px}
+body.hc-b .modal.lead:not(#_) .lead__row input{height:52px;padding:0 16px;border:0;border-radius:12px;background:#F1F1EF;font-family:inherit;font-size:16px;color:#0B1220;box-shadow:none;outline:none}
+body.hc-b .modal.lead:not(#_) .lead__row input::placeholder{color:rgba(11,18,32,.5)}
+body.hc-b .modal.lead:not(#_) .lead__row input:hover{box-shadow:inset 0 0 0 1px rgba(11,18,32,.25)}
+body.hc-b .modal.lead:not(#_) .lead__row input:focus{background:#FFFFFF;box-shadow:inset 0 0 0 2px #0B1220}
+body.hc-b .modal.lead:not(#_) .lead__hint{font-family:inherit;font-size:13px;letter-spacing:0}
+body.hc-b .modal.lead:not(#_) .lead__picks{margin-top:8px}
+body.hc-b .modal.lead:not(#_) .lead__lbl{font-family:inherit;font-size:14px;font-weight:500;color:#0B1220}
+body.hc-b .modal.lead:not(#_) .lead__pickshint{color:rgba(11,18,32,.56);font-size:13px}
+body.hc-b .modal.lead:not(#_) .lead__pick span{font-family:inherit;font-weight:500;background:#F1F1EF;color:#0B1220;padding:8px 13px}
+body.hc-b .modal.lead:not(#_) .lead__pick:hover span{background:#E7E7E3}
+body.hc-b .modal.lead:not(#_) .lead__form .btn--dark{width:100%;height:56px;margin-top:8px;border-radius:999px;font-family:inherit;font-size:15px;font-weight:600;
+  background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important;display:inline-flex;align-items:center;justify-content:center}
+body.hc-b .modal.lead:not(#_) .lead__form .btn--dark:hover{background:#000000 !important;border-color:#000000 !important}
+body.hc-b .modal.lead:not(#_) .modal__fine{margin:14px 0 0;font-size:12.5px;line-height:1.5;color:rgba(11,18,32,.56);text-align:center}
+body.hc-b .modal.lead:not(#_) .lead__alt{margin-top:20px;padding-top:20px;border-top:1px solid rgba(11,18,32,.1);display:flex;flex-direction:column;align-items:center;gap:12px}
+body.hc-b .modal.lead:not(#_) .lead__or{font-size:14px;color:rgba(11,18,32,.62)}
+body.hc-b .modal.lead:not(#_) .call__btn{height:48px;padding:0 22px;border-radius:999px;border:1px solid rgba(11,18,32,.25);background:#FFFFFF;color:#0B1220;font-family:inherit;font-size:14px;font-weight:600}
+body.hc-b .modal.lead:not(#_) .call__btn:hover{border-color:#0B1220}
+body.hc-b .modal.lead:not(#_) .modal__ok h3{font-family:inherit;font-size:28px;font-weight:500;letter-spacing:-.03em;color:#0B1220}
+body.hc-b .modal.lead:not(#_) .modal__ok p{color:rgba(11,18,32,.62)}
+body.hc-b .modal.lead:not(#_) .lead__opt{border-color:rgba(11,18,32,.12);border-radius:16px}
+@media (max-width:600px){
+  body.hc-b .modal.lead:not(#_){padding:0;place-items:end center}
+  body.hc-b .modal.lead:not(#_) .modal__panel{max-height:92svh;border-radius:20px 20px 0 0;padding:28px 20px 24px;border-bottom:0}
+  body.hc-b .modal.lead:not(#_) .lead__body > h3{font-size:26px}
+  body.hc-b .modal.lead:not(#_) .lead__pair{grid-template-columns:1fr}
+}
