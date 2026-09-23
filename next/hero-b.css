@@ -889,3 +889,12 @@ body.hc-b.pl-c .pc-more .prodcard__who,body.hc-b.pl-c .pc-more .pc-foot__what{ma
 /* /products: air between the Show me dropdown and the first product (it was 8px on phones) */
 body.hc-b.pl-c .ptoc:not(#_){margin-bottom:56px !important}
 @media (max-width:760px){ body.hc-b.pl-c .ptoc:not(#_){margin-bottom:40px !important} }
+
+/* ── /products phone gallery: one arrow on the picture instead of the pair under the cards ── */
+@media (max-width:760px){
+  body.hc-b.pl-c .pc-rail-wrap:not(#_){position:relative}
+  body.hc-b.pl-c .pc-arrows--rail:not(#_){position:absolute;top:var(--pic-mid,140px);right:8px;left:auto;margin:0;transform:translateY(-50%);z-index:4;pointer-events:none}
+  body.hc-b.pl-c .pc-arrows--rail.is-end:not(#_){right:auto;left:8px}
+  body.hc-b.pl-c .pc-arrows--rail:not(#_) .pc-arrow{pointer-events:auto;width:44px;height:44px;background:#FFFFFF;color:#0B1220;border:1px solid rgba(11,18,32,.12)}
+  body.hc-b.pl-c .pc-arrows--rail:not(#_) .pc-arrow[hidden]{display:none}
+}

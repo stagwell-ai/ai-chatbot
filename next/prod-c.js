@@ -298,8 +298,21 @@
           nav.addEventListener('click', e => {
             const b = e.target.closest('.pc-arrow'); if (!b) return;
             const card = rail.querySelector('.prodgroup');
-            rail.scrollBy({ left: (+b.dataset.d) * ((card ? card.getBoundingClientRect().width : 300) + 12), behavior: 'smooth' });
+            rail.scrollBy({ left: (+b.dataset.d) * ((card ? card.getBoundingClientRect().width : 300) + 24), behavior: 'smooth' });
           });
+          /* one arrow on the picture (client, 2026-09-23): next on the right edge; once the rail is at its end,
+             previous on the left. The pair sits at the vertical middle of the first picture. */
+          const prev = nav.querySelector('[data-d="-1"]'), next = nav.querySelector('[data-d="1"]');
+          const place = () => {
+            const head = rail.querySelector('.prodgroup__head');
+            if (head) nav.style.setProperty('--pic-mid', Math.round(head.offsetTop + head.offsetHeight / 2) + 'px');
+            const atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 8;
+            next.hidden = atEnd; prev.hidden = !atEnd;
+            nav.classList.toggle('is-end', atEnd);
+          };
+          rail.addEventListener('scroll', place, { passive: true });
+          new ResizeObserver(place).observe(rail);
+          place();
         }
         run = [];
       };
