@@ -356,7 +356,7 @@
     {
       "id": "marketing_ops",
       "label": "Connect our marketing ops into one system (workflows, media, knowledge)",
-      "solution": "The Machine / The Media Machine",
+      "solution": "Machine OS / The Media Machine",
       "icpRoles": [
         "CMO",
         "CCO",
