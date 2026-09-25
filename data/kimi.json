@@ -17,7 +17,7 @@
     "analytics": true,
     "explainWithLlm": true,
     "exploreMaxSteps": 8,
-    "_exploreNote": "How many STEPS of the product detour are shown before only the way back is offered. It is a count of turns, not of clicks deep: moving between two use-case groups is sideways, not deeper, and counting it as depth shut a visitor down after two of the five groups. Eight covers The Machine's whole tree exactly once — what it is, the five groups, what it connects to. The budget takes the CHIPS away, never the answer: the last step still answers in full and adds copy.explore.capped under it. 0 turns the detour off."
+    "_exploreNote": "How many STEPS of the product detour are shown before only the way back is offered. It is a count of turns, not of clicks deep: moving between two use-case groups is sideways, not deeper, and counting it as depth shut a visitor down after two of the five groups. Eight covers Machine OS's whole tree exactly once — what it is, the five groups, what it connects to. The budget takes the CHIPS away, never the answer: the last step still answers in full and adds copy.explore.capped under it. 0 turns the detour off."
   },
   "copy": {
     "intro": "What are you trying to solve?",

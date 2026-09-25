@@ -5,7 +5,7 @@
   "_schema": {
     "accent": "the product's own brand hue — hairlines, numerals, small marks, the lockup band",
     "accentInk": "ink proven legible on a solid fill of accent (>= 4.5:1 for body, >= 3:1 for display)",
-    "lockup.ink": "ink for the LOCKUP BAND, which is often not the accent fill — The Machine's band is its logo's own black, whose ink is white, while ink on its orange accent is black. lockup.pillInk overrides it for the category pill where a gradient band makes one colour work at one end and not the other.",
+    "lockup.ink": "ink for the LOCKUP BAND, which is often not the accent fill — Machine OS's band is its logo's own black, whose ink is white, while ink on its orange accent is black. lockup.pillInk overrides it for the category pill where a gradient band makes one colour work at one end and not the other.",
     "accentNote": "why THIS hex, out of the several the README lists",
     "band": "the deep surface the proof strip and lockup sit on; bandInk / bandFigure are its text and numeral colours",
     "tint": "a wash of accent light enough to carry the icon sets, which are all solid-colour-on-transparent",
@@ -17,7 +17,7 @@
   "products": [
     {
       "id": "the-machine",
-      "name": "The Machine",
+      "name": "Machine OS",
       "parent": "Stagwell · built by Code and Theory",
       "category": "Agentic marketing operating system",
       "tagline": "Marketing's first agentic operating system",
@@ -35,7 +35,7 @@
       "lockup": {
         "band": "#000000",
         "logo": "/assets/img/companies/the-machine/logo.png",
-        "logoAlt": "The Machine — orange mark and wordmark",
+        "logoAlt": "Machine OS — orange mark and wordmark",
         "fit": "bleed",
         "ink": "#FFFFFF",
         "note": "logo.png ships with its own black field baked in, so the band is set to the same #000000 and the image has no visible edge — the same trick machine/path.css plays with the lockup PNGs on #0A1743. fit:bleed lets the image fill the band and crop its own dead space, so the wordmark reads at size instead of floating in the middle of a black rectangle."
@@ -43,13 +43,13 @@
 
       "heroKind": "image",
       "hero": "/assets/img/companies/the-machine/hero.jpg",
-      "heroAlt": "The Machine — End-to-End Orchestration key visual",
+      "heroAlt": "Machine OS — End-to-End Orchestration key visual",
       "heroCaption": "“End-to-End Orchestration” — the CES 2026 key visual.",
 
       "valueProps": [
         {
           "title": "Works where you already work",
-          "line": "Open architecture and open APIs, no vendor lock-in: The Machine runs inside Figma, Slack, Teams, Adobe, Jira, Workfront and Monday rather than replacing them.",
+          "line": "Open architecture and open APIs, no vendor lock-in: Machine OS runs inside Figma, Slack, Teams, Adobe, Jira, Workfront and Monday rather than replacing them.",
           "icon": null
         },
         {
@@ -68,7 +68,7 @@
           "icon": null
         }
       ],
-      "valuePropsNote": "The kit ships no feature icons for The Machine, so these cards are number-led rather than illustrated.",
+      "valuePropsNote": "The kit ships no feature icons for Machine OS, so these cards are number-led rather than illustrated.",
 
       "proof": [
         { "figure": "20–40%", "label": "reduction in martech stack redundancy" },
@@ -79,7 +79,7 @@
       "proofSource": "Stagwell's own early-integration estimates, from The Machine launch release (stagwellglobal.com, January 2026). Stagwell's figures, not a Stagwell.AI measurement.",
 
       "quote": {
-        "text": "Most marketing AI tools ask you to rip out your infrastructure and start over. The Machine does the opposite. It works where you work, improves and AI enables the tools you already use, and transforms existing operations into an agentic system.",
+        "text": "Most marketing AI tools ask you to rip out your infrastructure and start over. Machine OS does the opposite. It works where you work, improves and AI enables the tools you already use, and transforms existing operations into an agentic system.",
         "name": "Dan Gardner",
         "title": "Founder and Chairman, Code and Theory",
         "photo": "/assets/img/companies/the-machine/person.jpg",
@@ -90,12 +90,12 @@
         {
           "src": "/assets/img/companies/the-machine/still.jpg",
           "alt": "Code and Theory network — five Webby Awards",
-          "caption": "Code and Theory, the network that built The Machine.",
+          "caption": "Code and Theory, the network that built Machine OS.",
           "credit": "Agency work — not Machine UI.",
           "frame": "dark"
         }
       ],
-      "shotsNote": "[PRODUCT UI — pending: Stagwell has released no public screenshots of The Machine]",
+      "shotsNote": "[PRODUCT UI — pending: Stagwell has released no public screenshots of Machine OS]",
 
       "builtBy": {
         "name": "Code and Theory",
@@ -113,7 +113,7 @@
       "badges": [],
 
       "siteUrl": "https://www.stagwellglobal.com/themachine/",
-      "siteLabel": "Explore The Machine on stagwellglobal.com"
+      "siteLabel": "Explore Machine OS on stagwellglobal.com"
     },
 
     {

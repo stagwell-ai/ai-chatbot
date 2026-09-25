@@ -2,6 +2,14 @@
 """
 build-product-pages.py — the four product landing pages, generated.
 
+DO NOT RUN THIS WITHOUT READING THIS FIRST (2026-09-25). The pages it writes
+have been hand-edited since it last ran — the mega-nav in the header is the
+obvious one — so a plain run DELETES that work: 22 files, 1,327 lines, in one
+go. It was run by accident while renaming The Machine to Machine OS and the
+output had to be thrown away. Bring it back in line with the pages before
+trusting it again; until then it is a reference for what the pages were
+generated from, not a build step.
+
 Writes next/{slug}.html for each product in PRODUCTS, built from the
 homepage's own parts (next/index.html: the head, the logo symbol, the bar,
 the phone menu, the hero chat, the footer) plus the content below, and keeps
@@ -34,12 +42,12 @@ ROOT = NEXT.parent
 # New Voices, Agent Cloud. It is also the order of the dropdown.
 PRODUCTS = [
     dict(
-        slug='the-machine', name='The Machine',
+        slug='the-machine', name='Machine OS',
         kind='Enterprise agentic marketing operating system',
         hero_bg='/assets/img/products/your-data-walker.jpg',   # Julian's hero picture, 2026-09-10
-        logo='<img class="pp-logo pp-logo--screen" src="/assets/img/companies/the-machine/logo-wide.png" alt="The Machine" width="570" height="100">',
+        logo='<img class="pp-logo pp-logo--screen" src="/assets/img/companies/the-machine/logo-wide.png" alt="Machine OS" width="570" height="100">',
         title='Turn your marketing stack into an intelligent system.',
-        description="The Stagwell Machines is a family of agentic solutions for enterprise marketing organizations – each built for a specific job; all connected under one operating layer. Unlike point solutions that make individual tasks smarter, the Machines share context: every signal, decision, and result carries forward. The Machine is that operating layer: it sits on top of the tools teams already use – Slack, Figma, Adobe, analytics platforms and project systems – and connects them into one system with shared memory. Connected by design.",   # Stagwell AI Messaging FINAL, 2026-09-16
+        description="The Stagwell Machines is a family of agentic solutions for enterprise marketing organizations – each built for a specific job; all connected under one operating layer. Unlike point solutions that make individual tasks smarter, the Machines share context: every signal, decision, and result carries forward. Machine OS is that operating layer: it sits on top of the tools teams already use – Slack, Figma, Adobe, analytics platforms and project systems – and connects them into one system with shared memory. Connected by design.",   # Stagwell AI Messaging FINAL, 2026-09-16
         # the line under the title, two lines at most (client); the definitions' own
         # description moves under the film, whole
         summary="Stagwell's agentic operating system for marketing, built on the tools you already use.",
