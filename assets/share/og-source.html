@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OG card source — screenshot at 1200×630</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  /* This file exists so the share image can be regenerated:
+     render at exactly 1200×630 and screenshot the body. */
+  *{margin:0;box-sizing:border-box}
+  body{
+    width:1200px;height:630px;overflow:hidden;position:relative;
+    background:#00121C;color:#EAF2F5;
+    font-family:'Geist',-apple-system,sans-serif;
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:64px 72px 56px;
+  }
+  /* the same quiet grain the site itself sits on */
+  body::after{content:"";position:absolute;inset:0;opacity:.05;pointer-events:none;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .top{display:flex;align-items:center;gap:18px}
+  .top svg{height:40px;width:auto}
+  .top b{font-family:'Geist Mono',monospace;font-weight:400;font-size:20px;
+    letter-spacing:.34em;color:#009CBD;margin-top:2px}
+  h1{font-size:88px;font-weight:600;letter-spacing:-.035em;line-height:1.04;max-width:20ch}
+  h1 em{font-style:normal;color:#009CBD}
+  h1 .serif{font-family:'Newsreader',Georgia,serif;font-style:italic;font-weight:400;
+    letter-spacing:-.02em}
+  .foot{display:flex;align-items:center;justify-content:space-between;
+    font-family:'Geist Mono',monospace;font-size:19px;letter-spacing:.12em;
+    text-transform:uppercase;color:rgba(234,242,245,.55)}
+  .foot .live{display:flex;align-items:center;gap:12px}
+  .foot .live i{width:9px;height:9px;border-radius:50%;background:#009CBD;
+    box-shadow:0 0 0 5px rgba(0,156,189,.22)}
+  .bars{position:absolute;right:72px;top:200px;width:300px;display:flex;
+    flex-direction:column;gap:26px}
+  .bar{display:flex;flex-direction:column;gap:10px}
+  .bar b{font-family:'Geist Mono',monospace;font-weight:400;font-size:15px;
+    letter-spacing:.14em;text-transform:uppercase;color:rgba(234,242,245,.5)}
+  .bar span{height:8px;border-radius:3px;background:rgba(234,242,245,.12);
+    position:relative;overflow:hidden}
+  .bar span i{position:absolute;inset:0;right:auto;border-radius:3px;background:#009CBD}
+  .bar.amber span i{background:#FFB81C}
+</style>
+</head>
+<body>
+  <div class="top">
+    <svg viewBox="0 0 28.44 28" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#EAF2F5" d="M16.74,19.93H0v7.59h12.33c2.71,0,4.41-1.69,4.41-4.41v-3.18Z"/>
+      <path fill="#FFB81C" d="M11.7,7.59h16.74V0h-12.34c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+      <path fill="#009CBD" d="M0,17.55h24.04c2.71,0,4.41-1.69,4.41-4.41v-3.18H4.41c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+    </svg>
+    <b>STAGWELL AI</b>
+  </div>
+
+  <h1>One link.<br>Your brand, <em>read, diagnosed</em> <span class="serif">and priced.</span></h1>
+
+  <div class="bars">
+    <div class="bar"><b>Brand equity · 67</b><span><i style="width:67%"></i></span></div>
+    <div class="bar amber"><b>AI visibility · 38</b><span><i style="width:38%"></i></span></div>
+    <div class="bar"><b>Share of voice · 16</b><span><i style="width:16%"></i></span></div>
+  </div>
+
+  <div class="foot">
+    <span class="live"><i></i>10 engines online</span>
+    <span>stagwell.vercel.app</span>
+  </div>
+</body>
+</html>

@@ -1,0 +1,319 @@
+{
+  "_comment": "Kimi — the product-discovery conversation on the homepage. Flags and every visitor-facing string live here so marketing can change the words and the team can switch a piece off without touching next/kimi-flow.js. {name}, {first}, {email}, {product}, {need}, {capability} are filled at render time. The on-page persona stays 'Stagwell AI'; Kimi is the internal name of the conversation engine and the primary model behind it.",
+  "version": "2026-09-10",
+  "flags": {
+    "enabled": true,
+    "llm": true,
+    "contactGate": false,
+    "pointers": false,
+    "voice": true,
+    "_pointersNote": "Way-finding under the questions (§4e in KIMI.md). Off at the client's request (2026-09-10): products are named once, at step 6 — the recommendation — and the fast-track form has no skip link. Turn on to show the running under each question and the skip link on the form.",
+    "_emailNote": "WHERE THE EMAIL SITS (client, 2026-09-16: \"be flexible with where the email is put … there are no hard rules right now, we'll play with it until we make all the stakeholders happy\"). emailFirst true asks for the work email as the second step, reads its domain and skips the website question when the address is a company's own; a free address (gmail, outlook, …) is kept and the website is asked next. false puts the email back after the recommendation, the order of 2026-09-10. phoneStep true asks for a number inline after the email; false leaves the number to the moments where a person is actually being asked for — Book a call, Call my phone, the contact form (client, 2026-09-16: \"it's just when they click contact us or book us that they get asked the extra questions about phone number, name\").",
+    "emailFirst": true,
+    "phoneStep": false,
+    "_showcaseNote": "THE VALUE BEFORE THE QUALIFICATION (client, 2026-09-16: \"as soon as we ask for the email, then we need to provide value before we do anything else\"). The order is 1) what you need 2) your email 3) one or more products that fit 4) the details — the business, the size, who they are in the company. showcaseAfterEmail true draws the cards into their own bubble the moment the address step is behind us, and the questions carry on underneath them; the full recommendation, refined by those answers, still comes at the end with the call. false is the old order, where nothing is shown until every question has been asked.",
+    "showcaseAfterEmail": true,
+    "secondaryRecommendations": true,
+    "analytics": true,
+    "explainWithLlm": true,
+    "exploreMaxSteps": 8,
+    "_exploreNote": "How many STEPS of the product detour are shown before only the way back is offered. It is a count of turns, not of clicks deep: moving between two use-case groups is sideways, not deeper, and counting it as depth shut a visitor down after two of the five groups. Eight covers The Machine's whole tree exactly once — what it is, the five groups, what it connects to. The budget takes the CHIPS away, never the answer: the last step still answers in full and adds copy.explore.capped under it. 0 turns the detour off."
+  },
+  "copy": {
+    "intro": "What are you trying to solve?",
+    "goalAck": {
+      "brand_awareness": "Brand awareness — good.",
+      "audience_growth": "Growing the audience — got it.",
+      "reputation": "Protecting reputation — understood.",
+      "competition": "Tracking the competition — good.",
+      "brand_impact": "Measuring brand impact — got it.",
+      "operations": "Scaling operations — understood."
+    },
+    "freeTextAck": "Got it.",
+    "fallback": "I can still help. Which of these is closest to what you're trying to solve?",
+    "unclassified": "I didn't catch a marketing or business problem in that. Which of these is closest?",
+    "moreDetail": "Tell me a little more about what you're trying to do.",
+    "contactTransition": "I've narrowed this down to a strong fit. Tell me where to send the recommendation and I'll connect you with the right Stagwell AI team.",
+    "contactTitle": "See your recommendation",
+    "contactFields": {
+      "name": "Full name",
+      "email": "Business email",
+      "phone": "Phone",
+      "company": "Company (optional)"
+    },
+    "contactSubmit": "Show my recommendations",
+    "contactNotice": "We use these details to send your recommendation and so the right Stagwell AI team can follow up. See our privacy notice.",
+    "contactNoticeUrl": "https://www.stagwellglobal.com/privacy-policy/",
+    "contactErrors": {
+      "name": "Your name, so we know who to ask for.",
+      "email": "That does not look like a business email — check the address.",
+      "phone": "That does not look like a phone number — check it.",
+      "failed": "That didn't go through. Try again in a moment.",
+      "phoneNudge": "That doesn't look like a phone number — check it, or say no and we'll stick to email."
+    },
+    "contactSubmitting": "Sending…",
+    "_openPathNote": "The client's order (2026-09-10): the recommendation is shown first, then the email is asked for, then the phone, then a call is offered. The lead is created in HubSpot on the email and updated on the phone.",
+    "recommendationIntroOpen": "Here's what fits best:",
+    "recommendationIntroOpenLow": "From what you've told me, here's where I'd start:",
+    "askEmail": "Want this written up for you, with a specialist who has read this conversation? Your work email:",
+    "askWorkEmail": "What's your work email? I'll read your company's site from it, so I can tailor the conversation to your needs.",
+    "emailRead": "Thanks — reading {domain} now.",
+    "emailFree": "Got it — that one's a personal address, so it won't tell me anything about your company.",
+    "_emailRefusalNote": "Asked once more, with the reason, and then never again (client, 2026-09-16: 'if the user refuses to give an email, we ask again one more time, with a justification that we can provide customized services based on your email domain. if they refuse we let them continue and try and find the right product for them'). emailWhy is that second ask; emailSkipped acknowledges the second no (it is said BEFORE anything is shown — client, 2026-09-17: 'acknowledge that i dont want to give an email, say thats fine, and ill have a chance later in the conversation to provide more info if relevant, and only after show the answer'); emailSkippedGoal is the same followed by the goal question, for when no goal is known yet. The address is still asked for at the end, by the form, when they want the write-up.",
+    "emailWhy": "I'll only use the domain — it tells me what your company does, so what I show you is built around your business instead of marketing in general. Worth ten seconds?",
+    "emailSkipped": "That's fine — we'll carry on without it. If it would help later on, you'll have the chance to share more.",
+    "emailSkippedLate": "No problem — I won't ask again.",
+    "emailSkipChip": "Not right now",
+    "emailSkippedGoal": "That's fine — we'll carry on without it. If it would help later on, you'll have the chance to share more. So: what are you trying to solve? Pick one of these, or tell me in a sentence.",
+    "_showcaseCopyNote": "The first look at the products, shown before the business questions (flags.showcaseAfterEmail). showcaseAfter sets the expectation that it gets sharper — the full recommendation follows at the end.",
+    "showcaseIntro": "Here's where I'd start:",
+    "showcaseIntroLow": "Here's the closest fit from what I know so far:",
+    "showcaseAfter": "Two or three quick things about your business and I'll tighten this up.",
+    "_exploreNote": "GOING DEEPER ON ONE PRODUCT (client, 2026-09-17: 'we dont want to simply reproduce the whole page in the chat window, we want it to be dynamic, and iterative, and animated, and let the user click things and ask questions'). SAIKIMI.explore() walks data/explainers.json one node at a time — the same file the product page renders from. exploreInvite is the line under the cards that offers the detour; the chip* lines are the pills. flags.exploreMaxSteps caps how many steps it shows before it offers only the way out; the last step still ANSWERS and adds copy.explore.capped under it. The root step leads with copy.explore.root — the explainer's own `summary` — and shows the differentiators straight away, rather than asking what they would like to know.",
+    "exploreInvite": "Tell me more about {product}",
+    "explore": {
+      "root": "{summary}",
+      "differentiators": "Three things set it apart:",
+      "usecases": "{cases} use cases, in {n} groups. Which is closest to your world?",
+      "group": "{label} — {n} of them:",
+      "connects": "It connects to what you already run, rather than replacing it:",
+      "chipDifferentiators": "How is it different?",
+      "chipUsecases": "What do teams use it for?",
+      "chipConnects": "What does it connect to?",
+      "chipDone": "Carry on",
+      "capped": "That's the shape of it. Shall we carry on?",
+      "rootAfter": "Three things set it apart:",
+      "done": "Happy to go deeper on {product} whenever you like.",
+      "doneGoal": "Happy to go deeper on {product} whenever you like. So — what are you working on? Pick one, or tell me in a sentence.",
+      "chipGroups": "See the other groups"
+    },
+    "askPhone": "Thanks — I'll send it to {email}. And a number, if you'd rather we call?",
+    "bookIntro": "Last thing — pick a time and a Stagwell AI specialist will walk you through {product} against your brand.",
+    "bookCta": "Book a call",
+    "bookAfter": "We'll also follow up at {email}.",
+    "bookAfterPhone": "We'll also follow up at {email} or on {phone}.",
+    "composerClosedBook": "Pick a time above — we'll be in touch either way.",
+    "recommendationIntro": "Thanks, {first}. Here's what fits best:",
+    "recommendationIntroLow": "Thanks, {first}. From what you've told me, here's where I'd start:",
+    "afterCards": "A Stagwell AI specialist will also follow up at {email}.",
+    "afterCardsPhone": "A Stagwell AI specialist will also follow up at {email} or on {phone}.",
+    "composerClosed": "Your recommendation is above — we'll be in touch.",
+    "bestFit": "Best fit",
+    "alsoConsider": "Also worth considering",
+    "whyFits": "{product} is the strongest fit because you want to {need}. It covers {capabilities}.",
+    "whyFitsNoNeed": "{product} is the closest fit for what you've described. It covers {capabilities}.",
+    "whySecondary": "Adds {capabilities} alongside your primary recommendation.",
+    "multiCta": "Talk to a Stagwell AI expert",
+    "ctaLabels": {
+      "DEMO": "Book a demo",
+      "SELF_SERVICE": "Start now",
+      "EXPERT_CALL": "Talk to an expert",
+      "LEARN_MORE": "Learn more"
+    },
+    "hints": {
+      "start": "What do you need help solving?",
+      "question": "Pick one, or type your answer…",
+      "size": "Roughly how many people?",
+      "website": "yourcompany.com",
+      "typed": "Type your answer…",
+      "email": "you@company.com",
+      "phone": "+1 555 000 0000"
+    },
+    "askExamples": [
+      "What is Machine OS?",
+      "How do I show up in ChatGPT?",
+      "I want to make surveys",
+      "How do I find influencers?",
+      "Can I prove my brand spend is paying off?",
+      "Who should we be targeting?"
+    ],
+    "about": "Stagwell AI is a custom portfolio of agentic solutions built for businesses of any size. It combines technology with deep marketing expertise to help businesses make better decisions, execute faster and drive stronger performance. On this page, the assistant asks a few questions about what you are trying to solve and recommends the Stagwell AI product that fits, then connects you with the right team.",
+    "hold": [
+      "Happy to help. To point you at the right thing I need to know a little about what you're working on — pick one of these, or tell me in a sentence.",
+      "I'm here to find the right Stagwell AI product for a real problem you have. What are you trying to improve — awareness, audiences, reputation, competition, impact, or how the business runs?",
+      "No rush. Whenever you're ready, describe the challenge in your own words, or choose the closest starting point below."
+    ],
+    "holdQuestion": [
+      "I didn't quite catch an answer in that. Pick one of the options, or say it in your own words.",
+      "Take your time — any of these, or a sentence of your own, will do."
+    ],
+    "composerClosedForm": "Fill in the form above to see your recommendation.",
+    "voice": {
+      "_note": "Chat with me (client, 2026-09-11; KIMI-VOICE-PLAN.md). Every visible string of the voice session, and the two lines the model is handed out-of-band (timeUp, back). Start over replaces the session, so there is no 'restarted' line. The agent's own brief is api/_lib/voice/instructions.js.",
+      "start": "Chat with me",
+      "live": "Chat is live",
+      "introduction": "Welcome to Stagwell AI. I'm NewVoices — a revolutionary AI voice agent that is changing how brands and companies interact with their customers.",
+      "invite": "What can I help you with today? Ask me anything — or tap one of the questions below.",
+      "language": "English",
+      "starters": {
+        "_note": "The opening in two beats (client, 2026-09-11: 'the timing here was too fast … give them an opportunity to say something first'). The agent greets — introduction + invite — and STOPS. These questions appear as animated pills under its words; hero is the focused one that starts the Stagwell AI story (showcase). A tap on a question is the visitor's own words to the agent (step 1: what they want to solve).",
+        "questions": [
+          "How do I improve my AI search results?",
+          "How do I find influencers to help promote my product?",
+          "How do I keep up to date on what my competitors are doing?",
+          "How do I measure whether my brand campaigns are working?"
+        ],
+        "hero": "What is Stagwell AI?"
+      },
+      "showcase": {
+        "_note": "The Stagwell AI story (client, 2026-09-11: 'a banger, awesome opening statement … very visual, with something flying out and another thing coming in … list another product, explain what it does … then talk about how we want to work with the customer'; then: 'pace it slower … before going into detail, tell the user they can interrupt'). Told ON REQUEST — the hero pill, or the visitor asking what Stagwell AI is — never unasked. The agent says interrupt → flagship → each product line → pivot, slowly; voice-stage.js animates to the transcript as it arrives — a product's tile (with its lockup) flies in the moment its name is said; openOn is the word in the transcript that raises the stage when the story was asked for by voice. Every line is the catalog's claim in fewer words; ids must be active products; images must exist.",
+        "interrupt": "Before I go into it — interrupt me any time with a question. I'd rather answer you than talk at you.",
+        "flagship": "You're talking to one of the flagship AI products from Stagwell AI — and I'm in good company.",
+        "openOn": "flagship",
+        "products": [
+          {
+            "id": "newintel",
+            "icon": "radar",
+            "line": "NewIntel — what your competitors did this week, not last quarter.",
+            "img": "/assets/img/intro/4.jpg"
+          },
+          {
+            "id": "questbrand",
+            "icon": "shield",
+            "line": "QuestBrand — always-on brand tracking against the competitors you name.",
+            "img": "/assets/img/tabs/questbrand-women.jpg"
+          },
+          {
+            "id": "targeting_machine",
+            "icon": "crosshair",
+            "line": "The Targeting Machine — your first-party data, turned into audiences you can buy.",
+            "img": "/assets/img/targeting.jpg"
+          },
+          {
+            "id": "imai",
+            "icon": "megaphone",
+            "line": "IMAI — influencer programs end to end, from discovery to ROI.",
+            "img": "/assets/img/imai.jpg"
+          }
+        ],
+        "more": "And that's four of them — plus over ten other AI services, to help with all your business needs.",
+        "moreLabel": "10+ products",
+        "moreOn": "over ten other",
+        "moreLine": "Explore the whole, growing family of Stagwell AI products.",
+        "moreGo": "See all products →",
+        "moreUrl": "/products",
+        "selfUrl": "/newvoices",
+        "teamLabel": "The Stagwell AI team",
+        "peekHint": "Hover a member to meet them — tap to read more.",
+        "_landNote": "WHERE THE STORY PUTS THEM DOWN (client, 2026-09-16: 'once we get to this point we need to pitch to get the customer's email and then to ask them what problem they want to solve with pills'). The story ends on the ASK, not on the question: the agent pitches the address and what it buys them, the composer goes to email, and only once that is answered — or turned down — does it ask what they want to solve, with the six starting points as pills. `closeOn` must be a phrase inside `land`: it is what lifts the pictures away.",
+        "land": "One thing before we dig in — what's your work email? I'll read your company's site from it, so everything I tell you next is about you, not about marketing in general.",
+        "closeOnNote": "the words in `land` that lift the stage",
+        "landSkip": "No problem — we can do it the other way round.",
+        "self": {
+          "name": "NewVoices",
+          "sub": "Stagwell AI's voice agent",
+          "icon": "waveform",
+          "img": "/assets/img/products/card-call.jpg",
+          "logo": "/assets/img/companies/newvoices/logo-white.png"
+        },
+        "burst": [
+          "/assets/img/intro/1.jpg",
+          "/assets/img/intro/2.jpg",
+          "/assets/img/intro/3.jpg",
+          "/assets/img/intro/5.jpg",
+          "/assets/img/intro/6.jpg",
+          "/assets/img/intro/7.jpg"
+        ],
+        "closeOn": "what's your work email"
+      },
+      "typeIt": "Type it in the box below — spelling matters here",
+      "cantHear": "Not hearing you? Check the mic isn't muted, or type below.",
+      "connecting": "Connecting…",
+      "consent": "Voice is transcribed on screen so you can read it and so the right team can follow up.",
+      "listening": "Listening",
+      "speaking": "Speaking",
+      "thinking": "Thinking",
+      "muted": "Muted",
+      "mutedSilence": "Muted after a quiet spell — tap to carry on",
+      "reconnecting": "Reconnecting…",
+      "ended": "Voice ended — carry on typing, or start it again.",
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "end": "End",
+      "tap": "Tap to hear",
+      "unavailable": {
+        "denied": "The microphone was not allowed — carry on typing, or allow it and try again.",
+        "nomic": "No microphone was found — carry on typing.",
+        "busy": "Voice is rate-limited while it's in beta, and the limit was just hit — try again in a few minutes, or carry on typing.",
+        "unconfigured": "Voice is not available here yet — carry on typing.",
+        "network": "Voice could not connect — carry on typing, or try again.",
+        "dropped": "Voice dropped — carry on typing, or tap Chat with me to reconnect."
+      },
+      "resumed": "That was background noise, not the visitor. Carry on from exactly where you stopped, in the same sentence. Do not greet them, do not start again and do not repeat what you have already said.",
+      "timeUp": "Time is nearly up: say in one line that the rest is quicker to type, then stop.",
+      "back": "You are reconnected. Say one short line that you are back, then continue with the current step."
+    },
+    "pointers": {
+      "_note": "Way-finding before the next question (Amy, 2026-09-10: value before profiling; a way to the product page from the chat). introReco leads the running once there is real evidence; introGoal leads a goal's own shortlist. Each item is the catalog's own one-liner and a link to the product page.",
+      "introReco": "Here's where I'd point you so far:",
+      "introGoal": "For that, these are the Stagwell AI products to know:",
+      "read": "Read about {product}",
+      "skipForm": "Or skip this and read about {product}"
+    },
+    "fastTrack": {
+      "call": {
+        "message": "Of course. Leave your name, email and number and a Stagwell AI specialist will call you.",
+        "title": "Request a call",
+        "submit": "Request a call",
+        "closed": "Leave your details above and we'll call you."
+      },
+      "demo": {
+        "message": "Happy to set that up. Leave your details and a Stagwell AI specialist will book the demo with you.",
+        "title": "Book a demo",
+        "submit": "Book a demo",
+        "closed": "Leave your details above and we'll set up your demo."
+      },
+      "trial": {
+        "message": "Good — let's get you started. Leave your details and a Stagwell AI specialist will set you up with the right product to try.",
+        "title": "Get started",
+        "submit": "Get me started",
+        "closed": "Leave your details above and we'll get you started."
+      },
+      "expert": {
+        "message": "Absolutely. Leave your details and a Stagwell AI specialist will get in touch.",
+        "title": "Talk to a specialist",
+        "submit": "Have someone contact me",
+        "closed": "Leave your details above and we'll be in touch."
+      },
+      "pricing": {
+        "message": "Pricing depends on which products you use and the scale you need, so a specialist will walk you through it. Leave your details and they'll be in touch.",
+        "title": "Talk to a specialist",
+        "submit": "Send me pricing",
+        "closed": "Leave your details above and we'll be in touch."
+      }
+    },
+    "fastTrackDone": "Thanks, {first}. A Stagwell AI specialist will be in touch at {email}.",
+    "fastTrackDonePhone": "Thanks, {first}. A Stagwell AI specialist will be in touch at {email} or on {phone}.",
+    "recommendationIntroFast": "Thanks, {first} — a specialist will be in touch. From what you've told me, this is where I'd start:",
+    "fastTrackExplore": "In the meantime, have a look at the products.",
+    "contactNoticeFast": "We use these details so the right Stagwell AI team can get in touch. See our privacy notice.",
+    "research": {
+      "reading": "Reading {domain}…",
+      "foundHeader": "Here's what I can see about {name}:",
+      "foundHeaderNoName": "Here's what I can see about {domain}:",
+      "foundNetwork": "{name} — so you're inside the network. Here's what I have:",
+      "notFound": "I couldn't find much on {domain} from here — no matter, let's carry on.",
+      "skipped": "No problem.",
+      "needDomain": "I need the web address itself — like acme.com — so I can look it up.",
+      "noDomain": "No problem — let's carry on.",
+      "labels": {
+        "industry": "Industry",
+        "size": "Size",
+        "competitors": "Compared with",
+        "based": "Based",
+        "does": "What they do",
+        "audience": "Who it's for"
+      },
+      "sizeBands": {
+        "micro": "under 20 people",
+        "small": "21 to 50 people",
+        "mid": "51 to 250 people",
+        "large": "251 or more people"
+      },
+      "sizeKnown": "I'll take it from there on size, so I won't ask."
+    },
+    "_emailFreeNote": "The line that leads INTO the website question, so it must not ask it: present() puts the question's own prompt straight after this, and the old wording ended '— what's your website?', which came out as 'what's your website? What's your website? I'll take a quick look…' (2026-09-17).",
+    "_exploreInviteNote": "ONE ASK PER SCREEN (client, 2026-09-17: \"now I have conflicting funnels… I feel a little lost\"). The card used to carry a line and three pills of its own while the question underneath asked for something else entirely — two funnels on one screen. The offer is now a single chip sitting on the QUESTION's own row, beside its answers, so there is one turn, one row and one box.",
+    "_exploreDoneNote": "LEAVING THE DETOUR (client, 2026-09-17). Tapping 'Carry on' used to fall through to copy.unclassified — \"I didn't catch a marketing or business problem in that\" — which is the I-did-not-understand-you fallback, fired on a word we put on the screen ourselves. `done` leads into whatever question comes next; `doneGoal` is the variant that carries the goal question, for the rare case where nothing at all is known yet."
+  }
+}

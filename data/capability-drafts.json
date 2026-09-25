@@ -1,0 +1,233 @@
+{
+  "_status": "DRAFT copy written by Claude on 2026-09-22 (plain, short sentences) for the How it works tabs on the /s/ pages. To be reviewed. Edit here, then run: python3 next/build-solution-pages-c.py",
+  "products": {
+    "questbrand": {
+      "Brand tracking": "Awareness, consideration and momentum, tracked every day. Not a quarterly report.",
+      "Competitive benchmarking": "Your numbers next to the competitors you name, in up to 24 markets.",
+      "Campaign impact": "See a campaign move the numbers while it is still running.",
+      "Emotional drivers": "What people feel about the brand, and how that changes over time."
+    },
+    "questdiy": {
+      "AI-drafted surveys": "Say what you want to learn. The questionnaire is drafted for you to edit.",
+      "Respondents in 100+ countries": "A built-in panel fields the study in more than 100 countries.",
+      "Concept & message testing": "Put concepts, messages and ads in front of real people before launch.",
+      "Same-day reads": "Built, fielded and read in as little as four hours."
+    },
+    "bera": {
+      "Brand ROI tracking": "Brand performance tied to pricing power and revenue. You can show which brand investments pay.",
+      "Audience prioritization": "Loyals, switchers, prospects and win-backs, and which of them are worth growing.",
+      "Competitive intelligence": "Weekly, census-matched tracking across 5,000+ brands.",
+      "Media planning": "Ten years of history feed media mix modelling, with brand next to media, pricing and distribution."
+    },
+    "knowledge_machine": {
+      "Real-time sentiment across owned, earned and competitive channels": "Your channels, earned coverage and competitors, read together as it happens.",
+      "Historical pattern matching against prior market moments": "Each new signal is matched to earlier moments that looked like it.",
+      "Full audience profile surfaced with the signal": "Every signal comes with who is driving it."
+    },
+    "unicepta": {
+      "Global monitoring": "460M+ sources across news, social, broadcast and AI answers, in 187 languages.",
+      "Daily briefings & alerts": "A daily media review and real-time alerts, built around your brand.",
+      "Narrative analysis": "Analysts and AI read the narratives and risks behind the numbers.",
+      "Social listening": "Social conversation tracked next to media coverage."
+    },
+    "imai": {
+      "Creator discovery": "Search 400M+ creators. Vet audiences and check for fraud before signing anyone.",
+      "Campaign management": "Outreach, contracts, approvals and results in one place.",
+      "LLM visibility": "How AI search tools talk about your brand, in the same platform.",
+      "UGC video ads": "AI-generated UGC-style video, made where you run creator campaigns."
+    },
+    "smb_platform": {
+      "Creator discovery": "Find creators who fit your brand. No influencer team needed.",
+      "Audience validation": "Check a creator's audience is real before you spend.",
+      "ROI tracking": "See what each creator and campaign returned.",
+      "One dashboard": "Listen, plan, run and measure from one place. Built for teams of 10 to 250."
+    },
+    "geopulse": {
+      "AI visibility intelligence": "How ChatGPT, Gemini and Perplexity describe your brand, topic by topic, refreshed daily.",
+      "Prompt optimization": "Prompts written the way real people ask, by persona and journey.",
+      "Competitive benchmarking": "Where AI answers recommend a rival instead of you.",
+      "Content simulation": "Test a content change and see how it shifts what AI says."
+    },
+    "numetrix": {
+      "Audience measurement": "Who actually saw and visited, from verified visitation data.",
+      "Brand lift & ad impact": "Impressions connected to brand lift, so OOH can be judged next to CTV and TV.",
+      "Location intelligence": "Foot traffic and dwell time, and whether advertising changed where people went."
+    },
+    "media_machine": {
+      "Scores every platform and channel against evidence of what works": "Every channel is scored on evidence of what has worked.",
+      "Drafts the plan and flighting": "The media plan and flighting, drafted for your team to adjust.",
+      "Models spend and projected lift": "Spend scenarios and the lift each one should deliver."
+    },
+    "newintel": {
+      "Pricing moves": "Competitor price changes, as they happen.",
+      "Hiring signals": "New roles show where a competitor is investing.",
+      "Earned coverage": "What the press says about your competitors, week by week.",
+      "Creator activity": "Which creators your competitors work with, and what they post."
+    },
+    "search_plus": {
+      "AI search representation": "How your brand is described inside AI search today, and where it falls short.",
+      "Influence how AI recommends you": "Shape the content AI tools draw on, so they recommend you more often.",
+      "ChatGPT, Gemini, Perplexity, Grok": "One program across the assistants people ask first."
+    },
+    "id_graph": {
+      "First-party data onboarding": "Match your customer data to 260 million US consumers and 123 million households.",
+      "Third-party media data": "Media data from partners joins the same identity spine.",
+      "Proprietary consumer intelligence": "Stagwell data from BERA, the Harris Poll and Numetrix.",
+      "Privacy-safe activation": "Build and activate audiences without exposing anyone's identity."
+    }
+  },
+  "tabs": {
+    "questbrand": {
+      "Brand tracking": "Tracking",
+      "Competitive benchmarking": "Benchmarks",
+      "Campaign impact": "Campaigns",
+      "Emotional drivers": "Emotion"
+    },
+    "questdiy": {
+      "AI-drafted surveys": "Surveys",
+      "Respondents in 100+ countries": "Global panel",
+      "Concept & message testing": "Testing",
+      "Same-day reads": "Speed"
+    },
+    "bera": {
+      "Brand ROI tracking": "Brand ROI",
+      "Audience prioritization": "Audiences",
+      "Competitive intelligence": "Competitors",
+      "Media planning": "Media"
+    },
+    "knowledge_machine": {
+      "Real-time sentiment across owned, earned and competitive channels": "Sentiment",
+      "Historical pattern matching against prior market moments": "Patterns",
+      "Full audience profile surfaced with the signal": "Audiences"
+    },
+    "unicepta": {
+      "Global monitoring": "Monitoring",
+      "Daily briefings & alerts": "Briefings",
+      "Narrative analysis": "Narratives",
+      "Social listening": "Social"
+    },
+    "imai": {
+      "Creator discovery": "Discovery",
+      "Campaign management": "Campaigns",
+      "LLM visibility": "AI search",
+      "UGC video ads": "UGC video"
+    },
+    "smb_platform": {
+      "Creator discovery": "Discovery",
+      "Audience validation": "Validation",
+      "ROI tracking": "ROI",
+      "One dashboard": "Dashboard"
+    },
+    "geopulse": {
+      "AI visibility intelligence": "Visibility",
+      "Prompt optimization": "Prompts",
+      "Competitive benchmarking": "Benchmarks",
+      "Content simulation": "Simulation"
+    },
+    "numetrix": {
+      "Audience measurement": "Measurement",
+      "Brand lift & ad impact": "Brand lift",
+      "Location intelligence": "Location"
+    },
+    "media_machine": {
+      "Scores every platform and channel against evidence of what works": "Scoring",
+      "Drafts the plan and flighting": "Planning",
+      "Models spend and projected lift": "Forecasting"
+    },
+    "newintel": {
+      "Pricing moves": "Pricing",
+      "Hiring signals": "Hiring",
+      "Earned coverage": "Coverage",
+      "Creator activity": "Creators"
+    },
+    "search_plus": {
+      "AI search representation": "Representation",
+      "Influence how AI recommends you": "Influence",
+      "ChatGPT, Gemini, Perplexity, Grok": "Assistants"
+    },
+    "id_graph": {
+      "First-party data onboarding": "First-party",
+      "Third-party media data": "Third-party",
+      "Proprietary consumer intelligence": "Intelligence",
+      "Privacy-safe activation": "Activation"
+    }
+  },
+  "_tabs_note": "Short tab labels (DRAFT). The four product pages carry theirs as data-tab on each step in next/{slug}.html.",
+  "loops": {
+    "questbrand": {
+      "Brand tracking": "workflow",
+      "Competitive benchmarking": "radial",
+      "Campaign impact": "circuit",
+      "Emotional drivers": "pulses"
+    },
+    "questdiy": {
+      "AI-drafted surveys": "mosaic",
+      "Respondents in 100+ countries": "world",
+      "Concept & message testing": "wave-dots",
+      "Same-day reads": "pulses"
+    },
+    "bera": {
+      "Brand ROI tracking": "workflow",
+      "Audience prioritization": "sankey",
+      "Competitive intelligence": "radar",
+      "Media planning": "media-flow"
+    },
+    "knowledge_machine": {
+      "Real-time sentiment across owned, earned and competitive channels": "pulses",
+      "Historical pattern matching against prior market moments": "activity",
+      "Full audience profile surfaced with the signal": "wave-dots"
+    },
+    "unicepta": {
+      "Global monitoring": "globe",
+      "Daily briefings & alerts": "world",
+      "Narrative analysis": "plexus",
+      "Social listening": "pulses"
+    },
+    "imai": {
+      "Creator discovery": "wave-dots",
+      "Campaign management": "people-map",
+      "LLM visibility": "orbits",
+      "UGC video ads": "mosaic"
+    },
+    "smb_platform": {
+      "Creator discovery": "wave-dots",
+      "Audience validation": "timeline",
+      "ROI tracking": "workflow",
+      "One dashboard": "circuit"
+    },
+    "geopulse": {
+      "AI visibility intelligence": "orbits",
+      "Prompt optimization": "orbits",
+      "Competitive benchmarking": "wave-dots",
+      "Content simulation": "orbits"
+    },
+    "numetrix": {
+      "Audience measurement": "workflow",
+      "Brand lift & ad impact": "quadtree",
+      "Location intelligence": "globe"
+    },
+    "media_machine": {
+      "Scores every platform and channel against evidence of what works": "workflow",
+      "Drafts the plan and flighting": "media-flow",
+      "Models spend and projected lift": "activity"
+    },
+    "newintel": {
+      "Pricing moves": "workflow",
+      "Hiring signals": "records",
+      "Earned coverage": "globe",
+      "Creator activity": "radar"
+    },
+    "search_plus": {
+      "AI search representation": "orbits",
+      "Influence how AI recommends you": "globe-blue",
+      "ChatGPT, Gemini, Perplexity, Grok": "orbits"
+    },
+    "id_graph": {
+      "First-party data onboarding": "id-spine",
+      "Third-party media data": "sankey",
+      "Proprietary consumer intelligence": "pulses",
+      "Privacy-safe activation": "circuit"
+    }
+  },
+  "_loops_note": "The motion-lab loop shown beside a How-it-works tab (assets/video/lab/loops/<name>.mp4; voice-squares sits in assets/video/lab/). Tabs 2 and 5 carry loops; the others are mockups or the picture. Loops are named for their product on /motion-lab."
+}

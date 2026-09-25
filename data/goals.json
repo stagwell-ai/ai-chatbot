@@ -1,0 +1,130 @@
+{
+  "_comment": "The six starting points on the homepage, as GOALS — not products. A goal names the problem the visitor tapped; `domain` is the routing.json domain it seeds (kept so the existing route()/tier machinery still runs); `intents` are the taxonomy.json signals a visitor with this goal usually carries (they earn a product the 'goal alignment' points in scoring.json when the product is tagged with one); `candidates` are the products in the running from the first tap — every active product in solutions.json appears in at least one goal, so nothing in the portfolio is unreachable from the pills. Products outside a goal's candidate list can still win on the strength of what the visitor actually says. Copy for the pills stays in next/index.html; this file is the mapping.",
+  "version": "2026-09-10",
+  "goals": [
+    {
+      "id": "brand_awareness",
+      "label": "Increase brand awareness",
+      "domain": "brand_health",
+      "intents": [
+        "brand_health",
+        "campaign_measurement",
+        "media_planning",
+        "ai_search_visibility",
+        "ai_search_influence",
+        "creator_discovery",
+        "brand_orchestration"
+      ],
+      "candidates": [
+        "questbrand",
+        "search_plus",
+        "media_machine",
+        "geopulse",
+        "imai",
+        "smb_platform"
+      ],
+      "firstQuestion": "awareness_lever"
+    },
+    {
+      "id": "audience_growth",
+      "label": "Grow your audience",
+      "domain": "audiences",
+      "intents": [
+        "audience_targeting",
+        "first_party_data",
+        "identity_graph",
+        "media_planning",
+        "media_buying",
+        "creator_discovery",
+        "customer_voice_ai"
+      ],
+      "candidates": [
+        "targeting_machine",
+        "id_graph",
+        "media_machine",
+        "imai",
+        "smb_platform",
+        "newvoices"
+      ],
+      "firstQuestion": "audience_type"
+    },
+    {
+      "id": "reputation",
+      "label": "Protect brand reputation",
+      "domain": "reputation",
+      "intents": [
+        "reputation_risk",
+        "media_monitoring",
+        "narrative_intelligence",
+        "ai_search_visibility"
+      ],
+      "candidates": [
+        "knowledge_machine",
+        "unicepta",
+        "geopulse"
+      ],
+      "firstQuestion": "reputation_scope"
+    },
+    {
+      "id": "competition",
+      "label": "Track your competition",
+      "domain": "competitive",
+      "intents": [
+        "competitive_activity",
+        "competitive_benchmarking",
+        "brand_benchmarking",
+        "competitive_media",
+        "competitive_ai_visibility"
+      ],
+      "candidates": [
+        "newintel",
+        "questbrand",
+        "knowledge_machine",
+        "unicepta",
+        "geopulse",
+        "bera"
+      ],
+      "firstQuestion": "competition_type"
+    },
+    {
+      "id": "brand_impact",
+      "label": "Measure brand impact",
+      "domain": "business_impact",
+      "intents": [
+        "business_impact",
+        "campaign_measurement",
+        "brand_health",
+        "behavioral_measurement",
+        "consumer_research"
+      ],
+      "candidates": [
+        "questbrand",
+        "bera",
+        "numetrix",
+        "questdiy",
+        "media_machine"
+      ],
+      "firstQuestion": "impact_type"
+    },
+    {
+      "id": "operations",
+      "label": "Scale business operations",
+      "domain": "marketing_ops",
+      "intents": [
+        "customer_voice_ai",
+        "customer_chat_ai",
+        "employee_ai_access",
+        "ai_governance",
+        "marketing_operations",
+        "brand_orchestration"
+      ],
+      "candidates": [
+        "newvoices",
+        "agent_cloud",
+        "machines_family",
+        "search_plus"
+      ],
+      "firstQuestion": "operations_type"
+    }
+  ]
+}

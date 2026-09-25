@@ -1,0 +1,27 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMBED — the agent page as a bare conversation, for the homepage's hero.
+   Only under html[data-embed] (agent.html?embed=1): the bar, the band, the
+   hero copy, the film, the chooser, the about/cloud/CTA/footer all go; the
+   chat panel fills the frame with the thread scrolling and the composer at
+   the bottom. The conversation itself is untouched — same convo.js.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-embed] #nav,html[data-embed] #mnav,html[data-embed] #heroBand,
+html[data-embed] #hero2Sub,html[data-embed] #film,html[data-embed] #heroPick,
+html[data-embed] #about,html[data-embed] #cloud,html[data-embed] #cta,
+html[data-embed] .bfoot,html[data-embed] .demomenu{display:none!important}
+html[data-embed] body{background:#FFFFFF}
+html[data-embed] .hero2{padding:0;display:flex;height:100svh;min-height:0;overflow:hidden}
+html[data-embed] .hero2__in,html[data-embed] .hero2.is-convo .hero2__in{max-width:none;width:100%;padding:0;display:flex;flex-direction:column;min-height:0}
+/* once the conversation starts, convo.js regrids: progress header, then a
+   .convo grid holding .convo__main > .chat. Every link in that chain must
+   pass the height down, or the composer floats above the bottom. */
+html[data-embed] .convo{flex:1;min-height:0;grid-template-rows:minmax(0,1fr);align-items:stretch}
+html[data-embed] .convo__main{display:flex;flex-direction:column;min-height:0}
+/* the started state sets the chat back to block and gives the panel its own
+   height; both are stated with !important here because the frame's height
+   is the whole point of this mode */
+html[data-embed] .chat{width:100%;max-width:none;margin:0;flex:1 1 0%;min-height:0;display:flex!important;flex-direction:column;gap:0}
+html[data-embed] .chat__panel{flex:1 1 0%;min-height:0;height:auto!important;max-height:none!important;display:flex;flex-direction:column;border:0;border-radius:0;background:#FFFFFF}
+html[data-embed] .chat__thread{flex:1 1 0%;min-height:0;max-height:none!important;overflow-y:auto;background:#FFFFFF}
+html[data-embed] .prompt{width:100%;margin:0}
+html[data-embed] .chat__solves{margin:10px 0 0}

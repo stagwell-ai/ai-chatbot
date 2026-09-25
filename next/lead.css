@@ -1,0 +1,194 @@
+/* ═══════════════════════════════════════════════════════════
+   LEAD.CSS — the shared lead-capture modal (machine/lead.js).
+
+   The panel itself is the site's own .modal / .modal__panel /
+   .modal__form / .modal__ok, which live in machine/styles.css.
+   Every page that loads lead.js already loads styles.css, so
+   those rules are NOT restated here: one definition, and the
+   modal on /p/{id} and /ads stays pixel-identical to the one on
+   "/" that the client signed off on. (b.css is not needed —
+   it only carries the .modal--wide video variant.)
+
+   What IS here is the small set of things styles.css has no
+   reason to know about: the field rows, the inline email hint,
+   and the shake that replaces a browser alert.
+   ═══════════════════════════════════════════════════════════ */
+
+.lead[hidden]{display:none !important}
+
+/* the panel takes focus programmatically; never draw a ring on the box */
+.lead__panel:focus{outline:none}
+.lead__panel:focus-visible{outline:none}
+
+/* visually hidden — campaign.css already defines .vh, but b.html does not
+   load campaign.css and the field labels must not become visible text there */
+.lead .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* each field is a <label> wrapping its input, so .modal__form's column gap
+   spaces the rows and the input still fills the row */
+.lead__row{display:block;margin:0;min-width:0}
+.lead__row input{width:100%;box-sizing:border-box;font-family:var(--sans);font-size:var(--t-body);color:var(--ink)}
+.lead__row input::placeholder{color:var(--ink-4)}
+
+/* ── invalid email: the site's shake idiom (.prompt.is-shake), never a
+      browser alert and never a native validation bubble ── */
+.lead__row.is-shake input{
+  border-color:var(--lead-warn,#A6231B);
+  animation:leadShake 420ms var(--ease-io,cubic-bezier(.45,0,.15,1));
+}
+@keyframes leadShake{
+  20%{transform:translateX(-5px)} 45%{transform:translateX(4px)}
+  70%{transform:translateX(-2px)} 100%{transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .lead__row.is-shake input{animation:none}
+}
+
+/* the hint sits between the email row and the role row; .modal p would give
+   it lede spacing and ink-2, which is not what an error line should read as */
+.lead__hint{
+  margin:-2px 0 0 !important;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.04em;
+  line-height:1.5;color:var(--lead-warn,#A6231B) !important;
+}
+.lead__hint[hidden]{display:none !important}
+
+/* ── accent: the important buttons in the brand orange (client palette, 2026-09-17)
+   Book a demo (every page, nav + hero + closing + the booking form) and See every
+   product: orange with white text, a darker orange on hover. The Ask Stagwell AI
+   launcher stays in the palette blue #009CBD. :not(#_) outranks page-level rules. ── */
+:root{--accent-btn:#FF6D24;--accent-btn-hover:#D9531A}
+.btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_),
+.lead__form .btn--dark:not(#_){
+  background:var(--accent-btn) !important;border-color:var(--accent-btn) !important;
+  color:#FFFFFF !important;box-shadow:none !important}
+.btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_) *,
+.lead__form .btn--dark:not(#_) *{color:#FFFFFF !important}
+.btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_):hover,
+.lead__form .btn--dark:not(#_):hover{background:var(--accent-btn-hover) !important;border-color:var(--accent-btn-hover) !important;color:#FFFFFF !important}
+#hcLaunchBtn:not(#_){background:#009CBD !important;color:#FFFFFF !important}
+#hcLaunchBtn:not(#_) svg{color:#FFFFFF !important}
+#hcLaunchBtn:not(#_):hover{background:#0E5F8E !important}
+
+/* ── H1: tighter letter-spacing on every page (client, 2026-09-17) ── */
+h1:not(#_),h1:not(#_) *{letter-spacing:-.035em !important}
+
+/* ── "Call my phone" in the nav: solid dark, white text (client, 2026-09-17) ── */
+.call--nav .call__btn:not(#_){background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important}
+.call--nav .call__btn:not(#_) *{color:#FFFFFF !important}
+.call--nav .call__btn:not(#_):hover{background:#003349 !important;border-color:#003349 !important}
+
+/* ── WHICH ONES THEY WANT TO HEAR ABOUT (client, 2026-09-17) ──────────────────
+   The catalog as toggles, under the role field. Pills rather than a <select
+   multiple>: on a phone a multi-select is a modal list nobody finds twice, and
+   these are brand names a visitor recognises at a glance. Real checkboxes
+   underneath, so the keyboard, the screen reader and the form all behave. */
+.lead__picks{margin:0;padding:0;border:0;min-width:0}
+.lead__picks .lead__lbl{display:block;padding:0}
+.lead__pickshint{margin:2px 0 8px;font-size:12.5px;line-height:1.45;color:var(--ink-3)}
+.lead__pickrow{display:flex;flex-wrap:wrap;gap:7px;margin:0}
+.lead__pick{position:relative;display:inline-flex}
+.lead__pick input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.lead__pick span{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;
+  font-family:var(--ui,var(--sans));font-size:13px;font-weight:600;line-height:1.2;
+  color:var(--ink-2);background:#F1F2F4;box-shadow:inset 0 0 0 1px transparent;
+  transition:background-color .16s ease,color .16s ease,box-shadow .16s ease}
+.lead__pick span::before{content:"";width:13px;height:13px;border-radius:4px;flex:0 0 auto;
+  background:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(11,18,32,.22);
+  transition:background-color .16s ease,box-shadow .16s ease}
+.lead__pick:hover span{background:#E8EAED}
+.lead__pick input:checked + span{background:rgba(0,156,189,.12);color:var(--navy,#003349);
+  box-shadow:inset 0 0 0 1px rgba(0,156,189,.55)}
+/* the tick is drawn, not a glyph: no font to wait for and no baseline to fight */
+.lead__pick input:checked + span::before{background:var(--teal,#009CBD);box-shadow:inset 0 0 0 1px var(--teal,#009CBD);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3 4.7-5' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size:12px 12px;background-position:center;background-repeat:no-repeat}
+.lead__pick input:focus-visible + span{outline:2px solid var(--ink);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){ .lead__pick span,.lead__pick span::before{transition:none} }
+
+/* ── the thank-you's three ways forward (lead.js thanksHtml) ─────────────────
+   Someone who has just asked for a demo is the most willing person on the
+   site; the old panel's only verb was "Back to the page". These sit inside
+   .modal__ok, which is already a flex column, so each card only has to lay
+   out its own contents. .btn--ghost lives in next/styles.css and the pages
+   that show this all load it, but the panel must not depend on that: the two
+   rules below give the buttons their own outline either way. */
+.lead__next{
+  list-style:none;margin:0;padding:0;width:100%;
+  display:grid;gap:12px;
+}
+@media (min-width:720px){
+  .lead__next{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));align-items:start}
+}
+.lead__opt{
+  margin:0;padding:16px;border:1px solid var(--line-2,rgba(0,0,0,.14));border-radius:12px;
+  background:var(--surface,#FFF);display:flex;flex-direction:column;gap:8px;min-width:0;
+}
+.lead__opt h4{
+  margin:0;font-family:var(--sans);font-size:var(--t-body);font-weight:600;
+  line-height:1.3;color:var(--ink);
+}
+.lead__opt p{margin:0 !important;font-size:var(--t-small,14px);line-height:1.45;color:var(--ink-2)}
+/* the card's action sits at its foot, so three cards of unequal copy still
+   line their buttons up */
+.lead__opt .btn{margin-top:auto;align-self:flex-start}
+.lead__opt .btn:not(.btn--dark){
+  border:1px solid var(--line-2,rgba(0,0,0,.2));background:transparent;color:var(--ink);
+}
+.lead__opt .btn:not(.btn--dark):hover{border-color:var(--ink)}
+/* call.js draws its own control in here; it must not inherit the card's gap
+   as extra space above a widget that already has its own */
+.lead__opt [data-lead-call]{margin-top:auto}
+.lead__opt .lead__or{display:none}
+
+/* ── the panel shell, for pages that do not load styles.css ──────────────────
+   .modal / .modal__scrim / .modal__panel live in machine/styles.css, and the
+   header of this file says they are deliberately not restated. That held for
+   as long as the modal only ever opened on pages that load styles.css. It
+   stopped holding the day /book started showing the thank-you in it: /book
+   loads lead.css, call.css, home.css and product.css and nothing else, so
+   .modal was an unstyled block at the end of <body> — the dialog opened
+   below the footer, a viewport and a half down, which is not "dismissible"
+   in any sense a visitor would recognise. Caught by measuring where the panel
+   sits, not by looking at the markup.
+
+   Scoped to .lead so a page that DOES have styles.css keeps one definition
+   winning; the values are that file's own, so the two agree. */
+.modal.lead{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px}
+.modal.lead .modal__scrim{position:absolute;inset:0;background:rgba(0,18,28,.5);backdrop-filter:blur(6px)}
+.modal.lead .modal__panel{
+  position:relative;background:var(--surface,#FFF);border-radius:var(--r-lg,18px);
+  max-width:560px;width:100%;max-height:calc(100vh - 48px);overflow:auto;
+  padding:44px;border:1px solid var(--line,rgba(0,0,0,.1));
+}
+.modal.lead .modal__x{
+  position:absolute;right:16px;top:16px;color:var(--ink-3,#6B7A82);width:30px;height:30px;
+  border-radius:50%;display:grid;place-items:center;background:none;border:0;cursor:pointer;
+}
+.modal.lead .modal__x:hover{color:var(--ink)}
+.modal.lead .modal__tick{
+  width:44px;height:44px;border-radius:50%;background:rgba(0,156,189,.12);color:var(--teal,#009CBD);
+  display:grid;place-items:center;flex:0 0 auto;
+}
+.modal.lead .modal__ok{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+/* the page behind must not scroll under an open dialog */
+body.lead-open{overflow:hidden}
+@media (max-width:600px){
+  .modal.lead{padding:14px}
+  .modal.lead .modal__panel{padding:28px 20px}
+}
+
+/* Close is a real button. .btn's fill lives in styles.css, which /book does
+   not load, so on that page it rendered as bare uppercase text floating under
+   the cards — a dismissal nobody would find. */
+.modal.lead .modal__ok > .btn--dark{
+  background:var(--ink,#0B1B24);border:1px solid var(--ink,#0B1B24);color:#FFFFFF;
+  border-radius:999px;padding:11px 24px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.modal.lead .modal__ok > .btn--dark:hover{opacity:.88}
+
+/* first and last name sit side by side where there is room; the HubSpot form
+   these go to requires a surname, so one box could not be enough */
+.lead__pair{display:grid;gap:10px;min-width:0}
+@media (min-width:520px){ .lead__pair{grid-template-columns:1fr 1fr} }

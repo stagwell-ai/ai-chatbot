@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stagwell AI — what we upgraded</title>
+<meta name="description" content="Thirteen upgrades to the Stagwell AI demo. Five of them are not simulations — the machine asks real models, audits real prompts, and writes the summary itself.">
+<meta name="robots" content="noindex">
+
+<link rel="canonical" href="https://stagwell.vercel.app/machine/upgrades.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stagwell AI">
+<meta property="og:title" content="Stagwell AI — what we upgraded">
+<meta property="og:description" content="Thirteen upgrades to the demo. Five of them are not simulations.">
+<meta property="og:url" content="https://stagwell.vercel.app/machine/upgrades.html">
+<meta property="og:image" content="https://stagwell.vercel.app/machine/assets/share/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://stagwell.vercel.app/machine/assets/share/og.png">
+<meta name="theme-color" content="#00121C">
+
+<link rel="icon" href="./assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="./assets/share/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="./assets/share/apple-touch-icon.png">
+<link rel="stylesheet" href="./assets/fonts/fonts.css">
+<link rel="stylesheet" href="./upgrades.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 28.44 28">
+    <path fill="currentColor" d="M16.74,19.93H0v7.59h12.33c2.71,0,4.41-1.69,4.41-4.41v-3.18Z"/>
+    <path fill="#FFB81C" d="M11.7,7.59h16.74V0h-12.34c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+    <path fill="#009CBD" d="M0,17.55h24.04c2.71,0,4.41-1.69,4.41-4.41v-3.18H4.41c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+  </symbol>
+</svg>
+
+<!-- ══════════════════ MASTHEAD ══════════════════ -->
+<header class="top">
+  <div class="wrap">
+    <div class="top__bar">
+      <span class="top__logo"><svg viewBox="0 0 28.44 28"><use href="#mark"/></svg><b>STAGWELL AI</b></span>
+      <span class="top__date">Build notes · August 2026</span>
+    </div>
+
+    <p class="eyebrow"><i class="pulse"></i>What we upgraded</p>
+    <h1>Thirteen upgrades.<br><span class="t">Five of them</span> <span class="s">are not simulations.</span></h1>
+    <p class="top__lede">The demo used to ask four fixed questions and assume the visitor owned the
+    brand they typed. It now asks whose site it is and reshapes itself around the answer — and the
+    single most important claim in the pitch, that a model does not know your brand,
+    <b>is no longer scripted — it is measured, live, in front of the room.</b> Since the first
+    wave shipped, the live surface has kept growing: the brief now quotes real model answers
+    verbatim, audits three buying prompts as it builds, writes its own executive summary for
+    the session, and takes questions from the room when it is done.</p>
+
+    <div class="scoreboard">
+      <div class="sb"><b>4<i>→</i>144</b><span>Report variants</span></div>
+      <div class="sb"><b>1<i>→</i>4</b><span>Report modes</span></div>
+      <div class="sb"><b>0<i>→</i>5</b><span>Live surfaces</span></div>
+      <div class="sb"><b>0<i>→</i>7</b><span>Model calls per build</span></div>
+      <div class="sb"><b>12</b><span>Defects fixed</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════ THE LIVE ONE ══════════════════ -->
+<section class="sec sec--void">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <p class="eyebrow"><i class="pulse"></i>Upgrade 01 · the headline</p>
+      <h2>The machine now actually asks.</h2>
+      <p>Before, the line “across eight language models” was an array of strings and a hash of the
+      domain. Now the visitor types the question their buyer would type, and we put it to a live
+      model. The answer comes back verbatim, in about three seconds, with the brands it named
+      highlighted. <b>Try it — this widget is calling the model, not a script.</b> The same
+      endpoint now powers four more surfaces inside the demo itself; they are in the second
+      wave below.</p>
+    </div>
+
+    <div class="ask rv">
+      <div class="ask__bar"><i class="pulse"></i><b>Live</b><span class="sp"></span>
+        <span id="askModel">kimi · via /api/ask</span></div>
+      <form class="ask__form" id="askForm" autocomplete="off">
+        <input id="askInput" type="text" placeholder="best running shoes for flat feet"
+               aria-label="A question your buyer would ask" spellcheck="false">
+        <button class="ask__go" type="submit" id="askGo">Ask a model</button>
+      </form>
+      <div class="ask__eg">
+        <button type="button" data-eg="best marketing agency network for a Fortune 500 brand">the tested prompt ↓</button>
+        <button type="button" data-eg="best running shoes for flat feet">best running shoes for flat feet</button>
+        <button type="button" data-eg="best CRM for a small agency">best CRM for a small agency</button>
+        <button type="button" data-eg="where should I stay in Lisbon">where to stay in Lisbon</button>
+      </div>
+      <div class="ask__out" id="askOut"></div>
+    </div>
+
+    <p class="rv" style="margin-top:26px;font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--on-void-3)">
+      In the demo this runs against the brand the visitor typed, and the report shows whether they were named.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ THE FORK ══════════════════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <p class="n">UPGRADE 02</p>
+      <h2>It asks whose site it is — then becomes a different report.</h2>
+      <p>One question after the site read now decides the subject of the whole brief, the pronouns
+      in every sentence, and which of the remaining questions get asked at all. Four modes come out
+      of three answers, and the flow never gets longer than seven questions on any path.</p>
+    </div>
+
+    <div class="ba">
+      <div class="ba__col rv">
+        <p class="ba__k">Before</p>
+        <h3>One path, one assumption</h3>
+        <ul>
+          <li>Four or five questions, always the same order</li>
+          <li>Everyone was addressed as the brand's owner</li>
+          <li>An agency researching a prospect got a brief that said “your brand equity” about
+              someone else's company</li>
+          <li>Four possible report shapes in total</li>
+        </ul>
+        <a class="ba__link" href="https://stagwell-ai-ruby.vercel.app/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M6.5 3.5H3.4v9.1h9.1V9.5" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M9.4 3.5h3.1v3.1M12.5 3.5L7.8 8.2" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Open the original version
+        </a>
+      </div>
+      <div class="ba__col ba__col--now rv">
+        <p class="ba__k">Now</p>
+        <h3>Four modes, 144 variants</h3>
+        <ul>
+          <li><b>That's us</b> — a read on your own position</li>
+          <li><b>They're a competitor</b> → give your own site and the report flips to
+              <b>you versus them</b>, head to head</li>
+          <li><b>Skip your side</b> — a cold read on the rival, in third person</li>
+          <li><b>Category only</b> — no stake, no role question, five questions total</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ THE REST ══════════════════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <p class="n">UPGRADES 03 — 06 · THE FIRST WAVE</p>
+      <h2>Four more that change how it feels in the room.</h2>
+    </div>
+
+    <div class="ups">
+      <article class="up rv">
+        <p class="up__k">03 · Six lenses</p>
+        <h3>Pick one or two, and the brief rebuilds around them</h3>
+        <p>How AI describes us · how we stack up · what people believe · what we've been doing
+        lately · where the growth is · where we're exposed. Whichever leads gets hoisted to the top
+        of the brief and picks its own follow-up question.</p>
+        <p class="up__f">Was four options, pick one</p>
+      </article>
+
+      <article class="up rv">
+        <p class="up__k">04 · It shows its work</p>
+        <h3>The read is performed, not claimed</h3>
+        <p>“47 pages read” used to sit above a card that appeared all at once. Now the crawl streams
+        with status codes and timings, the counters climb, and the inference fills in row by row.
+        The loader names names too — the domain, the rival, the prompt, the reader.</p>
+        <p class="up__f">Replay it below</p>
+      </article>
+
+      <article class="up rv up--live">
+        <p class="up__k">05 · Real brand marks</p>
+        <h3>The actual logo of the actual company</h3>
+        <p>Favicons are fetched live for the subject, every competitor and every ranking row. It is
+        a small thing that does a lot of work: it is visible proof the page reached the real
+        internet. Unknown brands fall back to a monogram, never a broken image.</p>
+        <div class="marks" id="marks"></div>
+        <p class="up__f">Live on this page</p>
+      </article>
+
+      <article class="up rv">
+        <p class="up__k">06 · Nothing is lost</p>
+        <h3>A read-back you can correct</h3>
+        <p>Every path ends on a card listing what the visitor steered, with a <b>change</b> link on
+        each row. It is the correction point, the proof they shaped it, and the only way back
+        through the conversation.</p>
+        <p class="up__f">Plus a share card and full icon set</p>
+      </article>
+    </div>
+
+    <div class="crawl rv" id="crawlDemo">
+      <div class="crawl__bar"><i class="pulse"></i><b>nike.com</b><span class="sp"></span>
+        <span class="crawl__count"><b id="cN">0</b> pages · <b id="cE">0</b> entities</span></div>
+      <div class="crawl__feed" id="cFeed"></div>
+      <button class="crawl__replay" id="cReplay">Replay the read</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ THE SECOND WAVE ══════════════════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <p class="n">UPGRADES 07 — 13 · THE SECOND WAVE</p>
+      <h2>Then the brief itself went live.</h2>
+      <p>Seven more, built in parallel and merged the same afternoon. Four of them call the model
+      for real — everything marked <b>live</b> below arrives with a receipt: model name, latency,
+      and the word <em>unscripted</em>.</p>
+    </div>
+
+    <div class="ups">
+      <article class="up rv up--live">
+        <p class="up__k">07 · Live · What the models say</p>
+        <h3>The quotes section is genuinely verbatim</h3>
+        <p>Three real questions fire while the loader talks — what is the brand known for, who
+        leads the category, what are its weaknesses. Whatever answers in time lands in the brief
+        word for word, badged with the question asked and the latency. A failed call keeps its
+        scripted stand-in, unbadged, so the two claims never blur.</p>
+        <p class="up__f">Was three hand-written quotes</p>
+      </article>
+
+      <article class="up rv up--live">
+        <p class="up__k">08 · Live · GEOPulse mini-audit</p>
+        <h3>“Named in 1 of 3” — measured, not modelled</h3>
+        <p>Three brand-blind buying prompts run during the build, and the brief reports how many
+        answers actually named the subject. Brand-blind on purpose: putting the name in the
+        question would inflate the hit rate. It is a working miniature of the flagship metric.</p>
+        <p class="up__f">The core GEOPulse number, made real</p>
+      </article>
+
+      <article class="up rv up--live">
+        <p class="up__k">09 · Live · The summary writes itself</p>
+        <h3>The most-read paragraph, written for this session</h3>
+        <p>The executive summary is composed by the model from the session's own context — reader,
+        lens, their typed words, the real figures. A strict validator stands in front of the page:
+        a paragraph that fails length, misses the brand, or carries no figure is discarded for the
+        template, because a mediocre paragraph is worse than a scripted one.</p>
+        <p class="up__f">Receipted: model · ms · unscripted</p>
+      </article>
+
+      <article class="up rv up--live">
+        <p class="up__k">10 · Live · Ask the machine</p>
+        <h3>The finished brief takes questions</h3>
+        <p>A composer under the summary (and in version B's chat panel) answers follow-ups in
+        character — Stagwell AI, holding this diagnosis, two to four sentences. Three suggested
+        chips mean the room never has to improvise, and a failed call answers in character and
+        admits it is the fallback.</p>
+        <p class="up__f">Was a dead input that promised answers</p>
+      </article>
+
+      <article class="up rv">
+        <p class="up__k">11 · Projection slider</p>
+        <h3>What closing the gap is worth</h3>
+        <p>Drag from today to two quarters of corrected citation supply and watch the numbers move
+        — AI visibility climbs toward the rival, “points behind” falls, share of voice follows.
+        Deliberately flagged <b>Projection · modelled</b> in amber: it is the one interactive
+        block that must never be mistaken for a measurement.</p>
+        <p class="up__f">Hand Mark the trackpad</p>
+      </article>
+
+      <article class="up rv">
+        <p class="up__k">12 · Board view</p>
+        <h3>Ten sections collapse to one screen</h3>
+        <p>The conversation promises “board altitude” — now the brief keeps it. One toggle: three
+        numbers, three moves, the first quote (its Live tag intact when it earned one), the Mark
+        Penn line, a way back. Escape exits, scroll position survives the round trip.</p>
+        <p class="up__f">The closing screen for the room</p>
+      </article>
+
+      <article class="up rv">
+        <p class="up__k">13 · Head to head</p>
+        <h3>The duel finally looks like a duel</h3>
+        <p>Say the site is a competitor's, give your own, and the brief opens with a two-column
+        arena — both logos, mirrored bars growing from a centre spine, a winner marker per row,
+        and an honest verdict that names who holds equity and who holds the answer layer. The
+        rival's visibility is derived the same way every other chart derives it, so the page
+        never argues with itself.</p>
+        <p class="up__f">Adidas vs Nike, properly staged</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ THE DEMO ══════════════════ -->
+<section class="sec sec--void">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <p class="eyebrow"><i class="pulse"></i>The presentation</p>
+      <h2>Running this for Mark Penn.</h2>
+      <p>A suggested order. The whole case is that the answer layer has already moved and most
+      brands cannot see themselves inside it — so lead with the part that is measured, not modelled,
+      and let the rest support it.</p>
+    </div>
+
+    <div class="run">
+      <div class="step rv">
+        <span class="step__n">01</span>
+        <div>
+          <h3>Open on Stagwell itself</h3>
+          <p>Type <code>stagwellglobal.com</code>. It is one of the twenty-one brands with real,
+          hand-checked facts — New York, 2015, ~13,000 people, WPP and Omnicom and Publicis as the
+          named set. The read lands as recognisably true before a single claim is made, which is
+          what buys credibility for everything after it.</p>
+        </div>
+      </div>
+
+      <div class="step rv">
+        <span class="step__n">02</span>
+        <div>
+          <h3>Choose “They're a competitor” and give a holding company</h3>
+          <p>Enter <code>wpp.com</code> first, then hand it <code>stagwellglobal.com</code> as your
+          side. The brief comes back as <b>Stagwell versus WPP</b> — his own company's position
+          against the incumbent, which is the argument he already makes in public.</p>
+        </div>
+      </div>
+
+      <div class="step rv">
+        <span class="step__n">03</span>
+        <div>
+          <h3>Lead on “How AI describes us” and use the tested prompt</h3>
+          <p>This is the moment, and the prompt matters. Use:</p>
+          <div class="say">best marketing agency network for a Fortune 500 brand</div>
+          <p>Run three times against the live endpoint, it returned
+          <b>WPP, Publicis and Omnicom on every attempt, and Stagwell on none.</b> The machine says
+          it is asking, and then it does. Three seconds later the verbatim answer is on screen with
+          the incumbents lit up and Stagwell marked absent — which is a far sharper result than
+          nobody being named.</p>
+          <div class="say">“That is not our model and not our script. That is what a general-purpose
+          assistant told a buyer thirty seconds ago. Our competitors are in that answer. We are not.”</div>
+          <p><b>Backup prompt</b>, also clean across three runs:
+          <em>which advertising holding company should a global brand hire</em>. Avoid open-ended
+          phrasings like <em>which agency for AI marketing</em> — it returns obscure specialists
+          about a third of the time, which reads as noise rather than as a gap.</p>
+          <p>While the loader runs, the machine is also asking three audit prompts, fetching
+          three verbatim quotes about Stagwell, and writing the executive summary — so the
+          brief that lands is carrying <b>seven live results</b>, each with its receipt.</p>
+        </div>
+      </div>
+
+      <div class="step rv">
+        <span class="step__n">04</span>
+        <div>
+          <h3>Let the read-back do the closing</h3>
+          <p>Before it builds, the machine reads the whole brief back — subject, angle, lens, tested
+          prompt, who it is for, where it is going — with every line correctable. It reframes the
+          preceding ninety seconds as <b>configuration</b> rather than interrogation, which is the
+          difference between a form and a workspace.</p>
+        </div>
+      </div>
+
+      <div class="step rv">
+        <span class="step__n">05</span>
+        <div>
+          <h3>Take one question from the room</h3>
+          <p>The finished brief has an <b>Ask the machine</b> section directly under the summary.
+          Tap a suggested chip — <em>Why is WPP ahead of us in AI answers?</em> — and it answers
+          in character, with the diagnosis's own figures, receipted as unscripted. If someone
+          shouts a question, type it; the system prompt keeps the answers on-message, and the
+          chips are there so nobody has to improvise.</p>
+        </div>
+      </div>
+
+      <div class="step rv">
+        <span class="step__n">06</span>
+        <div>
+          <h3>Close on the board view</h3>
+          <p>One tap on <b>Board view</b> and the whole document collapses to a single screen —
+          three numbers, three moves, one live quote, and his own line about advertisers
+          kickstarting a virtuous cycle of investing in news. The Future of News research runs
+          through the full document behind it: twenty-eight partners, nine HarrisX studies, the
+          news-adjacency finding priced as an opportunity. <b>The product argues his thesis back
+          to him with numbers attached, on one screen he can photograph.</b></p>
+        </div>
+      </div>
+
+      <div class="step rv">
+        <span class="step__n">07</span>
+        <div>
+          <h3>Have the honest answer ready</h3>
+          <p>He is a pollster. He will ask which numbers are real. The answer is short and it is
+          better said before he asks: <b>the tested prompt, the three-prompt audit, the verbatim
+          quotes, the written summary and the follow-up answers are real — every one arrives with
+          a model name and a latency. Every score on the page is illustrative</b> — derived from
+          the domain so it stays consistent, with BERA and GEOPulse producing the genuine ones in
+          the workspace. Saying that unprompted is what makes the live moments count for more,
+          not less.</p>
+        </div>
+      </div>
+    </div>
+
+    <a class="cta" href="./index.html">Open the demo
+      <svg viewBox="0 0 16 16" width="15" height="15"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ══════════════════ HONESTY ══════════════════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec__head rv">
+      <p class="n">BEFORE YOU PRESENT</p>
+      <h2>What is real, and what is still a demonstration.</h2>
+      <p>This matters more than any feature on this page. The prototype is far more convincing than
+      it was, which makes being precise about its edges more important, not less.</p>
+    </div>
+
+    <div class="honest">
+      <div class="hc hc--yes rv">
+        <p class="hc__k">Real</p>
+        <h3>You can stand behind these</h3>
+        <ul>
+          <li>The tested prompt — a live model, a verbatim answer, real latency</li>
+          <li>The three verbatim quotes in “What the models say”, when badged Live</li>
+          <li>The three-prompt audit — “named in N of 3” is counted, not hashed</li>
+          <li>The executive summary, when it carries its receipt line</li>
+          <li>Every answer from “Ask the machine” — receipted as unscripted</li>
+          <li>Brand logos, fetched from the live web</li>
+          <li>Company facts for the twenty-one known brands</li>
+          <li>The twenty-eight partners, nine HarrisX studies, the Mark Penn quote</li>
+        </ul>
+      </div>
+      <div class="hc hc--no rv">
+        <p class="hc__k">Illustrative</p>
+        <h3>Do not present these as measured</h3>
+        <ul>
+          <li>Brand equity, AI visibility, share of voice, creator counts</li>
+          <li>The eight-model comparison chart — the audit above it is the measured one</li>
+          <li>Competitor scores, trends and “last move this week”</li>
+          <li>Every opportunity lift, and the projection slider — flagged modelled by design</li>
+          <li>The crawl — no page is actually fetched</li>
+          <li>The email — captured, never sent</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="warn rv">
+      <b>The live surface is the only thing here that can vary</b>
+      <p>A full build now makes <b>about seven model calls</b> — quotes, audit, summary, the tested
+      prompt — and each is a real model at temperature one, so <b>wording changes every run</b> and
+      any single call can time out. Every failure falls back silently to scripted copy, unbadged.
+      That is the correct behaviour, but it means a live moment can quietly go missing, and the
+      loader will honestly say “Listening to what the models actually say…” for a few extra
+      seconds when the summary is still writing.</p>
+      <p style="margin-top:12px">So: run one full build a few minutes before you present, use the
+      tested prompt rather than improvising one, and know the backup. If an answer comes back
+      flattering — naming Stagwell — that is still a usable result, it just becomes a different
+      sentence: <em>we are in the answer, but third, behind two incumbents.</em> And the endpoint
+      still has no rate limit — fine for the room, cap it before this URL circulates.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <svg viewBox="0 0 28.44 28"><use href="#mark"/></svg>
+    <span>Prototype · scripted demonstration · figures illustrative ·
+      <a href="./index.html">the demo</a> · <a href="./b.html">version B</a> ·
+      <a href="https://stagwell-ai-ruby.vercel.app/" target="_blank" rel="noopener">the original</a></span>
+  </div>
+</footer>
+
+<script src="./upgrades.js"></script>
+</body>
+</html>

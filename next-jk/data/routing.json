@@ -1,0 +1,446 @@
+{
+  "tiers": {
+    "smb": "Under ~250 employees, or annual marketing budget under ~$1M (small/boutique agencies included)",
+    "mid_market": "~250–2,500 employees, active brand and media investment",
+    "enterprise": "2,500+ employees, or $1B+ revenue, or global / multi-brand footprint"
+  },
+  "routes": {
+    "self_serve": "Trial CTA dominates the routing screen; attributed signup on the product's site; activation tracked",
+    "demo": "Sales-led demo booked with the owning product team, pre-briefed with the snapshot",
+    "consultative": "One Stagwell conversation, multi-product capable, flagged first-class in CRM"
+  },
+  "overrides_in_order": [
+    {
+      "order": 1,
+      "if": "problem_domains.length >= 2",
+      "then": "consultative",
+      "why": "multi-product opportunity outranks any single cell, whatever the tier"
+    },
+    {
+      "order": 2,
+      "if": "role == 'c_suite' && tier in ['mid_market','enterprise']",
+      "then": "consultative",
+      "why": "senior decision-makers get the portfolio conversation, not a single-product demo"
+    },
+    {
+      "order": 3,
+      "if": "visitor asked for a human",
+      "then": "demo",
+      "why": "a human ask always wins"
+    },
+    {
+      "order": 4,
+      "if": "otherwise",
+      "then": "use domains[domain].cells[tier]"
+    }
+  ],
+  "notes": "Attribution is always captured; contact rides with the route wherever it was given — a visitor who declines email keeps the on-screen snapshot and is logged anonymously. · follow_up retired Sep 2 at the client’s request (“we want everyone to end on book a demo, start a free trial or talk to Stagwell”): q5 lost its “Just exploring” chip with it, and the six SMB cells that nurtured now book a demo — the one ask every product can honestly make.",
+  "domains": [
+    {
+      "id": "brand_health",
+      "label": "Track brand health and campaign impact",
+      "solution": "QuestBrand",
+      "icpRoles": [
+        "VP Consumer Insights",
+        "Director of Research",
+        "VP Brand/Marketing"
+      ],
+      "industryBoost": [
+        "QSR",
+        "Retail & Ecommerce",
+        "CPG"
+      ],
+      "cells": {
+        "smb": {
+          "route": "self_serve",
+          "note": "trial dashboard"
+        },
+        "mid_market": {
+          "route": "demo"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "'prove impact', CFO or board language at enterprise tier adds business_impact as a second domain (engine soft trigger, Sep 2) → override 1 → consultative with BERA.ai"
+        }
+      }
+    },
+    {
+      "id": "competitive",
+      "label": "Track competitors and benchmark against them",
+      "solution": "QuestBrand",
+      "icpRoles": [
+        "VP Brand/Marketing",
+        "VP Consumer Insights",
+        "Director of Research",
+        "CMO",
+        "Head of Strategy"
+      ],
+      "industryBoost": [
+        "QSR",
+        "Retail & Ecommerce",
+        "CPG",
+        "Automotive",
+        "Financial Services"
+      ],
+      "cells": {
+        "smb": {
+          "route": "self_serve",
+          "note": "named-competitor tracking on the trial dashboard"
+        },
+        "mid_market": {
+          "route": "demo"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "'prove impact', CFO or board language at enterprise tier adds business_impact as a second domain (engine soft trigger, Sep 2) → override 1 → consultative with BERA.ai"
+        }
+      }
+    },
+    {
+      "id": "research",
+      "label": "Run research myself (surveys, concept & message testing)",
+      "solution": "QuestDIY",
+      "icpRoles": [
+        "VP Consumer Insights",
+        "Director of Research",
+        "Insights Manager"
+      ],
+      "industryBoost": [
+        "Consumer Products",
+        "Travel",
+        "Financial Services",
+        "Media",
+        "Agencies"
+      ],
+      "cells": {
+        "smb": {
+          "route": "self_serve",
+          "note": "signup → first survey"
+        },
+        "mid_market": {
+          "route": "self_serve",
+          "note": "demo offered"
+        },
+        "enterprise": {
+          "route": "self_serve",
+          "note": "'run it regularly' (Q6) → demo for team plan"
+        }
+      }
+    },
+    {
+      "id": "business_impact",
+      "label": "Prove brand's business impact (pricing power, revenue, market value)",
+      "solution": "BERA.ai",
+      "icpRoles": [
+        "CMO",
+        "VP Brand",
+        "CFO",
+        "Agency MD"
+      ],
+      "industryBoost": [
+        "CPG",
+        "Food/Beverage",
+        "Retail",
+        "Automotive",
+        "Financial Services",
+        "Telecom"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "no self-serve tier — the demo is the honest floor"
+        },
+        "mid_market": {
+          "route": "demo"
+        },
+        "enterprise": {
+          "route": "consultative",
+          "note": "board/CFO audience makes this an executive sale"
+        }
+      }
+    },
+    {
+      "id": "audiences",
+      "label": "Reach better audiences (build & activate from first-party data)",
+      "solution": "The Targeting Machine",
+      "icpRoles": [
+        "Head of Insights",
+        "Chief Analytics Officer",
+        "Chief Growth Officer",
+        "Chief Data Officer",
+        "CMO"
+      ],
+      "industryBoost": [
+        "brands with multi-channel ad spend"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "usually below the paid-media threshold — the demo qualifies the spend"
+        },
+        "mid_market": {
+          "route": "demo",
+          "note": "data in CDP/warehouse (Q6) → demo now"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "data scattered in platforms (Q6) → consultative scoping"
+        }
+      }
+    },
+    {
+      "id": "leads",
+      "label": "Answer every inbound lead and customer call",
+      "solution": "NewVoices",
+      "solutionNote": "NewVoices is the one product in the suite that acts on a hand-raise rather than measuring one. Its own published value props lead with 'Qualify and book leads the moment they raise a hand'; this domain exists so Meta's Leads objective has an honest destination rather than a near-miss.",
+      "icpRoles": [
+        "VP Sales",
+        "Head of Revenue Operations",
+        "VP Customer Experience",
+        "Head of Contact Centre",
+        "CMO"
+      ],
+      "industryBoost": [
+        "Financial Services",
+        "Automotive",
+        "Retail & Ecommerce",
+        "Healthcare",
+        "Travel & Hospitality"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "[packaging to confirm with NewVoices — no self-serve tier is published, so the demo is the honest floor]"
+        },
+        "mid_market": {
+          "route": "demo",
+          "note": "volume and languages (Q6) size the pilot"
+        },
+        "enterprise": {
+          "route": "consultative",
+          "note": "CRM/telephony integration and compliance scoping come first"
+        }
+      },
+      "labelNote": "Widened from 'Answer and qualify every inbound lead': NewVoices' four published use cases are sales, service, retention and feedback, and the picker row 'Leads' is the door, not the boundary."
+    },
+    {
+      "id": "influencer",
+      "label": "Run influencer and creator programs",
+      "solution": "Stagwell AI for SMBs (small teams) / IMAI Enterprise (100+ creators)",
+      "icpRoles": [
+        "Marketing Manager",
+        "Founder",
+        "CMO",
+        "VP Marketing",
+        "Director of Influencer Marketing"
+      ],
+      "cells": {
+        "smb": {
+          "route": "self_serve",
+          "note": "SMB platform signup"
+        },
+        "mid_market": {
+          "route": "demo",
+          "note": "creator count (Q6) picks platform tier"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "IMAI Enterprise, full workflow"
+        }
+      }
+    },
+    {
+      "id": "reputation",
+      "label": "Protect reputation — see risks before they become stories",
+      "solution": "The Knowledge Machine",
+      "icpRoles": [
+        "CCO",
+        "CMO",
+        "VP Comms"
+      ],
+      "industryBoost": [
+        "Pharma",
+        "Finance",
+        "Insurance",
+        "Energy",
+        "Government"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "below the usual ICP floor — the demo qualifies"
+        },
+        "mid_market": {
+          "route": "demo"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "core ICP"
+        }
+      }
+    },
+    {
+      "id": "media_monitoring",
+      "label": "Monitor everything said about us, globally (Q6: global, multi-language)",
+      "solution": "UNICEPTA",
+      "icpRoles": [
+        "CCO",
+        "VP Corporate Comms",
+        "Head of Public Affairs"
+      ],
+      "industryBoost": [
+        "multinational corporations"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "below the usual ICP floor — the demo qualifies"
+        },
+        "mid_market": {
+          "route": "demo",
+          "note": "if genuinely multi-market"
+        },
+        "enterprise": {
+          "route": "demo"
+        }
+      }
+    },
+    {
+      "id": "ai_visibility",
+      "label": "Show up in AI answers (ChatGPT, Gemini, Perplexity)",
+      "solution": "GEOPulse",
+      "icpRoles": [
+        "brand & comms marketers"
+      ],
+      "cells": {
+        "smb": {
+          "route": "self_serve",
+          "note": "trial [confirm packaging]"
+        },
+        "mid_market": {
+          "route": "demo",
+          "note": "visibility program"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "multi-brand / multi-market program"
+        }
+      }
+    },
+    {
+      "id": "real_world_behavior",
+      "label": "Measure real-world behavior (visits, foot traffic, say/do gap)",
+      "solution": "Numetrix",
+      "icpRoles": [
+        "marketing & insights leads with physical locations"
+      ],
+      "industryBoost": [
+        "Retail",
+        "QSR",
+        "venues"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "the demo checks for multi-location need"
+        },
+        "mid_market": {
+          "route": "demo"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "often pairs with brand tracking → multi-product check"
+        }
+      }
+    },
+    {
+      "id": "marketing_ops",
+      "label": "Connect our marketing ops into one system (workflows, media, knowledge)",
+      "solution": "The Machine / The Media Machine",
+      "icpRoles": [
+        "CMO",
+        "CCO",
+        "CDO",
+        "Chief Media Officer"
+      ],
+      "industryBoost": [
+        "enterprise ($1B+ revenue), multi-brand, global"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "below the Machines’ ICP floor — the product team’s demo finds the nearest concrete need"
+        },
+        "mid_market": {
+          "route": "consultative",
+          "note": "scoping conversation"
+        },
+        "enterprise": {
+          "route": "consultative",
+          "note": "Q6 picks the entry Machine"
+        }
+      }
+    },
+    {
+      "id": "ai_workspace",
+      "label": "Give the whole team secure access to AI models and assistants",
+      "solution": "Agent Cloud",
+      "solutionNote": "Agent Cloud is the one product in the suite that is a workspace rather than a measurement: one login and one contract for the frontier models plus custom assistants, with data that never trains the LLMs. This domain exists so a visitor from its own ad can be routed to it.",
+      "icpRoles": [
+        "CMO",
+        "Chief Digital Officer",
+        "Head of Marketing Operations",
+        "Head of Creative",
+        "Agency COO"
+      ],
+      "industryBoost": [
+        "agencies",
+        "multi-brand marketing organisations"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "[packaging to confirm with TMC — self-serve trial if Agent Cloud ships one, otherwise the demo is the honest floor]"
+        },
+        "mid_market": {
+          "route": "demo",
+          "note": "seat count and which teams (q6) shape the pilot"
+        },
+        "enterprise": {
+          "route": "consultative",
+          "note": "security review, SSO and org policies come first"
+        }
+      }
+    },
+    {
+      "id": "sample_quality",
+      "label": "Get research sample you can trust (verified respondents)",
+      "solution": "Unlock",
+      "solutionNote": "Unlock was 'a supporting role by design' — reachable only as QuestDIY's companion. The client asked for it to be a primary (Sep 2): this domain is the door, for research and agency buyers whose problem is the people behind the data, not the survey tool.",
+      "icpRoles": [
+        "Director of Research",
+        "Insights Manager",
+        "VP Consumer Insights",
+        "Agency Research Lead"
+      ],
+      "industryBoost": [
+        "Agencies",
+        "Market research firms",
+        "Consumer Products"
+      ],
+      "cells": {
+        "smb": {
+          "route": "demo",
+          "note": "supply is contracted, not self-served — the demo sizes the need"
+        },
+        "mid_market": {
+          "route": "demo"
+        },
+        "enterprise": {
+          "route": "demo",
+          "note": "agency volume (q6) → consultative when it is for clients at scale"
+        }
+      }
+    }
+  ]
+}

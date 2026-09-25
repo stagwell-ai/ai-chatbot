@@ -1,0 +1,427 @@
+{
+  "_about": "PRODUCTS.JSON — the content contract for the /p/{campaign} product landings. The kit's rule is that copy lives in data, not components: machine/campaign.js renders this file and holds no product words of its own. Every line here is lifted from reference/companies/README.md (official taglines, descriptions, feature lines, FAQ copy, proof points and attributed testimonials) and every asset path is a file that exists under /assets/img/companies/. data/campaigns.json still owns the agent panel — the opener, the chips and the pending_positioning note come from there, never from here.",
+  "_honesty": "These are real third-party brands, real published claims and real named people. Nothing in proof[] or quote{} is a Stagwell.AI measurement: every figure carries proofSource and every quote carries source, and campaign.js renders both. Where a brand's own line has no named speaker we say so rather than borrowing a face for it. Where the kit supplies no asset, a visible [PLACEHOLDER] stays.",
+  "_sources": "reference/companies/README.md · reference/companies/catalog.json · reference/companies/SOURCES.md",
+  "_schema": {
+    "accent": "the product's own brand hue — hairlines, numerals, small marks, the lockup band",
+    "accentInk": "ink proven legible on a solid fill of accent (>= 4.5:1 for body, >= 3:1 for display)",
+    "lockup.ink": "ink for the LOCKUP BAND, which is often not the accent fill — The Machine's band is its logo's own black, whose ink is white, while ink on its orange accent is black. lockup.pillInk overrides it for the category pill where a gradient band makes one colour work at one end and not the other.",
+    "accentNote": "why THIS hex, out of the several the README lists",
+    "band": "the deep surface the proof strip and lockup sit on; bandInk / bandFigure are its text and numeral colours",
+    "tint": "a wash of accent light enough to carry the icon sets, which are all solid-colour-on-transparent",
+    "heroKind": "image = a real photograph/still · mark = the official logo mark as art · diagram = an official explanatory graphic (must be captioned + sourced) · gradient = the brand's own signature gradient, no borrowed picture",
+    "shots[].frame": "every supplied screenshot is cut out on black, so all frames are dark",
+    "valueProps[].icon": "null where the kit ships no icon for that product — those cards go text/number-led"
+  },
+
+  "products": [
+    {
+      "id": "the-machine",
+      "name": "The Machine",
+      "parent": "Stagwell · built by Code and Theory",
+      "category": "Agentic marketing operating system",
+      "tagline": "Marketing's first agentic operating system",
+      "kicker": "Unlock the next era of work.",
+      "summary": "An AI operating system that unifies people, tools and data into one experience — enhancing creativity, eliminating silos and streamlining workflows. It doesn't replace the stack you already have; it activates it, through open APIs, inside Figma, Slack, Teams, Adobe and Jira.",
+
+      "accent": "#FF4500",
+      "accentInk": "#000000",
+      "accentNote": "The README gives The Machine two palettes: the CES lockup (orange #FF4500 on black) and the live stagwellglobal.com page (navy #003349 + cyan #009CBD). We lead with the CES orange because that is the kit we were actually handed — logo.png is the orange mark on black and hero.jpg is orange light on charcoal, so the navy set would fight every image on the page. Ink on the orange is black, not white: white gives 3.4:1 and fails, black gives 6.1:1.",
+      "band": "#000000",
+      "bandInk": "#FFFFFF",
+      "bandFigure": "#FF4500",
+      "tint": "#FFF0E9",
+
+      "lockup": {
+        "band": "#000000",
+        "logo": "/assets/img/companies/the-machine/logo.png",
+        "logoAlt": "The Machine — orange mark and wordmark",
+        "fit": "bleed",
+        "ink": "#FFFFFF",
+        "note": "logo.png ships with its own black field baked in, so the band is set to the same #000000 and the image has no visible edge — the same trick machine/path.css plays with the lockup PNGs on #0A1743. fit:bleed lets the image fill the band and crop its own dead space, so the wordmark reads at size instead of floating in the middle of a black rectangle."
+      },
+
+      "heroKind": "image",
+      "hero": "/assets/img/companies/the-machine/hero.jpg",
+      "heroAlt": "The Machine — End-to-End Orchestration key visual",
+      "heroCaption": "“End-to-End Orchestration” — the CES 2026 key visual.",
+
+      "valueProps": [
+        {
+          "title": "Works where you already work",
+          "line": "Open architecture and open APIs, no vendor lock-in: The Machine runs inside Figma, Slack, Teams, Adobe, Jira, Workfront and Monday rather than replacing them.",
+          "icon": null
+        },
+        {
+          "title": "Context as the multiplier",
+          "line": "Trained on each client's brand, campaigns, audience data and institutional knowledge — the context layer Code and Theory built the system around.",
+          "icon": null
+        },
+        {
+          "title": "Agents on the operational load",
+          "line": "Competitive monitoring, brief generation, asset versioning, brand-compliance review and performance optimisation run as agents.",
+          "icon": null
+        },
+        {
+          "title": "People keep the judgement",
+          "line": "“It doesn't replace marketers' tools; it makes them more effective and predictive.” Humans stay on judgement and relationships.",
+          "icon": null
+        }
+      ],
+      "valuePropsNote": "The kit ships no feature icons for The Machine, so these cards are number-led rather than illustrated.",
+
+      "proof": [
+        { "figure": "20–40%", "label": "reduction in martech stack redundancy" },
+        { "figure": "~50%", "label": "savings in strategy & insights workflows" },
+        { "figure": "~30%", "label": "savings in creative production cost" },
+        { "figure": "10x", "label": "content volume, without proportional headcount" }
+      ],
+      "proofSource": "Stagwell's own early-integration estimates, from The Machine launch release (stagwellglobal.com, January 2026). Stagwell's figures, not a Stagwell.AI measurement.",
+
+      "quote": {
+        "text": "Most marketing AI tools ask you to rip out your infrastructure and start over. The Machine does the opposite. It works where you work, improves and AI enables the tools you already use, and transforms existing operations into an agentic system.",
+        "name": "Dan Gardner",
+        "title": "Founder and Chairman, Code and Theory",
+        "photo": "/assets/img/companies/the-machine/person.jpg",
+        "source": "The Machine launch release, stagwellglobal.com, January 2026."
+      },
+
+      "shots": [
+        {
+          "src": "/assets/img/companies/the-machine/still.jpg",
+          "alt": "Code and Theory network — five Webby Awards",
+          "caption": "Code and Theory, the network that built The Machine.",
+          "credit": "Agency work — not Machine UI.",
+          "frame": "dark"
+        }
+      ],
+      "shotsNote": "[PRODUCT UI — pending: Stagwell has released no public screenshots of The Machine]",
+
+      "builtBy": {
+        "name": "Code and Theory",
+        "logo": null,
+        "wordmark": true,
+        "logoAlt": "",
+        "logoOn": "dark",
+        "line": "Built by Code and Theory, a Stagwell network company.",
+        "logoNote": "[CODE AND THEORY LOGO — the kit's shared/code-and-theory-logo.svg is a FOUR04 mark, not the Code and Theory wordmark]",
+        "logoHowToFix": "the credit now renders the name as a typographic wordmark rather than a placeholder. To use the real mark: drop the official file in assets/img/companies/shared/ and set `logo` to its path — machine/campaign.js prefers it over the wordmark with no code change.",
+        "logoNoteWhy": "SOURCES.md pulled the file from Code and Theory's own Sanity CDN and README.md labels it “Code and Theory wordmark”, but rendered it reads FOUR04. Setting it under a Code and Theory credit would put a false mark on the page, so the credit runs as type and the mislabelled file is flagged for the client instead."
+      },
+
+      "partners": [],
+      "badges": [],
+
+      "siteUrl": "https://www.stagwellglobal.com/themachine/",
+      "siteLabel": "Explore The Machine on stagwellglobal.com"
+    },
+
+    {
+      "id": "agent-cloud",
+      "name": "Agent Cloud",
+      "parent": "The Marketing Cloud, a Stagwell company",
+      "category": "Secure AI workspace for marketers",
+      "tagline": "Giving the modern marketer access to the best AI — safely",
+      "kicker": "Your team's always-on AI powerhouse.",
+      "summary": "One login, one contract and one security standard for the leading multimodal LLMs, image and video tools, and purpose-built marketing assistants — instead of a drawer full of subscriptions. Uploaded data is never used to train the underlying models.",
+
+      "accent": "#0C49B9",
+      "accentInk": "#FFFFFF",
+      "accentNote": "#0C49B9 is Agent Cloud's own primary and the colour of its mark, so it leads here. It is also The Marketing Cloud's house blue, which SATS shares — that clash is resolved on the SATS page, which takes its own navy instead, so the two Marketing Cloud landings don't read as one product. White on #0C49B9 is 7.9:1.",
+      "band": "#0C49B9",
+      "bandInk": "#FFFFFF",
+      "bandFigure": "#FFFFFF",
+      "tint": "#EDF2FD",
+
+      "lockup": {
+        "band": "#0C49B9",
+        "ink": "#FFFFFF",
+        "logo": null,
+        "logoAlt": "",
+        "note": "The Agent Cloud mark is #0C49B9 on transparent — it would disappear on its own colour — so the band carries the name set in type and the mark is used at size in the hero instead."
+      },
+
+      "heroKind": "mark",
+      "hero": "/assets/img/companies/agent-cloud/hero.png",
+      "heroAlt": "Agent Cloud — the molecular A mark",
+      "heroCaption": "The Agent Cloud mark.",
+
+      "valueProps": [
+        {
+          "title": "Flexibility",
+          "line": "Enterprise ChatGPT, Claude Sonnet, Grok and Gemini Pro plus image and video tools, switchable per task — GPT-5, Gemini 2.5, Veo3 — with no single-vendor lock-in.",
+          "icon": "/assets/img/companies/agent-cloud/icon-flexibility.svg"
+        },
+        {
+          "title": "Security",
+          "line": "Uploaded data is never used to train the LLMs. Role-based access, organisation policies, and SOC 2 processes for security, availability and confidentiality.",
+          "icon": "/assets/img/companies/agent-cloud/icon-security.svg"
+        },
+        {
+          "title": "Speed and scale",
+          "line": "Build and share custom AI assistants for creative, media, communications and research, then deploy them across the whole organisation.",
+          "icon": "/assets/img/companies/agent-cloud/icon-speed-and-scale.svg"
+        },
+        {
+          "title": "One contract",
+          "line": "One annual base fee plus usage-based charges, in place of scattered subscriptions and unsanctioned AI use.",
+          "icon": null
+        }
+      ],
+
+      "proof": [
+        { "figure": "25,000+", "label": "agent interactions a month" },
+        { "figure": "500+", "label": "custom agents built" },
+        { "figure": "+30%", "label": "monthly interactions since launch" },
+        { "figure": "+25%", "label": "daily engagement time since launch" }
+      ],
+      "proofSource": "The Marketing Cloud, Agent Cloud expansion release, February 2026 — the product team's own figures, not a Stagwell.AI measurement.",
+
+      "quote": {
+        "text": "Agent Cloud has been pivotal in advancing our AI transformation… The ability to build and deploy custom AI assistants makes Agent Cloud a true differentiator.",
+        "name": "Brent Diggins",
+        "title": "Managing Director of Performance+Intelligence, Allison",
+        "photo": "/assets/img/companies/agent-cloud/person.jpg",
+        "source": "Agent Cloud product page, themarketingcloud.com. Ellipsis as published."
+      },
+
+      "shots": [
+        {
+          "src": "/assets/img/companies/agent-cloud/ui-1.jpg",
+          "alt": "Agent Cloud agent marketplace",
+          "caption": "The marketplace — ChatGPT Enterprise, Claude, Gemini and Grok side by side, each with the job it is best at.",
+          "credit": "Product screenshot, themarketingcloud.com.",
+          "frame": "dark"
+        },
+        {
+          "src": "/assets/img/companies/agent-cloud/ui-2.jpg",
+          "alt": "Agent Cloud — building a new custom agent",
+          "caption": "Building a custom agent: instructions, tools, provider and model, and who in the org can use it.",
+          "credit": "Product screenshot, themarketingcloud.com.",
+          "frame": "dark"
+        }
+      ],
+
+      "partners": [],
+      "badges": [],
+
+      "siteUrl": "https://www.themarketingcloud.com/marketplace/agent-cloud",
+      "siteLabel": "Explore Agent Cloud on The Marketing Cloud"
+    },
+
+    {
+      "id": "targeting-machine",
+      "name": "The Targeting Machine",
+      "officialName": "Stagwell Agentic Targeting System (SATS)",
+      "parent": "The Marketing Cloud, built natively on Palantir Foundry",
+      "category": "Privacy-first audience intelligence",
+      "tagline": "Enterprise-grade audience intelligence",
+      "kicker": "Privacy-first audience platform.",
+      "summary": "Fuse your first-party data with the Stagwell ID Graph, third-party media data and proprietary consumer intelligence — then query, segment and activate audiences conversationally, on Palantir Foundry.",
+
+      "accent": "#0A2A62",
+      "accentInk": "#FFFFFF",
+      "accentNote": "SATS shares The Marketing Cloud's #0C49B9 primary with Agent Cloud, so leading with it would make the two landings interchangeable. We lead instead with the SATS navy #0A2A62 and cyan #0DC2E9 — both read straight off the official SATS hero SVG in this kit. White on the navy is 13.8:1; the cyan numerals on it are 6.5:1.",
+      "band": "#0A2A62",
+      "bandInk": "#FFFFFF",
+      "bandFigure": "#0DC2E9",
+      "tint": "#EAF1FB",
+
+      "lockup": {
+        "band": "#0A2A62",
+        "ink": "#FFFFFF",
+        "logo": null,
+        "logoAlt": "",
+        "note": "There is no Targeting Machine wordmark — Stagwell goes to market as SATS, and the one identity file in the kit is an architecture diagram, not a logo. So the band carries the name set in type with the official product name beneath it, the way machine/path.css handles a product with no lockup."
+      },
+
+      "heroKind": "diagram",
+      "hero": "/assets/img/companies/targeting-machine/logo.svg",
+      "heroAlt": "SATS architecture — attitudinal and behavioural signals into the Stagwell Agentic Targeting System, on Palantir Foundry, over the Stagwell ID Graph",
+      "heroCaption": "How SATS is put together: attitudinal and behavioural signals, over Palantir Foundry, over the Stagwell ID Graph and Stagwell's proprietary datasets.",
+      "heroCredit": "Official architecture graphic, SATS product page, themarketingcloud.com.",
+
+      "valueProps": [
+        {
+          "title": "Proprietary consumer data",
+          "line": "Build high-intent audiences from Stagwell's own datasets — HarrisQuest, Unlock, BERA.ai and Numetrix — not just what the platforms will sell back to you.",
+          "icon": "/assets/img/companies/targeting-machine/sats-proprietary-data.svg"
+        },
+        {
+          "title": "Conversational interface",
+          "line": "Ask for an audience in plain language, then transform seed segments into high-fidelity lookalikes.",
+          "icon": "/assets/img/companies/targeting-machine/sats-conversational.svg"
+        },
+        {
+          "title": "Real-time monitoring",
+          "line": "Pipe audience insight into your activation platforms and track and optimise cross-channel performance in real time, with secure AI.",
+          "icon": "/assets/img/companies/targeting-machine/sats-realtime-monitoring.svg"
+        },
+        {
+          "title": "Patented differential privacy",
+          "line": "A Differential Privacy Vault built on Harvard OpenDP lets teams activate sensitive datasets without exposing individual identities.",
+          "icon": "/assets/img/companies/targeting-machine/sats-differential-privacy.svg"
+        }
+      ],
+
+      "poweredBy": {
+        "icon": "/assets/img/companies/targeting-machine/sats-palantir-foundry.svg",
+        "line": "Built natively on Palantir Foundry."
+      },
+
+      "proof": [
+        { "figure": "260M", "label": "US consumers in the Stagwell ID Graph" },
+        { "figure": "123M", "label": "US households in the ID Graph" },
+        { "figure": "29,000+", "label": "GSTV locations reachable through SATS" },
+        { "figure": "115M", "label": "unique US adults a month across GSTV" }
+      ],
+      "proofSource": "ID Graph figures from the SATS product page, themarketingcloud.com. GSTV network figures from the GSTV / Stagwell partnership release, 11 June 2026. Both are the publishers' own numbers, not a Stagwell.AI measurement.",
+
+      "quote": {
+        "text": "The Stagwell Agentic Targeting System fundamentally changes how we build and target audiences for campaigns, enabling us to target the right people at the right locations, in real time, based on far richer signals than traditional demographic or survey-based data.",
+        "name": "Lauren Lazarus",
+        "title": "SVP Insights & Analytics, GSTV",
+        "photo": null,
+        "photoNote": "[NO HEADSHOT IN KIT]",
+        "source": "GSTV press release, 11 June 2026."
+      },
+      "quoteSecondary": {
+        "text": "GSTV's integration with the Stagwell Agentic Targeting System gives us a more dynamic view of the convenience retail audience allowing us to move beyond static demographic assumptions and toward real-time behavioral insights.",
+        "name": "Peter Choi",
+        "title": "VP Marketing, Conagra Brands",
+        "photo": null,
+        "photoNote": "[NO HEADSHOT IN KIT]",
+        "source": "GSTV press release, 11 June 2026."
+      },
+
+      "shots": [
+        {
+          "src": "/assets/img/companies/targeting-machine/ui-1.jpg",
+          "alt": "SATS audience profile and map explorer",
+          "caption": "An audience profile — where a ~45K segment actually lives, city by city, with the question box underneath it.",
+          "credit": "Product screenshot, themarketingcloud.com.",
+          "frame": "dark"
+        },
+        {
+          "src": "/assets/img/companies/targeting-machine/ui-2.jpg",
+          "alt": "SATS platform activation picker",
+          "caption": "Activation — sending a built audience straight into social, programmatic and CTV, commerce, search and affiliate.",
+          "credit": "Product screenshot, themarketingcloud.com.",
+          "frame": "dark"
+        }
+      ],
+
+      "partners": [],
+      "badges": [],
+
+      "siteUrl": "https://www.themarketingcloud.com/marketplace/sats",
+      "siteLabel": "Explore SATS on The Marketing Cloud"
+    },
+
+    {
+      "id": "newvoices",
+      "name": "NewVoices",
+      "officialName": "NewVoices.ai",
+      "parent": "Stagwell · founded by Eran Nizri",
+      "category": "Enterprise AI voice and chat workforce",
+      "tagline": "Turning every customer conversation into a revenue opportunity",
+      "kicker": "AI agents that speak, sell and support alongside your team.",
+      "summary": "Lifelike voice and chat agents for sales, support, retention, payments and feedback — 24/7, in any language. They adapt in real time to customer history, context and intent, and plug into Salesforce, HubSpot, Stripe and Make. Built in Agent Studio, no code required.",
+
+      "accent": "#159CBD",
+      "accentInk": "#16181A",
+      "accentNote": "Sky #159CBD and Mint #57BF94 come from the NewVoices Brand Book v1.0, which the README marks authoritative over the older site teal #0D9488. Sky is the darker of the pair so it takes the accent role. Its ink is the brand's own Ink #16181A, not white — white on Sky is 3.2:1 and fails, Ink is 5.5:1. Deep bands are set on Ink rather than Sky for the same reason.",
+      "band": "#16181A",
+      "bandInk": "#FFFFFF",
+      "bandFigure": "#57BF94",
+      "tint": "#F4F6F6",
+      "gradient": "linear-gradient(90deg,#159CBD,#57BF94)",
+
+      "lockup": {
+        "band": "linear-gradient(90deg,#159CBD 0%,#159CBD 58%,#57BF94 100%)",
+        "ink": "#FFFFFF",
+        "pillInk": "#16181A",
+        "logo": "/assets/img/companies/newvoices/logo-white.png",
+        "logoAlt": "NewVoices AI",
+        "note": "The Brand Book's signature Sky→Mint gradient at 90°, carrying the white lockup — the brand's own pairing — but WEIGHTED. A straight two-stop ramp puts the tail of the white wordmark on Mint at 2.3:1, under the 3:1 a graphical object needs; holding Sky to 58% keeps the whole lockup on Sky (3.2:1) and lets Mint run out behind the category pill, which takes brand Ink instead of white (5.5:1 on Sky, 7.9:1 on Mint). Same two brand colours, same direction, legible at both ends."
+      },
+
+      "heroKind": "none",
+      "hero": null,
+      "heroAlt": "",
+      "heroCaption": "",
+      "heroNote": "The kit ships no NewVoices hero image, and its one product visual earns its place lower down under “Inside the product”. Rather than pad the hero with a decorative gradient slab, the column runs lockup → headline → summary and lets the agent panel keep the fold.",
+
+      "valueProps": [
+        {
+          "title": "Sales",
+          "line": "Qualify and book leads the moment they raise a hand — instant response, any hour, any language.",
+          "icon": "/assets/img/companies/newvoices/icon-sales-growth.svg"
+        },
+        {
+          "title": "Service",
+          "line": "Resolve Tier-1 support end to end, and hand the rest to a person with the context already gathered.",
+          "icon": "/assets/img/companies/newvoices/icon-service.svg"
+        },
+        {
+          "title": "Retention",
+          "line": "Reach lapsing subscribers before they go, and recover payments without putting anyone in a queue.",
+          "icon": "/assets/img/companies/newvoices/icon-retention.svg"
+        },
+        {
+          "title": "Feedback",
+          "line": "Collect NPS and post-interaction feedback in the conversation itself, not in a survey nobody opens.",
+          "icon": "/assets/img/companies/newvoices/icon-feedback.svg"
+        }
+      ],
+
+      "proof": [
+        { "figure": "+230%", "label": "more meetings booked (sales case)" },
+        { "figure": "90%", "label": "of Tier-1 tickets resolved" },
+        { "figure": "+70%", "label": "renewal rate (retention case)" },
+        { "figure": "3×", "label": "pipeline velocity" }
+      ],
+      "proofSource": "NewVoices.ai's own published case figures, newvoices.ai, 2026. The company's claims, not a Stagwell.AI measurement.",
+
+      "quote": {
+        "text": "NewVoices doesn't sound like AI. It sounds like our best employee, working 24 hours a day.",
+        "name": null,
+        "title": null,
+        "photo": null,
+        "source": "NewVoices.ai homepage. Published without a named speaker, so we don't attach one — and we don't put a face beside it.",
+        "unattributedNote": "[SPEAKER — not named on the source page]"
+      },
+      "quoteNote": "The kit ships a headshot of Ron Margaliot as an on-site testimonial photo, but no quote text or title to go with him. Pairing his face with this unattributed line would invent an attribution, so the photo is deliberately unused.",
+
+      "shots": [
+        {
+          "src": "/assets/img/companies/newvoices/ui-1.jpg",
+          "alt": "NewVoices — hear a real AI call in action",
+          "caption": "“Hear a real AI call in action” — the sample the company publishes of an agent greeting a caller, identifying the issue and resolving it without a human.",
+          "credit": "Section from newvoices.ai.",
+          "frame": "dark"
+        }
+      ],
+
+      "partners": [
+        { "src": "/assets/img/companies/newvoices/openai.webp", "name": "OpenAI" },
+        { "src": "/assets/img/companies/newvoices/aws.webp", "name": "AWS" },
+        { "src": "/assets/img/companies/newvoices/google-cloud.webp", "name": "Google Cloud" },
+        { "src": "/assets/img/companies/newvoices/microsoft.webp", "name": "Microsoft" },
+        { "src": "/assets/img/companies/newvoices/microsoft-azure.webp", "name": "Microsoft Azure" },
+        { "src": "/assets/img/companies/newvoices/twilio.webp", "name": "Twilio" }
+      ],
+      "partnersLabel": "Technology partners",
+      "badges": [
+        { "src": "/assets/img/companies/newvoices/badge-aicpa.webp", "name": "SOC 2 (AICPA)" },
+        { "src": "/assets/img/companies/newvoices/badge-gdpr.webp", "name": "GDPR" },
+        { "src": "/assets/img/companies/newvoices/badge-hipaa.webp", "name": "HIPAA" }
+      ],
+      "badgesLabel": "Compliance",
+      "trustSource": "Partner and compliance marks as shown on newvoices.ai.",
+
+      "siteUrl": "https://newvoices.ai/",
+      "siteLabel": "Explore NewVoices.ai"
+    }
+  ]
+}

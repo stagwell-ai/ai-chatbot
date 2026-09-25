@@ -1,0 +1,1900 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOME.CSS — the Stagwell AI homepage, from scratch.
+
+   Reference: the DEPT recording. Its language, not its brand: a sticky white
+   bar with a centred wordmark; one enormous heavy headline per section with a
+   single word in the accent; long stretches of nothing between things;
+   full-bleed film; hairlines instead of boxes; outlined and solid pills;
+   hover that flips a tile to a flat typographic panel; a centred horizontal
+   field with ghosted neighbours and a thin progress line.
+
+   One face: Montserrat, for headlines, numbers and everything spoken.
+
+   Spacing is the §165 scale, but the section steps are one size up from the
+   rest of the site: this page is allowed to breathe.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Montserrat is the only face on the page (client, 2026-09-09); the faces are
+   declared in /next/assets/fonts/fonts.css and nothing else is loaded. */
+
+:root{
+  --ink:#0B1220;
+  --ink-2:rgba(11,18,32,.72);
+  --ink-3:rgba(11,18,32,.52);
+  --ink-4:rgba(11,18,32,.34);
+  --line:rgba(11,18,32,.14);
+  --paper:#FFFFFF;
+  --deep:#07141D;
+  --orange:#FF6D24;
+  --navy:#003349;                               /* the wordmark's blue — the user's turns */
+  --amber:#FFB81C;
+  --teal:#009CBD;                               /* the mark's blue */
+  /* Concept Final V3.1 sets six: the two below complete the palette. */
+  --blue:#0E5F8E;                               /* the mid blue */
+  --sky:#77E3F6;                                /* the light cyan */
+  /* and a pastel of each, for grounds that carry a colour without shouting —
+     the tags, and anything else that wants to sit on its own tone. The
+     "-2" steps are the same colours a shade further on, for hover and edges. */
+  --navy-1:#E0E7E9;   --navy-2:#C2CED3;
+  --teal-1:#D6EFF4;   --teal-2:#ADDFEA;
+  --orange-1:#FFE8DC; --orange-2:#FFD0B9;
+  --blue-1:#DDE9EF;   --blue-2:#BCD2DF;
+  --sky-1:#D6F7FC;    --sky-2:#ADEEFA;
+  --amber-1:#FFF1D2;  --amber-2:#FFE3A4;
+
+  /* 2026-09-09: the homepage goes all Montserrat — one face for titles, copy
+     and controls alike (client). No other face is declared anywhere. */
+  --display:'Montserrat',"Helvetica Neue",Helvetica,Arial,sans-serif;   /* every title */
+  --sans:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ui:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
+  --wrap:1440px;
+  --gutter:clamp(24px,4vw,64px);
+
+  --s-4:.5rem; --s-5:.75rem; --s-6:1rem; --s-7:1.25rem; --s-8:1.5rem;
+  --s-9:2rem;  --s-10:2.5rem; --s-11:3rem; --s-12:4rem; --s-13:5rem;
+  --s-14:6rem; --s-15:7.5rem; --s-16:9rem; --s-17:11.25rem;
+
+  /* the page's own rhythm — bigger than the site's */
+  --sec:clamp(9rem, 6rem + 6vw, 14rem);        /* 144 → 224 */
+  --sec-lg:clamp(11rem, 7rem + 8vw, 18rem);    /* 176 → 288 */
+
+  --ease:cubic-bezier(.16,.72,.24,1);
+  --nav-h:72px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .btn__caret,.ask-mini__dots i,.btn__ic--wave rect,.call__wave,.hero__pic{animation:none}
+  .chat__tags li{opacity:1;transform:none;transition:none}
+  .suite__arrow-line,.suite__arrow-head{transition:none}
+  .ask-mini__hint-w{transition:none}
+  .call,.call > *{transition:none}
+}
+body.home{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:17px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:clip;
+}
+img,svg,video{display:block;max-width:100%}
+svg{flex-shrink:0}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+ul{list-style:none;margin:0;padding:0}
+h1,h2,p,figure{margin:0}
+[hidden]{display:none!important}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+
+/* the wordmark: navy letters, orange AI, amber and teal bars in the mark */
+.m-ink{fill:currentColor}
+.m-orange{fill:var(--orange)}
+.m-amber{fill:var(--amber)}
+.m-teal{fill:#009CBD}
+
+/* ── display type ────────────────────────────────────────────────────────── */
+.display{
+  font-family:var(--display);font-weight:900;
+  text-transform:uppercase;letter-spacing:-.03em;line-height:.9;
+  text-align:center;text-wrap:balance;
+}
+.display em{font-style:normal;color:var(--orange)}
+/* the substituted question mark was a fix for Roobert's; Montserrat's own is
+   fine, so the span is left in the markup and simply inherits */
+.q{font-family:inherit}
+/* the hero title reads like the wordmark: "Ask" in the orange the AI wears,
+   "Stagwell." in Stagwell's own navy. Sentence case, and a size up — a
+   two-word line in mixed case has the room. */
+/* one weight for the whole title: the accent line sat in an <em> at 700 while
+   the bare lines took the .display 900, and with the colour gone that read as
+   two different fonts (client) */
+/* two lines on desktop, and a step down in weight: 500 is Montserrat's own
+   Medium, the "less bold" the client asked for */
+.display--hero {font-weight:500;font-size:clamp(38px, min(.9rem + 3.4vw, 10.5vh), 58px);text-transform:none;text-align:center;line-height:1.1;letter-spacing:-.02em}   /* centred over the picture (client, 2026-09-09) */
+/* "Ask" in the orange, "Stagwell." in the ink — the same size and, by the
+   client's word, the same weight: Bold. (Heavy read too bold; an orange full
+   stop was tried and dropped.) */
+.display--hero em,.display--hero .navy{font-weight:700;letter-spacing:-.035em}   /* one weight for both words (client); the orange alone marks "Ask" */
+.display--hero .navy{color:#FFFFFF}          /* "black, not this blue" */
+/* "Ask" in the orange, as on the billboard; "Stagwell." in the ink */
+.display--hero em{color:var(--orange)}
+/* "Stagwell." in the page ink, as on the billboard */
+.display--hero .navy{color:#FFFFFF}
+/* the accent word in every title carries one of the brand's colours, and no
+   two in a row repeat: orange, teal, amber, blue, orange, teal, blue, amber
+   as you go down the page (client, 2026-09-09). */
+.display em{color:var(--teal)}
+.display--hero em{color:inherit}                /* the hero title is white throughout: the yellow came off it (client) */
+.display--intro em{color:var(--teal)}           /* "agentic solutions" */
+.display--port em{color:var(--amber)}           /* "to work" */
+.why .display--cos em{color:var(--orange)}
+.impact .display--cos em{color:var(--blue)}     /* "to impact" */
+.display--end em{color:var(--amber)}            /* "Ask", on the pastel teal */
+.chat-over__title em{color:var(--teal)}
+/* the reveal wrapper clips; at this size the descender of the g drops below
+   the .9 line box and was being cut. Room for it, and the rise-in offset grows
+   to match so the line still starts fully hidden. */
+.display--hero .ln{padding-bottom:.22em;margin-bottom:-.22em}
+.display--hero .ln__in{transform:translateY(125%)}
+.is-ready .display--hero .ln__in{transform:translateY(0)}
+/* every .display is then fitted to its wrap by home.js — the clamp is the ceiling */
+.display--ask  {font-size:clamp(56px, 1.2rem + 5.6vw, 104px);color:#FFFFFF}
+.display--cos  {font-size:clamp(36px, 1.2rem + 2.9vw, 58px);text-transform:none;letter-spacing:-.025em;line-height:.96}   /* the Agentic section's title, as the client asked */
+.display--close{font-size:clamp(60px, 1.3rem + 6vw, 112px)}
+
+/* a headline arrives one line at a time, from beneath its own baseline */
+.ln{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.ln__in{display:block;white-space:nowrap;transform:translateY(110%);transition:transform 1.1s var(--ease)}
+.is-ready .ln:nth-child(1) .ln__in{transition-delay:.08s}
+.is-ready .ln:nth-child(2) .ln__in{transition-delay:.2s}
+.is-ready .ln:nth-child(3) .ln__in{transition-delay:.32s}
+.is-ready .ln__in{transform:translateY(0)}
+/* headlines further down reveal when their .rv parent comes in */
+.rv .ln__in{transform:translateY(110%)}
+.rv.in .ln__in{transform:translateY(0)}
+.rv.in .ln:nth-child(2) .ln__in{transition-delay:.12s}
+
+/* ── reveals ─────────────────────────────────────────────────────────────── */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform 1s var(--ease);transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none}
+
+/* ── buttons and links ───────────────────────────────────────────────────── */
+.btn{
+  font-family:var(--ui);
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  height:48px;padding:0 28px;border-radius:999px;
+  font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  white-space:nowrap;transition:background-color .25s ease,color .25s ease,transform .3s var(--ease);
+}
+.btn--ink{background:var(--ink);color:#FFFFFF}
+/* the brand's yellow as a button, ink on it — it sits better on the hero's
+   pictures than the orange did (client) */
+.btn--accent{background:var(--amber);color:var(--ink)}
+.btn--accent:hover{background:#F0A800;transform:translateY(-1px)}
+/* and its neighbour is glass, not a ghost: it blurs the picture behind it, so
+   the words read whatever the still is doing under them (client) */
+.btn--glass{background:rgba(255,255,255,.14);color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.34);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15);backdrop-filter:blur(16px) saturate(1.15)}
+.btn--glass:hover{background:rgba(255,255,255,.26);transform:translateY(-1px)}
+.btn--ink:hover{background:#000;transform:translateY(-1px)}
+/* buttons are black and white only (client, 2026-09-07 late): the filled ink
+   button and its outline twin — white ground, ink type, a one-pixel ink
+   stroke. No orange on a button anywhere; the orange belongs to "Ask". */
+.btn--line{background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}   /* ONE stroke for every white round thing: the footer discs' grey, 1px (client) */
+.btn--line:hover{background:var(--ink);color:#FFFFFF;transform:translateY(-1px)}
+.btn--lg{height:60px;padding:0 34px;font-size:15px}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* an icon leads the label: sized here, never by the container */
+.btn__ic{width:18px;height:18px;flex-shrink:0;display:block}
+.btn--lg .btn__ic{width:22px;height:22px}
+.btn--ic{padding-left:24px}
+.btn--lg.btn--ic{padding-left:28px}
+/* the typing caret before "Ask Stagwell": a cursor waiting for a question.
+   Blinks in steps, like a real one; still under reduced motion. */
+.btn__caret{width:2px;height:15px;border-radius:1px;background:currentColor;flex-shrink:0;animation:caret 1.1s steps(1,end) infinite}
+.btn--lg .btn__caret{height:17px}
+.btn__caret{margin-right:-8px}   /* 2px to the A, as a cursor sits */
+@keyframes caret{50%{opacity:0}}
+/* the voice wave moves all the time (client): a line that is listening */
+.btn__ic--wave rect{transform-origin:center;animation:wave .9s ease-in-out infinite alternate}
+.btn__ic--wave rect:nth-child(2),.btn__ic--wave rect:nth-child(4){animation-delay:-.3s}
+.btn__ic--wave rect:nth-child(3){animation-delay:-.6s}
+@keyframes wave{from{transform:scaleY(.55)}to{transform:scaleY(1.15)}}
+
+.link{
+  font-family:var(--ui);
+  display:inline-flex;align-items:center;gap:var(--s-4);
+  font-size:15px;font-weight:500;color:var(--ink);
+  padding-bottom:2px;border-bottom:1px solid transparent;
+  transition:border-color .25s ease,color .25s ease;
+}
+.link--lg{font-size:18px}
+.link--quiet{color:var(--ink-3)}
+.link:hover{border-bottom-color:currentColor}
+.link:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:2px}
+
+/* ── nav ─────────────────────────────────────────────────────────────────── */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:50;height:var(--nav-h);
+  background:transparent;box-shadow:none;   /* you land on the picture with nothing over it; the bar arrives with the first scroll (client, 2026-09-09) */
+  transition:background-color .35s ease,box-shadow .35s ease;
+}
+.nav.is-stuck{background:#FFFFFF;box-shadow:0 1px 0 var(--line)}   /* full white, no blur (client) */
+/* the bar slides away as you scroll down and back as you scroll up — any
+   upward scroll shows it; hiding needs a little travel first */
+.nav{transition:transform .45s var(--ease),background-color .25s ease,box-shadow .25s ease}
+.nav.is-hidden{transform:translateY(calc(-100% - 2px));box-shadow:none}   /* the hairline under it must go too, or a line stays at the top */
+.nav__in{
+  height:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter);
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:var(--s-12);
+}
+.nav__links{display:flex;gap:var(--s-9)}
+.nav__links a{font-family:var(--ui);font-size:14px;font-weight:500;color:var(--ink);padding:6px 0;border-bottom:1px solid transparent;transition:border-color .25s ease}
+.nav__links a:hover{border-bottom-color:var(--ink)}
+.nav__brand{justify-self:start;color:var(--ink);display:block}
+.nav__brand svg{height:13px;width:auto}   /* 20% down from 16 (client) */
+.nav__acts{justify-self:end;display:flex;align-items:center;gap:var(--s-5)}   /* 12 — a pair */
+.nav__ask{font-size:14px;font-weight:500;color:var(--ink-2);transition:color .25s ease}
+.nav__ask:hover{color:var(--ink)}
+.nav .btn{height:44px;padding:0 22px;font-size:13px}
+/* the bar floats with no ground of its own, and on the first screen its right
+   half now sits over the chat's white: the page's soft hairline disappeared
+   there. In the bar only, the stroke is darkened until it reads on white as
+   well as on the grey. */
+.nav .btn--line,.nav__search{box-shadow:inset 0 0 0 1px rgba(11,18,32,.3)}
+.nav .btn--line:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+
+/* the phone's menu button: two lines that cross when the sheet is open.
+   Hidden on a desktop, where the links sit in the bar. */
+.nav__burger{display:none;width:40px;height:40px;border-radius:50%;place-items:center;position:relative;color:var(--ink)}
+.nav__burger span{position:absolute;left:11px;width:18px;height:1.6px;border-radius:2px;background:currentColor;transition:transform .32s var(--ease),opacity .2s ease}
+.nav__burger span:nth-child(1){transform:translateY(-4px)}
+.nav__burger span:nth-child(2){transform:translateY(4px)}
+.nav__burger[aria-expanded="true"] span:nth-child(1){transform:rotate(45deg)}
+.nav__burger[aria-expanded="true"] span:nth-child(2){transform:rotate(-45deg)}
+/* the sheet itself sits UNDER the bar, so the button stays reachable */
+.menu{position:fixed;inset:0;z-index:40;background:#FFFFFF;
+  padding:calc(var(--nav-h) + var(--s-11)) var(--gutter) var(--s-12);
+  display:flex;flex-direction:column;justify-content:space-between;gap:var(--s-12);
+  opacity:0;transition:opacity .28s var(--ease)}
+.menu.is-in{opacity:1}
+.menu__top{display:flex;flex-direction:column;gap:var(--s-11)}
+/* the search, as a field: it opens the chat over the page */
+.menu__search{display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 20px;border-radius:999px;
+  background:#F1F2F4;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-3);font-family:var(--ui);font-size:15px;
+  transition:background-color .25s ease,box-shadow .25s ease}
+.menu__search svg{width:22px;height:22px;color:var(--ink)}
+.menu__links{display:flex;flex-direction:column;gap:var(--s-8)}
+.menu__links a{font-family:var(--display);font-weight:400;font-size:clamp(32px, 9vw, 40px);letter-spacing:-.025em;line-height:1.1;color:var(--ink)}
+.menu__acts{display:flex;flex-direction:column;gap:var(--s-5)}
+.menu__acts .btn{width:100%}
+body.menu-open{overflow:hidden}
+body.menu-open .nav{background:#FFFFFF;transform:none!important}
+
+/* at the top of the page the bar is transparent over the picture, so every
+   control has to read white; the first scroll brings the white bar back */
+.nav:not(.is-stuck){color:#FFFFFF}
+.nav:not(.is-stuck) .nav__links a,.nav:not(.is-stuck) .nav__ask{color:rgba(255,255,255,.86)}
+.nav:not(.is-stuck) .nav__brand,.nav:not(.is-stuck) .nav__burger{color:#FFFFFF}
+.nav:not(.is-stuck) .btn--ink{background:#FFFFFF;color:var(--ink)}
+.nav:not(.is-stuck) .btn--line{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+/* the magnifier: a square the height of the small buttons, glyph only */
+/* a white disc with the ink stroke, like the pill beside it: it reads on the
+   still's dark corner as well as its light field */
+.nav__search{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#FFFFFF;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);transition:background-color .25s ease,color .25s ease,transform .3s var(--ease)}
+.nav__search svg{width:26px;height:26px;display:block}   /* the chat-with-AI glyph at just over half the disc (client: "too small inside the circle") */
+.nav__search:hover{background:var(--ink);color:#FFFFFF;transform:translateY(-1px)}
+.nav__search:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.nav:not(.is-stuck) .nav__search{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.nav:not(.is-stuck) .nav__search:hover{background:#FFFFFF;color:var(--ink)}
+
+/* ── the chat over the page: the Ask block, in light ─────────────────────── */
+.chat-over{
+  position:fixed;inset:0;z-index:200;background:#FFFFFF;color:var(--ink);
+  display:flex;align-items:center;justify-content:center;overflow:auto;
+  padding:var(--s-15) 0;
+  /* it spreads from where it was asked for — the field, or the magnifier —
+     as a circle that takes the screen; home.js sets the origin */
+  clip-path:circle(0px at var(--ox,50%) var(--oy,50%));
+  transition:clip-path .75s var(--ease);
+}
+.chat-over.is-in{clip-path:circle(150vmax at var(--ox,50%) var(--oy,50%))}
+/* compact: sentence case, a size down, tighter steps */
+.chat-over__in{max-width:880px}
+.chat-over .chat-over__title{font-size:clamp(44px, 1rem + 3.6vw, 76px);text-transform:none;letter-spacing:-.03em}
+.chat-over .ask__lede{margin-top:var(--s-8);font-size:clamp(16px, .8rem + .4vw, 19px)}
+.chat-over .ask__form{margin-top:var(--s-11);max-width:760px}
+/* the field is a pill with a stroke and the send disc inside — not one line */
+.chat-over .ask__field{height:68px;padding:0 8px 0 26px;border:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:999px;background:#FFFFFF;transition:border-color .25s ease,box-shadow .25s ease}
+.chat-over .ask__field:focus-within{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.chat-over .ask__input{height:100%;padding:0 16px 0 0;font-size:clamp(17px, .8rem + .5vw, 21px);font-weight:400}
+.chat-over .ask__go{position:static;transform:none;width:52px;height:52px}
+.chat-over .ask__go:hover{transform:scale(1.06)}
+.chat-over .ask__tags{margin-top:var(--s-8)}
+.chat-over .tag{height:36px;padding:0 16px;font-size:13px}
+/* ── THE REAL CHAT, LENT TO THE FULL SCREEN ──
+   home.js moves the hero's card in here while the overlay is open, so this is
+   the conversation itself and not a drawing of one. It gets the room: the
+   title shrinks out of the way and the thread takes the height the window can
+   spare, so a long answer is read here rather than in a letterbox. */
+.chat-over--live{align-items:flex-start;padding:calc(var(--s-6) + 64px) 0 var(--s-10)}
+.chat-over--live .chat-over__in{width:100%;max-width:820px}
+.chat-over--live .chat-over__title{font-size:clamp(30px, 1rem + 1.8vw, 44px);margin-bottom:var(--s-8)}
+.chat.is-over{width:100%;margin:0}
+.chat.is-over .askbox{box-shadow:0 30px 80px rgba(10,16,28,.14)}
+.chat.is-over .askbox__thread{max-height:min(56vh,560px)}
+.chat-over--live .chat__tags.is-over{margin-top:var(--s-8);justify-content:center}
+@media (max-width:640px){
+  .chat-over--live{padding:calc(var(--s-6) + 56px) 0 var(--s-8)}
+  .chat-over--live .chat-over__title{font-size:26px}
+  .chat.is-over .askbox__thread{max-height:52vh}
+}
+/* the disc rules sit later in the file: state these with the parent so they win */
+.chat-over .chat-over__close{position:absolute;top:var(--s-6);right:var(--gutter);background:var(--ink);color:#FFFFFF}
+/* the mark, top left of the overlay, on the close button's own line */
+.chat-over__brand{position:absolute;top:var(--s-6);left:var(--gutter);height:52px;display:grid;align-items:center;color:var(--ink);z-index:1}
+.chat-over__brand svg{height:13px;width:auto;display:block}
+.chat-over .chat-over__close .ic-x{display:block}
+.chat-over__close:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* the dark block's parts, read in light */
+.chat-over .display--ask{color:var(--ink)}
+.chat-over .ask__lede{color:var(--ink-2)}
+.chat-over .ask__field{border-bottom-color:var(--line)}
+.chat-over .ask__field:focus-within{border-bottom-color:var(--ink)}
+.chat-over .ask__input{color:var(--ink)}
+.chat-over .ask__input::placeholder{color:var(--ink-4)}
+.chat-over .ask__go{background:var(--ink);color:#FFFFFF}
+.chat-over .tag{border-color:var(--line);color:var(--ink-2)}
+.chat-over .tag:hover{border-color:var(--ink);color:var(--ink)}
+.chat-over .tag[aria-pressed="true"]{background:var(--ink);color:#FFFFFF;border-color:var(--ink)}
+body.chat-open{overflow:hidden}
+
+/* ── 1 · hero ────────────────────────────────────────────────────────────── */
+/* The first screen holds everything: the turning line, the title, the two
+   buttons. It is the viewport's height with the content centred in it, so the
+   buttons are inside the frame at 700px as surely as at 950. */
+/* ── 1 · THE HERO ─────────────────────────────────────────────────────────
+   One centred column on a picture that turns over: the title, the line, the
+   agent's field with its starting points, and the ways to a person. The
+   half-and-half split it replaced (2026-09-09) is in git. */
+.hero{position:relative;min-height:100svh;display:grid;place-items:center;
+  background:var(--deep);color:#FFFFFF;overflow:hidden;
+  padding:calc(var(--nav-h) + var(--s-12)) 0 var(--s-13)}
+.hero__in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;
+  max-width:min(1080px, 100%)}   /* wide enough that the five starting points hold one line */
+.hero__l.is-chat .hero__stack{overflow-y:auto;scrollbar-width:none}   /* a clean edge under the bar, no fade */
+.hero__l.is-chat .hero__stack::-webkit-scrollbar{display:none}
+/* the title takes the column's width, not its own: a start-aligned flex item
+   shrink-wraps its text, so fitDisplays() measured a box that already equalled
+   the line and never brought the size down — it ran 5px into the picture. */
+/* the thinking field: behind everything in the column, only while a reply
+   is on its way */
+.hero__think{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .6s ease}
+.hero__think.is-on{opacity:1}
+/* the turns, a regular chat: yours in the mark's blue from the right, the
+   agent's in a quiet grey from the left, no names; each rises in from below */
+.hero__thread{align-self:stretch;display:flex;flex-direction:column;gap:var(--s-5);width:100%}
+.hero__thread:not(:empty){padding:var(--s-9) 0 var(--s-10)}   /* 40 between the last turn and the composer */
+.turnb{max-width:80%;animation:turnIn .55s var(--ease) both;font-size:17px;line-height:1.45}
+.turnb--me{align-self:flex-end;background:var(--navy);color:#FFFFFF;border-radius:22px 22px 6px 22px;padding:12px 18px}
+.turnb--ai{align-self:flex-start;background:#F1F2F4;color:var(--ink);border-radius:22px 22px 22px 6px;padding:12px 18px}
+.turnb__chips{display:flex;flex-wrap:wrap;gap:var(--s-4);margin-top:var(--s-6)}
+.turnb__chips .tag{background:#FFFFFF}
+/* the way on, when the agent has what it needs: a link, never a redirect */
+.turnb__go{margin-top:var(--s-6)}
+.turnb__chips .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2)}
+.turnb__chips .tag:hover{border-color:var(--ink);color:var(--ink)}
+/* the agent thinking: three dots breathing */
+.turnb--wait{display:flex;gap:5px;padding:14px 18px}
+/* the mark's own three colours, left to right: dark blue, blue, yellow — the
+   same order as the field's dots. They only lift; the old dot animation
+   dimmed them to pastel (client) */
+.turnb--wait i{width:7px;height:7px;border-radius:50%;animation:dotLift 1.2s ease-in-out infinite}
+.turnb--wait i:nth-child(1){background:var(--navy)}
+.turnb--wait i:nth-child(2){background:var(--teal);animation-delay:.16s}
+.turnb--wait i:nth-child(3){background:var(--amber);animation-delay:.32s}
+@keyframes turnIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes dot{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+/* once the conversation is on, the tags under the paragraph are no longer
+   the way in — the agent asks in its own turn */
+.hero__l.is-chat > .hero__stack > .hero__tags{display:none}
+/* the starting points under the paragraph: outlined, ink on white, left */
+/* margin-bottom:auto with the title's margin-top:auto centres the block in
+   the stack — up from the bottom row, with at least 64 to it */
+/* one gap both ways: the row-break li is a flex item, so a row gap would
+   count twice around it — rows are spaced by the tags' own bottom margin */
+.hero__tags{display:flex;flex-wrap:wrap;gap:0 var(--s-4);margin:0 0 auto;padding-bottom:calc(var(--s-12) - var(--s-4));justify-content:flex-start}
+.hero__tags > li{margin-bottom:var(--s-4)}
+.hero__tags-br{flex-basis:100%;height:0;margin:0!important}   /* the row break: three on top, two below */
+/* the tags come last, one after the other, with a shorter lift than the big pieces */
+.hero__tags > .rv{transform:translateY(12px);transition-duration:.6s,.7s}
+.hero__tags .tag{height:38px;padding:0 16px;font-size:14px;border-color:var(--line);color:var(--ink-2);background:#FFFFFF}   /* white, so they sit on the lattice */
+.hero__tags .tag:hover{border-color:var(--ink);color:var(--ink)}
+.hero__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* the bottom row never moves when the conversation starts — the stack above
+   it is what scrolls */
+/* the panel: the whole first screen, clipped to the right column. Opening is
+   the clip letting go to the left — the picture underneath is already full
+   size, so what was a crop simply becomes the frame. Over the words. */
+/* the words' ground: the stills fill the left half and cross-fade, each
+   drifting while it shows (the .hero__pic machinery, kept from the film's
+   strip). A veil under the type, so white reads on any of them. */
+.hero__bg{position:absolute;inset:0;overflow:hidden}
+/* the veil is graded, not flat: heavy where the words are, light on the far
+   side, so the picture is still a picture. A flat 56% turned the dark stills
+   into a black rectangle. */
+.hero__bg::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(100deg,rgba(7,20,29,.44) 0%,rgba(7,20,29,.26) 52%,rgba(7,20,29,.08) 100%)}   /* a stop lighter again (client) */
+
+/* the film is gone (client, 2026-09-09): the strip is a picture, not a control */
+.hero__media{
+  position:absolute;inset:0;z-index:2;background:var(--deep);overflow:hidden;
+  clip-path:inset(0 0 0 calc(100% - var(--media-w)));
+  transition:clip-path .9s var(--ease);
+}
+.hero__media.is-open{clip-path:inset(0 0 0 0);cursor:default}
+.hero__film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* the slides live in the strip itself (the stills are cut for it), one
+   showing at a time, a 1.2s cross-fade between them */
+.hero__slides{position:absolute;top:0;bottom:0;right:0;width:var(--media-w);overflow:hidden;transition:width .9s var(--ease)}
+/* as the panel opens, the showing slide stretches across the whole of it at
+   the reveal's own pace, so the film fades in over a picture — not over the
+   panel's dark ground */
+.hero__media.is-open .hero__slides{width:100%}
+/* a 20% veil over every slide, so the white words read on any of them */
+.hero__slides::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.2);pointer-events:none}
+.hero__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:0}
+.hero__pic.is-on{opacity:1}
+/* the client composed the thumbnail at the film's size with the subject at
+   the right: the strip shows the right edge, not the centre */
+/* each still moves while it shows: a slow zoom in over its ten seconds,
+   the next one a slow zoom out — the animation restarts as a slide comes
+   on. The cross-fade between them is two seconds, eased both ends. */
+.hero__pic{transition:opacity 2s ease-in-out}
+/* .is-off keeps the outgoing slide's animation alive through its fade —
+   losing it snapped the image back to scale 1 mid-fade: the "zoom jump" */
+.hero__pic.is-on,.hero__pic.is-off{transform-origin:50% 50%;will-change:transform;animation:kbIn 12s ease-in-out forwards}
+.hero__pic.is-on:nth-child(even),.hero__pic.is-off:nth-child(even){animation-name:kbOut}
+@keyframes kbIn{from{transform:scale(1)}to{transform:scale(1.1)}}
+@keyframes kbOut{from{transform:scale(1.1)}to{transform:scale(1)}}
+/* the film shows only once it is actually running, so the still never gives
+   way to a black frame */
+.hero__film{opacity:0;transition:opacity .4s ease}
+.hero__media.is-playing .hero__film{opacity:1}
+/* one white pill for the words, one white disc for the glyph */
+.hero__pill{
+  font-family:var(--ui);
+  display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 26px 0 20px;border-radius:999px;
+  background:#FFFFFF;color:var(--ink);
+  font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+  transition:transform .3s var(--ease),background-color .25s ease;
+}
+.hero__pill svg{width:18px;height:18px;flex-shrink:0;display:block}
+.hero__pill:hover{transform:translateY(-1px)}
+.hero__disc{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#FFFFFF;color:var(--ink);transition:transform .3s var(--ease)}
+.hero__disc svg{width:20px;height:20px}
+.hero__disc:hover{transform:scale(1.06)}
+/* at rest the invitation sits bottom right; open, pause and close take the
+   same corner — the eye already knows where to go */
+/* the invitation is just a play glyph in the middle of the strip: a glass
+   disc, not a pill, not a CTA (client). Open, pause and close sit bottom right. */
+.hero__watch{position:absolute;z-index:1;right:var(--gutter);bottom:var(--gutter);   /* bottom right of the strip (client), where pause and close will sit */
+  width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);color:#FFFFFF;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  transition:transform .35s var(--ease),background-color .25s ease}
+.hero__watch svg{width:22px;height:22px}   /* the triangle sits right of the box centre inside the viewBox (8→19.4 of 24): that IS the optical centre, no extra nudge */
+.hero__watch:hover{transform:scale(1.08);background:rgba(255,255,255,.26)}
+.hero__watch:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+.hero__ctl{position:absolute;right:var(--gutter);bottom:var(--gutter);z-index:1;display:flex;align-items:center;gap:10px}
+.hero__pill:focus-visible,.hero__disc:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+/* one icon shows per disc; the state on the panel picks it */
+.hero__disc .ic{grid-area:1/1;display:none}
+#heroPause .ic-pause,#heroMute .ic-sound,#heroClose .ic-x{display:block}
+.hero__media.is-paused #heroPause .ic-pause{display:none}
+.hero__media.is-paused #heroPause .ic-play{display:block}
+.hero__media.is-muted #heroMute .ic-sound{display:none}
+.hero__media.is-muted #heroMute .ic-muted{display:block}
+/* the bar's buttons stay ink over the still — the still is light in places
+   and white buttons vanished on it. They turn white only over the open film
+   (nav.on-dark). */
+/* the question, over the picture: one phrase showing, the rest stacked
+   beneath out of view; a change is the old one lifting out and the next
+   rising in. */
+.turn{
+  position:absolute;z-index:1;top:50%;translate:0 -50%;
+  left:calc(100% - var(--media-w));right:0;   /* the visible strip, so "centred" is centred */
+  height:1.4em;overflow:hidden;margin:0;padding:0 var(--gutter);   /* one line */
+  font-size:clamp(24px, 1rem + 1vw, 32px);font-weight:300;line-height:1.2;
+  color:#FFFFFF;text-align:center;text-shadow:0 1px 24px rgba(0,0,0,.28);
+  transition:opacity .3s ease;
+}
+.hero__media.is-open .turn{opacity:0}          /* the film carries its own words */
+/* the turning question over the slides is hidden for now (client). Drop this
+   rule to bring it back; the words and the turn keep running underneath. */
+.hero__media .turn{display:none}
+
+/* a change is two moves in sequence, never one on top of the other: the old
+   phrase leaves fast and completely, THEN the new one rises in. Two large
+   phrases crossing at half opacity is what read as "not smooth". */
+.turn__w{
+  position:absolute;left:0;right:0;top:50%;translate:0 -50%;white-space:nowrap;   /* one line, never wraps */
+  opacity:0;transform:translateY(40%);
+  transition:opacity .55s ease,transform .8s var(--ease);
+  transition-delay:.34s;                       /* waits for the exit */
+}
+.turn__w.is-on{opacity:1;transform:none}
+.turn__w.is-off{opacity:0;transform:translateY(-34%);transition:opacity .28s ease,transform .32s ease-in;transition-delay:0s}
+
+.hero__sign{
+  margin:0 0 var(--s-8);                        /* 24 above the title */
+  font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+/* the line under the title: two lines, light, quieter than the title */
+/* one line under the title (client): the whole sentence holds its own row and
+   only breaks on a phone, where the media block sets white-space back */
+.hero__lede{margin:var(--s-9) 0 0;font-size:var(--hero-copy);font-weight:400;line-height:1.5;color:rgba(255,255,255,.92);white-space:nowrap}
+.hero__acts{margin-top:var(--s-11);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--s-5)}
+
+.ask-mini{
+  position:relative;display:flex;align-items:center;
+  flex:1 1 auto;min-width:0;height:60px;padding:0 6px 0 24px;border-radius:999px;   /* fills the row beside Call me: as wide as the conversation */
+  background:#F1F2F4;box-shadow:inset 0 0 0 1px var(--line);   /* a light grey with a soft stroke — on the column's grey it blended without one */
+  transition:box-shadow .25s ease,background-color .25s ease,transform .3s var(--ease);
+}
+.ask-mini:focus-within{background:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink)}
+.ask-mini__input{
+  flex:1;min-width:0;height:100%;background:none;border:0;outline:none;padding:0;
+  font-family:var(--ui);font-size:17px;font-weight:400;color:var(--ink);caret-color:var(--ink);
+}
+.ask-mini__input::placeholder{color:var(--ink-3)}
+/* the AI, thinking, at the start of the field: three dots in the brand's
+   colours, breathing in turn; gone the moment the field is focused or holds
+   text (the blinking caret before it read as noise with the turning hint) */
+.ask-mini__dots{display:flex;align-items:center;gap:3px;margin-right:16px;flex-shrink:0}
+/* the mark's own colours, at full strength: the bounce only moves them —
+   dimming them (the chat's wait dots do) washed them to pastel */
+.ask-mini__dots i{width:5px;height:5px;border-radius:50%;animation:dotLift 1.2s ease-in-out infinite}
+@keyframes dotLift{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+/* the icon's three colours, in the client's order: black, blue, yellow —
+   no orange (that is the "AI" in the wordmark, not the icon) */
+.ask-mini__dots i:nth-child(1){background:var(--ink)}
+.ask-mini__dots i:nth-child(2){background:#009CBD;animation-delay:.16s}
+.ask-mini__dots i:nth-child(3){background:var(--amber);animation-delay:.32s}
+.ask-mini:focus-within .ask-mini__dots,.ask-mini:has(.ask-mini__input:not(:placeholder-shown)) .ask-mini__dots{display:none}
+/* the turning hint stands in for the placeholder (which is made invisible
+   while the hint shows): one phrase at a time, the next rising in as the
+   last lifts out — hints for what to type */
+.ask-mini{--hint:1}
+.ask-mini__hint{position:absolute;left:calc(24px + 21px + 16px);   /* after the dots */top:0;bottom:0;right:64px;overflow:hidden;pointer-events:none;font-family:var(--ui);font-size:17px;color:var(--ink-3);white-space:nowrap}
+.ask-mini__hint-w{position:absolute;left:0;top:50%;translate:0 -50%;opacity:0;transform:translateY(60%);transition:opacity .4s ease,transform .55s var(--ease);transition-delay:.26s}
+.ask-mini__hint-w.is-on{opacity:1;transform:none}
+.ask-mini__hint-w.is-off{opacity:0;transform:translateY(-60%);transition:opacity .22s ease,transform .26s ease-in;transition-delay:0s}
+.ask-mini:has(.ask-mini__hint) .ask-mini__input::placeholder{color:transparent}
+.ask-mini:focus-within .ask-mini__hint,.ask-mini:has(.ask-mini__input:not(:placeholder-shown)) .ask-mini__hint{display:none}
+.ask-mini:focus-within .ask-mini__input::placeholder{color:var(--ink-3)}
+.ask-mini__go{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;background:var(--ink);color:#FFFFFF;
+  transition:transform .3s var(--ease),background-color .25s ease;
+}
+.ask-mini__go svg{width:20px;height:20px}
+.ask-mini__go:hover{transform:scale(1.06)}
+.ask-mini__go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* ── 2 · the AI experience ───────────────────────────────────────────────── */
+.ask{
+  background:var(--deep);color:#FFFFFF;
+  min-height:100vh;display:flex;align-items:center;
+  padding:var(--sec-lg) 0;
+}
+.ask__in{display:flex;flex-direction:column;align-items:center;text-align:center}
+.ask__lede{
+  margin-top:var(--s-11);                       /* 48 */
+  font-size:clamp(18px, .9rem + .6vw, 22px);font-weight:300;line-height:1.5;
+  color:rgba(255,255,255,.72);
+}
+
+/* the input is the section, not a box inside it */
+.ask__form{width:100%;max-width:1040px;margin-top:var(--s-15)}   /* 120 */
+.ask__field{
+  position:relative;display:flex;align-items:center;
+  border-bottom:1px solid rgba(255,255,255,.28);
+  transition:border-color .3s ease;
+}
+.ask__field:focus-within{border-bottom-color:rgba(255,255,255,.8)}
+.ask__input{
+  flex:1;min-width:0;height:104px;padding:0 84px 0 0;
+  background:none;border:0;outline:none;
+  font-family:var(--ui);font-size:clamp(26px, 1rem + 1.6vw, 40px);font-weight:300;
+  color:#FFFFFF;caret-color:var(--orange);
+}
+.ask__input::placeholder{color:rgba(255,255,255,.42)}
+.ask__go{
+  position:absolute;right:0;top:50%;transform:translateY(-50%);
+  width:60px;height:60px;border-radius:50%;
+  background:#FFFFFF;color:var(--ink);
+  display:grid;place-items:center;
+  transition:transform .3s var(--ease),background-color .25s ease;
+}
+.ask__go svg{width:22px;height:22px}
+.ask__go:hover{transform:translateY(-50%) scale(1.06)}
+.ask__go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+.ask__tags{
+  margin-top:var(--s-10);                       /* 40 */
+  display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-5);
+}
+/* a tag is something you pick, not something that fires: outlined at rest,
+   filled when chosen, and it only puts its words in the field */
+.tag{
+  font-family:var(--ui);
+  display:inline-flex;align-items:center;height:40px;padding:0 18px;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;
+  font-size:14px;font-weight:500;color:rgba(255,255,255,.82);
+  transition:background-color .25s ease,color .25s ease,border-color .25s ease;
+}
+.tag:hover{border-color:rgba(255,255,255,.7);color:#FFFFFF}
+.tag[aria-pressed="true"]{background:#FFFFFF;color:var(--ink);border-color:#FFFFFF}
+.tag:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* ── 2 · agentic solutions: the split ───────────────────────────────────── */
+/* the picture is inset, as on the reference: white around it on the left and
+   above, so it touches neither the screen's edge nor the hero */
+.intro{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1fr);align-items:center;min-height:100svh;
+  padding:var(--s-15) var(--gutter);background:var(--paper);color:var(--ink)}
+/* a tall rectangle, higher than it is wide, as the reference — not a square */
+.intro__media{position:relative;height:clamp(720px, 110vh, 1040px);background:var(--deep);overflow:hidden}
+.intro__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.intro__body{
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  padding:0 0 0 clamp(2.5rem, 2rem + 4vw, 7rem);
+}
+/* four lines at most on a desktop, as the reference's three */
+.display--intro{font-size:clamp(36px, 1.2rem + 2.9vw, 58px);text-transform:none;text-align:left;text-wrap:balance;letter-spacing:-.025em;line-height:.96;max-width:12.5em}
+.intro__lede{margin-top:var(--s-11);   /* 48 under the title: twice the gap to the button */font-size:clamp(18px, .9rem + .6vw, 22px);font-weight:400;line-height:1.5;color:var(--ink);max-width:640px}   /* the ink, regular — the same voice as the hero's paragraph */
+.intro__act{margin-top:var(--s-8);display:flex}
+
+/* ── 4 · scale ───────────────────────────────────────────────────────────── */
+/* ── 3b · portfolio: DEPT's "Solutions" block ────────────────────────────── */
+.port{padding:var(--s-15) 0 var(--s-13)}
+.port__eyebrow{font-family:var(--ui);font-size:17px;font-weight:500;color:var(--ink-3);padding-bottom:var(--s-7);border-bottom:1px solid var(--ink-4)}
+/* the big title: huge, left, the last line in the orange */
+.display--port{margin-top:var(--s-9);font-size:clamp(48px, 1.4rem + 5.2vw, 112px);text-transform:none;text-align:left;letter-spacing:-.035em;line-height:.92}
+/* the reveal clip cut the g of "agentic": room for the descender, and the
+   rise-in offset grows to match (the hero's rule) */
+.display--port .ln{padding-bottom:.22em;margin-bottom:-.22em}
+.display--port .ln__in{transform:translateY(125%)}
+.rv.in .display--port .ln__in,.display--port.rv.in .ln__in{transform:translateY(0)}
+/* the rows: a hairline above each; words left, a wide picture right */
+.port__rows{margin-top:var(--s-13)}
+/* the row: words left, picture right, the same height — the button sits on
+   the row's floor, level with the picture's bottom, as on the reference */
+.port__row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:stretch;padding:var(--s-11) 0 var(--s-11);border-top:1px solid var(--ink-4)}
+.port__body{display:flex;flex-direction:column;align-items:flex-start}
+.port__title{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(32px, 1.1rem + 2.3vw, 50px);letter-spacing:-.025em;line-height:1.05;color:var(--ink)}   /* an h3: the reset only covers h1/h2 */
+.port__head{margin-top:var(--s-6);max-width:560px;font-size:clamp(20px, .9rem + .8vw, 26px);font-weight:400;line-height:1.4;color:var(--ink)}   /* 16 under the title ("much closer") */
+.port__body .port__go{margin-top:0;padding-top:0}   /* up with the words, not pinned to the bottom (client) */
+.port__body .port__head{margin-bottom:var(--s-8)}   /* 24: the button sits under the line it belongs to */
+.port__media{position:relative;height:clamp(340px, 30vw, 540px);overflow:hidden;background:var(--deep)}
+.port__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.port__pic--in{transform:scale(1.24)}   /* only the 3D shape is cropped in; the others show as they are (client) */
+
+/* the head: a big title on the left, the paragraphs under it */
+/* the banner: a frame that never changes size; the picture inside zooms with
+   the scroll, in from the far side of the frame and out again */
+/* the numbers as cards: a big figure, its name, a line under it */
+.stats{
+  margin-top:var(--s-15);
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-7);
+}
+.stat{
+  display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-6);
+  padding:var(--s-10) var(--s-9) var(--s-10);
+  border:1px solid var(--line);border-radius:24px;
+}
+.stat__n{
+  font-family:var(--display);font-weight:400;font-size:clamp(48px, 1.4rem + 3.6vw, 84px);letter-spacing:-.03em;line-height:1;color:var(--ink);
+}
+.stat__n i{font-style:normal;font-size:.45em;vertical-align:top;margin-left:.15em;color:var(--ink)}
+/* the fourth card carries names, not a figure: one per line, a bullet before
+   each, the same voice a size down */
+.stat__n--words{display:flex;flex-direction:column;gap:.12em;font-size:clamp(32px, 1.1rem + 2vw, 54px);line-height:1.05;letter-spacing:-.025em}
+.stat__n--words span{display:flex;align-items:center;gap:.3em}
+.stat__n--words span::before{content:"";width:.28em;height:.28em;border-radius:50%;background:var(--teal);flex-shrink:0}
+.stat__d{margin-top:var(--s-4);font-size:16px;line-height:1.45;color:var(--ink-3)}   /* close under the figure, not pushed to the floor */
+
+/* ── 5 · the close ───────────────────────────────────────────────────────── */
+.close{padding:var(--s-15) 0 var(--s-16);background:#FFFFFF}   /* white, and no line: the pastel bands do the dividing now */
+.suite__in{display:flex;flex-direction:column;align-items:center;text-align:center}
+.display--close{font-size:clamp(48px, 1.4rem + 5vw, 108px);text-transform:none;letter-spacing:-.035em;line-height:.92}
+.display--close .ln{padding-bottom:.2em;margin-bottom:-.2em}
+.suite__lede{margin-top:var(--s-11);max-width:900px;font-size:clamp(20px, .9rem + .8vw, 26px);line-height:1.45;color:var(--ink)}
+/* the ways in: names on the left, the chosen one bold; its picture and line
+   on the right. (Each name also carries a thumbnail and its own line for the
+   phone's card rows — both are hidden here.) */
+.suite__grid{margin-top:var(--s-15);width:100%;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:var(--s-12);align-items:center;text-align:left}
+.suite__list{display:flex;flex-direction:column;gap:var(--s-5)}
+.suite__item{display:block;width:100%;font-family:var(--display);font-weight:400;font-size:clamp(26px, .9rem + 2vw, 44px);letter-spacing:-.02em;line-height:1.1;color:var(--ink-3);text-align:left;white-space:nowrap;transition:color .25s ease}
+.suite__item:hover{color:var(--ink)}
+.suite__item.is-on{font-weight:700;color:var(--ink)}
+.suite__thumb,.suite__note{display:none}                 /* the phone's half of the markup */
+/* the arrow beside the chosen name: up and to the right, in the ink, and it
+   draws itself — the shaft first, then the head arriving at its tip. Inline,
+   so a name that wraps keeps its arrow on the last word. */
+.suite__arrow{display:inline-block;width:.5em;height:.5em;margin-left:.3em;vertical-align:.02em;color:currentColor;overflow:visible}
+.suite__arrow-line{stroke-dasharray:17;stroke-dashoffset:17;transition:stroke-dashoffset .45s var(--ease)}
+.suite__arrow-head{opacity:0;transform:translate(-5px,5px);transition:opacity .25s ease .2s,transform .4s var(--ease) .15s}
+.suite__item.is-on .suite__arrow-line{stroke-dashoffset:0}
+.suite__item.is-on .suite__arrow-head{opacity:1;transform:none}
+.suite__item:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
+.suite__panel{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-8)}
+.suite__media{position:relative;width:min(100%,440px);aspect-ratio:1/1;overflow:hidden;background:var(--deep)}
+.suite__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s ease}
+.suite__pic.is-fading{opacity:0}
+.suite__line{width:min(100%,440px);font-size:clamp(18px, .9rem + .5vw, 22px);line-height:1.4;color:var(--ink)}
+
+/* ── 6 · the end is the start ────────────────────────────────────────────── */
+.ask-end{padding:var(--s-15) 0 var(--s-16)}   /* and the pastel teal with it: the page is white through */
+.ask-end__in{display:flex;flex-direction:column;align-items:center;text-align:center}
+.display--end{font-size:clamp(60px, 1.5rem + 6.2vw, 116px);text-transform:none;text-align:center;line-height:.88;letter-spacing:-.035em;font-weight:700}
+.display--end .navy{color:var(--ink)}
+.display--end .ln{padding-bottom:.22em;margin-bottom:-.22em}
+.ask-end__lede{margin:var(--s-11) 0 0;font-size:var(--hero-copy);line-height:1.45;color:var(--ink)}   /* 48 under the title, as in the hero */
+.ask-end__acts{margin-top:var(--s-11);width:min(100%,640px);display:flex;flex-direction:column;align-items:center;gap:var(--s-8)}   /* the field, then Call me under it — 24 */
+.ask-end__acts .ask-mini{width:100%;background:#FFFFFF}   /* white on the blue ground; the stroke stays */
+
+/* ── footer: keep exploring, the big ways in, the small ways out — light ── */
+.foot{background:#FFFFFF}
+.foot__in{
+  display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:var(--s-12);align-items:start;
+  padding-top:var(--s-15);padding-bottom:var(--s-15);
+}
+.foot__lead{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:var(--s-12)}
+.foot__kicker{font-size:16px;font-weight:500;color:var(--ink);line-height:1.4}
+.foot__mark{width:clamp(72px, 4vw + 32px, 96px);height:auto;color:var(--ink)}   /* the mark, big, at the column's foot — as the reference's badge */
+.foot__big{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:var(--s-9)}   /* the rows breathe; the last one ends on the column's floor, with the mark and the last small link */
+.foot__big a{font-family:var(--display);font-weight:400;font-size:clamp(34px, 1rem + 2.6vw, 56px);letter-spacing:-.02em;line-height:1;color:var(--ink);transition:color .25s ease}
+.foot__big a:hover{color:var(--ink-3)}
+.foot__small{display:flex;flex-direction:column;gap:var(--s-9);align-items:flex-end;text-align:right}   /* flush with the container's right edge (client) */
+.foot__small a,.foot__small button{display:inline-flex;align-items:center;gap:14px;font-size:16px;font-weight:500;color:var(--ink);text-align:left;line-height:1.3}
+.foot__disc{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+.foot__disc svg{width:18px;height:18px;transition:transform .3s var(--ease)}
+.foot__small a:hover .foot__disc,.foot__small button:hover .foot__disc{background:var(--ink);color:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink)}
+.foot__small a:hover .foot__disc svg,.foot__small button:hover .foot__disc svg{transform:translateX(2px)}
+.foot__band{display:flex;align-items:center;justify-content:space-between;gap:var(--s-9);padding-top:var(--s-11);padding-bottom:var(--s-11);
+  border-top:1px solid var(--line)}
+.foot__social{display:flex;align-items:center;gap:8px}
+.foot__so{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+.foot__so svg{width:18px;height:18px}
+.foot__so:hover{background:var(--ink);color:#FFFFFF;box-shadow:inset 0 0 0 1px var(--ink)}
+.foot__follow{margin-left:14px;font-size:16px;font-weight:500;color:var(--ink)}
+.foot__legal{display:flex;align-items:center;gap:var(--s-7)}
+.foot__copy{font-size:15px;color:var(--ink-3)}
+.foot__brand{color:var(--ink);display:block}
+.foot__brand svg{height:15px;width:auto;display:block}
+
+/* ── motion off ──────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  .rv,.ln__in,.hero__media,.chat-over{transition:none!important;animation:none!important;opacity:1!important}
+  .turn__w{transition:none!important}
+
+  .rv,.ln__in{transform:none!important}
+}
+
+/* ── the agent, in the middle of the hero ────────────────────────────────
+   The field, its starting points, and the ways to a person — every piece is
+   the page's own: the turn bubbles, the tags, the ask-mini field. */
+.chat{position:relative;width:min(100%,760px);margin-top:var(--s-11);display:flex;flex-direction:column;align-items:stretch}
+.chat > .hero__think{position:absolute;inset:-24px -24px 0;width:auto;height:auto}
+.chat > :not(.hero__think){position:relative;z-index:1}
+/* the conversation stands above the field; its bubbles keep their sides */
+.chat__form{flex:0 0 auto}
+/* ── the field, as a box (the client's reference) ──────────────────────────
+   Tall, softly rounded, white: the question sits at the top left and the send
+   disc waits at the bottom right, with the starting points in a row under it. */
+.askbox{position:relative;width:100%;min-height:148px;background:#FFFFFF;border-radius:26px;
+  box-shadow:inset 0 0 0 1px var(--line);padding:22px 24px 18px;
+  display:flex;flex-direction:column;text-align:left;
+  transition:box-shadow .25s ease}
+/* the conversation lives INSIDE the box, above the line you type on (client).
+   Inside a white box a black bubble reads as a foreign object, so the agent
+   simply speaks in ink on the box's own white and only YOUR words are given a
+   quiet grey pill — the difference is enough, and the panel stays clean. */
+/* tall enough that an answer — ack, two products, the question, its chips —
+   usually fits without scrolling on a desktop; a phone keeps 38svh below */
+.askbox__thread{position:relative;display:flex;flex-direction:column;gap:var(--s-6);max-height:min(52svh,560px);overflow-y:auto;scrollbar-width:none}   /* positioned: a turn's offsetTop is measured from here */
+/* there is more below: the foot fades, since the scrollbar is hidden */
+.askbox__thread.is-more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 36px),transparent)}
+.askbox__thread::-webkit-scrollbar{display:none}
+.askbox__thread:not(:empty){padding-bottom:var(--s-7);margin-bottom:var(--s-7);border-bottom:1px solid var(--line)}
+.askbox__thread .turnb{max-width:100%;font-size:16px;line-height:1.55;border-radius:0;padding:0;background:none;color:var(--ink)}
+.askbox__thread .turnb b{color:var(--ink);font-weight:600}
+.askbox__thread .turnb--me{align-self:flex-end;max-width:84%;background:#F1F2F4;color:var(--ink);
+  border-radius:18px 18px 6px 18px;padding:9px 15px;font-size:15px}
+.askbox__thread .turnb--ai{align-self:stretch;padding-left:26px;position:relative}
+/* the mark, as a small brand dot in the margin, so the agent's line is placed
+   without being boxed */
+.askbox__thread .turnb--ai::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:50%;
+  background:linear-gradient(135deg,var(--teal) 0%,var(--navy) 100%)}
+.askbox__thread .turnb--wait{align-self:flex-start;padding:2px 0 2px 26px;background:none}
+.askbox__thread .turnb--wait i{width:6px;height:6px}
+.askbox__thread .turnb__chips{gap:var(--s-4);margin-top:var(--s-5)}
+.askbox__thread .turnb__chips .tag{height:32px;padding:0 13px;font-size:13px;color:var(--ink-2);
+  background:#FFFFFF;border-color:var(--line);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.askbox__thread .turnb__chips .tag:hover{background:#F6F6F7;border-color:var(--ink);color:var(--ink)}
+.askbox:focus-within{box-shadow:inset 0 0 0 1px var(--ink)}
+/* the line you type on carries its own caret: the field is not focused when you
+   land, so the native one is not there to say "type here" (client) */
+.askbox__line{position:relative}
+.askbox__caret{position:absolute;left:0;top:.28em;width:2px;height:1.02em;border-radius:1px;background:var(--ink);
+  animation:caretBlink 1.05s steps(1,end) infinite}
+@keyframes caretBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+/* it steps aside the moment the real one takes over, or once there are words */
+.askbox__line:focus-within .askbox__caret,
+.askbox__line:has(.askbox__input:not(:placeholder-shown)) .askbox__caret{opacity:0;animation:none}
+@media (prefers-reduced-motion:reduce){.askbox__caret{animation:none}}
+/* a textarea that reads as a line: no border, no resize handle, one row until
+   the words need more — home.js grows it to the text, up to six lines, then it
+   scrolls inside itself. Nothing ever runs off the frame. */
+.askbox__input{display:block;width:100%;height:auto;min-height:1.5em;max-height:calc(6 * 1.5em);margin:0;border:0;background:none;outline:none;padding:0 0 0 4px;
+  resize:none;overflow-y:hidden;overflow-wrap:anywhere;
+  font-family:var(--ui);font-size:17px;font-weight:400;line-height:1.5;color:var(--ink);caret-color:var(--ink)}
+.askbox__input.is-tall{overflow-y:auto}
+.askbox__input::placeholder{color:var(--ink-4)}
+.askbox__bar{margin-top:auto;display:flex;align-items:center;justify-content:flex-end;padding-top:var(--s-6)}
+.askbox__restart{margin-right:auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px 0 10px;
+  border-radius:999px;font-family:var(--ui);font-size:13px;font-weight:500;color:var(--ink-3);
+  background:transparent;border:1px solid transparent;transition:color .2s ease,background-color .2s ease,border-color .2s ease}
+.askbox__restart svg{width:15px;height:15px}
+.askbox__restart:hover{color:var(--ink);background:#F1F2F4;border-color:var(--line)}
+.askbox__restart:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.askbox__restart[hidden]{display:none}
+/* ── VOICE: "Chat with me" and the sound bubble (voice.js) ── */
+.askbox__voice{margin-right:auto;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px 0 10px;
+  border-radius:999px;font-family:var(--ui);font-size:13px;font-weight:600;color:var(--ink);
+  background:var(--teal-1);border:1px solid var(--teal-2);cursor:pointer;transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.askbox__voice svg{width:15px;height:15px;flex:none}
+.askbox__voice:hover{background:var(--teal-2)}
+.askbox__voice:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.askbox__voice.is-live{background:var(--ink);border-color:var(--ink);color:#FFFFFF}
+.askbox__voice.is-live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);animation:voiceLive 1.4s ease-in-out infinite}
+.askbox__voice.is-live svg{display:none}
+.askbox__voice[hidden]{display:none}
+.askbox__restart:not([hidden])+.askbox__voice{margin-right:auto}
+.askbox__restart:not([hidden]){margin-right:8px}
+@keyframes voiceLive{0%,100%{opacity:1}50%{opacity:.35}}
+
+.voice{display:flex;align-items:center;gap:10px;min-height:44px;margin:0 0 6px;padding:2px 0}
+.voice[hidden]{display:none}
+.voice__wave{flex:1 1 auto;min-width:0;height:36px;display:block}
+.voice__status{flex:none;max-width:52%;font-family:var(--ui);font-size:12.5px;line-height:1.35;color:var(--ink-3)}
+.voice[data-tone="error"] .voice__status{color:#A6231B}
+.voice[data-tone="warn"] .voice__status{color:var(--ink)}
+.voice__ctl{flex:none;height:32px;min-width:44px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:#FFFFFF;
+  font-family:var(--ui);font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.voice__ctl:hover{border-color:var(--ink);color:var(--ink)}
+.voice__ctl[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#FFFFFF}
+.voice__ctl--end{border-color:transparent;color:var(--ink-3)}
+.voice__ctl[hidden]{display:none}
+.voice[data-state="speaking"] .voice__status{color:var(--teal)}
+/* no session (ended, or it could not start): no wave, no controls — one quiet
+   line at the left, where the eye is already reading ("this layout is strange
+   with the error", client) */
+.voice[data-state="ended"]{min-height:0;justify-content:flex-start;margin:0 0 4px;padding:6px 0 2px}
+.voice[data-state="ended"] .voice__wave{display:none}
+.voice[data-state="ended"] .voice__status{max-width:none;font-size:13px}
+.voice[data-state="muted"] .voice__wave{opacity:.5}
+/* ── THE OPENING SHOWCASE (voice-stage.js): brand pictures flash and fly out,
+   NewVoices comes in, each product flies in as it is named, then everything
+   lifts away and the thread is underneath ── */
+.askbox__thread[data-vstage-hidden]{display:none}
+.vstage{position:relative;height:min(52svh,440px);margin:0 0 10px;border-radius:18px;overflow:hidden;background:var(--deep,#0B1220);
+  opacity:0;transform:translateY(8px);transition:opacity .45s var(--ease,ease),transform .45s var(--ease,ease),height .55s var(--ease,ease),margin .55s var(--ease,ease)}
+.vstage.is-open{opacity:1;transform:none}
+.vstage.is-closing{opacity:0;height:0!important;margin-bottom:0}
+.vstage__burst{position:absolute;inset:0}
+.vstage__frame{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.02)}
+.vstage__frame.is-on{opacity:1}
+/* the last frame flies out to the left as the NewVoices card comes in from the right */
+.vstage.is-hero .vstage__burst{transition:transform .75s cubic-bezier(.2,.7,.2,1),opacity .6s ease;transform:translateX(-118%) rotate(-5deg) scale(.86);opacity:0}
+.vstage__hero{position:absolute;inset:6% 6%;border-radius:16px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.35);
+  transform:translateX(125%) rotate(4deg);opacity:0;transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .5s ease,inset .7s var(--ease,ease),width .7s var(--ease,ease),height .7s var(--ease,ease)}
+.vstage.is-hero .vstage__hero{transform:none;opacity:1}
+.vstage__heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* NewVoices' own mark, top-left of its card */
+.vstage__herologo{position:absolute;top:14px;left:16px;height:26px;width:auto;max-width:46%;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));transition:opacity .4s ease}
+.vstage.is-deck .vstage__herologo,.vstage.is-deck .vstage__emblem--hero{opacity:0}
+.vstage__herotext{position:absolute;left:0;right:0;bottom:0;padding:18px 22px 20px;background:linear-gradient(to top,rgba(11,18,32,.82),rgba(11,18,32,0));color:#FFFFFF;display:flex;flex-direction:column;gap:2px}
+.vstage__heroname{font-family:var(--display,var(--ui));font-size:clamp(26px,4vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1}
+.vstage__herosub{font-family:var(--ui);font-size:14px;opacity:.85}
+/* once the team starts, NewVoices steps to the bottom-left as a small card */
+.vstage.is-deck .vstage__hero{inset:auto auto 16% 4%;width:22%;height:26%;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.vstage.is-deck .vstage__herotext{padding:8px 10px 10px}
+.vstage.is-deck .vstage__heroname{font-size:15px}
+.vstage.is-deck .vstage__herosub{display:none}
+
+/* ── THE EMBLEMS: an icon in a glowing ring — the member's power ── */
+.vstage__emblem{position:absolute;display:grid;place-items:center;border-radius:50%;color:#FFFFFF;
+  background:radial-gradient(circle at 32% 30%,#3FD9F2 0%,#009CBD 55%,#064B60 100%);
+  box-shadow:0 0 0 5px rgba(255,255,255,.14),0 18px 44px rgba(0,0,0,.5),0 0 54px rgba(0,156,189,.55)}
+.vstage__emblem svg{width:54%;height:54%}
+.vstage__emblem--hero{top:14px;right:16px;width:clamp(44px,9%,64px);aspect-ratio:1;transition:opacity .4s ease}
+/* the slam: it lands large, settles, and a ring ripples out */
+.vstage__tile>.vstage__emblem{left:50%;top:36%;width:clamp(78px,20%,136px);aspect-ratio:1;opacity:0;transform:translate(-50%,-50%) scale(2.1);
+  transition:transform .6s cubic-bezier(.2,1.5,.35,1) .22s,opacity .3s ease .22s}
+.vstage__tile.is-in>.vstage__emblem{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.vstage__tile>.vstage__emblem::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:3px solid rgba(255,255,255,.75);opacity:0}
+.vstage__tile.is-in>.vstage__emblem::after{animation:slamRing .9s ease-out .55s}
+@keyframes slamRing{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+/* a flash of light as the member lands */
+.vstage__tile::after{content:"";position:absolute;inset:0;background:#FFFFFF;opacity:0;pointer-events:none}
+.vstage__tile.is-in::after{animation:slamFlash .7s ease-out .2s}
+@keyframes slamFlash{0%{opacity:0}18%{opacity:.55}100%{opacity:0}}
+
+/* ── THE CARDS ── */
+.vstage__deck{position:absolute;inset:0;pointer-events:none}
+.vstage__tile{position:absolute;overflow:hidden;border-radius:14px;box-shadow:0 24px 50px rgba(0,0,0,.4);opacity:0;
+  transition:transform .75s cubic-bezier(.2,.7,.2,1),opacity .45s ease}
+.vstage__tileimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
+.vstage__tile.is-current{top:6%;left:30%;width:66%;height:76%}
+.vstage__tile.from-left{transform:translate(-60%,40%) rotate(-8deg) scale(.7)}
+.vstage__tile.from-right{transform:translate(60%,40%) rotate(8deg) scale(.7)}
+.vstage__tile.is-in{transform:none;opacity:1}
+.vstage__tiletext{position:absolute;left:0;right:0;bottom:0;padding:44px 18px 16px;background:linear-gradient(to top,rgba(11,18,32,.92) 40%,rgba(11,18,32,0));color:#FFFFFF;display:flex;flex-direction:column;gap:5px}
+/* its mark — the lockup on the navy it was drawn on — then the name, then the power */
+.vstage__tilelogo{display:block;height:34px;width:112px;border-radius:7px;background:#0A1743;box-shadow:0 6px 18px rgba(0,0,0,.35);overflow:hidden;margin-bottom:2px;
+  opacity:0;transform:translateY(8px);transition:opacity .4s ease .5s,transform .5s cubic-bezier(.2,.7,.2,1) .5s}
+.vstage__tilelogo img{display:block;width:100%;height:100%;object-fit:contain}
+.vstage__tile.is-in .vstage__tilelogo{opacity:1;transform:none}
+.vstage__tilename{font-family:var(--display,var(--ui));font-size:clamp(22px,2.8vw,32px);font-weight:800;letter-spacing:-.02em;line-height:1.05;
+  opacity:0;transform:translateY(8px);transition:opacity .4s ease .4s,transform .5s cubic-bezier(.2,.7,.2,1) .4s}
+.vstage__tileline{font-family:var(--ui);font-size:14.5px;line-height:1.35;opacity:0;transform:translateY(8px);transition:opacity .4s ease .6s,transform .5s cubic-bezier(.2,.7,.2,1) .6s}
+.vstage__tile.is-in .vstage__tilename{opacity:1;transform:none}
+.vstage__tile.is-in .vstage__tileline{opacity:.94;transform:none}
+/* the ones already named leave the card; they live on the roster now */
+.vstage__tile.is-past{opacity:0;transform:translateY(-30px) scale(.94);transition:opacity .4s ease,transform .5s ease}
+
+/* ── THE ROSTER: every member named so far, as badges along the foot ── */
+.vstage__roster{position:absolute;left:4%;right:4%;bottom:10px;display:flex;align-items:flex-end;gap:14px;z-index:3;pointer-events:none;
+  transition:bottom .7s var(--ease,ease),left .7s var(--ease,ease),right .7s var(--ease,ease)}
+.vstage.is-deck .vstage__roster{left:30%}
+.vstage__badge{display:flex;flex-direction:column;align-items:center;gap:5px;width:64px;opacity:0;transform:translateY(14px) scale(.8);
+  transition:opacity .4s ease .35s,transform .55s cubic-bezier(.2,1.2,.3,1) .35s}
+.vstage__badge.is-in{opacity:1;transform:none}
+/* ── THE ONE BEING SPOKEN ABOUT IS IN A SPOTLIGHT ──
+   "each of the names and descriptions is mentioned, it should time with
+   highlighting that company. The icon should highlight, have a little glow
+   behind it" (client, 2026-09-16). The timing was already right — voice.js
+   lands each name within milliseconds of it being said — but the light was
+   too polite to read as a spotlight. Now: the rest of the roster drops well
+   back, the one being named lifts, and a halo BREATHES behind its icon for
+   as long as its line is being read. */
+.vstage__roster.has-speaking .vstage__badge.is-in{opacity:.3;filter:saturate(.35) brightness(.72)}
+.vstage__roster.has-speaking .vstage__badge.is-in.is-speaking{opacity:1;filter:none}
+.vstage__badge.is-speaking .vstage__badgename{color:#FFFFFF;font-weight:700;letter-spacing:.005em;
+  text-shadow:0 1px 8px rgba(0,0,0,.7),0 0 18px rgba(0,156,189,.55)}
+.vstage__roster.has-speaking .vstage__badge.is-in.is-speaking{transform:translateY(-7px) scale(1.14)}
+/* the halo: its own layer behind the emblem, so it can pulse without moving
+   anything — and it is only ever on one badge at a time */
+.vstage__badge .vstage__emblem{position:relative}
+.vstage__badge .vstage__emblem::after{content:"";position:absolute;inset:-14px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(0,190,225,.55) 0%,rgba(0,156,189,.28) 42%,rgba(0,156,189,0) 72%);
+  opacity:0;transition:opacity .35s ease}
+.vstage__badge.is-speaking .vstage__emblem::after{opacity:1;animation:vspot 1.9s ease-in-out infinite}
+.vstage__badge.is-speaking .vstage__emblem{box-shadow:0 0 0 4px rgba(255,255,255,.42),0 10px 26px rgba(0,0,0,.5),0 0 44px rgba(0,156,189,.9)}
+@keyframes vspot{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.18);opacity:1}}
+/* …and the tile on the deck wears the same light, so "that company is
+   displayed" and "that icon is lit" are plainly the same company */
+.vstage__tile.is-current .vstage__emblem{box-shadow:0 0 0 5px rgba(255,255,255,.28),0 18px 44px rgba(0,0,0,.55),0 0 54px rgba(0,156,189,.8)}
+.vstage__badge{transition:opacity .4s ease .35s,transform .55s cubic-bezier(.2,1.2,.3,1) .35s,filter .4s ease}
+.vstage__badge .vstage__emblem{position:static;width:36px;height:36px;box-shadow:0 0 0 3px rgba(255,255,255,.14),0 8px 20px rgba(0,0,0,.45);transition:width .5s var(--ease,ease),height .5s var(--ease,ease)}
+.vstage__badgename{font-family:var(--ui);font-size:11.5px;font-weight:600;color:rgba(255,255,255,.9);text-align:center;line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.6);max-width:84px;text-wrap:balance}
+.vstage__badge{width:84px;align-self:flex-start}
+.vstage__teamlabel{position:absolute;left:0;right:0;bottom:calc(100% + 14px);text-align:center;font-family:var(--display,var(--ui));font-size:clamp(16px,2vw,22px);font-weight:700;color:#FFFFFF;letter-spacing:-.01em;opacity:0;transition:opacity .5s ease .3s}
+
+/* ── ASSEMBLE: the pivot — the whole team, centre stage ── */
+.vstage.is-team .vstage__tile,.vstage.is-team .vstage__hero{opacity:0;transform:translateY(-30px) scale(.94);transition:opacity .45s ease,transform .5s ease}
+.vstage.is-team .vstage__roster{left:6%;right:6%;bottom:22%;justify-content:center;gap:clamp(14px,3vw,34px)}
+.vstage.is-team .vstage__badge{width:auto;transform:none}
+.vstage.is-team .vstage__badge .vstage__emblem{width:clamp(48px,7vw,74px);height:clamp(48px,7vw,74px);box-shadow:0 0 0 5px rgba(255,255,255,.14),0 16px 40px rgba(0,0,0,.5),0 0 44px rgba(0,156,189,.55)}
+.vstage.is-team .vstage__badgename{font-size:13px;max-width:none}
+.vstage.is-team .vstage__teamlabel{opacity:1}
+.vstage.is-team .vstage__caption{opacity:.9}
+
+/* the caption: the agent's words as it says them */
+.vstage__caption{position:absolute;left:4%;right:4%;bottom:10px;margin:0;font-family:var(--ui);font-size:13.5px;line-height:1.4;color:rgba(255,255,255,.92);
+  text-shadow:0 1px 8px rgba(0,0,0,.6);pointer-events:none;z-index:2;transition:opacity .3s ease}
+.vstage.is-deck .vstage__caption{left:30%;bottom:auto;top:calc(6% + 76% + 6px);font-size:12.5px;opacity:0}
+.vstage.is-team .vstage__caption{top:auto;bottom:8%;left:6%;right:6%;text-align:center}
+/* it all lifts away */
+.vstage.is-closing .vstage__tile,.vstage.is-closing .vstage__hero,.vstage.is-closing .vstage__roster{transform:translateY(-40px) scale(.96);opacity:0;transition-duration:.5s}
+/* reduced motion: fades only, no flight, no burst, no slam */
+.vstage--still,.vstage--still *{transition-duration:.25s!important;animation:none!important}
+.vstage--still .vstage__hero,.vstage--still .vstage__tile,.vstage--still .vstage__badge{transform:none!important}
+.vstage--still .vstage__tile>.vstage__emblem{transform:translate(-50%,-50%)!important}
+.vstage--still .vstage__burst{display:none}
+@media (max-width:640px){
+  .vstage{height:min(46svh,380px)}
+  .vstage__tile.is-current{top:5%;left:5%;width:90%;height:64%}
+  .vstage__tile>.vstage__emblem{width:clamp(60px,22%,90px);top:34%}
+  .vstage__tiletext{padding:26px 14px 12px}
+  .vstage__tilelogo{height:26px;width:86px}
+  .vstage.is-deck .vstage__hero{display:none}
+  .vstage.is-deck .vstage__roster{left:5%;right:5%;bottom:8px;gap:8px}
+  .vstage__badge{width:52px}
+  .vstage__badge .vstage__emblem{width:30px;height:30px}
+  .vstage__badgename{font-size:10.5px;max-width:60px}
+  .vstage.is-deck .vstage__caption{left:5%;right:5%;top:calc(5% + 64% + 4px);font-size:12px}
+  .vstage.is-team .vstage__roster{bottom:24%;flex-wrap:wrap;gap:10px 14px}
+  .vstage.is-team .vstage__badge .vstage__emblem{width:48px;height:48px}
+  .vstage__caption{font-size:12.5px}
+}
+
+/* ── THE TEAM CARD: the story's trace in the thread — a picture with the
+   member's name over it, the roster of emblems beneath; hover or focus a
+   badge to meet that member, tap to open its page in a new tab ── */
+.askbox__thread .turnb--team{padding-left:26px}
+.teamcard{border-radius:16px;overflow:hidden;background:var(--deep,#0B1220);color:#FFFFFF;box-shadow:0 18px 44px rgba(11,18,32,.18);
+  opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease,ease),transform .55s var(--ease,ease)}
+.teamcard.is-in{opacity:1;transform:none}
+.teamcard__stage{position:relative;aspect-ratio:16/7;min-height:170px;overflow:hidden}
+.teamcard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .55s ease,transform 1.2s ease}
+.teamcard__img.is-on{opacity:1;transform:none}
+.teamcard__text{position:absolute;left:0;right:0;bottom:0;padding:44px 20px 16px;background:linear-gradient(to top,rgba(11,18,32,.92) 30%,rgba(11,18,32,0));display:flex;flex-direction:column;gap:3px}
+.teamcard__eyebrow{font-family:var(--ui);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.teamcard__name{font-family:var(--display,var(--ui));font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.teamcard__line{font-family:var(--ui);font-size:14px;line-height:1.4;color:rgba(255,255,255,.92);max-width:56ch}
+.teamcard__go{font-family:var(--ui);font-size:13px;font-weight:600;color:var(--teal);margin-top:4px}
+.teamcard__go[hidden]{display:none}
+.teamcard__roster{display:flex;flex-wrap:wrap;gap:6px 4px;padding:12px 10px 12px;background:#0A1430}
+.teamcard__badge{flex:1 1 84px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px 6px;border-radius:12px;text-decoration:none;color:rgba(255,255,255,.88);
+  transition:background-color .25s ease,transform .25s ease}
+.teamcard__badge .vstage__emblem{position:static;width:38px;height:38px;box-shadow:0 0 0 3px rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.45);transition:transform .3s cubic-bezier(.2,1.2,.3,1),box-shadow .3s ease}
+.teamcard__badge:hover,.teamcard__badge:focus-visible,.teamcard__badge.is-current{background:rgba(255,255,255,.07);color:#FFFFFF;outline:none}
+.teamcard__badge:hover .vstage__emblem,.teamcard__badge:focus-visible .vstage__emblem,.teamcard__badge.is-current .vstage__emblem{transform:translateY(-3px) scale(1.08);box-shadow:0 0 0 4px rgba(255,255,255,.18),0 12px 26px rgba(0,0,0,.5),0 0 34px rgba(0,156,189,.6)}
+.teamcard__badge--more .vstage__emblem,.vstage__badge--more .vstage__emblem{background:radial-gradient(circle at 32% 30%,#FFE28A 0%,#F2A93B 55%,#7A4B0B 100%);box-shadow:0 0 0 3px rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.45),0 0 30px rgba(242,169,59,.45)}
+.teamcard__badgename{font-family:var(--ui);font-size:11.5px;font-weight:600;text-align:center;line-height:1.15;text-wrap:balance;max-width:84px}
+@media (prefers-reduced-motion:reduce){.teamcard,.teamcard__img,.teamcard__badge .vstage__emblem{transition:none}}
+@media (max-width:640px){
+  .teamcard__stage{aspect-ratio:4/3;min-height:0}
+  .teamcard__badge{flex:1 1 30%;padding:6px 2px}
+  .teamcard__badge .vstage__emblem{width:32px;height:32px}
+  .teamcard__badgename{font-size:10.5px}
+}
+
+/* ?voicedebug=1: the wire, readable off a screenshot */
+.voice__debug{margin:0 0 8px;padding:8px 10px;border-radius:10px;background:#0B1220;color:#B9E5EF;font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto}
+
+/* typography in the thread (home.js rich): names bold, the welcome in display
+   type, the asking sentence weighted, figures tabular */
+.askbox__thread .turnb__text .t-brand{font-weight:700;color:var(--ink);letter-spacing:-.005em}
+.askbox__thread .turnb__text .t-num{font-weight:700;font-variant-numeric:tabular-nums}
+.askbox__thread .turnb__text .t-ask{font-weight:600;color:var(--ink)}
+.askbox__thread .turnb__text .t-lead{display:block;font-family:var(--display);font-weight:800;font-size:1.45em;line-height:1.12;letter-spacing:-.025em;color:var(--ink);margin:0 0 8px}
+.askbox__thread .turnb__text .t-lead .t-brand{color:var(--teal)}
+@media (max-width:640px){.askbox__thread .turnb__text .t-lead{font-size:1.3em}}
+/* a product's own mark beside its name, on the navy plate its lockup was
+   drawn on ("when you mention company names, show their icons") */
+.askbox__thread .turnb__text .t-brand--logo{white-space:nowrap}
+.askbox__thread .turnb__text .t-logo{display:inline-block;height:1.15em;width:auto;max-width:5.2em;vertical-align:-.22em;margin:0 .3em 0 0;
+  border-radius:4px;background:#0A1743;object-fit:contain;padding:.08em .22em;box-sizing:content-box}
+.askbox__thread .turnb__text .t-lead .t-logo{display:none}   /* the welcome line is type alone */
+
+/* ── the starter pills (client, 2026-09-11: "give them an opportunity to say
+   something first … those should appear as animated pills at the bottom …
+   a focused hero pill") ── every row of pills rises one after another; the
+   hero pill is set apart, in ink with a live dot, and breathes until tapped */
+@keyframes pillIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes heroBreathe{0%,100%{box-shadow:0 0 0 0 rgba(0,150,175,.35)}50%{box-shadow:0 0 0 7px rgba(0,150,175,0)}}
+.askbox__thread .turnb__chips .tag{animation:pillIn .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*85ms)}
+.askbox__thread .turnb__chips .tag--hero{background:var(--ink);border-color:var(--ink);color:#FFFFFF;font-weight:600;gap:8px;padding:0 15px 0 12px;
+  animation:pillIn .5s cubic-bezier(.2,.7,.2,1) both,heroBreathe 2.2s ease-in-out .6s infinite}
+.askbox__thread .turnb__chips .tag--hero::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);flex:none;animation:voiceLive 1.4s ease-in-out infinite}
+.askbox__thread .turnb__chips .tag--hero:hover{background:var(--navy,#0A1743);border-color:var(--navy,#0A1743);color:#FFFFFF}
+.askbox__thread .turnb__chips .tag--hero:disabled{animation:none;box-shadow:none;opacity:.55}
+.askbox__thread .turnb__chips .tag--hero[aria-pressed="true"]{opacity:1;background:var(--teal);border-color:var(--teal)}
+.askbox__thread .turnb__chips--starters{margin-top:var(--s-6)}
+@media (prefers-reduced-motion:reduce){
+  .askbox__thread .turnb__chips .tag,.askbox__thread .turnb__chips .tag--hero,.askbox__thread .turnb__chips .tag--hero::before{animation:none}
+  .askbox__thread .turnb__chips .tag--hero{box-shadow:0 0 0 3px rgba(0,150,175,.25)}
+}
+
+/* ── THE ANSWER TYPES ITSELF IN (client, 2026-09-16: "i want the response to
+   animate in like an ai chatbot, like its typing up the response in a cool
+   animation") ── home.js puts the whole answer in the DOM at once, so the
+   height is final and nothing under it moves, and hands every word its index;
+   the reveal is all here. A word blurs into focus as it lands — the same way
+   the spoken words arrive — and a caret of no width rides the edge of what has
+   been written. The pills and the button wait for the last word. */
+@keyframes wordIn{from{opacity:0;filter:blur(5px);transform:translateY(.16em)}
+  to{opacity:1;filter:blur(0);transform:none}}
+@keyframes caretBlink{0%,45%{opacity:1}55%,100%{opacity:0}}
+.askbox__thread .turnb--ai .turnb__text .tw,
+.askbox__thread .turnb--ai .turnb__typed .tw{display:inline-block;
+  animation:wordIn .34s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--w,0)*var(--step,18ms))}
+.askbox__thread .turnb__caret{display:inline-block;width:0;height:1em;position:relative;vertical-align:-.14em}
+.askbox__thread .turnb__caret::after{content:"";position:absolute;left:0;top:.04em;width:2px;height:.96em;
+  border-radius:1px;background:var(--teal);animation:caretBlink .9s steps(1,end) infinite}
+.askbox__thread .turnb--ai.is-typing .turnb__chips,
+.askbox__thread .turnb--ai.is-typing .turnb__go,
+.askbox__thread .turnb--ai.is-typing .reco,
+.askbox__thread .turnb--ai.is-typing .askform{opacity:0;pointer-events:none}
+.askbox__thread .turnb--ai .turnb__chips,
+.askbox__thread .turnb--ai .turnb__go,
+.askbox__thread .turnb--ai .reco,
+.askbox__thread .turnb--ai .askform{transition:opacity .4s ease}
+@media (prefers-reduced-motion:reduce){
+  .askbox__thread .turnb--ai .turnb__text .tw,
+  .askbox__thread .turnb--ai .turnb__typed .tw{animation:none}
+  .askbox__thread .turnb__caret{display:none}
+  .askbox__thread .turnb--ai.is-typing .turnb__chips,
+  .askbox__thread .turnb--ai.is-typing .turnb__go,
+  .askbox__thread .turnb--ai.is-typing .reco,
+  .askbox__thread .turnb--ai.is-typing .askform{opacity:1;pointer-events:auto}
+}
+
+/* transcripts: the visitor's words still arriving, and an answer cut short */
+.askbox__thread .turnb--interim{opacity:.55;font-style:italic}
+/* the visitor's bubble, reserved as they speak and still waiting for the
+   words: a quiet listening mark, so the order of the thread holds */
+@keyframes hearing{0%,100%{opacity:.35}50%{opacity:.9}}
+.askbox__thread .turnb--hearing:empty{min-width:48px;font-style:normal}
+.askbox__thread .turnb--hearing:empty::after{content:"···";letter-spacing:.12em;font-weight:700;color:var(--ink-2);animation:hearing 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.askbox__thread .turnb--hearing:empty::after{animation:none}}
+.askbox__thread .turnb--cutoff .turnb__text::after{content:" —";color:var(--ink-3)}
+@media (max-width:640px){
+  .voice__status{max-width:40%;font-size:12px}
+  .askbox__voice span{display:none}          /* the mic glyph alone on a phone */
+  .askbox__voice{padding:0 10px}
+  .askbox__voice.is-live span{display:inline}
+}
+
+.askbox__go{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  background:#F1F2F4;color:var(--ink-3);transition:background-color .25s ease,color .25s ease,transform .3s var(--ease)}
+.askbox__go svg{width:18px;height:18px}
+.askbox__go:hover{background:var(--ink);color:#FFFFFF;transform:translateY(-1px)}
+.askbox__go:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* on the picture, the field is white and the agent speaks in ink */
+.hero .ask-mini{background:#FFFFFF}
+.chat__tags{margin-top:var(--s-8)}
+/* (the agent's black bubble is gone: inside the white box it did not belong —
+   see .askbox__thread above) */
+/* the starting points arrive once the agent has said its line, one by one */
+.chat__tags{width:100%;margin-top:var(--s-10);display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4)}   /* outside the box, so the five sit on one line */
+.chat__tags li{opacity:0;transform:translateY(10px);transition:opacity .45s var(--ease),transform .55s var(--ease)}
+.chat__tags.is-in li{opacity:1;transform:none}
+.chat__tags.is-in li:nth-child(1){transition-delay:0s}
+.chat__tags.is-in li:nth-child(2){transition-delay:.07s}
+.chat__tags.is-in li:nth-child(3){transition-delay:.14s}
+.chat__tags.is-in li:nth-child(4){transition-delay:.21s}
+.chat__tags.is-in li:nth-child(5){transition-delay:.28s}
+.chat__tags.is-in li:nth-child(6){transition-delay:.35s}
+/* three on the first line, two on the second: an empty full-width item makes
+   the break, so the rows stay 3/2 at any width instead of wrapping by chance */
+.tag__br{flex-basis:100%;height:0;margin:0;padding:0}
+.chat__tags .tag{height:38px;padding:0 16px;gap:8px;font-size:13px;color:#FFFFFF;
+  background:rgba(255,255,255,.13);border-color:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.34);
+  -webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);
+  transition:background-color .25s ease,box-shadow .25s ease}
+.tag__ic{width:16px;height:16px;flex-shrink:0;opacity:.9}
+.chat__tags .tag:hover{background:rgba(255,255,255,.26);box-shadow:inset 0 0 0 1px rgba(255,255,255,.6);color:#FFFFFF}
+.chat__tags .tag:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+/* once the conversation starts, the starting points step out of the way */
+#ask.is-chat .chat__tags{display:none}   /* the class lands on the centred column, which carries the id */
+/* the ways to a person: plain words under the field, not more buttons */
+.chat__ways{margin:var(--s-8) 0 0;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-4) var(--s-7)}
+.chat__way{font-family:var(--ui);font-size:12px;font-weight:500;color:rgba(255,255,255,.72);border-bottom:1px solid transparent;transition:color .25s ease,border-color .25s ease}
+.chat__way:hover{color:#FFFFFF;border-bottom-color:#FFFFFF}
+.chat__way:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px;border-radius:2px}
+
+/* ── 6 · WHY STAGWELL AI — short cards, the reasons to believe ─────────── */
+.why{padding:var(--s-15) 0 var(--s-14)}
+.why .display--cos{text-align:center}
+.why__grid{margin-top:var(--s-13);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-7)}
+.why__item{display:flex;flex-direction:column;gap:var(--s-5);padding:var(--s-10) var(--s-9);border:1px solid var(--line);border-radius:24px}   /* the numbers' own card */
+.why__t{margin:0;font-family:var(--display);font-weight:700;font-size:clamp(20px, .9rem + .6vw, 24px);letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
+.why__d{margin:0;font-size:16px;line-height:1.5;color:var(--ink-2)}
+/* four cards, not six (client, 2026-09-09): two across reads better than a
+   row of three with one stranded under it, and each card now carries a lead
+   line and a paragraph under it. */
+.why__grid--four{grid-template-columns:repeat(2,minmax(0,1fr))}
+.why__d--lead{color:var(--ink);font-weight:600}
+
+/* ── 8 · FROM INSIGHT TO IMPACT — the five steps, nothing more ─────────── */
+.impact{padding:var(--s-14) 0 var(--s-14)}
+.impact .display--cos{text-align:center}
+.impact__steps{margin-top:var(--s-13);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s-7)}
+.impact__step{display:flex;flex-direction:column;gap:var(--s-5);padding-top:var(--s-7);border-top:1px solid var(--ink-4)}
+.impact__n{font-family:var(--ui);font-size:13px;font-weight:600;letter-spacing:.12em;color:var(--teal)}
+.impact__t{font-family:var(--display);font-weight:700;font-size:clamp(18px, .8rem + .5vw, 21px);letter-spacing:-.015em;line-height:1.25;color:var(--ink)}
+
+/* ── 9 · TRUST AND METRICS — the cards, on their own now ────────────────── */
+.metrics{padding:var(--s-13) 0 var(--s-15);border-top:1px solid var(--line)}   /* its own block, not the tail of the steps above */
+.metrics .stats{margin-top:0}
+
+/* the final CTA's other two ways, under the field */
+.ask-end__ways{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--s-5)}
+
+/* ══════════════════════════ MOBILE (≤ 820px) ══════════════════════════════
+   A re-composition, not a scale-down. One column everywhere; the hero's
+   split becomes words over a 4:5 picture with the play disc on it; the film
+   opens full screen; the bottom row stacks; tiles, rows, stats and footer
+   fall into a single column. Kept at the END of the file on purpose: a media
+   block above the rules it overrides loses on equal specificity. */
+@media (max-width:820px){
+  :root{--nav-h:64px}
+
+  /* ── nav: the wordmark, the magnifier, the menu — tight to both edges ── */
+  /* the links are display:none on a phone, so they are no longer grid items:
+     with three columns the acts landed in the 1fr and stopped a column-gap
+     short of the edge — the right side read as heavier padding than the
+     left. Two columns, and both ends sit on the same 16. */
+  .nav__in{grid-template-columns:1fr auto;column-gap:var(--s-5);padding-inline:16px}
+  .nav__links{display:none}
+  .nav__brand svg{height:12px}
+  .nav__acts{gap:var(--s-4)}
+  .nav__search{width:40px;height:40px}
+  .nav__search svg{width:17px;height:17px}
+  /* the bar keeps one way in; Book a demo and the magnifier moved into the menu */
+  .nav .btn--ink{display:none}
+  .nav .btn--line{height:36px;padding:0 15px;font-size:11px;letter-spacing:.05em}
+  .nav__search{display:none}
+  .nav__burger{display:grid;margin-right:-11px}   /* the glyph is inset in its 40px target: pull the box out so the ink lands on the same 16 as the wordmark */
+  .menu{padding-inline:16px}
+
+  /* ── hero: the column first, the picture under it ── */
+  .hero{height:auto;min-height:100svh;--media-w:100%}
+  .hero__in{display:flex;flex-direction:column;flex:none}
+    .hero__stack{flex:none;overflow:visible}
+  .hero__stack > :first-child{margin-top:0}
+  .hero__l.is-chat .hero__stack{max-height:62svh;overflow-y:auto}
+  .askbox__thread{max-height:38svh}   /* inside a 62svh stack: the thread must not out-grow it into nested scrolling */
+  /* the tagline is three nowrap lines on a desktop; on a phone that made
+     fitDisplays shrink it to 35px. Let it wrap instead and keep it big. */
+  .display--hero{font-size:clamp(38px, 11.5vw, 48px)}
+  .display--hero .ln__in{white-space:normal}
+  .hero__lede{margin:var(--s-9) 0 0;white-space:normal;font-size:17px}   /* 32 under the title */
+  .hero__r{display:none}
+  .hero__acts{flex-direction:column;align-items:stretch;gap:var(--s-5)}
+  .hero__acts .call,.ask-end__acts .call{width:100%}     /* the pill takes the column; its faces fit inside */
+  .ask-mini{height:56px;padding:0 4px 0 20px}
+  .ask-mini__input,.ask-mini__hint{font-size:14px}
+  .ask-mini__dots{display:none}                   /* the room goes to the phrase */
+  .ask-mini__hint{left:20px;right:56px}
+  .call{height:56px}
+  .call__form,.call__done{height:56px}
+  .turnb{max-width:88%;font-size:16px}
+  /* the panel is a picture in the flow now: 4:5, the play disc on it */
+  .hero__media{position:relative;inset:auto;flex:none;width:100%;aspect-ratio:4/5;clip-path:none;transition:none}
+  .hero__slides{width:100%}
+  .hero__watch{right:var(--s-7);bottom:var(--s-7);width:52px;height:52px}
+  .hero__watch svg{width:20px;height:20px}
+  /* open, the film takes the screen */
+  .hero__media.is-open{position:fixed;inset:0;z-index:60;aspect-ratio:auto;width:auto;height:auto}
+  .hero__ctl{right:var(--s-7);bottom:max(var(--s-7), env(safe-area-inset-bottom))}
+
+  /* ── agentic: picture, then words ── */
+  .intro{grid-template-columns:1fr;min-height:0;padding:var(--s-13) var(--gutter);row-gap:var(--s-10)}
+  .intro__media{height:auto;aspect-ratio:4/5}
+  .intro__body{padding:0}
+  .display--intro{max-width:none}
+  .intro__lede{margin-top:var(--s-9)}
+  /* the hard break left "network." alone on a line here: let the sentences
+     flow and let the browser even the lines out. The space before each <br>
+     in the markup is what keeps the words apart once it is hidden. */
+  .chat-over .ask__lede br{display:none}
+  .chat-over .ask__lede,.suite__lede,.ask-end__lede{text-wrap:balance}
+
+  /* ── portfolio: one column per row, the picture last ── */
+  .port{padding:var(--s-13) 0 var(--s-12)}
+  .port__rows{margin-top:var(--s-11)}
+  .port__row{grid-template-columns:1fr;row-gap:var(--s-9);padding:var(--s-9) 0}
+  .port__body .port__head{margin-bottom:var(--s-8)}
+  .port__media{height:auto;aspect-ratio:16/10}
+
+  .stats{margin-top:var(--s-12);grid-template-columns:1fr 1fr;gap:var(--s-5)}   /* two and two: three in a row crushed the words (client) */
+  .stat{padding:var(--s-8) var(--s-7);border-radius:18px;gap:var(--s-5)}
+  .stat__n{font-size:38px}
+  .stat__n--words{font-size:21px}
+  .stat__d{font-size:13px}
+
+  /* ── the suite: the names, then the picture ── */
+  .close{padding:var(--s-13) 0 var(--s-14)}
+  /* a centred column shrink-wraps its title, so fitDisplays() measured a box
+     that already equalled the line and never brought the size down — the
+     hero's trap, again: the titles take their column's width */
+  .suite__in > .display,.ask-end__in > .display{align-self:stretch}
+  /* the same items become cards: a small picture, the name, its line. The
+     panel steps out — each row carries its own picture now. */
+  .suite__grid{margin-top:var(--s-11);grid-template-columns:1fr}
+  .suite__list{gap:0}
+  .suite__panel{display:none}
+  .suite__item{display:flex;flex-direction:row;align-items:center;gap:var(--s-7);
+    white-space:normal;font-size:19px;font-weight:700;color:var(--ink);
+    padding:var(--s-7) 0;border-top:1px solid var(--line)}
+  .suite__list li:last-child .suite__item{border-bottom:1px solid var(--line)}
+  .suite__item.is-on{font-weight:700}
+  .suite__thumb{display:block;position:relative;width:76px;flex:0 0 76px;aspect-ratio:1/1;overflow:hidden;border-radius:6px;background:var(--deep)}
+  .suite__thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .suite__body{display:flex;flex-direction:column;gap:var(--s-4);min-width:0;text-align:left}
+  .suite__word{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.2;letter-spacing:-.02em}
+  .suite__note{display:block;font-family:var(--sans);font-weight:400;font-size:14px;line-height:1.45;letter-spacing:0;color:var(--ink-3)}
+  .suite__arrow{width:.62em;height:.62em}
+  /* every row shows its arrow on a phone — there is no hover to reveal one */
+  .suite__arrow-line{stroke-dashoffset:0}
+  .suite__arrow-head{opacity:1;transform:none}
+
+  /* ── the end ── */
+  .ask-end{padding:var(--s-13) 0 var(--s-14)}
+  .display--end{font-size:clamp(52px, 15vw, 64px)}
+  .ask-end__lede{margin-top:var(--s-8);font-size:17px}
+  .ask-end__acts{margin-top:var(--s-9);width:100%;gap:var(--s-5)}
+
+  /* ── footer: one column; the mark beside the kicker; the band stacks ── */
+  .foot__in{grid-template-columns:1fr;gap:var(--s-11);padding-top:var(--s-13);padding-bottom:var(--s-12)}
+  /* the mark beside the kicker read as an accident; it ends the column
+     instead, under the links (client). display:contents lifts both out of
+     .foot__lead so the grid can order them. */
+  .foot__lead{display:contents}
+  .foot__kicker{order:1}
+  .foot__big{order:2}
+  .foot__small{order:3}
+  .foot__mark{order:4;width:64px;margin-top:var(--s-5)}
+  .foot__big{gap:var(--s-7)}
+  .foot__big a{font-size:34px}
+  .foot__small{gap:var(--s-7);align-items:flex-start;text-align:left}
+  .foot__disc{width:40px;height:40px}
+  .foot__band{flex-direction:column;align-items:flex-start;gap:var(--s-8);padding-top:var(--s-9);padding-bottom:max(var(--s-9), env(safe-area-inset-bottom))}
+  .foot__legal{width:100%;justify-content:space-between}
+
+  /* ── the hero's chat, under the words on a phone ── */
+  .hero__chat{padding:var(--s-11) var(--gutter) var(--s-12);min-height:auto}
+  .chat{flex:none}
+  .chat__body{padding:var(--s-7) 0 var(--s-9);min-height:0}
+  .chat__thread{max-height:46svh}
+  .chat__thread .turnb{max-width:92%;font-size:16px}
+  .chat__tags .tag{height:34px;padding:0 14px;font-size:13px}
+  .chat__ways{gap:var(--s-4) var(--s-7)}
+  .ask-mini--lg{height:56px;padding:0 4px 0 20px}
+  .ask-mini--lg .ask-mini__input{font-size:15px}
+  .ask-mini--lg .ask-mini__go{width:46px;height:46px}
+  .why{padding:var(--s-13) 0 var(--s-12)}
+  .why__grid{margin-top:var(--s-11);grid-template-columns:1fr;gap:var(--s-5)}
+  .why__item{padding:var(--s-8) var(--s-7);border-radius:18px;gap:var(--s-4)}
+  .impact{padding:var(--s-12) 0}
+  .impact__steps{margin-top:var(--s-11);grid-template-columns:1fr;gap:var(--s-6)}
+  .metrics{padding:var(--s-10) 0 var(--s-13)}
+  .ask-end__ways{flex-direction:column;align-items:stretch;width:100%}
+  .ask-end__ways .btn,.ask-end__ways .call{width:100%}
+  /* ── the chat over the page ── */
+  .chat-over .ask__field{height:56px;padding:0 4px 0 18px}
+  .chat-over .ask__go{width:46px;height:46px}
+  .chat-over .chat-over__close{top:var(--s-5)}
+}
+
+/* ── the hero agent's ending: the contact form inside the last bubble (client,
+      2026-09-09: after the questions, a form — name, email, phone — so a
+      Stagwell AI specialist can call). Fields inherit the page's one face. ── */
+.askbox__thread .turnb--form{padding-right:0}
+.askform{display:flex;flex-direction:column;gap:var(--s-5);margin-top:var(--s-6);max-width:440px}
+.askform .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.askform__row{display:block;position:relative;margin:0;min-width:0}
+.askform__row input{
+  width:100%;box-sizing:border-box;height:46px;padding:0 16px;
+  font-family:var(--sans);font-size:15px;color:var(--ink);
+  background:#FFFFFF;border:1px solid var(--line);border-radius:12px;outline:none;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.askform__row input::placeholder{color:var(--ink-4)}
+.askform__row input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(11,18,32,.08)}
+.askform__row.is-shake input{border-color:#A6231B;animation:askShake 420ms var(--ease)}
+@keyframes askShake{20%{transform:translateX(-5px)}45%{transform:translateX(4px)}70%{transform:translateX(-2px)}100%{transform:none}}
+.askform__hint{margin:-4px 0 0;font-size:13px;line-height:1.5;color:#A6231B}
+.askform__hint[hidden]{display:none}
+.askform__bar{display:flex;align-items:center;flex-wrap:wrap;gap:var(--s-5) var(--s-6);margin-top:var(--s-4)}
+.askform__go{height:46px;padding:0 24px;font-size:14px}
+.askform__fine{font-size:12px;line-height:1.5;color:var(--ink-3);flex:1 1 180px}
+.turnb__more{display:inline-block;margin-top:var(--s-6);font-size:14px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.turnb__more:hover{color:var(--navy)}
+.turnb__waitlabel{align-self:center;margin-left:6px;font-size:13px;color:var(--ink-3)}
+/* the composer, closed: the field says why and the send disc is gone */
+.askbox.is-closed .askbox__input{color:var(--ink-3)}
+.askbox.is-closed .askbox__caret{display:none}
+.askbox.is-closed .askbox__bar{padding-top:var(--s-4)}
+@media (prefers-reduced-motion:reduce){.askform__row.is-shake input{animation:none}}
+@media (max-width:640px){
+  .askform{max-width:none}
+  .askbox__thread .turnb--form .turnb__text{font-size:15px}
+}
+
+/* ── the designer's edit, made to hold on a phone (2026-09-10) ────────────────
+   Her About frame and closing title carry fixed inline sizes (518x587 and
+   80px), which beat every responsive rule above: on a phone the frame widened
+   the page to 542px and the title ran off the edge. Her own changelog lists the
+   frame as "to settle before this ships". These rules only engage where her
+   fixed sizes stop fitting — at desktop widths both compute to exactly what she
+   set. */
+@media (max-width:1100px){
+  .intro__media{width:auto !important;max-width:518px;height:auto !important;aspect-ratio:518/587}
+  .intro__pic{width:100% !important;height:100% !important;left:0 !important}
+}
+.display--end .navy{font-size:min(80px, 8.4vw) !important}
+@media (max-width:820px){ .display--end .ln__in{white-space:normal} }
+
+/* ── the Products dropdown (2026-09-10) ───────────────────────────────────────
+   Temporary: a way to reach the product pages while they are built. The whole
+   feature is this block, the <li class="nav__drop"> in the bar, the .menu__sub
+   list in the phone menu and navdrop.js. The panel's links are written as
+   `.nav .nav__panel a…` so they outrank `.nav:not(.is-stuck) .nav__links a`,
+   which would otherwise turn them white on the panel's white. */
+.nav__drop{position:relative}
+.nav__droptrig{display:inline-flex;align-items:center;gap:6px;font-family:var(--ui);font-size:14px;font-weight:500;
+  color:var(--ink);padding:6px 0;background:none;border:0;border-bottom:1px solid transparent;cursor:pointer;
+  transition:border-color .25s ease}
+.nav__droptrig:hover,.nav__drop.is-open .nav__droptrig{border-bottom-color:currentColor}
+.nav__droptrig:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:2px}
+.nav:not(.is-stuck) .nav__droptrig{color:rgba(255,255,255,.86)}
+.nav__chev{width:10px;height:10px;flex-shrink:0;transition:transform .3s var(--ease)}
+.nav__drop.is-open .nav__chev{transform:rotate(180deg)}
+.nav__panel{position:absolute;top:calc(100% + 16px);left:-18px;width:max-content;min-width:360px;max-width:calc(100vw - 48px);padding:8px;border-radius:18px;
+  background:#FFFFFF;color:var(--ink);box-shadow:0 22px 60px rgba(11,18,32,.16),inset 0 0 0 1px var(--line);
+  opacity:0;visibility:hidden;transform:translateY(-6px);z-index:60;
+  transition:opacity .22s ease,transform .3s var(--ease),visibility 0s linear .3s}
+.nav__panel::before{content:"";position:absolute;left:0;right:0;top:-18px;height:18px}   /* the hover bridge over the gap */
+.nav__drop.is-open .nav__panel{opacity:1;visibility:visible;transform:none;
+  transition:opacity .22s ease,transform .3s var(--ease),visibility 0s}
+.nav__plist{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
+.nav__pitem{display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:12px;color:var(--ink)}
+/* the product's own image, cropped square, on the left of its row (client) */
+.nav__pthumb{width:48px;height:48px;flex-shrink:0;border-radius:10px;object-fit:cover;display:block;background:#F1F2F4}
+.nav__ptext{display:flex;flex-direction:column;gap:3px;min-width:0}
+.nav .nav__panel a.nav__pitem{font-size:inherit;font-weight:inherit;color:var(--ink);padding:10px 12px;border-bottom:0;
+  transition:background-color .2s ease}
+.nav .nav__panel a.nav__pitem:hover,.nav .nav__panel a.nav__pitem:focus-visible,
+.nav .nav__panel a.nav__pitem[aria-current="page"]{background:#F4F6F8;outline:0}
+.nav__pname{font-family:var(--ui);font-size:15px;font-weight:600;line-height:1.25;display:flex;align-items:center;gap:8px}
+.nav__pdesc{font-family:var(--ui);font-size:13px;font-weight:400;line-height:1.35;color:var(--ink-3);white-space:nowrap}   /* one line on a desktop (client); the panel widens to its longest */
+.nav__pitem.is-soon{cursor:default}
+.nav__pitem.is-soon .nav__pname{color:var(--ink-3)}
+.nav__soon{font-style:normal;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);background:#F1F2F4;border-radius:999px;padding:3px 8px}
+.nav .nav__panel a.nav__pall{display:block;margin:6px 6px 2px;padding:12px 8px 6px;border-top:1px solid var(--line);
+  border-bottom:0;font-family:var(--ui);font-size:14px;font-weight:600;color:var(--ink)}
+.nav .nav__panel a.nav__pall:hover{color:var(--ink-3)}
+/* the phone menu: the product pages under "Products" */
+.menu__sub{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.menu__links .menu__sub a,.menu__sub span{font-family:var(--ui);font-size:17px;font-weight:500;letter-spacing:0;
+  line-height:1.3;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px}
+.menu__sub .is-soon{color:var(--ink-3)}
+/* "Products" and "Why Stagwell AI" on one line: the link is an inline box and
+   the trigger an inline-flex button, which put their words 3px apart (client:
+   "doesn't look aligned"). Both are the same box now — 21px of line, 6px above
+   and below, centred in their item — so the text lands on the same line. */
+.nav__links > li{display:flex;align-items:center}
+.nav__links > li > a,.nav__droptrig{display:inline-flex;align-items:center;line-height:21px}
+
+/* ── Book a demo and Learn more (.btn--go): the chat's send arrow slides in at
+   the RIGHT of the words on hover (client, 2026-09-10; first set at the left). The same drawing as the send buttons (24-grid, 1.8 stroke), as a
+   mask so it takes the button's colour. The button keeps its width: the arrow
+   and its gap come out of the side padding (18 + 10 = 28 → 14 a side), so a
+   centred row never jumps. Mouse only — a finger has no hover. */
+@media (hover:hover) and (pointer:fine){
+  .btn:is([data-cta="session"],.btn--go){transition:background-color .25s ease,color .25s ease,transform .3s var(--ease),padding .38s var(--ease)}
+  .btn:is([data-cta="session"],.btn--go)::before{content:"";order:2;flex-shrink:0;width:0;height:18px;margin-left:-10px;opacity:0;background:currentColor;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") right center / 18px 18px no-repeat;
+            mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") right center / 18px 18px no-repeat;
+    transition:width .38s var(--ease),margin .38s var(--ease),opacity .25s ease}
+  .btn:is([data-cta="session"],.btn--go):hover,.btn:is([data-cta="session"],.btn--go):focus-visible{padding-left:14px;padding-right:14px}
+  .btn--lg:is([data-cta="session"],.btn--go):hover,.btn--lg:is([data-cta="session"],.btn--go):focus-visible{padding-left:20px;padding-right:20px}
+  .btn:is([data-cta="session"],.btn--go):hover::before,.btn:is([data-cta="session"],.btn--go):focus-visible::before{width:18px;margin-left:0;opacity:1}
+}
+@media (prefers-reduced-motion:reduce){.btn:is([data-cta="session"],.btn--go),.btn:is([data-cta="session"],.btn--go)::before{transition:none}}
+
+/* ── the hero on a phone (client, 2026-09-10: "the title breaks into five
+   lines"). Three lines, set by hand where the words part — "Agentic solutions /
+   built to transform / your business" — at the size where the longest of them
+   ("built to transform", 8.53em wide) fills the column: 36.7px at 375, 30.5px
+   at 320. The desktop's two lines are hidden here and these three shown; each
+   set is display:none on the other side, so a reader hears the title once. */
+.display--hero .ln--m{display:none}
+@media (max-width:820px){
+  .display--hero .ln--d{display:none}
+  .display--hero .ln--m{display:block}
+  .display--hero .ln__in{white-space:nowrap}      /* fitDisplays() is the net if a font runs wide */
+  .display--hero{font-size:clamp(28px, calc((100vw - 48px) / 8.9), 44px)}
+  .is-ready .display--hero .ln--m:nth-child(3) .ln__in{transition-delay:.08s}
+  .is-ready .display--hero .ln--m:nth-child(4) .ln__in{transition-delay:.2s}
+  .is-ready .display--hero .ln--m:nth-child(5) .ln__in{transition-delay:.32s}
+  .hero__lede{margin-top:var(--s-7);font-size:16px;text-wrap:balance}   /* "results" was alone on the second line */
+  .chat__tags .tag__br{display:none}
+  .chat__tags{gap:var(--s-4)}   /* was var(--s-3), which does not exist: the whole gap was dropped and the pills touched */
+  /* the About picture: 16:9 on a phone (client: "less than square, HD") */
+  .intro__media{max-width:none;aspect-ratio:16/9}
+}
+
+/* ── the phone menu (client, 2026-09-10) ───────────────────────────────────────
+   1. Open, the sheet and the bar are white — but the bar was still in its
+      over-the-picture state, so the wordmark and the close were white on white.
+      While the menu is open they are ink, whatever the page's hero.
+   2. The products carry their square pictures and one line, as in the bar's
+      dropdown.
+   3. The Ask field left the top: it sits at the foot, over Book a demo, where a
+      thumb reaches it. The sheet scrolls if a short phone runs out of room. */
+body.menu-open .nav .nav__brand,
+body.menu-open .nav .nav__burger{color:var(--ink)}
+body.menu-open .nav .nav__brand{--ink:#0B1220}
+.menu{overflow-y:auto;overscroll-behavior:contain}
+.menu__top{gap:0}
+.menu__links{gap:var(--s-7)}
+.menu__sub{margin:18px 0 0;gap:6px}
+.menu__links .menu__sub a{display:flex;align-items:center;gap:14px;padding:6px 0;min-width:0;text-align:left}
+.menu__thumb{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;display:block}
+.menu__sub .menu__ptext{display:flex;flex-direction:column;align-items:flex-start;gap:2px;flex:1;min-width:0}
+.menu__sub .menu__pname{font-size:16px;font-weight:600;color:var(--ink);line-height:1.3}
+.menu__sub .menu__pdesc{display:block;max-width:100%;font-size:13px;font-weight:400;color:var(--ink-3);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menu__acts{gap:var(--s-4)}
+.menu__acts .menu__search{height:60px}
+/* the menu's own links (client: "too big… they don't look like links"): rows,
+   not display type — 20px semibold, a hairline under each and the send arrow at
+   the end, so each reads as a way somewhere. The products sit under "Products"
+   on the same left edge, a picture and two lines each. */
+.menu{padding-top:calc(var(--nav-h) + var(--s-6))}
+.menu__links{gap:0}
+.menu__links > li{border-bottom:1px solid var(--line)}
+.menu__links > li > a{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0;
+  font-family:var(--ui);font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.2;color:var(--ink)}
+.menu__links > li > a::after{content:"";width:18px;height:18px;flex-shrink:0;background:var(--ink-3);
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 18px 18px no-repeat;
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 18px 18px no-repeat}
+.menu__sub{margin:-4px 0 14px;gap:2px}
+.menu__links .menu__sub a{gap:14px;padding:8px 0}
+.menu__thumb{width:44px;height:44px}
+.menu__sub .menu__pname{font-size:15px}
+.menu__sub .menu__pdesc{font-size:13px}
+/* "Products" in the phone menu is the group's title, not a link (client): the
+   site's eyebrow — small, tracked, grey — then the four, then "View all
+   products" as the group's last line, like the bar's dropdown */
+.menu__group{padding-bottom:6px}
+.menu__label{display:block;padding:22px 0 8px;font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;color:var(--ink-3)}
+.menu__group .menu__sub{margin:0}
+.menu__links > li > a.menu__all{justify-content:flex-start;gap:8px;padding:12px 0 16px;font-size:15px;font-weight:600}
+.menu__links > li > a.menu__all::after{width:16px;height:16px;background:var(--ink);-webkit-mask-size:16px 16px;mask-size:16px 16px}
+
+/* ── Why Stagwell AI: the four cards made one family (client, 2026-09-10) ─────
+   The designer's first card carried a text-shadow (the "drop shadow" on its
+   title), its own gap and position, and the first two titles ran 26px against
+   the others' 24 — all inline, all gone. One size and colour for the four
+   titles here, and each led by its own mark: a teal glyph in a pale teal
+   square, the 24-grid 1.8 stroke of the site's other icons. */
+.why .why__head{display:flex;align-items:center;gap:14px}
+.why .why__ic{width:48px;height:48px;flex-shrink:0;border-radius:14px;display:grid;place-items:center;
+  background:rgba(0,156,189,.10);color:#009CBD}
+.why .why__ic svg{width:24px;height:24px;display:block}
+.why .why__t{font-size:26px;color:#009CBD}
+@media (max-width:820px){
+  .why .why__ic{width:42px;height:42px;border-radius:12px}
+  .why .why__ic svg{width:22px;height:22px}
+  .why .why__t{font-size:22px}
+}
+
+/* ── the bar's chat button, made Book a demo's twin (client, 2026-09-10: "not
+   the same style"). It was a ghost ring beside a filled pill. Now it takes the
+   pill's fill in every state: white with an ink glyph over the picture, ink
+   with a white glyph once the bar is white — no ring in either. */
+.nav__search{background:var(--ink);color:#FFFFFF;box-shadow:none}
+.nav__search:hover{background:#000000;color:#FFFFFF}
+.nav:not(.is-stuck) .nav__search{background:#FFFFFF;color:var(--ink);box-shadow:none}
+.nav:not(.is-stuck) .nav__search:hover{background:#FFFFFF;color:var(--ink)}
+
+/* ── the close's thinking field (client, 2026-09-10): the hero chat's dot
+   lattice, resting, under the whole "How can we help?" — the section holds it
+   (the canvas is its first child), the content sits above */
+.ask-end{position:relative;overflow:hidden}
+.ask-end > .ask-end__in{position:relative;z-index:1}
+
+/* ── the bar's chat button, redrawn (client, 2026-09-10: "a full icon, not a
+   border icon… without the round circle… one star of AI in the centre"): a
+   solid bubble with a single spark cut out of its middle, no disc — white
+   over the picture, ink on the white bar. Replaces the filled-disc rules
+   above. */
+.nav__search{width:44px;height:44px;border-radius:12px;background:transparent;color:var(--ink);box-shadow:none;
+  transition:color .25s ease,opacity .25s ease,transform .3s var(--ease)}
+.nav__search svg{width:30px;height:30px}
+.nav__search:hover{background:transparent;color:var(--ink);opacity:.78;transform:translateY(-1px)}
+.nav:not(.is-stuck) .nav__search,.nav:not(.is-stuck) .nav__search:hover{background:transparent;color:#FFFFFF;box-shadow:none}
+
+/* ── the homepage hero: a shade under the bar's logo (client, 2026-09-10) ──────
+   The still runs orange-brown in its top-left, right where the transparent
+   bar's wordmark sits: the orange "AI" measured 1.2–1.6:1 on it at 1440 and
+   1855 ("orange on orange"). A navy shade from the top-left, ~.5 at the logo
+   and gone by the middle of the screen, lifts it to ~3:1 and the white to ~9:1
+   until the solid bar arrives. Added to the veil's own layer (the ::after is
+   the veil's), so nothing else moves. */
+.hero__bg::after{background:
+    radial-gradient(ellipse 55% 42% at 12% 0%,rgba(4,34,52,.55) 0%,rgba(4,34,52,.35) 40%,rgba(4,34,52,0) 100%),
+    linear-gradient(100deg,rgba(7,20,29,.44) 0%,rgba(7,20,29,.26) 52%,rgba(7,20,29,.08) 100%)}
+
+/* the bar never slides away (client, 2026-09-10): a guard in case any script
+   still sets the old hidden state */
+.nav.is-hidden{transform:none}
+
+/* ── the phone's menu button (client, 2026-09-10): a small "Menu" at the left
+   of three lines; open, the word reads "Close", the middle line fades and the
+   other two cross. The word is the button's accessible name, so a screen
+   reader hears what a tap will do. The lines keep their 11px inset on the
+   right, so the ink still lands on the same 16px edge as the wordmark. */
+.nav__burger{width:auto;height:40px;border-radius:0;padding:0 40px 0 0;align-items:center;gap:0}
+.nav__burger .nav__blbl{position:static;width:auto;height:auto;background:none;border-radius:0;transform:none;
+  font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;line-height:1;color:currentColor}
+.nav__burger .nav__bl{position:absolute;left:auto;right:11px;top:50%;width:18px;height:1.6px;margin-top:-.8px;border-radius:2px;
+  background:currentColor;transition:transform .32s var(--ease),opacity .2s ease}
+.nav__burger .nav__bl:nth-child(2){transform:translateY(-6px)}
+.nav__burger .nav__bl:nth-child(3){transform:none}
+.nav__burger .nav__bl:nth-child(4){transform:translateY(6px)}
+.nav__burger[aria-expanded="true"] .nav__bl:nth-child(2){transform:rotate(45deg)}
+.nav__burger[aria-expanded="true"] .nav__bl:nth-child(3){opacity:0}
+.nav__burger[aria-expanded="true"] .nav__bl:nth-child(4){transform:rotate(-45deg)}
+@media (max-width:820px){ .nav__burger{display:inline-flex} }
+/* the old two-line rules (.nav__burger span:nth-child(1) → translateY(-4px),
+   and rotate(45deg) when open) also match the word, which is the first span
+   now: it sat 4px high and would have tipped over on opening */
+.nav__burger span.nav__blbl,
+.nav__burger[aria-expanded] span.nav__blbl{transform:none}
+
+/* the Why icons a size up (client, 2026-09-10); Experience is a briefcase now —
+   the history clock read as "time going back" */
+.why .why__ic{width:56px;height:56px;border-radius:16px}
+.why .why__ic svg{width:28px;height:28px}
+.why .why__head{gap:16px}
+@media (max-width:820px){
+  .why .why__ic{width:48px;height:48px;border-radius:14px}
+  .why .why__ic svg{width:24px;height:24px}
+}
+/* ── Kimi: the contact form as "See your recommendation", and the
+      recommendation cards (brief §20–§25, 2026-09-10). Cards render from view
+      models (cards.js); this is only how they look. ───────────────────────── */
+.askform__title{margin:0 0 2px;font-size:17px;font-weight:600;color:var(--ink)}
+.askform__label{display:block;margin:0 0 5px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+.askform__row input{height:44px}
+/* flex:none — the earlier rule's 180px flex-basis was written for a row and, in
+   this column, became 180px of empty height under the small print */
+.askform__fine{margin:0;font-size:12px;line-height:1.5;color:var(--ink-3);flex:none}
+.askform>.askform__skip{margin-top:0}
+.askform__fine a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.askform__go[disabled]{opacity:.6;cursor:progress}
+.askbox__thread .turnb--reco{padding-right:0}
+.reco{display:flex;flex-direction:column;gap:var(--s-5);margin-top:var(--s-6)}
+.reco__card{position:relative;background:#FFFFFF;border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 0 rgba(11,18,32,.03)}
+.reco__card--best{overflow:hidden;padding:0;border-color:var(--navy);box-shadow:0 18px 44px -22px rgba(0,51,73,.42)}
+.reco__card--also{padding:14px 18px 14px 20px;overflow:hidden;background:#F7F8F9}
+.reco__body{padding:18px 20px 20px}
+.reco__badge{margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
+.reco__badge--quiet{color:var(--ink-3)}
+.reco__head{display:flex;align-items:flex-start;gap:14px}
+.reco__logo{flex:0 0 auto;width:44px;height:44px;object-fit:contain;border-radius:10px;background:#F1F2F4;padding:4px}
+.reco__mark{flex:0 0 auto;width:44px;height:44px;border-radius:10px;background:var(--gr-g1)}
+.reco__card--also .reco__logo,.reco__card--also .reco__mark{width:32px;height:32px}
+.reco__title{min-width:0}
+.reco__name{margin:0;font-family:var(--sans);font-size:19px;font-weight:700;line-height:1.25;color:var(--ink);letter-spacing:-.01em}
+.reco__card--also .reco__name{font-size:16px}
+.reco__desc{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}
+.reco__who{margin:8px 0 0;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--teal)}
+.reco__whylabel{margin:16px 0 4px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+.reco__why{margin:0;font-size:15px;line-height:1.55;color:var(--ink)}
+.reco__card--also .reco__why{margin-top:8px;font-size:14px;color:var(--ink-2)}
+.reco__caps{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0;padding:0;list-style:none}
+.reco__caps li{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:#F1F2F4;color:var(--ink-2)}
+.reco__acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:16px}
+.reco__go{height:44px;padding:0 20px;font-size:14px}
+.reco__learn{height:44px;padding:0 18px;font-size:14px}
+.reco__learn--quiet{font-size:14px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.reco__learn--quiet:hover{color:var(--navy)}
+.reco__after{margin:var(--s-6) 0 0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+
+/* ═══ THE ANSWER ARRIVES AS THE PRODUCT'S OWN PAGE, IN ONE BREATH ═════════════
+   "when this card comes out, id like to see more images and animation, it
+   should be exciting. use the content from the product pages" (client,
+   2026-09-17). The band over the card is the opening of /the-machine (or
+   /s/{id}): its hero picture where Julian set one, and otherwise the very
+   gradient that page stands on — the five grounds below are next/product.css's
+   .pp-hero::before and .sp-hero--* verbatim, as tokens, so a card and the page
+   it points at are never two different products.
+
+   Nothing starts until the answer has finished writing itself: the card carries
+   [data-cue], and home.js adds .is-in when the last word lands. A stagger that
+   begins on append plays out under an opacity of 0 — the panel rows taught us
+   that on 2026-09-17, and the same trap is here, because .reco is held at
+   opacity 0 for the whole of .is-typing. */
+:root{
+  --gr-g1:linear-gradient(30deg,#003349 0%,#009CBD 55%,#FF6D24 100%);
+  --gr-g2:linear-gradient(20deg,#009CBD 0%,#035173 55%,#003349 100%);
+  --gr-g3:linear-gradient(210deg,#FF6D24 0%,#035173 48%,#003349 100%);
+  --gr-imai:radial-gradient(55% 75% at 0% 0%,rgba(150,228,220,.95) 0%,rgba(150,228,220,0) 70%),
+    radial-gradient(55% 80% at 100% 100%,rgba(206,190,247,.95) 0%,rgba(206,190,247,0) 70%),
+    linear-gradient(120deg,#B4EBE4 0%,#C9F0D3 48%,#D8CCF8 100%);
+  --gr-unicepta:radial-gradient(55% 75% at 0% 0%,rgba(255,206,178,.95) 0%,rgba(255,206,178,0) 70%),
+    radial-gradient(55% 80% at 100% 100%,rgba(184,234,196,.95) 0%,rgba(184,234,196,0) 70%),
+    linear-gradient(120deg,#FFDCC8 0%,#F3E6D2 45%,#CDEFD6 100%);
+}
+.reco__band{position:relative;overflow:hidden;aspect-ratio:16/6;display:flex;align-items:flex-end;
+  background:#003349;background-image:var(--gr-g1);color:#FFFFFF}
+.reco__band--g2{background-image:var(--gr-g2)}
+.reco__band--g3{background-image:var(--gr-g3)}
+.reco__band--imai{background-image:var(--gr-imai);color:var(--ink)}
+.reco__band--unicepta{background-image:var(--gr-unicepta);color:var(--ink)}
+/* a picture takes the ground's place; the veil keeps the lockup legible over
+   it without muddying the glow, the way the product pages do it.
+
+   NOTHING INSIDE THE BAND CARRIES A z-index. The picture, the veil, the light
+   and the words are all positioned and paint in the order they are written, so
+   the band is one stacking context — which is what lets a lockup drawn on
+   black blend its black away against the picture (mix-blend-mode only reaches
+   its own group; .reco__bandin with a z-index of its own left The Machine's
+   wordmark sitting in a black rectangle). .pp-hero__in does the same. */
+.reco__band--shot{background-image:none}
+.reco__shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:68% 52%;transform:scale(1.1);transform-origin:72% 58%}
+.reco__veil{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(190deg,rgba(0,34,49,.42) 0%,rgba(0,34,49,.06) 46%,rgba(0,34,49,.62) 100%)}
+.reco__band:not(.reco__band--shot) .reco__veil{display:none}
+.reco__bandin{position:relative;padding:0 20px 16px;max-width:100%}
+.reco__wordmark{display:block;height:26px;width:auto;max-width:74%;object-fit:contain;object-position:left center}
+.reco__wordmark--screen{mix-blend-mode:screen}   /* a lockup drawn on black, as on its page */
+/* the band's heading IS the card's heading: a wordmark, or the name in the
+   display face beside the product's mark */
+.reco__name--band{display:flex;align-items:center;gap:11px;margin:0;font-family:var(--display);
+  font-size:clamp(19px,3.2vw,25px);font-weight:600;letter-spacing:-.01em;line-height:1.1;color:inherit}
+.reco__markicon{flex:0 0 auto;width:30px;height:30px;object-fit:contain}
+.reco__tagline{margin:7px 0 0;font-size:14px;font-weight:600;line-height:1.35;color:inherit;opacity:.88}
+.reco__card--best .reco__badge{position:absolute;top:14px;left:20px;margin:0;color:#FFFFFF;
+  padding:5px 10px;border-radius:999px;background:rgba(0,34,49,.5);backdrop-filter:blur(6px)}
+.reco__band--imai .reco__badge,.reco__band--unicepta .reco__badge{color:var(--ink);background:rgba(255,255,255,.62)}
+/* the light that passes over the band once, as it opens */
+.reco__sheen{position:absolute;top:0;bottom:0;left:-40%;width:34%;pointer-events:none;opacity:0;
+  background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.34) 50%,rgba(255,255,255,0) 100%)}
+/* the page's "How it works" lines */
+.reco__proof{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.reco__proof li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 10px;align-items:start;
+  font-size:14px;line-height:1.5;color:var(--ink-2)}
+.reco__tick{position:relative;width:16px;height:16px;margin-top:3px;border-radius:50%;background:rgba(0,156,189,.14)}
+.reco__tick::after{content:"";position:absolute;left:5px;top:4px;width:5px;height:8px;border:solid var(--teal);
+  border-width:0 2px 2px 0;transform:rotate(42deg)}
+/* the secondary cards keep their quiet, but wear the product's ground on the edge */
+.reco__edge{position:absolute;left:0;top:0;bottom:0;width:4px;background-image:var(--gr-g1)}
+.reco__edge--g2{background-image:var(--gr-g2)}
+.reco__edge--g3{background-image:var(--gr-g3)}
+.reco__edge--imai{background-image:var(--gr-imai)}
+.reco__edge--unicepta{background-image:var(--gr-unicepta)}
+.reco__mark--g2{background-image:var(--gr-g2)}
+.reco__mark--g3{background-image:var(--gr-g3)}
+.reco__mark--imai{background-image:var(--gr-imai)}
+.reco__mark--unicepta{background-image:var(--gr-unicepta)}
+
+/* ── the reveal, kicked by .is-in ──────────────────────────────────────── */
+@keyframes recoIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes recoBand{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes recoShot{from{transform:scale(1.1)}to{transform:scale(1)}}
+@keyframes recoSheen{0%{opacity:0;transform:translateX(0) skewX(-12deg)}
+  16%{opacity:1}100%{opacity:0;transform:translateX(420%) skewX(-12deg)}}
+@keyframes recoRow{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.reco__card{opacity:0}
+.reco__card.is-in{animation:recoIn .58s cubic-bezier(.2,.8,.25,1) both;animation-delay:var(--cd,0s)}
+.reco__card .reco__band{clip-path:inset(0 0 100% 0)}
+.reco__card.is-in .reco__band{animation:recoBand .66s cubic-bezier(.22,.9,.3,1) both;animation-delay:calc(var(--cd,0s) + .12s)}
+.reco__card.is-in .reco__shot{animation:recoShot 7s cubic-bezier(.16,.6,.3,1) both;animation-delay:calc(var(--cd,0s) + .12s)}
+.reco__card.is-in .reco__sheen{animation:recoSheen 1.15s cubic-bezier(.3,.6,.3,1) both;animation-delay:calc(var(--cd,0s) + .42s)}
+.reco__card .reco__bandin>*{opacity:0}
+.reco__card.is-in .reco__bandin>*{animation:recoRow .5s cubic-bezier(.2,.8,.25,1) both}
+.reco__card.is-in .reco__bandin>:first-child{animation-delay:calc(var(--cd,0s) + .40s)}
+.reco__card.is-in .reco__bandin>:nth-child(2){animation-delay:calc(var(--cd,0s) + .50s)}
+.reco__rv{opacity:0}
+.reco__card.is-in .reco__rv{animation:recoRow .48s cubic-bezier(.2,.8,.25,1) both;
+  animation-delay:calc(var(--cd,0s) + .46s + var(--d,0ms))}
+.reco__card.is-in .reco__proof li{animation:recoRow .48s cubic-bezier(.2,.8,.25,1) both;
+  animation-delay:calc(var(--cd,0s) + .46s + var(--d,0ms))}
+@media (max-width:640px){
+  .reco__body{padding:16px}
+  .reco__card--also{padding:14px 16px 14px 18px}
+  .reco__band{aspect-ratio:16/8}
+  .reco__acts .btn{flex:1 1 100%;justify-content:center}
+  .reco__learn--quiet{flex:1 1 100%;text-align:center}
+}
+/* motion off: the card is simply there, picture and all. Every selector below
+   MATCHES the one it is turning off — a media query adds no specificity, and a
+   bare .reco__rv here lost to .reco__card.is-in .reco__rv above, so the whole
+   card animated for a reader who had asked it not to (measured, 2026-09-17). */
+@media (prefers-reduced-motion:reduce){
+  .reco__card,.reco__card.is-in,
+  .reco__rv,.reco__card.is-in .reco__rv,
+  .reco__card .reco__bandin>*,.reco__card.is-in .reco__bandin>*,
+  .reco__card.is-in .reco__bandin>:first-child,.reco__card.is-in .reco__bandin>:nth-child(2),
+  .reco__card.is-in .reco__proof li{opacity:1;animation:none}
+  .reco__card .reco__band,.reco__card.is-in .reco__band{clip-path:none;animation:none}
+  .reco__shot,.reco__card.is-in .reco__shot{transform:scale(1);animation:none}
+  .reco__sheen,.reco__card.is-in .reco__sheen{display:none;animation:none}
+}
+/* the chat box stays a light island in dark mode (the form fields and the
+   thread's ink are already re-scoped light there), so the cards keep their
+   light styles and only the thread's height rule changes */
+.askbox__thread:has(.turnb--reco),.askbox__thread:has(.turnb--form){max-height:none}
+.askform{max-width:520px}
+
+/* the bar's links (client, 2026-09-10): no underline on hover — a step bolder
+   at rest instead, and a soft fade when pointed at. "Products" matches. */
+.nav__links a,.nav__droptrig{font-weight:600;border-bottom-color:transparent !important;transition:opacity .2s ease}
+.nav__links > li > a:hover,.nav__droptrig:hover,.nav__drop.is-open .nav__droptrig{opacity:.7}
+.nav .nav__panel a.nav__pitem:hover{opacity:1}
+
+/* the chat's starting points are rounded pills again, on every screen and in
+   the chat overlay (client, 2026-09-10: his boss preferred them) — the glass
+   tray (desktop), the glass list (phone) and the grouped overlay panel that
+   stood here for a day were taken out; the pills' own rules above apply */
+
+/* ── what the lookup found: a short fact list, only ever what came back real
+      (kimi-flow.js reads the site through /api/ask mode:'research', which
+      answers "not recognised" rather than guessing) ─────────────────────── */
+/* ── WAY-FINDING: the products worth reading about, before the next question
+   (Amy, 2026-09-10). Each is the catalog's own line and a door to its page. ── */
+.point__intro{margin:0 0 8px;font-size:15px;line-height:1.5;color:var(--ink)}
+.turnb__text+.point__intro{margin-top:8px}
+.point{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
+.point__item{display:flex;flex-direction:column;gap:2px;padding:11px 14px;border:1px solid var(--line);border-radius:14px;
+  background:#FFFFFF;color:var(--ink);text-decoration:none;transition:border-color .15s,background .15s}
+.point__item:hover{border-color:var(--ink);background:#FBFBFC}
+.point__item:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.point__name{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.point__line{font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.point__go{margin-top:4px;font-size:13px;font-weight:600;color:var(--ink-3)}
+.point__item:hover .point__go{color:var(--ink)}
+.askbox__thread .turnb__text--after{margin-top:0}
+/* …and the line that closes a detour, under the list rather than instead of it */
+.askbox__thread .turnb__text--close{margin-top:14px}
+.askform__skip{display:inline-block;margin-top:12px;font-size:13.5px;font-weight:600;color:var(--ink-3);text-decoration:none}
+.askform__skip:hover,.askform__skip:focus-visible{color:var(--ink);text-decoration:underline}
+
+.found{margin:10px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#F7F8F9;
+  display:flex;flex-direction:column;gap:6px}
+.found__row{display:flex;gap:10px;align-items:baseline;margin:0}
+.found__row dt{flex:0 0 118px;margin:0;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-3)}
+.found__row dd{margin:0;font-size:15px;line-height:1.45;color:var(--ink)}
+@media (max-width:640px){
+  .found__row{flex-direction:column;gap:1px}
+  .found__row dt{flex:none}
+}
+
+/* ═══ EXPLORE: the panel that opens inside a turn ═════════════════════════════
+   Going deeper on one product without reproducing its page in the thread
+   (client, 2026-09-17: "dynamic, and iterative, and animated, and let the user
+   click things"). Two to five rows at a time, dealt out one after another on
+   the same stagger the product pages use, and the words type in above them. */
+.xpanel{margin:12px 0 0;padding:0;list-style:none;border-top:1px solid rgba(11,18,32,.12)}
+.xpanel li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 12px;padding:13px 0;
+  border-bottom:1px solid rgba(11,18,32,.12);opacity:0;transform:translateY(6px)}
+/* a row rises when the typing REACHES it (home.js, [data-cue]): the answer is
+   one stream and the list is part of it, so the row arrives with the sentence
+   that names it rather than on a timer of its own. When nothing types — motion
+   off, or a voice turn — hero-agent.js deals the rows in on --d as each crosses
+   into view, because a stagger that starts on append plays itself out below the
+   fold (measured 4 of 4 rows revealed off-screen, desktop and phone, 2026-09-17). */
+.xpanel li.is-in{animation:xrow .42s cubic-bezier(.22,.9,.3,1) forwards;animation-delay:var(--d,0s)}
+@keyframes xrow{to{opacity:1;transform:none}}
+.xpanel__n{font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--teal);padding-top:4px}
+.xpanel b{display:block;font-family:var(--display);font-size:15.5px;font-weight:600;line-height:1.3;color:var(--ink)}
+/* the line is addressed by its own class, never as ".xpanel span": the typing
+   wraps every word in a span of its own inside it, and a descendant selector
+   would hand each word the line's size and colour — a title's words set in the
+   body size, mid-sentence */
+.xpanel__l{display:block;margin-top:3px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.xpanel--connects .xpanel__n{color:var(--teal)}
+/* the dark overlay (the full-screen chat on C) */
+.chat-over--live .xpanel,.chat-over--live .xpanel li{border-color:rgba(241,250,255,.16)}
+.chat-over--live .xpanel b{color:#F1FAFF}
+.chat-over--live .xpanel__l{color:rgba(241,250,255,.72)}
+@media (prefers-reduced-motion:reduce){
+  .xpanel li,.xpanel li.is-in{opacity:1;transform:none;animation:none}
+}

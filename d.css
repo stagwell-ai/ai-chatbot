@@ -1,0 +1,87 @@
+/* ═══════════════════════════════════════════════════════════
+   VERSION D — The Marketing Cloud, one product
+
+   D is C's page, single-brand. Everything structural — nav,
+   hero, tiles, crop dashboard, rail, fine print, footer —
+   comes from c.css untouched. This file adds only what C has
+   no equivalent for: the hero button row, the roadmap note,
+   the economics comparison, the data band, and the capability
+   cards in the rail (which inherit .scard sizing from c.css).
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── hero: no concierge, so the column needs its own bottom air ── */
+body.vD .chero{padding-bottom:clamp(56px,7vw,96px)}
+.chero__acts{display:flex;align-items:center;justify-content:center;gap:10px;
+  margin-top:22px;flex-wrap:wrap}
+
+/* ── roadmap note under the rail ──────────────────────────── */
+.roadmap{max-width:720px;margin:26px auto 0;padding:0 20px;
+  font-size:var(--t-sm);color:var(--ink-3);text-align:center;line-height:1.6}
+
+/* ── capability cards in the rail (built by d.js) ──────────── */
+/* .scard in c.css already owns the size, padding and surface;
+   these two rules are the only additions. */
+.dcap{justify-content:space-between}
+.dcap__k{font-style:normal;font-family:var(--mono);font-size:var(--t-label);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+
+/* ── the economics — assembled stack vs one product ───────── */
+.econ{padding:clamp(64px,8vw,110px) 20px}
+.econ__in{max-width:1080px;margin:0 auto;display:grid;
+  grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:start}
+
+.econ__label{margin:0 0 18px;font-family:var(--mono);font-size:var(--t-label);
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+
+/* fit-content, so the strike hugs the figure instead of running the column */
+.econ__big{display:block;width:fit-content;margin:6px 0 22px;font-family:var(--sans);
+  font-weight:650;font-size:clamp(3rem,7vw,4.6rem);letter-spacing:-.03em;line-height:1}
+.econ__big i{font-style:normal;font-size:.35em;font-weight:500;color:var(--ink-3)}
+.econ__big--strike{position:relative;color:var(--ink-3)}
+.econ__big--strike::after{content:"";position:absolute;left:-2%;right:-2%;top:52%;
+  height:3px;border-radius:2px;background:var(--amber);transform:rotate(-4deg)}
+.econ__big--free{color:var(--teal)}
+
+.econ__rows{border-top:1px solid var(--line)}
+.econ__row{display:flex;align-items:baseline;justify-content:space-between;
+  padding:9px 0;border-bottom:1px solid var(--line);
+  font-size:var(--t-sm);color:var(--ink-2)}
+.econ__row b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+
+.econ__note{margin:14px 0 0;font-size:var(--t-xs);color:var(--ink-4);line-height:1.6}
+
+.econ__one p{margin:0 0 22px;max-width:42ch;font-size:var(--t-body);
+  line-height:1.65;color:var(--ink-2)}
+
+/* ── the data band ────────────────────────────────────────── */
+.dstats{background:var(--navy);color:#EAF2F5;text-align:center;
+  padding:clamp(56px,7vw,92px) 20px}
+.dstats__in{display:flex;flex-wrap:wrap;align-items:flex-start;
+  justify-content:center;gap:clamp(40px,8vw,110px)}
+.dstat b{display:block;font-family:var(--sans);font-weight:650;
+  font-size:clamp(2.4rem,5.5vw,3.6rem);letter-spacing:-.025em;line-height:1.05}
+.dstat span{display:block;margin-top:8px;font-family:var(--mono);
+  font-size:var(--t-label);letter-spacing:.13em;text-transform:uppercase;
+  color:rgba(234,242,245,.55)}
+.dstats__line{margin:34px auto 0;max-width:56ch;font-size:var(--t-sm);
+  line-height:1.6;color:rgba(234,242,245,.66)}
+
+/* ── narrow ───────────────────────────────────────────────── */
+@media (max-width:860px){
+  .econ__in{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .econ__big{font-size:clamp(2.5rem,11vw,3.25rem);margin-bottom:18px}
+  .dstats__in{gap:30px 26px}
+  .dstat{min-width:44%}
+  .roadmap{margin-top:22px}
+}
+
+/* ── capability-card media ──────────────────────────────────────
+   Two of the eight cards carry footage instead of a fragment. The base
+   .scard__art ships at 65% opacity for the fragment strip — full-bleed
+   footage wants none of that, and the kicker moves to white over film. */
+.dcap--media{background:linear-gradient(160deg,#01293B,#00121C)}
+.dcap--media .scard__art{opacity:1}
+.dcap__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dcap--media .dcap__k{position:relative;z-index:2;color:#8FD6E4}

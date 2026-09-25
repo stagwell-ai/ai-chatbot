@@ -1,0 +1,31 @@
+{
+  "name": "stagwell-ai",
+  "private": true,
+  "description": "Stagwell AI site: static pages under next/, Vercel functions under api/. No build step and no runtime dependencies \u2014 this file exists for the engine requirement and the test commands.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/kimi/*.test.mjs",
+    "test:funnel": "node tests/kimi/no-llm.funnel.mjs",
+    "hubspot:setup": "node scripts/hubspot-setup.mjs",
+    "test:focus": "node tests/kimi/focus.funnel.mjs",
+    "test:fasttrack": "node tests/kimi/fast-track.funnel.mjs",
+    "test:site": "node tests/kimi/site.funnel.mjs",
+    "test:restart": "node tests/kimi/restart.funnel.mjs",
+    "test:value": "node tests/kimi/value.funnel.mjs",
+    "test:order": "node tests/kimi/order.funnel.mjs",
+    "test:voice": "node tests/kimi/voice.funnel.mjs",
+    "test:rehearsal": "node tests/kimi/voice.rehearsal.mjs",
+    "test:callback": "node tests/kimi/callback.funnel.mjs",
+    "test:reveal": "node tests/kimi/reveal.funnel.mjs",
+    "test:homec": "node tests/kimi/homec.funnel.mjs",
+    "test:story": "node tests/kimi/story.funnel.mjs",
+    "test:explore": "node tests/kimi/explore.funnel.mjs",
+    "test:ghost": "node tests/kimi/ghost.funnel.mjs",
+    "test:picks": "node tests/kimi/picks.funnel.mjs",
+    "test:thanks": "node tests/kimi/thanks.funnel.mjs",
+    "test:mixpanel": "node tests/kimi/mixpanel.funnel.mjs",
+    "test:consent": "node tests/kimi/consent.funnel.mjs"
+  }
+}

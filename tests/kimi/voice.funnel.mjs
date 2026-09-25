@@ -1,0 +1,979 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   VOICE — "Chat with me" in the browser, against a FAKE Realtime peer.
+
+   OpenAI cannot be reached from the test box, and a real WebRTC call is not a
+   thing a test should depend on. voice.js exposes a transport seam
+   (window.__SAIVOICE_TRANSPORT); this suite injects a fake that records what
+   the browser sends and lets the test emit the server's events. Everything
+   above the wire — the button, the strip, the wave states, the transcripts,
+   the sync rules, the tools, mute/end, Start over, the fallbacks — runs here.
+
+   Run:  node tests/kimi/voice.funnel.mjs [baseUrl]   (default http://localhost:8199)
+   ═══════════════════════════════════════════════════════════════════════════ */
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+let chromium;
+for (const c of ['playwright', '/opt/node22/lib/node_modules/playwright']) { try { chromium = require(c).chromium; break; } catch (e) { /* next */ } }
+if (!chromium) { console.error('playwright not found'); process.exit(2); }
+
+const BASE = process.argv[2] || 'http://localhost:8199';
+let failures = 0;
+const ok = (cond, msg) => { if (cond) console.log('  ok   ' + msg); else { failures++; console.log('  FAIL ' + msg); } };
+
+const KNOWN = { ok: true, known: true, name: 'Acme Hotels', domain: 'acmehotels.com', employees: 4200, industry: 'hospitality', competitors: ['Marriott', 'Hilton', 'Accor'] };
+
+/* the fake peer, installed before any page script runs */
+const FAKE = `
+window.__voiceFake = {
+  sent: [], connects: 0, closed: 0, denied: false, failConnect: false, muted: null, levels: { user: 0, agent: 0 },
+  emit(ev) { if (this._onEvent) this._onEvent(ev); },
+  drop(why) { if (this._onClose) this._onClose(why || 'failed'); },
+  sentTypes() { return this.sent.map(e => e.type); },
+  last(type) { const l = this.sent.filter(e => e.type === type); return l[l.length - 1] || null; }
+};
+window.__SAIVOICE_TRANSPORT = {
+  async connect(o) {
+    const F = window.__voiceFake;
+    F.connects++; F.lastSecret = o.secret; F.model = o.model;
+    if (F.denied) { const e = new Error('Permission denied'); e.name = 'NotAllowedError'; throw e; }
+    if (F.failConnect) throw new Error('sdp_500');
+    F._onEvent = o.onEvent; F._onClose = o.onClose; F.gotAudioEl = !!o.audioEl;
+    if (F.needTap) setTimeout(() => o.onNeedTap && o.onNeedTap(), 0);
+    return {
+      ready: Promise.resolve(),
+      send: obj => F.sent.push(obj),
+      close: () => { F.closed++; },
+      setMuted: m => { F.muted = m; },
+      setSpeakerMuted: () => {},
+      resumeAudio: () => { F.needTap = false; F.resumed = (F.resumed || 0) + 1; return Promise.resolve(); },
+      needsTap: () => !!F.needTap,
+      levels: () => F.levels
+    };
+  }
+};`;
+
+const browser = await chromium.launch({ args: ['--no-sandbox'] });
+
+async function open(opts = {}) {
+  const ctx = await browser.newContext({ viewport: opts.viewport || { width: 1360, height: 900 }, reducedMotion: opts.motion ? 'no-preference' : 'reduce' });
+  const page = await ctx.newPage();
+  const state = { errors: [], mints: [], leads: [] };
+  page.on('pageerror', e => state.errors.push(String(e.message)));
+  await page.addInitScript(FAKE);
+  await page.route('**/api/voice/session', r => {
+    state.mints.push(JSON.parse(r.request().postData() || '{}'));
+    if (opts.mint === 503) return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'voice_unconfigured' }) });
+    if (opts.mint === 429) return r.fulfill({ status: 429, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'rate_limited' }) });
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, value: 'ek_test_' + state.mints.length, expiresAt: 1, model: 'gpt-realtime', voice: 'marin', caps: Object.assign({ sessionSeconds: 900, softSeconds: 600, silenceMuteSeconds: 90 }, opts.caps || {}) }) });
+  });
+  await page.route('**/api/ask', r => {
+    const body = JSON.parse(r.request().postData() || '{}');
+    if (body.mode === 'research') return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(opts.research === 'unknown' ? { ok: true, known: false, name: null, domain: null, employees: null, industry: null, competitors: [] } : KNOWN) });
+    r.abort();
+  });
+  await page.route('**/api/lead', r => { state.leads.push(JSON.parse(r.request().postData() || '{}')); r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, delivered: true, mode: 'mock' }) }); });
+  await page.goto(BASE + (opts.path || '/next/index.html'), { waitUntil: 'load' });
+  await page.waitForFunction(() => window.SAIKIMI && window.SAIVOICE && window.SAI && window.SAI.data && window.SAI.data.kimi);
+  await page.evaluate(() => {
+    const a = window.SAIANALYTICS; window.__tracked = [];
+    if (a && a.track) { const orig = a.track.bind(a); a.track = (n, p) => { window.__tracked.push([n, p || {}]); return orig(n, p); }; }
+  });
+  return { ctx, page, state };
+}
+const fake = (page, js) => page.evaluate(js);
+const emit = (page, ev) => page.evaluate(e => window.__voiceFake.emit(e), ev);
+const sentTypes = page => page.evaluate(() => window.__voiceFake.sentTypes());
+const vstate = page => page.evaluate(() => window.SAIVOICE.state());
+const kstate = page => page.evaluate(() => window.SAIKIMI.state());
+const strip = page => page.$eval('#voiceStrip', el => ({ hidden: el.hidden, state: el.dataset.state, tone: el.dataset.tone, status: el.querySelector('#voiceStatus').textContent.trim(), mute: el.querySelector('#voiceMute').hidden ? null : el.querySelector('#voiceMute').textContent.trim(), end: !el.querySelector('#voiceEnd').hidden }));
+const tracked = (page, n) => page.evaluate(n => window.__tracked.filter(t => t[0] === n), n);
+/* a bubble's words — not the pills that may hang under them */
+const thread = page => page.$$eval('#agentThread .turnb', els => els.map(e => ({ cls: e.className.replace('turnb ', ''), text: (e.querySelector('.turnb__text') || e).textContent.trim().slice(0, 80) })));
+const startVoice = async page => { await page.click('#voiceStart'); await page.waitForFunction(() => window.SAIVOICE.phase() === 'live', null, { timeout: 8000 }); await page.waitForTimeout(80); };
+/* the agent speaks a line: start → item → transcript → done, as the API would */
+async function agentSays(page, text, id) {
+  const item = id || ('a_' + Math.random().toString(36).slice(2, 8)), resp = 'r_' + item;
+  await emit(page, { type: 'response.created', response: { id: resp } });
+  await emit(page, { type: 'response.output_item.added', item: { id: item, type: 'message', role: 'assistant' } });
+  await emit(page, { type: 'output_audio_buffer.started' });
+  const words = text.split(' ');
+  for (let i = 0; i < words.length; i++) await emit(page, { type: 'response.output_audio_transcript.delta', item_id: item, delta: (i ? ' ' : '') + words[i] });
+  await emit(page, { type: 'response.output_audio_transcript.done', item_id: item, transcript: text });
+  await emit(page, { type: 'output_audio_buffer.stopped' });
+  await emit(page, { type: 'response.done', response: { id: resp, status: 'completed' } });
+  return item;
+}
+async function visitorSays(page, text, id) {
+  const item = id || ('u_' + Math.random().toString(36).slice(2, 8));
+  await emit(page, { type: 'input_audio_buffer.speech_started' });
+  const half = Math.ceil(text.length / 2);
+  await emit(page, { type: 'conversation.item.input_audio_transcription.delta', item_id: item, delta: text.slice(0, half) });
+  await emit(page, { type: 'conversation.item.input_audio_transcription.delta', item_id: item, delta: text.slice(half) });
+  await emit(page, { type: 'input_audio_buffer.speech_stopped' });
+  await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: item, transcript: text });
+  return item;
+}
+/* the model calls a tool; the browser runs it and answers on the wire */
+async function toolCall(page, name, args, callId) {
+  const id = callId || ('c_' + Math.random().toString(36).slice(2, 8));
+  const before = await page.evaluate(() => window.__voiceFake.sent.length);
+  await emit(page, { type: 'response.created', response: { id: 'r_' + id } });
+  await emit(page, { type: 'response.function_call_arguments.done', call_id: id, name, arguments: JSON.stringify(args || {}) });
+  await emit(page, { type: 'response.done', response: { id: 'r_' + id, status: 'completed' } });
+  await page.waitForFunction(([n, cid]) => window.__voiceFake.sent.slice(n).some(e => e.type === 'conversation.item.create' && e.item && e.item.type === 'function_call_output' && e.item.call_id === cid), [before, id], { timeout: 15000 });
+  const out = await page.evaluate(cid => { const e = window.__voiceFake.sent.find(x => x.type === 'conversation.item.create' && x.item && x.item.call_id === cid); return JSON.parse(e.item.output); }, id);
+  await page.waitForTimeout(120);
+  return out;
+}
+
+try {
+  console.log('\n▶ the button, the strip, the greeting');
+  {
+    const { ctx, page, state } = await open();
+    ok(await page.$eval('#voiceStart', b => !b.hidden && /Chat with me/.test(b.textContent)), '"Chat with me" sits in the composer bar');
+    ok(await page.$eval('#voiceStrip', el => el.hidden), 'the strip is hidden before a session');
+    await page.click('#voiceStart');
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'live', null, { timeout: 8000 });
+    await page.waitForTimeout(100);
+    const s = await strip(page);
+    ok(!s.hidden && s.state === 'thinking' && s.mute === 'Mute' && s.end, 'the strip is up with Mute and End (' + s.state + ')');
+    ok(state.mints.length === 1 && state.mints[0].page === '/next/index.html' && !state.mints[0].resume, 'one secret was minted for this page, nothing to resume');
+    ok(await page.evaluate(() => window.__voiceFake.lastSecret === 'ek_test_1' && window.__voiceFake.model === 'gpt-realtime'), 'the transport got the secret and the model, never a key');
+    ok((await sentTypes(page)).join(',') === 'response.create', 'the agent is asked to speak first');
+    ok((await tracked(page, 'voice_session_started')).length === 1, 'voice_session_started tracked');
+    ok(await page.$eval('#voiceStart', b => b.classList.contains('is-live') && b.getAttribute('aria-pressed') === 'true' && /Chat is live/.test(b.textContent)), 'the button reads "Chat is live"');
+    ok(await page.$eval('#agentRestart', b => !b.hidden), 'Start over is offered');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the agent talks: its words stream into a bubble as it speaks; the wave says speaking');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    const id = 'a1', resp = 'r1';
+    await emit(page, { type: 'response.created', response: { id: resp } });
+    await emit(page, { type: 'response.output_item.added', item: { id, type: 'message', role: 'assistant' } });
+    await emit(page, { type: 'output_audio_buffer.started' });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: id, delta: "Hi — what are" });
+    let t = await thread(page);
+    ok(t.length === 1 && /turnb--ai/.test(t[0].cls) && t[0].text === 'Hi — what are', 'the first words appear at once: "' + t[0].text + '"');
+    ok((await strip(page)).state === 'speaking', 'the strip says speaking');
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: id, delta: ' you trying to solve?' });
+    await emit(page, { type: 'response.output_audio_transcript.done', item_id: id, transcript: 'Hi — what are you trying to solve?' });
+    await emit(page, { type: 'output_audio_buffer.stopped' });
+    await emit(page, { type: 'response.done', response: { id: resp, status: 'completed' } });
+    t = await thread(page);
+    ok(t.length === 1 && t[0].text === 'Hi — what are you trying to solve?', 'one bubble, the whole line: "' + t[0].text + '"');
+    ok((await strip(page)).state === 'listening', 'then the strip listens');
+    ok(await page.$eval('#agentThread .turnb--ai .turnb__text .q', e => e.textContent === '?'), 'the question mark is styled like every other');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the visitor talks: a grey interim bubble that settles when the transcript is final');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    ok((await strip(page)).state === 'listening', 'listening as they speak');
+    await emit(page, { type: 'conversation.item.input_audio_transcription.delta', item_id: 'u1', delta: 'we need to track ' });
+    let t = await thread(page);
+    ok(t.length === 1 && /turnb--me/.test(t[0].cls) && /turnb--interim/.test(t[0].cls) && t[0].text === 'we need to track', 'their words arrive as an interim "me" bubble');
+    await emit(page, { type: 'conversation.item.input_audio_transcription.delta', item_id: 'u1', delta: 'competitors' });
+    await emit(page, { type: 'input_audio_buffer.speech_stopped' });
+    await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'u1', transcript: 'we need to track competitors' });
+    t = await thread(page);
+    ok(t.length === 1 && !/interim/.test(t[0].cls) && t[0].text === 'we need to track competitors', 'and settle to normal type when final');
+    ok((await vstate(page)).turns === 1, 'counted as a turn');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the order of the thread: their words arrive after the reply has begun, but their bubble was reserved as they spoke — the reply stays under it');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await agentSays(page, 'What are you trying to solve?', 'a_q');
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    let t = await thread(page);
+    ok(t.length === 2 && /turnb--me/.test(t[1].cls) && /turnb--hearing/.test(t[1].cls) && t[1].text === '', 'they start talking: a quiet bubble is reserved for their words at once');
+    await emit(page, { type: 'input_audio_buffer.speech_stopped' });
+    await emit(page, { type: 'input_audio_buffer.committed', item_id: 'u7' });
+    /* the model answers before the transcription has caught up — as it does */
+    await agentSays(page, 'No problem at all. Tell me what you are working on.', 'a_reply');
+    t = await thread(page);
+    ok(t.length === 3 && /turnb--me/.test(t[1].cls) && /turnb--ai/.test(t[2].cls), 'the reply lands UNDER the reserved bubble');
+    await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'u7', transcript: "Sorry, I didn't mean to interrupt you. Keep going." });
+    t = await thread(page);
+    ok(t.length === 3 && t[1].text === "Sorry, I didn't mean to interrupt you. Keep going." && !/interim|hearing/.test(t[1].cls), 'the late words fill it: "' + t[1].text + '"');
+    ok(t.map(x => (/turnb--me/.test(x.cls) ? 'me' : 'ai')).join(' → ') === 'ai → me → ai', 'question → their words → the reply, in that order');
+    ok((await vstate(page)).turns === 1, 'one turn counted');
+    /* and the interim path adopts the same reserved bubble */
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'conversation.item.input_audio_transcription.delta', item_id: 'u8', delta: 'we track ' });
+    t = await thread(page);
+    ok(t.length === 4 && /turnb--interim/.test(t[3].cls) && !/hearing/.test(t[3].cls) && t[3].text === 'we track', 'interim words go into the reserved bubble, not a second one');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the tools: the model moves the flow only through submit_answer, and gets back what it may say');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    const bubblesBefore = (await thread(page)).length;
+    const r1 = await toolCall(page, 'submit_answer', { text: 'we need to know what competitors are doing this week' });
+    ok(r1.status === 'DISCOVERY' && r1.question && r1.question.id === 'work_email', 'step 1 answered → the flow asks for the WORK EMAIL (' + (r1.question && r1.question.id) + ')');
+    ok(/work email/i.test(r1.say), 'the model is handed the question to say ("' + r1.say.slice(0, 50) + '…")');
+    ok(r1.input === 'typed', 'and told the address is TYPED, not taken by ear');
+    ok(/Type it in the box/.test((await strip(page)).status), 'the strip says so too: "' + (await strip(page)).status + '"');
+    ok((await thread(page)).length === bubblesBefore, 'hero-agent drew NO question text — the agent is saying it');
+    ok((await kstate(page)).primaryGoal !== undefined, 'the flow state moved');
+    ok(await page.$eval('#agentInput', el => el.getAttribute('inputmode') === 'email' && !el.disabled), 'the keyboard is set to email, the composer open');
+    const rBad = await toolCall(page, 'submit_answer', { text: 'ada@acme' });
+    ok(rBad.question && rBad.question.id === 'work_email' && /does not look like/i.test(rBad.say), 'a mistyped address: the model is told to ask again');
+    const rNo = await toolCall(page, 'submit_answer', { text: "i'd rather not" });
+    ok(rNo.question && rNo.question.id === 'work_email' && /only use the domain/i.test(rNo.say), '   turning it down: the model is handed the REASON to say, once');
+    const r2 = await toolCall(page, 'submit_answer', { text: 'cmo@acmehotels.com' });
+    ok(r2.facts && r2.facts.company === 'Acme Hotels' && r2.facts.industry === 'hospitality', 'the address → its domain → the lookup\'s facts, and only those (' + JSON.stringify(r2.facts).slice(0, 80) + ')');
+    ok(r2.shown.some(s => /fact list/.test(s)), 'and it is told the fact list is on screen');
+    ok((await page.$$('.found__row')).length === 3, 'the fact list is drawn in the thread (3 rows)');
+    ok(state.leads.length === 1 && state.leads[0].lead.email === 'cmo@acmehotels.com', 'the lead was created on the address, at the top');
+    ok(r2.question && r2.question.id === 'role', 'size was read from the site → the role comes next (' + (r2.question && r2.question.id) + ')');
+    ok(Array.isArray(r2.question.options) && r2.question.options.includes('C-suite'), 'with the options to offer');
+    const r3 = await toolCall(page, 'submit_answer', { text: 'I am the CMO' });
+    ok(r3.status === 'BOOK' && r3.recommendation && r3.recommendation[0].name === 'NewIntel', 'role → the recommendation (NewIntel) and the call (' + r3.status + ')');
+    ok((await page.$$('.reco__card--best')).length === 2, 'the cards are drawn — the first look, then the recommendation');
+    ok(r3.done === true && r3.shown.some(s => /Book a call/.test(s)), 'and the model is told the call is on screen');
+    ok(!!(await page.$('.turnb--book [data-kimi-cta="BOOK"]')), 'the Book a call button is on screen');
+    ok(!!(await page.$('.turnb--book .call__num')), 'with "Call my phone" beside it — where the number is asked for');
+    ok(state.leads.every(l => !l.lead.phone), 'and the conversation never asked for a number');
+    ok((await tracked(page, 'voice_tool_call')).length === 5, 'five tool calls tracked');
+    const asked = (await kstate(page)).askedQuestionIds.join(' → ');
+    ok(asked === 'work_email → role', 'the questions ran in order: ' + asked);
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ typing while the voice is open: a "me" bubble, sent to the agent, answered by voice');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await agentSays(page, 'What are you trying to solve?');
+    await page.fill('#agentInput', 'we want to run our own surveys');
+    await page.press('#agentInput', 'Enter');
+    await page.waitForTimeout(150);
+    const t = await thread(page);
+    ok(t.length === 2 && /turnb--me/.test(t[1].cls) && t[1].text === 'we want to run our own surveys', 'the typed line is a "me" bubble');
+    const types = await sentTypes(page);
+    const created = await page.evaluate(() => window.__voiceFake.last('conversation.item.create'));
+    ok(created && created.item.role === 'user' && created.item.content[0].text === 'we want to run our own surveys' && types[types.length - 1] === 'response.create', 'it went to the agent as a user turn, then a response was asked for');
+    ok((await page.$$('#agentThread .turnb--wait')).length === 0, 'no thinking dots in the thread — the strip carries that');
+    ok((await strip(page)).state === 'thinking', 'the strip says thinking');
+    ok(await page.$eval('#agentInput', el => el.value === ''), 'the composer is empty again');
+    await ctx.close();
+  }
+
+  console.log('\n▶ barge-in: talking or typing over the agent cuts it off');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await emit(page, { type: 'response.created', response: { id: 'r1' } });
+    await emit(page, { type: 'output_audio_buffer.started' });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'a1', delta: 'Let me tell you about the whole' });
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    ok(await page.$eval('#agentThread .turnb--ai', e => e.classList.contains('turnb--cutoff')), 'speaking over it marks the bubble cut off');
+    ok((await tracked(page, 'voice_barge_in')).length === 1, 'voice_barge_in tracked');
+    await emit(page, { type: 'response.done', response: { id: 'r1', status: 'cancelled' } });
+    await emit(page, { type: 'output_audio_buffer.cleared' });
+    /* now typing over a fresh response */
+    await emit(page, { type: 'response.created', response: { id: 'r2' } });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'a2', delta: 'Here is' });
+    await page.fill('#agentInput', 'stop'); await page.press('#agentInput', 'Enter');
+    await page.waitForTimeout(100);
+    const types = await sentTypes(page);
+    const i = types.lastIndexOf('response.cancel');
+    ok(i !== -1 && types[i + 1] === 'output_audio_buffer.clear' && types[i + 2] === 'conversation.item.create', 'typing sent cancel + clear before the new turn');
+    await ctx.close();
+  }
+
+  console.log('\n▶ a false alarm is not an interruption: noise cuts the agent off, no words follow, it picks up where it stopped');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    /* the agent is mid-answer when the room makes a noise */
+    await emit(page, { type: 'response.created', response: { id: 'rn1' } });
+    await emit(page, { type: 'output_audio_buffer.started' });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'an1', delta: 'QuestBrand tracks awareness and consideration against' });
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'response.done', response: { id: 'rn1', status: 'cancelled' } });
+    await emit(page, { type: 'output_audio_buffer.cleared' });
+    ok(await page.$eval('#agentThread .turnb--ai', e => e.classList.contains('turnb--cutoff')), 'the bubble is marked cut off');
+    const before = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
+    /* the transcript comes back empty: it was a door, not a person */
+    await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'un1', transcript: '' });
+    await page.waitForFunction(n => window.__voiceFake.sent.filter(e => e.type === 'response.create').length > n, before, { timeout: 4000 });
+    const r = await page.evaluate(() => window.__voiceFake.last('response.create'));
+    ok(/Carry on from exactly where you stopped/i.test(r.response.instructions), 'the agent is asked to carry on, not to start again');
+    ok(/QuestBrand tracks awareness/.test(r.response.instructions), 'and it is told how far it had got');
+    ok((await tracked(page, 'voice_false_barge'))[0][1].why === 'empty', 'voice_false_barge {why:empty}');
+    ok((await thread(page)).filter(t => /turnb--me/.test(t.cls)).length === 0, 'no empty visitor bubble is left behind');
+    await ctx.close();
+  }
+
+  console.log('\n▶ and when nothing comes back at all, it still picks up — once, never in a loop');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await emit(page, { type: 'response.created', response: { id: 'rn2' } });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'an2', delta: 'The Targeting Machine turns your first-party data' });
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'response.done', response: { id: 'rn2', status: 'cancelled' } });
+    const n0 = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
+    /* no transcript ever arrives — the watch times out */
+    await page.waitForFunction(n => window.__voiceFake.sent.filter(e => e.type === 'response.create').length > n, n0, { timeout: 6000 });
+    ok((await tracked(page, 'voice_false_barge'))[0][1].why === 'silence', 'voice_false_barge {why:silence}');
+    const n1 = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
+    await page.waitForTimeout(2600);
+    ok((await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length)) === n1, 'it resumes once and then leaves it alone');
+    /* a real interruption still stops it dead */
+    await emit(page, { type: 'response.created', response: { id: 'rn3' } });
+    await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'an3', delta: 'As I was saying' });
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'response.done', response: { id: 'rn3', status: 'cancelled' } });
+    await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'un3', transcript: 'actually, what does it cost?' });
+    const n2 = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create').length);
+    await page.waitForTimeout(2600);
+    const after = await page.evaluate(() => window.__voiceFake.sent.filter(e => e.type === 'response.create' && e.response && /Carry on from exactly/i.test(e.response.instructions || '')).length);
+    ok(after === 1, 'real words: no resume is sent, the interruption stands');
+    ok((await thread(page)).some(t => /turnb--me/.test(t.cls) && /what does it cost/.test(t.text)), 'their question is in the thread');
+    await ctx.close();
+  }
+
+  console.log('\n▶ mute, end — and the text keeps working after');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    await page.click('#voiceMute');
+    ok(await page.evaluate(() => window.__voiceFake.muted === true), 'the mic track is muted');
+    let s = await strip(page);
+    ok(s.state === 'muted' && s.mute === 'Unmute' && /Muted/.test(s.status), 'the strip says muted, the button says Unmute');
+    await page.click('#voiceMute');
+    ok(await page.evaluate(() => window.__voiceFake.muted === false), 'and back');
+    await page.click('#voiceEnd');
+    await page.waitForTimeout(100);
+    ok((await vstate(page)).phase === 'ended' && await page.evaluate(() => window.__voiceFake.closed === 1), 'End closes the connection');
+    s = await strip(page);
+    ok(/Voice ended/.test(s.status) && s.mute === null && !s.end, 'the strip says so and drops its controls');
+    ok(await page.$eval('#voiceStart', b => /Chat with me/.test(b.textContent) && !b.classList.contains('is-live')), 'the button reads "Chat with me" again');
+    ok((await tracked(page, 'voice_session_ended')).length === 1 && (await tracked(page, 'voice_session_ended'))[0][1].reason === 'user', 'voice_session_ended {reason:user}');
+    /* text mode carries on with the ordinary flow */
+    await page.fill('#agentInput', 'I want to create my own surveys'); await page.press('#agentInput', 'Enter');
+    await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && document.querySelector('#agentThread .turnb--ai .turnb__text'), null, { timeout: 12000 });
+    await page.waitForTimeout(200);
+    ok(await page.$$eval('#agentThread .turnb--ai .turnb__text', els => els.some(e => /work email|website/i.test(e.textContent))), 'a typed line after End is answered in text by the ordinary flow');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ Start over during a voice session STARTS THE VOICE AGENT OVER: the thread clears, the flow resets, a fresh session greets with the pills');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    await agentSays(page, 'What are you trying to solve?');
+    await toolCall(page, 'submit_answer', { text: 'we need to track competitors' });
+    ok((await kstate(page)).status === 'DISCOVERY', 'a conversation is under way');
+    const V = await page.evaluate(() => window.SAI.data.kimi.copy.voice);
+    await page.click('#agentRestart');
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'live' && window.__voiceFake.connects === 2, null, { timeout: 8000 });
+    await page.waitForTimeout(100);
+    ok((await thread(page)).length === 0, 'the thread is empty');
+    ok((await kstate(page)).status === 'IDLE', 'the flow is blank');
+    ok(state.mints.length === 2 && !state.mints[1].resume && state.mints[1].showcase !== false, 'a fresh secret, no resume: the greeting script again');
+    ok(await page.evaluate(() => window.__voiceFake.connects === 2 && window.__voiceFake.closed === 1), 'the old connection closed, a new one opened');
+    ok((await tracked(page, 'voice_session_ended')).some(e => e[1].reason === 'restart' && e[1].via === 'button'), 'voice_session_ended {reason:restart, via:button}');
+    ok((await tracked(page, 'voice_session_started')).length === 2, 'voice_session_started again');
+    ok(!(await page.evaluate(() => window.__voiceFake.sent.some(e => e.type === 'response.create' && e.response && e.response.instructions))), 'no "greet again" prompt to an old session — the new one simply opens');
+    ok(await page.$eval('#voiceStart', b => /Chat is live/.test(b.textContent)) && !(await strip(page)).hidden, 'the strip and the live button carry on');
+    await agentSays(page, V.introduction + ' ' + V.invite, 'a_greet2');
+    ok(!!(await page.$('#agentThread .turnb--ai:last-child .turnb__chips--starters .tag--hero')), 'the greeting comes with the starter pills, as on a first start');
+    /* and the model's own start_over tool (the visitor asked aloud) does the same */
+    await emit(page, { type: 'response.created', response: { id: 'r_so' } });
+    await emit(page, { type: 'response.function_call_arguments.done', call_id: 'c_so', name: 'start_over', arguments: '{}' });
+    await emit(page, { type: 'response.done', response: { id: 'r_so', status: 'completed' } });
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'live' && window.__voiceFake.connects === 3, null, { timeout: 8000 });
+    await page.waitForTimeout(100);
+    ok((await thread(page)).length === 0 && (await kstate(page)).status === 'IDLE', 'start_over from the model clears too');
+    ok(state.mints.length === 3 && !state.mints[2].resume, 'and replaces the session the same way');
+    ok(!(await page.evaluate(() => window.__voiceFake.sent.some(e => e.type === 'conversation.item.create' && e.item && e.item.call_id === 'c_so'))), 'no tool result is sent to the session that is gone');
+    ok((await tracked(page, 'voice_session_ended')).some(e => e[1].reason === 'restart' && e[1].via === 'tool'), 'voice_session_ended {reason:restart, via:tool}');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ text first, voice later: the agent is primed with what is already known');
+  {
+    const { ctx, page, state } = await open();
+    await page.fill('#agentInput', 'we need live competitive intelligence'); await page.press('#agentInput', 'Enter');
+    await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && document.querySelector('#agentThread .turnb--ai .turnb__text'), null, { timeout: 12000 });
+    await page.fill('#agentInput', 'cmo@acmehotels.com'); await page.press('#agentInput', 'Enter');
+    await page.waitForFunction(() => window.SAIKIMI.state().question && window.SAIKIMI.state().question.id === 'role', null, { timeout: 12000 });
+    await startVoice(page);
+    const m = state.mints[0];
+    ok(m.resume && /Acme Hotels/.test(m.resume.summary) && /acmehotels\.com/.test(m.resume.summary) && m.resume.step === 'their role', 'the mint carries a summary and the current step: "' + (m.resume && m.resume.summary.slice(0, 70)) + '…" / ' + (m.resume && m.resume.step));
+    ok(m.resume && m.resume.reason === 'join', 'marked as a JOIN — the agent opens with a handoff line, not "the connection dropped"');
+    ok((await tracked(page, 'voice_session_started'))[0][1].resumed === true, 'tracked as resumed');
+    ok((await page.$$('.found__row')).length === 3, 'what was already on screen stays');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the microphone is refused: one honest line, text carries on');
+  {
+    const { ctx, page, state } = await open();
+    await fake(page, () => { window.__voiceFake.denied = true; });
+    await page.click('#voiceStart');
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'ended', null, { timeout: 8000 });
+    const s = await strip(page);
+    ok(/microphone was not allowed/i.test(s.status) && s.tone === 'error', 'the strip explains: "' + s.status + '"');
+    ok((await tracked(page, 'voice_unavailable'))[0][1].reason === 'denied', 'voice_unavailable {reason:denied}');
+    await page.fill('#agentInput', 'hello'); await page.press('#agentInput', 'Enter');
+    await page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && document.querySelector('#agentThread .turnb--ai .turnb__text'), null, { timeout: 12000 });
+    ok((await thread(page)).some(t => /turnb--ai/.test(t.cls)), 'typing still gets a text answer');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the mint fails (503, 429): unavailable / busy, text carries on');
+  for (const [code, re, reason] of [[503, /not available here yet/i, 'unconfigured'], [429, /rate-limited while it.s in beta/i, 'busy']]) {
+    const { ctx, page } = await open({ mint: code });
+    await page.click('#voiceStart');
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'ended', null, { timeout: 8000 });
+    const s = await strip(page);
+    ok(re.test(s.status), code + ': "' + s.status + '"');
+    ok((await tracked(page, 'voice_unavailable'))[0][1].reason === reason, '   reason ' + reason);
+    ok(await page.evaluate(() => window.__voiceFake.connects === 0), '   no connection was attempted');
+    const lay = await page.evaluate(() => { const w = document.querySelector('#voiceWave'), s = document.querySelector('#voiceStatus').getBoundingClientRect(), c = document.querySelector('#agentForm').getBoundingClientRect(); return { wave: getComputedStyle(w).display, left: s.left - c.left, h: document.querySelector('#voiceStrip').getBoundingClientRect().height }; });
+    ok(lay.wave === 'none' && lay.left < 80 && lay.h < 40, '   one quiet line at the left, no empty wave (' + Math.round(lay.h) + 'px tall)');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the connection drops: reconnect, primed, one line to say it is back');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    await toolCall(page, 'submit_answer', { text: 'we need to know what competitors are doing this week' });
+    await fake(page, () => window.__voiceFake.drop('failed'));
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'reconnecting' || window.SAIVOICE.state().reconnects > 0, null, { timeout: 5000 });
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'live', null, { timeout: 10000 });
+    ok(state.mints.length === 2 && state.mints[1].resume && /competitors/.test(state.mints[1].resume.summary), 'a second secret, primed with the conversation so far (' + JSON.stringify(state.mints.map(m => m.resume)) + ')');
+    ok(state.mints[1].resume.reason === 'reconnect', 'marked as a RECONNECT — one line that it is back, not a handoff');
+    ok(await page.evaluate(() => window.__voiceFake.connects === 2), 'a second connection');
+    const last = await page.evaluate(() => window.__voiceFake.last('response.create'));
+    ok(last && last.response && /reconnected/i.test(last.response.instructions), 'the agent is told it is back');
+    ok((await tracked(page, 'voice_reconnected')).length === 1, 'voice_reconnected tracked');
+    ok((await kstate(page)).status === 'DISCOVERY', 'the flow state survived');
+    await ctx.close();
+  }
+
+  console.log('\n▶ a phone: the strip fits the card, the controls are finger-sized');
+  {
+    const { ctx, page, state } = await open({ viewport: { width: 390, height: 844 } });
+    ok(await page.$eval('#voiceStart', b => !b.hidden && b.getBoundingClientRect().height >= 30), 'the button is there');
+    await startVoice(page);
+    const geo = await page.evaluate(() => {
+      const card = document.querySelector('#agentForm').getBoundingClientRect(), s = document.querySelector('#voiceStrip').getBoundingClientRect();
+      const btns = [...document.querySelectorAll('#voiceMute, #voiceEnd')].map(b => b.getBoundingClientRect());
+      return { inside: s.left >= card.left - 1 && s.right <= card.right + 1, width: Math.round(s.width), btn: btns.map(b => [Math.round(b.width), Math.round(b.height)]), noX: document.documentElement.scrollWidth <= innerWidth };
+    });
+    ok(geo.inside && geo.width > 200, 'the strip sits inside the card (' + geo.width + 'px)');
+    ok(geo.btn.every(([w, h]) => h >= 30 && w >= 44), 'Mute and End are at least 44px wide (' + JSON.stringify(geo.btn) + ')');
+    ok(geo.noX, 'the page does not scroll sideways');
+    await agentSays(page, 'What are you trying to solve?');
+    ok((await thread(page)).length === 1, 'transcripts land on the phone too');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the caps: the agent is told to wrap up at the soft cap, the session ends at the hard cap');
+  {
+    const { ctx, page } = await open({ caps: { softSeconds: 1, sessionSeconds: 2, silenceMuteSeconds: 900 } });
+    await startVoice(page);
+    await page.waitForFunction(() => window.__voiceFake.sent.some(e => e.type === 'response.create' && e.response && /quicker to type/i.test(e.response.instructions)), null, { timeout: 5000 });
+    ok(true, 'at the soft cap the agent is told to say the rest is quicker to type');
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'ended', null, { timeout: 5000 });
+    const ended = await tracked(page, 'voice_session_ended');
+    ok(ended.length === 1 && ended[0][1].reason === 'cap', 'at the hard cap the session ends {reason:cap}');
+    ok(await page.evaluate(() => window.__voiceFake.closed === 1), 'the connection is closed');
+    ok(!(await page.$eval('#agentInput', el => el.disabled)), 'the composer stays open for text');
+    await ctx.close();
+  }
+
+  console.log('\n▶ silence: a quiet spell mutes the mic, a tap on the strip brings it back');
+  {
+    const { ctx, page } = await open({ caps: { silenceMuteSeconds: 1 } });
+    await startVoice(page);
+    await agentSays(page, 'What are you trying to solve?');
+    await page.waitForFunction(() => window.SAIVOICE.state().muted === true, null, { timeout: 6000 });
+    let s = await strip(page);
+    ok(s.state === 'muted' && /quiet spell/i.test(s.status), 'muted after the quiet spell: "' + s.status + '"');
+    ok((await vstate(page)).muteReason === 'silence' && (await tracked(page, 'voice_silence_mute')).length === 1, 'recorded as a silence mute');
+    ok(await page.evaluate(() => window.__voiceFake.muted === true), 'the mic track is off');
+    await page.click('#voiceWave');
+    await page.waitForTimeout(100);
+    ok((await vstate(page)).muted === false && await page.evaluate(() => window.__voiceFake.muted === false), 'a tap on the strip un-mutes');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the tab goes to the background: the mic is muted; coming back un-mutes');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
+    ok((await vstate(page)).muted === true && (await vstate(page)).muteReason === 'hidden', 'hidden → muted');
+    await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); });
+    ok((await vstate(page)).muted === false, 'visible → un-muted');
+    await ctx.close();
+  }
+
+  console.log('\n▶ Safari will not play until tapped: "Tap to hear", and the tap plays');
+  {
+    const { ctx, page } = await open();
+    await fake(page, () => { window.__voiceFake.needTap = true; });
+    await startVoice(page);
+    await page.waitForFunction(() => /Tap to hear/.test(document.querySelector('#voiceStatus').textContent), null, { timeout: 3000 });
+    ok(true, 'the strip says "Tap to hear"');
+    ok(await page.evaluate(() => window.__voiceFake.gotAudioEl === true), 'the audio element was born inside the tap and handed to the transport');
+    await page.click('#voiceWave');
+    ok(await page.evaluate(() => window.__voiceFake.resumed === 1 && window.__voiceFake.needTap === false), 'the tap resumes playback');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the fast track by voice: request_contact puts the form up, quietly');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    await agentSays(page, 'What are you trying to solve?');
+    const before = (await thread(page)).length;
+    const r = await toolCall(page, 'request_contact', { kind: 'call' });
+    ok(r.status === 'CONTACT_CAPTURE' && r.shown.some(s => /contact form/.test(s)), 'the tool answers: the form is shown, wait (' + r.status + ')');
+    ok(!!(await page.$('#heroLeadForm')), 'the form is in the thread');
+    ok(await page.$eval('#agentThread .turnb--form .turnb__text', e => e.textContent.trim() === ''), 'with no written intro — the agent says it');
+    ok((await thread(page)).length === before + 1, 'one new bubble: the form');
+    await page.fill('#heroLeadForm [name=name]', 'Test Visitor');
+    await page.fill('#heroLeadForm [name=email]', 'visitor@example-brand.com');
+    await page.fill('#heroLeadForm [name=phone]', '+1 212 555 0100');
+    await page.click('#heroLeadForm .askform__go');
+    await page.waitForFunction(() => !document.querySelector('#heroLeadForm'), null, { timeout: 12000 });
+    ok(state.leads.length === 1 && state.leads[0].discovery.contactRequest === 'call', 'the lead carries the call request');
+    ok((await vstate(page)).phase === 'live', 'the voice stays open through it');
+    await ctx.close();
+  }
+
+  console.log('\n▶ a session error from the API is treated as a drop: reconnect');
+  {
+    const { ctx, page, state } = await open();
+    await startVoice(page);
+    await emit(page, { type: 'error', error: { code: 'session_expired', message: 'Your session hit the maximum duration' } });
+    await page.waitForFunction(() => window.SAIVOICE.state().reconnects > 0, null, { timeout: 5000 });
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'live', null, { timeout: 10000 });
+    ok(state.mints.length === 2 && (await tracked(page, 'voice_error')).length === 1, 'a fresh secret and a reconnect, the error recorded');
+    await ctx.close();
+  }
+
+  console.log('\n▶ three drops in a row: give up honestly, text carries on');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    for (let i = 0; i < 3; i++) {
+      await fake(page, () => window.__voiceFake.drop('failed'));
+      await page.waitForFunction(() => window.SAIVOICE.phase() === 'live' || window.SAIVOICE.phase() === 'ended', null, { timeout: 10000 });
+    }
+    await fake(page, () => window.__voiceFake.drop('failed'));
+    await page.waitForFunction(() => window.SAIVOICE.phase() === 'ended', null, { timeout: 10000 });
+    const s = await strip(page);
+    ok(/Voice dropped/i.test(s.status), 'after the third reconnect fails again it says so: "' + s.status + '"');
+    ok((await tracked(page, 'voice_session_ended')).some(e => e[1].reason === 'dropped'), 'voice_session_ended {reason:dropped}');
+    ok(!(await page.$eval('#agentInput', el => el.disabled)), 'the composer is open for text');
+    await ctx.close();
+  }
+
+  /* the greeting, as the agent would say it; the starters then hang under it */
+  const greet = async page => { const V = await page.evaluate(() => window.SAI.data.kimi.copy.voice); await agentSays(page, V.introduction + ' ' + V.invite, 'a_greet'); await page.waitForTimeout(80); return V; };
+  const speakStory = async (page, sc, upTo) => {
+    /* The agent tells the story, piece by piece, as the API would stream it.
+       The PICTURES follow the voice, not the text (voice.js: the transcript
+       arrives in a burst far ahead of the audio), so the clock has to move for
+       anything to appear. Pinning a very fast words-a-second in the copy runs
+       that clock at speed: the schedule is the same code, just compressed, so
+       a whole story's worth of pacing fits in a second of test. */
+    await page.evaluate(() => { window.SAI.data.kimi.copy.voice.wordsPerSecond = 120; });
+    await emit(page, { type: 'response.created', response: { id: 'r_story' } });
+    await emit(page, { type: 'response.output_item.added', item: { id: 'a_story', type: 'message', role: 'assistant' } });
+    await emit(page, { type: 'output_audio_buffer.started' });
+    let said = '';
+    const speak = async chunk => {
+      const delta = (said ? ' ' : '') + chunk; said += delta;
+      await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'a_story', delta });
+      await page.waitForTimeout(260);                 /* two beats of the conductor */
+    };
+    return { speak, said: () => said };
+  };
+
+  console.log('\n▶ the opening in two beats: the agent greets and WAITS; the questions rise as pills; nothing plays unasked');
+  {
+    const { ctx, page, state } = await open({ motion: true });
+    await startVoice(page);
+    ok(!(await page.$('.vstage')), 'no pictures before a word is said — the visitor gets the first move');
+    ok((await thread(page)).length === 0, 'and no pills of their own: they wait for the greeting');
+    const V = await greet(page);
+    const row = await page.$('#agentThread .turnb--ai:last-child .turnb__chips--starters');
+    ok(!!row, 'the starters hang under the greeting, in the agent\'s own bubble');
+    const tags = await page.$$eval('#agentThread .turnb__chips--starters .tag', els => els.map(e => ({ text: e.textContent.trim(), hero: e.classList.contains('tag--hero'), anim: getComputedStyle(e).animationName, delay: getComputedStyle(e).animationDelay })));
+    ok(tags.length === 1 + V.starters.questions.length, (tags.length) + ' pills: the hero and ' + V.starters.questions.length + ' questions');
+    ok(tags[0].hero && tags[0].text === V.starters.hero, 'the focused hero pill first: "' + tags[0].text + '"');
+    ok(tags.slice(1).every((t, i) => !t.hero && t.text === V.starters.questions[i]), 'then the questions, as written: ' + tags.slice(1).map(t => '"' + t.text + '"').join(', '));
+    ok(tags.every(t => /pillIn/.test(t.anim)) && tags[1].delay !== tags[3].delay, 'animated in, one after another (' + tags[1].delay + ' → ' + tags[3].delay + ')');
+    ok(/heroBreathe/.test(tags[0].anim), 'the hero pill breathes until tapped');
+    ok(!(await page.$('.vstage')), 'still no pictures: the story waits to be asked for');
+    ok((await sentTypes(page)).filter(t => t === 'response.create').length === 1, 'and the agent has not been prompted again — it is waiting');
+    /* a question tapped is the visitor's own words to the agent */
+    const q = V.starters.questions[2];
+    await page.click('#agentThread .turnb__chips--starters .tag:has-text("' + q + '")');
+    await page.waitForTimeout(150);
+    const created = await page.evaluate(() => window.__voiceFake.last('conversation.item.create'));
+    ok(created && created.item.content[0].text === q, 'a tap sends the question as the visitor\'s words: "' + q + '"');
+    ok((await thread(page)).some(t => /turnb--me/.test(t.cls) && t.text === q), 'and it appears as their turn');
+    ok(await page.$$eval('#agentThread .turnb__chips--starters .tag', els => els.every(e => e.disabled)), 'the pills settle');
+    ok(!(await page.$('.vstage')), 'no pictures for an ordinary question');
+    const ev = await tracked(page, 'voice_starter_tapped');
+    ok(ev.length === 1 && ev[0][1].hero === false, 'voice_starter_tapped {hero:false}');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the story on request: the hero pill raises the pictures, the agent says they may interrupt, each product appears with its mark as it is named, then it all goes away');
+  {
+    const { ctx, page, state } = await open({ motion: true });
+    await startVoice(page);
+    ok(state.mints[0].showcase === true, 'a fresh start: the greeting script');
+    const V = await greet(page);
+    const sc = V.showcase;
+    await page.click('#agentThread .turnb__chips--starters .tag--hero');
+    await page.waitForTimeout(120);
+    const created = await page.evaluate(() => window.__voiceFake.last('conversation.item.create'));
+    ok(created && created.item.content[0].text === V.starters.hero, 'the agent is asked, in the visitor\'s words: "' + V.starters.hero + '"');
+    ok((await thread(page)).some(t => /turnb--me/.test(t.cls) && t.text === V.starters.hero), 'shown as their turn');
+    ok(!!(await page.$('.vstage.is-open')) && !(await page.$('.vstage--still')), 'the stage is up, with motion');
+    ok(await page.$eval('#agentThread', t => getComputedStyle(t).display === 'none'), 'the thread waits underneath');
+    ok((await page.$$('.vstage__frame')).length >= 4, 'the brand pictures are loaded for the burst');
+    await page.waitForFunction(() => document.querySelector('.vstage.is-hero'), null, { timeout: 4000 });
+    ok(true, 'the last picture flies out and NewVoices comes in');
+    ok(await page.$eval('.vstage__heroname', e => e.textContent === 'NewVoices'), 'named on its card');
+    ok(await page.$eval('.vstage__herologo', e => /newvoices/.test(e.getAttribute('src'))), 'with its own mark');
+    const S = await speakStory(page, sc);
+    await S.speak(sc.interrupt);
+    ok((await page.$$('.vstage__tile')).length === 0, 'first the agent says they may interrupt — no product yet');
+    ok(await page.$eval('.vstage__caption', e => /interrupt/i.test(e.textContent)), 'the caption follows: "' + (await page.$eval('.vstage__caption', e => e.textContent.slice(-60))) + '"');
+    await S.speak(sc.flagship);
+    ok((await page.$$('.vstage__tile')).length === 0, 'the flagship line — still no product tile, none has been named');
+    const lockups = await page.evaluate(ids => ids.map(id => (window.SAI.data.solutions.solutions.find(p => p.id === id) || {}).lockup || null), sc.products.map(p => p.id));
+    for (let i = 0; i < sc.products.length; i++) {
+      await S.speak(sc.products[i].line);
+      const tiles = await page.$$eval('.vstage__tile', els => els.map(e => ({ id: e.dataset.product, logo: (e.querySelector('.vstage__tilelogo img') || {}).getAttribute ? e.querySelector('.vstage__tilelogo img').getAttribute('src') : null })));
+      ok(tiles.length === i + 1 && tiles[i].id === sc.products[i].id, 'named → appears: ' + tiles.map(t => t.id).join(' → '));
+      /* the one being spoken about is the one lit on the roster; the rest dim */
+      const lit = await page.$$eval('.vstage__roster .vstage__badge.is-speaking', els => els.map(e => e.dataset.product));
+      ok(lit.length === 1 && lit[0] === sc.products[i].id, '   and it is the name lit on the roster: ' + lit.join(','));
+      if (lockups[i]) ok(tiles[i].logo === lockups[i], '   with its mark: ' + lockups[i]);
+    }
+    ok(await page.$eval('.vstage__tile.is-current', (e, id) => e.dataset.product === id, sc.products[sc.products.length - 1].id), 'the one being described is the large one');
+    ok((await page.$$('.vstage__tile.is-past')).length === sc.products.length - 1, 'the earlier ones have stepped aside');
+    /* the team: each card lands emblem-first, and the roster at the foot holds every member named so far */
+    ok(await page.$eval('.vstage__tile.is-current > .vstage__emblem svg', e => !!e), 'the member\'s emblem — its icon in a glowing ring — is on the card');
+    const badges = await page.$$eval('.vstage__roster .vstage__badge', els => els.map(e => ({ id: e.dataset.product, name: e.querySelector('.vstage__badgename').textContent, icon: !!e.querySelector('.vstage__emblem svg'), on: e.classList.contains('is-in') })));
+    ok(badges.length === sc.products.length && badges.every((b, i) => b.id === sc.products[i].id && b.icon && b.on), 'the roster: ' + badges.map(b => b.name).join(' · '));
+    await page.waitForTimeout(900);            /* the badges finish fading in */
+    const dim = await page.$eval('.vstage__roster', r => { const a = r.querySelector('.vstage__badge:not(.is-speaking)'), b = r.querySelector('.vstage__badge.is-speaking'); return { other: a ? +getComputedStyle(a).opacity : null, lit: b ? +getComputedStyle(b).opacity : null }; });
+    ok(dim.lit === 1 && dim.other !== null && dim.other < 0.6, 'the lit name is full strength and the others step back (' + dim.lit + ' vs ' + dim.other + ')');
+    ok(await page.evaluate(() => { const K = window.SAIVOICESTAGE.icons; return window.SAI.data.kimi.copy.voice.showcase.products.every(p => K.indexOf(p.icon) !== -1); }), 'every member has an emblem the stage can draw');
+    ok(await page.$eval('.vstage.is-deck .vstage__hero', e => e.getBoundingClientRect().width < 400), 'NewVoices has stepped into the corner');
+    ok(!(await page.$('.vstage__badge--more')), 'the rest of the family is not on the roster yet');
+    await S.speak(sc.more);
+    ok(await page.$eval('.vstage__roster .vstage__badge--more.is-in .vstage__badgename', (e, l) => e.textContent === l, sc.moreLabel), '"' + sc.moreOn + '…" → the family badge joins the roster: ' + sc.moreLabel);
+    await S.speak(sc.land || sc.pivot);      /* the ask it ends on */
+    await emit(page, { type: 'response.output_audio_transcript.done', item_id: 'a_story', transcript: S.said() });
+    await emit(page, { type: 'output_audio_buffer.stopped' });
+    await emit(page, { type: 'response.done', response: { id: 'r_story', status: 'completed' } });
+    await page.waitForSelector('.vstage.is-team', { timeout: 3000 });
+    ok(await page.$eval('.vstage.is-team .vstage__teamlabel', (e, label) => e.textContent === label, sc.teamLabel), '"' + sc.closeOn + '" → the whole team assembles, centre stage: "' + sc.teamLabel + '"');
+    await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 6000 });
+    ok(true, 'then the stage lifts away');
+    /* …and it puts them down on the ASK, not on a question about them */
+    await page.waitForTimeout(400);
+    const landed = await page.evaluate(() => { const k = window.SAIKIMI.state(), i = document.querySelector('#agentInput'); return { field: k.question && k.question.field, mode: i.getAttribute('inputmode') }; });
+    ok(landed.field === 'email' && landed.mode === 'email', 'and lands on the pitch for the work email, composer ready (' + landed.field + ')');
+    ok(await page.$eval('#agentThread', t => getComputedStyle(t).display !== 'none'), 'and the thread is there underneath');
+    /* …and the team stays, as a card in the conversation */
+    await page.waitForSelector('#agentThread .turnb--team .teamcard.is-in', { timeout: 3000 });
+    const tc = await page.$eval('#agentThread .turnb--team .teamcard', e => ({
+      badges: [...e.querySelectorAll('.teamcard__badge')].map(b => ({ id: b.dataset.id, name: b.querySelector('.teamcard__badgename').textContent, href: b.getAttribute('href'), blank: b.target === '_blank' && /noopener/.test(b.rel), icon: !!b.querySelector('svg') })),
+      name: e.querySelector('.teamcard__name').textContent, line: e.querySelector('.teamcard__line').textContent, eyebrow: e.querySelector('.teamcard__eyebrow').textContent
+    }));
+    ok(tc.badges.length === sc.products.length + 2 && tc.badges[0].id === 'newvoices' && tc.badges[tc.badges.length - 1].id === 'more', 'the team card: NewVoices, the ' + sc.products.length + ' members, and the rest of the family (' + tc.badges.map(b => b.name).join(' · ') + ')');
+    ok(tc.badges.every(b => b.blank && b.icon), 'every badge is a link that opens a new tab — the conversation is never lost — with its emblem');
+    ok(tc.badges.find(b => b.id === 'questbrand').href === '/s/questbrand' && tc.badges.find(b => b.id === 'more').href === '/products' && tc.badges[0].href === '/newvoices', 'each to its own page: /s/questbrand, /products, /newvoices');
+    ok(tc.eyebrow === sc.teamLabel && tc.name === 'NewVoices' && /Hover a member/.test(tc.line), 'at rest: the team label, NewVoices, and the hint');
+    await page.hover('#agentThread .teamcard__badge[data-id="imai"]');
+    await page.waitForTimeout(150);
+    const peek = await page.$eval('#agentThread .teamcard', e => ({ name: e.querySelector('.teamcard__name').textContent, line: e.querySelector('.teamcard__line').textContent, go: e.querySelector('.teamcard__go').textContent, img: e.querySelector('.teamcard__img.is-on').getAttribute('src'), current: (e.querySelector('.teamcard__badge.is-current') || {}).dataset && e.querySelector('.teamcard__badge.is-current').dataset.id }));
+    ok(peek.name === 'IMAI' && /influencer/.test(peek.line) && /imai/.test(peek.img) && peek.go === 'Read about IMAI →' && peek.current === 'imai', 'hover IMAI: its picture, its name, its line, "' + peek.go + '"');
+    await page.hover('#agentThread .teamcard__badge[data-id="newintel"]');
+    await page.waitForTimeout(150);
+    ok(await page.$eval('#agentThread .teamcard', e => e.querySelector('.teamcard__name').textContent === 'NewIntel'), 'hover NewIntel: the picture crossfades, the name follows');
+    /* GEOPulse and Agent Cloud are not named aloud any more, so they are not on
+       the card either — they live behind "10+ products" (client, 2026-09-16) */
+    ok(!(await page.$('#agentThread .teamcard__badge[data-id="geopulse"]')), 'GEOPulse is not on the card — it is one of the 10+');
+    ok((await tracked(page, 'voice_team_peek')).length === 2, 'voice_team_peek ×2');
+    await page.$eval('#agentThread .teamcard__badge[data-id="questbrand"]', a => { a.addEventListener('click', ev => ev.preventDefault(), { once: true }); a.click(); });
+    await page.waitForTimeout(100);
+    ok((await tracked(page, 'voice_team_open')).some(e => e[1].id === 'questbrand'), 'a tap on a member is recorded (voice_team_open)');
+    /* the story bubble sits just above the team card */
+    const bubble = await page.$$eval('#agentThread .turnb--ai .turnb__text', els => { const e = els[els.length - 1]; return { text: e.textContent, logos: [...e.querySelectorAll('.t-brand--logo .t-logo')].map(i => i.getAttribute('src')), next: e.closest('.turnb').nextElementSibling && e.closest('.turnb').nextElementSibling.classList.contains('turnb--team') }; });
+    ok(bubble.text.includes(sc.interrupt) && bubble.text.includes((sc.land || sc.pivot).slice(0, 40)), 'with the whole story as one bubble, in sync with what was said');
+    ok(bubble.next, 'and the team card right under it, in the history');
+    ok(bubble.logos.length >= 3 && bubble.logos.some(s => /questbrand/.test(s)) && bubble.logos.some(s => /imai/.test(s)), 'the names in the transcript carry their marks (' + bubble.logos.length + ')');
+    const st = await tracked(page, 'voice_showcase_started'), en = await tracked(page, 'voice_showcase_ended'), tp = await tracked(page, 'voice_starter_tapped');
+    ok(st.length === 1 && st[0][1].via === 'pill', 'voice_showcase_started {via:pill}');
+    ok(en.length === 1 && en[0][1].why === 'pivot' && en[0][1].revealed === sc.products.length, 'voice_showcase_ended {why:pivot, revealed:' + sc.products.length + '}');
+    ok(tp.length === 1 && tp[0][1].hero === true, 'voice_starter_tapped {hero:true}');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ asked aloud: "what is Stagwell AI?" by voice raises the same pictures as the agent reaches the story — once');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    const V = await greet(page);
+    const sc = V.showcase;
+    await visitorSays(page, 'so what is Stagwell AI, actually?');
+    ok(!(await page.$('.vstage')), 'the question alone raises nothing — the agent\'s words do');
+    const S = await speakStory(page, sc);
+    await S.speak(sc.interrupt);
+    ok(!(await page.$('.vstage')), 'the interruption line: not yet');
+    await S.speak(sc.flagship);
+    ok(!!(await page.$('.vstage')), 'the flagship line ("' + sc.openOn + '") → the stage rises');
+    await S.speak(sc.products[0].line);
+    ok((await page.$$eval('.vstage__tile', els => els.map(e => e.dataset.product))).join(',') === sc.products[0].id, 'and follows the words from there');
+    const st = await tracked(page, 'voice_showcase_started');
+    ok(st.length === 1 && st[0][1].via === 'voice', 'voice_showcase_started {via:voice}');
+    /* a real interruption: cut off AND words */
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await emit(page, { type: 'response.done', response: { id: 'r_story', status: 'cancelled' } });
+    await emit(page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'u_stop', transcript: 'got it, thanks' });
+    await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 3000 });
+    await agentSays(page, 'Sure. You are talking to one of the flagship AI products from Stagwell AI.');
+    await page.waitForTimeout(150);
+    ok(!(await page.$('.vstage')), 'told once: the same words later do not raise it again');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the story steps aside the moment the visitor speaks or types — and a conversation begun in text gets neither greeting script nor starters');
+  {
+    const a = await open();
+    await startVoice(a.page); await greet(a.page);
+    await a.page.click('#agentThread .turnb__chips--starters .tag--hero');
+    await a.page.waitForSelector('.vstage');
+    /* what used to end the show too early on production: a wordless response
+       (the model calling a tool first) and speech_started from echo or noise */
+    await emit(a.page, { type: 'response.created', response: { id: 'r_tool' } });
+    await emit(a.page, { type: 'response.function_call_arguments.done', call_id: 'c_x', name: 'submit_answer', arguments: JSON.stringify({ text: 'What is Stagwell AI?' }) });
+    await emit(a.page, { type: 'response.done', response: { id: 'r_tool', status: 'completed' } });
+    await a.page.waitForTimeout(200);
+    ok(!!(await a.page.$('.vstage')), 'a wordless response ending (a tool call first) does NOT close the stage');
+    const toolOut = await a.page.evaluate(() => { const e = window.__voiceFake.sent.find(x => x.type === 'conversation.item.create' && x.item && x.item.call_id === 'c_x'); return e ? JSON.parse(e.item.output) : null; });
+    ok(toolOut && toolOut.status === 'IDLE' && /Tell the Stagwell AI story/.test(toolOut.say) && (await kstate(a.page)).status === 'IDLE', 'and "What is Stagwell AI?" handed to submit_answer is refused: the flow is not started on it, the model is pointed back at the story');
+    await emit(a.page, { type: 'input_audio_buffer.speech_started' });
+    await emit(a.page, { type: 'input_audio_buffer.speech_stopped' });
+    await a.page.waitForTimeout(200);
+    ok(!!(await a.page.$('.vstage')), 'speech_started with no active response (echo, a cough) does NOT close the stage');
+    /* a real interruption: the story is playing and the server cuts it off */
+    const Sa = await speakStory(a.page, (await a.page.evaluate(() => window.SAI.data.kimi.copy.voice)).showcase);
+    await Sa.speak('Before I go into it — interrupt me any time.');
+    /* a real interruption is the server truncating the answer AND words arriving */
+    await emit(a.page, { type: 'input_audio_buffer.speech_started' });
+    await emit(a.page, { type: 'response.done', response: { id: 'r_story', status: 'cancelled' } });
+    await a.page.waitForTimeout(120);
+    ok(!!(await a.page.$('.vstage')), 'cut off but no words yet: the stage holds, nothing is thrown away');
+    await emit(a.page, { type: 'conversation.item.input_audio_transcription.completed', item_id: 'u_real', transcript: 'wait, what does QuestBrand cost?' });
+    await a.page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 3000 });
+    ok((await tracked(a.page, 'voice_showcase_ended'))[0][1].why === 'barge', 'their words arrive: gone, recorded as a barge');
+    ok(!(await a.page.$('#agentThread .turnb--team')), 'nobody was introduced, so no team card is left behind');
+    /* nothing was shown, so asking again can raise it again */
+    await a.page.waitForTimeout(800);
+    await agentSays(a.page, 'Sure — what is Stagwell AI? You are talking to one of the flagship AI products from Stagwell AI.', 'a_retry');
+    ok(!!(await a.page.$('.vstage')), 'told nothing yet → asked again, the pictures rise again');
+    await a.ctx.close();
+    const b = await open();
+    await startVoice(b.page); await greet(b.page);
+    await b.page.click('#agentThread .turnb__chips--starters .tag--hero');
+    await b.page.waitForSelector('.vstage');
+    await b.page.fill('#agentInput', 'hello'); await b.page.press('#agentInput', 'Enter');
+    await b.page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 3000 });
+    ok((await tracked(b.page, 'voice_showcase_ended'))[0][1].why === 'typed', 'typing: gone, recorded as typed');
+    await b.ctx.close();
+    const c = await open();
+    await c.page.fill('#agentInput', 'we need live competitive intelligence'); await c.page.press('#agentInput', 'Enter');
+    await c.page.waitForFunction(() => !document.querySelector('#agentThread .turnb--wait') && document.querySelector('#agentThread .turnb--ai .turnb__text'), null, { timeout: 12000 });
+    await startVoice(c.page);
+    await agentSays(c.page, 'Hi, NewVoices here — picking up where you left off. What is your work email?');
+    ok(!(await c.page.$('.vstage')) && c.state.mints[0].showcase === false, 'a conversation begun in text: no stage, and the brief is told to skip the greeting script');
+    ok(!(await c.page.$('.turnb__chips--starters')), 'and no starter pills — the conversation is already under way');
+    await c.ctx.close();
+  }
+
+  console.log('\n▶ the story on a phone, and under reduced motion');
+  {
+    const { ctx, page } = await open({ viewport: { width: 390, height: 844 } });
+    await startVoice(page);
+    const V = await greet(page);
+    ok(await page.$$eval('#agentThread .turnb__chips--starters .tag', els => els.every(e => getComputedStyle(e).animationName === 'none')), 'reduced motion: the pills simply appear');
+    await page.click('#agentThread .turnb__chips--starters .tag--hero');
+    await page.waitForSelector('.vstage');
+    ok(!!(await page.$('.vstage--still')), 'reduced motion: the still variant (fades, no flight, no burst)');
+    await page.waitForFunction(() => document.querySelector('.vstage.is-hero'), null, { timeout: 3000 });
+    const g = await page.evaluate(() => { const s = document.querySelector('.vstage').getBoundingClientRect(), c = document.querySelector('#agentForm').getBoundingClientRect(); return { h: s.height, w: s.width, inside: s.left >= c.left - 1 && s.right <= c.right + 1, vh: innerHeight }; });
+    ok(g.inside && g.h <= g.vh * 0.5 && g.w > 250, 'the stage fits the card and no more than half the screen (' + Math.round(g.h) + 'px of ' + g.vh + ')');
+    const S = await speakStory(page, V.showcase);
+    await S.speak(V.showcase.interrupt); await S.speak(V.showcase.flagship);
+    await S.speak('NewIntel — what your competitors did this week. QuestBrand — always-on brand tracking.');
+    await page.waitForTimeout(150);
+    ok((await page.$$eval('.vstage__tile', els => els.map(e => e.dataset.product))).join(',') === 'newintel,questbrand', 'tiles appear on the phone too');
+    await ctx.close();
+  }
+
+  console.log('\n▶ answer pills in voice mode: the agent speaks the question, the options hang under its words');
+  {
+    const { ctx, page, state } = await open({ research: 'unknown' });
+    await startVoice(page);
+    await agentSays(page, 'What are you trying to solve?');
+    await toolCall(page, 'submit_answer', { text: 'we need to know what competitors are doing this week' });
+    await agentSays(page, 'Got it. What is your work email? Type it in the box below.');
+    ok((await page.$$('#agentThread .turnb__chips:not(.turnb__chips--starters)')).length === 0, 'the address is typed: no pills for it');
+    const r = await toolCall(page, 'submit_answer', { text: 'ada@acme-brands.com' });
+    ok(r.question && r.question.id === 'company_size' && r.question.options.length === 4, 'an unknown site → the size question, with four options for the model to offer');
+    ok((await page.$$('#agentThread .turnb__chips:not(.turnb__chips--starters)')).length === 0, 'the pills wait for the agent to ask');
+    await agentSays(page, 'Roughly how big is your company?', 'a_size');
+    const chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.map(e => e.textContent.trim()));
+    ok(chips.join(' | ') === 'Under 20 | 21 to 50 | 51 to 250 | 251 or more', 'the size pills hang under the spoken question: ' + chips.join(' | '));
+    ok(await page.$eval('#agentThread .turnb--ai:last-child .turnb__text', e => /how big/i.test(e.textContent)), 'under the agent\'s own words, not a separate box');
+    await page.click('#agentThread .turnb--ai:last-child .turnb__chips .tag:has-text("51 to 250")');
+    await page.waitForTimeout(150);
+    const created = await page.evaluate(() => window.__voiceFake.last('conversation.item.create'));
+    ok(created && created.item.content && created.item.content[0].text === '51 to 250', 'a tap on a pill goes to the agent as the visitor\'s words');
+    ok(await page.$eval('#agentThread .turnb--ai .turnb__chips .tag[aria-pressed="true"]', e => e.disabled), 'the pills settle once answered');
+    const r2 = await toolCall(page, 'submit_answer', { text: '51 to 250' });
+    ok(r2.question && r2.question.id === 'role' && r2.question.options.length === 4, 'the model relays it → the size lands, the role comes next with four options');
+    await agentSays(page, 'And what is your role there?', 'a_role');
+    ok((await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.length)) === 4, 'four role pills under the role question');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ every question gets pills: step 1 asked again gets the goals; a typed step gets none; a step with options gets them even when the flow did not just change');
+  {
+    const { ctx, page, state } = await open({ research: 'unknown' });
+    await startVoice(page);
+    await greet(page);
+    await visitorSays(page, 'uh, sorry, go on');
+    /* the agent asks step 1 again in its own words — the starters were spent, so the goals come as pills */
+    await agentSays(page, "No problem. What's the main problem you're trying to solve right now?", 'a_again');
+    const goals = await page.evaluate(() => window.SAI.data.goals.goals.map(g => g.label));
+    let chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips--answers .tag', els => els.map(e => e.textContent.trim()));
+    ok(chips.length === goals.length && chips.every((c, i) => c === goals[i]), 'the six goals hang under it: ' + chips.join(' | '));
+    ok(await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.every(e => getComputedStyle(e).animationName !== undefined)), 'as pills like every other');
+    await page.click('#agentThread .turnb--ai:last-child .turnb__chips--answers .tag:has-text("Protect brand reputation")');
+    await page.waitForTimeout(120);
+    ok((await page.evaluate(() => window.__voiceFake.last('conversation.item.create'))).item.content[0].text === 'Protect brand reputation', 'a tap is their answer, in words the agent relays');
+    await toolCall(page, 'submit_answer', { text: 'Protect brand reputation' });
+    await agentSays(page, 'Got it. What is your work email? Type it in the box below.', 'a_site');
+    ok(!(await page.$('#agentThread .turnb--ai:last-child .turnb__chips')), 'the address is typed: no pills under that question');
+    await toolCall(page, 'submit_answer', { text: 'ada@acme-brands.com' });
+    await agentSays(page, 'Thanks. Before I go on — how big is your company, roughly?', 'a_size');
+    chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.map(e => e.textContent.trim()));
+    ok(chips.length === 4 && /Under 20/.test(chips[0]), 'the size options hang under the size question: ' + chips.join(' | '));
+    /* said aloud instead of tapped: the same words, the same step */
+    await visitorSays(page, '51 to 250');
+    const r = await toolCall(page, 'submit_answer', { text: '51 to 250' });
+    ok(r.question && r.question.id === 'role', 'said aloud works the same: the size lands, the role is next');
+    await agentSays(page, 'And your role?', 'a_role1');
+    chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.map(e => e.textContent.trim()));
+    ok(chips.length === 4, 'four role pills under the role question');
+    await visitorSays(page, 'hmm, say that again?');
+    await agentSays(page, 'Sure — what is your role at the company?', 'a_role2');
+    chips = await page.$$eval('#agentThread .turnb--ai:last-child .turnb__chips .tag', els => els.map(e => e.textContent.trim()));
+    ok(chips.length === 4, 'asked again without the flow moving: the role pills come again');
+    ok(state.errors.length === 0, state.errors.length ? 'page errors: ' + state.errors.join(' | ') : 'no page errors');
+    await ctx.close();
+  }
+
+  console.log('\n▶ typography: welcome in display type, names in bold, the question weighted');
+  {
+    const { ctx, page } = await open();
+    await startVoice(page);
+    await emit(page, { type: 'input_audio_buffer.speech_started' });
+    await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 3000 });
+    const V = await page.evaluate(() => window.SAI.data.kimi.copy.voice);
+    ok(/^Welcome to Stagwell AI\./.test(V.introduction) && /I'm NewVoices/.test(V.introduction), 'the introduction welcomes them to Stagwell AI first, then names itself: "' + V.introduction.slice(0, 60) + '…"');
+    await agentSays(page, V.introduction + ' What are you trying to solve?');
+    const t = await page.$eval('#agentThread .turnb--ai:last-child .turnb__text', e => ({
+      lead: (e.querySelector('.t-lead') || {}).textContent || null,
+      brands: [...e.querySelectorAll('.t-brand')].map(b => b.textContent),
+      ask: (e.querySelector('.t-ask') || {}).textContent || null,
+      text: e.textContent
+    }));
+    ok(t.lead === 'Welcome to Stagwell AI.', 'the welcome opens in display type: "' + t.lead + '"');
+    ok(t.brands.includes('Stagwell AI') && t.brands.includes('NewVoices'), 'Stagwell AI and NewVoices in bold (' + t.brands.join(', ') + ')');
+    ok(t.ask && /trying to solve\?/.test(t.ask), 'the question carries the weight: "' + t.ask.trim() + '"');
+    ok(t.text.replace(/\s+/g, ' ').trim() === (V.introduction + ' What are you trying to solve?').replace(/\s+/g, ' '), 'and the words themselves are untouched');
+    await agentSays(page, 'NewIntel tracks what your competitors did this week; QuestBrand benchmarks you against 2,500 rivals.');
+    const b = await page.$eval('#agentThread .turnb--ai:last-child .turnb__text', e => ({ brands: [...e.querySelectorAll('.t-brand')].map(x => x.textContent), nums: [...e.querySelectorAll('.t-num')].map(x => x.textContent) }));
+    ok(b.brands.join(',') === 'NewIntel,QuestBrand' && b.nums.join(',') === '2,500', 'product names bold, figures tabular (' + b.brands.join(',') + ' · ' + b.nums.join(',') + ')');
+    await ctx.close();
+  }
+
+  console.log('\n▶ the thread follows the words as they stream in — and the page keeps the card in view');
+  {
+    const { ctx, page } = await open({ viewport: { width: 1360, height: 720 } });
+    await startVoice(page);
+    await emit(page, { type: 'input_audio_buffer.speech_started' });            /* the showcase steps aside */
+    await page.waitForFunction(() => !document.querySelector('.vstage'), null, { timeout: 3000 });
+    for (let i = 0; i < 6; i++) await agentSays(page, 'Line ' + i + ': ' + 'a fairly long sentence about competitors and pricing and hiring and coverage. '.repeat(3));
+    await emit(page, { type: 'response.created', response: { id: 'rx' } });
+    for (let i = 0; i < 12; i++) await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'ax', delta: 'more words arriving as the agent speaks them, ' });
+    await page.waitForTimeout(250);
+    const g = await page.$eval('#agentThread', t => ({ gap: t.scrollHeight - t.scrollTop - t.clientHeight, scrollable: t.scrollHeight > t.clientHeight }));
+    ok(g.scrollable && g.gap < 40, 'the newest words are in view (gap to the bottom ' + Math.round(g.gap) + 'px)');
+    const card = await page.$eval('#agentForm', f => ({ bottom: Math.round(f.getBoundingClientRect().bottom), vh: innerHeight, scrolled: Math.round(scrollY) }));
+    ok(card.bottom <= card.vh + 2, 'the page scrolled so the composer is not cut off (card bottom ' + card.bottom + ' ≤ ' + card.vh + ', page scrolled ' + card.scrolled + 'px)');
+    /* but a visitor who scrolled up to read is left where they are */
+    await page.$eval('#agentThread', t => { t.scrollTop = 0; t.dispatchEvent(new Event('scroll')); });
+    for (let i = 0; i < 6; i++) await emit(page, { type: 'response.output_audio_transcript.delta', item_id: 'ax', delta: 'and still more, ' });
+    await page.waitForTimeout(200);
+    ok(await page.$eval('#agentThread', t => t.scrollTop < 40), 'scrolled up to read: not yanked back down');
+    await ctx.close();
+  }
+
+  console.log('\n▶ no transport, no button: a browser that cannot do it never sees "Chat with me"');
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1360, height: 900 } });
+    const page = await ctx.newPage();
+    await page.addInitScript(() => { Object.defineProperty(navigator, 'mediaDevices', { value: undefined, configurable: true }); });
+    await page.goto(BASE + '/next/index.html', { waitUntil: 'load' });
+    await page.waitForFunction(() => window.SAIKIMI && window.SAI && window.SAI.data && window.SAI.data.kimi);
+    ok(await page.$eval('#voiceStart', b => b.hidden), 'the button is hidden');
+    await ctx.close();
+  }
+} finally {
+  await browser.close();
+}
+console.log('\n' + (failures ? failures + ' FAILURE(S)' : 'all green'));
+process.exit(failures ? 1 : 0);

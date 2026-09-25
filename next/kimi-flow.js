@@ -1,0 +1,1679 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   KIMI FLOW — the product-discovery conversation as a state machine (brief
+   §4, §5, §41). Pure logic, no DOM: the homepage's hero-agent.js renders what
+   state() says and hands input back. It replaces the fixed six-question
+   sequence of flow.js FOR THE HOMEPAGE ONLY; the older agent page keeps
+   flow.js untouched.
+
+   The pipeline, in one line:
+
+     text → (model via /api/ask mode:'interpret' | keywords) → intent signals
+          → recommend.js (deterministic) → select-question.js → this → UI
+
+   The model never picks a product, never decides whether contact is required,
+   and never writes a URL. It normalises language; everything after that is
+   data and arithmetic the team can read.
+
+   Statuses: DISCOVERY → QUALIFICATION → READY_FOR_CONTACT → CONTACT_CAPTURE →
+   RECOMMENDATION → COMPLETE. uiAction tells the UI what to draw:
+   'ASK' | 'CAPTURE_CONTACT' | 'SHOW_RECOMMENDATIONS' | 'COMPLETE'.
+
+   window.SAIKIMI:
+     .start({ initialText, chipLabel, goal, domain })  → Promise<state>
+     .answer(text)                                     → Promise<state>
+     .contact({ name, email, phone, company })         → Promise<{ ok, retry, error, state }>
+     .clicked(type, productId, url)                    → records the CTA; COMPLETE
+     .state()  .onChange(cb)  .recommendation()  .result()  .reset()
+
+   Everything the engine's demo console already understood is still emitted
+   (slot_filled, question_asked, answer_given, route_decided, capture_*), and
+   the brief's kimi_* events go through SAIANALYTICS.track.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(() => {
+'use strict';
+
+const eng = () => window.SAI || null;
+const R = () => window.SAIRECOMMEND || null;
+const Qs = () => window.SAISELECT || null;
+const C = () => window.SAICARDS || null;
+const A = () => window.SAIANALYTICS || null;
+
+const INTERPRET_MS = 13000;     /* the server's own deadline is 12s; this is the outer fence */
+const EXPLAIN_MS = 8000;        /* runs beside the lead POST; the template stands in if it is late */
+const GOAL_Q = '__goal__';
+
+const data = () => (eng() && eng().data) || {};
+const kimi = () => data().kimi || {};
+const flags = () => Object.assign({ enabled: true, llm: true, contactGate: true, secondaryRecommendations: true, analytics: true, explainWithLlm: true, emailFirst: false, phoneStep: true }, kimi().flags || {});
+const copy = () => Object.assign({}, kimi().copy || {});
+const goals = () => ((data().goals || {}).goals) || [];
+const conv = () => Object.assign({ secondaryMax: 2 }, ((data().scoring || {}).conversation) || {});
+
+const uid = () => 'k_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+const list = v => (Array.isArray(v) ? v : []);
+const tpl = (s, vars) => String(s || '').replace(/\{(\w+)\}/g, (m, k) => (vars[k] == null ? '' : String(vars[k])));
+
+/* ── state ───────────────────────────────────────────────────────────────── */
+function blank() {
+  return {
+    sessionId: uid(),
+    status: 'IDLE',
+    step: 0,
+    primaryGoal: null,
+    secondaryGoals: [],
+    rawProblemText: null,
+    industry: null,
+    companySize: null,
+    creatorProgramSize: null,
+    geographicScope: null,
+    intents: [],                 /* [{ id, explicit }] */
+    askedQuestionIds: [],
+    currentQuestion: null,
+    message: null,
+    ack: null,                   /* the two halves of message, so the way-finding can sit between them */
+    prompt: null,
+    pointers: null,              /* { kind: 'reco'|'goal', items: [{ id, name, line, url }] } — where to read, before the next question */
+    suggestions: [],
+    uiAction: 'ASK',
+    hint: null,
+    reco: null,
+    cards: [],
+    lead: null,
+    contactCaptured: false,
+    llmStatus: 'DETERMINISTIC',
+    llmProvider: null,
+    llmModel: null,
+    fallbacks: 0,
+    summary: null,
+    unclassifiedOnce: false,
+    researched: false,           /* the lookup has run — not recognised is not the same as never asked */
+    role: null,                  /* founder | manager | director_vp | c_suite */
+    roleText: null,              /* their own words, when they typed a title instead */
+    website: null,               /* the domain they gave, or '__skip__' if they declined */
+    email: null,                  /* the work email, asked second when flags.emailFirst — its domain is the website */
+    emailFree: false,             /* …unless it is a personal address, and then the website is still to come */
+    findings: null,              /* what the lookup actually knew — never anything it did not */
+    contactRequest: null,        /* 'call'|'demo'|'trial'|'expert'|'pricing' — they asked to be contacted */
+    contact: null,               /* the resolved copy for the form they are about to see */
+    holds: 0,                    /* consecutive turns that taught us nothing */
+    company: null,               /* a company name typed where a web address was asked for */
+    websiteNudged: false,        /* asked once more for the address itself */
+    emailWhyGiven: false,        /* they turned the address down once and were told why it is asked for */
+    emailDone: false,            /* the work email step is behind us — answered, dodged or declined */
+    previewed: false,            /* the products have been shown once, before the business questions */
+    exploreOffer: null,          /* the card on screen can be gone into: { productId, label } */
+    mentioned: [],               /* products the visitor named outright — the strongest signal there is */
+    explore: { productId: null, node: null, depth: 0, panel: null },   /* the detour into one product's detail */
+    resume: null,                /* the turn that was on screen when the detour began */
+    phoneNudged: false,          /* asked once more for a number that looked wrong */
+    action: null,                /* the BOOK step's button: { label, cta } */
+    after: null,
+    cardsIntro: null,            /* the line above the cards, safe from the asks that follow */
+    error: null
+  };
+}
+let st = blank();
+let listeners = [];
+/* bumped by reset(): a turn that was waiting on the network when the visitor
+   started over must not write its answer into the fresh conversation */
+let epoch = 0;
+const stale = e => e !== epoch;
+let deterministicNoted = false;
+
+const signals = () => ({
+  goal: st.primaryGoal, intents: st.intents, companySize: st.companySize,
+  creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope
+});
+
+function track(name, props) {
+  const base = { session_id: st.sessionId, step: st.step, primary_goal: st.primaryGoal, llm_status: st.llmStatus, llm_provider: st.llmProvider };
+  try { const a = A(); if (a) a.track(name, Object.assign(base, props || {})); else eng().events.emit(name, Object.assign(base, props || {})); } catch (e) { /* never the visitor's problem */ }
+}
+const emit = (type, payload) => { try { eng().events.emit(type, payload); } catch (e) {} };
+const setSlot = (n, v, src) => { try { eng().setSlot(n, v, src || 'visitor'); } catch (e) {} };
+
+/* ── reading free text ───────────────────────────────────────────────────── */
+function deterministicRead(text) {
+  const r = R();
+  const intents = r ? r.keywordIntents(text, data()) : [];
+  const bands = r ? r.bandsFromText(text, data()) : {};
+  /* a product named outright ("is GEOPulse the one?", "quest brand" as the
+     transcript hears it) is the strongest signal there is: its primary intents
+     are taken as CHOSEN, so it tops the running whatever else was said */
+  const mentioned = r && r.nameMentions ? r.nameMentions(text, data()) : [];
+  const named = mentioned.length ? list(((r.productById(mentioned[0], data()) || {}).intentTags || {}).primary) : [];
+  return { detectedGoals: [], detectedIntents: named.concat(intents.map(i => i.id)).filter((id, i, a) => a.indexOf(id) === i), inferred: {
+    industry: null, companySize: bands.companySize || null, creatorProgramSize: bands.creatorProgramSize || null, geographicScope: bands.geographicScope || null
+  }, userNeedSummary: null, confidence: intents.length || named.length ? 0.5 : 0, ack: null, reply: null,
+    contactRequest: r ? r.contactRequest(text, data()) : null,
+    mentioned, namedIntents: named,
+    website: S_extractDomain(text), live: false };
+}
+
+function withTimeout(p, ms) {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error('timeout')), ms);
+    Promise.resolve(p).then(v => { clearTimeout(t); resolve(v); }, e => { clearTimeout(t); reject(e); });
+  });
+}
+
+async function interpret(text) {
+  const S = eng();
+  const raw = String(text || '').slice(0, 600);
+  const off = deterministicRead(raw);
+  if (!flags().llm || !S || typeof S._ask !== 'function') { noteDeterministic('disabled'); return off; }
+  try {
+    const j = await withTimeout(S._ask({
+      mode: 'interpret', text: raw,
+      context: { goal: st.primaryGoal, intents: st.intents.map(i => i.id), companySize: st.companySize, creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope, question: st.currentQuestion && st.currentQuestion.id !== GOAL_Q ? st.currentQuestion.id : null }
+    }, INTERPRET_MS), INTERPRET_MS + 500);
+    if (!j || j.ok !== true || !j.interpretation) throw new Error('no_interpretation');
+    const meta = j.llm || {};
+    st.llmProvider = meta.provider || null;
+    st.llmModel = meta.model || null;
+    st.fallbacks = meta.fallbacks || 0;
+    st.llmStatus = ['PRIMARY', 'FALLBACK_1', 'FALLBACK_2'][meta.chainIndex || 0] || 'FALLBACK_2';
+    if (st.fallbacks > 0) track('kimi_model_fallback', { llm_fallback_count: st.fallbacks, llm_model: st.llmModel, failed: meta.failed || null });
+    const it = j.interpretation;
+    /* the model leads; the keyword pass fills anything it left empty — and a
+       product the visitor NAMED stays in front of whatever the model read */
+    return {
+      mentioned: off.mentioned, namedIntents: off.namedIntents,
+      detectedGoals: list(it.detectedGoals),
+      detectedIntents: list(off.namedIntents).concat(list(it.detectedIntents).length ? it.detectedIntents : off.detectedIntents).filter((id, i, a) => a.indexOf(id) === i),
+      inferred: Object.assign({}, off.inferred, Object.fromEntries(Object.entries(it.inferred || {}).filter(([, v]) => v != null && v !== ''))),
+      userNeedSummary: it.userNeedSummary || null,
+      confidence: typeof it.confidence === 'number' ? it.confidence : 0.5,
+      ack: it.ack || null,
+      reply: it.reply || null,
+      contactRequest: it.contactRequest || null,
+      website: off.website,
+      live: true
+    };
+  } catch (e) {
+    noteDeterministic(e && e.message);
+    return off;
+  }
+}
+
+function noteDeterministic(reason) {
+  st.llmStatus = 'DETERMINISTIC';
+  if (deterministicNoted) return;
+  deterministicNoted = true;
+  track('kimi_deterministic_mode', { reason: String(reason || 'unavailable').slice(0, 60) });
+}
+
+/* merge what a read taught us into the state — visitor corrections win, and
+   bands are only filled where still unknown unless the read is explicit */
+function absorb(read, opts) {
+  const o = opts || {};
+  const r = R();
+  const known = data();
+  const named = list(read.namedIntents);
+  list(read.detectedIntents).forEach(id => {
+    if (!r || !r.intentById(id, known)) return;
+    const explicit = !!o.explicit || named.indexOf(id) !== -1;
+    const have = st.intents.find(i => i.id === id);
+    if (!have) st.intents.push({ id, explicit });
+    else if (explicit) have.explicit = true;
+  });
+  if (list(read.mentioned).length) { st.mentioned = read.mentioned.slice(0, 2); track('kimi_product_named', { products: st.mentioned.join(',') }); }
+  if (!st.primaryGoal) {
+    const g = list(read.detectedGoals).find(id => goals().some(x => x.id === id));
+    if (g) setGoal(g, 'inferred');
+  }
+  /* a site typed in their own words answers the website question before it is
+     asked — the lookup runs from advance() */
+  if (!st.website && read.website) { st.website = read.website; setSlot('company_domain', read.website, 'visitor'); }
+
+  const inf = read.inferred || {};
+  ['companySize', 'creatorProgramSize', 'geographicScope'].forEach(k => {
+    if (inf[k] && (!st[k] || o.overwrite)) st[k] = String(inf[k]);
+  });
+  if (inf.industry && !st.industry) st.industry = String(inf.industry).slice(0, 80);
+  if (read.userNeedSummary && !st.summary) st.summary = String(read.userNeedSummary).slice(0, 300);
+  if (st.companySize) setSlot('size_tier', sizeTier(st.companySize), 'visitor');
+}
+
+/* ── THE BAND THE VISITOR PICKS vs THE TIER THE ENGINE ROUTES ON ──
+   engine.js routes on routing.json's three tiers (SMB / mid-market /
+   enterprise). The visitor answers in the client's four bands — under 20,
+   21–50, 51–250, 251 or more — and each band carries the tier it belongs to
+   (taxonomy.json). The top band opens at 251 and has no ceiling, so when the
+   site lookup has counted the heads, that count is the better witness for
+   anything above it: hand the engine the number and let it tier it. */
+function sizeTier(band) {
+  const d = data();
+  const B = list(d.taxonomy && d.taxonomy.bands && d.taxonomy.bands.companySize);
+  const hit = B.filter(b => b && b.id === band)[0];
+  if (!hit) return band;
+  const n = st.findings && typeof st.findings.employees === 'number' ? st.findings.employees : null;
+  if (hit.max == null && n != null && n > 250) return n;
+  return hit.tier || band;
+}
+
+/* what a turn can change; compared before and after absorb() */
+const knowledge = () => JSON.stringify([st.primaryGoal, st.intents.map(i => i.id + (i.explicit ? '!' : '')).sort(), st.companySize, st.creatorProgramSize, st.geographicScope, st.website]);
+const pick = (arr, n) => { const a = list(arr); return a.length ? a[Math.min(n, a.length - 1)] : null; };
+
+function setGoal(id, source) {
+  const g = goals().find(x => x.id === id);
+  if (!g) return false;
+  st.primaryGoal = g.id;
+  /* the routing.json domain rides along so the engine's route(), tiers and the
+     demo console keep working exactly as before */
+  if (g.domain) setSlot('problem_domains', [g.domain], source === 'inferred' ? 'inferred' : 'visitor');
+  track('kimi_goal_selected', { goal: g.id, source: source || 'pill' });
+  return true;
+}
+
+/* A site the visitor named in their own words gets read exactly as one given
+   at the question does — it is the same offer, made a beat earlier. */
+async function readSiteIfNew() {
+  if (!st.website || st.website === '__skip__' || st.researched) return;
+  const domain = st.website;
+  st.researching = domain;
+  st.uiAction = 'READING';
+  st.message = tpl((copy().research || {}).reading, { domain });
+  notify();
+  const e = epoch;
+  const found = await research(domain);
+  if (stale(e)) return;
+  st.researching = null;
+  st.researched = true;
+  absorbFindings(found);
+  if (!found) track('kimi_site_read', { domain, known: false });
+}
+
+/* ── the machine ─────────────────────────────────────────────────────────── */
+function recompute() {
+  const r = R();
+  st.reco = r ? r.recommend(signals(), data()) : null;
+  st.pointers = (r && r.pointers) ? r.pointers(st.reco, st.primaryGoal, data()) : null;
+  return st.reco;
+}
+
+function goalSuggestions() {
+  return goals().map(g => ({ id: g.id, label: g.label, value: g.id, kind: 'goal' }));
+}
+
+function askGoal(reply) {
+  const c = copy();
+  /* the model's own words when it answered (a greeting answered, a question
+     about the site answered); the hold lines rotate when it did not */
+  const prompt = reply || (st.holds ? (pick(c.hold, st.holds - 1) || c.fallback) : (st.unclassifiedOnce ? c.fallback : c.unclassified));
+  st.currentQuestion = { id: GOAL_Q, field: 'goal', prompt, suggestions: goalSuggestions() };
+  st.message = st.currentQuestion.prompt;
+  st.ack = null; st.prompt = st.message;
+  st.suggestions = st.currentQuestion.suggestions;
+  st.uiAction = 'ASK';
+  st.hint = (c.hints || {}).start || null;
+  st.status = 'DISCOVERY';
+  st.unclassifiedOnce = true;
+  emit('question_asked', { id: GOAL_Q, slot: 'goal', copy: st.message, mode: null });
+}
+
+/* ── THE ADDRESS, ASKED BEFORE ANYTHING ELSE ──
+   The voice story ends on the pitch for it — "what's your work email? I'll read
+   your company's site from it" (client, 2026-09-16) — so the conversation needs
+   to be able to stand on that question before a goal is known. advance() always
+   asks the goal first, which is right for someone who typed a sentence; this is
+   the one place that steps in front of it. Answering, or turning it down, goes
+   straight back to the ordinary order. */
+function askWorkEmail() {
+  const c = copy();
+  const q = list((data().questions || {}).discovery && data().questions.discovery.questions).find(x => x && x.field === 'email');
+  if (!q || st.email || flags().emailFirst === false) return state();
+  st.currentQuestion = { id: q.id, field: 'email', prompt: q.prompt, suggestions: [] };
+  st.askedQuestionIds.push(q.id);
+  st.message = c.askWorkEmail || q.prompt;
+  st.ack = null; st.prompt = st.message;
+  st.suggestions = [];
+  st.uiAction = 'ASK';
+  st.hint = (c.hints || {}).email || 'you@company.com';
+  st.status = 'DISCOVERY';
+  st.holds = 0;
+  emit('question_asked', { id: q.id, slot: 'work_email', copy: st.message, mode: 'story' });
+  track('kimi_email_asked', { at: 'story' });
+  notify();
+  return state();
+}
+
+function present(q, first, modelAck) {
+  const c = copy();
+  st.currentQuestion = q;
+  st.askedQuestionIds.push(q.id);
+  st.step++;
+  st.holds = 0;
+  /* the model's acknowledgement of what was just said leads into the question;
+     without one, the goal's own line on the first question only */
+  const ack = modelAck || (first ? ((c.goalAck || {})[st.primaryGoal] || (st.rawProblemText ? c.freeTextAck : null)) : null);
+  st.message = (ack ? ack + ' ' : '') + (q.prompt || '');
+  st.ack = ack || null; st.prompt = q.prompt || '';
+  st.suggestions = list(q.suggestions).map(s => ({ id: s.id, label: s.label, value: s.value }));
+  st.uiAction = 'ASK';
+  /* the placeholder says what kind of answer this is: an address for the
+     website (it has no chips — "Pick one" would be a lie), a headcount for
+     the size, otherwise "pick one, or type" */
+  const hints = c.hints || {};
+  st.hint = q.field === 'website' ? (hints.website || 'yourcompany.com')
+    : q.field === 'email' ? (hints.email || 'you@company.com')
+    : q.field === 'companySize' ? hints.size
+    : (list(q.suggestions).length ? hints.question : (hints.typed || 'Type your answer…'));
+  st.status = st.status === 'DISCOVERY' && st.step > 1 ? 'QUALIFICATION' : (st.status === 'IDLE' ? 'DISCOVERY' : st.status);
+  if (st.step > 1) st.status = 'QUALIFICATION';
+  emit('question_asked', { id: q.id, slot: q.field || 'intent', copy: q.prompt, mode: null });
+}
+
+/* the visitor said something that taught us nothing (small talk, a question
+   about the site, an off-topic line). The conversation answers in kind and
+   stays where it is: the same question, the same suggestions. It never moves
+   toward the form on a turn that carried no signal. */
+function hold(reply) {
+  const c = copy();
+  st.holds++;
+  const q = st.currentQuestion;
+  if (!q || q.id === GOAL_Q) { askGoal(reply); return; }
+  st.message = reply || pick(c.holdQuestion, st.holds - 1) || q.prompt;
+  st.ack = null; st.prompt = st.message;
+  st.suggestions = list(q.suggestions).map(s => ({ id: s.id, label: s.label, value: s.value }));
+  st.uiAction = 'ASK';
+  emit('question_asked', { id: q.id, slot: q.field || 'intent', copy: st.message, mode: 'hold' });
+}
+
+/* a typed title lands on one of the four bands the routing overrides and the
+   ICP boosts already speak (engine.js ROLE_AFFINITY, routing.json override 2),
+   and the words themselves are kept for the CRM */
+const ROLE_PATTERNS = [
+  ['c_suite', /(c-?suite|\bcmo\b|\bceo\b|\bcoo\b|\bcfo\b|\bcto\b|\bcdo\b|\bcco\b|chief|president|partner)/],
+  ['founder', /(founder|co-?founder|owner|proprietor|i started|my own (company|business|agency))/],
+  ['director_vp', /(director|\bvp\b|v\.p\.|vice president|\bsvp\b|\bevp\b|head of|\bmd\b|managing director)/],
+  ['manager', /(manager|marketing lead|team lead|specialist|coordinator|analyst|associate|consultant)/]
+];
+function roleFromText(text) {
+  const t = String(text || '').toLowerCase().replace(/[’']/g, '').replace(/\s+/g, ' ').trim();
+  if (!t) return null;
+  for (let i = 0; i < ROLE_PATTERNS.length; i++) if (ROLE_PATTERNS[i][1].test(t)) return ROLE_PATTERNS[i][0];
+  return null;
+}
+
+/* ── READING THEIR SITE ──
+   The visitor gives a website and the conversation stops being about marketing
+   in general (client, 2026-09-10: "it should have asked me about my website,
+   and then it should do a quick search to see what info it can pull up and
+   show me the info and then keep talking to me with added relevance").
+
+   /api/ask mode:'research' asks the model what it ALREADY knows about that
+   domain and is built to answer known:false rather than guess — so what comes
+   back is either real or nothing. Nothing invented is ever shown: research.js,
+   which the older agent page uses, falls back to seeded fiction for the demo's
+   sake, and that is exactly why this calls the endpoint directly instead.
+
+   What it buys the rest of the conversation: the size band (so the size
+   question is never asked), the industry (carried to the CRM), and the
+   competitor set. What it never buys: a claim we cannot stand behind. */
+const RESEARCH_MS = 9000;
+
+/* the lookup's headcount → a band, read off taxonomy.json's own ceilings, so
+   the site and the pills can never drift apart when the bands are redrawn */
+function bandFromEmployees(n) {
+  if (typeof n !== 'number' || !isFinite(n) || n <= 0) return null;
+  const d = data();
+  const B = list(d.taxonomy && d.taxonomy.bands && d.taxonomy.bands.companySize);
+  if (!B.length) return null;
+  for (let i = 0; i < B.length; i++) if (B[i].max == null || n <= B[i].max) return B[i].id;
+  return B[B.length - 1].id;
+}
+
+/* ── THE NETWORK, PRE-FETCHED ────────────────────────────────────────────────
+   "here are some list of companies that we should just have pre fetched and we
+   can use this to provide info if they use the product" (client, 2026-09-17).
+
+   data/network.json is the client's own research document, 53 Stagwell domains.
+   A visitor whose address is one of them is not a prospect to be looked up —
+   they are inside the network, and we already know who they are. So the lookup
+   answers from the file: no model call, no two-second wait, and nothing that
+   can be invented about a colleague. It carries no headcount and no
+   competitors, so those stay null and the flow asks about size as it always
+   would. The catalog's own products live here too (BERA.ai, UNICEPTA, IMAI…)
+   — a visitor from one of those is a colleague as well. */
+const netList = () => list((data().network || {}).companies);
+const bareHost = x => String(x || '').toLowerCase().replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '');
+/* their domain, or a sub-domain of it — but never a look-alike that merely
+   ends with it ("notanomaly.com" is somebody else) */
+const hostIs = (theirs, given) => {
+  const n = bareHost(theirs), d = bareHost(given);
+  return !!n && !!d && (n === d || d.slice(-(n.length + 1)) === '.' + n);
+};
+function netFor(domain) {
+  if (!bareHost(domain)) return null;
+  const hit = netList().find(c => hostIs(c.domain, domain));
+  if (hit) return { id: hit.id, name: hit.name, domain: bareHost(hit.domain), based: hit.based || null, summary: hit.summary || null };
+  /* THE RESEARCH DOCUMENT IS NOT THE WHOLE NETWORK — its own caveat says so,
+     and two domains the site sells from (harrisquest.com, newvoices.ai) are
+     not in it. A product's own site is a colleague whatever the list says, and
+     the catalog already carries approved words for it, so it answers from
+     there rather than from a model. */
+  const r = R(); if (!r) return null;
+  const p = list(r.activeProducts(data())).find(x =>
+    hostIs(x.url, domain) || hostIs((x.urls || {}).externalWebsite, domain) || hostIs(x.signupUrl, domain));
+  if (!p) return null;
+  /* `based` is a PLACE and only the document has one. The catalog's whoFor is
+     an audience — "Insights and brand leaders" is not a head office. */
+  return { id: p.id, name: p.displayName || p.name, domain: bareHost(p.url || (p.urls || {}).externalWebsite || p.signupUrl),
+    based: null, audience: p.whoFor || null, summary: p.cardDescription || p.positioning || null };
+}
+
+async function research(domain) {
+  const S = eng();
+  /* the network first: we already know these, so nothing is asked of a model */
+  const inside = netFor(domain);
+  if (inside) {
+    track('kimi_site_read', { domain, known: true, network: true, company: inside.id });
+    return { domain: inside.domain, name: inside.name, industry: null, employees: null,
+      companySize: null, competitors: [], network: true, based: inside.based || null,
+      audience: inside.audience || null, summary: inside.summary };
+  }
+  if (!flags().llm || !S || typeof S._ask !== 'function' || !domain) return null;
+  try {
+    const j = await withTimeout(S._ask({ mode: 'research', domain }, RESEARCH_MS), RESEARCH_MS + 500);
+    if (!j || j.ok !== true || j.known !== true) return null;
+    const size = bandFromEmployees(j.employees);
+    return {
+      domain: j.domain || domain,
+      name: typeof j.name === 'string' && j.name.trim() ? j.name.trim().slice(0, 80) : null,
+      industry: typeof j.industry === 'string' && j.industry.trim() ? j.industry.trim().slice(0, 60) : null,
+      employees: typeof j.employees === 'number' ? j.employees : null,
+      companySize: size,
+      competitors: list(j.competitors).map(x => String(x).trim()).filter(Boolean).slice(0, 3)
+    };
+  } catch (e) { noteDeterministic('research_unavailable'); return null; }   /* the lookup is the model's knowledge too */
+}
+
+/* what it learned becomes what we know — but never over something the visitor
+   said themselves */
+function absorbFindings(f) {
+  if (!f) return;
+  st.findings = f;
+  if (f.companySize && !st.companySize) { st.companySize = f.companySize; setSlot('size_tier', sizeTier(f.companySize), 'research'); }
+  if (f.industry && !st.industry) st.industry = f.industry;
+  if (f.name) setSlot('company', f.name, 'research');
+  if (f.network) setSlot('stagwell_network', f.domain, 'research');
+  track('kimi_site_read', { domain: f.domain, known: true, network: !!f.network, industry: f.industry || null, size: f.companySize || null, competitors: (f.competitors || []).length });
+}
+
+/* ── THE FAST TRACK ──
+   "If the person just ever cuts the chase that they want to be contacted, or
+   they want to book a demo, or they want to try out something, we should just
+   fast-track them to filling out the form. That's it, we're gold. Let's get
+   their contact info and get a sales agent to reach out to them." (client,
+   2026-09-10.)
+
+   So a contact request ends the questions wherever it lands: on the opening
+   message, mid-conversation, or in place of an answer. Whatever the turn also
+   taught us is kept — a visitor who says "we need to track competitors, can
+   you call me" still gets NewIntel on the card and in the CRM — but nothing
+   more is asked. The words on the form follow what they asked for: a call, a
+   demo, a trial, a specialist, or pricing.
+
+   The request is read two ways, like everything else here: the phrases in
+   taxonomy.json (which work with no model at all) and the model's own reading
+   of the sentence, which catches the phrasings the list misses. */
+function contactRequestIn(text, read) {
+  const r = R();
+  const byWord = r ? r.contactRequest(text, data()) : null;
+  if (byWord) return byWord;
+  const ids = r ? r.contactRequestIds(data()) : [];
+  const byModel = read && read.contactRequest;
+  return byModel && ids.indexOf(byModel) !== -1 ? byModel : null;
+}
+
+function fastTrack(kind) {
+  const c = copy();
+  const block = (c.fastTrack || {})[kind] || {};
+  st.contactRequest = kind;
+  st.contact = {
+    title: block.title || c.contactTitle,
+    submit: block.submit || c.contactSubmit,
+    closed: block.closed || null,
+    /* nothing was recommended yet, so the small print does not promise one */
+    notice: c.contactNoticeFast || c.contactNotice
+  };
+  recompute();
+  st.currentQuestion = null;
+  st.suggestions = [];
+  st.holds = 0;
+  st.status = 'CONTACT_CAPTURE';
+  st.message = block.message || c.contactTransition;
+  st.uiAction = 'CAPTURE_CONTACT';
+  st.hint = null;
+  try { const S = eng(); if (S.session.humanAsk !== true) { S.session.humanAsk = true; emit('human_requested', { kind }); } } catch (e) {}
+  track('kimi_fast_track', Object.assign({ request: kind, at_step: st.step }, recoProps()));
+  track('kimi_contact_viewed', Object.assign({ fast_track: kind }, recoProps()));
+}
+
+function readyForContact() {
+  const c = copy();
+  st.currentQuestion = null;
+  st.suggestions = [];
+  st.status = 'READY_FOR_CONTACT';
+  try { eng().route(); } catch (e) { /* the old console's route_decided; not needed here */ }
+  if (flags().contactGate) {
+    st.status = 'CONTACT_CAPTURE';
+    st.contact = { title: c.contactTitle, submit: c.contactSubmit, closed: null, notice: c.contactNotice };
+    st.message = c.contactTransition;
+    st.uiAction = 'CAPTURE_CONTACT';
+    st.hint = null;
+    track('kimi_contact_viewed', recoProps());
+  } else {
+    /* the client's order (2026-09-10): "6) here are some recommendations we
+       have 7) give us your email 8) give us your phone number 9) book a call" —
+       the value first, then the ask.
+       With the email asked up front instead (flags.emailFirst, 2026-09-16) it
+       is already in hand by now, so the recommendation goes straight to the
+       call, where a name and a number are asked for by the thing that needs
+       them — Book a call, Call my phone, the contact form. */
+    showRecommendation();
+    if (st.contactCaptured && st.lead && st.lead.email) {
+      /* the address came in at the top, before there was anything to say about
+         them: now there is — the recommendation, the size, the role — so the
+         same lead is written again, brought up to date */
+      const e = epoch;
+      submitLead(leadPayload()).then(d => {
+        if (stale(e)) return;
+        track('kimi_lead_updated', Object.assign({ delivered: !!d.delivered }, recoProps()));
+      });
+      book();
+    } else askEmail();
+  }
+}
+
+function recoProps() {
+  const r = st.reco || {};
+  return { primary_product: r.primary || null, secondary_products: list(r.secondary).join(','), recommendation_confidence: r.confidence ? r.confidence.level : null, steps: st.step };
+}
+
+/* ── THE VALUE BEFORE THE QUALIFICATION ──
+   "as soon as we ask for the email, then we need to provide value before we do
+   anything else" (client, 2026-09-16). The order is: what you need → your
+   email → one or more products that fit → and only THEN the questions about
+   the business, the size, who they are. The cards are drawn once, into their
+   own bubble, and the conversation carries on underneath them; the full
+   recommendation — refined by everything those questions add — still comes at
+   the end, where the call is offered. */
+function preview(reco) {
+  const c = copy();
+  const cards = C() ? C().buildCards(reco, signals(), data(), c, { why: {}, secondary: flags().secondaryRecommendations !== false }) : [];
+  if (!cards.length) return false;
+  st.cards = cards;
+  st.previewed = true;
+  const low = !reco.confidence || reco.confidence.level === 'low';
+  st.cardsIntro = (low ? c.showcaseIntroLow : c.showcaseIntro) || c.recommendationIntroOpen || '';
+  st.after = null;   /* the question under the card already says what is wanted */
+  /* the card is on screen: the detour into its detail is offered here and
+     nowhere else, so it can never start before there is a product to go into */
+  st.exploreOffer = exFor(reco.primary) ? { productId: reco.primary, label: tpl(c.exploreInvite || 'Tell me more about {product}', { product: exName(reco.primary, exFor(reco.primary)) }) } : null;
+  track('kimi_showcase_shown', Object.assign({ cards: cards.length, email_given: !!st.email }, recoProps()));
+  return true;
+}
+
+function advance(ack) {
+  const first = st.askedQuestionIds.length === 0;
+  if (!st.primaryGoal && !st.intents.length) { askGoal(); return; }
+  const reco = recompute();
+  /* the goal is known and the address step is behind us: show them something
+     before asking them anything else — unless the running is two siblings the
+     words cannot separate (GEOPulse/Search+, IMAI/SMB…): then the one question
+     that tells them apart comes first, and the card after the answer */
+  const tie = Qs() && Qs().siblingTie ? Qs().siblingTie(reco, data()) : null;
+  if (!st.previewed && st.emailDone && flags().showcaseAfterEmail !== false && reco && reco.primary && !tie) preview(reco);
+  if (tie && !st.previewed) track('kimi_sibling_tie', { pair: tie.join(',') });
+  /* with the email asked after the recommendation instead (flags.emailFirst
+     off), the work_email question is simply never in the running */
+  const asked = flags().emailFirst === false ? st.askedQuestionIds.concat('work_email') : st.askedQuestionIds;
+  const q = Qs() ? Qs().selectQuestion({
+    primaryGoal: st.primaryGoal, intents: st.intents, askedQuestionIds: asked,
+    companySize: st.companySize, creatorProgramSize: st.creatorProgramSize, geographicScope: st.geographicScope,
+    website: st.website, role: st.role, email: st.email
+  }, reco, data()) : null;
+  if (q) { present(q, first, ack); return; }
+  if (!reco || !reco.primary) { askGoal(); return; }
+  readyForContact();
+}
+
+/* ── EXPLORE: going deeper on one product, a step at a time ──────────────────
+   "we dont want to simply reproduce the whole page in the chat window, we want
+   it to be dynamic, and iterative, and animated, and let the user click things
+   and ask questions" (client, 2026-09-17).
+
+   The tree lives in data/explainers.json — the same file the product page
+   renders from, so the two cannot drift. This walks it ONE NODE AT A TIME and
+   never shows a level it was not asked for: a node returns a short line, a
+   small panel, and the chips that lead on from it.
+
+   Four rules keep it from becoming the page, and keep it walkable. They were
+   rewritten on 2026-09-17 after crawling all 64 reachable turns:
+
+     · IT NEVER SWALLOWS AN ANSWER. The budget closes the detour by taking the
+       chips away and adding a closing line UNDER the answer — it never replaces
+       the answer with "that's the shape of it". It used to, and 21 of 22 capped
+       turns printed a full list beneath a sentence announcing the end, while one
+       path ("what do teams use it for?") answered with nothing at all.
+     · THE BUDGET IS STEPS SHOWN, NOT CLICKS DEEP. Moving between two use-case
+       groups is sideways, not deeper; counting it as depth meant a visitor saw
+       2 of the 5 groups — 8 of the 15 use cases — and was then shut down.
+       `depth` is now the node's LEVEL in the tree (a branch is 1, a group is 2)
+       and is reported for analytics only; exploreMaxSteps is the real limit.
+     · THERE IS ALWAYS A WAY BACK. Every group offers the other groups and
+       whichever top-level branches have not been read. Nothing is a one-way
+       door, and no group is unreachable (the old step offered three of four
+       siblings, so "Growth and listening" could not be reached from inside
+       another group at all).
+     · NOTHING IS OFFERED TWICE. `seen` holds every node already delivered, so
+       a branch that has been read is not offered again — the root prints the
+       differentiators, and "How is it different?" used to reprint them.
+
+   And, as before: `answerOnly` items (the does-NOT-do list) are NEVER offered
+   as a chip. They exist so a direct question gets an honest answer instead of
+   an overclaim — they are not something to read off a screen.                 */
+const EXPLORE_PREFIX = '__x__';
+const exData = () => (data().explainers && data().explainers.products) || {};
+const exFor = id => exData()[id] || null;
+const pName = p => (p && (p.displayName || p.name)) || null;   /* never the routing label */
+const exName = (id, ex) => (ex && ex.name) || pName(R() && R().productById(id, data())) || 'this';
+const exCopy = () => Object.assign({
+  root: 'What would you like to know about {product}?',
+  differentiators: 'Three things set it apart:',
+  usecases: 'Fifteen use cases, in five groups. Which is closest to your world?',
+  group: '{label} — {n} of them:',
+  connects: 'It connects to what you already run, rather than replacing it:',
+  back: 'Something else about {product}?',
+  chipDifferentiators: 'How is it different?',
+  chipUsecases: 'What do teams use it for?',
+  chipConnects: 'What does it connect to?',
+  chipGroups: 'See the other groups',
+  chipMore: 'Something else about it',
+  chipDone: 'Carry on',
+  capped: "That's the shape of it. Shall we carry on?"
+}, (copy().explore || {}));
+
+/* where a node sits in the tree. A branch off the root is 1; a use-case group
+   is 2. This is the node's LEVEL — it does not go up because you looked at two
+   groups in a row, which is the whole point of it. */
+const exLevel = node => (String(node || '').indexOf('g:') === 0 ? 2 : (node === 'root' ? 0 : 1));
+
+/* every node of the tree: what to say, what to draw, where it can go next.
+   `seen` is the nodes already delivered in this detour — nothing in it is
+   offered again, and a branch whose content is exhausted is not offered at
+   all, so a chip never leads somewhere the visitor has already been. */
+function exploreNode(pid, node, seen) {
+  const ex = exFor(pid); if (!ex) return null;
+  const c = exCopy(), name = exName(pid, ex);
+  const read = list(seen);
+  const fill = (s, v) => tpl(s, Object.assign({ product: name }, v || {}));
+  const chip = (id, label) => ({ id: EXPLORE_PREFIX + id, label, value: EXPLORE_PREFIX + id, kind: 'explore' });
+  const has = k => list(ex[k]).length;
+  const groups = list(ex.useCaseGroups);
+  const unread = groups.filter(g => read.indexOf('g:' + g.id) === -1);
+  /* a branch is spent when there is nothing left behind it */
+  const spent = id => (id === 'usecases' ? !unread.length : read.indexOf(id) !== -1);
+  /* the top-level branches still worth offering, minus whatever is on screen */
+  const ways = (not) => {
+    const skip = list(not).concat(read.filter(x => x.indexOf('g:') !== 0));
+    const out = [];
+    if (has('differentiators') && skip.indexOf('differentiators') === -1 && !spent('differentiators')) out.push(chip('differentiators', c.chipDifferentiators));
+    if (has('useCaseGroups') && skip.indexOf('usecases') === -1 && !spent('usecases')) out.push(chip('usecases', c.chipUsecases));
+    if (has('connectsTo') && skip.indexOf('connects') === -1 && !spent('connects')) out.push(chip('connects', c.chipConnects));
+    return out;
+  };
+
+  /* the first step ANSWERS: what it is, then the three things that set it
+     apart, and only then what else they might want (client, 2026-09-17) */
+  if (node === 'root') {
+    const summary = ex.summary || (R() && R().productById(pid, data()) || {}).cardDescription || '';
+    return { say: fill(c.root, { summary }) || summary,
+      /* the root PRINTS the differentiators, so it has read that branch too */
+      reads: has('differentiators') ? ['differentiators'] : [],
+      panel: has('differentiators') ? { kind: 'diff', after: c.rootAfter, items: list(ex.differentiators).map(d => ({ title: d.title, line: d.line })) } : null,
+      chips: ways(['differentiators']) };
+  }
+  if (node === 'differentiators') {
+    return { say: fill(c.differentiators),
+      panel: { kind: 'diff', items: list(ex.differentiators).map(d => ({ title: d.title, line: d.line })) },
+      chips: ways(['differentiators']) };
+  }
+  if (node === 'connects') {
+    return { say: fill(c.connects),
+      panel: { kind: 'connects', items: list(ex.connectsTo).map(d => ({ title: d.title, line: d.line })) },
+      chips: ways(['connects']) };
+  }
+  /* the groups themselves ARE this step's content — its chips are its answer,
+     which is why the budget must never be allowed to empty them */
+  if (node === 'usecases') {
+    return { say: fill(c.usecases, { n: groups.length, cases: groups.reduce((n, g) => n + g.items.length, 0) }),
+      panel: null, chips: unread.map(g => chip('g:' + g.id, g.label)) };
+  }
+  if (node.indexOf('g:') === 0) {
+    const g = groups.find(x => x.id === node.slice(2));
+    if (!g) return null;
+    /* the groups they have NOT read, two of them by name and the rest behind
+       one chip. The old step listed three of the four siblings whether they
+       had been read or not, so "Growth and listening" — last in the list —
+       could not be reached from inside another group at all. The set shrinks
+       as they read, so by the second group every one that is left is named. */
+    const rest = groups.filter(x => x.id !== g.id && read.indexOf('g:' + x.id) === -1);
+    const near = rest.slice(0, 2).map(x => chip('g:' + x.id, x.label));
+    const over = rest.length > near.length ? [chip('usecases', c.chipGroups)] : [];
+    return { say: fill(c.group, { label: g.label, n: g.items.length }),
+      panel: { kind: 'cases', items: g.items.map(i => ({ title: i.name, line: i.line })) },
+      chips: near.concat(over, ways(['usecases'])) };
+  }
+  return null;
+}
+
+/* ── "i want to know about the machine" ──────────────────────────────────────
+   A question ABOUT a product, asked in the middle of another question. It used
+   to fall through to whatever step was on screen and be judged as an answer to
+   it: asked for a website, the visitor typed that sentence and was told "I need
+   the web address itself — like acme.com" (client, 2026-09-17). The matcher
+   already knew the name — nameMentions() reads it — but nothing asked.
+
+   So it is read before the step is: name a product we have detail for, in a
+   sentence shaped like a question about it, and the detour opens on THAT
+   product — whichever one happens to be on the card. The question that was on
+   screen is remembered and handed straight back afterwards.
+
+   It stays deliberately narrow. A product named while ANSWERING is still an
+   answer — a domain at the website step, an address at the email step, a chip
+   that matches — and a product with no explainer entry falls through rather
+   than opening an empty detour. */
+const ASKING_ABOUT = /\b(tell me|tell us|what is|what's|whats|who is|how does|how do|how would|explain|describe|more about|know about|hear about|learn about|read about|talk about|info|information|details|curious|interested in|show me|walk me)\b/i;
+function askedAboutProduct(text) {
+  const r = R(); if (!r || !r.nameMentions) return null;
+  const raw = String(text || '').trim();
+  if (!raw || raw.length > 240) return null;
+  const q = st.currentQuestion;
+  /* a real answer to the step on screen is an answer, not a question */
+  if (q && q.field === 'website' && S_extractDomain(raw)) return null;
+  if (q && q.field === 'email' && emailDomain(raw)) return null;
+  if (q && Qs() && Qs().matchSuggestion(q, raw)) return null;
+  const id = r.nameMentions(raw, data())[0];
+  if (!id || !exFor(id)) return null;
+  /* asked about, or simply named on its own ("the machine") */
+  const bare = r.norm(raw).replace(/^(the|a)\s+/, '');
+  const name = r.norm(exName(id, exFor(id))).replace(/^(the|a)\s+/, '');
+  if (!ASKING_ABOUT.test(raw) && bare !== name) return null;
+  return id;
+}
+
+/* ── WHAT ASKING ABOUT A PRODUCT TELLS US ──
+   Someone who says "tell me about The Machine" has told us a great deal, and
+   the opening path used to drop it: the detour answered the question and the
+   conversation then asked "which of these is closest?", as if nothing had been
+   said (client, 2026-09-17).
+
+   Its primary intents are taken as INFERRED rather than chosen — they asked
+   ABOUT it, not FOR it — and only when nothing else is known yet. Mid-
+   conversation the visitor has already said what they need, and a question
+   asked out of curiosity must not reweight it. */
+function noteProductInterest(pid) {
+  if (st.primaryGoal || st.intents.length) return false;
+  const r = R(); if (!r) return false;
+  const prim = list(((r.productById(pid, data()) || {}).intentTags || {}).primary);
+  if (!prim.length) return false;
+  absorb({ detectedIntents: prim, detectedGoals: [], inferred: {} }, {});
+  st.mentioned = [pid];
+  track('kimi_product_interest', { product: pid, intents: prim.join(',') });
+  return true;
+}
+
+/* the visitor tapped one of those chips, or the model called show_me */
+function explore(topic, opts) {
+  const o = opts || {};
+  const pid = o.productId || st.explore.productId || (st.reco && st.reco.primary) || null;
+  const ex = pid ? exFor(pid) : null;
+  if (!ex) return state();
+  const c = exCopy();
+  const node = String(topic || 'root').replace(EXPLORE_PREFIX, '') || 'root';
+  const max = flags().exploreMaxSteps == null ? 8 : flags().exploreMaxSteps;
+  /* a detour that has moved to another product starts its own reading */
+  const same = st.explore.productId === pid && !!st.explore.node;
+  const seen = same ? list(st.explore.seen) : [];
+  const step = exploreNode(pid, node, seen);
+  if (!step) return state();
+  const read = seen.concat([node], list(step.reads)).filter((x, i, a) => a.indexOf(x) === i);
+  const shown = (same ? st.explore.shown || 0 : 0) + 1;
+  /* THE BUDGET TAKES THE CHIPS, NEVER THE ANSWER. The question that was asked
+     is answered in full; the closing line goes UNDER it, and the only way on
+     is out. (It used to replace the answer, which left one path saying
+     "that's the shape of it" and nothing else — 2026-09-17.) */
+  const last = shown >= max || !step.chips.length;
+  st.explore = { productId: pid, node, depth: exLevel(node), panel: step.panel,
+    seen: read, shown, close: last ? tpl(c.capped, { product: exName(pid, ex) }) : null };
+  st.message = step.say;
+  st.ack = null; st.prompt = st.message;
+  st.suggestions = (last ? [] : step.chips)
+    .concat([{ id: EXPLORE_PREFIX + 'done', label: c.chipDone, value: EXPLORE_PREFIX + 'done', kind: 'explore' }]);
+  st.uiAction = 'EXPLORE';
+  st.hint = (copy().hints || {}).explore || 'Pick one, or ask me anything about it';
+  emit('explore_opened', { product: pid, node, depth: st.explore.depth });
+  track('kimi_explore', { product: pid, node, depth: st.explore.depth, step: shown, last,
+    items: step.panel ? step.panel.items.length : 0 });
+  notify();
+  return state();
+}
+
+/* leaving the detour: the conversation picks up exactly where it was */
+function exploreDone() {
+  const pid = st.explore.productId;
+  const c = exCopy();
+  const name = exName(pid, exFor(pid));
+  track('kimi_explore_done', { product: pid, depth: st.explore.depth, steps: st.explore.shown || 0 });
+  st.explore = blankExplore();
+  st.holds = 0;
+  if (st.resume && st.resume.uiAction) {
+    /* the question that was on screen when they wandered off */
+    Object.assign(st, st.resume);
+    st.resume = null;
+    notify();
+    return state();
+  }
+  /* nothing to go back to — the detour WAS the conversation so far. It is led
+     out of with a line that is true ("happy to go deeper whenever you like"),
+     never with the fallback that says we did not understand them. */
+  if (!st.primaryGoal && !st.intents.length) askGoal(tpl(c.doneGoal || c.done, { product: name }) || null);
+  else advance(tpl(c.done, { product: name }) || null);
+  notify();
+  return state();
+}
+const blankExplore = () => ({ productId: null, node: null, depth: 0, panel: null, seen: [], shown: 0, close: null });
+/* the chips this turn are explore chips, so answer() hands them here */
+const isExplore = text => String(text || '').indexOf(EXPLORE_PREFIX) === 0;
+
+/* ── opening ─────────────────────────────────────────────────────────────── */
+async function start(opts) {
+  const o = opts || {};
+  const S = eng();
+  const e = epoch;
+  await S.ready;
+  if (stale(e)) return state();
+  st = blank();
+  st.status = 'DISCOVERY';
+  const chip = o.chipLabel == null ? null : String(o.chipLabel);
+  const text = o.initialText == null ? null : String(o.initialText).trim();
+  track('kimi_started', { input_type: o.via || (chip ? 'pill' : 'free_text'), landing_page: location.pathname, utm_source: (S.session.attribution || {}).utm_source || null, utm_campaign: (S.session.attribution || {}).utm_campaign || null });
+
+  let goal = o.goal || null;
+  if (!goal && o.domain && R()) goal = R().goalForDomain(o.domain, data());
+  if (!goal && chip) { const g = goals().find(x => x.label.toLowerCase() === chip.toLowerCase()); if (g) goal = g.id; }
+  if (goal) setGoal(goal, 'pill');
+  if (chip) emit('answer_given', { id: GOAL_Q, slot: 'goal', text: chip, chip: goal, source: 'chip' });
+
+  if (text) {
+    st.rawProblemText = text.slice(0, 600);
+    track('kimi_free_text_submitted', { length: text.length });
+    noteHuman(text);
+    /* ── ANSWERING BEATS QUALIFYING ──
+       "i want more information about the machine", typed as the FIRST thing,
+       used to be read as a need and answered with "what's your work email?"
+       (client, 2026-09-17). A question about a named product is answered first;
+       the funnel picks up the moment they are done, through exploreDone(). */
+    if (flags().exploreMaxSteps !== 0) {
+      const named = askedAboutProduct(text);
+      if (named) {
+        track('kimi_explore_asked', { product: named, at: 'opening' });
+        noteProductInterest(named);        /* …and do not forget they asked */
+        explore('root', { productId: named });
+        return state();
+      }
+    }
+    const before = knowledge();
+    const read = await interpret(text);
+    if (stale(e)) return state();
+    absorb(read, {});
+    const asked = contactRequestIn(text, read);
+    if (asked) { fastTrack(asked); notify(); return state(); }
+    await readSiteIfNew();
+    if (stale(e)) return state();
+    if (knowledge() === before && !goal) {
+      /* nothing to route on yet: reply in kind, offer the starting points */
+      st.rawProblemText = null;
+      st.holds = 1;
+      askGoal(read.reply);
+      notify();
+      return state();
+    }
+    advance(read.ack);
+    notify();
+    return state();
+  }
+  advance();
+  notify();
+  return state();
+}
+
+/* a website anywhere in a sentence — the engine's own reader, so the two
+   agree on what a domain is */
+function S_extractDomain(text) {
+  try { return eng().extractDomain(text); } catch (e) { return null; }
+}
+
+function noteHuman(text) {
+  const S = eng();
+  try {
+    if (S.detectHumanAsk(text) && S.session.humanAsk !== true) { S.session.humanAsk = true; emit('human_requested', { text: String(text) }); }
+  } catch (e) {}
+}
+
+/* ── one answer ──────────────────────────────────────────────────────────── */
+async function answer(input) {
+  /* ── a tap on an explore chip is a DETOUR, not an answer ──
+     It is valid whatever is on screen, so it is read before the guards below:
+     once the detour is open uiAction is 'EXPLORE', and those guards would
+     otherwise drop every tap after the first. The question that was showing is
+     remembered and handed straight back when they are done. */
+  if (isExplore(input)) {
+    const topic = String(input).slice(EXPLORE_PREFIX.length);
+    if (topic === 'done') return exploreDone();
+    if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
+    return explore(topic);
+  }
+  /* …and a product asked about in words opens the same detour, from wherever
+     the conversation happens to be */
+  if (st.status !== 'CONTACT_CAPTURE' && flags().exploreMaxSteps !== 0) {
+    const named = askedAboutProduct(input);
+    if (named) {
+      if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
+      track('kimi_explore_asked', { product: named, at: (st.currentQuestion && st.currentQuestion.id) || st.status });
+      noteProductInterest(named);
+      return explore('root', { productId: named });
+    }
+  }
+  /* after the recommendation the composer asks for the email, then the phone */
+  if (st.status === 'CAPTURE_EMAIL') return captureEmail(String(input == null ? '' : input).trim());
+  if (st.status === 'CAPTURE_PHONE') return capturePhone(String(input == null ? '' : input).trim());
+  if (st.status === 'IDLE' || st.uiAction !== 'ASK' || !st.currentQuestion) return state();
+  const text = String(input == null ? '' : input).trim();
+  if (!text) return state();
+  const q = st.currentQuestion;
+  const e = epoch;
+  noteHuman(text);
+
+  if (q.id === GOAL_Q) {
+    const g = goals().find(x => x.id === text || x.label.toLowerCase() === text.toLowerCase());
+    emit('answer_given', { id: GOAL_Q, slot: 'goal', text, chip: g ? g.id : null });
+    if (g) { setGoal(g.id, 'pill'); st.currentQuestion = null; advance(); notify(); return state(); }
+    const before = knowledge();
+    const read = await interpret(text);
+    if (stale(e)) return state();
+    absorb(read, {});
+    track('kimi_free_text_submitted', { length: text.length, understood: knowledge() !== before });
+    const asked = contactRequestIn(text, read);
+    if (asked) { if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600); fastTrack(asked); notify(); return state(); }
+    if (knowledge() === before) { hold(read.reply); notify(); return state(); }
+    if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600);
+    st.currentQuestion = null;
+    advance(read.ack); notify(); return state();
+  }
+
+  /* a tap on an explore chip is a detour into the product's detail, not an
+     answer to the question on screen: the question is remembered and handed
+     back when they are done (client, 2026-09-17) */
+  if (isExplore(text)) {
+    const topic = String(text).slice(EXPLORE_PREFIX.length);
+    if (topic === 'done') return exploreDone();
+    if (st.uiAction !== 'EXPLORE') st.resume = { uiAction: st.uiAction, message: st.message, ack: st.ack, prompt: st.prompt, suggestions: st.suggestions.slice(), hint: st.hint, currentQuestion: st.currentQuestion };
+    return explore(topic);
+  }
+
+  /* the opening two questions are still a conversation: someone who answers
+     either of them with "just call me" is cutting to the chase, not naming a
+     website or a job title. Read deterministically, so it costs no round trip. */
+  if (q.field === 'website' || q.field === 'role') {
+    const cut = R() ? R().contactRequest(text, data()) : null;
+    if (cut) { if (!st.rawProblemText) st.rawProblemText = text.slice(0, 600); fastTrack(cut); notify(); return state(); }
+  }
+
+  /* ── THE WORK EMAIL, ASKED SECOND ──
+     One answer for two questions: the address is the contact, and its domain
+     is the site to read. A personal address is kept all the same — it is how
+     we reach them — and the website is asked straight after it. The lead is
+     created here, early, so nothing is lost if they leave before the
+     recommendation; it carries whatever is known at the time and is updated
+     as the conversation fills in. */
+  if (q.field === 'email') {
+    const c = copy();
+    const domain = emailDomain(text);
+    if (!domain) {
+      /* …but it is not a trap. Someone who answers the address with what they
+         actually want — "we need to track competitors" — has told us something
+         far more useful, and being asked for an email again would be rude.
+         Take the words, drop the question, carry on. */
+      const read = await interpret(text);
+      if (stale(e)) return state();
+      const before = knowledge();
+      absorb(read, {});
+      if (knowledge() !== before || read.contactRequest) {
+        st.currentQuestion = null;
+        st.emailDone = true;
+        track('kimi_email_deferred', { at: 'story' });
+        if (read.contactRequest) { fastTrack(read.contactRequest); notify(); return state(); }
+        advance(read.ack || null);
+        notify(); return state();
+      }
+      /* Someone who typed an address and got it wrong wants "check it"; someone
+         who said no wants a reason. They are not the same turn, and one must
+         not spend the other's patience: a typo is always asked again, and a
+         refusal is answered ONCE with what the domain actually buys them
+         (client, 2026-09-16: "we ask again one more time, with a justification
+         that we can provide customized services based on your email domain").
+         Say no twice and it is dropped. */
+      const tried = /@/.test(text) || /[a-z0-9][a-z0-9-]*\.[a-z]{2,}/i.test(text);
+      if (tried || !st.emailWhyGiven) {
+        if (!tried) st.emailWhyGiven = true;
+        st.holds++;
+        st.message = tried
+          ? ((c.contactErrors || {}).email || 'That does not look like an email address.')
+          : (c.emailWhy || (c.contactErrors || {}).email || 'That does not look like an email address.');
+        st.ack = null; st.prompt = st.message; st.suggestions = []; st.uiAction = 'ASK';
+        emit('question_asked', { id: q.id, slot: 'work_email', copy: st.message, mode: tried ? 'nudge' : 'why' });
+        track('kimi_email_nudged', { at: 'story', declined: !tried });
+        notify(); return state();
+      }
+      /* asked twice is an answer: the conversation carries on and finds them a
+         product without it. The address is asked for again at the end, by the
+         form, when there is something to send them. */
+      st.currentQuestion = null;
+      st.emailDone = true;
+      st.holds = 0;   /* turning the address down is an answer, not a blank turn */
+      emit('answer_given', { id: q.id, slot: 'work_email', text: '__skip__', chip: null });
+      track('kimi_email_skipped', { at: 'story', declined: true });
+      /* advance() drops its ack when it falls through to the goal, and the
+         goal's own line ("I didn't catch a problem in that") is the wrong
+         thing to say to someone who just declined — so say ours instead */
+      if (!st.primaryGoal && !st.intents.length) { askGoal(c.emailSkippedGoal || c.emailSkipped || null); notify(); return state(); }
+      advance(c.emailSkipped || null);
+      notify(); return state();
+    }
+    const email = text.trim();
+    st.email = email;
+    st.emailDone = true;
+    st.emailFree = isFreeMail(domain);
+    st.lead = Object.assign({ name: null, phone: null }, st.lead || {}, { email, company: st.company || null });
+    setSlot('work_email', email, 'visitor');
+    setSlot('contact_consent', true, 'visitor');
+    emit('answer_given', { id: q.id, slot: 'work_email', text: '@' + domain, chip: null });
+    track('kimi_question_answered', { question_id: q.id, input_type: 'free_text', understood: true });
+    st.currentQuestion = null;
+    /* the lead goes out now, and again as more is learned */
+    const e2 = epoch;
+    const delivery = await submitLead(leadPayload());
+    if (stale(e2)) return state();
+    if (delivery.ok) {
+      st.contactCaptured = true;
+      emit('capture_email', { domain, kind: 'kimi' });
+      emit('capture_consent', { consent: true });
+      track('kimi_email_captured', Object.assign({ email_domain: domain, free_mail: st.emailFree, at: 'early',
+        delivered: !!delivery.delivered, destination: delivery.destination || null }, recoProps()));
+    }
+    /* a personal address tells us nothing about the company: on to the website */
+    if (st.emailFree) {
+      track('kimi_email_free', { email_domain: domain });
+      advance(c.emailFree || null);
+      notify(); return state();
+    }
+    /* a company's own address: its domain IS the website, and the site is read
+       now — so the website question never has to be asked at all */
+    st.website = domain;
+    setSlot('company_domain', domain, 'visitor');
+    st.researching = domain;
+    st.uiAction = 'READING';
+    st.message = tpl(c.emailRead || (c.research || {}).reading, { domain });
+    notify();
+    const found = await research(domain);
+    if (stale(e2)) return state();
+    st.researching = null;
+    st.researched = true;
+    absorbFindings(found);
+    if (!found) track('kimi_site_read', { domain, known: false });
+    advance(null);
+    notify(); return state();
+  }
+
+  /* the website question: take the domain, look it up, show what came back */
+  if (q.field === 'website') {
+    const domain = S_extractDomain(text) || null;
+    if (!domain) {
+      const declined = /^(__skip__|skip|no|nope|none|rather not|i'd rather not|prefer not|n\/a|pass)\b/i.test(text);
+      if (!st.websiteNudged) {
+        /* no chip out of this question — "we really want to get their company"
+           (client, 2026-09-10). Asked once more, for the address itself. */
+        st.websiteNudged = true;
+        st.holds++;
+        st.message = (copy().research || {}).needDomain || q.prompt;
+        st.ack = null; st.prompt = st.message;
+        st.suggestions = [];
+        st.uiAction = 'ASK';
+        emit('question_asked', { id: q.id, slot: 'website', copy: st.message, mode: 'nudge' });
+        track('kimi_website_nudged', { declined });
+        notify(); return state();
+      }
+      /* twice is an answer: what they typed is kept as the company's name, and
+         the conversation moves on rather than trapping them here */
+      st.website = '__skip__';
+      if (!declined) { st.company = text.slice(0, 120); setSlot('company', st.company, 'visitor'); }
+      emit('answer_given', { id: q.id, slot: 'website', text: declined ? '__skip__' : text, chip: null });
+      track('kimi_question_answered', { question_id: q.id, input_type: 'free_text', understood: false, company_named: !declined });
+      st.currentQuestion = null;
+      advance((copy().research || {}).noDomain || (copy().research || {}).skipped);
+      notify(); return state();
+    }
+    emit('answer_given', { id: q.id, slot: 'website', text, chip: null });
+    st.website = domain;
+    setSlot('company_domain', domain, 'visitor');
+    /* "we're acme.com and we need help with competitors" — the domain answers
+       the question, and the rest is not thrown away. The keyword read costs
+       nothing; the model is not worth a round trip on top of the lookup. */
+    if (text.trim().split(/\s+/).length > 2) absorb(deterministicRead(text), {});
+    track('kimi_question_answered', { question_id: q.id, input_type: 'free_text', understood: true });
+    /* the UI shows "Reading acme.com…" while this runs */
+    st.researching = domain;
+    st.uiAction = 'READING';
+    st.message = tpl((copy().research || {}).reading, { domain });
+    notify();
+    const found = await research(domain);
+    if (stale(e)) return state();
+    st.researching = null;
+    st.researched = true;
+    absorbFindings(found);
+    if (!found) track('kimi_site_read', { domain, known: false });
+    st.currentQuestion = null;
+    advance(null);
+    notify(); return state();
+  }
+
+  /* the role question: a chip is a band, typed words are matched to one and
+     kept verbatim either way */
+  if (q.field === 'role') {
+    const chip = Qs() ? Qs().matchSuggestion(q, text) : null;
+    const band = chip ? chip.value : roleFromText(text);
+    emit('answer_given', { id: q.id, slot: 'role_seniority', text, chip: chip ? chip.value : null });
+    st.role = band || 'other';
+    if (!chip) st.roleText = text.slice(0, 80);
+    setSlot('role_seniority', band || text.slice(0, 80), 'visitor');
+    track('kimi_question_answered', { question_id: q.id, suggestion_id: chip ? chip.id : null, input_type: chip ? 'pill' : 'free_text', understood: !!band });
+    st.currentQuestion = null;
+    advance(null);
+    notify(); return state();
+  }
+
+  const sel = Qs() ? Qs().matchSuggestion(q, text) : null;
+  emit('answer_given', { id: q.id, slot: q.field || 'intent', text, chip: sel ? sel.value : null });
+  if (sel) {
+    Qs().applySuggestion(st, q, sel);
+    if (q.field === 'companySize' && st.companySize) setSlot('size_tier', sizeTier(st.companySize), 'visitor');
+    track('kimi_question_answered', { question_id: q.id, suggestion_id: sel.id, input_type: 'pill' });
+  } else {
+    const before = knowledge();
+    const read = await interpret(text);
+    if (stale(e)) return state();
+    /* asked to be contacted instead of answering: the questions stop here */
+    const asked = contactRequestIn(text, read);
+    if (asked) { absorb(read, {}); fastTrack(asked); notify(); return state(); }
+    /* a typed answer to a band question is that band when the words carry one */
+    if (q.field && q.field !== 'intent') {
+      const bands = R() ? R().bandsFromText(text, data()) : {};
+      const map = { companySize: bands.companySize, creatorProgramSize: bands.creatorProgramSize, geographicScope: bands.geographicScope };
+      if (map[q.field]) st[q.field] = map[q.field];
+      else if (read.inferred && read.inferred[q.field]) st[q.field] = String(read.inferred[q.field]);
+      if (q.field === 'companySize' && st.companySize) setSlot('size_tier', sizeTier(st.companySize), 'visitor');
+    }
+    absorb(read, { explicit: q.field === 'intent' || !q.field });
+    const understood = knowledge() !== before;
+    track('kimi_question_answered', { question_id: q.id, suggestion_id: null, input_type: 'free_text', understood });
+    /* nothing learned: answer in kind and stay on this question */
+    if (!understood) { hold(read.reply); notify(); return state(); }
+    await readSiteIfNew();
+    if (stale(e)) return state();
+    st.currentQuestion = null;
+    advance(read.ack); notify(); return state();
+  }
+  st.currentQuestion = null;
+  advance(); notify(); return state();
+}
+
+/* ── contact, then the recommendation ────────────────────────────────────── */
+const EMAIL_RE = /^[^\s@]+@([a-z0-9.-]+\.[a-z]{2,})$/i;
+const PHONE_RE = /^\+?[\d\s().-]{7,20}$/;
+const emailDomain = e => { const m = String(e || '').trim().toLowerCase().match(EMAIL_RE); return m ? m[1] : null; };
+/* ── A WORK ADDRESS, OR A PERSONAL ONE ──
+   The work email's domain IS the website, which is why it is asked first: one
+   answer does the job of two. A free address is still a perfectly good way to
+   reach someone — it is kept as the contact — but it says nothing about their
+   company, so the website is asked after it (client, 2026-09-16: "if they put
+   in a Gmail or some ambiguous email, then we'll ask for the website").
+   Deliberately a short list of the addresses people actually use, not an
+   attempt at every free host on earth: a miss costs one skipped lookup. */
+const FREE_MAIL = ['gmail.com', 'googlemail.com', 'yahoo.com', 'yahoo.co.uk', 'ymail.com', 'hotmail.com', 'hotmail.co.uk',
+  'outlook.com', 'live.com', 'msn.com', 'icloud.com', 'me.com', 'mac.com', 'aol.com', 'proton.me', 'protonmail.com',
+  'gmx.com', 'gmx.de', 'mail.com', 'zoho.com', 'yandex.com', 'yandex.ru', 'mail.ru', 'qq.com', '163.com', '126.com',
+  'comcast.net', 'verizon.net', 'btinternet.com', 'sbcglobal.net', 'orange.fr', 'free.fr', 'web.de', 't-online.de'];
+const isFreeMail = d => !d || FREE_MAIL.indexOf(String(d).toLowerCase()) !== -1;
+
+function validate(lead) {
+  const c = copy().contactErrors || {};
+  const name = String(lead.name || '').replace(/\s+/g, ' ').trim();
+  const email = String(lead.email || '').trim();
+  const phone = String(lead.phone || '').trim();
+  const company = String(lead.company || '').replace(/\s+/g, ' ').trim();
+  if (!name) return { error: 'name', message: c.name };
+  if (!emailDomain(email)) return { error: 'email', message: c.email };
+  if (!phone || !PHONE_RE.test(phone) || phone.replace(/\D/g, '').length < 7) return { error: 'phone', message: c.phone };
+  return { lead: { name, email, phone, company: company || null } };
+}
+
+function discoveryPayload() {
+  const S = eng();
+  const r = st.reco || {};
+  const a = (S && S.session && S.session.attribution) || {};
+  return {
+    sessionId: st.sessionId,
+    primaryGoal: st.primaryGoal,
+    rawProblemText: st.rawProblemText,
+    intents: st.intents,
+    companySize: st.companySize,
+    creatorProgramSize: st.creatorProgramSize,
+    geographicScope: st.geographicScope,
+    industry: st.industry,
+    askedQuestionIds: st.askedQuestionIds,
+    steps: st.step,
+    primary: r.primary || null,
+    secondary: list(r.secondary),
+    confidence: r.confidence || null,
+    summary: st.summary,
+    llmStatus: st.llmStatus,
+    llmProvider: st.llmProvider,
+    contactRequest: st.contactRequest,
+    role: st.role,
+    roleText: st.roleText,
+    website: st.website && st.website !== '__skip__' ? st.website : null,
+    siteKnown: !!st.findings,
+    attribution: {
+      utmSource: a.utm_source || null, utmMedium: a.utm_medium || null, utmCampaign: a.utm_campaign || null, utmContent: a.utm_content || null,
+      landingPage: location.pathname + location.search, referrer: a.referrer || null
+    }
+  };
+}
+
+async function explain() {
+  const S = eng();
+  const r = st.reco;
+  if (!flags().explainWithLlm || !flags().llm || !S || !r || !r.primary || typeof S._ask !== 'function') return {};
+  try {
+    const j = await withTimeout(S._ask({ mode: 'explain', productId: r.primary, intents: st.intents.map(i => i.id), goal: st.primaryGoal, summary: st.summary, rawProblemText: st.rawProblemText }, EXPLAIN_MS), EXPLAIN_MS + 500);
+    if (j && j.ok === true && typeof j.why === 'string' && j.why.trim()) {
+      const meta = j.llm || {};
+      if (meta.fallbacks > 0) track('kimi_model_fallback', { llm_fallback_count: meta.fallbacks, llm_model: meta.model || null, call: 'explain' });
+      return { [r.primary]: j.why.trim() };
+    }
+    noteDeterministic('explain_unavailable');
+  } catch (e) { noteDeterministic(e && e.message); /* the template is the answer */ }
+  return {};
+}
+
+async function contact(lead) {
+  if (st.status !== 'CONTACT_CAPTURE' && st.status !== 'READY_FOR_CONTACT') return { ok: false, error: 'not_ready', state: state() };
+  const v = validate(lead || {});
+  if (v.error) return { ok: false, error: v.error, message: v.message, state: state() };
+  st.lead = v.lead;
+  st.error = null;
+
+  /* the session keeps the contact (engine.js redacts both slots on the bus) */
+  setSlot('work_email', v.lead.email, 'visitor');
+  setSlot('phone', v.lead.phone, 'visitor');
+  setSlot('contact_consent', true, 'visitor');
+  if (v.lead.company) setSlot('company', v.lead.company, 'visitor');
+
+  const payload = { lead: v.lead, discovery: discoveryPayload(), page: location.pathname + location.search, ts: new Date().toISOString(), source: 'stagwell-ai · kimi' };
+  const e = epoch;
+  const [delivery, why] = await Promise.all([submitLead(payload), explain()]);
+  /* started over while the lead was being sent: the lead is in HubSpot, the
+     cards are not drawn over the empty box */
+  if (stale(e)) return { ok: true, stale: true, state: state() };
+
+  if (!delivery.ok && delivery.retry) {
+    st.error = (copy().contactErrors || {}).failed || 'That did not go through.';
+    notify();
+    return { ok: false, retry: true, error: 'delivery', message: st.error, state: state() };
+  }
+
+  st.contactCaptured = true;
+  emit('capture_email', { domain: emailDomain(v.lead.email), kind: 'kimi' });
+  emit('capture_phone', { given: true, kind: 'kimi' });
+  emit('capture_consent', { consent: true });
+  emit('journey_converted', { kind: 'kimi', product: (st.reco || {}).primary || null });
+  track('kimi_contact_submitted', Object.assign({ email_domain: emailDomain(v.lead.email), phone_given: true, delivered: !!delivery.delivered, destination: delivery.destination || null }, recoProps()));
+  showRecommendation(why);
+  notify();
+  return { ok: true, delivered: !!delivery.delivered, state: state() };
+}
+
+async function submitLead(payload) {
+  if (typeof fetch !== 'function') return { ok: false, retry: true };
+  try {
+    const ac = new AbortController();
+    const t = setTimeout(() => ac.abort(), 12000);
+    const r = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload), signal: ac.signal, keepalive: true });
+    clearTimeout(t);
+    let j = null; try { j = await r.json(); } catch (e) { j = null; }
+    if (r.status >= 500 || !j) return { ok: false, retry: true, status: r.status };
+    if (r.status === 400) return { ok: false, retry: false, error: (j && j.error) || 'invalid' };
+    track('kimi_lead_delivery', { delivered: !!j.delivered, destination: j.destination || null, mode: j.mode || null });
+    return { ok: true, delivered: !!j.delivered, destination: j.destination || null };
+  } catch (e) {
+    return { ok: false, retry: true, error: e && e.name === 'AbortError' ? 'timeout' : 'network' };
+  }
+}
+
+function showRecommendation(why) {
+  const c = copy();
+  const r = st.reco || recompute();
+  /* a lead can carry an email and no name at all: String(null) is "null", which
+     is truthy, and the recommendation opened "Thanks, null." (2026-09-17) */
+  const first = String((st.lead && st.lead.name) || '').trim().split(/\s+/)[0];
+  const vars = { first: first || 'there', name: st.lead ? st.lead.name : '', email: st.lead ? st.lead.email : '', phone: st.lead ? st.lead.phone : '' };
+  st.cards = C() ? C().buildCards(r, signals(), data(), c, { why: why || {}, secondary: flags().secondaryRecommendations !== false }) : [];
+  const low = !r || !r.confidence || r.confidence.level === 'low';
+  /* someone who cut to the chase may have told us nothing to recommend from.
+     They are still a lead — say a specialist is coming and leave it there,
+     rather than dressing up an empty card. */
+  if (!st.cards.length) {
+    st.message = tpl(st.lead && st.lead.phone ? c.fastTrackDonePhone : c.fastTrackDone, vars);
+    st.after = c.fastTrackExplore || null;
+  } else {
+    /* no lead yet = the open path: the cards come before any details are asked */
+    const intro = st.contactRequest ? c.recommendationIntroFast
+      : !st.lead ? (low ? c.recommendationIntroOpenLow : c.recommendationIntroOpen)
+      : (low ? c.recommendationIntroLow : c.recommendationIntro);
+    st.message = tpl(intro, vars);
+    st.after = st.lead ? tpl(st.lead.phone ? c.afterCardsPhone : c.afterCards, vars) : null;
+    /* kept apart from message: on the open path the email ask follows at once
+       and would otherwise be written over the cards' own heading */
+    st.cardsIntro = st.message;
+  }
+  st.status = 'RECOMMENDATION';
+  st.uiAction = 'SHOW_RECOMMENDATIONS';
+  st.suggestions = [];
+  st.currentQuestion = null;
+  track('kimi_recommendation_generated', Object.assign({ cards: st.cards.length, why_from_llm: !!(why && Object.keys(why).length) }, recoProps()));
+}
+
+/* ── the open path: recommendation shown, then email → phone → a call ──
+   The client's order (2026-09-10). The lead is created in HubSpot the moment
+   the email lands and updated when the phone does (leadService upserts by
+   email), so nothing is lost if they leave halfway. A wrong email is asked
+   again; a wrong phone is asked once more, then the call is offered anyway. */
+/* the company is read at SEND time, not at capture time: with the address
+   taken at the top, the name of the company often turns up later — typed where
+   the website was asked for — and the lead is written again when it does */
+const leadPayload = () => ({
+  lead: Object.assign({}, st.lead, { company: (st.lead && st.lead.company) || st.company || null }),
+  discovery: discoveryPayload(), page: location.pathname + location.search,
+  ts: new Date().toISOString(), source: 'stagwell-ai · kimi'
+});
+
+const EMAIL_SKIP = '__noemail__';
+
+function askEmail() {
+  const c = copy();
+  st.status = 'CAPTURE_EMAIL'; st.uiAction = 'CAPTURE_EMAIL';
+  st.message = c.askEmail || 'Where should I send this? Your work email:';
+  st.ack = null; st.prompt = st.message;
+  st.hint = (c.hints || {}).email || 'you@company.com';
+  /* a way past it that does not depend on the matcher reading their words */
+  st.suggestions = [{ id: EMAIL_SKIP, label: c.emailSkipChip || 'Not right now', value: EMAIL_SKIP, kind: 'skip' }];
+  st.currentQuestion = null; st.holds = 0;
+  track('kimi_contact_viewed', Object.assign({ mode: 'open', ask: 'email' }, recoProps()));
+}
+
+/* THEY SAID NO. Take it as a no.
+   This step used to run every non-address through the address validator, so
+   "no", "no thanks", "I'd rather not", "skip", "I already said no" all came
+   back as "That does not look like a business email — check the address",
+   forever: no pill, no skip, no exit but Start over, and no lead captured
+   either. Measured over eight refusals in a row (2026-09-17). */
+function emailDeclined() {
+  const c = copy();
+  st.holds = 0;
+  st.emailDone = true;
+  st.suggestions = [];
+  emit('answer_given', { id: 'work_email', slot: 'work_email', text: '__skip__', chip: null });
+  track('kimi_email_skipped', Object.assign({ at: 'late', declined: true }, recoProps()));
+  book();
+  /* book() writes its own opening line; this goes in front of it, so the first
+     thing they read is that the answer was heard */
+  st.message = (c.emailSkippedLate || "No problem — I won't ask again.") + ' ' + st.message;
+  st.prompt = st.message;
+  notify(); return state();
+}
+
+async function captureEmail(text) {
+  const c = copy();
+  const raw = String(text == null ? '' : text).trim();
+  if (raw === EMAIL_SKIP) return emailDeclined();
+  if (!emailDomain(raw)) {
+    /* a typo and a refusal are not the same turn — the same distinction the
+       first ask makes (see the work_email step above): something shaped like an
+       address is asked about again, anything else is taken as a no */
+    const tried = /@/.test(raw) || /[a-z0-9][a-z0-9-]*\.[a-z]{2,}/i.test(raw);
+    if (!tried) return emailDeclined();
+    st.holds++;
+    st.message = (c.contactErrors || {}).email || 'That does not look like an email address.'; st.prompt = st.message;
+    notify(); return state();
+  }
+  text = raw;
+  const email = text.trim();
+  st.lead = { name: null, email, phone: null, company: st.company || null };
+  st.error = null;
+  setSlot('work_email', email, 'visitor');
+  setSlot('contact_consent', true, 'visitor');
+  if (st.company) setSlot('company', st.company, 'visitor');
+  const e = epoch;
+  const delivery = await submitLead(leadPayload());
+  if (stale(e)) return state();
+  if (!delivery.ok && delivery.retry) {
+    st.holds++;
+    st.message = (c.contactErrors || {}).failed || 'That did not go through.'; st.prompt = st.message;
+    notify(); return state();
+  }
+  st.contactCaptured = true;
+  emit('capture_email', { domain: emailDomain(email), kind: 'kimi' });
+  emit('capture_consent', { consent: true });
+  emit('journey_converted', { kind: 'kimi', product: (st.reco || {}).primary || null });
+  track('kimi_email_captured', Object.assign({ email_domain: emailDomain(email), at: 'late', delivered: !!delivery.delivered, destination: delivery.destination || null }, recoProps()));
+  /* the number is asked for by the thing that needs it, not by the
+     conversation (client, 2026-09-16) — unless flags.phoneStep says otherwise */
+  if (flags().phoneStep) askPhone(); else book();
+  notify(); return state();
+}
+
+function askPhone() {
+  const c = copy();
+  st.status = 'CAPTURE_PHONE'; st.uiAction = 'CAPTURE_PHONE';
+  st.message = tpl(c.askPhone || 'Thanks — I\'ll send it to {email}. And a number, if you\'d rather we call?', { email: st.lead ? st.lead.email : '' });
+  st.ack = null; st.prompt = st.message;
+  st.hint = (c.hints || {}).phone || '+1 555 000 0000';
+  st.suggestions = []; st.holds = 0;
+  track('kimi_contact_viewed', Object.assign({ mode: 'open', ask: 'phone' }, recoProps()));
+}
+
+async function capturePhone(text) {
+  const c = copy();
+  const good = PHONE_RE.test(text) && text.replace(/\D/g, '').length >= 7;
+  if (!good) {
+    if (!st.phoneNudged) {
+      st.phoneNudged = true; st.holds++;
+      st.message = (c.contactErrors || {}).phoneNudge || (c.contactErrors || {}).phone || 'That does not look like a phone number.'; st.prompt = st.message;
+      notify(); return state();
+    }
+    track('kimi_phone_declined', recoProps());
+    book(); notify(); return state();
+  }
+  st.lead.phone = text.trim();
+  setSlot('phone', st.lead.phone, 'visitor');
+  const e = epoch;
+  const delivery = await submitLead(leadPayload());        /* the same contact, updated */
+  if (stale(e)) return state();
+  emit('capture_phone', { given: true, kind: 'kimi' });
+  track('kimi_phone_captured', Object.assign({ delivered: !!delivery.delivered }, recoProps()));
+  book(); notify(); return state();
+}
+
+function book() {
+  const c = copy();
+  const r = st.reco || {};
+  const p = r.primary && R() ? R().productById(r.primary, data()) : null;
+  const vars = { email: st.lead ? st.lead.email : '', phone: st.lead && st.lead.phone ? st.lead.phone : '', product: pName(p) || 'the right product' };
+  st.status = 'BOOK'; st.uiAction = 'BOOK';
+  st.message = tpl(c.bookIntro || 'Last thing — pick a time and a Stagwell AI specialist will walk you through {product}.', vars);
+  st.action = { label: c.bookCta || 'Book a call', cta: 'demo' };
+  st.after = tpl(st.lead && st.lead.phone ? (c.bookAfterPhone || c.afterCardsPhone) : (c.bookAfter || c.afterCards), vars);
+  st.suggestions = []; st.hint = null; st.currentQuestion = null;
+  track('kimi_book_offered', recoProps());
+}
+
+function clicked(type, productId, url, from) {
+  const map = { DEMO: 'kimi_demo_clicked', SELF_SERVICE: 'kimi_self_service_clicked', EXPERT_CALL: 'kimi_demo_clicked', LEARN_MORE: 'kimi_product_clicked', BOOK: 'kimi_book_clicked' };
+  const external = url && /^https?:\/\//i.test(url) && !/^https?:\/\/[^/]*stagwell/i.test(url);
+  /* from: 'card' (the recommendation), 'chat' (a way-finding pointer mid-conversation), 'form' (the skip link on the contact form) */
+  track(map[type] || 'kimi_product_clicked', { product: productId || null, cta: type, url: url || null, from: from || 'card', at_step: st.step });
+  if (external) track('kimi_external_site_clicked', { product: productId || null, url });
+  emit('handoff_click', { product: productId || null, cta: type, url: url || null });
+  if (st.status === 'RECOMMENDATION' || st.status === 'BOOK') { st.status = 'COMPLETE'; st.uiAction = 'COMPLETE'; notify(); }
+}
+
+/* ── public surface ──────────────────────────────────────────────────────── */
+function state() {
+  return {
+    sessionId: st.sessionId,
+    status: st.status,
+    step: st.step,
+    uiAction: st.uiAction,
+    message: st.message,
+    after: st.after || null,
+    cardsIntro: st.cardsIntro || null,
+    rawProblemText: st.rawProblemText || null,
+    action: st.action ? Object.assign({}, st.action) : null,
+    company: st.company,
+    holds: st.holds,
+    suggestions: st.suggestions.slice(),
+    hint: st.hint,
+    question: st.currentQuestion ? { id: st.currentQuestion.id, field: st.currentQuestion.field || 'intent' } : null,
+    website: st.website,
+    email: st.email,
+    emailFree: !!st.emailFree,
+    role: st.role,
+    ack: st.ack,
+    prompt: st.prompt,
+    pointers: st.pointers ? { kind: st.pointers.kind, items: st.pointers.items.slice() } : null,
+    researched: !!st.researched,
+    previewed: !!st.previewed,
+    exploreOffer: st.exploreOffer || null,
+    explore: st.explore && st.explore.node ? { productId: st.explore.productId, node: st.explore.node, depth: st.explore.depth,
+      panel: st.explore.panel, close: st.explore.close || null, seen: list(st.explore.seen), step: st.explore.shown || 0 } : null,
+    findings: st.findings ? Object.assign({}, st.findings) : null,
+    contact: st.contact ? Object.assign({}, st.contact) : null,
+    contactRequest: st.contactRequest,
+    primaryGoal: st.primaryGoal,
+    intents: st.intents.slice(),
+    companySize: st.companySize,
+    creatorProgramSize: st.creatorProgramSize,
+    geographicScope: st.geographicScope,
+    askedQuestionIds: st.askedQuestionIds.slice(),
+    recommendation: st.reco ? { primary: st.reco.primary, secondary: st.reco.secondary.slice(), confidence: st.reco.confidence, candidates: st.reco.candidates.slice() } : null,
+    cards: st.cards.slice(),
+    contactCaptured: st.contactCaptured,
+    lead: st.lead ? { name: st.lead.name, email: st.lead.email, phone: st.lead.phone } : null,
+    llmStatus: st.llmStatus,
+    llmProvider: st.llmProvider,
+    error: st.error
+  };
+}
+function notify() { const s = state(); listeners.slice().forEach(cb => { try { cb(s); } catch (e) {} }); }
+function onChange(cb) { if (typeof cb !== 'function') return () => {}; listeners.push(cb); return () => { listeners = listeners.filter(f => f !== cb); }; }
+
+/* ── the voice agent's hands (KIMI-VOICE-PLAN.md §3) ──
+   The Realtime model cannot move a step, recommend a product or write a lead
+   itself: it calls one of these, the flow does exactly what it does for a
+   typed turn, and the view below is what the model is allowed to say next. */
+function findingsFacts() {
+  const f = st.findings; if (!f) return null;
+  const R_ = (copy().research || {});
+  const out = {};
+  if (f.name) out.company = f.name;
+  if (f.domain) out.domain = f.domain;
+  if (f.industry) out.industry = f.industry;
+  if (f.companySize) out.size = (R_.sizeBands || {})[f.companySize] || f.companySize;
+  if (list(f.competitors).length) out.comparedWith = f.competitors.slice();
+  return Object.keys(out).length ? out : null;
+}
+function toolView() {
+  const s = state();
+  const shown = [];
+  if (s.findings && s.researched) shown.push('a fact list about their company');
+  if (s.uiAction === 'CAPTURE_CONTACT') shown.push('a short contact form (name, email, phone) — wait for them to fill it in');
+  if (s.cards && s.cards.length && (s.previewed || s.uiAction === 'CAPTURE_EMAIL' || s.uiAction === 'SHOW_RECOMMENDATIONS' || s.uiAction === 'CAPTURE_PHONE' || s.uiAction === 'BOOK' || s.uiAction === 'COMPLETE')) shown.push('the recommendation card(s)');
+  if (s.uiAction === 'BOOK') shown.push('a "Book a call" button');
+  const stepOf = { DISCOVERY: null, QUALIFICATION: null, CAPTURE_EMAIL: 'their work email', CAPTURE_PHONE: 'their phone number', BOOK: 'booking a call', RECOMMENDATION: 'the recommendation', CONTACT_CAPTURE: 'the contact form', COMPLETE: 'done' };
+  const q = s.question;
+  const step = q ? ({ website: 'their website', companySize: 'how large their organisation is', role: 'their role', goal: 'what they want to solve' }[q.field] || 'a question about their need') : (stepOf[s.status] || null);
+  /* websites, emails and phone numbers are typed, never taken by ear (client, 2026-09-11) */
+  const typed = (q && (q.field === 'website' || q.field === 'email')) || s.status === 'CAPTURE_EMAIL' || s.status === 'CAPTURE_PHONE';
+  return {
+    status: s.status,
+    step,
+    input: typed ? 'typed' : 'spoken',
+    say: s.message || '',
+    question: q ? { id: q.id, prompt: s.prompt || s.message, options: list(s.suggestions).map(x => x.label) } : null,
+    facts: findingsFacts(),
+    recommendation: s.cards && s.cards.length ? s.cards.map(c => ({ name: c.productName, badge: c.badge, description: c.description, why: c.whyThisFits })) : null,
+    lead: s.lead ? { emailGiven: !!s.lead.email, phoneGiven: !!s.lead.phone } : null,
+    holding: !!(s.holds && s.holds > 0),
+    shown,
+    done: s.status === 'BOOK' || s.status === 'COMPLETE'
+  };
+}
+function requestContact(kind) {
+  const k = String(kind || '').toLowerCase();
+  const ok = ['call', 'demo', 'trial', 'expert', 'pricing'].indexOf(k) !== -1;
+  if (!ok) return state();
+  if (st.status === 'IDLE') { st.status = 'DISCOVERY'; track('kimi_started', { input_type: 'voice', landing_page: location.pathname }); }
+  if (st.status === 'CONTACT_CAPTURE' || st.status === 'RECOMMENDATION' || st.status === 'BOOK' || st.status === 'COMPLETE') return state();
+  recompute();
+  fastTrack(k);
+  notify();
+  return state();
+}
+const tools = {
+  async submit_answer(args) {
+    const text = String((args || {}).text == null ? '' : args.text).trim();
+    if (!text) return toolView();
+    if (st.status === 'IDLE') await start({ initialText: text, via: 'voice' });
+    else await answer(text);
+    return toolView();
+  },
+  request_contact(args) { requestContact((args || {}).kind); return toolView(); },
+  start_over() { epoch++; st = blank(); deterministicNoted = false; notify(); return toolView(); },
+  view: toolView
+};
+
+window.SAIKIMI = {
+  start, answer, contact, clicked, state, onChange, requestContact, tools, askWorkEmail, explore, exploreDone,
+  validate: lead => { const v = validate(lead || {}); return v.error ? { ok: false, error: v.error, message: v.message } : { ok: true, lead: v.lead }; },
+  recommendation: () => st.reco,
+  result: () => ({ state: state(), reco: st.reco, discovery: discoveryPayload() }),
+  reset() { epoch++; st = blank(); deterministicNoted = false; return state(); },
+  _interpret: interpret,     /* seams for tests */
+  _absorb: absorb
+};
+})();

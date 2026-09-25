@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+/* Theme, before first paint.
+
+   A stored choice used to win forever, which meant one tap of the toggle
+   permanently deafened the site to the system: a phone set to dark went on
+   opening in light with no way back short of clearing site data. The choice is
+   now stored alongside the system value it was made against, and it only
+   applies while the system still says that. Change the phone to dark and the
+   site follows; toggle again and that new choice sticks until the system moves
+   again. Old plain 'light'/'dark' values are discarded rather than honoured —
+   they are exactly the stuck state this replaces. */
+(function(){var d=document.documentElement,sys='light',t=null;
+try{sys=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(e){}
+try{var raw=localStorage.getItem('sw-theme');
+  if(raw&&raw!=='light'&&raw!=='dark'){var o=JSON.parse(raw);
+    if(o&&(o.choice==='light'||o.choice==='dark')&&o.sys===sys)t=o.choice;}
+  else if(raw){localStorage.removeItem('sw-theme');}
+}catch(e){}
+var q=/[?&]theme=(light|dark)\b/.exec(location.search);
+if(/[?&]embed=1\b/.test(location.search))d.setAttribute('data-embed','');   /* the homepage's hero frames this page bare */   /* the homepage opens this in a frame, in light */
+d.setAttribute('data-theme',q?q[1]:(t||sys));})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- A reload lands at the top. /chat, /snapshot and /path are pushState views of
+     this one document, so the browser's restored scroll offset belongs to a view
+     that no longer exists — it drops the visitor into the middle of a page they
+     have not seen build. Set before first paint; a real #hash still wins. -->
+<script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
+<title>Stagwell AI — Agentic solutions for modern marketers</title>
+<meta name="description" content="AI products from the Stagwell family, aimed at the problem you’re actually facing. Tell the agent what you’re solving and it finds the ones that fit.">
+
+<!-- Share kit — crawlers need absolute URLs, so the production host is hardcoded -->
+<link rel="canonical" href="https://stagwell.vercel.app/agent">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stagwell AI">
+<meta property="og:title" content="Stagwell AI — Agentic solutions for modern marketers">
+<meta property="og:description" content="AI products from the Stagwell family, aimed at the problem you’re actually facing. Tell the agent what you’re solving and it finds the ones that fit.">
+<meta property="og:url" content="https://stagwell.vercel.app/agent">
+<meta property="og:image" content="https://stagwell.vercel.app/next/assets/share/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stagwell AI — the Stagwell AI suite, pointed at your hardest marketing problem.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Stagwell AI — Agentic solutions for modern marketers">
+<meta name="twitter:description" content="AI products from the Stagwell family, aimed at the problem you’re actually facing. Tell the agent what you’re solving and it finds the ones that fit.">
+<meta name="twitter:image" content="https://stagwell.vercel.app/next/assets/share/og.png">
+<meta name="theme-color" content="#071A24">
+
+<link rel="icon" href="/next/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/next/assets/share/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/next/assets/share/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/next/assets/share/apple-touch-icon.png">
+<link rel="stylesheet" href="/next/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/next/styles.css">
+<link rel="stylesheet" href="/next/b.css">
+<link rel="stylesheet" href="/next/lead.css?v=7">
+<link rel="stylesheet" href="/next/call.css">
+<link rel="stylesheet" href="/next/convo.css">
+<link rel="stylesheet" href="/next/hero.css">
+<link rel="stylesheet" href="/next/snapshot.css">
+<link rel="stylesheet" href="/next/path.css">
+<link rel="stylesheet" href="/next/directory.css">
+<link rel="stylesheet" href="/next/cloud.css">
+<link rel="stylesheet" href="/next/ribbon.css">
+<link rel="stylesheet" href="/next/tweaks.css">
+<link rel="stylesheet" href="/next/embed.css">
+<!-- Contentsquare: funnel analysis and heatmaps (client, 2026-09-17) -->
+<script src="/next/consent.js"></script>
+<script src="/next/analytics.js" defer></script>
+<script src="/next/mixpanel.js" defer></script>
+</head>
+<body class="vB" data-state="boot">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="sw-mark" viewBox="0 0 158.2 153">
+    <path class="m-ink" d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z"/>
+    <path class="m-amber" d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z"/>
+    <path class="m-teal" d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z"/>
+  </symbol>
+  <!-- Stagwell AI logo, Concept Final V3.1 (For Jonathan/V3/StagwellAI - Logo - *.svg):
+       wordmark + mark bar take the page ink (.m-ink), the AI is orange (.m-orange) -->
+  <symbol id="sw-logo" viewBox="0 0 1870 153">
+    <path class="m-ink" d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z"/>
+    <path class="m-amber" d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z"/>
+    <path class="m-teal" d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z"/>
+    <path class="m-ink" d="M308.166 60.8018H261.261C251.788 60.8018 245.742 54.5706 245.742 44.8919C245.742 35.2123 251.788 29.0018 261.261 29.0018H344.997V22.9575C345.065 19.9247 344.517 16.9097 343.388 14.0942C342.258 11.2788 340.57 8.72141 338.425 6.57636C336.28 4.4314 333.722 2.74325 330.906 1.61393C328.091 0.484608 325.075 -0.0624364 322.042 0.00565917H261.261C233.674 0.00565917 215.56 17.7232 215.56 44.7048C215.56 71.6857 233.674 89.3829 261.261 89.3829H308.145C318.428 89.3829 324.867 95.8221 324.867 105.999C324.867 116.177 318.428 122.616 308.145 122.616H218.821V128.661C218.767 131.685 219.325 134.688 220.461 137.491C221.596 140.295 223.286 142.839 225.43 144.973C227.574 147.107 230.127 148.787 232.936 149.909C235.744 151.032 238.751 151.576 241.775 151.508H308.249C336.646 151.508 355.362 133.188 355.362 105.812C355.362 78.4363 336.438 60.532 308.249 60.532"/>
+    <path class="m-ink" d="M378.113 28.9962H433.474V151.772H463.656V28.9962H518.809V0H378.113V28.9962Z"/>
+    <path class="m-ink" d="M659.706 76.2919H581.807V53.1527C581.807 38.6131 591.258 29.2039 605.758 29.2039H635.734C650.275 29.2039 659.706 38.6546 659.706 53.1527V76.2919ZM635.734 0H605.758C573.144 0 551.603 21.1448 551.603 53.1527V151.772H581.807V104.872H659.706V151.772H689.89V53.1527C689.89 21.1448 668.347 0 635.734 0Z"/>
+    <path class="m-ink" d="M808.447 83.8816V88.3064H856.223V98.6917C856.223 113.231 846.773 122.827 832.269 122.827H797.188C782.646 122.827 773.236 113.168 773.236 98.6917V53.2035C773.236 38.6637 782.688 29.0467 797.188 29.0467H875.685V23.0024C875.761 19.9697 875.21 16.9546 874.08 14.1392C872.95 11.3238 871.259 8.76634 869.122 6.62137C866.975 4.47641 864.411 2.78827 861.599 1.65895C858.778 0.529625 855.767 -0.0175153 852.737 0.0505802H797.188C764.573 0.0505802 743.032 21.1953 743.032 53.2035V98.6917C743.032 130.679 764.573 151.823 797.188 151.823H832.212C864.829 151.823 886.342 130.679 886.342 98.6917V61.0549H831.404C828.384 60.9979 825.392 61.5506 822.59 62.6789C819.788 63.8072 817.252 65.4882 815.115 67.6213C812.987 69.7544 811.306 72.2949 810.176 75.0928C809.045 77.8907 808.494 80.8871 808.551 83.9025"/>
+    <path class="m-ink" d="M1088.87 100.859C1088.87 114.942 1079.81 123.997 1065.53 123.997C1051.23 123.997 1042.38 114.942 1042.38 100.859V1.63672H1012.2V100.859C1012.2 114.942 1003.14 123.997 988.848 123.997C974.563 123.997 965.691 114.942 965.691 100.859V1.63672H935.506V100.859C935.506 132.452 956.63 152.994 988.848 152.994C996.238 153.091 1003.54 151.49 1010.2 148.313C1016.87 145.137 1022.71 140.47 1027.28 134.674C1031.88 140.396 1037.7 145.014 1044.32 148.184C1050.94 151.355 1058.19 152.999 1065.53 152.994C1097.94 152.994 1119.08 132.223 1119.08 100.859V1.63672H1088.87V100.859Z"/>
+    <path class="m-ink" d="M1269.81 1.63672H1218.77C1189.97 1.63672 1170.66 20.5589 1170.66 48.7239V104.805C1170.66 132.971 1189.78 151.706 1218.77 151.706H1269.89C1272.9 151.763 1275.91 151.21 1278.71 150.082C1281.5 148.953 1284.05 147.272 1286.17 145.139C1288.31 143.007 1289.99 140.466 1291.12 137.668C1292.24 134.871 1292.8 131.874 1292.75 128.858V122.814H1218.77C1207.89 122.814 1200.84 115.773 1200.84 104.91V90.2242H1282.17V61.8311H1200.76V48.5577C1200.76 37.6741 1207.8 30.6328 1218.69 30.6328H1292.75V24.6092C1292.81 21.5846 1292.27 18.577 1291.15 15.7673C1290.03 12.9577 1288.35 10.4039 1286.21 8.25984C1284.08 6.11573 1281.53 4.4255 1278.73 3.29086C1275.92 2.15622 1272.91 1.60063 1269.89 1.65742"/>
+    <path class="m-ink" d="M1371.67 104.889V1.63672H1341.46V105.283C1341.46 133.262 1360.8 151.789 1389.57 151.789H1429.64C1432.65 151.845 1435.66 151.294 1438.45 150.165C1441.25 149.037 1443.8 147.356 1445.92 145.223C1448.06 143.09 1449.74 140.548 1450.87 137.751C1451.99 134.953 1452.55 131.957 1452.5 128.941V122.897H1389.49C1378.62 122.897 1371.58 115.855 1371.58 104.992"/>
+    <path class="m-ink" d="M1538.97 122.793C1528.1 122.793 1521.07 115.752 1521.07 104.889V1.63672H1490.95V105.283C1490.95 133.262 1510.27 151.789 1539.06 151.789H1579.1C1582.12 151.843 1585.11 151.288 1587.91 150.159C1590.71 149.029 1593.25 147.348 1595.38 145.216C1597.52 143.084 1599.2 140.544 1600.33 137.748C1601.45 134.952 1602.01 131.956 1601.95 128.942V122.897L1538.97 122.793Z"/>
+    <path class="m-orange" d="M1767.44 76.2919H1689.54V53.1527C1689.54 38.6131 1698.99 29.2039 1713.49 29.2039H1743.46C1758.01 29.2039 1767.44 38.6546 1767.44 53.1527V76.2919ZM1743.46 0H1713.49C1680.87 0 1659.33 21.1448 1659.33 53.1527V151.772H1689.54V104.872H1767.44V151.772H1797.62V53.1527C1797.62 21.1448 1776.08 0 1743.46 0Z"/>
+    <path class="m-orange" d="M1840.53 1.30078H1855.59C1863.11 1.30078 1869.21 7.39451 1869.21 14.9115V151.209H1840.53V1.30078Z"/>
+  </symbol>
+  <symbol id="sw-logo-dark" viewBox="0 0 1870 153">
+<path d="M808.447 83.8816V88.3064H856.223V98.6917C856.223 113.231 846.773 122.827 832.269 122.827H797.188C782.646 122.827 773.236 113.168 773.236 98.6917V53.2035C773.236 38.6637 782.688 29.0467 797.188 29.0467H875.685V23.0024C875.761 19.9697 875.21 16.9546 874.08 14.1392C872.95 11.3238 871.259 8.76634 869.122 6.62137C866.975 4.47641 864.411 2.78827 861.599 1.65895C858.778 0.529625 855.767 -0.0175153 852.737 0.0505802H797.188C764.573 0.0505802 743.032 21.1953 743.032 53.2035V98.6917C743.032 130.679 764.573 151.823 797.188 151.823H832.212C864.829 151.823 886.342 130.679 886.342 98.6917V61.0549H831.404C828.384 60.9979 825.392 61.5506 822.59 62.6789C819.788 63.8072 817.252 65.4882 815.115 67.6213C812.987 69.7544 811.306 72.2949 810.176 75.0928C809.045 77.8907 808.494 80.8871 808.551 83.9025" fill="#F1FAFF"/>
+<path d="M378.113 28.9962H433.474V151.772H463.656V28.9962H518.809V0H378.113V28.9962Z" fill="#F1FAFF"/>
+<path d="M308.166 60.8018H261.261C251.788 60.8018 245.742 54.5706 245.742 44.8919C245.742 35.2123 251.788 29.0018 261.261 29.0018H344.997V22.9575C345.065 19.9247 344.517 16.9097 343.388 14.0942C342.258 11.2788 340.57 8.72141 338.425 6.57636C336.28 4.4314 333.722 2.74325 330.906 1.61393C328.091 0.484608 325.075 -0.0624364 322.042 0.00565917H261.261C233.674 0.00565917 215.56 17.7232 215.56 44.7048C215.56 71.6857 233.674 89.3829 261.261 89.3829H308.145C318.428 89.3829 324.867 95.8221 324.867 105.999C324.867 116.177 318.428 122.616 308.145 122.616H218.821V128.661C218.767 131.685 219.325 134.688 220.461 137.491C221.596 140.295 223.286 142.839 225.43 144.973C227.574 147.107 230.127 148.787 232.936 149.909C235.744 151.032 238.751 151.576 241.775 151.508H308.249C336.646 151.508 355.362 133.188 355.362 105.812C355.362 78.4363 336.438 60.532 308.249 60.532" fill="#F1FAFF"/>
+<path d="M659.706 76.2919H581.807V53.1527C581.807 38.6131 591.258 29.2039 605.758 29.2039H635.734C650.275 29.2039 659.706 38.6546 659.706 53.1527V76.2919ZM635.734 0H605.758C573.144 0 551.603 21.1448 551.603 53.1527V151.772H581.807V104.872H659.706V151.772H689.89V53.1527C689.89 21.1448 668.347 0 635.734 0Z" fill="#F1FAFF"/>
+<path d="M659.706 76.2919H581.807V53.1527C581.807 38.6131 591.258 29.2039 605.758 29.2039H635.734C650.275 29.2039 659.706 38.6546 659.706 53.1527V76.2919ZM635.734 0H605.758C573.144 0 551.603 21.1448 551.603 53.1527V151.772H581.807V104.872H659.706V151.772H689.89V53.1527C689.89 21.1448 668.347 0 635.734 0Z" fill="#F1FAFF"/>
+<path d="M1371.67 104.889V1.63672H1341.46V105.283C1341.46 133.262 1360.8 151.789 1389.57 151.789H1429.64C1432.65 151.845 1435.66 151.294 1438.45 150.165C1441.25 149.037 1443.8 147.356 1445.92 145.223C1448.06 143.09 1449.74 140.548 1450.87 137.751C1451.99 134.953 1452.55 131.957 1452.5 128.941V122.897H1389.49C1378.62 122.897 1371.58 115.855 1371.58 104.992" fill="#F1FAFF"/>
+<path d="M1088.87 100.859C1088.87 114.942 1079.81 123.997 1065.53 123.997C1051.23 123.997 1042.38 114.942 1042.38 100.859V1.63672H1012.2V100.859C1012.2 114.942 1003.14 123.997 988.848 123.997C974.563 123.997 965.691 114.942 965.691 100.859V1.63672H935.506V100.859C935.506 132.452 956.63 152.994 988.848 152.994C996.238 153.091 1003.54 151.49 1010.2 148.313C1016.87 145.137 1022.71 140.47 1027.28 134.674C1031.88 140.396 1037.7 145.014 1044.32 148.184C1050.94 151.355 1058.19 152.999 1065.53 152.994C1097.94 152.994 1119.08 132.223 1119.08 100.859V1.63672H1088.87V100.859Z" fill="#F1FAFF"/>
+<path d="M1538.97 122.793C1528.1 122.793 1521.07 115.752 1521.07 104.889V1.63672H1490.95V105.283C1490.95 133.262 1510.27 151.789 1539.06 151.789H1579.1C1582.12 151.843 1585.11 151.288 1587.91 150.159C1590.71 149.029 1593.25 147.348 1595.38 145.216C1597.52 143.084 1599.2 140.544 1600.33 137.748C1601.45 134.952 1602.01 131.956 1601.95 128.942V122.897L1538.97 122.793Z" fill="#F1FAFF"/>
+<path d="M1269.81 1.63672H1218.77C1189.97 1.63672 1170.66 20.5589 1170.66 48.7239V104.805C1170.66 132.971 1189.78 151.706 1218.77 151.706H1269.89C1272.9 151.763 1275.91 151.21 1278.71 150.082C1281.5 148.953 1284.05 147.272 1286.17 145.139C1288.31 143.007 1289.99 140.466 1291.12 137.668C1292.24 134.871 1292.8 131.874 1292.75 128.858V122.814H1218.77C1207.89 122.814 1200.84 115.773 1200.84 104.91V90.2242H1282.17V61.8311H1200.76V48.5577C1200.76 37.6741 1207.8 30.6328 1218.69 30.6328H1292.75V24.6092C1292.81 21.5846 1292.27 18.577 1291.15 15.7673C1290.03 12.9577 1288.35 10.4039 1286.21 8.25984C1284.08 6.11573 1281.53 4.4255 1278.73 3.29086C1275.92 2.15622 1272.91 1.60063 1269.89 1.65742" fill="#F1FAFF"/>
+<path d="M1767.44 76.2919H1689.54V53.1527C1689.54 38.6131 1698.99 29.2039 1713.49 29.2039H1743.46C1758.01 29.2039 1767.44 38.6546 1767.44 53.1527V76.2919ZM1743.46 0H1713.49C1680.87 0 1659.33 21.1448 1659.33 53.1527V151.772H1689.54V104.872H1767.44V151.772H1797.62V53.1527C1797.62 21.1448 1776.08 0 1743.46 0Z" fill="#FF6D24"/>
+<path d="M1840.53 1.30078H1855.59C1863.11 1.30078 1869.21 7.39451 1869.21 14.9115V151.209H1840.53V1.30078Z" fill="#FF6D24"/>
+<path d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z" fill="white"/>
+<path d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z" fill="#FFB81C"/>
+<path d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z" fill="#009CBD"/>
+  </symbol>
+</svg>
+
+<!-- ─────────────── BOOT ─────────────── -->
+<div class="boot" id="boot" aria-hidden="true">
+  <svg class="boot__mark"><use href="#sw-logo"/></svg>
+  <div class="boot__line"><i></i></div>
+</div>
+
+<!-- ─────────────── HEADER ─────────────── -->
+<header class="nav" id="nav">
+  <div class="nav__in">
+    <a class="nav__brand" href="/" aria-label="Stagwell AI">
+      <svg class="nav__logo nav__logo--light" viewBox="0 0 1870 153"><use href="#sw-logo"/></svg>
+      <svg class="nav__logo nav__logo--dark" viewBox="0 0 1870 153" aria-hidden="true"><use href="#sw-logo-dark"/></svg>
+    </a>
+    <nav class="nav__links">
+      <a href="/#about">What is Stagwell AI</a>
+      <a href="/products">Products</a>
+      <a href="/#film" data-film class="nav__film"><span class="nav__playdot" aria-hidden="true"><svg viewBox="0 0 12 12" width="8" height="8"><path d="M4 2.6v6.8l5.4-3.4z" fill="currentColor"/></svg></span>Watch the film</a>
+    </nav>
+    <div class="nav__acts">
+      <button class="nav__new" id="navNew" hidden>
+        <svg viewBox="0 0 16 16" width="13" height="13"><path d="M2.8 8h10.4M8 2.8v10.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>New analysis</span>
+      </button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" title="Switch theme">
+        <svg class="theme-toggle__sun" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <svg class="theme-toggle__moon" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn btn--dark nav__cta" data-cta="expert">Talk to an AI expert</button>
+      <button class="nav__menu" id="navMenu" aria-label="Open menu">
+        <svg viewBox="0 0 16 16" width="18" height="18"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="navscrim" id="navScrim" aria-hidden="true"></div>
+
+<!-- mobile drawer lives at body level: the header's backdrop-filter makes it a
+     containing block, which would size any fixed child against the bar -->
+<aside class="mnav" id="mnav" aria-label="Menu">
+  <div class="mnav__head">
+    <svg class="mnav__mark" viewBox="0 0 158.2 153"><use href="#sw-mark"/></svg>
+    <button class="mnav__close" id="mnavClose" aria-label="Close menu">
+      <svg viewBox="0 0 16 16" width="18" height="18"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <nav class="mnav__links">
+    <a href="/#about">What is Stagwell AI</a>
+    <a href="/products">Products</a>
+    <a href="/#film" data-film>Watch the film</a>
+  </nav>
+  <div class="mnav__foot">
+    <button class="theme-toggle theme-toggle--row" data-theme-toggle type="button" aria-label="Switch to light mode">
+      <svg class="theme-toggle__sun" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <svg class="theme-toggle__moon" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      <span>Switch theme</span>
+    </button>
+    <button class="btn btn--ghost mnav__new" data-new hidden>New analysis</button>
+    <button class="btn btn--dark" data-cta="expert">Talk to an AI expert</button>
+  </div>
+</aside>
+
+<main id="top">
+
+  <!-- ─────────────── HERO + CHAT ─────────────── -->
+  <section class="hero2 hero2--band" id="heroBand">
+    <div class="hero2__band">
+      <canvas class="hero2__dots" id="heroDots" aria-hidden="true"></canvas>
+      <p class="eyebrow" id="heroEyebrow"><i class="pulse"></i>Stagwell AI · Agentic solutions built to transform marketing</p>
+      <h1 class="display" id="hero2Title">What do you need help <span class="accent">solving today?</span></h1>
+      <a class="btn btn--gold hero2__cta" id="heroAsk" href="#hero2">Ask AI</a>
+    </div>
+  </section>
+
+  <div class="page" id="page">
+  <section class="hero2" id="hero2">
+    <div class="hero2__in">
+      <p class="hero2__sub" id="hero2Sub">Tell the agent what you’re trying to do — or just paste your website — and it will point you to the right solution, with a live snapshot of your brand to show for it.</p>
+
+      <!-- the explainer (client, Sep 2): a small thumbnail, a big play button,
+           between the headline and the sub-line. machine/video.js opens it in
+           the shadow box at the end of the page. -->
+      <div class="film" id="film">
+      <button type="button" class="hero2__play" id="heroPlay" aria-haspopup="dialog" aria-controls="videoBox">
+        <span class="hero2__thumb"><img src="/assets/img/film-poster.jpg" alt="" width="640" height="360" decoding="async"><i class="hero2__playbtn" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></i></span>
+        <span class="hero2__playtext"><b id="heroPlayLabel">Watch: what is Stagwell AI</b><small id="heroPlayMeta">1:53 · sound on</small></span>
+      </button>
+      </div>
+
+      <!-- the chooser (machine/hero.js) renders here; the chat panel below is
+           the same one machine/convo.js takes over, revealed on Ask AI -->
+      <div id="heroPick"></div>
+
+      <div class="chat" id="chat">
+        <div class="chat__panel" id="chatPanel">
+          <div class="chat__bar" id="chatBar" hidden>
+            <span class="chat__dot"><i class="pulse"></i></span>
+            <b>Stagwell AI</b>
+            <span class="chat__sp"></span>
+            <span class="chat__step" id="chatStep">Reading the site</span>
+          </div>
+          <div class="chat__thread" id="thread" role="log" aria-live="polite" aria-relevant="additions" hidden></div>
+          <form class="prompt" id="promptForm" autocomplete="off">
+            <div class="prompt__field">
+              <span class="prompt__caret"></span>
+              <input class="prompt__input" id="promptInput" type="text" placeholder="Describe your problem — or paste your website, like nike.com — and we’ll take it from there…" aria-label="Your answer" spellcheck="false">
+              <button class="prompt__send btn--gold" id="promptSend" type="submit">Ask the agent</button>
+            </div>
+          </form>
+        </div>
+        <div class="chat__solves" id="solveChips" role="group" aria-label="Common questions" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── WHAT IS STAGWELL.AI ───────────────
+       The answer Amy asked for (client, Sep 2): the positioning, the three
+       tiers of the portfolio and the promises, from data/messaging.json.
+       machine/about.js renders it; it hides with the hero once a snapshot
+       or path is on screen. -->
+  <section class="about" id="about" aria-label="What is Stagwell AI"></section>
+
+  <!-- ─────────────── DASHBOARD ─────────────── -->
+  <section class="dash" id="dash" hidden></section>
+
+  <!-- ─────────────── THE MARKETING CLOUD ───────────────
+       The Catalogue's carousel, verbatim: what Stagwell actually ships,
+       between the dashboard flow and the CTA. cloud.js drives it. -->
+  <section class="crail" id="cloud" aria-label="The Stagwell AI Suite">
+    <div class="flow flow--big" id="flowBig">
+      <button class="paddle paddle--l" id="bigPrev" aria-label="Previous">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="paddle paddle--r" id="bigNext" aria-label="Next">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="flow flow--sm" id="flowSm">
+      <button class="paddle paddle--l" id="cloudPrev" aria-label="Previous">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="paddle paddle--r" id="cloudNext" aria-label="Next">
+        <svg viewBox="0 0 16 16" width="15" height="15"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ─────────────── CTA ─────────────── -->
+  <section class="bcta" id="cta">
+    <div class="bcta__in">
+      <h2>The Stagwell AI suite.<br><span>Pointed at your hardest problem.</span></h2>
+      <p class="bcta__lede">Stagwell AI puts the Stagwell AI Suite’s products behind one conversation. Tell the agent what you’re up against; it finds the ones that solve it, and hands you to the people who run them.</p>
+      <div class="bcta__grid">
+        <button class="ctacard" data-cta="session" style="--photo:url(/assets/img/cta-1.jpg)"><b>Book a strategy session<svg viewBox="0 0 16 16" width="14" height="14"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></b><span>Sixty minutes with the strategists who run these products.</span></button>
+        <button class="ctacard" data-cta="expert" style="--photo:url(/assets/img/cta-2.jpg)"><b>Talk to an AI expert<svg viewBox="0 0 16 16" width="14" height="14"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></b><span>A working conversation, not a pitch.</span></button>
+        <button class="ctacard" data-cta="workspace" style="--photo:url(/assets/img/cta-3.jpg)"><b>Request your full AI workspace<svg viewBox="0 0 16 16" width="14" height="14"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></b><span>The whole suite, pointed at your brand.</span></button>
+        <a class="ctacard" href="/products" style="--photo:url(/assets/img/cta-4.jpg)"><b>See every product<svg viewBox="0 0 16 16" width="14" height="14"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></b><span>Every solution, grouped by the problem it solves.</span></a>
+      </div>
+      <div class="callback">
+        <div class="callback__t">
+          <b><i class="pulse"></i>Or let Stagwell AI call you.</b>
+          <span>Leave a number and a NewVoices agent calls within two minutes — already briefed on what you told the agent.</span>
+        </div>
+        <!-- this band's button opens the lead panel, which carries "Call my phone".
+             Mounting the widget here directly fought ribbon.css, which loads after
+             call.css on this page and re-colours everything inside .callback. -->
+        <button class="btn btn--light" type="button" data-cta="callback">Call me now</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bfoot">
+    <div class="bfoot__top">
+      <svg><use href="#sw-logo"/></svg>
+      <nav class="bfoot__links" aria-label="Site">
+        <a href="/#about">What is Stagwell AI</a>
+        <a href="/why">Why Stagwell AI</a>
+        <a href="/products">Products</a>
+        <a href="/#film" data-film>Watch the film</a>
+      </nav>
+    </div>
+    <div class="bfoot__foot">
+      <span class="bfoot__note">Prototype · live model calls · figures illustrative · typed answers are read by a language model · no CRM is connected</span>
+      <nav class="bfoot__demo" aria-label="Demo">
+      </nav>
+    </div>
+  </footer>
+  </div><!-- /.page -->
+</main>
+
+<!-- ─────────────── THINKING ─────────────── -->
+<div class="think" id="think" hidden>
+  <span class="loader__mark">
+    <span class="loader__ring"></span>
+    <svg viewBox="0 0 158.2 153"><use href="#sw-mark"/></svg>
+  </span>
+  <p class="loader__title">Building your personalized dashboard</p>
+  <p class="loader__status" id="thinkStatus" aria-live="polite"></p>
+  <span class="loader__bar"><i id="thinkMeter"></i></span>
+</div>
+
+<!-- ─────────── PROTOTYPE SWITCH ───────────
+     Named, not lettered, and all three are listed. The link out to the
+     original lives in the nav, so it does not need a seat here. -->
+
+<!-- ─────────────── MODAL ─────────────── -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__scrim" data-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true">
+    <button class="modal__x" data-close aria-label="Close">
+      <svg viewBox="0 0 16 16" width="16" height="16"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+
+<script src="/next/data-loader.js"></script>
+<script src="/next/engine.js"></script>
+<!-- "arrived from {campaign} ad" — renders only for a campaign the JSON knows -->
+<!-- kit conversation engine — built in parallel; convo.js degrades to the
+     old landing flow if any of these fail to load (see machine/b.js) -->
+<script src="/next/flow.js"></script>
+<script src="/next/research.js"></script>
+<script src="/next/convo.js"></script>
+<script src="/next/snapshot-data.js"></script>
+<script src="/next/snapshot.js"></script>
+<script src="/next/path.js"></script>
+<!-- the landing chooser: renders from data/questions.json, hands to convo.js -->
+<!-- ─────────────── THE FILM, in a shadow box ─────────────── -->
+<div class="vbox" id="videoBox" role="dialog" aria-modal="true" aria-label="What is Stagwell AI — the explainer" hidden>
+  <div class="vbox__scrim" data-vbox-close></div>
+  <div class="vbox__in">
+    <button type="button" class="vbox__close" id="videoClose" aria-label="Close the video" data-vbox-close>
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 3l10 10M13 3 3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <video id="videoEl" controls playsinline preload="none" poster="/assets/img/film-poster.jpg">
+      <source src="/assets/video/stagwell-ai-explainer.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+
+<script src="/next/hero.js"></script>
+<script src="/next/about.js"></script>
+<script src="/next/video.js"></script>
+<script src="/next/directory.js"></script>
+<script src="/next/shared.js"></script>
+<!-- the shared lead-capture modal; b.js's openModal() delegates to it -->
+<script src="/next/call.js"></script>
+<script src="/next/lead.js"></script>
+<script src="/next/hero-band.js"></script>
+<script src="/next/b.js"></script>
+<script src="/next/cloud.js"></script>
+<!-- S6 · the demo aid: observer only, loads last, never emits -->
+<script src="/next/tweaks.js"></script>
+<!-- the demo chrome, collected into one control in the header -->
+<!-- the portfolio section as an interactive explorer -->
+<script src="/next/portfolio-explorer.js"></script>
+<script src="/next/chat-shape.js"></script>
+</body>
+</html>

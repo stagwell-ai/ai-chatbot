@@ -1,0 +1,1280 @@
+{
+  "model": "fixed data contract, flexible conversation — ask only what can't be inferred; confirm inferences, never assume; visitor corrections always win",
+  "slots": [
+    "problem_domains",
+    "company",
+    "role_seniority",
+    "size_tier",
+    "timing_intent",
+    "product_interest",
+    "work_email",
+    "contact_consent"
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "slot": "problem_domains",
+      "copy": "What do you need help solving today?",
+      "copyAfterOpener": "Got it — “{said}”. So I point that at the right product, which of these is closest?",
+      "input": "chips_or_free_text",
+      "chipsNote": "The client's own list, Sep 2: competitive analysis, Awareness, Leads, Sales, then free text — three of the four in Meta's ad-objective words verbatim (Awareness, Leads, Sales), with competitive analysis first because Meta has no objective for it and it is the demo's strongest opening. Meta's Traffic and Engagement rows are deliberately not offered: AI-search visibility and creator programs are still reachable through 'Something else', the chat and /products, they are simply not one of the four doors. Each row is a routing domain; what the word means HERE lives in hero.byDomain[domain] — the detail pane is what keeps 'Leads' and 'Sales' from reading as paid media.",
+      "chips": [
+        {
+          "label": "Competitive analysis",
+          "domain": "competitive",
+          "meta": null
+        },
+        {
+          "label": "Awareness",
+          "domain": "brand_health",
+          "meta": "Awareness"
+        },
+        {
+          "label": "Leads",
+          "domain": "leads",
+          "meta": "Leads"
+        },
+        {
+          "label": "Sales",
+          "domain": "audiences",
+          "meta": "Sales"
+        }
+      ],
+      "freeTextDomains": [
+        "research",
+        "business_impact",
+        "audiences",
+        "reputation",
+        "media_monitoring",
+        "real_world_behavior",
+        "marketing_ops"
+      ],
+      "notes": "Free text can carry multiple domains at once — that is how multi-product opportunities surface.",
+      "skipWhen": "entry came from a product ad (product_interest pre-filled; opener names the product)",
+      "copyUnclassified": "I didn't catch a marketing problem in that — which of these is closest? Or describe it another way.",
+      "copyUnclassifiedNote": "Shown when free text at q1 classifies to no domain. Asking the identical question again read as a loop (QA, Sep 2: emoji and gibberish got the same words back with no acknowledgement).",
+      "moreChips": [
+        {
+          "label": "Consumer research",
+          "domain": "research"
+        },
+        {
+          "label": "Business impact",
+          "domain": "business_impact"
+        },
+        {
+          "label": "Influencer marketing",
+          "domain": "influencer"
+        },
+        {
+          "label": "Reputation risk",
+          "domain": "reputation"
+        },
+        {
+          "label": "Media monitoring",
+          "domain": "media_monitoring"
+        },
+        {
+          "label": "AI visibility",
+          "domain": "ai_visibility"
+        },
+        {
+          "label": "Foot traffic",
+          "domain": "real_world_behavior"
+        },
+        {
+          "label": "Marketing ops",
+          "domain": "marketing_ops"
+        },
+        {
+          "label": "Secure AI access",
+          "domain": "ai_workspace"
+        },
+        {
+          "label": "Research sample",
+          "domain": "sample_quality"
+        }
+      ],
+      "moreChipsNote": "Every routing domain that is not one of the four rows, offered as a chip under 'Something else' so every product has a visible door while the picker keeps its four-row Meta shape (client, Sep 2, option c). A tap is a deterministic q1 answer — flow.js domainFromLabel and convo.js matchingChip read this list too — and the label is what the visitor's bubble says. Labels are kept SHORT so the ten fit three rows inside the detail pane without it scrolling (client, Sep 2: \"fix it so that there's no scrolling involved\")."
+    },
+    {
+      "id": "q2",
+      "slot": "company",
+      "copy": "Got it. What's your company? A website works — I'll start pulling your snapshot together.",
+      "confirmMode": {
+        "when": "the landing chooser read a domain out of the visitor's business email and they never typed a site themselves — questions.json's own model line: confirm inferences, never assume",
+        "copy": "Your email puts you at {domain} — is that the site I should read?",
+        "chips": [
+          {
+            "label": "Yes, that's us",
+            "value": "confirm"
+          },
+          {
+            "label": "No — different site",
+            "value": "different"
+          }
+        ]
+      },
+      "input": "free_text",
+      "sideEffect": "starts background research (size, industry, competitors, AI-search presence) and the snapshot build — from a website, or from a bare company name. An email-derived domain starts nothing until the visitor confirms it.",
+      "skipWhen": "the visitor's first message included a website — they typed it, so there is nothing to confirm"
+    },
+    {
+      "id": "q3",
+      "slot": "role_seniority",
+      "copy": "And what's your role there?",
+      "input": "chips_or_free_text",
+      "chips": [
+        {
+          "label": "Founder / owner",
+          "value": "founder"
+        },
+        {
+          "label": "Manager",
+          "value": "manager"
+        },
+        {
+          "label": "Director / VP",
+          "value": "director_vp"
+        },
+        {
+          "label": "C-suite",
+          "value": "c_suite"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "slot": "size_tier",
+      "confirmMode": {
+        "when": "research recognised the company and knows its headcount — copyNoIndustry renders when the model gave no industry",
+        "copy": "Looks like {company} is around {employees} people, in {industry} — did I get that right?",
+        "copyNoIndustry": "Looks like {company} is around {employees} people — did I get that right?",
+        "chips": [
+          {
+            "label": "That's right",
+            "value": "confirm"
+          },
+          {
+            "label": "Not quite — we're smaller",
+            "value": "smaller"
+          },
+          {
+            "label": "Not quite — we're bigger",
+            "value": "bigger"
+          }
+        ]
+      },
+      "askMode": {
+        "copy": "Roughly how big is the company?",
+        "chips": [
+          {
+            "label": "Under 50 people",
+            "tier": "smb"
+          },
+          {
+            "label": "50–250",
+            "tier": "smb"
+          },
+          {
+            "label": "250–2,500",
+            "tier": "mid_market"
+          },
+          {
+            "label": "2,500+",
+            "tier": "enterprise"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q5",
+      "slot": "timing_intent",
+      "copy": "When do you want this working — this quarter, or later this year?",
+      "copyWithGoal": "So you want to {goal} — when do you want that working: this quarter, or later this year?",
+      "input": "chips_or_free_text",
+      "chips": [
+        {
+          "label": "This quarter",
+          "value": "now"
+        },
+        {
+          "label": "This year",
+          "value": "this_year"
+        }
+      ],
+      "chipsNote": "'Just exploring' removed Sep 2 with the follow_up route: every visitor ends on a trial, a demo or a conversation. Typed exploring language ('just looking', 'no timeline') classifies to this_year — the loosest timing that still has a destination."
+    },
+    {
+      "id": "q6",
+      "slot": "domain_detail",
+      "adaptive": true,
+      "skipWhen": "the solution match is already obvious from prior answers",
+      "byDomain": {
+        "brand_health": {
+          "copy": "How do you track your brand today — an agency, in-house dashboards, or not really yet?",
+          "decides": "always-on tracking subscription vs. deeper analytics; upgrade path"
+        },
+        "competitive": {
+          "copy": "Who are you measuring against — competitors you name, or the whole category?",
+          "chips": [
+            {
+              "label": "Competitors I name",
+              "value": "named"
+            },
+            {
+              "label": "The whole category",
+              "value": "category"
+            }
+          ],
+          "copyWithPeers": "I'm seeing {competitors} as your closest comparison set — is that who you're measuring against?",
+          "chipsWithPeers": [
+            {
+              "label": "That's the set",
+              "value": "named"
+            },
+            {
+              "label": "There are others",
+              "value": "add"
+            },
+            {
+              "label": "Widen to the category",
+              "value": "category"
+            }
+          ],
+          "peersNote": "the {competitors} form is only ever asked when research came back with the visitor's REAL comparison set — never with the seeded fallback names (machine/flow.js q6View)",
+          "decides": "named-rival tracking vs category-wide benchmarking"
+        },
+        "leads": {
+          "copy": "Where do most of your inbound leads land today — a form, a phone line, or a shared inbox?",
+          "chips": [
+            {
+              "label": "A form on the site",
+              "value": "form"
+            },
+            {
+              "label": "A phone line",
+              "value": "phone"
+            },
+            {
+              "label": "A shared inbox",
+              "value": "inbox"
+            }
+          ],
+          "decides": "which channel the agents answer first; telephony vs. CRM integration leads the scoping"
+        },
+        "research": {
+          "copy": "Is this a one-off study, or something you'll run regularly?",
+          "chips": [
+            {
+              "label": "A one-off study",
+              "value": "one-off study"
+            },
+            {
+              "label": "Something we'll run regularly",
+              "value": "run regularly"
+            },
+            {
+              "label": "Not sure yet",
+              "value": "not sure yet"
+            }
+          ],
+          "decides": "self-service platform vs. serviced research; trial-readiness"
+        },
+        "business_impact": {
+          "copy": "Who needs convincing — the board, the CFO, or your own team?",
+          "decides": "seniority of the sale; executive audience biases consultative"
+        },
+        "audiences": {
+          "copy": "Where does your first-party data live — a CDP, a data warehouse, or mostly in the ad platforms?",
+          "decides": "data readiness; demo now vs. consultative scoping"
+        },
+        "influencer": {
+          "copy": "Roughly how many creators do you work with in a year?",
+          "chips": [
+            {
+              "label": "Under 25",
+              "value": "under 25 creators a year"
+            },
+            {
+              "label": "25–100",
+              "value": "25 to 100 creators a year"
+            },
+            {
+              "label": "100+",
+              "value": "100+ creators a year"
+            }
+          ],
+          "decides": "SMB platform vs. enterprise program (~100+ creators)"
+        },
+        "reputation": {
+          "copy": "Are you watching one market, or monitoring globally in multiple languages?",
+          "chips": [
+            {
+              "label": "One market",
+              "value": "one market"
+            },
+            {
+              "label": "A few markets",
+              "value": "a few markets"
+            },
+            {
+              "label": "Global, multiple languages",
+              "value": "global, multiple languages"
+            }
+          ],
+          "decides": "early-warning narrative intelligence vs. global media monitoring"
+        },
+        "ai_visibility": {
+          "copy": "Which platforms matter most to you — ChatGPT, Gemini, Perplexity?",
+          "decides": "scope of the visibility program"
+        },
+        "marketing_ops": {
+          "copy": "Which part of the workflow feels most fragmented — planning, creation, media, or measurement?",
+          "decides": "which agentic-workflow conversation to open"
+        },
+        "ai_workspace": {
+          "copy": "Where is AI use in the team today — a few personal licences, everyone on their own tools, or nothing sanctioned yet?",
+          "chips": [
+            {
+              "label": "A few personal licences",
+              "value": "licences"
+            },
+            {
+              "label": "Everyone on their own tools",
+              "value": "own tools"
+            },
+            {
+              "label": "Nothing sanctioned yet",
+              "value": "none"
+            }
+          ],
+          "decides": "whether the conversation is about consolidation, governance or a first rollout"
+        },
+        "sample_quality": {
+          "copy": "Is this sample for your own studies, or sample you buy on behalf of clients?",
+          "chips": [
+            {
+              "label": "Our own studies",
+              "value": "own"
+            },
+            {
+              "label": "For clients",
+              "value": "clients"
+            },
+            {
+              "label": "Both",
+              "value": "both"
+            }
+          ],
+          "decides": "agency volume vs. single-brand supply; who signs the contract"
+        }
+      }
+    }
+  ],
+  "hero": {
+    "model": "the landing is a chooser, not a blank prompt — the visitor picks what they are solving and lands in the conversation with that first answer already given (client, Sep 1, after Meta's ad-objective flow). The email is NOT asked here any more: it moved to the gate in front of the snapshot (client, Sep 2: 'move the email collection to right before they get the snapshot' — the way in is one click). An optional website field keeps the live read starting early.",
+    "eyebrow": "Stagwell.AI · Agentic solutions grounded in real-world marketing expertise",
+    "title": "What do you need help solving today?",
+    "sub": "Pick what you're up against — add your website if you like — and the agent reads your brand and finds your fit.",
+    "subNote": "Says out loud that the row and the website are optional. Kept under ~110 characters so it holds one line at 1280×720 and the card stays above the fold.",
+    "listLabel": "Choose what you're solving",
+    "emptyImage": "/assets/img/hero/agent.webp",
+    "emptyImageAlt": "How the agent works: it reads AI search and brand signals, understands your brand, sees where you stand, finds the right opportunities and recommends what to do next — producing performance and opportunity reads.",
+    "emptyImageNote": "the client's own artwork (source PNG beside it at agent.png, 1536x1024; the .webp is that file at 1100px and 30KB). machine/hero.js prefers this over its built-in drawing — set to null to go back to the SVG, which is composed from emptySays and emptySteps below.",
+    "emptySays": "I analyze your brand and find the areas where AI can help most.",
+    "emptySteps": [
+      "Understand your brand",
+      "See where you stand",
+      "Find the right opportunities",
+      "Recommend what to do next"
+    ],
+    "emptyTitle": "Pick one and I'll show you what it covers.",
+    "emptyLine": "Whichever you choose, the agent reads your brand first — where you stand, how AI assistants describe you, where your signal is moving — then names the products that fit.",
+    "submit": "Ask AI",
+    "errorsNote": "Nothing here can be refused over except a website that is not one — and only when the field is not blank. The email is asked at the snapshot gate (captureMoment.gate), not at the door.",
+    "errors": {
+      "badSite": "That doesn't look like a website — try something like nike.com, or leave it blank and I'll ask."
+    },
+    "otherLabel": "Something else",
+    "otherLine": "Describe it in your own words, or pick the closest below.",
+    "otherPlaceholder": "Describe your problem — or paste your website, like nike.com",
+    "otherGoodFor": [
+      "Anything not on this list",
+      "More than one problem at once",
+      "Reading your site first"
+    ],
+    "personalDomains": [
+      "gmail.com",
+      "googlemail.com",
+      "yahoo.com",
+      "yahoo.co.uk",
+      "ymail.com",
+      "hotmail.com",
+      "hotmail.co.uk",
+      "outlook.com",
+      "live.com",
+      "msn.com",
+      "aol.com",
+      "icloud.com",
+      "me.com",
+      "mac.com",
+      "proton.me",
+      "protonmail.com",
+      "pm.me",
+      "gmx.com",
+      "gmx.de",
+      "mail.com",
+      "mail.ru",
+      "yandex.com",
+      "yandex.ru",
+      "qq.com",
+      "163.com",
+      "126.com",
+      "naver.com",
+      "hey.com",
+      "fastmail.com",
+      "tutanota.com",
+      "duck.com",
+      "zoho.com"
+    ],
+    "byDomain": {
+      "brand_health": {
+        "title": "How is my brand really doing?",
+        "line": "Track awareness, consideration and momentum every day — and watch a campaign actually move them, instead of waiting for the next quarterly read.",
+        "goodFor": [
+          "Always-on brand tracking",
+          "Campaign impact",
+          "Competitive benchmarks",
+          "Emotional drivers"
+        ]
+      },
+      "competitive": {
+        "title": "How do I stack up against my competitors?",
+        "line": "See where you gain and lose ground against the rivals you name — share, perception and momentum, measured against them rather than in isolation.",
+        "goodFor": [
+          "Named-rival benchmarking",
+          "Category share of voice",
+          "Win/loss narratives",
+          "Quarterly board reads"
+        ]
+      },
+      "ai_visibility": {
+        "title": "How do AI models describe my brand?",
+        "line": "Find out how ChatGPT, Gemini and Perplexity describe and recommend you versus your rivals — and what to change so you show up more.",
+        "goodFor": [
+          "AI answer coverage",
+          "Prompt-level diagnostics",
+          "Rival comparisons",
+          "What to fix first"
+        ]
+      },
+      "influencer": {
+        "title": "How do I run creator programs that pay back?",
+        "line": "Run creator programs end to end — discovery and vetting, then outreach, contracts, approvals and tracking through to ROI.",
+        "goodFor": [
+          "Creator discovery",
+          "Fraud and audience checks",
+          "Campaign management",
+          "Proving ROI"
+        ]
+      },
+      "leads": {
+        "title": "How many hand-raises are we losing?",
+        "line": "Answer, qualify and book every inbound lead the moment it arrives — voice and chat agents working any hour and any language, handing anything they can't finish to a person with the context already gathered.",
+        "goodFor": [
+          "Instant lead response",
+          "Qualifying and booking",
+          "After-hours and overflow",
+          "Any language"
+        ]
+      },
+      "audiences": {
+        "title": "How do I reach the people who actually buy?",
+        "line": "Build high-intent audiences from your first-party data and Stagwell's own consumer datasets, activate them straight into your channels, and measure what converts.",
+        "goodFor": [
+          "High-intent audiences",
+          "Lookalikes from your best customers",
+          "Cross-channel activation",
+          "What the spend returned"
+        ],
+        "note": "The Sales row, so the pane leads with the outcome Meta's Sales objective promises — reaching likely buyers — not with the plumbing that gets there (client, Sep 2: 'this copy doesn't really reflect sales'). Every claim is The Targeting Machine's own: proprietary consumer datasets, seed-to-lookalike, cross-channel activation, campaign measurement (data/products.json valueProps)."
+      },
+      "research": {
+        "title": "How do I run research myself, fast?",
+        "line": "Describe what you want to learn; AI drafts the questionnaire, fields it to respondents in 100+ countries and helps you read the results — in days, no agency required.",
+        "goodFor": [
+          "Concept and message testing",
+          "Quick polls",
+          "Creative testing",
+          "Same-day reads"
+        ]
+      },
+      "business_impact": {
+        "title": "How do I prove the brand is moving the business?",
+        "line": "Continuous scoring of the emotional and functional drivers of brand strength, tied to pricing power, revenue and market value — the numbers a CFO and a board will accept.",
+        "goodFor": [
+          "Brand ROI",
+          "Pricing power",
+          "Board and CFO conversations",
+          "Which investments pay"
+        ]
+      },
+      "reputation": {
+        "title": "How do I see a reputation risk before it becomes a story?",
+        "line": "Reads narrative alignment and emotional intensity across the conversation about you, and flags the risks that are about to become headlines.",
+        "goodFor": [
+          "Early warning",
+          "Crisis readiness",
+          "Narrative tracking",
+          "Issues management"
+        ]
+      },
+      "media_monitoring": {
+        "title": "How do I monitor everything said about us, globally?",
+        "line": "Human-plus-AI monitoring of news, social and broadcast worldwide, in every language, with analysis of the narratives your stakeholders are forming.",
+        "goodFor": [
+          "Multi-market coverage",
+          "Daily briefings",
+          "Narrative analysis",
+          "Broadcast and print"
+        ]
+      },
+      "real_world_behavior": {
+        "title": "How do I measure what people actually do?",
+        "line": "Real-world behaviour — who visited, how foot traffic moved, and whether your advertising changed where people went — instead of what they tell a survey.",
+        "goodFor": [
+          "Store visits",
+          "Foot traffic lift",
+          "Drive-to-store",
+          "The say/do gap"
+        ]
+      },
+      "marketing_ops": {
+        "title": "How do I get my marketing tools working as one system?",
+        "line": "Connect planning, creation, media and measurement into an agentic operating system that keeps learning, with specialised machines for media, knowledge and targeting.",
+        "goodFor": [
+          "Fragmented stacks",
+          "Workflow orchestration",
+          "Enterprise marketing ops",
+          "Continuous learning"
+        ]
+      },
+      "ai_workspace": {
+        "title": "How do I give the whole team AI, safely?",
+        "line": "One login, one contract and one security standard for the frontier models and purpose-built marketing assistants — with uploaded data never used to train the models.",
+        "goodFor": [
+          "Sanctioned AI access",
+          "Custom assistants",
+          "Governance and SOC 2",
+          "One contract, not a drawer of subscriptions"
+        ]
+      },
+      "sample_quality": {
+        "title": "How do I know the people behind my research are real?",
+        "line": "Verified consumer and B2B respondents from a global supply and identity backbone, so every study stands on sample you can trust.",
+        "goodFor": [
+          "Verified respondents",
+          "B2B sample",
+          "Fraud and bot screening",
+          "Panel quality"
+        ]
+      }
+    },
+    "otherLineNote": "One line: the free-text pane also carries ten chips and a text box, and the pane must fit without scrolling.",
+    "moreLabel": "Or pick one of these:",
+    "morePlaceholder": "Anything else the agent should know (optional)",
+    "siteLabel": "Your website (optional)",
+    "siteHint": "A website starts the read before you answer another question; leave it blank and the agent simply asks.",
+    "video": {
+      "src": "/assets/video/stagwell-ai-explainer.mp4",
+      "poster": "/assets/img/film-poster.jpg",
+      "label": "Watch: what is Stagwell.AI",
+      "duration": "1:53",
+      "title": "What is Stagwell.AI — the explainer",
+      "note": "Sits between the headline and the sub-line (client, Sep 2): a small thumbnail with a big play button; opens the film in a shadow box with the browser's own controls. StagwellAI_Explainer_v2 (720p preview, 1:53)."
+    }
+  },
+  "captureMoment": {
+    "when": "right before the snapshot — the gate. Never at the door (client, Sep 2), and the band below the snapshot only asks if the gate was skipped.",
+    "emailCopy": "Get the full report — and keep it updated.",
+    "consentLine": "By sending, you agree someone from Stagwell can follow up about these results.",
+    "consentModel": "one decision, not two — sending the report IS the consent, stated under the button; there is no separate checkbox to tick",
+    "emailPrefill": "the field arrives filled with the work_email the visitor already gave at the front door or in the conversation, and the line under the headline names where the report is going; it stays editable, and the submit reads the field, never the slot",
+    "bandTitle": "One read. The whole suite behind it.",
+    "bandAccent": "The next step is the people who run them.",
+    "bandSub": "Brand tracking, competitive benchmarking, creator marketing, AI-search visibility, consumer research, voice agents — matched to your problem by strategists who work with them every day.",
+    "bandNote": "kept deliberately distinct from the landing CTA band lower on the same page",
+    "onCapture": [
+      "unlock PDF download",
+      "email the report",
+      "record consent granted to CRM",
+      "show routing card"
+    ],
+    "onDecline": [
+      "keep on-screen snapshot",
+      "log session as anonymous",
+      "no nagging"
+    ],
+    "gate": {
+      "line": "Your read is ready. Where should the report go? Drop your work email and I'll open your snapshot — the PDF goes to the same address.",
+      "emailLabel": "Work email",
+      "phoneLabel": "Phone (optional)",
+      "button": "Show my snapshot →",
+      "consent": "By continuing, you agree someone from Stagwell can follow up about these results.",
+      "skip": "Skip for now — just show me the snapshot",
+      "errors": {
+        "noEmail": "Add your work email to open the snapshot — or skip for now below.",
+        "badEmail": "That doesn't look like an email address yet — check it over.",
+        "personalEmail": "That's a personal address — the report goes to your work email."
+      },
+      "phoneRule": "every email ask carries a phone ask; never required (cta.json phoneRule)",
+      "skipNote": "a skip is not a decline: the band under the snapshot still offers the report, and the PDF stays locked until an address is given"
+    }
+  },
+  "humanAck": "Got it — I'll make sure a person picks this up; the route at the end books that. A couple more quick answers so they arrive already briefed.",
+  "humanAckAfterDone": "Of course. Open your snapshot and take the “Book a demo” or “Talk to an AI expert” button, or leave a number and Stagwell.AI will call you — either way a person, not a script.",
+  "humanAckNote": "humanAck is spoken the moment the human-ask override fires (a human ask at any question). humanAckAfterDone is retired as of Sep 2: once the read is finished the composer closes and its button becomes 'Show my snapshot', so nothing can be typed after the reveal — the copy is kept for the record only.",
+  "discovery": {
+    "_comment": "Kimi's discriminating questions (brief §7). Not a sequence: next/select-question.js picks the one that best separates the products still in the running, and stops when scoring.json says the top candidate is clearly ahead. `field` is what an answer fills — 'intent' adds the suggestion's value to the visitor's signals as an EXPLICIT intent (taxonomy.json id); companySize / creatorProgramSize / geographicScope set that band. `askWhen` is declarative: goals (the visitor's primary goal is one of these), intentsAny (any of these intents already detected), candidatesAll (all these products currently in the top candidates), always. `separates` names the products the question exists to tell apart; the selector counts how many of them are in the running to value the question. `required:true` questions are asked once whenever the field is still unknown, after the discriminators; `first:true` is asked BEFORE them (the website, so the lookup can colour everything after it). Suggestions: 3–5, visitor language, never mandatory — free text is always allowed.",
+    "questions": [
+      {
+        "id": "work_email",
+        "purpose": "The work email, asked second — its domain IS the website, so one answer does the job of two and the lookup can colour everything after it (client, 2026-09-16: \"let's ask for the work email first, and if they put in a Gmail or some ambiguous email, then we'll ask for the website\"). A free address is kept as the contact but tells us nothing about the company, so the website question is asked after it. Switched by flags.emailFirst in kimi.json; with it off this question is never asked and the email goes back after the recommendation.",
+        "field": "email",
+        "priority": 101,
+        "first": true,
+        "prompt": "What's your work email? I'll read your company's site from it, so I can tailor the conversation to your needs.",
+        "suggestions": [],
+        "askWhen": {
+          "always": true
+        }
+      },
+      {
+        "id": "website",
+        "purpose": "Read the visitor's own site so everything after this is about them, not about marketing in general No way out of it on a chip: the client wants the company (2026-09-10) — a non-address answer is asked once more for the address itself, then accepted as the company's name.",
+        "field": "website",
+        "priority": 100,
+        "first": true,
+        "prompt": "What's your website? I'll take a quick look so I can tailor the conversation to your needs.",
+        "suggestions": [],
+        "askWhen": {
+          "always": true
+        },
+        "separates": []
+      },
+      {
+        "id": "role",
+        "purpose": "Who we are talking to — lead qualification, and the routing overrides that turn on seniority Fifth, after the size (client's order, 2026-09-10).",
+        "field": "role",
+        "priority": 98,
+        "first": true,
+        "prompt": "And what's your role there?",
+        "suggestions": [
+          {
+            "id": "founder",
+            "label": "Founder / owner",
+            "value": "founder"
+          },
+          {
+            "id": "manager",
+            "label": "Marketing manager",
+            "value": "manager"
+          },
+          {
+            "id": "director_vp",
+            "label": "Director / VP",
+            "value": "director_vp"
+          },
+          {
+            "id": "c_suite",
+            "label": "C-suite",
+            "value": "c_suite"
+          }
+        ],
+        "askWhen": {
+          "always": true
+        },
+        "separates": []
+      },
+      {
+        "id": "competition_type",
+        "purpose": "Separate NewIntel, QuestBrand, The Knowledge Machine / UNICEPTA and GEOPulse",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "What do you most want to understand about your competitors?",
+        "suggestions": [
+          {
+            "id": "current_activity",
+            "label": "What they're doing right now",
+            "value": "competitive_activity"
+          },
+          {
+            "id": "brand_compare",
+            "label": "How our brand compares",
+            "value": "competitive_benchmarking"
+          },
+          {
+            "id": "media",
+            "label": "What the media is saying about them",
+            "value": "competitive_media"
+          },
+          {
+            "id": "ai",
+            "label": "How they show up in AI answers",
+            "value": "competitive_ai_visibility"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "competition"
+          ],
+          "intentsAny": [
+            "competitive_activity",
+            "competitive_benchmarking",
+            "brand_benchmarking",
+            "competitive_media",
+            "competitive_ai_visibility"
+          ]
+        },
+        "separates": [
+          "newintel",
+          "questbrand",
+          "knowledge_machine",
+          "unicepta",
+          "geopulse"
+        ]
+      },
+      {
+        "id": "impact_type",
+        "purpose": "Separate QuestBrand, BERA.ai, Numetrix and QuestDIY",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "What kind of impact do you need to show?",
+        "suggestions": [
+          {
+            "id": "awareness",
+            "label": "Awareness and consideration moving",
+            "value": "campaign_measurement"
+          },
+          {
+            "id": "revenue",
+            "label": "Revenue, pricing power, business value",
+            "value": "business_impact"
+          },
+          {
+            "id": "behavior",
+            "label": "Real-world behaviour, like store visits",
+            "value": "behavioral_measurement"
+          },
+          {
+            "id": "research",
+            "label": "I need to run new research",
+            "value": "consumer_research"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "brand_impact"
+          ],
+          "intentsAny": [
+            "business_impact",
+            "campaign_measurement",
+            "behavioral_measurement"
+          ]
+        },
+        "separates": [
+          "questbrand",
+          "bera",
+          "numetrix",
+          "questdiy"
+        ]
+      },
+      {
+        "id": "awareness_lever",
+        "purpose": "Separate measurement (QuestBrand), media (The Media Machine), AI search (GEOPulse / Search+) and creators (IMAI / SMB)",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "Where do you want awareness to come from?",
+        "suggestions": [
+          {
+            "id": "measure",
+            "label": "First, measure where we stand",
+            "value": "brand_health"
+          },
+          {
+            "id": "media",
+            "label": "Smarter media planning and buying",
+            "value": "media_planning"
+          },
+          {
+            "id": "ai_search",
+            "label": "Showing up in AI answers and search",
+            "value": "ai_search_visibility"
+          },
+          {
+            "id": "creators",
+            "label": "Creators and influencers",
+            "value": "creator_discovery"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "brand_awareness"
+          ]
+        },
+        "separates": [
+          "questbrand",
+          "media_machine",
+          "geopulse",
+          "search_plus",
+          "imai",
+          "smb_platform"
+        ]
+      },
+      {
+        "id": "audience_type",
+        "purpose": "Separate The Targeting Machine, Stagwell ID Graph, The Media Machine, IMAI / SMB and NewVoices",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "What would help most with your audience?",
+        "suggestions": [
+          {
+            "id": "targeting",
+            "label": "Building and activating better audiences",
+            "value": "audience_targeting"
+          },
+          {
+            "id": "identity",
+            "label": "Connecting and enriching our customer data",
+            "value": "identity_graph"
+          },
+          {
+            "id": "media",
+            "label": "Planning and buying media",
+            "value": "media_planning"
+          },
+          {
+            "id": "creators",
+            "label": "Reaching people through creators",
+            "value": "creator_discovery"
+          },
+          {
+            "id": "leads",
+            "label": "Converting more of the leads we already get",
+            "value": "customer_voice_ai"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "audience_growth"
+          ]
+        },
+        "separates": [
+          "targeting_machine",
+          "id_graph",
+          "media_machine",
+          "imai",
+          "smb_platform",
+          "newvoices"
+        ]
+      },
+      {
+        "id": "reputation_scope",
+        "purpose": "Separate The Knowledge Machine, UNICEPTA and GEOPulse",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "What matters most for protecting your reputation?",
+        "suggestions": [
+          {
+            "id": "early",
+            "label": "Early warning before a story breaks",
+            "value": "reputation_risk"
+          },
+          {
+            "id": "monitor",
+            "label": "Monitoring everything said about us, globally",
+            "value": "media_monitoring"
+          },
+          {
+            "id": "ai",
+            "label": "How AI assistants describe us",
+            "value": "ai_search_visibility"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "reputation"
+          ],
+          "intentsAny": [
+            "reputation_risk",
+            "media_monitoring",
+            "narrative_intelligence"
+          ]
+        },
+        "separates": [
+          "knowledge_machine",
+          "unicepta",
+          "geopulse"
+        ]
+      },
+      {
+        "id": "operations_type",
+        "purpose": "Separate NewVoices, Agent Cloud, Stagwell’s Machines and Search+",
+        "field": "intent",
+        "priority": 90,
+        "prompt": "Which part of the operation do you want to scale?",
+        "suggestions": [
+          {
+            "id": "conversations",
+            "label": "Customer calls and conversations",
+            "value": "customer_voice_ai"
+          },
+          {
+            "id": "ai_access",
+            "label": "Giving the team secure access to AI",
+            "value": "employee_ai_access"
+          },
+          {
+            "id": "ops",
+            "label": "Connecting marketing tools into one system",
+            "value": "marketing_operations"
+          },
+          {
+            "id": "orchestration",
+            "label": "Orchestrating paid, owned and earned media",
+            "value": "brand_orchestration"
+          }
+        ],
+        "askWhen": {
+          "goals": [
+            "operations"
+          ],
+          "intentsAny": [
+            "marketing_operations",
+            "employee_ai_access",
+            "ai_governance",
+            "brand_orchestration",
+            "customer_chat_ai"
+          ]
+        },
+        "separates": [
+          "newvoices",
+          "agent_cloud",
+          "machines_family",
+          "search_plus"
+        ]
+      },
+      {
+        "id": "creator_scale",
+        "purpose": "SMB platform (under ~100 creators) vs IMAI (100+ / enterprise program)",
+        "field": "creatorProgramSize",
+        "priority": 95,
+        "prompt": "Roughly how many creators do you work with in a year?",
+        "suggestions": [
+          {
+            "id": "under_100",
+            "label": "Under 100",
+            "value": "under_100"
+          },
+          {
+            "id": "100_plus",
+            "label": "100 or more",
+            "value": "100_plus"
+          },
+          {
+            "id": "unknown",
+            "label": "Not sure yet",
+            "value": "unknown"
+          }
+        ],
+        "askWhen": {
+          "intentsAny": [
+            "creator_discovery",
+            "creator_management",
+            "creator_measurement"
+          ]
+        },
+        "separates": [
+          "smb_platform",
+          "imai"
+        ]
+      },
+      {
+        "id": "monitoring_scope",
+        "purpose": "The Knowledge Machine (one market, early warning) vs UNICEPTA (global, many languages)",
+        "field": "geographicScope",
+        "priority": 70,
+        "prompt": "Which markets do you need to cover?",
+        "suggestions": [
+          {
+            "id": "single",
+            "label": "One market, one language",
+            "value": "single_market"
+          },
+          {
+            "id": "global",
+            "label": "Many markets and languages",
+            "value": "global"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "knowledge_machine",
+            "unicepta"
+          ]
+        },
+        "separates": [
+          "knowledge_machine",
+          "unicepta"
+        ]
+      },
+      {
+        "id": "media_focus",
+        "purpose": "The Media Machine vs The Targeting Machine",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What do you want from media?",
+        "suggestions": [
+          {
+            "id": "planning",
+            "label": "Planning that ties spend to brand outcomes",
+            "value": "media_planning"
+          },
+          {
+            "id": "buying",
+            "label": "Buying and activation",
+            "value": "media_buying"
+          },
+          {
+            "id": "audiences",
+            "label": "Better audiences to buy against",
+            "value": "audience_targeting"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "media_machine",
+            "targeting_machine"
+          ]
+        },
+        "separates": [
+          "media_machine",
+          "targeting_machine"
+        ]
+      },
+      {
+        "id": "data_focus",
+        "purpose": "The Targeting Machine vs Stagwell ID Graph",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What's the data challenge?",
+        "suggestions": [
+          {
+            "id": "first_party",
+            "label": "Putting our first-party data to work",
+            "value": "first_party_data"
+          },
+          {
+            "id": "identity",
+            "label": "Resolving identities across households and devices",
+            "value": "identity_graph"
+          },
+          {
+            "id": "activate",
+            "label": "Activating audiences into our buying",
+            "value": "audience_targeting"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "targeting_machine",
+            "id_graph"
+          ]
+        },
+        "separates": [
+          "targeting_machine",
+          "id_graph"
+        ]
+      },
+      {
+        "id": "ai_access_type",
+        "purpose": "Agent Cloud vs Stagwell’s Machines",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What does the team need from AI?",
+        "suggestions": [
+          {
+            "id": "access",
+            "label": "Secure access to the leading models",
+            "value": "employee_ai_access"
+          },
+          {
+            "id": "governance",
+            "label": "Governance over how AI is used",
+            "value": "ai_governance"
+          },
+          {
+            "id": "os",
+            "label": "An operating system for marketing work",
+            "value": "marketing_operations"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "agent_cloud",
+            "machines_family"
+          ]
+        },
+        "separates": [
+          "agent_cloud",
+          "machines_family"
+        ]
+      },
+      {
+        "id": "research_need",
+        "purpose": "QuestDIY vs QuestBrand vs Numetrix",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What do you need from research?",
+        "suggestions": [
+          {
+            "id": "diy",
+            "label": "Run surveys and tests ourselves",
+            "value": "consumer_research"
+          },
+          {
+            "id": "tracking",
+            "label": "Always-on brand tracking",
+            "value": "brand_health"
+          },
+          {
+            "id": "behavior",
+            "label": "Observed behaviour, not surveys",
+            "value": "behavioral_measurement"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "questdiy",
+            "questbrand"
+          ]
+        },
+        "separates": [
+          "questdiy",
+          "questbrand",
+          "numetrix"
+        ]
+      },
+      {
+        "id": "ai_visibility_focus",
+        "purpose": "GEOPulse (measure how AI answers describe you) vs Search+ (change it)",
+        "field": "intent",
+        "priority": 70,
+        "prompt": "What about AI answers matters most?",
+        "suggestions": [
+          {
+            "id": "recommends",
+            "label": "Seeing how AI describes us today",
+            "value": "ai_search_visibility"
+          },
+          {
+            "id": "competitors",
+            "label": "How competitors show up",
+            "value": "competitive_ai_visibility"
+          },
+          {
+            "id": "influence",
+            "label": "Changing how AI represents us",
+            "value": "ai_search_influence"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "geopulse",
+            "search_plus"
+          ]
+        },
+        "separates": [
+          "geopulse",
+          "search_plus"
+        ]
+      },
+      {
+        "id": "conversation_channel",
+        "purpose": "NewVoices (conversations) vs QuestDIY (interviews as research)",
+        "field": "intent",
+        "priority": 60,
+        "prompt": "Where do those customer conversations happen?",
+        "suggestions": [
+          {
+            "id": "phone",
+            "label": "Phone calls",
+            "value": "customer_voice_ai"
+          },
+          {
+            "id": "chat",
+            "label": "Chat and messaging",
+            "value": "customer_chat_ai"
+          },
+          {
+            "id": "interviews",
+            "label": "We want to interview customers at scale",
+            "value": "consumer_research"
+          }
+        ],
+        "askWhen": {
+          "candidatesAll": [
+            "newvoices",
+            "questdiy"
+          ]
+        },
+        "separates": [
+          "newvoices",
+          "questdiy"
+        ]
+      },
+      {
+        "id": "company_size",
+        "purpose": "Lead qualification and the SMB self-service path; also the routing tier Asked fourth, right after the site has been read (client's order, 2026-09-10) — and not at all when the lookup already found the size.",
+        "field": "companySize",
+        "priority": 99,
+        "prompt": "Roughly how big is your company?",
+        "suggestions": [
+          {
+            "id": "micro",
+            "label": "Under 20",
+            "value": "micro"
+          },
+          {
+            "id": "small",
+            "label": "21 to 50",
+            "value": "small"
+          },
+          {
+            "id": "mid",
+            "label": "51 to 250",
+            "value": "mid"
+          },
+          {
+            "id": "large",
+            "label": "251 or more",
+            "value": "large"
+          }
+        ],
+        "askWhen": {
+          "always": true
+        },
+        "separates": [
+          "smb_platform",
+          "imai",
+          "bera",
+          "media_machine",
+          "search_plus",
+          "machines_family"
+        ],
+        "first": true
+      }
+    ]
+  }
+}

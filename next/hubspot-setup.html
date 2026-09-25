@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>HubSpot setup · Stagwell AI</title>
+<!--
+  ADMIN PAGE, ONE JOB. It asks for the HubSpot service key, POSTs it to
+  /api/hubspot-setup, and shows what happened to each property. The key is
+  held in a variable for the length of one request: never stored, never put in
+  the URL, never sent anywhere but this site's own function. Run it once,
+  before the first live lead.
+-->
+<style>
+  :root { --page:#071A24; --card:#0C2331; --raised:#12303F; --ink:#F1FAFF; --cyan:#77E3F6; --orange:#FF6D24; --dim:#8FB2C4; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:48px 20px 96px; background:var(--page); color:var(--ink);
+         font:400 16px/1.55 Montserrat,'Segoe UI','Helvetica Neue',Arial,sans-serif; }
+  main { max-width: 680px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: 600; margin: 0 0 8px; }
+  h1 span { color: var(--orange); }
+  p { color: var(--dim); margin: 0 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--raised); border-radius: 14px; padding: 24px; margin-top: 28px; }
+  label { display:block; font-size: 13px; letter-spacing:.04em; text-transform:uppercase; color: var(--dim); margin-bottom: 8px; }
+  input { width:100%; padding:13px 14px; border-radius:10px; border:1px solid var(--raised);
+          background:#061620; color:var(--ink); font:400 15px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  input:focus { outline:none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(119,227,246,.18); }
+  button { margin-top:16px; padding:13px 22px; border:0; border-radius:999px; background:var(--orange);
+           color:#003349; font:600 15px Montserrat,sans-serif; cursor:pointer; }
+  #formBtn { margin-left:10px; background:transparent; border:1px solid var(--raised); color:var(--ink); }
+  #formBtn:hover { border-color: var(--cyan); }
+  .map { margin-top:14px; padding:12px 14px; border-radius:10px; background:#061620;
+         font:400 13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--cyan); word-break:break-all; }
+  button[disabled] { opacity:.5; cursor:default; }
+  .note { font-size:13px; color:var(--dim); margin-top:14px; }
+  .out { margin-top:24px; display:none; }
+  .banner { border-radius:10px; padding:14px 16px; font-size:15px; margin-bottom:16px; }
+  .banner.good { background:rgba(119,227,246,.12); border:1px solid rgba(119,227,246,.4); }
+  .banner.bad  { background:rgba(255,109,36,.12);  border:1px solid rgba(255,109,36,.45); }
+  ul { list-style:none; margin:0; padding:0; font:400 13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  li { display:flex; gap:10px; padding:6px 0; border-top:1px solid rgba(255,255,255,.06); }
+  li b { flex:0 0 78px; font-weight:600; }
+  li .nm { flex:1; color:var(--dim); word-break:break-all; }
+  .created b, .fixed b { color: var(--cyan); }
+  .ok b { color: var(--dim); }
+  .failed b { color: var(--orange); }
+  .failed .nm { color: var(--ink); }
+</style>
+</head>
+<body>
+<main>
+  <h1>HubSpot <span>setup</span></h1>
+  <p>Creates the <strong>Stagwell AI discovery</strong> section on the HubSpot contact record and
+     the 22 fields the Book&nbsp;a&nbsp;demo form writes into it. Run this once, before the first
+     real lead. Running it again is safe — it repairs anything that has drifted and leaves the
+     rest alone.</p>
+
+  <form class="card" id="f" autocomplete="off">
+    <label for="k">HubSpot service key</label>
+    <input id="k" name="k" type="password" spellcheck="false" autocomplete="off"
+           placeholder="paste the key you put in Vercel">
+    <button id="go" type="submit">Run setup</button>
+    <button id="formBtn" type="button">Check the HubSpot form</button>
+    <p class="note">The key is only checked against the one this site already holds — it proves
+       you are an admin. It is not saved here, never appears in the address bar, and is not
+       written to any log.</p>
+  </form>
+
+  <section class="out" id="out">
+    <div class="banner" id="banner"></div>
+    <ul id="list"></ul>
+  </section>
+</main>
+
+<script>
+(function () {
+  var f = document.getElementById('f'), k = document.getElementById('k'), go = document.getElementById('go');
+  var out = document.getElementById('out'), banner = document.getElementById('banner'), list = document.getElementById('list');
+
+  function show(cls, text) { out.style.display = 'block'; banner.className = 'banner ' + cls; banner.textContent = text; }
+
+  /* "what is on that form?" — asked of HubSpot rather than of a colleague */
+  document.getElementById('formBtn').addEventListener('click', function () {
+    var key = k.value.trim();
+    if (!key) { k.focus(); return; }
+    list.innerHTML = '';
+    show('good', 'Asking HubSpot what is on the form…');
+
+    fetch('/api/hubspot-setup', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ key: key, action: 'form' })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      k.value = '';
+      if (!j.ok) { show('bad', j.help || j.error || 'Could not read the form.'); return; }
+      (j.fields || []).forEach(function (fl) {
+        var li = document.createElement('li');
+        li.className = fl.required ? 'created' : 'ok';
+        li.innerHTML = '<b></b><span class="nm"></span>';
+        li.querySelector('b').textContent = fl.required ? 'required' : 'optional';
+        li.querySelector('.nm').textContent = fl.name + (fl.type ? ' · ' + fl.type : '') + (fl.label ? ' · “' + fl.label + '”' : '');
+        list.appendChild(li);
+      });
+      show('good', (j.fields || []).length + ' field(s) on the form, read from its ' +
+        (j.source === 'probe' ? 'rejection of a probe — REQUIRED fields only' : 'public definition') + '.' +
+        (j.help ? ' ' + j.help : ''));
+      if (j.unsure && j.unsure.length) {
+        var u = document.createElement('div');
+        u.className = 'banner bad';
+        u.textContent = 'Not decided for you: ' + j.unsure.join(', ') +
+          '. A partial reading cannot tell an optional field from a missing one, and dropping the wrong one breaks the routing. Check these by hand before adding them to the map.';
+        banner.parentNode.insertBefore(u, list);
+      }
+      if (j.suggestion) {
+        var m = document.createElement('div');
+        m.className = 'map';
+        m.textContent = 'HUBSPOT_FORM_FIELD_MAP=' + j.suggestion;
+        banner.parentNode.insertBefore(m, list);
+      }
+    })
+    .catch(function () { show('bad', 'Could not reach the setup endpoint.'); });
+  });
+
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var key = k.value.trim();
+    if (!key) { k.focus(); return; }
+    go.disabled = true; go.textContent = 'Working…';
+    list.innerHTML = '';
+    show('good', 'Talking to HubSpot — this takes a few seconds.');
+
+    fetch('/api/hubspot-setup', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ key: key })
+    })
+    .then(function (r) { return r.json().then(function (j) { return { status: r.status, j: j }; }); })
+    .then(function (res) {
+      var j = res.j || {};
+      k.value = '';                                    /* out of the field the moment it is used */
+      if (j.properties && j.properties.length) {
+        j.properties.forEach(function (p) {
+          var li = document.createElement('li');
+          li.className = p.state;
+          li.innerHTML = '<b></b><span class="nm"></span>';
+          li.querySelector('b').textContent = p.state;
+          li.querySelector('.nm').textContent = p.name + (p.detail ? ' — ' + p.detail : '');
+          list.appendChild(li);
+        });
+      }
+      if (j.ok) {
+        var t = j.tally || {};
+        show('good', 'Done. ' + (t.created || 0) + ' created · ' + (t.fixed || 0) + ' repaired · ' +
+          (t.ok || 0) + ' already correct. HubSpot is ready for live leads.');
+        /* the properties can all be right and the key still be unable to
+           raise the note and the task that make a lead noticeable */
+        if (j.reachHelp) {
+          var warn = document.createElement('div');
+          warn.className = 'banner bad';
+          warn.textContent = j.reachHelp;
+          banner.parentNode.insertBefore(warn, list);
+        }
+      } else {
+        show('bad', (j.help || j.error || ('HTTP ' + res.status)) );
+      }
+    })
+    .catch(function () { show('bad', 'Could not reach the setup endpoint. Check the deployment and try again.'); })
+    .then(function () { go.disabled = false; go.textContent = 'Run setup'; });
+  });
+})();
+</script>
+</body>
+</html>

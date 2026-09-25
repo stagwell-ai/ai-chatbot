@@ -1,0 +1,1281 @@
+{
+  "surfaces": {
+    "A_directory": "Always available under 'Find your solution' — card = positioning line + who it's for, grouped by problem, not by company",
+    "B_featured": "Full solution block shown when the visitor's domain, ad entry, or firmographics match — presented conversationally by the agent",
+    "C_snapshot": "Snapshot modules framed as capabilities; 'powered by' credit revealed at the routing step, not before",
+    "D_cross_discovery": "'Teams solving this usually also ask about…' — shown after the primary match is established"
+  },
+  "solutions": [
+    {
+      "id": "questbrand",
+      "name": "QuestBrand",
+      "tagline": "Know how your brand is really doing — every day.",
+      "positioning": "Know how your brand is really doing — every day. Always-on tracking of awareness, consideration and momentum, benchmarked against the competitors you name. Watch a campaign move the numbers, as a subscription — not a quarterly research project.",
+      "whoFor": "Insights and brand leaders",
+      "shownWhen": "B: domain=brand_health, and domain=competitive — its Competitive Benchmarking half is the whole answer there · C: powers competitive & brand modules · D: after Numetrix (retail) and BERA conversations · industry boost QSR/retail/CPG",
+      "nextStep": "Trial (SMB) / demo",
+      "positioningByDomain": {
+        "brand_health": "Awareness, consideration and momentum tracked every day, so you can watch a campaign move your own numbers instead of waiting for the next quarterly read.",
+        "competitive": "Always-on tracking benchmarked against the competitors you name — see where you gain and lose ground against them, every day."
+      },
+      "companions": [
+        "bera",
+        "numetrix"
+      ],
+      "url": "https://www.harrisquest.com/suite/questbrand",
+      "signupUrl": null,
+      "valueProps": [
+        "Brand tracking",
+        "Competitive benchmarking",
+        "Campaign impact",
+        "Emotional drivers"
+      ],
+      "lockup": "/assets/img/lockups/questbrand.png",
+      "active": true,
+      "cardDescription": "Always-on tracking of awareness, consideration and momentum, benchmarked against the competitors you name.",
+      "capabilityTags": [
+        "Brand tracking",
+        "Competitive benchmarking",
+        "Campaign impact",
+        "Emotional drivers"
+      ],
+      "intentTags": {
+        "primary": [
+          "brand_health",
+          "campaign_measurement",
+          "brand_benchmarking",
+          "competitive_benchmarking"
+        ],
+        "secondary": [
+          "narrative_intelligence"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/questbrand",
+        "externalWebsite": "https://www.harrisquest.com/suite/questbrand",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "questbrand",
+        "lockup": "/assets/img/lockups/questbrand.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "questbrand",
+        "quest brand",
+        "quest-brand"
+      ]
+    },
+    {
+      "id": "questdiy",
+      "name": "QuestDIY",
+      "tagline": "Run real consumer research yourself — in days.",
+      "positioning": "Run real consumer research yourself — in days. Describe what you want to learn; AI helps draft the questionnaire, fields it to respondents in 100+ countries, and helps you read the results. No agency required.",
+      "whoFor": "Teams that need answers before the deadline",
+      "shownWhen": "B: domain=research; Q6 one-off · D: to brand-health visitors needing a deep-dive; wherever 'test creative/messaging' appears",
+      "nextStep": "Self-serve signup, all tiers",
+      "companions": [
+        "unlock",
+        "questbrand"
+      ],
+      "url": "https://www.harrisquest.com/suite/questdiy",
+      "signupUrl": "https://www.harrisquest.com/suite/questdiy",
+      "valueProps": [
+        "AI-drafted surveys",
+        "Respondents in 100+ countries",
+        "Concept & message testing",
+        "Same-day reads"
+      ],
+      "lockup": "/assets/img/lockups/questdiy.png",
+      "signupNote": "Client, Sep 2: QuestDIY has a free trial. The kit carries no separate signup URL, so the trial button points at the product page — swap in the exact trial link when Harris Quest supplies it.",
+      "active": true,
+      "cardDescription": "Run real consumer research yourself in days: AI drafts the questionnaire, fields it in 100+ countries and helps you read the results.",
+      "capabilityTags": [
+        "AI-drafted surveys",
+        "Respondents in 100+ countries",
+        "Concept & message testing",
+        "Same-day reads"
+      ],
+      "intentTags": {
+        "primary": [
+          "consumer_research"
+        ],
+        "secondary": [
+          "campaign_measurement",
+          "brand_health"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "SELF_SERVICE",
+        "primaryLabel": "Start now",
+        "secondaryLabel": "Talk to an expert"
+      },
+      "urls": {
+        "productPage": "/s/questdiy",
+        "externalWebsite": "https://www.harrisquest.com/suite/questdiy",
+        "demo": null,
+        "selfService": "https://www.harrisquest.com/suite/questdiy"
+      },
+      "visual": {
+        "logoKey": "questdiy",
+        "lockup": "/assets/img/lockups/questdiy.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g2",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "questdiy",
+        "quest diy",
+        "quest d i y",
+        "quest do it yourself"
+      ]
+    },
+    {
+      "id": "bera",
+      "name": "BERA.ai",
+      "tagline": "Prove the brand is moving the business.",
+      "positioning": "Prove the brand is moving the business. Continuous scoring of the emotional and functional drivers of brand strength, connected to pricing power, revenue and market value — so you know which brand investments pay, and which audiences to grow.",
+      "whoFor": "CMOs who answer to CFOs",
+      "shownWhen": "B: domain=business_impact; Q6 board/CFO · D: enterprise brand-health visitors, and enterprise domain=competitive visitors who also use 'prove impact'/CFO language (routing.json competitive→enterprise note); every consultative recap · role boost C-suite",
+      "nextStep": "Executive session / demo",
+      "companions": [
+        "questbrand",
+        "targeting_machine"
+      ],
+      "url": "https://bera.ai",
+      "signupUrl": null,
+      "valueProps": [
+        "Brand ROI tracking",
+        "Audience prioritization",
+        "Competitive intelligence",
+        "Media planning"
+      ],
+      "lockup": "/assets/img/lockups/bera.png",
+      "active": true,
+      "cardDescription": "Continuous scoring of the drivers of brand strength, connected to pricing power, revenue and market value.",
+      "capabilityTags": [
+        "Brand ROI tracking",
+        "Audience prioritization",
+        "Competitive intelligence",
+        "Media planning"
+      ],
+      "intentTags": {
+        "primary": [
+          "business_impact"
+        ],
+        "secondary": [
+          "brand_health",
+          "competitive_benchmarking",
+          "media_planning",
+          "audience_targeting"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid",
+          "large"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/bera",
+        "externalWebsite": "https://bera.ai",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "bera",
+        "lockup": "/assets/img/lockups/bera.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g3",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "bera",
+        "bera.ai",
+        "bera ai",
+        "berra"
+      ]
+    },
+    {
+      "id": "unlock",
+      "name": "Unlock",
+      "positioning": "Real, verified people behind every answer. A global respondent supply and identity backbone — validated consumer and B2B respondents, so your research stands on sample you can trust.",
+      "whoFor": "The quality layer under our research offerings",
+      "shownWhen": "B: domain=sample_quality — a primary for research and agency buyers asking about the people behind the data (Sep 2) · still the trust layer under QuestDIY and QuestBrand as a companion",
+      "nextStep": "Demo",
+      "companions": [
+        "questdiy",
+        "questbrand"
+      ],
+      "url": "https://www.themarketingcloud.com/marketplace/unlock",
+      "signupUrl": null,
+      "valueProps": [
+        "Verified consumer & B2B sample",
+        "Respondent validation",
+        "Trusted data quality"
+      ],
+      "lockup": null,
+      "active": false,
+      "cardDescription": "Verified consumer and B2B respondents, so research stands on sample you can trust.",
+      "capabilityTags": [
+        "Verified consumer & B2B sample",
+        "Respondent validation",
+        "Trusted data quality"
+      ],
+      "intentTags": {
+        "primary": [],
+        "secondary": [
+          "consumer_research"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/unlock",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/unlock",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "unlock",
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
+      }
+    },
+    {
+      "id": "knowledge_machine",
+      "name": "The Knowledge Machine",
+      "tagline": "Know what audiences think before it shows up in the numbers.",
+      "positioning": "Know what audiences think before it shows up in the numbers. Transforms emotional and market signals into strategic intelligence – surfacing not just what is shifting but the emotional driver underneath it, and who is driving it.",
+      "whoFor": "The communications lead drowning in fragmented signals",
+      "shownWhen": "B: domain=reputation; Q6 early-warning/one market · industry boost pharma/finance/insurance/energy/gov · D: beside UNICEPTA when both fit",
+      "nextStep": "Demo",
+      "companions": [
+        "unicepta",
+        "geopulse"
+      ],
+      "url": "https://www.themarketingcloud.com/marketplace/pulse",
+      "signupUrl": null,
+      "valueProps": [
+        "Signal detection",
+        "Reputation intelligence",
+        "Competitive analysis",
+        "Campaign tracking"
+      ],
+      "lockup": "/assets/img/lockups/knowledge-machine.png",
+      "active": true,
+      "cardDescription": "Transforms emotional and market signals into strategic intelligence: what is shifting, the emotional driver underneath it, and who is driving it.",
+      "capabilityTags": [
+        "Signal detection",
+        "Reputation intelligence",
+        "Competitive analysis",
+        "Campaign tracking"
+      ],
+      "intentTags": {
+        "primary": [
+          "reputation_risk",
+          "narrative_intelligence",
+          "competitive_media"
+        ],
+        "secondary": [
+          "media_monitoring",
+          "campaign_measurement"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/knowledge_machine",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/pulse",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "knowledge_machine",
+        "lockup": "/assets/img/lockups/knowledge-machine.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "solves": "You find out what audiences think after it shows up in the numbers, too late to act on.",
+      "proofPoints": [
+        "Real-time sentiment across owned, earned and competitive channels",
+        "Historical pattern matching against prior market moments",
+        "Full audience profile surfaced with the signal"
+      ],
+      "messagingSource": "Stagwell AI Messaging FINAL (client, 2026-09-16), Stagwell Machines section",
+      "aliases": [
+        "knowledge machine",
+        "the knowledge machine"
+      ]
+    },
+    {
+      "id": "unicepta",
+      "name": "UNICEPTA",
+      "tagline": "Everything said about you, everywhere, in every language.",
+      "positioning": "Everything said about you, everywhere, in every language. Human-plus-AI monitoring of news, social and broadcast worldwide, with analysis of the narratives your stakeholders are forming.",
+      "whoFor": "Multinational comms teams",
+      "shownWhen": "B: domain=reputation; Q6 global/multi-language · firmographic boost multinational/Europe · D: beside The Knowledge Machine",
+      "nextStep": "Demo",
+      "companions": [
+        "knowledge_machine"
+      ],
+      "url": "https://www.themarketingcloud.com/marketplace/unicepta",
+      "signupUrl": null,
+      "valueProps": [
+        "Global monitoring",
+        "Daily briefings & alerts",
+        "Narrative analysis",
+        "Social listening"
+      ],
+      "lockup": "/assets/img/lockups/unicepta.png",
+      "active": true,
+      "cardDescription": "Human-plus-AI monitoring of news, social and broadcast worldwide, in every language, with analysis of the narratives forming.",
+      "capabilityTags": [
+        "Global monitoring",
+        "Daily briefings & alerts",
+        "Narrative analysis",
+        "Social listening"
+      ],
+      "intentTags": {
+        "primary": [
+          "media_monitoring",
+          "competitive_media",
+          "executive_alerts"
+        ],
+        "secondary": [
+          "narrative_intelligence",
+          "reputation_risk"
+        ]
+      },
+      "audiences": {
+        "geography": [
+          "global"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/unicepta",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/unicepta",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "unicepta",
+        "lockup": "/assets/img/lockups/unicepta.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "unicepta",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "unicepta",
+        "uni cepta",
+        "unisepta",
+        "unicepter"
+      ]
+    },
+    {
+      "id": "imai",
+      "name": "IMAI",
+      "tagline": "Influencer programs, end to end.",
+      "positioning": "Influencer programs, end to end. Hundreds of millions of creator profiles — discovery, vetting and fraud checks, then outreach, contracts, approvals and tracking through to ROI. One tool instead of spreadsheets and DMs.",
+      "whoFor": "Teams running creators at scale",
+      "shownWhen": "B: domain=influencer AND tier mid/enterprise (Q6 creators ≥ ~100); SMB sees the SMB platform instead · D: where creator language appears",
+      "nextStep": "Demo",
+      "companions": [
+        "geopulse",
+        "smb_platform"
+      ],
+      "url": "https://www.themarketingcloud.com/marketplace/imai",
+      "signupUrl": "https://influencermarketing.ai",
+      "valueProps": [
+        "Creator discovery",
+        "Campaign management",
+        "LLM visibility",
+        "UGC video ads"
+      ],
+      "lockup": "/assets/img/lockups/imai.png",
+      "active": true,
+      "cardDescription": "Influencer programs end to end: discovery and vetting across hundreds of millions of profiles, then outreach, contracts, approvals and ROI.",
+      "capabilityTags": [
+        "Creator discovery",
+        "Campaign management",
+        "LLM visibility",
+        "UGC video ads"
+      ],
+      "intentTags": {
+        "primary": [
+          "creator_management",
+          "creator_discovery",
+          "creator_measurement"
+        ],
+        "secondary": [
+          "ai_search_visibility"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid",
+          "large"
+        ],
+        "creatorVolume": [
+          "100_plus"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/imai",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/imai",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "imai",
+        "lockup": "/assets/img/lockups/imai.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "imai",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "imai",
+        "i m a i",
+        "influencermarketing.ai",
+        "influencer marketing ai",
+        "influencermarketing ai"
+      ]
+    },
+    {
+      "id": "smb_platform",
+      "name": "Stagwell AI for SMBs",
+      "tagline": "Discover creators, validate audience quality, and prove ROI — without a big team or budget.",
+      "positioning": "Discover creators, validate audience quality, and prove ROI — without a big team or budget. Listen, understand, execute, and measure, all from one dashboard.",
+      "whoFor": "Brands and small agencies (10–250 people)",
+      "shownWhen": "B: domain=influencer AND tier=smb",
+      "nextStep": "Self-serve signup",
+      "companions": [
+        "imai"
+      ],
+      "url": null,
+      "signupUrl": "https://influencermarketing.ai",
+      "valueProps": [
+        "Creator discovery",
+        "Audience validation",
+        "ROI tracking",
+        "One dashboard"
+      ],
+      "lockup": "/assets/img/lockups/smb-platform.png",
+      "active": true,
+      "cardDescription": "Discover creators, validate audience quality and prove ROI from one dashboard, without a big team or budget.",
+      "capabilityTags": [
+        "Creator discovery",
+        "Audience validation",
+        "ROI tracking",
+        "One dashboard"
+      ],
+      "intentTags": {
+        "primary": [
+          "creator_discovery",
+          "creator_measurement"
+        ],
+        "secondary": [
+          "creator_management",
+          "audience_targeting"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "micro",
+          "small",
+          "mid"
+        ],
+        "creatorVolume": [
+          "under_100"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "SELF_SERVICE",
+        "primaryLabel": "Start now",
+        "secondaryLabel": "Talk to an expert"
+      },
+      "urls": {
+        "productPage": "/s/smb_platform",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": "https://influencermarketing.ai"
+      },
+      "visual": {
+        "logoKey": "smb_platform",
+        "lockup": "/assets/img/lockups/smb-platform.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "stagwell ai for smbs",
+        "stagwell ai for smb",
+        "smb platform"
+      ]
+    },
+    {
+      "id": "geopulse",
+      "name": "GEOPulse",
+      "tagline": "When AI answers, is it recommending you?",
+      "positioning": "When AI answers, is it recommending you? Track how ChatGPT, Gemini and Perplexity mention, describe and recommend your brand versus rivals — and what to change to show up more.",
+      "whoFor": "The new search battleground, measured",
+      "shownWhen": "C first: its output IS the snapshot's AI-visibility module · B: domain=ai_visibility · D: universal companion",
+      "nextStep": "Trial [confirm packaging] / demo",
+      "companions": [
+        "all"
+      ],
+      "url": "https://www.themarketingcloud.com/marketplace/geopulse",
+      "signupUrl": null,
+      "valueProps": [
+        "AI visibility intelligence",
+        "Prompt optimization",
+        "Competitive benchmarking",
+        "Content simulation"
+      ],
+      "lockup": "/assets/img/lockups/geopulse.png",
+      "active": true,
+      "cardDescription": "Tracks how ChatGPT, Gemini and Perplexity mention, describe and recommend your brand versus rivals, and what to change.",
+      "capabilityTags": [
+        "AI visibility intelligence",
+        "Prompt optimization",
+        "Competitive benchmarking",
+        "Content simulation"
+      ],
+      "intentTags": {
+        "primary": [
+          "ai_search_visibility",
+          "competitive_ai_visibility",
+          "ai_citations"
+        ],
+        "secondary": [
+          "competitive_benchmarking",
+          "reputation_risk",
+          "brand_health"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/geopulse",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/geopulse",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "geopulse",
+        "lockup": "/assets/img/lockups/geopulse.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g2",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "geopulse",
+        "geo pulse",
+        "geo-pulse"
+      ]
+    },
+    {
+      "id": "targeting_machine",
+      "name": "The Targeting Machine",
+      "tagline": "Turn fragmented data into audiences you can activate.",
+      "positioning": "Audiences built from people already exhibiting the behavior. Connects fragmented first-party data with the Stagwell ID Graph and proprietary intelligence from BERA.ai, The Harris Poll and more – building audience profiles from real behavioral and attitudinal signals.",
+      "whoFor": "The insights leader tired of guessing who to reach",
+      "shownWhen": "B: domain=audiences · campaign product — its ad traffic lands on the product-branded page · D: where wasted-spend/targeting language appears",
+      "nextStep": "Demo",
+      "companions": [
+        "bera",
+        "numetrix"
+      ],
+      "url": "https://www.themarketingcloud.com/marketplace/sats",
+      "signupUrl": null,
+      "valueProps": [
+        "Audience exploration",
+        "1P onboarding & ID mapping",
+        "Cross-channel activation",
+        "Campaign measurement"
+      ],
+      "lockup": "/assets/img/lockups/targeting-machine.png",
+      "active": true,
+      "cardDescription": "Connects fragmented first-party data with the Stagwell ID Graph and proprietary intelligence, building audiences from real behavioral and attitudinal signals.",
+      "capabilityTags": [
+        "Audience exploration",
+        "1P onboarding & ID mapping",
+        "Cross-channel activation",
+        "Campaign measurement"
+      ],
+      "intentTags": {
+        "primary": [
+          "audience_targeting",
+          "first_party_data"
+        ],
+        "secondary": [
+          "identity_graph",
+          "media_buying",
+          "campaign_measurement"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/targeting-machine",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/sats",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "targeting_machine",
+        "lockup": "/assets/img/lockups/targeting-machine.png",
+        "hero": "/assets/img/products/targeting-machine-new.jpg",
+        "wordmark": "/assets/img/companies/targeting-machine/logo-lockup-teal.png",
+        "ground": "own",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "solves": "First-party data is fragmented, and lookalike models are educated guesses.",
+      "proofPoints": [
+        "Audiences built from people already exhibiting the behavior",
+        "Attitudinal and behavioral layering",
+        "Expanded addressable reach"
+      ],
+      "messagingSource": "Stagwell AI Messaging FINAL (client, 2026-09-16), Stagwell Machines section",
+      "aliases": [
+        "targeting machine",
+        "the targeting machine"
+      ]
+    },
+    {
+      "id": "numetrix",
+      "name": "Numetrix",
+      "tagline": "What people do, not what they tell surveys.",
+      "positioning": "What people do, not what they tell surveys. Real-world behavior measurement — who actually visited, how foot traffic moved, and whether your advertising changed where people went.",
+      "whoFor": "Brands with physical locations",
+      "shownWhen": "B: domain=real_world_behavior · firmographic trigger: retail/QSR/venue footprint detected — offered even unasked · D: say/do companion to brand tracking and targeting",
+      "nextStep": "Demo",
+      "companions": [
+        "questbrand",
+        "targeting_machine"
+      ],
+      "url": "https://www.themarketingcloud.com/marketplace/numetrix",
+      "signupUrl": null,
+      "valueProps": [
+        "Audience measurement",
+        "Brand lift & ad impact",
+        "Location intelligence"
+      ],
+      "lockup": "/assets/img/lockups/numetrix.png",
+      "active": true,
+      "cardDescription": "Real-world behaviour measurement: who actually visited, how foot traffic moved, and whether advertising changed where people went.",
+      "capabilityTags": [
+        "Audience measurement",
+        "Brand lift & ad impact",
+        "Location intelligence"
+      ],
+      "intentTags": {
+        "primary": [
+          "behavioral_measurement",
+          "ad_measurement"
+        ],
+        "secondary": [
+          "campaign_measurement",
+          "audience_targeting"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/numetrix",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/numetrix",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "numetrix",
+        "lockup": "/assets/img/lockups/numetrix.png",
+        "hero": null,
+        "wordmark": null,
+        "ground": "g3",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "numetrix",
+        "numetrics",
+        "new metrics"
+      ]
+    },
+    {
+      "id": "newvoices",
+      "name": "NewVoices",
+      "tagline": "Lifelike voice and chat agents that hold real conversations with your customers — any hour, in any language.",
+      "positioning": "Lifelike voice and chat agents that hold real conversations with your customers — any hour, in any language. The same agents qualify and book inbound leads, resolve tier-1 service and win back lapsing customers, and interview customers at scale when you need to understand why they act — turning what they say into decision-ready insight. Anything an agent can't finish goes to a person with the context already gathered.",
+      "whoFor": "Teams losing demand between the hand-raise and the callback — and teams who need to hear the why, at scale",
+      "shownWhen": "B: domain=leads · campaign product — its ad traffic lands on the product-branded page",
+      "nextStep": "Demo [packaging to confirm with NewVoices]",
+      "companions": [
+        "targeting_machine",
+        "questbrand"
+      ],
+      "url": "https://newvoices.ai/",
+      "signupUrl": null,
+      "valueProps": [
+        "Lead qualification and booking",
+        "Tier-1 service resolution",
+        "Retention and payment recovery",
+        "Customer interviews at scale",
+        "Decision-ready insight",
+        "Decision-ready insight"
+      ],
+      "lockup": null,
+      "lockupNote": "No normalised lockup plate exists for NewVoices in the deck — the only mark shipped is a white-on-gradient PNG, which would vanish on the plate's own field. Like Unlock, the name is set in type instead, which every surface already handles.",
+      "sourceNote": "positioning covers both jobs the product does — the conversion agents on NewVoices' own site and the insight campaigns on /next/newvoices. Both are its published lines; they were split across two surfaces and read as two products (client, 2026-09-10).",
+      "active": true,
+      "cardDescription": "Lifelike voice and chat agents that qualify and book leads, resolve tier-1 service, win back lapsing customers and interview customers at scale.",
+      "capabilityTags": [
+        "Lead qualification and booking",
+        "Tier-1 service resolution",
+        "Retention and payment recovery",
+        "Customer interviews at scale",
+        "Decision-ready insight"
+      ],
+      "intentTags": {
+        "primary": [
+          "customer_voice_ai",
+          "customer_chat_ai"
+        ],
+        "secondary": [
+          "consumer_research"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/newvoices",
+        "externalWebsite": "https://newvoices.ai/",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "newvoices",
+        "lockup": null,
+        "hero": "/assets/img/products/newvoices-voice.jpg",
+        "wordmark": "/assets/img/companies/newvoices/logo-white.png",
+        "ground": "own",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "newvoices",
+        "new voices"
+      ]
+    },
+    {
+      "id": "machines_family",
+      "name": "Stagwell's Machines (family frame)",
+      "displayName": "Machine OS",
+      "tagline": "Connected by design.",
+      "positioning": "The Stagwell Machines is a family of agentic solutions for enterprise marketing organizations – each built for a specific job; all connected under one operating layer. Unlike point solutions that make individual tasks smarter, the Machines share context: every signal, decision, and result carries forward.",
+      "whoFor": "The organization, not one role",
+      "shownWhen": "B: domain=marketing_ops; enterprise firmographics · frame around every multi-product consultative recap",
+      "nextStep": "Consultative",
+      "companions": [
+        "targeting_machine",
+        "knowledge_machine"
+      ],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [
+        "Workflow orchestration",
+        "Strategic intelligence",
+        "Audience targeting",
+        "Continuous learning"
+      ],
+      "lockup": "/assets/img/lockups/the-machine.png",
+      "active": true,
+      "cardDescription": "A family of agentic solutions for enterprise marketing – each built for a specific job, all connected under one operating layer, so every signal, decision and result carries forward.",
+      "capabilityTags": [
+        "Workflow orchestration",
+        "Strategic intelligence",
+        "Audience targeting",
+        "Continuous learning"
+      ],
+      "intentTags": {
+        "primary": [
+          "marketing_operations"
+        ],
+        "secondary": [
+          "audience_targeting",
+          "media_planning",
+          "brand_orchestration"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid",
+          "large"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "EXPERT_CALL",
+        "primaryLabel": "Talk to a Stagwell AI expert",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/the-machine",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "machines_family",
+        "lockup": "/assets/img/lockups/the-machine.png",
+        "hero": "/assets/img/products/your-data-walker.jpg",
+        "wordmark": "/assets/img/companies/the-machine/logo-wide.png",
+        "ground": "own",
+        "wordmarkBlend": "screen",
+        "markIcon": null
+      },
+      "solves": "Intelligence that is stagnant in the tool where it was created.",
+      "proofPoints": [
+        "Works inside existing workflows rather than replacing them",
+        "One system of record for insight, decision and result",
+        "Context persists rather than resets"
+      ],
+      "messagingSource": "Stagwell AI Messaging FINAL (client, 2026-09-16), Stagwell Machines section",
+      "aliases": [
+        "the machine",
+        "machine os",
+        "the machine os",
+        "stagwell machines",
+        "the stagwell machines"
+      ]
+    },
+    {
+      "id": "agent_cloud",
+      "name": "Agent Cloud",
+      "tagline": "Give your marketing team one secure place to use the best AI.",
+      "positioning": "One login, one contract and one security standard for the leading multimodal LLMs, image and video tools, and purpose-built marketing assistants — instead of a drawer full of subscriptions. Uploaded data is never used to train the underlying models.",
+      "whoFor": "Marketing teams and agencies that want the frontier models without the sprawl or the risk",
+      "shownWhen": "B: domain=ai_workspace · campaign product — its ad traffic lands on the product-branded page",
+      "nextStep": "Demo [packaging to confirm with TMC — self-serve trial if Agent Cloud ships one]",
+      "companions": [
+        "machines_family",
+        "geopulse"
+      ],
+      "url": "https://www.themarketingcloud.com/marketplace/agent-cloud",
+      "signupUrl": null,
+      "valueProps": [
+        "Enterprise ChatGPT, Claude, Gemini and Grok",
+        "Data never trains the models",
+        "Custom assistants, deployed org-wide",
+        "One annual contract"
+      ],
+      "lockup": "/assets/img/lockups/agent-cloud.png",
+      "sourceNote": "positioning and valueProps are Agent Cloud's own published lines, the same ones data/products.json carries for the /p/agent-cloud landing. Added Sep 2: until then the product had a landing and five chips but no domain and no solution entry, so a visitor from its own ad could never be routed to it.",
+      "active": true,
+      "cardDescription": "One login, one contract and one security standard for the leading LLMs and purpose-built marketing assistants. Your data never trains the models.",
+      "capabilityTags": [
+        "Enterprise ChatGPT, Claude, Gemini and Grok",
+        "Data never trains the models",
+        "Custom assistants, deployed org-wide",
+        "One annual contract"
+      ],
+      "intentTags": {
+        "primary": [
+          "employee_ai_access",
+          "ai_governance",
+          "workflow_automation"
+        ],
+        "secondary": [
+          "marketing_operations"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/agent-cloud",
+        "externalWebsite": "https://www.themarketingcloud.com/marketplace/agent-cloud",
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "agent_cloud",
+        "lockup": "/assets/img/lockups/agent-cloud.png",
+        "hero": "/assets/img/products/agent-cloud-code.jpg",
+        "wordmark": null,
+        "ground": "own",
+        "wordmarkBlend": null,
+        "markIcon": "/assets/img/companies/agent-cloud/logo.svg"
+      },
+      "aliases": [
+        "agent cloud",
+        "agentcloud"
+      ]
+    },
+    {
+      "id": "media_machine",
+      "name": "The Media Machine",
+      "tagline": "One source of truth for media performance.",
+      "positioning": "One source of truth for media performance. Turns paid media strategy, planning, activation and measurement into a fully agentic system.",
+      "whoFor": "The media lead running paid across platforms and channels that are not connected",
+      "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
+      "nextStep": "Demo",
+      "companions": [],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [
+        "Media planning",
+        "Media buying and activation",
+        "Investment tied to brand outcomes",
+        "Enterprise media"
+      ],
+      "lockup": null,
+      "sourceNote": "Copy from Stagwell AI Messaging FINAL (client, 2026-09-16), The Media Machine section, verbatim or shortened.",
+      "active": true,
+      "cardDescription": "Turns paid media strategy, planning, activation and measurement into a fully agentic system – one source of truth across every platform and channel.",
+      "capabilityTags": [
+        "Media planning",
+        "Media buying and activation",
+        "Investment tied to brand outcomes",
+        "Enterprise media"
+      ],
+      "intentTags": {
+        "primary": [
+          "media_planning",
+          "media_buying"
+        ],
+        "secondary": [
+          "business_impact",
+          "brand_health",
+          "marketing_operations"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid",
+          "large"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/media_machine",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "media_machine",
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "solves": "Every platform holds its own audiences, signals and results. There is no single source of truth for media performance.",
+      "proofPoints": [
+        "Scores every platform and channel against evidence of what works",
+        "Drafts the plan and flighting",
+        "Models spend and projected lift"
+      ],
+      "messagingSource": "Stagwell AI Messaging FINAL (client, 2026-09-16), Stagwell Machines section",
+      "aliases": [
+        "media machine",
+        "the media machine"
+      ]
+    },
+    {
+      "id": "newintel",
+      "name": "NewIntel",
+      "tagline": "What your competitors did this week.",
+      "positioning": "What your competitors did this week. Live competitive signal across pricing, hiring, earned coverage and creator activity, rather than a quarterly deck that is already out of date.",
+      "whoFor": null,
+      "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
+      "nextStep": "Demo",
+      "companions": [],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [
+        "Pricing moves",
+        "Hiring signals",
+        "Earned coverage",
+        "Creator activity"
+      ],
+      "lockup": null,
+      "sourceNote": "copy approved by the client on 2026-09-10, drawn from this repo's earlier product catalogue (catalogue.js, where it is badged 'The Intelligence Machine') and from the competitive-intelligence role it already plays in the demo. Not vendor-published copy — confirm before client use.",
+      "active": true,
+      "cardDescription": "Live competitive signal across pricing, hiring, earned coverage and creator activity, instead of a quarterly deck.",
+      "capabilityTags": [
+        "Pricing moves",
+        "Hiring signals",
+        "Earned coverage",
+        "Creator activity"
+      ],
+      "intentTags": {
+        "primary": [
+          "competitive_activity"
+        ],
+        "secondary": [
+          "competitive_media"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/newintel",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "newintel",
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g2",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "newintel",
+        "new intel"
+      ]
+    },
+    {
+      "id": "search_plus",
+      "name": "Search+",
+      "tagline": "Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.",
+      "positioning": "Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.",
+      "whoFor": null,
+      "shownWhen": "B: domain=ai_visibility, where it is the INFLUENCE half - GEOPulse measures how AI answers describe you, Search+ changes it. Listed on /products in the \"Newly added\" group.",
+      "nextStep": "Demo",
+      "companions": [],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [
+        "AI search representation",
+        "Influence how AI recommends you",
+        "ChatGPT, Gemini, Perplexity, Grok"
+      ],
+      "lockup": null,
+      "active": true,
+      "cardDescription": "Influences how your brand is represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity and Grok.",
+      "capabilityTags": [
+        "AI search representation",
+        "Influence how AI recommends you",
+        "ChatGPT, Gemini, Perplexity, Grok"
+      ],
+      "intentTags": {
+        "primary": [
+          "ai_search_influence",
+          "brand_orchestration"
+        ],
+        "secondary": [
+          "ai_search_visibility",
+          "competitive_ai_visibility",
+          "media_planning",
+          "campaign_measurement"
+        ]
+      },
+      "audiences": {
+        "companySize": [
+          "mid",
+          "large"
+        ]
+      },
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/search_plus",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "search_plus",
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g3",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "sourceNote": "Positioning is the client's own words, 2026-09-10: \"Stagwell Search+ helps brands influence how they are represented and recommended inside AI search tools like ChatGPT, Gemini, Perplexity, Grok, etc.\" It supersedes the Stagwell Search+ ICP one-pager line used earlier the same day, kept here so nothing is lost: \"Stagwell Search+ is the enterprise OS for Brand Orchestration across Paid, Owned and Earned media. Its agentic architecture helps brands detect, predict, shape and prove performance across AI Search Experiences, including ChatGPT, Gemini, Claude, Grok, DeepSeek and emerging AI interfaces.\" Who it is for and the next step are still to come. Confirm before client use. Routing keeps brand_orchestration as a lead signal so the paid/owned/earned path still reaches Search+: the new line does not mention it, but the one-pager it replaces did, and no one has said the capability is gone. Say so and it comes out.",
+      "aliases": [
+        "search+",
+        "search plus",
+        "stagwell search+",
+        "stagwell search plus",
+        "stagwell search"
+      ]
+    },
+    {
+      "id": "id_graph",
+      "name": "Stagwell ID Graph",
+      "tagline": "The identity spine under Stagwell's audience work.",
+      "positioning": "Covering 260 million US consumers and 123 million US households, the Stagwell ID Graph connects first-party data, third-party media data and proprietary consumer intelligence so audiences can be built and activated without exposing individual identities. It is the identity spine under Stagwell's audience work.",
+      "whoFor": null,
+      "shownWhen": "Listed on /products in the \"Newly added\" group; no routing domain points at it yet.",
+      "nextStep": "Demo",
+      "companions": [],
+      "url": null,
+      "signupUrl": null,
+      "valueProps": [
+        "First-party data onboarding",
+        "Third-party media data",
+        "Proprietary consumer intelligence",
+        "Privacy-safe activation"
+      ],
+      "lockup": null,
+      "sourceNote": "copy approved by the client on 2026-09-10. The figures are the ones reference/companies/README.md and catalog.json carry for SATS — 260M US consumers, 123M US households — and the same graph the Targeting Machine page names. Confirm the figures are current before client use. The two sentences were swapped on 2026-09-10 so the card, which shows only the opening, leads with the figures rather than with the framing.",
+      "active": true,
+      "cardDescription": "Connects first-party data, third-party media data and consumer intelligence across 260 million US consumers, so audiences can be built and activated privacy-safely.",
+      "capabilityTags": [
+        "First-party data onboarding",
+        "Third-party media data",
+        "Proprietary consumer intelligence",
+        "Privacy-safe activation"
+      ],
+      "intentTags": {
+        "primary": [
+          "identity_graph",
+          "first_party_data"
+        ],
+        "secondary": [
+          "audience_targeting"
+        ]
+      },
+      "audiences": {},
+      "excludesIntents": [],
+      "conversion": {
+        "primaryType": "DEMO",
+        "primaryLabel": "Book a demo",
+        "secondaryLabel": "Learn more"
+      },
+      "urls": {
+        "productPage": "/s/id_graph",
+        "externalWebsite": null,
+        "demo": null,
+        "selfService": null
+      },
+      "visual": {
+        "logoKey": "id_graph",
+        "lockup": null,
+        "hero": null,
+        "wordmark": null,
+        "ground": "g1",
+        "wordmarkBlend": null,
+        "markIcon": null
+      },
+      "aliases": [
+        "stagwell id graph",
+        "the id graph"
+      ]
+    }
+  ],
+  "_catalogNote": "Kimi fields (2026-09-10): active, cardDescription, capabilityTags, intentTags{primary,secondary} (taxonomy.json ids), audiences{companySize,creatorVolume,geography} (bands from taxonomy.json — a product that declares a band scores a fit on it and a mismatch outside it; one that declares none is neutral), excludesIntents (use-case mismatch), conversion{primaryType DEMO|SELF_SERVICE|EXPERT_CALL, primaryLabel, secondaryLabel}, urls{productPage,externalWebsite,demo,selfService}, visual. The recommendation cards render from these and from nothing else; the older fields (positioning, whoFor, valueProps, url, signupUrl, lockup) still drive /products and /s/{id}.",
+  "_aliasesNote": "`aliases`: the product's name as people type it and as speech-to-text hears it. A named product goes straight to the top of the running (recommend.js nameMentions → its primary intents, explicit). Never a plain word that means something else ('machine' alone is not The Machine).",
+  "_taglineNote": "`tagline`: the product's short brand line — the CORE KNOWLEDGE field of the client's Product Package Checklist (2026-09-17), and the <h1> the product-page builder puts on a generated page. Set deliberately rather than derived: the builder used to take the first sentence of `positioning`, which gave The Targeting Machine the headline \"Your data.\" and needed a hard-coded override for the ID Graph. Where the checklist's line predated the FINAL messaging copy (The Machine, Targeting, Knowledge and Media Machines) the current line is kept — superseded wording is not reintroduced.",
+  "_displayNameNote": "`name` is the catalog's own label and may carry a routing qualifier — \"Stagwell's Machines (family frame)\" tells the engine what the entry IS. `displayName` is what a visitor is allowed to see, and everything that renders to a person uses it: the recommendation card, the why-line, the way-finding, and the facts the explain model is given. A product with no displayName simply uses its name (client, 2026-09-17: the routing label reached the card, twice)."
+}

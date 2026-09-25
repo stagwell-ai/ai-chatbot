@@ -1,0 +1,360 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PAGE MATCH — /next/products, brought in line with the homepage.
+
+   Loaded after ribbon.css (and after site-nav.css), and prefixed the same way
+   for the same reason: ribbon.css is an !important override sheet, and a rule
+   that does not match its specificity never reaches the page. See the note at
+   the top of site-nav.css.
+
+   What it fixes, all from the client's read of the page on 2026-09-09:
+   · the group headings stuck to the underside of the bar as you scrolled
+   · every product was words in a box, with no picture
+   · the closing CTA had lost its dark ground to ribbon.css but kept its
+     white type: the paragraph and one button were white on white
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. the hero becomes a picture ──────────────────────────────────────────
+   It was a photograph under two heavy pale gradients, which left it reading
+   as a wash of blue with nothing in it. Same treatment as the homepage now:
+   the still full bleed, one graded veil across it, white type on top. */
+html[data-theme] body.vB.vProducts .prodhero{background:#07141D !important;color:#FFFFFF !important;
+  border-bottom:0 !important;
+  /* the bar floats over the picture here, so the eyebrow has to start below
+     it — on a phone the section's own 56px put it behind the logo. The rest
+     is kept tight on purpose: the client wants "Show me" on screen the moment
+     you land, at any window height. */
+  padding-top:calc(72px + clamp(34px,7vh,80px)) !important;
+  padding-bottom:clamp(44px,8vh,92px) !important}
+/* everything in the hero sits on the centre line (client, 2026-09-09) */
+html[data-theme] body.vB.vProducts .prodhero__in{padding-top:0 !important;padding-bottom:0 !important;
+  display:flex !important;flex-direction:column !important;align-items:center !important;
+  text-align:center !important}
+html[data-theme] body.vB.vProducts .prodhero__acts{justify-content:center !important}
+/* two lines, not three: the client wants the breathing room around it */
+html[data-theme] body.vB.vProducts .prodhero h1,html[data-theme] body.vB.vProducts .prodhero__title{
+  font-size:clamp(28px,min(3.5vw,5.4vh),50px) !important;margin:0 auto 18px !important;
+  max-width:32ch !important;line-height:1.12 !important;text-wrap:balance}
+html[data-theme] body.vB.vProducts .prodhero__sub{font-size:clamp(14px,1.15vw,16px) !important;
+  max-width:58ch !important;margin-inline:auto !important}
+html[data-theme] body.vB.vProducts .prodhero__eyebrow{margin-bottom:20px !important}
+html[data-theme] body.vB.vProducts .prodhero__acts{margin-top:clamp(26px,3.6vh,40px) !important}
+/* and the index rides up under it, so the control is the next thing you see */
+html[data-theme] body.vB.vProducts .ptoc{padding-top:clamp(22px,3vh,38px) !important;
+  margin-bottom:clamp(24px,3vh,40px) !important}
+/* the picture is its own layer, so it can be scaled and pushed off-centre;
+   the veil that keeps the words readable is a second one above it */
+html[data-theme] body.vB.vProducts .prodhero::before{
+  background-image:url("/assets/img/products-hero.jpg") !important;
+  background-size:cover !important;background-position:50% 100% !important;
+  display:block !important;transform:none !important}
+html[data-theme] body.vB.vProducts .prodhero::after{
+  content:"" !important;position:absolute !important;inset:0 !important;z-index:0 !important;
+  pointer-events:none !important;
+  background:linear-gradient(100deg,rgba(7,20,29,.90) 0%,rgba(7,20,29,.70) 42%,rgba(7,20,29,.30) 78%,rgba(7,20,29,.16) 100%) !important}
+/* on a desktop the subject sat right behind the headline. It is bigger and
+   moved to the right there, so the words have their own half of the frame
+   (client, 2026-09-09). The phone keeps the plain cover crop. */
+@media (min-width:900px){
+  html[data-theme] body.vB.vProducts .prodhero::before{
+    /* anchored to the foot of the picture: scaling from the bottom keeps its
+       bottom edge in frame, which is the part the client wants seen */
+    transform-origin:58% 100% !important;
+    transform:scale(1.34) translateX(8%) !important;
+    /* and it breathes: 28s in and back out, so the frame is never quite still.
+       Slow enough that you notice it only if you stay. */
+    animation:prodHeroDrift 28s ease-in-out infinite alternate !important}
+}
+@keyframes prodHeroDrift{
+  from{transform:scale(1.34) translateX(8%)}
+  to{transform:scale(1.48) translateX(5%)}
+}
+@media (prefers-reduced-motion:reduce){
+  html[data-theme] body.vB.vProducts .prodhero::before{animation:none !important}
+}
+html[data-theme] body.vB.vProducts .prodhero h1,html[data-theme] body.vB.vProducts .prodhero__title{color:#FFFFFF !important}
+html[data-theme] body.vB.vProducts .prodhero__title .accent{color:var(--amber,#FFB81C) !important}
+html[data-theme] body.vB.vProducts .prodhero__sub{color:rgba(255,255,255,.86) !important}
+html[data-theme] body.vB.vProducts .prodhero__eyebrow{color:rgba(255,255,255,.62) !important}
+html[data-theme] body.vB.vProducts .prodhero__eyebrow .pulse{background:var(--amber,#FFB81C) !important}
+/* on the picture the second button is glass, the way the homepage's is */
+html[data-theme] body.vB.vProducts .prodhero .btn--ghost{background:rgba(255,255,255,.14) !important;color:#FFFFFF !important;
+  border:0 !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.34) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(1.15) !important;backdrop-filter:blur(16px) saturate(1.15) !important}
+html[data-theme] body.vB.vProducts .prodhero .btn--gold{background:var(--amber,#FFB81C) !important;color:#0B171E !important}
+
+/* The wordmark's letters are `fill:var(--ink)` on paths that live inside a
+   <symbol>, so they are in the <use> shadow tree: no selector from here can
+   reach them, and setting the link's colour does nothing. Custom properties
+   DO inherit across that boundary — so the brand link redefines --ink for its
+   own subtree and the letters come out white. */
+html[data-theme] body.vProducts #nav:not(.is-stuck) .nav__brand{--ink:#FFFFFF}
+
+/* ── 0b. "Show me", on its own line ─────────────────────────────────────────
+   The label and the control sat side by side, so a long heading broke the
+   line badly on a phone. They stack now. The type is lighter and smaller —
+   600 uppercase-weight on a 21px word read as heavy; this is closer to the
+   Apple register the client asked for — and the word swaps with a short lift
+   and a breath of blur rather than a hard cut (client, 2026-09-09). */
+html[data-theme] body .ptoc__line{flex-direction:column !important;gap:14px !important;
+  font-size:clamp(15px,1.15vw,17px) !important}
+html[data-theme] body .ptoc__lead{font-weight:400 !important;letter-spacing:0 !important;
+  color:rgba(0,51,73,.48) !important}
+html[data-theme] body .ptoc__btn{width:auto !important;max-width:min(92vw,520px) !important;
+  font-weight:500 !important;font-size:clamp(19px,1.9vw,26px) !important;letter-spacing:-.015em !important;
+  padding:10px 20px !important;background:rgba(0,51,73,.045) !important;
+  transition:background .25s ease !important}
+html[data-theme] body .ptoc__btn:hover{background:rgba(0,51,73,.08) !important}
+html[data-theme] body .ptoc__chev{width:16px !important;height:16px !important;flex:0 0 16px !important;
+  opacity:.45 !important}
+html[data-theme] body .ptoc__label{
+  transition:opacity .34s cubic-bezier(.32,.72,0,1),transform .34s cubic-bezier(.32,.72,0,1),filter .34s ease !important}
+html[data-theme] body .ptoc__label.is-out{opacity:0 !important;transform:translateY(-.34em) !important;filter:blur(4px) !important}
+html[data-theme] body .ptoc__label.is-under{opacity:0 !important;transform:translateY(.34em) !important;filter:blur(4px) !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){
+  html[data-theme] body .ptoc__label{transition:none !important;filter:none !important}
+}
+
+/* ── 1. the headings stop sticking ──────────────────────────────────────────
+   They were `position:sticky; top:96px` under a 72px bar, so each one parked
+   24px below it and sat there while its cards ran past. Nothing on the
+   homepage behaves that way. */
+html[data-theme] body.vB.vProducts .prodgroup__head{position:static !important;top:auto !important}
+html[data-theme] body.vB.vProducts .prodgroup{scroll-margin-top:104px !important}
+
+/* ── 2. the left column IS the picture ─────────────────────────────────────
+   The still went through a band in the card, a block under the heading and a
+   thumbnail beside the words. It is the left column now: a tall tile under a
+   dark overlay with the problem's number and title set inside it, which is
+   what carries the page (client, 2026-09-09). */
+/* The tile is a tile: rounded on all four corners and sitting inside the
+   column, like everything else on the page. It was bled out to the window's
+   edge for one round — square on the left, round on the right — and that read
+   as broken rather than deliberate (client, 2026-09-09). */
+html[data-theme] body.vB.vProducts .prodgroup__head{position:relative !important;display:flex !important;
+  align-items:flex-end !important;overflow:hidden !important;border-radius:20px !important;
+  min-height:clamp(280px,34vh,400px) !important;background:#0A1743 !important;
+  margin:0 !important;padding:clamp(22px,2vw,30px) !important}
+html[data-theme] body.vB.vProducts .prodgroup__pic{position:absolute !important;inset:0 !important;
+  width:100% !important;height:100% !important;object-fit:cover !important;display:block !important;
+  transform:scale(1.02);transition:transform 1.1s var(--ease,cubic-bezier(.16,1,.3,1))}
+html[data-theme] body.vB.vProducts .prodgroup:hover .prodgroup__pic{transform:scale(1.07)}
+/* the overlay: graded from the foot, where the words sit */
+html[data-theme] body.vB.vProducts .prodgroup__head::after{content:"" !important;position:absolute !important;
+  inset:0 !important;pointer-events:none !important;
+  background:linear-gradient(180deg,rgba(7,20,29,.28) 0%,rgba(7,20,29,.46) 46%,rgba(7,20,29,.86) 100%) !important}
+html[data-theme] body.vB.vProducts .prodgroup__words{position:relative !important;z-index:1 !important}
+html[data-theme] body.vB.vProducts .prodgroup__n{color:rgba(255,255,255,.66) !important;margin:0 0 10px !important}
+html[data-theme] body.vB.vProducts .prodgroup__h{color:#FFFFFF !important;max-width:16ch !important;
+  font-size:clamp(24px,2.2vw,34px) !important}
+
+/* ── 2b. one product, one band ─────────────────────────────────────────────
+   Every other row sits on a tone that runs the full width of the window.
+   A rounded panel floating inside the text column read as a card of its own,
+   and its corners fought the cards inside it (client). */
+html[data-theme] body.vProducts{overflow-x:clip !important}
+html:has(body.vProducts){overflow-x:clip}
+html[data-theme] body.vB.vProducts .prodgroup{position:relative !important;border-top:0 !important;
+  margin-top:0 !important;border-radius:0 !important;background:transparent !important;
+  padding:clamp(44px,6vh,84px) 0 !important}
+html[data-theme] body.vB.vProducts .prodgroup:nth-of-type(even)::before{content:"";position:absolute;
+  top:0;bottom:0;left:calc(50% - 50vw);width:100vw;background:#F5F7F8;z-index:0}
+/* the tone runs edge to edge; the content inside it keeps a real inset, so
+   the tile never hugs the window on a narrow screen */
+html[data-theme] body.vB.vProducts .prodbody{padding-inline:clamp(24px,4vw,48px) !important}
+html[data-theme] body.vB.vProducts .prodgroup > *{position:relative;z-index:1}
+
+/* ── 2c. the card, with no box of its own ──────────────────────────────────
+   A white card on white with a stroke, then the same card on grey without
+   one, was the inconsistency the client saw. The band is the division; the
+   card is words. */
+html[data-theme] body.vB.vProducts .prodcard{background:transparent !important;border:0 !important;
+  border-radius:0 !important;box-shadow:none !important;padding:0 !important;gap:0 !important}
+html[data-theme] body.vB.vProducts .prodcard:hover{transform:none !important;box-shadow:none !important}
+html[data-theme] body.vB.vProducts .prodcard + .prodcard{margin-top:clamp(26px,3vh,38px) !important;
+  padding-top:clamp(26px,3vh,38px) !important;border-top:1px solid rgba(0,51,73,.12) !important}
+html[data-theme] body.vB.vProducts .prodcard__top{display:flex;min-width:0}
+html[data-theme] body.vB.vProducts .prodcard__head{display:flex;flex-direction:column;align-items:flex-start;
+  gap:10px;min-width:0;flex:1 1 auto}
+html[data-theme] body.vB.vProducts .prodcard__name{font-size:20px !important;line-height:1.2 !important}
+html[data-theme] body.vB.vProducts .prodcard__pos{font-size:15px !important;line-height:1.6 !important;max-width:58ch !important}
+html[data-theme] body.vB.vProducts .prodcard__who{margin-top:2px !important}
+/* the card's only action is a button, not a tinted link — dark, the way the
+   client asked for every "learn more" on the homepage */
+html[data-theme] body.vB.vProducts .prodcard__link{margin-top:6px !important;align-self:flex-start !important;
+  background:var(--ink,#0B171E) !important;color:#FFFFFF !important}
+html[data-theme] body.vB.vProducts .prodcard__link:hover{background:#000000 !important}
+
+/* ── 3. the closing CTA ─────────────────────────────────────────────────────
+   ribbon.css flattens the band's dark gradient to nothing but leaves the type
+   at --on-void, so the paragraph and the light button were white on white.
+   The band is light now, the way the homepage's closing CTA is, and every
+   piece of type in it is stated rather than inherited. */
+html[data-theme] body.vB.vProducts .prodband{background:var(--sky-1,#D6F7FC) !important;color:var(--ink,#0B171E) !important;
+  border-top:1px solid var(--line,rgba(11,23,30,.09)) !important}
+html[data-theme] body.vB.vProducts .prodband h2{color:var(--ink,#0B171E) !important}
+html[data-theme] body.vB.vProducts .prodband h2 .accent{color:var(--orange,#FF6D24) !important}
+html[data-theme] body.vB.vProducts .prodband p{color:rgba(11,23,30,.72) !important}
+html[data-theme] body.vB.vProducts .prodband .btn--light{background:var(--ink,#0B171E) !important;color:#FFFFFF !important}
+html[data-theme] body.vB.vProducts .prodband .btn--gold{background:var(--amber,#FFB81C) !important;color:var(--ink,#0B171E) !important}
+
+@media (max-width:820px){
+  html[data-theme] body.vB.vProducts .prodgroup{padding:clamp(34px,4.4vh,52px) 0 !important}
+  html[data-theme] body.vB.vProducts .prodgroup__head{min-height:230px !important;
+    margin:0 0 24px !important;border-radius:18px !important;padding:20px !important}
+}
+
+/* ── 4. one button, everywhere ──────────────────────────────────────────────
+   The page had three button sizes and its own gold/light pair. Every button
+   on it is the homepage's button now — 48px, 28px of padding, 14/600/.06em
+   uppercase, fully round — and the arrows have come off the labels (client,
+   2026-09-09). --amber for the primary, ink for the dark one, glass on the
+   picture, exactly as the homepage sets them. */
+html[data-theme] body.vB.vProducts .prodhero .btn,
+html[data-theme] body.vB.vProducts .prodband .btn,
+html[data-theme] body.vB.vProducts .prodcard__link{
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  display:inline-flex !important;align-items:center !important;justify-content:center !important;
+  gap:10px !important;height:48px !important;padding:0 28px !important;border-radius:999px !important;
+  font-size:14px !important;font-weight:600 !important;letter-spacing:.06em !important;
+  text-transform:uppercase !important;white-space:nowrap !important;text-decoration:none !important;
+  border:0 !important;
+  transition:background-color .25s ease,color .25s ease,transform .3s var(--ease,cubic-bezier(.16,1,.3,1)) !important}
+html[data-theme] body.vB.vProducts .prodhero .btn:hover,
+html[data-theme] body.vB.vProducts .prodband .btn:hover,
+html[data-theme] body.vB.vProducts .prodcard__link:hover{transform:translateY(-1px) !important}
+
+
+/* ── 5. the closing CTA and the footer, as the homepage sets them ───────────
+   /products had a dark band with its own gold/light buttons and no footer at
+   all. Both are the homepage's now (client, 2026-09-09). The values are
+   literal because this page's --s-* scale is a different scale entirely under
+   the same names — --s-5 is 44px here and 12px on the homepage. */
+html[data-theme] body.vB.vProducts .prodband{background:#FFFFFF !important;
+  border-top:1px solid rgba(11,18,32,.14) !important;border-bottom:0 !important;
+  padding:clamp(72px,10vh,120px) clamp(20px,4vw,48px) clamp(88px,12vh,160px) !important}
+html[data-theme] body.vB.vProducts .prodband__in{max-width:1180px !important;margin:0 auto !important;
+  display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center !important}
+html[data-theme] body.vB.vProducts .prodband h2{margin:0 !important;color:#0B1220 !important;
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-weight:500 !important;font-size:clamp(32px,4.2vw,58px) !important;line-height:1.08 !important;
+  letter-spacing:-.02em !important;max-width:18ch !important}
+html[data-theme] body.vB.vProducts .prodband h2 .accent{color:#FFB81C !important;font-weight:500 !important}
+html[data-theme] body.vB.vProducts .prodband p{margin:28px 0 0 !important;max-width:52ch !important;
+  font-size:clamp(16px,1.3vw,19px) !important;line-height:1.45 !important;color:#0B1220 !important}
+html[data-theme] body.vB.vProducts .prodband__acts{margin-top:40px !important;display:flex !important;
+  flex-wrap:wrap !important;align-items:center !important;justify-content:center !important;gap:12px !important}
+/* the closing pair is the homepage's large button */
+html[data-theme] body.vB.vProducts .prodband .btn{height:60px !important;padding:0 34px !important;font-size:15px !important}
+html[data-theme] body.vB.vProducts .prodband .btn--gold{background:#0B1220 !important;color:#FFFFFF !important}
+html[data-theme] body.vB.vProducts .prodband .btn--gold:hover{background:#000000 !important}
+html[data-theme] body.vB.vProducts .prodband .btn--light{background:#FFFFFF !important;color:#0B1220 !important;
+  box-shadow:inset 0 0 0 1px rgba(11,18,32,.14) !important}
+html[data-theme] body.vB.vProducts .prodband .btn--light:hover{background:#0B1220 !important;color:#FFFFFF !important}
+
+/* the footer */
+html[data-theme] body.vB.vProducts .foot{background:#FFFFFF !important;color:#0B1220 !important;
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+html[data-theme] body.vB.vProducts .foot .wrap{max-width:1440px;margin-inline:auto;padding-inline:clamp(24px,4vw,64px)}
+html[data-theme] body.vB.vProducts .foot__in{display:grid;
+  grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:64px;align-items:start;
+  padding-top:clamp(72px,9vw,120px);padding-bottom:clamp(72px,9vw,120px)}
+html[data-theme] body.vB.vProducts .foot__lead{align-self:stretch;display:flex;flex-direction:column;
+  justify-content:space-between;gap:64px}
+html[data-theme] body.vB.vProducts .foot__kicker{font-size:16px;font-weight:500;line-height:1.4}
+html[data-theme] body.vB.vProducts .foot__mark{width:clamp(72px,4vw + 32px,96px);height:auto;color:#0B1220}
+html[data-theme] body.vB.vProducts .foot__big{align-self:stretch;display:flex;flex-direction:column;
+  justify-content:space-between;gap:32px;list-style:none;margin:0;padding:0}
+html[data-theme] body.vB.vProducts .foot__big li{list-style:none;margin:0}
+html[data-theme] body.vB.vProducts .foot__big a{font-weight:400;font-size:clamp(34px,1rem + 2.6vw,56px);
+  letter-spacing:-.02em;line-height:1;color:#0B1220;text-decoration:none;transition:color .25s ease}
+html[data-theme] body.vB.vProducts .foot__big a:hover{color:rgba(11,18,32,.52)}
+html[data-theme] body.vB.vProducts .foot__small{display:flex;flex-direction:column;gap:32px;
+  align-items:flex-end;text-align:right;list-style:none;margin:0;padding:0}
+html[data-theme] body.vB.vProducts .foot__small li{list-style:none;margin:0}
+html[data-theme] body.vB.vProducts .foot__small a,
+html[data-theme] body.vB.vProducts .foot__small button{display:inline-flex;align-items:center;gap:14px;
+  font:inherit;font-size:16px;font-weight:500;color:#0B1220;background:none;border:0;padding:0;
+  text-align:left;line-height:1.3;text-decoration:none;cursor:pointer}
+html[data-theme] body.vB.vProducts .foot__disc{width:44px;height:44px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(11,18,32,.14) !important;color:#0B1220;
+  transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+html[data-theme] body.vB.vProducts .foot__disc svg{width:18px;height:18px;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+html[data-theme] body.vB.vProducts .foot__small a:hover .foot__disc,
+html[data-theme] body.vB.vProducts .foot__small button:hover .foot__disc{background:#0B1220;color:#FFFFFF;
+  box-shadow:inset 0 0 0 1px #0B1220 !important}
+html[data-theme] body.vB.vProducts .foot__band{display:flex;align-items:center;justify-content:space-between;
+  gap:32px;padding-top:48px;padding-bottom:48px;border-top:1px solid rgba(11,18,32,.14)}
+html[data-theme] body.vB.vProducts .foot__social{display:flex;align-items:center;gap:8px}
+html[data-theme] body.vB.vProducts .foot__so{width:44px;height:44px;border-radius:50%;display:grid;
+  place-items:center;box-shadow:inset 0 0 0 1px rgba(11,18,32,.14) !important;color:#0B1220;
+  transition:background-color .25s ease,color .25s ease,box-shadow .25s ease}
+html[data-theme] body.vB.vProducts .foot__so svg{width:18px;height:18px}
+html[data-theme] body.vB.vProducts .foot__so:hover{background:#0B1220;color:#FFFFFF;box-shadow:inset 0 0 0 1px #0B1220 !important}
+html[data-theme] body.vB.vProducts .foot__follow{margin-left:14px;font-size:16px;font-weight:500}
+html[data-theme] body.vB.vProducts .foot__legal{display:flex;align-items:center;gap:20px}
+html[data-theme] body.vB.vProducts .foot__copy{font-size:15px;color:rgba(11,18,32,.52)}
+html[data-theme] body.vB.vProducts .foot__brand{color:#0B1220;display:block}
+html[data-theme] body.vB.vProducts .foot__brand svg{height:15px;width:auto;display:block}
+/* the disclaimer sits under the footer, quiet */
+html[data-theme] body.vB.vProducts .prodfoot{border-top:1px solid rgba(11,18,32,.14) !important;
+  padding-top:24px !important;color:rgba(11,18,32,.42) !important}
+
+@media (max-width:900px){
+  html[data-theme] body.vB.vProducts .foot__in{grid-template-columns:1fr;gap:44px}
+  html[data-theme] body.vB.vProducts .foot__small{align-items:flex-start;text-align:left}
+  html[data-theme] body.vB.vProducts .foot__band{flex-direction:column;align-items:flex-start;gap:24px}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   /products IN DARK MODE, and a legibility pass over the faint type.
+
+   The page's tone bands, its closing CTA and its buttons were written in
+   light-mode colours that never flipped, while the type in them is var(--ink)
+   and does flip. On a device set to dark that put white type on the #F5F7F8
+   band — six of the thirteen groups unreadable — a white "Explore" on a
+   near-white button, and white on white in the closing band. Surfaces flip
+   here; type keeps the tokens so it stays correct in both.
+   ══════════════════════════════════════════════════════════════════════════ */
+html[data-theme="dark"] body.vB.vProducts .prodgroup:nth-of-type(even)::before{
+  background:var(--dk-raised,#121D2A)}
+html[data-theme="dark"] body.vB.vProducts .prodcard + .prodcard{
+  border-top-color:var(--dk-line-2,rgba(233,238,243,.16)) !important}
+html[data-theme="dark"] body.vB.vProducts .prodcard__link{
+  background:var(--ink,#E9EEF3) !important;color:var(--dk-ground,#070D14) !important}
+html[data-theme="dark"] body.vB.vProducts .prodcard__link:hover{background:#FFFFFF !important}
+html[data-theme="dark"] body.vB.vProducts .prodband{
+  background:var(--dk-raised,#121D2A) !important;color:var(--ink,#E9EEF3) !important;
+  border-top-color:var(--dk-line,rgba(233,238,243,.10)) !important}
+html[data-theme="dark"] body.vB.vProducts .prodband h2{color:var(--ink,#E9EEF3) !important}
+html[data-theme="dark"] body.vB.vProducts .prodband p{color:var(--ink-2) !important}
+html[data-theme="dark"] body.vB.vProducts .prodband .btn--light{
+  background:var(--ink,#E9EEF3) !important;color:var(--dk-ground,#070D14) !important}
+html[data-theme="dark"] body.vB.vProducts .prodfoot{
+  border-top-color:var(--dk-line,rgba(233,238,243,.10)) !important}
+
+/* the faint type, in both themes: these were set at .34–.55 alpha and fell
+   under the readable floor on their own grounds. The tokens carry the right
+   value for whichever theme is on. */
+html[data-theme] body.vB.vProducts .prodcard__who,
+html[data-theme] body.vB.vProducts .prodcard__fit,
+html[data-theme] body.vB.vProducts .prodcard__again,
+html[data-theme] body.vB.vProducts .prodfoot,
+html[data-theme] body.vB.vProducts .foot__copy,
+html[data-theme] body.vB.vProducts .ptoc__lead{color:var(--ink-2) !important}
+/* the closing band's accent was marigold on a near-white ground (1.7:1). The
+   brand's orange is the accent everywhere else on this site and clears the
+   floor for a heading on both grounds. */
+html[data-theme] body.vB.vProducts .prodband h2 .accent{color:var(--orange,#FF6D24) !important}
+
+/* the footer on this page is a white block in BOTH themes (see .foot above),
+   so its small print cannot take the themed token — in dark that token is
+   near-white and the line vanished into the white. Stated in ink instead. */
+html[data-theme] body.vB.vProducts .foot__copy{color:rgba(11,18,32,.72) !important}
+/* the closing band is white in both themes too, and the brand orange lands at
+   2.8:1 on it — just under the floor for a heading. This is that orange taken
+   down a step so the accent clears it; the brand orange is untouched
+   everywhere else. */
+html[data-theme] body.vB.vProducts .prodband h2 .accent{color:#DF5A14 !important}
+/* on the dark ground the same darkened orange is too quiet; the accent takes a
+   lighter tint of it there, so the word reads on either band */
+html[data-theme="dark"] body.vB.vProducts .prodband h2 .accent{color:#FFA46B !important}

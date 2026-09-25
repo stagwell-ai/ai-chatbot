@@ -1,0 +1,358 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SOLUTION.CSS — the internal solution landing (/s/:solution).
+
+   Tokens come from /machine/styles.css. Like machine/campaign.css this file
+   is deliberately self-contained: b.css is NOT loaded on this page, so the
+   nav chrome, the marigold button, the bottom band and the corner link are
+   restated here rather than assumed. The header/drawer/band/corner blocks
+   below are the site's shared chrome, matched rule for rule with
+   machine/campaign.css so /p/{id} and /s/{id} are the same site.
+
+   The page's own idioms are borrowed, not invented:
+     .solband  — machine/path.css's .pathband (the deck-navy lockup band)
+     .solpill  — machine/path.css's .pathpill (the quiet outline value chip)
+     .sitelink — machine/campaign.css's external link + pending placeholder
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body.vSolution{overflow:auto;background:var(--surface)}
+body.vSolution main{position:relative;z-index:1}
+
+/* Primary CTA per brand.json (V3.1): orange bg, navy text — never white on orange */
+.btn--gold{background:var(--orange);color:var(--navy)}
+.btn--gold:hover{background:#FF8140}
+/* every CTA on this page is a real link (it goes somewhere internal), so the
+   button rule has to say what the <button> version never needed to */
+a.btn{text-decoration:none}
+
+/* ═══════════════════════════════════════════════════════════
+   HEADER — same pattern as the rest of the site
+   ═══════════════════════════════════════════════════════════ */
+.nav{position:sticky;top:0;z-index:50;background:rgba(7,26,36,.84);
+  backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid var(--line)}
+.nav__in{max-width:1440px;margin:0 auto;padding:0 clamp(16px,2.2vw,30px);height:76px;
+  display:flex;align-items:center;gap:clamp(20px,4vw,56px)}
+.nav__brand{display:flex;align-items:flex-end;gap:8px;text-decoration:none;flex:none}
+.nav__brand svg{width:250px;height:20px}
+.nav__links{display:flex;align-items:center;gap:clamp(14px,2vw,32px);flex:1}
+.nav__links a{font-size:var(--t-sm);font-weight:500;color:var(--ink);text-decoration:none;transition:color var(--d-1) var(--ease-io)}
+.nav__links a:hover{color:var(--ink)}
+.nav__acts{display:flex;align-items:center;gap:12px;flex:none}
+.nav__cta{height:44px;padding:0 18px}
+.nav__menu{display:none;place-items:center;width:38px;height:38px;background:var(--blue);color:var(--ink);border-radius:var(--r)}
+.navscrim{display:none;position:fixed;inset:0;z-index:45;background:rgba(0,18,28,.34);
+  opacity:0;visibility:hidden;transition:opacity var(--d-3) var(--ease),visibility var(--d-3)}
+body.nav-open .navscrim{opacity:1;visibility:visible}
+
+.mnav{position:fixed;inset:0 0 0 auto;width:min(300px,86vw);z-index:55;
+  background:var(--paper);border-left:1px solid var(--line);
+  display:none;flex-direction:column;transform:translateX(100%);
+  transition:transform var(--d-3) var(--ease)}
+body.nav-open .mnav{transform:none}
+.mnav__head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px}
+.mnav__mark{width:28px;height:28px}
+.mnav__close{width:38px;height:38px;display:grid;place-items:center;background:var(--blue);color:var(--ink);border-radius:var(--r)}
+.mnav__links{flex:1;display:flex;flex-direction:column;gap:2px;padding:18px 12px}
+.mnav__links a{padding:14px 12px;font-size:1.0625rem;color:var(--ink-2);text-decoration:none;
+  border-radius:var(--r-sm);transition:background var(--d-1),color var(--d-1)}
+.mnav__links a:hover{background:rgba(0,35,52,.05);color:var(--ink)}
+.mnav__foot{padding:18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.mnav__foot .btn{justify-content:center;width:100%}
+
+@media (max-width:820px){
+  .nav__in{height:64px}
+  .nav__brand svg{width:200px;height:16px}
+  .nav__links{display:none}
+  .nav__acts{margin-left:auto}
+  .nav__cta{display:none}
+  .nav__menu{display:grid}
+  .mnav{display:flex}
+  .navscrim{display:block}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   THE HEAD OF THE PAGE — lockup band, name, positioning, CTAs
+   ═══════════════════════════════════════════════════════════ */
+.sol{background:var(--surface);--lockup-navy:#0A1743}
+.sol__in{max-width:780px;margin:0 auto;
+  padding:clamp(26px,4vh,44px) clamp(20px,4vw,48px) clamp(34px,5vh,54px);
+  display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0}
+
+.sol__back{align-self:flex-start;font-family:var(--mono);font-size:var(--t-label);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);text-decoration:none;
+  transition:color var(--d-1) var(--ease-io)}
+.sol__back:hover{color:var(--teal)}
+
+/* machine/path.css's .pathband, one size up: --lockup-navy is the measured
+   background of the lockup PNGs (corner pixel #0A1743) so the image has no
+   visible edge inside the band — it simply IS the band. */
+.solband{background:var(--lockup-navy);border-radius:var(--r-lg);
+  display:flex;align-items:center;align-self:stretch;
+  padding:18px 26px;min-height:112px;min-width:0}
+.solband__lockup{display:block;width:auto;max-width:100%;max-height:76px;object-fit:contain}
+/* solutions.json's one entry with no lockup in the deck (Unlock): the band
+   carries the name set in type rather than a broken image. */
+.solband__word{font-family:var(--sans);font-weight:600;color:var(--on-void);
+  letter-spacing:-.015em;line-height:1.1;font-size:clamp(1.5rem,3vw,2rem)}
+
+.sol__kicker{margin-top:4px}
+.sol__h1{margin:0;font-family:var(--sans);font-weight:600;letter-spacing:-.02em;line-height:1.1;
+  font-size:clamp(1.75rem,3.2vw,2.75rem);color:var(--ink)}
+.sol__pos{margin:0;max-width:62ch;font-size:var(--t-lede);line-height:1.6;color:var(--ink-2)}
+.sol__who{margin:2px 0 0;max-width:62ch;font-size:var(--t-sm);line-height:1.6;color:var(--ink-2);
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+.sol__wholab{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);flex:none}
+
+/* ── the CTA row: the agent first, the trial second, the site as a link ── */
+.solcta{margin-top:10px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;max-width:100%}
+.solcta__row{display:flex;flex-wrap:wrap;gap:10px}
+.solcta__note{margin:0;font-size:var(--t-xs);line-height:1.5;color:var(--ink-3)}
+
+.sitelink{
+  margin-top:2px;font-size:var(--t-sm);color:var(--teal);text-decoration:none;
+  font-weight:500;transition:color var(--d-1) var(--ease-io);
+}
+.sitelink:hover{color:var(--ink)}
+/* the pending state is deliberately not a button — a placeholder must never
+   look live (see machine/path.js's note on the marigold-pending bug) */
+.sitelink--disabled{color:var(--ink-4);font-family:var(--mono);font-size:var(--t-label);
+  letter-spacing:.06em;text-transform:uppercase;font-weight:400;cursor:not-allowed}
+
+/* ═══════════════════════════════════════════════════════════
+   THE BODY — problems, value, companions
+   ═══════════════════════════════════════════════════════════ */
+.solbody{background:var(--paper)}
+.solbody__in{max-width:780px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+.solbody__in:empty{display:none}
+
+.solsec{padding:clamp(26px,4vh,44px) 0;border-top:1px solid var(--line)}
+.solsec:first-child{border-top:0}
+.solsec__h{margin:0 0 6px;font-family:var(--sans);font-weight:600;letter-spacing:-.015em;
+  font-size:var(--t-h2);line-height:1.2;color:var(--ink)}
+.solsec__lede{margin:0 0 18px;font-size:var(--t-sm);line-height:1.6;color:var(--ink-2);max-width:60ch}
+.solsec__note{margin:8px 0 12px;font-size:var(--t-sm);line-height:1.6;color:var(--ink-2);max-width:62ch}
+/* also a <button> now — it opens the panel rather than leaving the page */
+.sollink{font-size:var(--t-sm);font-weight:500;color:var(--teal);text-decoration:none;text-align:left}
+.sollink:hover{color:var(--ink);text-decoration:underline}
+
+/* ── problems it solves: the page's real job, so these are the biggest
+      targets on it — each one opens the conversation on that problem, in the
+      panel above. They were links out to /?autostart=1&q=… and are buttons
+      now, which is why width/text-align are stated: styles.css's button reset
+      leaves a <button> shrink-wrapped and centred. ── */
+.solproblems{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.solproblem{
+  width:100%;text-align:left;
+  display:flex;align-items:center;gap:16px;min-width:0;text-decoration:none;
+  background:var(--surface);border:1px solid var(--line-2);border-left:3px solid var(--amber);
+  border-radius:var(--r-lg);padding:16px 18px;
+  transition:border-color var(--d-1) var(--ease-io),box-shadow var(--d-1) var(--ease-io),
+    transform var(--d-1) var(--ease-io);
+}
+.solproblem:hover{border-color:var(--line-2);border-left-color:var(--amber);
+  box-shadow:0 8px 26px -18px rgba(0,35,52,.5);transform:translateY(-1px)}
+.solproblem__t{flex:1;min-width:0;font-size:var(--t-body);font-weight:500;line-height:1.45;
+  letter-spacing:-.006em;color:var(--ink)}
+.solproblem__go{flex:none;font-family:var(--mono);font-size:.9375rem;color:var(--teal);
+  transition:transform var(--d-1) var(--ease-io)}
+.solproblem:hover .solproblem__go{transform:translateX(3px)}
+
+/* ── value pills: machine/path.css's .pathpill, numbered so a four-pill row
+      reads as a set rather than a tag cloud ── */
+.solpills{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.solpill{display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--sans);font-size:var(--t-sm);line-height:1.45;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-full);
+  padding:7px 15px 7px 9px;min-width:0}
+.solpill__n{flex:none;font-family:var(--mono);font-size:var(--t-label);letter-spacing:.04em;
+  color:var(--teal);background:rgba(0,156,189,.10);border-radius:var(--r-full);padding:2px 7px}
+
+/* ── companions: quiet cards, each one an internal door ── */
+.solcomps{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.solcomp{display:flex;align-items:center;gap:12px;min-width:0;text-decoration:none;
+  background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:12px 14px;transition:border-color var(--d-1) var(--ease-io),box-shadow var(--d-1) var(--ease-io)}
+.solcomp:hover{border-color:var(--teal);box-shadow:0 8px 26px -20px rgba(0,35,52,.5)}
+.solcomp__mark{flex:none;display:grid;place-items:center;width:74px;height:34px;
+  background:#0A1743;border-radius:var(--r-sm);overflow:hidden}
+.solcomp__mark img{display:block;width:auto;height:22px;max-width:66px;object-fit:contain}
+.solcomp__mark--word{font-family:var(--sans);font-weight:600;font-size:.5625rem;
+  letter-spacing:.02em;color:var(--on-void);text-align:center;padding:0 4px;line-height:1.15}
+.solcomp__b{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.solcomp__n{font-size:var(--t-sm);font-weight:600;letter-spacing:-.006em;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.solcomp__w{font-style:normal;font-size:var(--t-xs);line-height:1.4;color:var(--ink-3)}
+.solcomp__go{flex:none;font-family:var(--mono);font-size:var(--t-sm);color:var(--teal)}
+
+/* ═══════════════════════════════════════════════════════════
+   BOTTOM BAND + FOOTNOTE + NOT-FOUND — the site's shared endings
+   ═══════════════════════════════════════════════════════════ */
+.band{background:var(--band);color:var(--on-void);padding:clamp(44px,7vh,80px) clamp(20px,4vw,48px)}
+.band__in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;gap:24px}
+.band__h{font-family:var(--sans);font-weight:600;font-size:var(--t-h2);letter-spacing:-.015em;
+  line-height:1.25;max-width:44ch}
+.band__h .accent{font-family:var(--sans);font-style:normal;font-weight:600;color:var(--orange)}
+.band__acts{display:flex;gap:12px;flex-wrap:wrap;flex:none}
+.band__acts .btn{text-decoration:none}
+
+.solfoot{max-width:1180px;margin:0 auto;padding:22px clamp(20px,4vw,48px) 64px;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.02em;line-height:1.7;
+  color:var(--ink-3)}
+
+.solNF{max-width:640px;margin:0 auto;
+  padding:clamp(72px,14vh,140px) clamp(20px,4vw,48px) clamp(48px,8vh,96px);
+  display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.solNF__sub{color:var(--ink-2);font-size:var(--t-lede);line-height:1.55;max-width:52ch}
+.solNF .btn{margin-top:6px}
+
+/* ═══════════════════════════════════════════════════════════
+   THE AGENT PANEL  (machine/product-chat.js)
+
+   The conversation itself is NOT styled here. Every turn inside .solconvo
+   is the site's existing conversation idiom straight out of machine/
+   styles.css — .turn / .turn--user / .bubble / .ai / .ai__mark / .ai__body /
+   .ai__who / .ai__text / .thinking / .opts / .opt / .opt__dot — exactly the
+   markup machine/convo.js appends on the landing. There is no second chat
+   style on this page and there must never be a third on this site.
+
+   What is below is only the FRAME the landing gets from b.css + convo.css
+   and this page does not load: the panel's card, its head, its composer, its
+   progress bar and its research strip. Each block names the rule it mirrors.
+   ═══════════════════════════════════════════════════════════ */
+.solconvo__host{width:100%}
+
+/* the card: machine/campaign.css's .panel, at conversation size */
+.solconvo{
+  margin-top:8px;width:100%;
+  background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-xl);
+  padding:20px;display:flex;flex-direction:column;gap:14px;
+  box-shadow:0 20px 48px -32px rgba(0,35,52,.28);
+}
+
+/* the head: campaign.css's .panel__head, with the mark instead of the avatar
+   because this panel is the agent talking, not a label above a form */
+.solconvo__head{display:flex;align-items:center;gap:9px;font-size:var(--t-sm);color:var(--ink-2);
+  flex-wrap:wrap;min-width:0}
+.solconvo__mark{width:22px;height:22px;flex:none}
+.solconvo__who{font-weight:600;color:var(--ink)}
+.solconvo__sep{color:var(--ink-4)}
+.solconvo__stage{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);min-width:0;overflow-wrap:anywhere}
+
+/* progress: convo.css's .convo__progress, rule for rule */
+.solconvo__prog{display:flex;align-items:center;gap:14px;width:100%;margin:0}
+.solconvo__prog[hidden]{display:none}
+.solconvo__proglab{font-family:var(--mono);font-size:var(--t-label);letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);white-space:nowrap;flex:none}
+.solconvo__progbar{flex:1;height:4px;border-radius:var(--r-full);
+  background:var(--line-2);overflow:hidden;max-width:260px}
+.solconvo__progbar i{display:block;height:100%;width:0%;border-radius:inherit;
+  background:linear-gradient(90deg,var(--teal),var(--amber));
+  transition:width 560ms var(--ease-io)}
+
+/* research narration: convo.css's .rail__narration / .rail__logline. The
+   landing puts these in the snapshot rail; this page has no rail, so they
+   run as a strip above the thread. Same events, same labels, same badge. */
+.solnarr{display:flex;flex-direction:column;gap:6px;max-height:120px;overflow-y:auto;
+  padding:12px 14px;border:1px solid var(--line);border-radius:var(--r-lg);
+  background:var(--surface-2);scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.solnarr[hidden]{display:none}
+.solnarr__line{display:flex;align-items:flex-start;gap:8px;font-size:var(--t-xs);
+  color:var(--ink-2);line-height:1.45;animation:fadeUp 420ms var(--ease) both}
+.solnarr__dot{width:5px;height:5px;border-radius:50%;background:var(--teal);flex:none;margin-top:6px}
+.solnarr__text{flex:1;min-width:0;overflow-wrap:anywhere}
+.solnarr__live{font-family:var(--mono);font-size:9px;letter-spacing:.1em;font-weight:600;
+  color:var(--teal);border:1px solid var(--teal);border-radius:4px;padding:1px 5px;
+  flex:none;line-height:1.5}
+
+/* the thread: b.css's #thread scroller. Caps its own height so a long Q&A
+   scrolls inside the panel instead of pushing the page's own sections out
+   of reach — the panel is part of a page, not the whole of one. */
+.solconvo__thread{display:flex;flex-direction:column;gap:22px;min-width:0;
+  max-height:min(56vh,520px);overflow-y:auto;overflow-x:hidden;padding-right:4px;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.solconvo__thread:empty{display:none}
+.solconvo .ai__text{font-size:1rem}
+.solconvo .ai__text--muted{color:var(--ink-4);font-size:var(--t-sm);font-family:var(--sans)}
+.solconvo .bubble{max-width:86%}
+.solconvo .opt{max-width:100%;text-align:left}
+
+/* the answer's receipt: b.css's .chat__livemeta, plus the fallback face of
+   the same line — a scripted answer says so in the same place, in the
+   quieter colour, so the two can never be confused for one another */
+.solmeta{display:inline-flex;align-items:center;gap:8px;margin:0;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--teal);overflow-wrap:anywhere}
+.solmeta--script{color:var(--ink-4);text-transform:none;letter-spacing:.02em}
+
+/* the composer: campaign.css's .askform, laid out as one row where there is
+   room for one */
+.solconvo__form{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.solconvo__field{
+  flex:1 1 260px;min-width:0;display:flex;align-items:center;gap:10px;
+  height:52px;padding:0 16px;background:var(--surface);
+  border:1px solid var(--line-2);border-radius:var(--r-full);
+  transition:border-color var(--d-1) var(--ease-io),box-shadow var(--d-1) var(--ease-io);
+}
+.solconvo__field:hover{border-color:var(--ink-4)}
+.solconvo__field:focus-within{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,156,189,.12)}
+.solconvo__caret{width:7px;height:7px;border-radius:50%;background:var(--teal);flex:none;
+  transition:transform var(--d-1) var(--ease-io)}
+.solconvo__field:focus-within .solconvo__caret{transform:scale(1.45)}
+.solconvo__input{
+  flex:1;min-width:0;border:0;background:none;outline:none;
+  font-family:var(--sans);font-size:1rem;color:var(--ink);
+}
+.solconvo__input::placeholder{color:var(--ink-4)}
+.solconvo__input:disabled{color:var(--ink-4)}
+.solconvo__send{flex:none;height:52px;padding:0 24px}
+.solconvo.is-busy .solconvo__send{opacity:.5;pointer-events:none}
+
+/* the human door, available at every point in the conversation */
+.solconvo__aside{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.solconvo__expert{
+  font-size:var(--t-sm);color:var(--ink-2);background:none;border:0;padding:0;
+  text-align:left;transition:color var(--d-1) var(--ease-io);
+}
+.solconvo__expert:hover{color:var(--teal)}
+
+/* ═══════════════════════════════════════════════════════════
+   CORNER LINK
+   ═══════════════════════════════════════════════════════════ */
+.vercorner{
+  position:fixed;right:14px;bottom:14px;z-index:60;
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-full);padding:6px 12px;opacity:.78;text-decoration:none;
+  transition:opacity var(--d-1) var(--ease-io),color var(--d-1),border-color var(--d-1);
+}
+.vercorner:hover{opacity:1;color:var(--teal);border-color:var(--teal)}
+@media (max-width:720px){.vercorner{right:10px;bottom:10px;padding:5px 10px}}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width:560px){
+  .solband{min-height:88px;padding:14px 18px}
+  .solband__lockup{max-height:56px}
+  .band__in{flex-direction:column;align-items:flex-start}
+  .solcta__row{width:100%}
+  .solcta__row .btn{flex:1 1 100%;justify-content:center}
+  .solcomps{grid-template-columns:minmax(0,1fr)}
+
+  /* the composer stacks rather than shrinking: a 16px field is what stops
+     iOS zooming the page on focus, and it has to keep that size */
+  .solconvo{padding:16px}
+  .solconvo__send{width:100%;justify-content:center}
+  .solconvo__thread{max-height:min(62vh,460px)}
+  .solconvo .bubble{max-width:92%}
+  .solconvo .opt{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  .solproblem,.solproblem__go,.solcomp{transition:none}
+  .solproblem:hover{transform:none}
+  .solconvo__progbar i{transition:none}
+  .solnarr__line{animation:none}
+}

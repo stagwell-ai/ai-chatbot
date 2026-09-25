@@ -1,0 +1,234 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   STAGWELL AI — master landing page
+   Deliberately self-contained. It does NOT load styles.css, because that file
+   is shared by The Dashboard and The Catalogue and a class collision there has
+   broken a variant once already. Tokens are copied, not imported.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  --navy:#002334;
+  --teal:#009CBD;
+  --amber:#FFB81C;
+
+  --paper:#F5F6F6;
+  --surface:#FFFFFF;
+
+  --ink:#002334;
+  --ink-2:rgba(0,35,52,.66);
+  --ink-3:rgba(0,35,52,.44);
+  --ink-4:rgba(0,35,52,.26);
+
+  --line:rgba(0,35,52,.10);
+  --line-2:rgba(0,35,52,.16);
+
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
+
+  --t-display:clamp(2.5rem,4.2vw,3.375rem);
+  --t-lede:clamp(1rem,1.2vw,1.1875rem);
+  --t-body:.9375rem;
+  --t-sm:.8125rem;
+  --t-label:.6875rem;
+
+  --r-sm:6px; --r:10px; --r-lg:14px; --r-full:999px;
+
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-io:cubic-bezier(.45,0,.15,1);
+  --d-1:160ms; --d-2:320ms; --d-3:640ms;
+
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:var(--t-body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  position:relative;
+}
+/* Paper grain — same 2.6% fractal tile the product uses. */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:var(--grain);opacity:.026;
+}
+
+a{color:inherit;text-decoration:none}
+
+.m-ink{fill:var(--navy)}
+.m-teal{fill:var(--teal)}
+.m-amber{fill:var(--amber)}
+
+.eyebrow{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+
+/* ─────────────────────────── HEADER ─────────────────────────── */
+
+.top{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:22px clamp(20px,5vw,56px);
+  border-bottom:1px solid var(--line);
+}
+.top__brand{display:flex;align-items:flex-end;gap:7px}
+.top__logo{width:118px;height:18px;display:block}
+.top__ai{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--teal);padding-bottom:1px}
+.top__note{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-4);
+}
+
+/* ─────────────────────────── LAYOUT ─────────────────────────── */
+
+.wrap{
+  position:relative;z-index:1;
+  max-width:1180px;margin:0 auto;
+  padding:clamp(56px,9vw,104px) clamp(20px,5vw,56px) 80px;
+}
+
+/* ─────────────────────────── HERO ─────────────────────────── */
+
+.hero{max-width:760px;margin-bottom:clamp(48px,6vw,72px)}
+.hero__h{
+  font-family:var(--serif);font-weight:400;
+  font-size:var(--t-display);line-height:1.08;letter-spacing:-.015em;
+  margin:18px 0 22px;
+}
+.hero__p{
+  font-size:var(--t-lede);line-height:1.62;color:var(--ink-2);
+  max-width:60ch;
+}
+
+/* ─────────────────────────── CARDS ─────────────────────────── */
+
+.grid{
+  display:grid;gap:18px;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  align-items:stretch;
+}
+/* the two newest front doors take the first row at half-width each;
+   the earlier three share the second row */
+.grid .card{grid-column:span 2}
+.grid .card:nth-child(-n+2){grid-column:span 3}
+
+.card{
+  position:relative;display:flex;flex-direction:column;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  padding:26px 26px 22px;
+  min-height:300px;
+  transition:border-color var(--d-2) var(--ease-io),
+             transform var(--d-2) var(--ease),
+             box-shadow var(--d-2) var(--ease);
+}
+.card:hover{
+  border-color:var(--line-2);
+  transform:translateY(-3px);
+  box-shadow:0 12px 34px rgba(0,35,52,.07);
+}
+.card:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+
+/* The teal rule that draws itself across the top on hover. */
+.card::after{
+  content:"";position:absolute;left:26px;right:26px;top:0;height:2px;
+  background:var(--teal);border-radius:0 0 2px 2px;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--d-3) var(--ease);
+}
+.card:hover::after{transform:scaleX(1)}
+
+.card__n{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.14em;
+  color:var(--ink-4);
+}
+.card__h{
+  font-family:var(--serif);font-weight:400;font-size:1.75rem;line-height:1.15;
+  letter-spacing:-.01em;margin:12px 0 12px;
+}
+.card__p{
+  font-size:var(--t-sm);line-height:1.68;color:var(--ink-2);
+  margin-bottom:20px;
+}
+
+/* Stacked, with the badge row's height reserved whether or not a badge is
+   present — so the divider lands on the same baseline across all three cards. */
+.card__foot{
+  margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  padding-top:16px;border-top:1px solid var(--line);min-height:68px;
+}
+.card__meta{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.06em;
+  color:var(--ink-3);
+}
+
+/* The honesty boundary: this badge appears ONLY where a real model is called. */
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--line-2);border-radius:var(--r-full);
+  padding:3px 10px 3px 8px;white-space:nowrap;
+}
+.pulse{
+  width:5px;height:5px;border-radius:50%;background:var(--teal);
+  flex:none;position:relative;
+}
+.pulse::after{
+  content:"";position:absolute;inset:-3px;border-radius:50%;
+  border:1px solid var(--teal);
+  animation:ping 2.6s var(--ease) infinite;
+}
+@keyframes ping{
+  0%{transform:scale(.6);opacity:.9}
+  70%,100%{transform:scale(1.9);opacity:0}
+}
+
+.card__go{
+  display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--navy);
+}
+.card__arrow{
+  width:15px;height:15px;
+  transition:transform var(--d-2) var(--ease);
+}
+.card:hover .card__arrow{transform:translateX(4px)}
+
+/* ─────────────────────────── FINE PRINT ─────────────────────────── */
+
+.fine{
+  margin-top:clamp(56px,7vw,88px);
+  padding-top:26px;border-top:1px solid var(--line);
+  max-width:70ch;
+}
+.fine p{font-size:var(--t-sm);line-height:1.72;color:var(--ink-3)}
+.fine .eyebrow{margin-bottom:12px}
+.fine p + p{margin-top:12px}
+.fine strong{color:var(--ink-2);font-weight:500}
+
+/* ─────────────────────────── RESPONSIVE ─────────────────────────── */
+
+@media (max-width:920px){
+  .grid{grid-template-columns:1fr;gap:14px}
+  /* one column: the span choreography above stands down */
+  .grid .card,.grid .card:nth-child(-n+2){grid-column:auto}
+  .card{min-height:0}
+}
+@media (max-width:520px){
+  .top__note{display:none}
+  .card{padding:22px 20px 18px}
+  .card::after{left:20px;right:20px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .card:hover{transform:none}
+}

@@ -1,0 +1,2662 @@
+/* ── OPTION C ────────────────────────────────────────────────────────────────
+   A copy of the homepage (option A) to work on freely: /home-c serves
+   next/home-c.html, which loads home.css first and then this file. Everything
+   here is scoped to body.hc-page, so the live homepage is never touched.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ═══ the Manus-clean pass: hero, chat, starting points (client references, 2026-09-14) ══════════
+   Same words, same links — only the design: a warm light ground instead of the picture, one big
+   centred title, a roomy white composer with a black send disc, and the starting points as clean
+   chips. Everything is scoped to .hc-page, so the live homepage keeps its dark hero. */
+
+body.hc-page{--hc-ground:#F5F5F3;--hc-card:#FFFFFF;--hc-edge:#E5E5E1;--hc-quiet:#6B7079;background:var(--hc-ground)}
+
+/* ── the hero: light, airy, centred ───────────────────────────────────────────────────────────── */
+.hc-page .hero{background:var(--hc-ground);color:var(--ink);min-height:auto;
+  padding:calc(var(--nav-h) + clamp(56px,9vh,112px)) 0 clamp(64px,10vh,120px)}
+.hc-page .hero__bg{display:none}                      /* no picture behind it (the references are plain) */
+.hc-page .hero__in{max-width:min(920px,100%)}
+.hc-page .display--hero,.hc-page .display--hero .navy{color:var(--ink)}
+.hc-page .display--hero{font-weight:500;font-size:clamp(40px,min(1rem + 4.2vw,11vh),72px);line-height:1.06;letter-spacing:-.03em}
+.hc-page .hero__lede{margin-top:clamp(14px,1.6vw,20px);color:var(--hc-quiet);white-space:normal;font-size:clamp(16px,1.1vw,18px)}
+
+/* the bar sits on light now, so its white-on-picture colours step aside */
+.hc-page .nav:not(.is-stuck){color:var(--ink)}
+.hc-page .nav:not(.is-stuck) .nav__links a,.hc-page .nav:not(.is-stuck) .nav__droptrig,
+.hc-page .nav:not(.is-stuck) .nav__ask{color:var(--ink-2, #3B4252)}
+.hc-page .nav:not(.is-stuck) .nav__brand,.hc-page .nav:not(.is-stuck) .nav__burger{color:var(--ink)}
+.hc-page .nav:not(.is-stuck) .btn--ink{background:var(--ink);color:#FFFFFF}
+.hc-page .nav:not(.is-stuck) .nav__search,.hc-page .nav:not(.is-stuck) .nav__search:hover{
+  background:var(--hc-card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--hc-edge)}
+.hc-page .nav.is-stuck{background:var(--hc-ground)}
+
+/* ── the composer: a quiet white card, the send a black disc ──────────────────────────────────── */
+.hc-page .chat{width:min(100%,760px);margin-top:clamp(28px,3.4vw,44px)}
+.hc-page .askbox{border-radius:18px;box-shadow:inset 0 0 0 1px var(--hc-edge);padding:20px 20px 14px;min-height:150px}
+.hc-page .askbox:focus-within{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34)}
+.hc-page .askbox__caret{display:none}                  /* the references show a plain placeholder */
+.hc-page .askbox__input{padding-left:0;font-size:17px}
+.hc-page .askbox__input::placeholder{color:#9AA0A8}
+.hc-page .askbox__bar{padding-top:14px}
+.hc-page .askbox__voice{height:36px;padding:0 14px 0 11px;background:var(--hc-card);border:1px solid var(--hc-edge);color:var(--ink);font-weight:500}
+.hc-page .askbox__voice:hover{background:#F1F1EE;border-color:#D8D8D3}
+.hc-page .askbox__voice.is-live{background:var(--ink);border-color:var(--ink);color:#FFFFFF}
+.hc-page .askbox__go{width:40px;height:40px;background:var(--ink);color:#FFFFFF}
+.hc-page .askbox__go:hover{background:#000000}
+.hc-page .askbox__restart{height:36px}
+
+/* ── the starting points: clean chips in one centred row, as in the references ─────────────────── */
+.hc-page .chat__tags{margin-top:clamp(20px,2.4vw,28px);gap:8px;flex-wrap:wrap;justify-content:center}
+.hc-page .chat__tags .tag__br{display:none}            /* they flow on their own now */
+.hc-page .chat__tags .tag{height:38px;padding:0 15px;gap:8px;background:var(--hc-card);border:1px solid var(--hc-edge);
+  color:var(--ink);font-size:13.5px;font-weight:500;letter-spacing:-.005em}
+.hc-page .chat__tags .tag:hover{background:#F1F1EE;border-color:#D8D8D3;color:var(--ink)}
+.hc-page .chat__tags .tag .tag__ic{opacity:.62}
+.hc-page .chat__tags .tag:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* the thinking dots are ink on a light ground: a touch quieter */
+.hc-page .hero__think.is-on{opacity:.5}
+
+@media (max-width:600px){
+  .hc-page .hero{padding-top:calc(var(--nav-h) + 40px)}
+  .hc-page .askbox{padding:16px 14px 12px;border-radius:16px}
+  .hc-page .chat__tags{gap:6px}
+  .hc-page .chat__tags .tag{height:34px;padding:0 12px;font-size:12.5px}
+}
+
+/* ═══ the whole page in the references' language (client, 2026-09-14) ════════════════════════════
+   Serif titles, a warm light ground everywhere, big rounded picture cards that alternate sides,
+   quiet hairlines instead of heavy blocks. Same words, same links, same order — design only.
+   The serif is Newsreader, already self-hosted in this repo (nothing is fetched from outside). */
+
+@font-face{font-family:'Newsreader';font-style:normal;font-weight:300 700;font-display:swap;
+  src:url(./assets/fonts/v26-cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Newsreader';font-style:normal;font-weight:300 700;font-display:swap;
+  src:url(./assets/fonts/v26-cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2) format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Newsreader';font-style:normal;font-weight:300 700;font-display:swap;
+  src:url(./assets/fonts/v26-cY9AfjOCX1hbuyalUrK439HyjIJFJpeBZQ.woff2) format('woff2');
+  unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+
+body.hc-page{--hc-serif:'Montserrat',Georgia,'Times New Roman',serif}
+
+/* ── every big title in the serif, sentence case, quiet weight ────────────────────────────────── */
+.hc-page .display,.hc-page .display--hero,.hc-page .display--intro,.hc-page .display--port,
+.hc-page .display--cos,.hc-page .display--end,.hc-page .display--ask{
+  font-family:var(--hc-serif);font-weight:400;text-transform:none;letter-spacing:-.015em;line-height:1.06;color:var(--ink)}
+.hc-page .display em,.hc-page .display .navy{font-style:normal;font-weight:400;color:var(--ink)}
+.hc-page .display--hero{font-size:clamp(40px,min(1rem + 4.4vw,11vh),76px)}
+.hc-page .display--intro{font-size:clamp(34px,1.1rem + 2.6vw,56px);line-height:1.08}
+.hc-page .display--port{font-size:clamp(38px,1.2rem + 3vw,64px);line-height:1.05;letter-spacing:-.02em}
+.hc-page .display--cos{font-size:clamp(34px,1.1rem + 2.6vw,56px)}
+.hc-page .display--end{font-size:clamp(38px,1.2rem + 3.2vw,64px);font-weight:400;line-height:1.06}
+/* the smaller headings stay in the sans, bold — as in the references' feature blocks */
+.hc-page .why__t,.hc-page .port__title,.hc-page .impact__t{font-family:var(--ui);font-weight:700;letter-spacing:-.015em}
+
+/* ── one ground under the whole page, one rhythm between its parts ────────────────────────────── */
+.hc-page .intro,.hc-page .why,.hc-page .port,.hc-page .impact,.hc-page .metrics,
+.hc-page .ask-end,.hc-page .foot{background:var(--hc-ground);color:var(--ink)}
+.hc-page .why,.hc-page .port,.hc-page .impact{padding:clamp(72px,9vw,128px) 0}
+.hc-page .metrics{padding:clamp(56px,7vw,96px) 0;border-top:1px solid var(--hc-edge)}
+.hc-page .ask-end{padding:clamp(72px,9vw,128px) 0 clamp(56px,7vw,96px)}
+
+/* ── the opening block: a picture card beside the words, not a full-height slab ────────────────── */
+.hc-page .intro{min-height:auto;padding:clamp(72px,9vw,128px) var(--gutter);gap:clamp(32px,5vw,80px);align-items:center}
+.hc-page .intro__media{height:clamp(380px,52vh,560px);border-radius:22px;overflow:hidden;background:#E9E9E5}
+.hc-page .intro__pic{border-radius:22px}
+
+/* ── the product rows: a big rounded picture, alternating sides ────────────────────────────────── */
+.hc-page .port__eyebrow{border-bottom:0;padding-bottom:0;color:var(--hc-quiet);font-size:14px;font-weight:500;letter-spacing:.02em}
+.hc-page .port__rows{margin-top:clamp(40px,5vw,72px);display:grid;gap:clamp(48px,7vw,104px)}
+.hc-page .port__row{align-items:center;gap:clamp(28px,4vw,64px)}
+.hc-page .port__media{border-radius:22px;overflow:hidden;background:#E9E9E5}
+.hc-page .port__pic{border-radius:22px}
+.hc-page .port__row:nth-child(even) .port__media{order:-1}
+.hc-page .port__title{font-size:clamp(24px,1rem + 1.2vw,32px)}
+.hc-page .port__head{color:var(--hc-quiet);font-size:16px;line-height:1.55}
+
+/* ── the cards and steps: hairlines on white, nothing heavy ───────────────────────────────────── */
+.hc-page .why__item{background:var(--hc-card);border:1px solid var(--hc-edge);border-radius:20px;padding:clamp(22px,2.4vw,32px)}
+.hc-page .why__d,.hc-page .impact__t + *,.hc-page .stat__d{color:var(--hc-quiet)}
+.hc-page .impact__step{border-top:1px solid var(--hc-edge)}
+.hc-page .impact__n{color:var(--hc-quiet);font-weight:600}
+.hc-page .stat__n{font-family:var(--hc-serif);font-weight:400}
+
+/* ── the close and the footer on the same ground ──────────────────────────────────────────────── */
+.hc-page .ask-end .ask-mini{background:var(--hc-card);box-shadow:inset 0 0 0 1px var(--hc-edge)}
+.hc-page .foot{border-top:1px solid var(--hc-edge)}
+
+/* ── the buttons as in the references: ink pill, or white with a hairline ──────────────────────── */
+.hc-page .btn--line{background:var(--hc-card);box-shadow:inset 0 0 0 1px var(--hc-edge)}
+.hc-page .btn--line:hover{background:var(--ink);color:#FFFFFF}
+
+@media (max-width:900px){
+  .hc-page .intro{grid-template-columns:1fr}
+  .hc-page .intro__media{height:clamp(280px,42vh,420px)}
+  .hc-page .port__row:nth-child(even) .port__media{order:0}
+}
+
+/* ── the three blocks that were still painted dark ────────────────────────────────────────────────
+   The Why band carries its gradient as a background-image on #why (an id rule, so it outranked the
+   plain class); the footer's gradient sits on its inner .foot__in; and the close heading's last
+   words are an orange span. On this option they all join the one light ground. */
+.hc-page #why{background:var(--hc-ground);background-image:none;color:var(--ink)}
+.hc-page #why .display,.hc-page #why .display--cos,.hc-page #why .why__t{color:var(--ink)}
+.hc-page #why .why__d{color:var(--hc-quiet)}
+.hc-page #why .why__item{background:var(--hc-card);border:1px solid var(--hc-edge);color:var(--ink)}
+.hc-page .foot__in{background:transparent;background-image:none;color:var(--ink)}
+.hc-page .foot a,.hc-page .foot__in a{color:var(--ink)}
+.hc-page .foot svg{color:var(--ink)}
+.hc-page #start .display--end .navy,.hc-page #start .display--end em,
+.hc-page .display--end .navy,.hc-page .display--end em{color:var(--ink)}
+
+/* home.css paints these three with selectors stronger than a plain class (id- and body-scoped), and
+   that file is shared with the live homepage, so option C overrides the exact properties here. */
+.hc-page #why{background:var(--hc-ground) !important;background-image:none !important}
+.hc-page #why .display,.hc-page #why .ln,.hc-page #why .ln__in,.hc-page #why .why__t{color:var(--ink) !important}
+.hc-page #why .why__d{color:var(--hc-quiet) !important}
+.hc-page .foot__in{background:transparent !important;background-image:none !important}
+.hc-page .foot,.hc-page .foot__in,.hc-page .foot__in *{color:var(--ink) !important}
+.hc-page .foot__in .btn--ink{background:var(--ink) !important;color:#FFFFFF !important}
+.hc-page .foot__in .btn--ink *{color:#FFFFFF !important}
+.hc-page .display--end .navy,.hc-page .display--end em{color:var(--ink) !important}
+
+/* ═══ pass 3: the references' divisions, sizes and a black footer (client, 2026-09-14) ═══════════
+   The page's own markup pins several things with inline styles (the opening picture's pixel size,
+   the Why gradient and its white cards, the footer gradient and its white text), and inline styles
+   beat a stylesheet — so the ones that matter are overridden here by name. */
+
+/* ── the opening block: a soft light picture that fills a rounded card ─────────────────────────── */
+.hc-page .intro__media{width:auto !important;height:clamp(380px,50vh,520px) !important;border-radius:22px;overflow:hidden}
+.hc-page .intro__pic{width:100% !important;height:100% !important;left:0 !important;object-fit:cover;border-radius:22px}
+
+/* ── section heads as in the references: centred, serif, with a quiet line under them ──────────── */
+.hc-page .why .display,.hc-page .impact .display,.hc-page .ask-end .display{text-align:center}
+.hc-page .why__grid,.hc-page .impact__steps{margin-top:clamp(36px,4.5vw,64px)}
+.hc-page .ask-end__lede,.hc-page .intro__lede{color:var(--hc-quiet);font-size:clamp(16px,1.1vw,18px);line-height:1.55}
+
+/* ── the feature cards: soft grey panels, icon, bold sans title, quiet body ────────────────────── */
+.hc-page .why__item{background:#F0F0EC !important;border:0 !important;border-radius:18px;padding:clamp(22px,2.4vw,30px);gap:10px}
+.hc-page .why__t{font-size:clamp(17px,.9rem + .3vw,20px)}
+.hc-page .why__d{font-size:15.5px;line-height:1.55}
+.hc-page .why__ic{width:34px;height:34px;border-radius:9px}
+
+/* ── the footer, black at the end ─────────────────────────────────────────────────────────────── */
+.hc-page .foot{background:#0B0B0C !important;border-top:0}
+.hc-page .foot__in{background:transparent !important;background-image:none !important}
+.hc-page .foot,.hc-page .foot__in,.hc-page .foot__in *,
+.hc-page .foot__band,.hc-page .foot__band *{color:#FFFFFF !important}
+.hc-page .foot__big a:hover{color:rgba(255,255,255,.66) !important}
+.hc-page .foot__disc,.hc-page .foot__so{box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);color:#FFFFFF}
+.hc-page .foot__so:hover,.hc-page .foot__small a:hover .foot__disc,.hc-page .foot__small button:hover .foot__disc{
+  background:#FFFFFF;color:#0B0B0C !important;box-shadow:inset 0 0 0 1px #FFFFFF}
+.hc-page .foot__so:hover svg,.hc-page .foot__small a:hover .foot__disc svg{color:#0B0B0C}
+.hc-page .foot__band{border-top:1px solid rgba(255,255,255,.18)}
+.hc-page .foot__brand,.hc-page .foot__mark{color:#FFFFFF}
+
+@media (max-width:900px){
+  .hc-page .intro__media{height:clamp(260px,38vh,380px) !important}
+}
+
+/* ═══ pass 4 (client, 2026-09-14): Tiro Tamil for the titles, no blue in them, a centred first block ══
+   Tiro Tamil is downloaded from Google Fonts and self-hosted beside the others, so the page still
+   fetches nothing from outside. It ships in one weight, so the titles sit at 400. */
+@font-face{font-family:'Tiro Tamil';font-style:normal;font-weight:400;font-display:swap;
+  src:url(./assets/fonts/tiro-tamil-normal.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Tiro Tamil';font-style:italic;font-weight:400;font-display:swap;
+  src:url(./assets/fonts/tiro-tamil-italic.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+body.hc-page{--hc-serif:'Montserrat','Montserrat',Georgia,'Times New Roman',serif}
+/* one weight only: the markup asks some titles for 600, which would fake-bold them */
+.hc-page .display,.hc-page .display *{font-weight:400 !important}
+
+/* no blue in the titles (the markup paints those words inline, so this has to say so) */
+.hc-page .display *,.hc-page .display em,.hc-page .display .navy,.hc-page .display span[style]{color:inherit !important}
+
+/* ── the first block, centred: the words, then the picture, all on the middle line ─────────────── */
+.hc-page .intro{grid-template-columns:minmax(0,1fr) !important;justify-items:center;text-align:center;gap:clamp(28px,4vw,56px)}
+.hc-page .intro__body{align-items:center;text-align:center;max-width:760px}
+.hc-page .intro__body > *{text-align:center}
+.hc-page .display--intro{text-align:center !important;max-width:none !important;margin-inline:auto}
+.hc-page .intro__lede{margin-inline:auto;max-width:60ch}
+.hc-page .intro__media{order:2;width:min(100%,900px) !important;height:clamp(340px,46vh,480px) !important;margin-inline:auto}
+.hc-page .intro__body{order:1}
+
+/* one colour, one size, one weight for every title on the page (client) */
+.hc-page .display,.hc-page .display--hero,.hc-page .display--intro,.hc-page .display--port,
+.hc-page .display--cos,.hc-page .display--end,.hc-page .display--ask{
+  font-size:clamp(34px,1rem + 2.9vw,58px) !important;line-height:1.1;letter-spacing:-.015em;color:var(--ink) !important}
+
+/* the first block, re-ordered (client): the picture comes first — it divides the chat above from the
+   Stagwell AI introduction below — then the title and its line. The eyebrow steps out. */
+.hc-page .intro__media{order:1 !important;margin-bottom:clamp(28px,3.6vw,56px)}
+.hc-page .intro__body{order:2 !important}
+.hc-page .intro .hero__sign{display:none}
+
+/* ═══ Why Stagwell AI as split panels (client's reference, 2026-09-14) ═══════════════════════════
+   One full-width rounded block per item, cut in two: a tinted half carrying the item's mark, and a
+   light half with its title and line. The halves swap sides down the list, as in the reference. */
+.hc-page .why__grid{grid-template-columns:minmax(0,1fr) !important;gap:clamp(14px,1.6vw,22px)}
+.hc-page .why__item{display:grid !important;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+  align-items:stretch;gap:0 !important;padding:0 !important;border-radius:20px;overflow:hidden;
+  background:#F4F4F1 !important;border:0 !important;min-height:clamp(200px,26vh,280px)}
+.hc-page .why__head{display:contents}
+/* the tinted half: the mark, large and quiet */
+.hc-page .why__ic{grid-column:1;grid-row:1 / span 2;display:grid;place-items:center;width:100% !important;height:100% !important;
+  border-radius:0 !important;background:#E9E6DF !important;color:var(--ink)}
+.hc-page .why__ic svg{width:clamp(38px,4vw,56px);height:clamp(38px,4vw,56px);opacity:.72}
+/* the light half: the title, then its line */
+.hc-page .why__t{grid-column:2;grid-row:1;align-self:end;margin:0;padding:clamp(24px,3vw,40px) clamp(24px,3vw,40px) 10px}
+.hc-page .why__d{grid-column:2;grid-row:2;align-self:start;margin:0;padding:0 clamp(24px,3vw,40px) clamp(24px,3vw,40px);max-width:52ch}
+/* they swap sides down the list, and the tints alternate */
+.hc-page .why__item:nth-child(even) .why__ic{grid-column:2;background:#DCE4EA !important}
+.hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-column:1}
+.hc-page .why__item:nth-child(4n+3) .why__ic{background:#EDE7E2 !important}
+@media (max-width:760px){
+  .hc-page .why__item{grid-template-columns:minmax(0,1fr);min-height:0}
+  .hc-page .why__ic{grid-column:1 !important;grid-row:1;height:clamp(120px,22vh,170px) !important}
+  .hc-page .why__t,.hc-page .why__d{grid-column:1 !important}
+  .hc-page .why__t{grid-row:2}
+  .hc-page .why__d{grid-row:3}
+}
+
+/* the split panel, corrected: each item carries TWO paragraphs (a lead line and the body), so the
+   text side must flow in its own rows instead of being pinned — and the tinted half keeps the same
+   width when the sides swap */
+.hc-page .why__item{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr) !important;align-content:center}
+.hc-page .why__ic{grid-column:1 !important;grid-row:1 / -1 !important}
+.hc-page .why__t{grid-column:2 !important;grid-row:auto !important;align-self:end;
+  padding:clamp(24px,3vw,38px) clamp(24px,3vw,40px) 0 !important}
+.hc-page .why__d--lead{grid-column:2 !important;grid-row:auto !important;font-weight:600;color:var(--ink);
+  padding:10px clamp(24px,3vw,40px) 0 !important;margin:0}
+.hc-page .why__d:not(.why__d--lead){grid-column:2 !important;grid-row:auto !important;align-self:start;
+  padding:8px clamp(24px,3vw,40px) clamp(24px,3vw,38px) !important;margin:0}
+/* the swapped rows: widths swap with the sides */
+.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr) !important}
+.hc-page .why__item:nth-child(even) .why__ic{grid-column:2 !important}
+.hc-page .why__item:nth-child(even) .why__t,
+.hc-page .why__item:nth-child(even) .why__d{grid-column:1 !important}
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1fr) !important}
+  .hc-page .why__ic,.hc-page .why__item:nth-child(even) .why__ic{grid-column:1 !important;grid-row:1 / span 1 !important}
+  .hc-page .why__t,.hc-page .why__d,
+  .hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-column:1 !important}
+}
+
+/* the tinted half must FILL its side: align-content:center had collapsed the rows to their content,
+   so height:100% had nothing to stretch into. And the two greys were too close to read as a split. */
+.hc-page .why__item{align-content:stretch !important;background:#FFFFFF !important}
+.hc-page .why__ic{align-self:stretch !important;height:auto !important;min-height:100%;background:#E7E2D8 !important}
+.hc-page .why__item:nth-child(even) .why__ic{background:#D7E1E9 !important}
+.hc-page .why__item:nth-child(4n+3) .why__ic{background:#EAE3DC !important}
+
+/* `grid-row: 1 / -1` means "to the last EXPLICIT line", and this grid has no explicit rows, so the
+   tinted half collapsed to one row. It spans the three text rows (title, lead, body) instead. */
+.hc-page .why__ic,.hc-page .why__item:nth-child(even) .why__ic{grid-row:1 / span 3 !important;align-self:stretch !important;height:auto !important}
+@media (max-width:760px){
+  .hc-page .why__ic,.hc-page .why__item:nth-child(even) .why__ic{grid-row:1 / span 1 !important;height:clamp(120px,22vh,170px) !important}
+}
+
+/* phones: the text must flow in its own rows here too — the earlier mobile block pinned both
+   paragraphs to one row, which stacked the lead line on top of the body */
+@media (max-width:760px){
+  .hc-page .why__t,.hc-page .why__d,
+  .hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-row:auto !important}
+  .hc-page .why__t{padding:clamp(18px,4vw,24px) clamp(18px,5vw,24px) 0 !important}
+  .hc-page .why__d--lead{padding:8px clamp(18px,5vw,24px) 0 !important}
+  .hc-page .why__d:not(.why__d--lead){padding:6px clamp(18px,5vw,24px) clamp(18px,4vw,24px) !important}
+}
+
+/* ── phones, last word ────────────────────────────────────────────────────────────────────────────
+   Every rule above this point is unscoped, so it also applied at phone width and put the body
+   paragraph in a collapsed second column, on top of the lead line. This block is last, so it wins. */
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1fr) !important;min-height:0 !important}
+  .hc-page .why__ic,.hc-page .why__item:nth-child(even) .why__ic{grid-column:1 !important;grid-row:1 / span 1 !important;
+    height:clamp(120px,22vh,170px) !important;min-height:0 !important}
+  .hc-page .why__t,.hc-page .why__d,.hc-page .why__d--lead,
+  .hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-column:1 !important;grid-row:auto !important}
+}
+
+/* ═══ Why Stagwell AI, take two (client's newest reference) ══════════════════════════════════════
+   No panel, no tint, nothing behind it: a rounded picture on one side, the words on the other, and
+   the sides swap down the list. Narrower than before, with air around it. */
+.hc-page .why > .wrap{max-width:1180px}
+.hc-page .why__grid{grid-template-columns:minmax(0,1fr) !important;gap:clamp(56px,7vw,104px) !important;margin-top:clamp(40px,5vw,72px)}
+.hc-page .why__item{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  align-items:center;gap:clamp(28px,4.5vw,72px) !important;background:transparent !important;border:0 !important;
+  border-radius:0 !important;padding:0 !important;min-height:0 !important;overflow:visible}
+/* the placeholder picture */
+.hc-page .why__pic{grid-column:2;grid-row:1 / span 3;width:100%;height:clamp(240px,30vh,340px);object-fit:cover;border-radius:16px;display:block}
+/* the mark steps aside — the picture carries the side now */
+.hc-page .why__ic{display:none !important}
+.hc-page .why__t{grid-column:1 !important;grid-row:1 !important;align-self:end;padding:0 !important;
+  font-family:var(--ui);font-weight:700;font-size:clamp(22px,1rem + 1vw,30px);letter-spacing:-.015em;color:var(--ink)}
+.hc-page .why__d--lead{grid-column:1 !important;grid-row:2 !important;padding:10px 0 0 !important;font-weight:600;color:var(--ink)}
+.hc-page .why__d:not(.why__d--lead){grid-column:1 !important;grid-row:3 !important;align-self:start;
+  padding:8px 0 0 !important;color:var(--hc-quiet);font-size:16px;line-height:1.6;max-width:46ch}
+/* the sides swap down the list */
+.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important}
+.hc-page .why__item:nth-child(even) .why__pic{grid-column:1}
+.hc-page .why__item:nth-child(even) .why__t,
+.hc-page .why__item:nth-child(even) .why__d{grid-column:2 !important}
+
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){grid-template-columns:minmax(0,1fr) !important;gap:18px !important}
+  .hc-page .why__pic,.hc-page .why__item:nth-child(even) .why__pic{grid-column:1 !important;grid-row:1 !important;height:clamp(200px,28vh,260px)}
+  .hc-page .why__t,.hc-page .why__d,.hc-page .why__d--lead,
+  .hc-page .why__item:nth-child(even) .why__t,.hc-page .why__item:nth-child(even) .why__d{grid-column:1 !important;grid-row:auto !important}
+}
+
+/* ═══ one button system (client: consistent size, no white "learn more") ════════════════════════
+   Main CTAs — Book a demo — are solid ink pills at one size. The quiet ones are text with their
+   arrow, as in the references, and the Call me pill is outlined rather than filled white. */
+.hc-page .btn,.hc-page .btn--lg{height:50px;padding:0 26px;border-radius:999px;
+  font-family:var(--ui);font-size:15px;font-weight:600;letter-spacing:0}
+.hc-page .btn--ink,.hc-page .btn--ink.btn--lg{background:var(--ink);color:#FFFFFF;box-shadow:none}
+.hc-page .btn--ink:hover{background:#000000;color:#FFFFFF}
+/* the quiet one: text and its arrow, never a white pill */
+.hc-page .intro__act .btn--line,.hc-page .intro__act .btn--line.btn--lg{height:auto;padding:0;border-radius:0;
+  background:none;box-shadow:none;color:var(--ink)}
+.hc-page .intro__act .btn--line:hover{background:none;color:var(--ink);opacity:.68;transform:none;box-shadow:none}
+/* Call me: outlined, matching the pill size */
+.hc-page .call,.hc-page .call__btn{height:50px}
+.hc-page .call__btn{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(11,18,32,.3)}
+.hc-page .call__btn:hover{background:var(--ink);color:#FFFFFF;box-shadow:none}
+
+/* the words sit as one tight group beside the picture, instead of being spread across its height */
+.hc-page .why__item{align-content:center !important}
+.hc-page .why__t{align-self:center !important}
+.hc-page .why__d--lead,.hc-page .why__d:not(.why__d--lead){align-self:center !important}
+.hc-page .why__pic{align-self:center}
+
+/* the picture spans the three text rows, and `auto` rows absorb its height — which is what pushed the
+   title, lead and body apart. Content-sized rows can't absorb it, so the words stay together. */
+.hc-page .why__item{grid-template-rows:min-content min-content min-content !important}
+
+/* the spread was the item's own `gap` — it applies to rows too, so the 72px column gap was also
+   pushing the title, lead and body apart. Columns keep the air; the rows close up. */
+.hc-page .why__item,.hc-page .why__item:nth-child(even){row-gap:0 !important;column-gap:clamp(28px,4.5vw,72px) !important}
+.hc-page .why__d--lead{padding-top:14px !important}
+.hc-page .why__d:not(.why__d--lead){padding-top:10px !important}
+
+/* ── the picture leaves the text's flow ───────────────────────────────────────────────────────────
+   Measured: the picture spanned the three text rows, so its height was divided among them and each
+   line sat centred in an over-tall row. The words now flow normally in their own column and the
+   picture is placed beside them, centred on the row. */
+.hc-page .why__item,.hc-page .why__item:nth-child(even){display:block !important;position:relative;
+  min-height:clamp(240px,30vh,340px);padding:0 !important}
+.hc-page .why__item{padding-right:calc(50% + 26px) !important}
+.hc-page .why__item:nth-child(even){padding-left:calc(50% + 26px) !important;padding-right:0 !important}
+.hc-page .why__pic{position:absolute;top:50%;transform:translateY(-50%);right:0;left:auto;
+  width:calc(50% - 26px);height:clamp(240px,30vh,340px);margin:0}
+.hc-page .why__item:nth-child(even) .why__pic{right:auto;left:0}
+.hc-page .why__t{display:block;margin:0 0 12px !important;padding:0 !important}
+.hc-page .why__d--lead{display:block;margin:0 0 10px !important;padding:0 !important}
+.hc-page .why__d:not(.why__d--lead){display:block;margin:0 !important;padding:0 !important}
+
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){padding:0 !important;min-height:0}
+  .hc-page .why__pic,.hc-page .why__item:nth-child(even) .why__pic{position:static;transform:none;
+    width:100%;height:clamp(200px,28vh,260px);margin:0 0 16px}
+}
+
+/* the row must be at least as tall as the picture beside it (an earlier min-height:0 !important was
+   winning, so the centred picture overflowed into the next row) */
+.hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:clamp(240px,30vh,340px) !important}
+@media (max-width:760px){ .hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:0 !important} }
+
+/* ═══ the first block is a video frame, and the Why pictures stand taller (client) ═══════════════ */
+/* HD: the divider between the chat and the introduction is 16:9, ready for the film */
+.hc-page .intro__media{aspect-ratio:16/9;height:auto !important;width:min(100%,900px) !important}
+.hc-page .intro__pic{width:100% !important;height:100% !important;object-fit:cover}
+
+/* the Why pictures were far too wide (500x270): taller, nearer 4:3, and the row grows with them */
+.hc-page .why__pic{height:clamp(300px,26vw,420px) !important}
+.hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:clamp(300px,26vw,420px) !important}
+@media (max-width:760px){
+  .hc-page .intro__media{aspect-ratio:16/9;height:auto !important}
+  .hc-page .why__pic,.hc-page .why__item:nth-child(even) .why__pic{height:clamp(230px,58vw,300px) !important}
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){min-height:0 !important}
+}
+
+/* ═══ the closing chat matches the hero's (client) ═══════════════════════════════════════════════
+   It was a 60px pill while the hero is a card: same white card, same hairline, the line to type on
+   at the top and the black send disc on its floor. */
+.hc-page .ask-end__acts{width:min(100%,760px)}
+.hc-page .ask-end .ask-mini{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;
+  height:auto;min-height:150px;padding:20px 20px 14px;border-radius:18px;background:var(--hc-card);
+  box-shadow:inset 0 0 0 1px var(--hc-edge);align-items:start}
+.hc-page .ask-end .ask-mini:focus-within{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34)}
+.hc-page .ask-end .ask-mini__dots{display:none}
+.hc-page .ask-end .ask-mini__input{grid-column:1 / -1;grid-row:1;height:34px;font-size:17px;padding:0}
+.hc-page .ask-end .ask-mini__input::placeholder{color:#9AA0A8}
+.hc-page .ask-end .ask-mini__hint{left:20px;right:20px;top:22px;transform:none;text-align:left;font-size:17px;color:#9AA0A8}
+.hc-page .ask-end .ask-mini__go{grid-column:2;grid-row:2;align-self:end;justify-self:end;
+  width:40px;height:40px;border-radius:50%;background:var(--ink);color:#FFFFFF}
+.hc-page .ask-end .ask-mini__go:hover{background:#000000;color:#FFFFFF}
+
+/* ═══ the starting points as ghost tags (client) ═════════════════════════════════════════════════
+   Inverted from before: nothing but a hairline at rest, and the white fill arrives on hover. */
+.hc-page .chat__tags .tag{background:transparent;border:1px solid rgba(11,18,32,.22);color:var(--ink)}
+.hc-page .chat__tags .tag:hover,.hc-page .chat__tags .tag:focus-visible{background:#FFFFFF;border-color:rgba(11,18,32,.34);color:var(--ink)}
+.hc-page .chat__tags .tag .tag__ic{opacity:.58}
+.hc-page .chat__tags .tag:hover .tag__ic{opacity:.8}
+
+/* the closing field showed two placeholder lines at once — its own placeholder and the rotating
+   hint, which used to sit exactly on top of each other in the old pill. The hint is the visible one. */
+.hc-page .ask-end .ask-mini__input::placeholder{color:transparent}
+.hc-page .ask-end .ask-mini__hint{top:20px;left:20px;right:20px;line-height:34px;height:34px}
+
+/* ═══ the introduction on three lines, and a CTA on every Why row (client) ══════════════════════ */
+/* four lines was too many: the measure is narrowed so it breaks on three */
+.hc-page .display--intro{max-width:15.2em !important;margin-inline:auto}
+
+/* each row gets the same ink pill as the rest of the page */
+.hc-page .why__cta{display:inline-flex;margin-top:22px}
+@media (max-width:760px){ .hc-page .why__cta{margin-top:18px} }
+
+/* three lines, not four: 88 characters were breaking at ~22 per line inside a 670px measure, so the
+   measure widens to about 30 per line */
+.hc-page .intro__body{max-width:1000px !important}
+.hc-page .display--intro{max-width:none !important;width:min(100%,960px);margin-inline:auto}
+
+/* ═══ the first block's frame holds the hero pictures, one fading into the next (client) ═════════
+   They are stacked in the 16:9 frame; home-c.js turns them every three seconds. Videos can take
+   their place later without touching the layout. */
+.hc-page .intro__media{position:relative;overflow:hidden}
+.hc-page .intro__pic{position:absolute;inset:0;width:100% !important;height:100% !important;object-fit:cover;
+  opacity:0;transition:opacity .9s ease}
+.hc-page .intro__pic.is-on{opacity:1}
+@media (prefers-reduced-motion:reduce){ .hc-page .intro__pic{transition:none} }
+
+/* three and three: the markup carries a line break after the third tag — it comes back (client) */
+.hc-page .chat__tags .tag__br{display:block !important;flex-basis:100%;width:100%;height:0;margin:0;padding:0}
+
+/* ═══ centring, and the hero's thinking field ═══════════════════════════════════════════════════
+   Measured: the frame sits on the page centre (720) but the title, line and button sat at 765 —
+   they were not centred inside their column. */
+.hc-page .intro__body{align-items:center !important;text-align:center !important;margin-inline:auto !important}
+.hc-page .display--intro,.hc-page .intro__lede,.hc-page .intro__act{align-self:center !important;margin-inline:auto !important}
+
+/* the hero's dots were a dense 600x300 block behind the box; the one by the footer spreads across its
+   whole section, which is why it reads quieter. This one spreads too. */
+.hc-page .hero .chat > .hero__think{left:50%;right:auto;transform:translateX(-50%);
+  width:min(100vw,1200px) !important;height:440px !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.34}
+
+/* the text column kept an 89.6px left padding from the old two-column layout — half of it was the
+   45px by which the title, line and button sat right of the frame's centre */
+.hc-page .intro__body{padding:0 !important}
+
+/* ═══ the film grows to fill the screen as you scroll (client, desktop) ══════════════════════════
+   The stage gives it the scroll room; the frame pins to the top and is revealed by a crop that
+   opens from the card's shape to the full screen, so nothing jumps. Without the script, or on a
+   phone, or with reduced motion, it stays exactly the card it is now. */
+.hc-page .intro__stage{width:100%;display:flex;justify-content:center}
+.hc-page .intro__stage .intro__media{margin-inline:auto}
+
+@media (min-width:901px){
+  .hc-page .intro__stage.is-cine{display:block;height:190vh}
+  .hc-page .intro__stage.is-cine .intro__media{position:sticky;top:0;width:100vw !important;max-width:none !important;
+    height:100vh !important;aspect-ratio:auto;margin-left:calc(50% - 50vw);border-radius:0;
+    will-change:clip-path;overflow:hidden}
+  .hc-page .intro__stage.is-cine .intro__pic{width:100% !important;height:100% !important;object-fit:cover}
+  /* while the film covers the screen the bar sits on it: no plate, white type */
+  .hc-page .nav.on-film{background:transparent !important;box-shadow:none !important;
+    border-bottom-color:transparent !important;backdrop-filter:none !important;color:#FFFFFF !important;
+    transition:background .35s ease,color .35s ease,box-shadow .35s ease}
+  .hc-page .nav.on-film .nav__in,.hc-page .nav.on-film .nav__brand,.hc-page .nav.on-film .nav__links a,
+  .hc-page .nav.on-film .nav__droptrig,.hc-page .nav.on-film .nav__burger{color:#FFFFFF !important}
+  .hc-page .nav.on-film .nav__brand svg{fill:#FFFFFF}
+  .hc-page .nav.on-film .btn--ink{background:#FFFFFF !important;color:var(--ink) !important}
+  .hc-page .nav.on-film .nav__search{background:transparent !important;color:#FFFFFF !important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.55) !important}
+}
+@media (prefers-reduced-motion:reduce){ .hc-page .intro__pic{transition:none} }
+
+/* three and three: the markup carries a line break after the third tag — it comes back (client) */
+.hc-page .chat__tags .tag__br{display:block !important;flex-basis:100%;width:100%;height:0;margin:0;padding:0}
+
+/* ═══ centring, and the hero's thinking field ═══════════════════════════════════════════════════
+   Measured: the frame sits on the page centre (720) but the title, line and button sat at 765 —
+   they were not centred inside their column. */
+.hc-page .intro__body{align-items:center !important;text-align:center !important;margin-inline:auto !important}
+.hc-page .display--intro,.hc-page .intro__lede,.hc-page .intro__act{align-self:center !important;margin-inline:auto !important}
+
+/* the hero's dots were a dense 600x300 block behind the box; the one by the footer spreads across its
+   whole section, which is why it reads quieter. This one spreads too. */
+.hc-page .hero .chat > .hero__think{left:50%;right:auto;transform:translateX(-50%);
+  width:min(100vw,1200px) !important;height:440px !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.34}
+
+/* the text column kept an 89.6px left padding from the old two-column layout — half of it was the
+   45px by which the title, line and button sat right of the frame's centre */
+.hc-page .intro__body{padding:0 !important}
+
+/* ═══ the film grows to fill the screen as you scroll (client, desktop) ══════════════════════════
+   The stage gives it the scroll room; the frame pins to the top and is revealed by a crop that
+   opens from the card's shape to the full screen, so nothing jumps. Without the script, or on a
+   phone, or with reduced motion, it stays exactly the card it is now. */
+.hc-page .intro__stage{width:100%;display:flex;justify-content:center}
+.hc-page .intro__stage .intro__media{margin-inline:auto}
+
+@media (min-width:901px){
+  .hc-page .intro__stage.is-cine{display:block;height:190vh}
+  .hc-page .intro__stage.is-cine .intro__media{position:sticky;top:0;width:100vw !important;max-width:none !important;
+    height:100vh !important;aspect-ratio:auto;margin-left:calc(50% - 50vw);border-radius:0;
+    will-change:clip-path;overflow:hidden}
+  .hc-page .intro__stage.is-cine .intro__pic{width:100% !important;height:100% !important;object-fit:cover}
+  /* while the film covers the screen, the bar reads on it */
+  .hc-page .nav.on-film:not(.is-stuck){color:#FFFFFF}
+  .hc-page .nav.on-film:not(.is-stuck) .nav__links a,.hc-page .nav.on-film:not(.is-stuck) .nav__droptrig,
+  .hc-page .nav.on-film:not(.is-stuck) .nav__brand,.hc-page .nav.on-film:not(.is-stuck) .nav__burger{color:#FFFFFF}
+  .hc-page .nav.on-film:not(.is-stuck) .btn--ink{background:#FFFFFF;color:var(--ink)}
+  .hc-page .nav.on-film:not(.is-stuck) .nav__search{background:transparent;color:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+  .hc-page .nav.on-film{transition:color .3s ease}
+}
+@media (prefers-reduced-motion:reduce){ .hc-page .intro__stage.is-cine{height:auto} }
+
+/* ═══ the title now lives inside the film, over a soft dark veil ═════════════════════════════════ */
+.hc-page .intro__media::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(11,11,12,.30) 0%,rgba(11,11,12,.42) 55%,rgba(11,11,12,.62) 100%)}
+.hc-page .intro__over{position:absolute !important;inset:0;z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center !important;
+  width:100% !important;max-width:none !important;margin:0 !important;
+  padding:0 clamp(22px,5vw,64px) !important}
+.hc-page .intro__over .display--intro{width:min(100%,860px);margin:0 auto !important;
+  color:#FFFFFF !important;text-shadow:0 1px 22px rgba(0,0,0,.28)}
+.hc-page .intro__over .display--intro *{color:#FFFFFF !important}
+@media (max-width:760px){
+  .hc-page .intro__over{padding:0 20px !important}
+  .hc-page .intro__over .display--intro{font-size:clamp(24px,6.4vw,34px) !important}
+}
+@media (max-width:760px){
+  /* on a phone the film stands taller so the title has room inside it */
+  .hc-page .intro__media{aspect-ratio:4/5 !important;height:auto !important}
+}
+
+/* the two CTAs inside the film: white pill for the main one, outlined for the quiet one */
+.hc-page .intro__over .intro__act{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+  margin:clamp(20px,2.4vw,30px) 0 0 !important;padding:0 !important}
+.hc-page .intro__over .btn,.hc-page .intro__over .btn--lg{height:50px;padding:0 26px !important;
+  border-radius:999px !important;font-size:15px}
+.hc-page .intro__over .btn--ink{background:#FFFFFF !important;color:var(--ink) !important;box-shadow:none !important}
+.hc-page .intro__over .btn--ink:hover{background:rgba(255,255,255,.86) !important;color:var(--ink) !important}
+.hc-page .intro__over .btn--line,.hc-page .intro__over .btn--line.btn--lg{height:50px;background:transparent !important;
+  color:#FFFFFF !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.62) !important;opacity:1}
+.hc-page .intro__over .btn--line:hover{background:rgba(255,255,255,.14) !important;color:#FFFFFF !important;opacity:1}
+
+/* the film is now a video: same frame, same crop, and it rests when it is off screen */
+.hc-page video.intro__pic{display:block;background:#0B0B0C}
+.hc-page .intro__media::after{background:linear-gradient(180deg,rgba(11,11,12,.34) 0%,rgba(11,11,12,.40) 50%,rgba(11,11,12,.58) 100%)}
+
+/* a fine dot grid over the film: it settles the moving footage so the type reads on every frame.
+   Both layers ride the one ::after — dots first, then the veil under them. */
+.hc-page .intro__media::after{
+  background-image:radial-gradient(rgba(8,10,14,.55) 1px,transparent 1.1px),
+    linear-gradient(180deg,rgba(11,11,12,.28) 0%,rgba(11,11,12,.34) 50%,rgba(11,11,12,.52) 100%);
+  background-size:3px 3px,auto;
+  background-position:0 0,0 0}
+
+/* ═══ Products: tabs over one big still, in the reference's shape ════════════════════════════════ */
+.hc-page .hc-port{background:var(--hc-ground);padding-block:clamp(64px,7vw,110px)}
+.hc-page .hc-port > .wrap{max-width:1180px}
+.hc-page .hc-port .port__eyebrow{font-family:var(--ui);font-size:12px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--hc-quiet);margin:0 0 14px}
+.hc-page .hc-port .display--port{margin:0 0 clamp(26px,3vw,40px)}
+/* the tab strip: ghost chips, the live one filled */
+.hc-page .hc-port__tabs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 18px}
+.hc-page .hc-port__tab,.hc-page .hc-port__all{height:40px;padding:0 16px;border-radius:999px;
+  font-family:var(--ui);font-size:14px;font-weight:500;letter-spacing:0;line-height:40px;
+  background:transparent;color:var(--ink);border:1px solid rgba(11,18,32,.22);cursor:pointer;
+  transition:background .2s ease,border-color .2s ease,color .2s ease}
+.hc-page .hc-port__tab:hover,.hc-page .hc-port__all:hover{background:#FFFFFF;border-color:rgba(11,18,32,.34)}
+.hc-page .hc-port__tab.is-on{background:var(--ink);border-color:var(--ink);color:#FFFFFF}
+.hc-page .hc-port__all{margin-left:auto;text-decoration:none;font-size:12px;letter-spacing:1.4px;
+  text-transform:uppercase;display:inline-block}
+/* the stage: one still at a time, the caption block sitting on it */
+.hc-page .hc-port__stage{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;
+  background:#0B0B0C}
+.hc-page .hc-port__slide{position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .5s ease,visibility .5s ease}
+.hc-page .hc-port__slide.is-on{opacity:1;visibility:visible}
+.hc-page .hc-port__pic{width:100%;height:100%;object-fit:cover;display:block}
+.hc-page .hc-port__cap{position:absolute;left:clamp(16px,2.4vw,34px);top:clamp(16px,2.4vw,34px);
+  max-width:min(560px,68%);display:block;padding:18px 22px 20px;background:rgba(22,25,30,.82);
+  color:#FFFFFF;text-decoration:none;border-radius:4px}
+.hc-page .hc-port__cap:hover{background:rgba(22,25,30,.92)}
+.hc-page .hc-port__eb{display:block;font-family:var(--ui);font-size:12px;letter-spacing:1.6px;
+  text-transform:uppercase;color:rgba(255,255,255,.82);margin:0 0 10px}
+.hc-page .hc-port__h{display:block;font-family:var(--hc-serif);font-size:clamp(20px,1.9vw,30px);
+  line-height:1.18;font-weight:400;color:#FFFFFF}
+.hc-page .hc-port__arw{width:.72em;height:.72em;margin-left:.3em;vertical-align:baseline}
+/* the two arrows, in the reference's corners */
+.hc-page .hc-port__nav{position:absolute;bottom:clamp(14px,2vw,26px);width:52px;height:40px;
+  display:grid;place-items:center;border:0;cursor:pointer;color:#FFFFFF;
+  background:rgba(22,25,30,.55);transition:background .2s ease}
+.hc-page .hc-port__nav:hover{background:rgba(22,25,30,.8)}
+.hc-page .hc-port__nav svg{width:20px;height:20px}
+.hc-page .hc-port__nav--prev{left:clamp(14px,2vw,26px)}
+.hc-page .hc-port__nav--next{right:clamp(14px,2vw,26px)}
+@media (max-width:760px){
+  .hc-page .hc-port__tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-20px;
+    padding-inline:20px}
+  .hc-page .hc-port__tabs::-webkit-scrollbar{display:none}
+  .hc-page .hc-port__tab{flex:0 0 auto}
+  .hc-page .hc-port__all{flex:0 0 auto;margin-left:0}
+  .hc-page .hc-port__stage{aspect-ratio:4/5}
+  .hc-page .hc-port__cap{max-width:none;right:clamp(16px,2.4vw,34px)}
+}
+.hc-page .hc-port__nb{white-space:nowrap}
+
+/* ═══ Why Stagwell AI — the reference's card grid: quiet grey cells, icon, title, words ══════════
+   This pass replaces the picture rows: no pictures, two columns, nothing but type in a soft cell. */
+.hc-page .why{background:var(--hc-ground) !important;padding-block:clamp(64px,7vw,110px)}
+.hc-page .why > .wrap{max-width:1180px}
+.hc-page .why .display--cos{text-align:center;margin:0 auto clamp(30px,3.4vw,48px)}
+.hc-page .why__grid,.hc-page .why__grid--four{display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:16px !important;
+  margin-top:0 !important;align-items:stretch}
+.hc-page .why__item,.hc-page .why__item:nth-child(even){display:flex !important;flex-direction:column;
+  align-items:flex-start;gap:0;position:static;min-height:0 !important;
+  padding:clamp(24px,2.4vw,32px) !important;background:#EFEFEC !important;border:0 !important;
+  border-radius:14px;box-shadow:none !important}
+.hc-page .why__pic{display:none !important}
+.hc-page .why__head{display:flex !important;align-items:center;gap:10px;margin:0 0 12px;
+  grid-column:auto !important;grid-row:auto !important}
+.hc-page .why__ic{display:grid !important;place-items:center;width:22px !important;height:22px !important;
+  min-height:0 !important;background:none !important;border-radius:0;grid-column:auto !important;
+  grid-row:auto !important;align-self:center !important;color:var(--ink);flex:0 0 auto}
+.hc-page .why__ic svg{width:20px;height:20px;opacity:1}
+.hc-page .why__t{font-family:var(--ui);font-size:18px;font-weight:600;letter-spacing:-.01em;
+  color:var(--ink) !important;margin:0 !important;padding:0 !important;grid-column:auto !important;
+  grid-row:auto !important}
+.hc-page .why__d,.hc-page .why__d--lead{grid-column:auto !important;grid-row:auto !important;
+  margin:0 !important;padding:0 !important;max-width:56ch;font-family:var(--ui);font-size:15.5px;
+  line-height:1.6;color:var(--hc-quiet) !important}
+.hc-page .why__d--lead{color:var(--ink) !important;font-weight:500;margin-bottom:8px !important}
+.hc-page .why__cta{margin-top:18px;height:40px;padding:0 18px;font-size:14px;
+  background:transparent !important;color:var(--ink) !important;
+  box-shadow:inset 0 0 0 1px rgba(11,18,32,.24) !important}
+.hc-page .why__cta:hover{background:#FFFFFF !important;color:var(--ink) !important}
+@media (max-width:860px){
+  .hc-page .why__grid,.hc-page .why__grid--four{grid-template-columns:minmax(0,1fr) !important}
+}
+.hc-page .why__item,.hc-page .why__item *{text-align:left !important;text-indent:0 !important}
+.hc-page .why__item > *{align-self:stretch !important}
+.hc-page .why__item > .why__cta{align-self:flex-start !important}
+/* the cards carry icon and words only: no plate behind the icon, no button */
+.hc-page .why__ic{background:none !important;box-shadow:none !important;border:0 !important}
+.hc-page .why__cta{display:none !important}
+
+
+/* ═══ the dashboard mockups, copied from option B and scoped to C so B is never touched ═══ */
+.hc-page .mk{position:absolute;left:24px;bottom:24px;z-index:2;display:block;width:400px;box-sizing:border-box;padding:20px;border-radius:22px;background:#FFFFFF;
+  transform-origin:0 100%;pointer-events:none;text-align:left;color:#111318;font-family:var(--ui,'Montserrat'),-apple-system,system-ui,sans-serif;
+  font-size:14px;line-height:1.3;letter-spacing:-.005em}
+.hc-page .mk span,.hc-page .mk b,.hc-page .mk i,.hc-page .mk u,.hc-page .mk em{font-style:normal}
+.hc-page .mk svg{display:block;width:16px;height:16px;flex-shrink:0}
+.hc-page .mk-t{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0 0 14px}
+.hc-page .mk-sk{display:inline-block;height:10px;border-radius:5px;background:#ECEDEF;vertical-align:middle}
+.hc-page .mk-f{display:flex;align-items:center;gap:6px;height:40px;padding:0 10px;margin:0 0 10px;border-radius:10px;background:#F4F5F6;box-shadow:inset 0 0 0 1px #E6E7EA;color:#8A8F98;white-space:nowrap;overflow:hidden}
+.hc-page .mk-f svg{width:18px;height:18px;color:#111318}
+.hc-page .mk-val{color:#111318}
+.hc-page .mk-chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 5px 0 10px;border-radius:999px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E6E7EA;color:#111318;vertical-align:middle}
+.hc-page .mk-chip svg{width:15px;height:15px}
+.hc-page .mk-ed{display:block;margin:0 0 10px;padding:10px 12px 12px;border-radius:12px;background:#F4F5F6;box-shadow:inset 0 0 0 1px #E6E7EA}
+.hc-page .mk-bar{display:flex;align-items:center;gap:10px;height:30px;margin:0 0 10px;color:#111318}
+.hc-page .mk-tb{font-size:15px;line-height:1;width:14px;text-align:center}
+.hc-page .mk-bar b{font-weight:700}
+.hc-page .mk-bar i{font-style:italic !important;font-weight:500}
+.hc-page .mk-bar u{text-decoration:underline;font-weight:500}
+.hc-page .mk-ic{display:inline-flex}
+.hc-page .mk-ic--s svg{width:13px;height:13px}
+.hc-page .mk-ic--end{margin-left:auto}
+.hc-page .mk-div{width:1px;height:18px;background:#DADCE0}
+.hc-page .mk-line{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;margin:0 0 8px;white-space:nowrap}
+.hc-page .mk-line:last-child{margin:0}
+.hc-page .mk-tag{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:999px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E6E7EA;font-weight:600;color:#111318}
+.hc-page .mk-foot{display:flex;align-items:center;gap:10px;height:52px;padding:0 14px;border-radius:14px;box-shadow:inset 0 0 0 1px #E6E7EA;font-size:15px}
+.hc-page .mk-foot > svg{width:22px;height:22px}
+.hc-page .mk-num{display:inline-flex;align-items:center;gap:10px;height:34px;padding:0 8px 0 12px;border-radius:9px;box-shadow:inset 0 0 0 1px #E6E7EA}
+.hc-page .mk-num svg{width:14px;height:14px}
+.hc-page .mk-list{display:block;border-radius:12px;box-shadow:inset 0 0 0 1px #E6E7EA;overflow:hidden}
+.hc-page .mk-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-top:1px solid #E6E7EA}
+.hc-page .mk-row:first-child{border-top:0}
+.hc-page .mk-row.is-on{background:#F4F5F6}
+.hc-page .mk-tile{display:grid;place-items:center;width:36px;height:36px;border-radius:9px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E6E7EA;color:#111318}
+.hc-page .mk-tile svg{width:18px;height:18px}
+.hc-page .mk-rt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.hc-page .mk-rn{font-size:14px;font-weight:600}
+.hc-page .mk-rs{font-size:12px;color:#8A8F98}
+.hc-page .mk-box{display:grid;place-items:center;width:20px;height:20px;border-radius:5px;box-shadow:inset 0 0 0 1.5px #D5D7DB}
+.hc-page .mk-row.is-on .mk-box{background:#111318;box-shadow:none}
+.hc-page .mk-box svg{width:14px;height:14px}
+.hc-page .mk--table{padding:0;overflow:hidden}
+.hc-page .mk-tr{display:grid;grid-template-columns:1.25fr 1fr 1.3fr;border-top:1px solid #E6E7EA}
+.hc-page .mk-tr--h{border-top:0}
+.hc-page .mk-th{padding:12px 14px;font-size:12.5px;color:#8A8F98;border-left:1px solid #E6E7EA}
+.hc-page .mk-td{display:flex;align-items:center;gap:9px;padding:10px 14px;border-left:1px solid #E6E7EA;min-width:0}
+.hc-page .mk-th:first-child,.hc-page .mk-td:first-child{border-left:0}
+.hc-page .mk-av{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:600;color:#111318;flex-shrink:0}
+.hc-page .mk-nm{font-weight:600;white-space:nowrap}
+.hc-page .mk-pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:999px;box-shadow:inset 0 0 0 1px #E6E7EA}
+.hc-page .mk-pill svg{width:13px;height:13px}
+.hc-page .mk-st{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;box-shadow:inset 0 0 0 1px #E6E7EA;font-size:12.5px;color:#6B7079;white-space:nowrap}
+.hc-page .mk-st i{width:6px;height:6px;border-radius:50%}
+.hc-page .mk-hero{display:flex;align-items:center;gap:14px;padding:14px;margin:0 0 6px;border-radius:14px;background:#F4F5F6}
+.hc-page .mk-big{display:grid;place-items:center;width:52px;height:52px;border-radius:11px;background:#FFFFFF;flex-shrink:0}
+.hc-page .mk-ht{font-size:18px;font-weight:400;letter-spacing:-.01em}
+.hc-page .mk-hd{font-size:13px;line-height:1.4;color:#8A8F98}
+.hc-page .mk-wave{display:flex;align-items:center;justify-content:center;gap:3px}
+.hc-page .mk-wave i{display:block;width:3px;height:22px;border-radius:2px;background:#009CBD;transform:scaleY(.4);animation:mkWave 1.1s ease-in-out infinite;animation-delay:calc(var(--k) * -.18s)}
+.hc-page .mk-kv{display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px solid #E6E7EA;font-weight:600}
+.hc-page .mk-kv svg{width:18px;height:18px}
+.hc-page .mk-kvv{margin-left:auto;font-weight:600}
+.hc-page .mk-kvv em{color:#A3A8B0;font-weight:500;letter-spacing:.02em}
+.hc-page .mk-btn{display:grid;place-items:center;height:44px;margin-top:14px;border-radius:9px;background:#111318;color:#FFFFFF;font-weight:600}
+.hc-page .mk .mk-opt{display:none}
+.hc-page .mk.mk-arm{opacity:0;translate:0 18px;transition:opacity .6s ease,translate .9s cubic-bezier(.16,.72,.24,1)}
+.hc-page .mk.mk-arm.in{opacity:1;translate:0 0}
+.hc-page .mk.mk-arm .mk-row,.hc-page .mk.mk-arm .mk-tr,.hc-page .mk.mk-arm .mk-f,.hc-page .mk.mk-arm .mk-ed,.hc-page .mk.mk-arm .mk-foot,.hc-page .mk.mk-arm .mk-hero,.hc-page .mk.mk-arm .mk-kv,.hc-page .mk.mk-arm .mk-btn{opacity:0;translate:0 6px;transition:opacity .45s ease,translate .6s cubic-bezier(.16,.72,.24,1)}
+.hc-page .mk.mk-arm.in .mk-row,.hc-page .mk.mk-arm.in .mk-tr,.hc-page .mk.mk-arm.in .mk-f,.hc-page .mk.mk-arm.in .mk-ed,.hc-page .mk.mk-arm.in .mk-foot,.hc-page .mk.mk-arm.in .mk-hero,.hc-page .mk.mk-arm.in .mk-kv,.hc-page .mk.mk-arm.in .mk-btn{opacity:1;translate:0 0}
+.hc-page .mk.in :is(.mk-row,.hc-page .mk-tr,.hc-page .mk-f,.hc-page .mk-ed,.hc-page .mk-foot,.hc-page .mk-hero,.hc-page .mk-kv,.hc-page .mk-btn):nth-child(2){transition-delay:.12s}
+.hc-page .mk.in :is(.mk-row,.hc-page .mk-tr,.hc-page .mk-f,.hc-page .mk-ed,.hc-page .mk-foot,.hc-page .mk-hero,.hc-page .mk-kv,.hc-page .mk-btn):nth-child(3){transition-delay:.22s}
+.hc-page .mk.in :is(.mk-row,.hc-page .mk-tr,.hc-page .mk-f,.hc-page .mk-ed,.hc-page .mk-foot,.hc-page .mk-hero,.hc-page .mk-kv,.hc-page .mk-btn):nth-child(4){transition-delay:.32s}
+.hc-page .mk.in :is(.mk-row,.hc-page .mk-tr,.hc-page .mk-f,.hc-page .mk-ed,.hc-page .mk-foot,.hc-page .mk-hero,.hc-page .mk-kv,.hc-page .mk-btn):nth-child(5){transition-delay:.42s}
+.hc-page .mk [data-in].is-off{display:none !important}
+.hc-page .mk-swap{display:inline}
+.hc-page .mk-pop{animation:mkPop .45s cubic-bezier(.16,.72,.24,1)}
+.hc-page .mk-row{transition:background-color .3s ease}
+.hc-page .mk-row:not(.is-on){background:transparent}
+.hc-page .mk-row .mk-box{transition:background-color .25s ease,box-shadow .25s ease}
+.hc-page .mk-row:not(.is-on) .mk-box{background:transparent;box-shadow:inset 0 0 0 1.5px #D5D7DB}
+.hc-page .mk-row:not(.is-on) .mk-box svg{opacity:0}
+.hc-page .mk-row.is-on .mk-box svg{opacity:1;transition:opacity .25s ease .05s}
+.hc-page .mk-big > span{display:grid;place-items:center}
+.hc-page .mk-big svg{width:26px;height:26px}
+.hc-page .mk-hd{min-height:2.8em}
+.hc-page .mk-big > .mk-wave{display:flex;align-items:center;justify-content:center;gap:3px}
+.hc-page .mk-big > .mk-wave.is-off{display:none !important}
+.hc-page .mk-who{display:inline-flex;align-items:center;gap:9px}
+.hc-page .mk-meter{display:block;width:84px;height:6px;border-radius:3px;background:#ECEDEF;overflow:hidden}
+.hc-page .mk-meter b{display:block;height:100%;border-radius:3px;background:#111318;transition:width .6s cubic-bezier(.16,.72,.24,1)}
+.hc-page .mk-meter.mk-pop b{animation:mkGrow .7s cubic-bezier(.16,.72,.24,1)}
+.hc-page .mk--prompt{padding:22px 22px 20px}
+.hc-page .mk-q{display:block;min-height:2.8em;margin:0 0 22px;font-size:17px;line-height:1.4;color:#111318}
+.hc-page .mk-acts{display:flex;align-items:center;gap:10px}
+.hc-page .mk-ob{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:10px;box-shadow:inset 0 0 0 1px #E6E7EA;font-weight:600}
+.hc-page .mk-ob svg{width:17px;height:17px}
+.hc-page .mk-go{display:grid;place-items:center;width:44px;height:44px;margin-left:auto;border-radius:10px;background:#111318;color:#FFFFFF}
+.hc-page .mk-go svg{width:20px;height:20px}
+.hc-page .mk--one .mk-row .mk-tile{position:relative}
+@keyframes mkWave{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+@keyframes mkPop{from{opacity:0;transform:translateY(4px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes mkGrow{from{width:0}}
+@media (prefers-reduced-motion:reduce){
+.hc-page .mk-wave i{animation:none;transform:scaleY(.7)}
+}
+@media (prefers-reduced-motion:reduce){
+.hc-page .mk-pop{animation:none}
+}
+
+/* ═══ The Stagwell AI suite — a compact rail of stills, each with its live panel ═════════════════ */
+.hc-page .hcs{background:var(--hc-ground);padding-block:clamp(56px,6vw,92px);overflow:hidden}
+.hc-page .hcs__head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+  max-width:1180px;margin-inline:auto;padding-inline:clamp(20px,4vw,40px)}
+.hc-page .hcs__eb{font-family:var(--ui);font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--hc-quiet);margin:0 0 12px}
+.hc-page .hcs__h{font-family:var(--hc-serif);font-weight:400;font-size:clamp(34px,1rem + 2.9vw,58px);
+  line-height:1.1;color:var(--ink);margin:0}
+.hc-page .hcs__all{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.hc-page .hcs__all svg{width:17px;height:17px}
+/* the rail itself: it runs off the right edge, as in the reference */
+.hc-page .hcs__rail{display:flex;gap:16px;list-style:none;margin:clamp(26px,3vw,40px) 0 0;
+  padding:0 clamp(20px,4vw,40px);max-width:1260px;margin-inline:auto;
+  overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.hc-page .hcs__rail::-webkit-scrollbar{display:none}
+.hc-page .hcs__rail > li{flex:0 0 clamp(240px,23vw,300px);scroll-snap-align:start}
+.hc-page .hcs__rail::after{content:'';flex:0 0 clamp(20px,4vw,40px)}
+.hc-page .hcs__card{display:flex;flex-direction:column;height:100%;text-decoration:none;color:var(--ink)}
+.hc-page .hcs__media{position:relative;display:block;aspect-ratio:3/4;border-radius:14px;overflow:hidden;
+  background:#E9E9E5}
+.hc-page .hcs__media img{width:100%;height:100%;object-fit:cover;display:block}
+.hc-page .hcs__desc{display:block;font-family:var(--ui);font-size:14.5px;line-height:1.55;
+  color:var(--hc-quiet);margin:14px 0 0}
+.hc-page .hcs__go{display:inline-flex;align-items:center;gap:7px;font-family:var(--ui);font-size:13px;
+  font-weight:600;color:var(--ink);margin:10px 0 0}
+.hc-page .hcs__go svg{width:15px;height:15px;transition:transform .2s ease}
+.hc-page .hcs__card:hover .hcs__go svg{transform:translateX(3px)}
+/* the panels ride smaller here than on B, so the picture still reads */
+.hc-page .hcs__media .mk{width:400px;padding:14px;border-radius:14px;transform-origin:left bottom}
+.hc-page .hcs__nav{display:flex;gap:10px;max-width:1180px;margin:22px auto 0;
+  padding-inline:clamp(20px,4vw,40px)}
+.hc-page .hcs__round{width:44px;height:44px;border-radius:999px;display:grid;place-items:center;
+  background:transparent;color:var(--ink);border:1px solid rgba(11,18,32,.22);cursor:pointer;
+  transition:background .2s ease,border-color .2s ease}
+.hc-page .hcs__round:hover{background:#FFFFFF;border-color:rgba(11,18,32,.34)}
+.hc-page .hcs__round svg{width:19px;height:19px}
+@media (max-width:760px){
+  .hc-page .hcs__head{flex-direction:column;align-items:flex-start;gap:14px}
+  .hc-page .hcs__rail > li{flex:0 0 78vw}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════
+   One type rule, one rhythm, one arrow.
+   · the serif belongs to the chat: the hero and the closing ask. Every other title runs in the sans
+   · every section between the film and the footer breathes by the same measure
+   · the cards carry their own ground, and the section title starts on the first card's edge
+   ═══════════════════════════════════════════════════════════════════════════════════════════════ */
+body.hc-page{--hc-rhythm:clamp(64px,6.6vw,104px)}
+
+/* ── type ─────────────────────────────────────────────────────────────────────────────────────── */
+.hc-page .display,.hc-page .display *,.hc-page .hc-port__h,.hc-page .hcs__h,
+.hc-page .hc-port__eb,.hc-page .hcs__desc{font-family:var(--ui) !important}
+.hc-page .display{letter-spacing:-.025em;font-weight:500 !important}
+.hc-page .display *{font-weight:500 !important}
+.hc-page .hero .display,.hc-page .hero .display *,
+.hc-page .chat-over__title,.hc-page .chat-over__title *,
+.hc-page .ask-end .display,.hc-page .ask-end .display *{font-family:var(--hc-serif) !important;
+  font-weight:400 !important;letter-spacing:-.015em}
+.hc-page .hc-port__h{font-weight:500;letter-spacing:-.02em}
+
+/* ── rhythm ───────────────────────────────────────────────────────────────────────────────────── */
+.hc-page .intro,.hc-page .hc-port,.hc-page .why,.hc-page .hcs,.hc-page .ask-end{
+  padding-top:var(--hc-rhythm) !important;padding-bottom:var(--hc-rhythm) !important}
+.hc-page .hc-port .display--port,.hc-page .why .display--cos,.hc-page .hcs__head{
+  margin-bottom:clamp(28px,3vw,44px) !important}
+
+/* ── the suite, read from the reference: flat cards on their own ground ───────────────────────── */
+.hc-page .hcs__head,.hc-page .hcs__nav{max-width:1180px;margin-inline:auto;
+  padding-inline:clamp(20px,4vw,40px)}
+.hc-page .hcs__h{text-align:left}
+/* the rail starts on the head's left edge and runs off the right, as in the reference */
+.hc-page .hcs__rail{max-width:none;margin-inline:0;width:100%;
+  padding-left:max(clamp(20px,4vw,40px),calc((100% - 1180px) / 2 + clamp(20px,4vw,40px)));
+  padding-right:0;margin-top:0}
+.hc-page .hcs__card{background:#EFEFEC;border-radius:14px;padding:14px 14px 18px;height:100%;
+  transition:background .2s ease}
+.hc-page .hcs__card:hover{background:#E8E8E3}
+.hc-page .hcs__media{border-radius:10px}
+.hc-page .hcs__desc{margin:14px 2px 0}
+.hc-page .hcs__go{margin:12px 2px 0}
+.hc-page .hcs__nav{margin-top:22px}
+
+/* ── one arrow system: round outlined buttons, under the thing they move ──────────────────────── */
+.hc-page .hc-port__nav{position:static;width:44px;height:44px;border-radius:999px;
+  background:transparent;color:var(--ink);border:1px solid rgba(11,18,32,.22);
+  transition:background .2s ease,border-color .2s ease}
+.hc-page .hc-port__nav:hover{background:#FFFFFF;border-color:rgba(11,18,32,.34)}
+.hc-page .hc-port__arrows{display:flex;gap:10px;margin-top:18px}
+
+/* ── the tabs move on their own: the ink fills the live one, then it hands over ────────────────── */
+.hc-page .hc-port__tab{position:relative;z-index:0;overflow:hidden;border-radius:8px;isolation:isolate}
+.hc-page .hc-port__all{border-radius:8px}
+.hc-page .hc-port__tab::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--ink);
+  transform:scaleX(0);transform-origin:left center}
+.hc-page .hc-port__tab.is-on{background:transparent;border-color:var(--ink);color:#FFFFFF}
+.hc-page .hc-port__tab.is-on::before{transform:scaleX(1)}
+.hc-page .hc-port__tab.is-on.is-timing::before{animation:hcFill var(--hc-dwell,6s) linear forwards}
+.hc-page .hc-port__tab:not(.is-on)::before{transform:scaleX(0)}
+@keyframes hcFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hc-port__tab.is-on.is-timing::before{animation:none;transform:scaleX(1)}
+}
+
+/* the live tab fills with a soft grey, as in the reference — not ink */
+.hc-page .hc-port__tab{background:#FFFFFF;border-color:rgba(11,18,32,.12);color:var(--ink)}
+.hc-page .hc-port__tab:hover{background:#F2F2EF;border-color:rgba(11,18,32,.2)}
+.hc-page .hc-port__tab::before{background:#DCDCD7}
+.hc-page .hc-port__tab.is-on{background:#FFFFFF;border-color:rgba(11,18,32,.12);color:var(--ink)}
+.hc-page .hc-port__all{background:#FFFFFF;border-color:rgba(11,18,32,.12)}
+/* the two arrows sit in the picture's corners again, quiet over the still */
+.hc-page .hc-port__nav{position:absolute;bottom:clamp(14px,2vw,26px);width:56px;height:42px;
+  border-radius:0;border:0;background:rgba(235,235,232,.55);color:#FFFFFF;backdrop-filter:blur(2px)}
+.hc-page .hc-port__nav:hover{background:rgba(235,235,232,.78);border:0}
+.hc-page .hc-port__nav--prev{left:clamp(14px,2vw,26px)}
+.hc-page .hc-port__nav--next{right:clamp(14px,2vw,26px)}
+
+/* Products runs the full width of the screen, as in the reference */
+.hc-page .hc-port > .wrap{max-width:none !important;width:100% !important;
+  padding-inline:clamp(14px,2.2vw,28px) !important;margin-inline:0 !important}
+.hc-page .hc-port__stage{aspect-ratio:auto;height:clamp(420px,64vh,720px)}
+.hc-page .hc-port__cap{max-width:min(620px,52%)}
+@media (max-width:760px){
+  .hc-page .hc-port__stage{height:clamp(380px,58vh,520px)}
+  .hc-page .hc-port__cap{max-width:none}
+}
+.hc-page .hc-port__h{text-wrap:balance}
+
+/* ── the voice chip: it is a spoken turn, not a typed one, so it says so and carries the logo's
+      middle colour (the teal bar), the way the reference chip carries its blue ─────────────────── */
+.hc-page .askbox__voice{height:36px;padding:0 14px 0 12px;gap:8px;border-radius:999px;
+  background:rgba(0,156,189,.09) !important;border:1px solid rgba(0,156,189,.42) !important;
+  color:var(--teal) !important;font-weight:600}
+.hc-page .askbox__voice svg{width:16px;height:16px;color:var(--teal)}
+.hc-page .askbox__voice:hover{background:rgba(0,156,189,.16) !important;
+  border-color:rgba(0,156,189,.6) !important}
+.hc-page .askbox__voice.is-live{background:var(--teal) !important;border-color:var(--teal) !important;
+  color:#FFFFFF !important}
+.hc-page .askbox__voice.is-live svg{color:#FFFFFF}
+
+/* ═══ one arrow, one disc: the chat's send button is the model ═══════════════════════════════════ */
+/* the page sits on a whiter ground; the cells keep their step away from it */
+body.hc-page{--hc-ground:#FBFBFA;--hc-edge:#E7E7E3}
+.hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .hcs__card{background:#F1F1ED !important}
+.hc-page .hcs__card:hover{background:#EAEAE5 !important}
+.hc-page .hc-port__tab,.hc-page .hc-port__tab.is-on,.hc-page .hc-port__all{background:#FFFFFF}
+
+/* the two movers on the picture, and the rail's, are the chat's disc */
+.hc-page .hc-port__nav,.hc-page .hcs__round{width:44px;height:44px;border-radius:50% !important;
+  border:0 !important;background:var(--ink) !important;color:#FFFFFF !important;backdrop-filter:none;
+  display:grid;place-items:center;transition:background .2s ease,transform .2s ease}
+.hc-page .hc-port__nav:hover,.hc-page .hcs__round:hover{background:#000000 !important;color:#FFFFFF !important}
+.hc-page .hc-port__nav svg,.hc-page .hcs__round svg{width:19px;height:19px}
+
+/* the link mark sits in the container's top right, not inside the sentence */
+.hc-page .hc-port__cap{position:absolute;padding-right:clamp(44px,4vw,58px)}
+.hc-page .hc-port__cap .hc-port__arw{position:absolute;top:16px;right:16px;width:19px;height:19px;
+  margin:0;color:rgba(255,255,255,.9);transition:transform .2s ease}
+.hc-page .hc-port__cap:hover .hc-port__arw{transform:translate(2px,-2px)}
+
+/* the suite's stills stand shorter */
+.hc-page .hcs__media{aspect-ratio:1 / 1}
+
+/* the rail's snap was landing on the container edge, which ate the left inset — snap to the same
+   line the title starts on */
+.hc-page .hcs__rail{scroll-padding-left:max(clamp(20px,4vw,40px),calc((100% - 1180px) / 2 + clamp(20px,4vw,40px)))}
+
+/* the cards run wider, so the words take fewer lines and the cells stand shorter */
+.hc-page .why > .wrap{max-width:1300px}
+.hc-page .why__d,.hc-page .why__d--lead{max-width:64ch}
+/* the mark reads at its proper size, and never on a plate */
+.hc-page .why__ic{width:28px !important;height:28px !important;background:none !important}
+.hc-page .why__ic svg{width:26px;height:26px}
+.hc-page .why__head{gap:12px;margin-bottom:14px}
+
+/* the still behind Products stands taller */
+.hc-page .hc-port__stage{height:clamp(460px,72vh,820px)}
+@media (max-width:760px){.hc-page .hc-port__stage{height:clamp(380px,58vh,520px)}}
+/* no eyebrows above these two: the title carries the section on its own */
+.hc-page .hc-port .port__eyebrow,.hc-page .hcs__eb{display:none !important}
+
+/* ═══ while the film holds the screen: its own controls, and the word to keep going ══════════════ */
+.hc-page .intro__ctl,.hc-page .intro__more{position:absolute;z-index:3;opacity:0;visibility:hidden;
+  transition:opacity .35s ease,visibility .35s ease}
+.hc-page .intro__stage.is-full .intro__ctl,.hc-page .intro__stage.is-full .intro__more{opacity:1;visibility:visible}
+.hc-page .intro__ctl{right:clamp(16px,2.4vw,32px);bottom:clamp(16px,2.4vw,32px);display:flex;gap:10px}
+.hc-page .intro__btn{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;
+  background:var(--ink);color:#FFFFFF;cursor:pointer;transition:background .2s ease}
+.hc-page .intro__btn:hover{background:#000000}
+.hc-page .intro__btn svg{width:20px;height:20px}
+.hc-page .intro__btn .intro__on{display:none}
+.hc-page .intro__btn[aria-pressed="true"] .intro__off{display:none}
+.hc-page .intro__btn[aria-pressed="true"] .intro__on{display:block}
+.hc-page .intro__more{left:50%;transform:translateX(-50%);bottom:clamp(74px,11vh,120px);margin:0;
+  display:flex;flex-direction:column;align-items:center;gap:6px;color:#FFFFFF;font-family:var(--ui);
+  font-size:12px;letter-spacing:1.6px;text-transform:uppercase}
+.hc-page .intro__more svg{width:22px;height:22px;animation:hcNudge 2.1s ease-in-out infinite}
+@keyframes hcNudge{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
+@media (prefers-reduced-motion:reduce){.hc-page .intro__more svg{animation:none}}
+
+/* ═══ the closing call: one panel, no chat ══════════════════════════════════════════════════════
+   The words and the buttons are the ones that were already here; the form and its dot field are
+   gone, and they sit on a panel that runs from near-black into the logo's teal. */
+.hc-page .ask-end{background:var(--hc-ground);padding-block:clamp(48px,5vw,80px) !important}
+.hc-page .ask-end #endThink,.hc-page .ask-end .ask-mini{display:none !important}
+.hc-page .ask-end .wrap.ask-end__in{max-width:1240px;margin-inline:auto;
+  padding:clamp(56px,8vw,110px) clamp(24px,5vw,64px);border-radius:24px;text-align:center;
+  background:linear-gradient(105deg,#05080C 0%,#071A28 38%,#00506A 72%,#009CBD 100%)}
+.hc-page .ask-end .display--end,.hc-page .ask-end .display--end *{color:#FFFFFF !important;
+  font-size:clamp(34px,1rem + 2.9vw,58px) !important;font-weight:400 !important;margin:0 !important}
+.hc-page .ask-end .ask-end__lede{color:rgba(255,255,255,.78) !important;font-family:var(--ui);
+  font-size:16px;margin:14px 0 0 !important}
+.hc-page .ask-end .ask-end__acts{display:flex;justify-content:center;margin-top:clamp(24px,3vw,36px)}
+.hc-page .ask-end .ask-end__ways{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+/* on the panel the main call is the white pill, the quiet one is outlined in white */
+.hc-page .ask-end .btn--ink{background:#FFFFFF !important;color:var(--ink) !important}
+.hc-page .ask-end .btn--ink:hover{background:rgba(255,255,255,.88) !important}
+.hc-page .ask-end .call__btn{background:transparent !important;color:#FFFFFF !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55) !important}
+.hc-page .ask-end .call__btn:hover{background:rgba(255,255,255,.14) !important;color:#FFFFFF !important}
+.hc-page .ask-end .call__form,.hc-page .ask-end .call__done{color:var(--ink)}
+.hc-page .ask-end .ask-end__ways .btn,.hc-page .ask-end .call{width:auto !important;flex:0 0 auto}
+.hc-page .ask-end .ask-end__ways{width:auto;max-width:none}
+
+/* the rail sits out near the page's own edge again, not tucked in to the title's measure */
+.hc-page .hcs__rail{padding-left:clamp(20px,6vw,120px) !important;
+  scroll-padding-left:clamp(20px,6vw,120px) !important}
+.hc-page .hcs__nav{padding-left:clamp(20px,6vw,120px);max-width:none;margin-inline:0}
+
+/* the closing panel: the line goes, the two calls stay shoulder to shoulder, and the dark end of
+   the sweep is blue rather than black */
+.hc-page .ask-end .ask-end__lede{display:none !important}
+.hc-page .ask-end .wrap.ask-end__in{
+  background:linear-gradient(105deg,#041634 0%,#063056 34%,#00618A 70%,#009CBD 100%)}
+.hc-page .ask-end .ask-end__ways{flex-wrap:nowrap}
+.hc-page .ask-end .ask-end__acts{margin-top:clamp(26px,3.2vw,40px)}
+@media (max-width:560px){.hc-page .ask-end .ask-end__ways{flex-wrap:wrap}}
+
+/* ── the film's controls belong to the film, not only to its full-screen moment ────────────────── */
+.hc-page .intro__ctl,.hc-page .intro__more{opacity:1;visibility:visible}
+.hc-page .intro__more{bottom:clamp(18px,3vh,34px)}
+.hc-page .intro__stage.is-full .intro__more{bottom:clamp(74px,11vh,120px)}
+
+/* ── Why: wider cells, softer corners, and the words starting where the title starts ───────────── */
+.hc-page .why > .wrap{max-width:1400px}
+.hc-page .why__item,.hc-page .why__item:nth-child(even){border-radius:18px !important;
+  padding:clamp(26px,2.2vw,34px) clamp(26px,2.4vw,38px) !important;overflow:hidden}
+.hc-page .why__ic{background:none !important;background-color:transparent !important;
+  box-shadow:none !important;border-radius:0 !important}
+.hc-page .why__ic svg{background:none !important}
+.hc-page .why__d,.hc-page .why__d--lead{padding-left:40px !important;max-width:70ch}
+
+/* ── the suite's words sit on the picture's own edge ───────────────────────────────────────────── */
+.hc-page .hcs__desc,.hc-page .hcs__go{margin-left:0;margin-right:0}
+
+/* ── the closing panel keeps its two calls shoulder to shoulder at any width worth it ──────────── */
+.hc-page .ask-end .ask-end__ways{display:flex !important;flex-direction:row !important;
+  align-items:center;justify-content:center}
+
+/* ═══ one button size, everywhere, a step smaller ════════════════════════════════════════════════ */
+.hc-page .btn,.hc-page .btn--lg,.hc-page .call__btn,.hc-page .call,
+.hc-page .ask-end .ask-end__ways .btn{height:42px !important}
+.hc-page .btn,.hc-page .btn--lg{padding:0 20px !important;font-size:13.5px !important;
+  letter-spacing:.01em}
+.hc-page .hc-port__tab,.hc-page .hc-port__all{height:38px;line-height:38px;font-size:13.5px}
+.hc-page .nav .btn--ink{height:42px !important;font-size:13.5px !important}
+.hc-page .hcs__all{height:42px !important}
+
+/* ── the header: no chat icon, Book a demo and Call me ─────────────────────────────────────────── */
+.hc-page .nav__search{display:none !important}
+.hc-page .call--nav{position:relative}
+.hc-page .call--nav .call__btn{background:transparent !important;color:var(--ink) !important;
+  box-shadow:inset 0 0 0 1px rgba(11,18,32,.24) !important}
+.hc-page .call--nav .call__btn:hover{background:#FFFFFF !important}
+.hc-page .nav.on-film .call--nav .call__btn{color:#FFFFFF !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55) !important}
+@media (max-width:900px){.hc-page .call--nav{display:none}}
+
+/* ── the way back into the chat, once the hero's chat has gone ─────────────────────────────────── */
+.hc-launch{position:fixed;right:clamp(14px,2vw,26px);bottom:clamp(14px,2vw,26px);z-index:60;
+  display:flex;flex-direction:column;align-items:flex-end;gap:10px;max-width:min(340px,86vw);
+  opacity:0;transform:translateY(14px) scale(.96);transform-origin:100% 100%;
+  transition:opacity .38s cubic-bezier(.16,.72,.24,1),transform .38s cubic-bezier(.16,.72,.24,1)}
+.hc-launch.is-on{opacity:1;transform:none}
+.hc-launch__say{margin:0;padding:14px 16px;border-radius:16px 16px 4px 16px;background:#FFFFFF;
+  box-shadow:inset 0 0 0 1px var(--hc-edge);font-family:var(--ui);font-size:14px;line-height:1.5;
+  color:var(--ink);opacity:0;transform:translateY(8px);
+  transition:opacity .35s ease .12s,transform .35s ease .12s}
+.hc-launch.is-on .hc-launch__say{opacity:1;transform:none}
+.hc-launch__btn{display:inline-flex;align-items:center;gap:9px;height:46px;padding:0 20px;
+  border:0;border-radius:999px;cursor:pointer;background:var(--ink);color:#FFFFFF;
+  font-family:var(--ui);font-size:14px;font-weight:600;
+  transition:background .2s ease,transform .2s ease}
+.hc-launch__btn:hover{background:#000000;transform:translateY(-1px)}
+.hc-launch__btn svg{width:18px;height:18px;color:var(--teal)}
+@media (max-width:560px){.hc-launch__say{display:none}}
+@media (prefers-reduced-motion:reduce){
+  .hc-launch,.hc-launch__say{transition:none}
+}
+
+
+/* ═══ the suite: title on the cards' line, and the rail greets you with a drift ══════════════════ */
+.hc-page .hcs__head,.hc-page .hcs__nav{max-width:none;margin-inline:0;
+  padding-left:clamp(20px,6vw,120px);padding-right:clamp(20px,4vw,40px)}
+/* the launcher owns the bottom right, so the film's controls take the left corner */
+.hc-page .intro__ctl{right:auto;left:clamp(16px,2.4vw,32px)}
+
+/* ═══ the two faces, settled: Roobert sets the titles, Montserrat carries everything else ═══════ */
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Light.ttf') format('truetype');font-weight:300;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Bold.ttf') format('truetype');font-weight:600 700;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Heavy.ttf') format('truetype');font-weight:800 900;font-display:swap}
+body.hc-page{--hc-title:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif}
+.hc-page .display,.hc-page .display *,
+.hc-page .hero .display,.hc-page .hero .display *,
+.hc-page .chat-over__title,.hc-page .chat-over__title *,
+.hc-page .ask-end .display,.hc-page .ask-end .display *,
+.hc-page .hc-port__h,.hc-page .hcs__h,.hc-page .why__t,
+.hc-page .display--intro,.hc-page .display--intro *{font-family:var(--hc-title) !important;
+  font-weight:400 !important;letter-spacing:-.02em}
+.hc-page .why__t{font-weight:600 !important}
+
+/* ═══ the film carries nothing but the film, and the one word to keep going ═════════════════════ */
+.hc-page .intro__over{display:none !important}
+.hc-page .intro__media::after{background-image:radial-gradient(rgba(8,10,14,.4) 1px,transparent 1.1px),
+  linear-gradient(180deg,rgba(11,11,12,.14) 0%,rgba(11,11,12,.18) 55%,rgba(11,11,12,.34) 100%)}
+.hc-page .intro__more{bottom:clamp(18px,3vh,34px)}
+.hc-page .intro__stage.is-full .intro__more{bottom:clamp(40px,6vh,70px)}
+
+/* the launcher steps aside while the film holds the screen, and its bubble says its piece once */
+.hc-page .intro__stage.is-full ~ * .hc-launch,.hc-launch.is-away{opacity:0 !important;
+  transform:translateY(14px) scale(.96) !important;pointer-events:none}
+.hc-launch__say.is-gone{opacity:0;transform:translateY(6px);pointer-events:none;
+  max-height:0;padding-block:0;margin-bottom:-10px;overflow:hidden;
+  transition:opacity .3s ease,transform .3s ease,max-height .3s ease,padding .3s ease,margin .3s ease}
+/* nothing over the film now that it carries its own words: no veil, no dots */
+.hc-page .intro__media::after{display:none !important}
+.hc-page .intro__more{text-shadow:0 1px 10px rgba(0,0,0,.45)}
+
+/* ═══ the footer's mark moves to the left, clear of the launcher ════════════════════════════════ */
+.hc-page .foot__legal{flex-direction:row-reverse;justify-content:flex-end;gap:clamp(16px,3vw,34px)}
+.hc-page .foot__brand{margin-left:0;margin-right:auto}
+.hc-page .foot__band{padding-bottom:clamp(74px,9vh,96px)}   /* room under it for the launcher */
+
+/* ═══ the launcher arrives: it comes in from the side, settles, and then speaks ═════════════════ */
+.hc-launch{transition:none}
+.hc-launch__btn{opacity:0;transform:translateX(120%);
+  transition:opacity .01s linear,transform .01s linear}
+.hc-launch.is-on{opacity:1;transform:none}
+.hc-launch.is-on .hc-launch__btn{opacity:1;transform:none;
+  animation:hcSlideIn .62s cubic-bezier(.2,1.5,.32,1) both}
+.hc-launch.is-on .hc-launch__say{animation:hcSayIn .5s cubic-bezier(.16,.72,.24,1) .42s both}
+@keyframes hcSlideIn{
+  0%{opacity:0;transform:translateX(130%) scale(.96)}
+  62%{opacity:1;transform:translateX(-8px) scale(1.02)}
+  100%{opacity:1;transform:none}}
+@keyframes hcSayIn{
+  0%{opacity:0;transform:translateY(10px) scale(.94);transform-origin:100% 100%}
+  100%{opacity:1;transform:none}}
+/* a ring goes out from the pill the moment it lands, once */
+.hc-launch__btn::after{content:'';position:absolute;inset:0;border-radius:999px;
+  box-shadow:0 0 0 0 rgba(0,156,189,.55);pointer-events:none}
+.hc-launch.is-on .hc-launch__btn::after{animation:hcRing 1.15s ease-out .5s 2}
+@keyframes hcRing{from{box-shadow:0 0 0 0 rgba(0,156,189,.5)}to{box-shadow:0 0 0 16px rgba(0,156,189,0)}}
+.hc-launch__btn{position:relative}
+@media (prefers-reduced-motion:reduce){
+  .hc-launch.is-on .hc-launch__btn,.hc-launch.is-on .hc-launch__say,
+  .hc-launch.is-on .hc-launch__btn::after{animation:none}
+  .hc-launch__btn{opacity:1;transform:none}
+}
+/* full screen means square: the crop does the rounding while it grows, so neither the frame nor
+   the film itself may carry a radius of its own */
+.hc-page .intro__stage.is-cine .intro__media,
+.hc-page .intro__stage.is-cine .intro__pic{border-radius:0 !important}
+
+/* ═══ Why: the mark keeps its own column, so every line starts under the title ═══════════════════
+   Earlier passes painted the mark's plate with nth-child selectors, which outrank a plain one —
+   hence the colours that kept coming back. These match that weight and clear them for good. */
+.hc-page .why__item,.hc-page .why__item:nth-child(even),
+.hc-page .why__item:nth-child(4n+3){display:grid !important;
+  grid-template-columns:28px minmax(0,1fr) !important;column-gap:12px;row-gap:0;
+  align-content:start;justify-items:start}
+.hc-page .why__item .why__head,.hc-page .why__item:nth-child(even) .why__head{display:contents !important}
+.hc-page .why__item .why__ic,.hc-page .why__item:nth-child(even) .why__ic,
+.hc-page .why__item:nth-child(4n+3) .why__ic{grid-column:1 !important;grid-row:1 !important;
+  background:none !important;background-color:transparent !important;background-image:none !important;
+  box-shadow:none !important;border:0 !important;border-radius:0 !important;
+  width:28px !important;height:28px !important;min-height:0 !important;align-self:center !important;
+  padding:0 !important;margin:0 !important}
+.hc-page .why__item .why__t,.hc-page .why__item:nth-child(even) .why__t{grid-column:2 !important;
+  grid-row:1 !important;align-self:center !important;margin:0 !important;padding:0 !important}
+.hc-page .why__item .why__d,.hc-page .why__item .why__d--lead,
+.hc-page .why__item:nth-child(even) .why__d,.hc-page .why__item:nth-child(even) .why__d--lead{
+  grid-column:2 !important;grid-row:auto !important;padding:0 !important;margin:14px 0 0 !important}
+.hc-page .why__item .why__d--lead{margin-top:16px !important}
+.hc-page .why__item .why__d + .why__d{margin-top:10px !important}
+/* proximity, not mandatory: a horizontal rail that snaps hard fights the page's own scrolling */
+.hc-page .hcs__rail{scroll-snap-type:x proximity}
+/* the launcher rides above the film, never behind it */
+.hc-launch{z-index:80}
+.hc-page .intro__stage.is-cine .intro__media{z-index:1}
+.hc-launch.is-away{opacity:1 !important;transform:none !important;pointer-events:auto}
+
+/* the message keeps its place beside the pill; only the reader can send it away */
+.hc-launch{position:fixed}
+.hc-launch__say{position:relative;padding-right:34px}
+.hc-launch__x{position:absolute;top:8px;right:8px;width:20px;height:20px;display:grid;place-items:center;
+  border:0;background:none;color:var(--hc-quiet);cursor:pointer;opacity:0;transition:opacity .2s ease}
+.hc-launch:hover .hc-launch__x,.hc-launch__x:focus-visible{opacity:1}
+.hc-launch__x svg{width:13px;height:13px}
+.hc-launch.is-on .hc-launch__say:not(.is-gone){opacity:1;visibility:visible}
+@media (max-width:420px){.hc-launch__say{display:none}}
+@media (min-width:421px) and (max-width:560px){.hc-launch__say{display:block}}
+
+/* the message carries the voice mark and a narrower invitation */
+.hc-launch__say{display:flex;align-items:flex-start;gap:10px}
+.hc-launch__mic{width:18px;height:18px;flex:0 0 auto;margin-top:1px;color:var(--teal)}
+
+/* ═══ the full-screen chat reads exactly like the hero's ════════════════════════════════════════ */
+.hc-page .chat-over{background:var(--hc-ground) !important}
+.hc-page .chat-over__in{max-width:900px}
+.hc-page .chat-over__title{text-align:center}
+.hc-page .chat-over .ask__lede{font-family:var(--ui);font-size:16px;color:var(--hc-quiet);
+  text-align:center;margin:14px auto 26px;max-width:56ch}
+.hc-page .chat-over .ask__lede br{display:none}
+/* the field is the hero's box: one hairline, ink disc, room to breathe */
+.hc-page .chat-over .ask__field{border-radius:18px;background:var(--hc-card);
+  box-shadow:inset 0 0 0 1px var(--hc-edge);min-height:118px;padding:20px 20px 14px;
+  display:grid;grid-template-columns:minmax(0,1fr) 42px;align-items:end}
+.hc-page .chat-over .ask__field:focus-within{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34)}
+.hc-page .chat-over .ask__input{grid-column:1;grid-row:1;align-self:start;border:0;background:none;
+  font-family:var(--ui);font-size:17px;color:var(--ink);padding:0;height:auto;min-height:54px}
+.hc-page .chat-over .ask__input::placeholder{color:#9AA0A8}
+.hc-page .chat-over .ask__go{grid-column:2;grid-row:1;align-self:end;width:42px;height:42px;
+  border-radius:50%;background:var(--ink);color:#FFFFFF;border:0;display:grid;place-items:center}
+.hc-page .chat-over .ask__go:hover{background:#000000;color:#FFFFFF}
+.hc-page .chat-over .ask__go svg{width:19px;height:19px}
+/* the starting points as the hero's ghost tags, three and three */
+.hc-page .chat-over .ask__tags{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+  margin:20px auto 0;max-width:760px;padding:0;list-style:none}
+.hc-page .chat-over .ask__tags .tag{height:38px;padding:0 15px;gap:8px;border-radius:999px;
+  background:transparent;border:1px solid rgba(11,18,32,.22);color:var(--ink);
+  font-family:var(--ui);font-size:13.5px;font-weight:500}
+.hc-page .chat-over .ask__tags .tag:hover{background:#FFFFFF;border-color:rgba(11,18,32,.34)}
+.hc-page .chat-over .ask__tags .tag .tag__ic{opacity:.62}
+
+/* the Call me wave: each bar must grow about its own middle. Without transform-box the origin is
+   the SVG's viewBox centre, so the outer bars climbed instead of pulsing in place. */
+.hc-page .btn__ic--wave rect,.hc-page .call__wave rect{transform-box:fill-box;
+  transform-origin:center center}
+.hc-page .btn__ic--wave rect{animation-duration:1s}
+@keyframes hcWave{from{transform:scaleY(.62)}to{transform:scaleY(1.1)}}
+.hc-page .btn__ic--wave rect{animation-name:hcWave}
+
+/* the rail scrolls freely: a snap point is what pulled it back to the start after its greeting */
+.hc-page .hcs__rail{scroll-snap-type:none !important}
+.hc-page .hcs__rail > li{scroll-snap-align:none}
+
+/* Why: the words run the card's full width, so they sit under the mark and take fewer lines */
+.hc-page .why__item .why__d,.hc-page .why__item .why__d--lead,
+.hc-page .why__item:nth-child(even) .why__d,.hc-page .why__item:nth-child(even) .why__d--lead{
+  grid-column:1 / -1 !important;max-width:none !important}
+.hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .why__item:nth-child(4n+3){
+  grid-template-columns:24px minmax(0,1fr) !important;column-gap:10px}
+.hc-page .why__item .why__ic,.hc-page .why__item:nth-child(even) .why__ic,
+.hc-page .why__item:nth-child(4n+3) .why__ic{width:24px !important;height:24px !important}
+.hc-page .why__ic svg{width:22px;height:22px}
+.hc-page .why__item .why__d--lead{margin-top:12px !important}
+.hc-page .why__item .why__d + .why__d{margin-top:8px !important}
+/* the old picture-row pass set gap with !important; this is the gap the cells actually want */
+.hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .why__item:nth-child(4n+3){
+  column-gap:10px !important;row-gap:0 !important;gap:0 10px !important}
+
+/* the mark belongs to the band's own left edge, not to the group at its right: the legal group
+   dissolves so its children become band items, and the mark takes the first place */
+.hc-page .foot__legal{display:contents}
+.hc-page .foot__brand{order:-1;margin:0 auto 0 0}
+.hc-page .foot__copy{order:3}
+.hc-page .foot__social{order:2}
+
+/* the voice round in the full-screen chat: the chip's colours, no words */
+.hc-page .chat-over .ask__field{grid-template-columns:minmax(0,1fr) 42px 42px;column-gap:10px}
+.hc-page .chat-over .chat-over__voice{grid-column:2;grid-row:1;align-self:end;width:42px;height:42px;
+  border-radius:50%;display:grid;place-items:center;cursor:pointer;
+  background:rgba(0,156,189,.09);border:1px solid rgba(0,156,189,.42);color:var(--teal);
+  transition:background .2s ease,border-color .2s ease}
+.hc-page .chat-over .chat-over__voice:hover{background:rgba(0,156,189,.16);border-color:rgba(0,156,189,.6)}
+.hc-page .chat-over .chat-over__voice.is-live{background:var(--teal);border-color:var(--teal);color:#FFFFFF}
+.hc-page .chat-over .chat-over__voice svg{width:19px;height:19px}
+.hc-page .chat-over .ask__go{grid-column:3}
+
+/* no arrows inside the CTAs themselves — the words carry them */
+.hc-page .btn svg:not(.btn__ic):not(.btn__ic--wave),
+.hc-page .btn .btn__caret,
+.hc-page .hcs__all svg{display:none !important}
+.hc-page .btn--go::after{display:none !important}
+/* clean everywhere a call is made: the rail's Explore, the header, the panels */
+.hc-page .hcs__go svg,.hc-page .why__cta svg,.hc-page .menu__acts .btn svg,
+.hc-page .ask-end .btn svg:not(.btn__ic--wave){display:none !important}
+.hc-page .chat-over .ask__tags .tag__br{flex-basis:100%;width:100%;height:0;list-style:none}
+
+/* the suite's stills are square, and each panel sits in the middle of its picture */
+.hc-page .hcs__media{aspect-ratio:1 / 1 !important}
+.hc-page .hcs__media .mk{left:50%;top:50%;bottom:auto;transform-origin:center center}
+.hc-page .hcs__media .mk.mk-arm{translate:0 12px}
+.hc-page .hcs__media .mk.mk-arm.in{translate:0 0}
+
+/* the suite's panels stand about 15% shorter: the same rows, less air in them */
+.hc-page .hcs__media .mk{padding:12px 14px}
+.hc-page .hcs__media .mk-t{font-size:16px;margin:0 0 9px}
+.hc-page .hcs__media .mk-th{padding:8px 12px}
+.hc-page .hcs__media .mk-td{padding:7px 12px}
+.hc-page .hcs__media .mk-row,.hc-page .hcs__media .mk-f,
+.hc-page .hcs__media .mk-foot,.hc-page .hcs__media .mk-kv{padding-block:7px}
+
+/* the last band keeps to the left: the launcher owns the bottom right of the page, so nothing
+   that has to be read may sit there */
+.hc-page .foot__band{justify-content:flex-start !important;gap:clamp(18px,3vw,44px);
+  flex-wrap:wrap;padding-right:clamp(220px,22vw,320px)}
+.hc-page .foot__brand{order:-1;margin:0 !important}
+.hc-page .foot__social{order:2;margin:0 !important}
+.hc-page .foot__copy{order:3;margin:0 !important}
+@media (max-width:760px){
+  .hc-page .foot__band{padding-right:clamp(20px,5vw,40px)}
+}
+
+/* ═══ the suite drops its photographs: each card is a pastel field in the brand's own tones ══════ */
+.hc-page .hcs__media img{display:none !important}
+.hc-page .hcs__media{background:#F0EFEA}
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media{
+  background:linear-gradient(150deg,#FFE7D8 0%,#FFD9C2 100%)}   /* orange, pastel */
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media{
+  background:linear-gradient(150deg,#DCEFF6 0%,#C4E4EE 100%)}   /* blue, pastel */
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{
+  background:linear-gradient(150deg,#FFF3D2 0%,#FFE9B4 100%)}   /* yellow, pastel */
+/* the panel keeps its white so it reads on every tone */
+.hc-page .hcs__media .mk{background:#FFFFFF}
+
+/* ═══ the suite, two tones and no more: a white card, a pastel block ════════════════════════════ */
+.hc-page .hcs__card{background:#FFFFFF !important;box-shadow:inset 0 0 0 1px var(--hc-edge);
+  border-radius:16px;padding:12px 12px 16px}
+.hc-page .hcs__card:hover{background:#FFFFFF !important;box-shadow:inset 0 0 0 1px #DCDCD6}
+.hc-page .hcs__media{aspect-ratio:4 / 3 !important;border-radius:10px}
+.hc-page .hcs__rail > li{flex:0 0 clamp(250px,24vw,320px)}
+.hc-page .hcs__desc{margin:16px 4px 0;font-size:14px;line-height:1.5}
+.hc-page .hcs__go{margin:12px 4px 0}
+/* the spark on the ink pill reads in a pale blue, not the full teal */
+.hc-launch__btn svg{color:#9BE3F5}
+/* this one call wears the logo's middle blue, so it stands out from the ink buttons */
+.hc-launch__btn{background:var(--teal);color:#FFFFFF}
+.hc-launch__btn:hover{background:#0089A6}
+.hc-launch__btn svg{color:#FFFFFF}
+.hc-launch.is-on .hc-launch__btn::after{animation:hcRingT 1.15s ease-out .5s 2}
+@keyframes hcRingT{from{box-shadow:0 0 0 0 rgba(0,156,189,.55)}to{box-shadow:0 0 0 16px rgba(0,156,189,0)}}
+
+/* the blocks breathe through the three brand pastels, each card a step behind the last */
+.hc-page .hcs__media{background-image:none !important;animation:hcTone 24s ease-in-out infinite}
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media{animation-delay:-8s}
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{animation-delay:-16s}
+@keyframes hcTone{
+  0%,100%{background-color:#FFE7D8}   /* orange */
+  33%{background-color:#DCEFF6}       /* blue */
+  66%{background-color:#FFF3D2}       /* yellow */
+}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hcs__media{animation:none}
+  .hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media{background-color:#FFE7D8}
+  .hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media{background-color:#DCEFF6}
+  .hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{background-color:#FFF3D2}
+}
+/* Explore reads in the same blue as the Ask pill */
+.hc-page .hcs__go{color:var(--teal) !important}
+.hc-page .hcs__card:hover .hcs__go{color:#0089A6 !important}
+
+/* ═══ the suite, plain: one quiet grey block, a card with no outline, nothing shifting ══════════ */
+.hc-page .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{
+  background:#F0F0EC !important;background-image:none !important;animation:none !important}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{background:transparent !important;
+  box-shadow:none !important;border:0 !important;padding:0 0 4px}
+.hc-page .hcs__desc{margin-inline:0}
+.hc-page .hcs__go{margin-inline:0}
+
+/* the suite's cards sit on their own ground again — no outline, just a quiet plate */
+.hc-page .hcs__card,.hc-page .hcs__card:hover{background:#FFFFFF !important;box-shadow:none !important;
+  border:0 !important;border-radius:16px;padding:12px 12px 16px}
+.hc-page .hcs__media{background:#EDEDE7 !important}
+.hc-page .hcs__desc,.hc-page .hcs__go{margin-inline:4px}
+
+/* a phrase that names a page of its own reads as a link, in the same blue */
+.hc-page .hc-inlink{color:var(--teal);text-decoration:none;
+  box-shadow:inset 0 -1px 0 0 rgba(0,156,189,.4);transition:box-shadow .2s ease,color .2s ease}
+.hc-page .hc-inlink:hover{color:#0089A6;box-shadow:inset 0 -1px 0 0 #0089A6}
+/* the reference's greys: the card a step down from the page, the block a step down from the card */
+.hc-page .hcs__card,.hc-page .hcs__card:hover{background:#F2F1EE !important}
+.hc-page .hcs__media{background:#E7E6E1 !important}
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{background:#E7E6E1 !important}
+
+/* ═══ the greys go neutral: ours were warm, which read as yellow beside the reference ════════════ */
+body.hc-page{--hc-ground:#FAFAFA;--hc-card:#FFFFFF;--hc-edge:#E6E6E6}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{background:#F2F2F2 !important}
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media,
+.hc-page .hcs__media{background:#E8E8E8 !important}
+.hc-page .why__item,.hc-page .why__item:nth-child(even),
+.hc-page .why__item:nth-child(4n+3){background:#F2F2F2 !important}
+.hc-page .hc-port__tab:hover{background:#F2F2F2}
+/* the card ground the client picked */
+.hc-page .hcs__card,.hc-page .hcs__card:hover,
+.hc-page .why__item,.hc-page .why__item:nth-child(even),
+.hc-page .why__item:nth-child(4n+3){background:#F3F3F3 !important}
+/* the reference's card metrics: 300 wide, 20px of padding, 20px between cards */
+.hc-page .hcs__rail{gap:20px}
+.hc-page .hcs__rail > li{flex:0 0 300px}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding:20px}
+.hc-page .hcs__media{border-radius:8px}
+.hc-page .hcs__desc,.hc-page .hcs__go{margin-inline:0}
+@media (max-width:760px){.hc-page .hcs__rail > li{flex:0 0 78vw}}
+
+/* each card names its service at the top left, with the panel centred under it */
+.hc-page .hcs__kind{position:absolute;top:16px;left:16px;right:16px;z-index:3;
+  font-family:var(--ui);font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
+  color:var(--hc-quiet);display:block}
+.hc-page .hcs__media .mk{margin-top:10px}
+
+/* ═══ one container only: no inner plate, the words set alike, the panel centred ════════════════ */
+.hc-page .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+1) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+2) .hcs__media,
+.hc-page .hcs__rail > li:nth-child(3n+3) .hcs__media{background:transparent !important;
+  border-radius:0;aspect-ratio:auto !important;height:170px;display:block}
+.hc-page .hcs__kind{position:static;margin:0 0 10px;font-family:var(--ui);font-size:14px;
+  font-weight:400;letter-spacing:0;text-transform:none;color:var(--hc-quiet)}
+.hc-page .hcs__media .mk{top:calc(50% + 12px);left:50%;margin-top:0}
+
+/* ═══ the closing call becomes two blocks, as in the reference ══════════════════════════════════ */
+.hc-page .ask-end .wrap.ask-end__in{background:none !important;padding:0 !important;
+  max-width:1240px;border-radius:0}
+.hc-page .ask-end .display--end,.hc-page .ask-end .display--end *{color:var(--ink) !important;
+  text-align:left}
+.hc-page .ask-end .ask-end__acts{margin-top:clamp(24px,3vw,38px)}
+.hc-page .ask-end .ask-end__ways{display:grid !important;grid-template-columns:1fr 1fr;gap:16px;
+  width:100%;flex-wrap:nowrap}
+/* each call fills its own block */
+.hc-page .ask-end .ask-end__ways .btn,
+.hc-page .ask-end .call,.hc-page .ask-end .call__btn{width:100% !important;height:150px !important;
+  border-radius:10px;justify-content:space-between;align-items:flex-end;
+  padding:22px 24px !important;font-size:22px !important;font-weight:500;letter-spacing:-.01em}
+.hc-page .ask-end .btn--ink{background:#E9E9E9 !important;color:var(--ink) !important;
+  box-shadow:none !important}
+.hc-page .ask-end .btn--ink:hover{background:#E1E1E1 !important}
+.hc-page .ask-end .call__btn{background:linear-gradient(105deg,#041634 0%,#063056 42%,#009CBD 100%) !important;
+  color:#FFFFFF !important;box-shadow:none !important}
+.hc-page .ask-end .call__btn:hover{filter:brightness(1.06)}
+/* the block's own arrow, the one the reference carries */
+.hc-page .ask-end .ask-end__ways .btn::after,
+.hc-page .ask-end .call__btn::after{content:'';display:block !important;width:26px;height:26px;
+  flex:0 0 auto;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 12h15M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat}
+.hc-page .ask-end .call__btn .btn__ic--wave{display:none}
+@media (max-width:760px){
+  .hc-page .ask-end .ask-end__ways{grid-template-columns:1fr}
+  .hc-page .ask-end .ask-end__ways .btn,.hc-page .ask-end .call,
+  .hc-page .ask-end .call__btn{height:120px !important;font-size:19px !important}
+}
+/* the two blocks match exactly: same width, same top line */
+.hc-page .ask-end .ask-end__ways{align-items:stretch;justify-items:stretch}
+.hc-page .ask-end .call{display:block !important;position:relative;justify-self:stretch;
+  padding:0 !important;height:150px !important}
+.hc-page .ask-end .call__btn{position:absolute;inset:0;height:100% !important;width:100% !important;
+  display:flex !important;margin:0 !important}
+@media (max-width:760px){
+  .hc-page .ask-end .call{height:120px !important}
+}
+
+/* ═══ the cards line up: title at the top, panel in the middle, words and link on one baseline ═══ */
+.hc-page .hcs__rail{align-items:stretch}
+.hc-page .hcs__rail > li{display:flex}
+.hc-page .hcs__card{display:flex;flex-direction:column;height:100%;width:100%}
+.hc-page .hcs__kind{font-family:var(--hc-title) !important;font-weight:600;font-size:15px;
+  color:var(--ink);margin:0 0 12px}
+.hc-page .hcs__media{flex:1 1 auto;min-height:150px;height:auto !important}
+.hc-page .hcs__desc{margin-top:auto;padding-top:18px}
+.hc-page .hcs__go{margin-top:14px;font-family:var(--ui)}
+
+/* ═══ the two closing blocks, settled ═══════════════════════════════════════════════════════════
+   No heading above them; each block carries its words at the top left and its arrow at the top
+   right; the phone field opens inside the blue one and nothing peeks through before it does. */
+.hc-page .ask-end .display--end{display:none !important}
+.hc-page .ask-end .ask-end__acts{margin-top:0 !important}
+.hc-page .ask-end .ask-end__ways .btn,
+.hc-page .ask-end .call__btn{align-items:flex-start !important;justify-content:space-between !important;
+  padding:22px 24px !important;height:170px !important;gap:16px}
+.hc-page .ask-end .call{height:170px !important}
+.hc-page .ask-end .ask-end__ways .btn::after,
+.hc-page .ask-end .call__btn::after{align-self:flex-start;margin-top:2px}
+/* idle: the field is truly out of the way, so nothing flickers under the pointer */
+.hc-page .ask-end .call[data-state="idle"] .call__form,
+.hc-page .ask-end .call[data-state="idle"] .call__done{visibility:hidden;pointer-events:none}
+.hc-page .ask-end .call__form{position:absolute;inset:0;height:100% !important;margin:0 !important;
+  display:flex !important;align-items:center;gap:10px;padding:22px 24px !important;
+  background:linear-gradient(105deg,#041634 0%,#063056 42%,#009CBD 100%);border-radius:10px;
+  box-shadow:none !important}
+.hc-page .ask-end .call__form .call__cc,.hc-page .ask-end .call__form .call__num{
+  background:rgba(255,255,255,.12);border:0;color:#FFFFFF;height:46px;border-radius:8px;padding:0 12px}
+.hc-page .ask-end .call__form .call__num::placeholder{color:rgba(255,255,255,.7)}
+.hc-page .ask-end .call__form .call__sep{display:none}
+.hc-page .ask-end .call__form .call__go{width:46px;height:46px;border-radius:50%;background:#FFFFFF;
+  color:var(--ink);flex:0 0 auto;display:grid;place-items:center}
+.hc-page .ask-end .call__form .call__go svg{display:block !important;width:19px;height:19px}
+.hc-page .ask-end .call__x{color:#FFFFFF;opacity:.8}
+.hc-page .ask-end .call__done{position:absolute;inset:0;height:100% !important;border-radius:10px;
+  background:linear-gradient(105deg,#041634 0%,#063056 42%,#009CBD 100%);color:#FFFFFF;
+  display:flex;align-items:center;gap:12px;padding:22px 24px !important}
+.hc-page .ask-end .call__done .call__line,.hc-page .ask-end .call__done .call__to{color:#FFFFFF}
+/* the hover says one thing only */
+.hc-page .ask-end .btn--ink:hover{background:#E1E1E1 !important;transform:none}
+.hc-page .ask-end .call__btn:hover{filter:none;background:linear-gradient(105deg,#062046 0%,#08406F 42%,#00ACD0 100%) !important;transform:none}
+/* the phone row: the code stays readable, the number takes the rest */
+.hc-page .ask-end .call__form .call__cc{flex:0 0 auto;min-width:118px;max-width:150px}
+.hc-page .ask-end .call__form .call__num{flex:1 1 auto;min-width:0}
+
+/* the panel's band is fixed, so title, panel and first line of copy start on the same line in
+   every card; the link stays pinned to the foot */
+.hc-page .hcs__media{flex:0 0 150px !important;height:150px !important;min-height:0}
+.hc-page .hcs__desc{margin-top:0 !important;padding-top:20px}
+.hc-page .hcs__go{margin-top:auto !important;padding-top:14px}
+
+/* the phone row gets room: the blue block a little wider, the field breathing */
+.hc-page .ask-end .ask-end__ways{grid-template-columns:0.86fr 1.14fr}
+.hc-page .ask-end .call__form{gap:10px;padding:20px !important}
+.hc-page .ask-end .call__form .call__cc{min-width:128px;max-width:150px;font-size:14px;
+  appearance:none;-webkit-appearance:none;padding-right:26px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M3 4.5l3 3 3-3' fill='none' stroke='white' stroke-width='1.4' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 8px center;background-size:12px}
+.hc-page .ask-end .call__form .call__num{font-size:15px;padding:0 14px}
+.hc-page .ask-end .call__x{position:absolute;top:10px;right:12px}
+@media (max-width:760px){
+  .hc-page .ask-end .ask-end__ways{grid-template-columns:1fr}
+}
+
+/* the block keeps its title while the number is typed: the row opens along the foot, the words stay */
+.hc-page .ask-end .call[data-state="phone"] .call__btn,
+.hc-page .ask-end .call[data-state="sending"] .call__btn,
+.hc-page .ask-end .call[data-state="done"] .call__btn{opacity:1 !important;visibility:visible !important;
+  pointer-events:none}
+.hc-page .ask-end .call__form,.hc-page .ask-end .call__done{position:absolute;inset:auto 0 0 0;
+  height:auto !important;background:none !important;padding:0 20px 20px !important;border-radius:0}
+.hc-page .ask-end .call__btn::after{transition:opacity .2s ease}
+.hc-page .ask-end .call:not([data-state="idle"]) .call__btn::after{opacity:0}
+/* the helper's close is always there, quietly, not only under the pointer */
+.hc-launch__x{opacity:.5;width:22px;height:22px;top:7px;right:7px;border-radius:50%}
+.hc-launch__x:hover,.hc-launch:hover .hc-launch__x{opacity:1;background:rgba(11,18,32,.06)}
+.hc-launch__x svg{width:12px;height:12px}
+.hc-launch__say{padding-right:36px}
+
+/* the site grows its own arrow inside a session button on hover — with ours in place that read as
+   two arrows, so the built-in one stays away on this page */
+.hc-page .btn:is([data-cta="session"],.btn--go)::before,
+.hc-page .btn:is([data-cta="session"],.btn--go):hover::before,
+.hc-page .btn:is([data-cta="session"],.btn--go):focus-visible::before{display:none !important;
+  width:0 !important;margin:0 !important;opacity:0 !important;content:none !important}
+.hc-page .ask-end .btn:hover,.hc-page .nav .btn--ink:hover{transform:none}
+
+/* a dismissed helper stays dismissed: its entrance animation was holding it open */
+.hc-launch__say.is-gone{animation:none !important;opacity:0 !important;visibility:hidden}
+/* the dismiss reads as a control, not a whisper: a small disc on the bubble's corner */
+.hc-launch__x{opacity:1;width:24px;height:24px;top:-9px;right:-9px;border-radius:50%;
+  background:#FFFFFF;color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--hc-edge);transition:background .2s ease,color .2s ease}
+.hc-launch__x:hover,.hc-launch:hover .hc-launch__x{background:var(--ink);color:#FFFFFF;
+  box-shadow:none}
+.hc-launch__x svg{width:11px;height:11px}
+.hc-launch__say{padding-right:20px;overflow:visible}
+
+/* ═══ three groups in a card: the title, the panel, then the words with their link ══════════════ */
+.hc-page .hcs__kind{position:static !important;margin:0 0 18px !important;padding:0}
+.hc-page .hcs__media{flex:0 0 150px !important;height:150px !important;margin:0 0 22px;
+  position:relative}
+.hc-page .hcs__media .mk{top:50%;left:50%;margin-top:0}
+.hc-page .hcs__desc{margin:0 !important;padding:0 !important}
+.hc-page .hcs__go{margin-top:14px !important;padding:0 !important}
+.hc-page .hcs__card{justify-content:flex-start}
+/* the dismiss rides above the message, never behind it */
+.hc-launch__say{position:relative;z-index:1}
+.hc-launch__x{z-index:5}
+
+/* the voice mark sits in its own round, centred against the two shorter lines of the message */
+.hc-launch{max-width:min(320px,86vw)}
+.hc-launch__say{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.hc-launch__mic{width:32px !important;height:32px !important;flex:0 0 auto;margin:0;padding:7px;
+  border-radius:50%;background:rgba(0,156,189,.1);
+  box-shadow:inset 0 0 0 1px rgba(0,156,189,.3);color:var(--teal);box-sizing:border-box}
+.hc-launch__say > span{flex:1 1 auto;text-wrap:balance;max-width:220px;line-height:1.45}
+/* the three groups draw closer: less air under the title and under the panel */
+.hc-page .hcs__kind{margin:0 0 12px !important}
+.hc-page .hcs__media{flex:0 0 128px !important;height:128px !important;margin:0 0 14px}
+/* the round stands as tall as the two lines beside it */
+.hc-launch__mic{width:40px !important;height:40px !important;padding:9px}
+
+/* the two closing blocks run wide: the pair fills the page's measure, not the words' measure */
+.hc-page .ask-end .ask-end__acts{display:block !important;width:100%}
+.hc-page .ask-end .ask-end__ways{width:100% !important;max-width:1180px;margin-inline:auto;
+  grid-template-columns:0.86fr 1.14fr;gap:20px}
+.hc-page .ask-end .wrap.ask-end__in{width:100%;padding-inline:clamp(20px,4vw,40px) !important}
+/* the Products stage stands taller — full width was reading as a letterbox */
+.hc-page .hc-port__stage{height:clamp(560px,84vh,940px)}
+@media (max-width:760px){.hc-page .hc-port__stage{height:clamp(420px,64vh,600px)}}
+/* the launcher lines up with the footer's right-hand links rather than the screen's edge */
+.hc-launch{right:clamp(24px,5.8vw,60px)}
+
+/* the film sits closer to the chat, and its scroll runway is shorter, so the gap to Products
+   stops dwarfing the one above it */
+.hc-page .intro{padding-top:clamp(28px,3vw,44px) !important;padding-bottom:clamp(28px,3vw,44px) !important}
+@media (min-width:901px){
+  .hc-page .intro__stage.is-cine{height:145vh}
+}
+
+/* nothing on this page falls back to a serif: the token itself now points at the title face, so
+   even a rule we missed lands on Roobert */
+body.hc-page{--hc-serif:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif}
+.hc-page h1,.hc-page h2,.hc-page h3,.hc-page .display,.hc-page .display *,
+.hc-page .hero .display,.hc-page .hero .display *{font-family:var(--hc-title) !important}
+
+/* the main title goes back to the serif it had — Tiro Tamil — and nothing else follows it */
+body.hc-page{--hc-head:'Montserrat','Montserrat',Georgia,'Times New Roman',serif}
+.hc-page .hero .display--hero,.hc-page .hero .display--hero *{font-family:var(--hc-head) !important;
+  font-weight:400 !important;letter-spacing:-.015em}
+/* the Why heading joins the hero in the serif */
+.hc-page .why .display--cos,.hc-page .why .display--cos *{font-family:var(--hc-head) !important;
+  font-weight:400 !important;letter-spacing:-.015em}
+
+/* ═══ every sans on this page is Roobert; the serif stays on the two titles ═════════════════════ */
+body.hc-page{--ui:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --sans:'Montserrat','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-family:var(--ui)}
+.hc-page p,.hc-page li,.hc-page a,.hc-page button,.hc-page input,.hc-page select,.hc-page textarea,
+.hc-page span,.hc-page .btn,.hc-page .tag,.hc-page .hcs__desc,.hc-page .why__d,
+.hc-page .hcs__go,.hc-page .hcs__kind{font-family:var(--ui)}
+/* the two that keep the serif */
+.hc-page .hero .display--hero,.hc-page .hero .display--hero *,
+.hc-page .why .display--cos,.hc-page .why .display--cos *{font-family:var(--hc-head) !important}
+/* the two closing blocks share one width */
+.hc-page .ask-end .ask-end__ways{grid-template-columns:1fr 1fr !important}
+
+/* ═══ one dark on the page: the ink the type is set in ══════════════════════════════════════════ */
+.hc-page .foot,.hc-page .foot__band{background:var(--ink) !important}
+.hc-page .hc-port__cap{background:rgba(11,18,32,.82)}
+.hc-page .hc-port__cap:hover{background:rgba(11,18,32,.92)}
+.hc-page .intro__btn{background:var(--ink)}
+.hc-page .intro__btn:hover{background:#05080F}
+.hc-page .btn--ink:hover,.hc-page .hcs__round:hover,.hc-page .hc-port__nav:hover{background:#05080F !important}
+.hc-page .ask-end .call__form .call__go{color:var(--ink)}
+
+/* the hero's thinking field reads again: wider, taller, a little stronger behind the chat */
+.hc-page .hero .chat > .hero__think{width:min(100vw,1340px) !important;height:560px !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.46}
+
+/* ═══ the film's words return — under it, centred, with one call ════════════════════════════════ */
+.hc-page .intro__over{display:flex !important;position:static !important;flex-direction:column;
+  align-items:center;text-align:center !important;padding:clamp(28px,3.4vw,46px) 20px 0 !important;
+  max-width:none !important;width:100% !important}
+.hc-page .intro__over .display--intro{width:min(100%,900px);margin:0 auto !important;
+  color:var(--ink) !important;text-shadow:none}
+.hc-page .intro__over .display--intro *{color:var(--ink) !important}
+.hc-page .intro__over .intro__act{margin:clamp(18px,2.2vw,26px) 0 0 !important;justify-content:center}
+.hc-page .intro__over .btn--ink{background:var(--ink) !important;color:#FFFFFF !important}
+.hc-page .intro__over .btn--ink:hover{background:#05080F !important;color:#FFFFFF !important}
+
+/* ═══ the words ride on the film again: a veil under them, the title in the serif ═══════════════ */
+.hc-page .intro__media::after{display:block !important;content:'';position:absolute;inset:0;z-index:1;
+  pointer-events:none;background-image:none;
+  background:linear-gradient(180deg,rgba(11,18,32,.42) 0%,rgba(11,18,32,.34) 46%,rgba(11,18,32,.58) 100%)}
+.hc-page .intro__over{position:absolute !important;inset:0;z-index:3;display:flex !important;
+  flex-direction:column;align-items:center;justify-content:center;text-align:center !important;
+  padding:0 clamp(22px,5vw,64px) !important;width:100% !important;max-width:none !important}
+.hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+  font-family:var(--hc-head) !important;font-weight:400 !important;color:#FFFFFF !important;
+  text-shadow:0 1px 22px rgba(0,0,0,.3)}
+.hc-page .intro__over .display--intro{width:min(100%,900px);margin:0 auto !important}
+.hc-page .intro__over .intro__act{margin:clamp(20px,2.4vw,30px) 0 0 !important}
+.hc-page .intro__over .btn--ink{background:#FFFFFF !important;color:var(--ink) !important}
+.hc-page .intro__over .btn--ink:hover{background:rgba(255,255,255,.88) !important;color:var(--ink) !important}
+/* the film's own controls and the scroll word stay clear of the words */
+.hc-page .intro__ctl,.hc-page .intro__more{z-index:4}
+/* a fine dark dot grid rides with the veil, so the words hold on every frame */
+.hc-page .intro__media::after{
+  background-image:radial-gradient(rgba(8,10,14,.42) 1px,transparent 1.1px),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%);
+  background-size:3px 3px,auto;background-position:0 0,0 0}
+/* smaller dots at half the strength */
+.hc-page .intro__media::after{
+  background-image:radial-gradient(rgba(8,10,14,.21) 0.65px,transparent 0.75px),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%);
+  background-size:2.5px 2.5px,auto}
+
+/* ═══ the film holds longer at full screen ══════════════════════════════════════════════════════ */
+@media (min-width:901px){
+  .hc-page .intro__stage.is-cine{height:190vh}
+}
+
+/* ═══ a ghost button over imagery gets something to sit on ══════════════════════════════════════ */
+.hc-page .nav.on-film .call--nav .call__btn,
+.hc-page .intro__over .btn--line,
+.hc-page .hc-port__cap .btn--line{background:rgba(255,255,255,.16) !important;
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.72) !important;color:#FFFFFF !important}
+.hc-page .nav.on-film .call--nav .call__btn:hover{background:rgba(255,255,255,.28) !important}
+/* and the ink one keeps its weight over a picture */
+.hc-page .nav.on-film .btn--ink{background:#FFFFFF !important;color:var(--ink) !important}
+/* every tab holds for the same three seconds, and its fill runs the same length */
+.hc-page .hc-port__tab.is-on.is-timing::before{animation-duration:5.5s !important}
+/* the dismiss goes with the message it dismisses */
+.hc-launch[data-hushed] .hc-launch__x{display:none !important}
+
+/* ═══ the titles stand bigger (same weight), and the film's dots read on a desktop ══════════════ */
+.hc-page .display,.hc-page .display *,
+.hc-page .hcs__h,.hc-page .hero .display--hero,.hc-page .hero .display--hero *,
+.hc-page .why .display--cos,.hc-page .why .display--cos *,
+.hc-page .display--port,.hc-page .display--port *,
+.hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+  font-size:clamp(40px,1rem + 3.9vw,78px) !important;line-height:1.06}
+.hc-page .intro__media::after{
+  background-image:radial-gradient(rgba(8,10,14,.3) 0.8px,transparent 0.9px),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%);
+  background-size:3px 3px,auto}
+@media (max-width:760px){
+  .hc-page .display,.hc-page .display *,.hc-page .hcs__h,
+  .hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+    font-size:clamp(30px,7.2vw,42px) !important}
+}
+
+/* ═══ the thinking field runs the whole column: from under the bar down past the chat ════════════
+   Its loop's top stop is the canvas's own upper third, so the light sets off near the bar's calls
+   and the mark, travels down to the field and the tags, and back — the eye follows it in. */
+.hc-page .hero .chat > .hero__think{top:-232px !important;height:820px !important;
+  width:min(100vw,1440px) !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.6}
+/* reach the bar on a desktop too: the taller titles push the chat down, so the field has to start
+   further above it than the old offset allowed */
+.hc-page .hero .chat > .hero__think{top:-360px !important;height:1000px !important}
+.hc-page .hero .chat > .hero__think.is-on{opacity:.68}
+
+/* C's own thinking field sits behind the hero, edge to edge */
+.hc-page .hero{position:relative}
+.hc-page canvas.hc-think{position:absolute;inset:0;width:100%;height:100%;z-index:0;
+  pointer-events:none}
+.hc-page .hero > *:not(canvas.hc-think){position:relative;z-index:1}
+.hc-page .hero .chat > .hero__think{display:none !important}
+
+/* the film's words: the sans, a step smaller, two lines */
+.hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+  font-family:var(--hc-title) !important;font-weight:500 !important;letter-spacing:-.02em;
+  font-size:clamp(28px,1rem + 2.1vw,52px) !important;line-height:1.12}
+.hc-page .intro__over .display--intro{width:min(100%,760px)}
+
+/* ═══ grain instead of the dot grid: a fine noise over the film, drifting slowly ════════════════ */
+.hc-page .intro__media::after{
+  background-image:url(/assets/img/grain.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%);
+  background-size:160px 160px,auto;background-repeat:repeat,no-repeat;
+  mix-blend-mode:normal;opacity:1;animation:hcGrain 1.1s steps(4) infinite}
+@keyframes hcGrain{
+  0%{background-position:0 0,0 0}
+  25%{background-position:-40px 30px,0 0}
+  50%{background-position:30px -40px,0 0}
+  75%{background-position:-30px -20px,0 0}
+  100%{background-position:0 0,0 0}}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .intro__media::after{animation:none}
+}
+/* the grain barely moves: slower, and it shifts a hair rather than a jump */
+.hc-page .intro__media::after{animation:hcGrainSoft 3.4s steps(3) infinite}
+@keyframes hcGrainSoft{
+  0%{background-position:0 0,0 0}
+  33%{background-position:-9px 7px,0 0}
+  66%{background-position:6px -8px,0 0}
+  100%{background-position:0 0,0 0}}
+
+/* ═══ the grain sits still and re-forms in place: three tiles swapped, never slid ═══════════════ */
+.hc-page .intro__media::after{
+  background-image:url(/assets/img/grain-1.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%);
+  background-size:120px 120px,auto;background-position:0 0,0 0;
+  animation:hcGrainHold 1.5s steps(1) infinite}
+@keyframes hcGrainHold{
+  0%,33%{background-image:url(/assets/img/grain-1.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%)}
+  34%,66%{background-image:url(/assets/img/grain-2.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%)}
+  67%,100%{background-image:url(/assets/img/grain-3.png),
+    linear-gradient(180deg,rgba(11,18,32,.34) 0%,rgba(11,18,32,.28) 46%,rgba(11,18,32,.5) 100%)}}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .intro__media::after{animation:none}
+}
+/* the film's title matches the section titles */
+.hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+  font-size:clamp(34px,1rem + 3.9vw,78px) !important;line-height:1.06}
+.hc-page .intro__over .display--intro{width:min(100%,1100px)}
+@media (max-width:760px){
+  .hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+    font-size:clamp(26px,6.6vw,38px) !important}
+}
+/* two lines at the card's width: the measure takes the whole frame */
+.hc-page .intro__over{padding-inline:clamp(16px,2.2vw,34px) !important}
+.hc-page .intro__over .display--intro{width:min(100%,1240px)}
+.hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+  font-size:clamp(30px,1rem + 3.2vw,64px) !important}
+/* the words must also fit the card's 900px window, not just the full-bleed frame */
+.hc-page .intro__over .display--intro{width:min(100%,840px)}
+/* ten points more veil under the words */
+.hc-page .intro__media::after{
+  background-image:url(/assets/img/grain-1.png),
+    linear-gradient(180deg,rgba(11,18,32,.44) 0%,rgba(11,18,32,.38) 46%,rgba(11,18,32,.6) 100%)}
+@keyframes hcGrainHold{
+  0%,33%{background-image:url(/assets/img/grain-1.png),
+    linear-gradient(180deg,rgba(11,18,32,.44) 0%,rgba(11,18,32,.38) 46%,rgba(11,18,32,.6) 100%)}
+  34%,66%{background-image:url(/assets/img/grain-2.png),
+    linear-gradient(180deg,rgba(11,18,32,.44) 0%,rgba(11,18,32,.38) 46%,rgba(11,18,32,.6) 100%)}
+  67%,100%{background-image:url(/assets/img/grain-3.png),
+    linear-gradient(180deg,rgba(11,18,32,.44) 0%,rgba(11,18,32,.38) 46%,rgba(11,18,32,.6) 100%)}}
+
+/* ═══ the Call me block takes the wave still instead of the sweep ═══════════════════════════════ */
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__form,
+.hc-page .ask-end .call__done{
+  background:linear-gradient(180deg,rgba(6,18,24,.52),rgba(6,18,24,.62)),
+    url(/assets/img/hero-film/3.jpg) center/cover no-repeat !important}
+.hc-page .ask-end .call__btn:hover{
+  background:linear-gradient(180deg,rgba(6,18,24,.42),rgba(6,18,24,.54)),
+    url(/assets/img/hero-film/3.jpg) center/cover no-repeat !important}
+.hc-page .ask-end .call__form .call__cc,
+.hc-page .ask-end .call__form .call__num{background:rgba(255,255,255,.16)}
+/* on a narrow block the number keeps a usable width */
+@media (max-width:1100px){
+  .hc-page .ask-end .call__form{flex-wrap:wrap;gap:8px}
+  .hc-page .ask-end .call__form .call__cc{flex:0 0 auto;min-width:112px}
+  .hc-page .ask-end .call__form .call__num{flex:1 1 130px;min-width:110px}
+}
+/* the hero's title comes down a step; the section titles keep their size */
+.hc-page .hero .display--hero,.hc-page .hero .display--hero *{
+  font-size:clamp(32px,1rem + 3.1vw,60px) !important;line-height:1.08}
+@media (max-width:760px){
+  .hc-page .hero .display--hero,.hc-page .hero .display--hero *{
+    font-size:clamp(28px,6.8vw,38px) !important}
+}
+
+/* ═══ Call me: the still, and only the still ════════════════════════════════════════════════════
+   The veil is gone, and the phone row no longer paints its own copy of the picture — that second
+   layer is what read as the background changing when the row opened. */
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__btn:hover{
+  background:url(/assets/img/hero-film/3.jpg) center/cover no-repeat !important}
+.hc-page .ask-end .call__form,
+.hc-page .ask-end .call__done{background:none !important;background-image:none !important}
+.hc-page .ask-end .call__form .call__cc,
+.hc-page .ask-end .call__form .call__num{background:rgba(10,20,16,.42);color:#FFFFFF}
+.hc-page .ask-end .call__form .call__num::placeholder{color:rgba(255,255,255,.75)}
+/* where the row wraps, the block gives it the room so it never reaches the words */
+@media (max-width:1100px){
+  .hc-page .ask-end .call,.hc-page .ask-end .call__btn{height:210px !important}
+  .hc-page .ask-end .ask-end__ways .btn{height:210px !important}
+}
+/* the caption block is solid: no picture showing through the words */
+.hc-page .hc-port__cap{background:var(--ink) !important}
+.hc-page .hc-port__cap:hover{background:#05080F !important}
+/* the wave sits in close on the Call me block */
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__btn:hover{
+  background:url(/assets/img/hero-film/3.jpg) center/300% auto no-repeat !important}
+/* the Why heading goes back to the sans; the serif stays on the hero alone */
+.hc-page .why .display--cos,.hc-page .why .display--cos *{font-family:var(--hc-title) !important;
+  font-weight:500 !important;letter-spacing:-.025em}
+/* the suite's panels are drawn near the card's own width, so they are barely scaled at all */
+.hc-page .hcs__media .mk{width:280px;padding:12px 13px}
+.hc-page .hcs__media .mk-t{font-size:15px;margin:0 0 8px}
+.hc-page .hcs__media .mk-th{padding:7px 10px;font-size:11.5px}
+.hc-page .hcs__media .mk-td{padding:7px 10px;font-size:12.5px}
+/* the band gives the tallest panel room, so it is not shrunk to fit */
+.hc-page .hcs__media{flex:0 0 152px !important;height:152px !important}
+/* the panel is centred in its band with nothing added, so it is never cut */
+.hc-page .hcs__media .mk{top:50% !important;left:50% !important;margin:0 !important}
+.hc-page .hcs__media .mk.mk-arm{translate:0 8px}
+.hc-page .hcs__media .mk.mk-arm.in{translate:0 0}
+
+/* ═══ the suite, stripped back: a stroke mark, a name, one line, a link ═════════════════════════ */
+.hc-page .hcs__media{display:none !important}
+.hc-page .hcs__rail > li{flex:0 0 clamp(180px,16vw,220px)}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding:18px 18px 20px;border-radius:14px}
+.hc-page .hcs__ic{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;
+  box-shadow:inset 0 0 0 1px rgba(11,18,32,.16);color:var(--ink);margin:0 0 16px}
+.hc-page .hcs__ic svg{width:21px;height:21px}
+.hc-page .hcs__kind{margin:0 0 8px !important;font-size:15px}
+.hc-page .hcs__desc{margin:0 !important;font-size:14px;line-height:1.5;max-width:22ch}
+.hc-page .hcs__go{margin-top:16px !important}
+@media (max-width:760px){.hc-page .hcs__rail > li{flex:0 0 64vw}}
+
+/* ═══ the suite as a marquee: tall quiet cards, the mark up top, the words at the foot ══════════ */
+.hc-page .hcs__rail{overflow-x:auto;scrollbar-width:none}
+.hc-page .hcs__rail::-webkit-scrollbar{display:none}
+.hc-page .hcs__rail > li{flex:0 0 clamp(250px,22vw,310px);height:clamp(380px,34vw,460px)}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{height:100%;padding:26px 26px 28px;border-radius:0;
+  display:flex;flex-direction:column}
+.hc-page .hcs__ic{margin:0 0 auto}                       /* the mark holds the top */
+.hc-page .hcs__kind{margin:0 0 10px !important}
+.hc-page .hcs__desc{margin:0 !important}
+.hc-page .hcs__go{margin:18px 0 0 !important}
+/* the gap under the mark comes down by about a hundred: the card is shorter with it */
+.hc-page .hcs__rail > li{height:clamp(300px,26vw,360px)}
+.hc-page .hcs__ic{margin:0 0 auto}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding:24px 24px 26px}
+
+/* ═══ Why Stagwell AI as a list, the way the reference reads it ═════════════════════════════════
+   A small label at the left, then each name set large with its line beneath, divided by hairlines
+   and numbered down the right. */
+.hc-page .why > .wrap{max-width:1180px}
+.hc-page .why .display--cos,.hc-page .why .display--cos *{font-size:17px !important;
+  font-weight:500 !important;letter-spacing:0 !important;text-align:left !important;
+  color:var(--ink) !important;line-height:1.4}
+.hc-page .why .display--cos{margin:0 0 26px !important}
+.hc-page .why .display--cos em{font-style:normal}
+.hc-page .why__grid,.hc-page .why__grid--four{display:block !important;counter-reset:why}
+.hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .why__item:nth-child(4n+3){
+  display:block !important;position:relative;counter-increment:why;
+  background:none !important;border-radius:0 !important;overflow:visible;
+  padding:clamp(28px,3vw,44px) 76px clamp(30px,3.4vw,50px) 0 !important;
+  border-top:1px solid rgba(11,18,32,.14)}
+.hc-page .why__item:last-child{border-bottom:1px solid rgba(11,18,32,.14)}
+.hc-page .why__item .why__ic,.hc-page .why__item:nth-child(even) .why__ic{display:none !important}
+.hc-page .why__item .why__head{display:block !important;margin:0}
+.hc-page .why__item .why__t{font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(40px,1rem + 4.2vw,86px) !important;line-height:1.02;letter-spacing:-.03em;
+  color:var(--ink) !important;margin:0 0 clamp(14px,1.6vw,22px) !important}
+.hc-page .why__item .why__d,.hc-page .why__item .why__d--lead{color:var(--ink) !important;
+  font-size:17px !important;line-height:1.5;max-width:76ch;padding:0 !important}
+.hc-page .why__item .why__d--lead{margin:0 0 8px !important;font-weight:500}
+.hc-page .why__item .why__d + .why__d{margin-top:6px !important;color:var(--hc-quiet) !important}
+/* the index, small, at the right of each row */
+.hc-page .why__item::after{content:"/0." counter(why);position:absolute;top:clamp(28px,3vw,44px);
+  right:0;font-family:var(--ui);font-size:13px;color:var(--hc-quiet);letter-spacing:.02em}
+@media (max-width:760px){
+  .hc-page .why__item,.hc-page .why__item:nth-child(even){padding-right:52px !important}
+  .hc-page .why__item .why__t{font-size:clamp(32px,9vw,46px) !important}
+}
+/* the hairlines were being cleared by the earlier card pass's border:0 */
+.hc-page .why__item,.hc-page .why__item:nth-child(even),.hc-page .why__item:nth-child(4n+3){
+  border:0 !important;border-top:1px solid rgba(11,18,32,.16) !important}
+.hc-page .why__item:last-child{border-bottom:1px solid rgba(11,18,32,.16) !important}
+
+/* ═══ the footer goes light: paper, ink, hairlines ══════════════════════════════════════════════ */
+.hc-page .foot,.hc-page .foot__band,.hc-page .foot__in{background:var(--hc-ground) !important;
+  background-image:none !important}
+.hc-page .foot{border-top:1px solid rgba(11,18,32,.12)}
+.hc-page .foot *,.hc-page .foot a,.hc-page .foot li,.hc-page .foot span,
+.hc-page .foot .foot__big a,.hc-page .foot .foot__small a{color:var(--ink) !important}
+.hc-page .foot .foot__small a,.hc-page .foot .foot__copy{color:var(--hc-quiet) !important}
+.hc-page .foot .foot__small a:hover,.hc-page .foot .foot__big a:hover{color:var(--teal) !important}
+.hc-page .foot__band{border-top:1px solid rgba(11,18,32,.12);margin-top:clamp(28px,3vw,44px)}
+.hc-page .foot__brand svg{fill:var(--ink)}
+.hc-page .foot__brand .m-ink{fill:var(--ink)}
+.hc-page .foot__so{box-shadow:inset 0 0 0 1px rgba(11,18,32,.18) !important;border:0 !important;
+  color:var(--ink) !important;background:transparent !important}
+.hc-page .foot__so:hover{background:#FFFFFF !important;box-shadow:inset 0 0 0 1px rgba(11,18,32,.32) !important}
+.hc-page .foot__follow{color:var(--hc-quiet) !important}
+/* one colour for the whole right-hand column */
+.hc-page .foot__small a,.hc-page .foot__small a *,
+.hc-page .foot__small .link,.hc-page .foot__small .link *{color:var(--hc-quiet) !important}
+.hc-page .foot__small a:hover,.hc-page .foot__small a:hover *{color:var(--teal) !important}
+
+/* ═══ the footer, closer to the reference: rules, room, outlined marks ══════════════════════════ */
+.hc-page .foot{padding-top:clamp(56px,6vw,96px)}
+.hc-page .foot__in{padding-block:0 clamp(30px,3.4vw,48px) !important}
+.hc-page .foot__big a{font-size:19px;letter-spacing:-.01em}
+.hc-page .foot__small{gap:14px 40px}
+.hc-page .foot__small a{font-size:15px}
+/* the band reads as three quiet groups under one rule */
+.hc-page .foot__band{padding-top:clamp(22px,2.4vw,34px);align-items:center}
+.hc-page .foot__social{gap:10px}
+.hc-page .foot__so{width:auto;height:34px;padding:0 14px;border-radius:999px;display:inline-flex;
+  align-items:center;gap:8px;font-family:var(--ui);font-size:11.5px;letter-spacing:1.3px;
+  text-transform:uppercase}
+.hc-page .foot__so svg{width:14px;height:14px}
+.hc-page .foot__so::after{content:attr(aria-label)}
+.hc-page .foot__follow{display:none}
+.hc-page .foot__copy{font-size:13px;letter-spacing:.01em}
+.hc-page .foot__brand svg{height:22px;width:auto}
+/* the stage follows the picture's own shape, so the stills are barely cropped on a wide screen */
+.hc-page .hc-port__stage{height:auto !important;aspect-ratio:16 / 9;max-height:86vh}
+@media (max-width:760px){
+  .hc-page .hc-port__stage{aspect-ratio:4 / 5;height:auto !important;max-height:none}
+}
+/* the still runs edge to edge; the words and tabs keep their inset */
+.hc-page .hc-port__stage{width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);
+  margin-right:calc(50% - 50vw);border-radius:0}
+@media (max-width:760px){
+  .hc-page .hc-port__stage{width:100vw;margin-left:calc(50% - 50vw)}
+}
+/* full bleed without 100vw: the stage simply undoes the wrap's own inset, so the scrollbar can't
+   push the page sideways */
+.hc-page .hc-port__stage{width:auto;max-width:none;
+  margin-inline:calc(-1 * clamp(14px,2.2vw,28px)) !important}
+.hc-page .hc-port{overflow-x:clip}
+/* the height cap was driving the width down through the aspect ratio: take the cap off and let the
+   stage be as wide as the section, with its height following the picture */
+.hc-page .hc-port__stage{width:calc(100% + 2 * clamp(14px,2.2vw,28px)) !important;
+  max-height:none !important;height:auto !important}
+
+/* ═══ the suite's cards take their panel back, between the mark and the name ════════════════════ */
+.hc-page .hcs__rail > li{flex:0 0 clamp(260px,23vw,320px);height:clamp(420px,38vw,480px)}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{display:flex;flex-direction:column;
+  padding:24px 22px 26px}
+.hc-page .hcs__ic{order:1;margin:0 0 20px}
+.hc-page .hcs__media{order:2;display:block !important;position:relative;
+  flex:0 0 132px !important;height:132px !important;margin:0 0 auto;
+  background:transparent !important;border-radius:0}
+.hc-page .hcs__kind{order:3;margin:0 0 8px !important}
+.hc-page .hcs__desc{order:4;margin:0 !important}
+.hc-page .hcs__go{order:5;margin:16px 0 0 !important}
+/* the panel is drawn near the card's width and never cropped */
+.hc-page .hcs__media .mk{width:258px;padding:11px 12px}
+.hc-page .hcs__media .mk-t{font-size:14px;margin:0 0 7px}
+.hc-page .hcs__media .mk-th{padding:6px 9px;font-size:11px}
+.hc-page .hcs__media .mk-td{padding:6px 9px;font-size:12px}
+@media (max-width:760px){.hc-page .hcs__rail > li{flex:0 0 72vw;height:440px}}
+/* a little more band, so the tallest panels are not scaled far below the rest */
+.hc-page .hcs__media{flex:0 0 150px !important;height:150px !important}
+.hc-page .hcs__media .mk{top:auto;bottom:0}
+/* the band no longer clips: a taller panel simply reaches up into the card's own air */
+.hc-page .hcs__media{overflow:visible !important}
+/* the panels come back out: the cards keep the mark, the name, the line and the link */
+.hc-page .hcs__media{display:none !important}
+.hc-page .hcs__rail > li{flex:0 0 clamp(200px,17vw,240px);height:clamp(300px,26vw,360px)}
+.hc-page .hcs__ic{order:1;margin:0 0 auto}
+
+/* ═══ a card under the pointer lifts its words and offers the call ══════════════════════════════ */
+.hc-page .hcs__card{position:relative}
+.hc-page .hcs__kind,.hc-page .hcs__desc{transition:transform .34s cubic-bezier(.16,.72,.24,1)}
+.hc-page .hcs__go{position:absolute;left:24px;right:24px;bottom:22px;margin:0 !important;
+  display:inline-flex;align-items:center;justify-content:center;gap:0;height:38px;padding:0 16px;
+  border-radius:999px;background:var(--ink);color:#FFFFFF !important;font-size:13px;font-weight:600;
+  opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity .28s ease,transform .34s cubic-bezier(.16,.72,.24,1)}
+.hc-page .hcs__card:hover .hcs__kind,.hc-page .hcs__card:focus-visible .hcs__kind,
+.hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
+  transform:translateY(-46px)}
+.hc-page .hcs__card:hover .hcs__go,.hc-page .hcs__card:focus-visible .hcs__go{
+  opacity:1;transform:none;pointer-events:auto}
+.hc-page .hcs__card:hover .hcs__ic{border-color:rgba(11,18,32,.3)}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hcs__kind,.hc-page .hcs__desc,.hc-page .hcs__go{transition:none}
+}
+/* the card's call matches every other button: white, upper case, with room above it */
+.hc-page .hcs__go,.hc-page .hcs__card:hover .hcs__go{color:#FFFFFF !important;
+  text-transform:uppercase;letter-spacing:.06em;font-size:12.5px;font-weight:600;height:40px}
+.hc-page .hcs__go svg{display:none !important}
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding-bottom:78px}
+.hc-page .hcs__card:hover .hcs__kind,.hc-page .hcs__card:focus-visible .hcs__kind,
+.hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
+  transform:translateY(-18px)}
+.hc-page .hcs__go{bottom:24px;left:22px;right:22px}
+/* at rest the words sit at the foot as usual; the lift on hover is what opens the room for the call */
+.hc-page .hcs__card,.hc-page .hcs__card:hover{padding-bottom:26px}
+.hc-page .hcs__card:hover .hcs__kind,.hc-page .hcs__card:focus-visible .hcs__kind,
+.hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
+  transform:translateY(-56px)}
+.hc-page .hcs__go{bottom:22px}
+
+/* ═══ the closing pair: the demo block inverts, the call takes the robot ════════════════════════ */
+.hc-page .ask-end .btn--ink,.hc-page .ask-end .ask-end__ways .btn--ink{
+  background:var(--ink) !important;color:#FFFFFF !important}
+.hc-page .ask-end .btn--ink:hover{background:#05080F !important;color:#FFFFFF !important}
+.hc-page .ask-end .ask-end__ways .btn::after{background:#FFFFFF}
+.hc-page .ask-end .call__btn,.hc-page .ask-end .call__btn:hover{
+  background:url(/assets/img/products/new-voices-new.jpg) center/150% auto no-repeat !important}
+
+/* the call block: the picture is pale where the words sit, so it dims toward the left */
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__btn:hover{
+  background:
+    linear-gradient(104deg,rgba(11,18,32,.66) 0%,rgba(11,18,32,.34) 34%,rgba(11,18,32,0) 66%),
+    url(/assets/img/products/new-voices-new.jpg) !important;
+  background-size:auto,150% auto !important;
+  background-position:center,center !important;
+  background-repeat:no-repeat,no-repeat !important}
+
+/* ═══ one shape for the four stills, so the section holds its height as the tabs turn ═══════════ */
+.hc-page .hc-port__stage{aspect-ratio:2 / 1 !important}
+.hc-page .hc-port__pic{width:100%;height:100%;object-fit:cover;object-position:center}
+@media (max-width:760px){.hc-page .hc-port__stage{aspect-ratio:4 / 3 !important}}
+
+/* ═══ New Voices: the android takes both the tab and the closing call ═══════════════════════════ */
+.hc-page .hc-port__slide[data-i="2"] .hc-port__pic{object-position:62% center}
+.hc-page .ask-end .call__btn,
+.hc-page .ask-end .call__btn:hover{
+  background:
+    linear-gradient(104deg,rgba(11,18,32,.72) 0%,rgba(11,18,32,.40) 34%,rgba(11,18,32,.06) 72%),
+    url(/assets/img/products/new-voices-android.jpg) !important;
+  background-size:auto,cover !important;
+  background-position:center,68% center !important;
+  background-repeat:no-repeat,no-repeat !important}
+
+/* ═══════════════════════ the phone pass ═══════════════════════════════════════════════════════ */
+@media (max-width:760px){
+  /* the title carries the page */
+  .hc-page .hero .display--hero,.hc-page .hero .display--hero *{
+    font-size:clamp(36px,10.8vw,46px) !important;line-height:1.05;letter-spacing:-.012em}
+
+  /* the film runs edge to edge, square-cornered */
+  .hc-page .intro{padding-inline:0 !important;grid-template-columns:1fr !important}
+  .hc-page .intro__stage{overflow:visible;width:100% !important;max-width:100% !important;
+    margin-inline:0 !important;justify-content:center}
+  .hc-page .intro__media{width:100% !important;max-width:100% !important;flex:0 0 100% !important;
+    margin-inline:0 !important;border-radius:0 !important;clip-path:none !important}
+  .hc-page .intro__pic{border-radius:0 !important}
+
+  /* Products: the words sit above their picture, both on one width */
+  .hc-page .hc-port__stage{width:auto !important;max-width:none;margin-inline:0 !important;
+    aspect-ratio:auto !important;height:auto !important;overflow:visible;border-radius:0;background:none}
+  .hc-page .hc-port__slide{position:static;inset:auto;display:none;opacity:1;visibility:visible}
+  .hc-page .hc-port__slide.is-on{display:flex;flex-direction:column;gap:14px}
+  .hc-page .hc-port__cap{position:static !important;order:1;left:auto;top:auto;right:auto;
+    max-width:none !important;width:100%;border-radius:14px;padding:20px 52px 20px 20px}
+  .hc-page .hc-port__cap .hc-port__arw{top:20px;right:20px}
+  .hc-page .hc-port__pic{order:2;width:100%;height:auto;aspect-ratio:4 / 3;border-radius:14px}
+  .hc-page .hc-port__stage{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .hc-page .hc-port__slide.is-on{flex:0 0 100%}
+  .hc-page .hc-port__nav{position:static;order:3;margin-top:2px}
+
+  /* the closing pair stacks */
+  .hc-page .ask-end .ask-end__ways{grid-template-columns:1fr !important;display:grid !important;gap:12px}
+  .hc-page .ask-end .ask-end__ways > *{width:100% !important}
+
+  /* the footer: one column of links, one ink, the actions before the small print */
+  .hc-page .foot__small{flex-direction:column !important;gap:14px !important}
+  .hc-page .foot__small li:nth-child(1){order:1}
+  .hc-page .foot__small li:nth-child(3){order:2}
+  .hc-page .foot__small li:nth-child(2){order:3}
+  .hc-page .foot__small li:nth-child(4){order:4}
+  .hc-page .foot__small a,.hc-page .foot__small button{color:var(--ink) !important;font-size:16px}
+
+  /* the band centres, and keeps clear of the chat button */
+  .hc-page .foot__band{flex-direction:column;align-items:center;text-align:center;
+    gap:20px;padding-bottom:180px !important}
+  .hc-page .foot__social{justify-content:center;flex-wrap:wrap;gap:10px;width:100%;
+    max-width:100%;margin-inline:auto}
+  .hc-page .foot__legal{display:flex !important;flex-direction:column;align-items:center;gap:14px}
+  .hc-page .foot__brand{margin:0 auto}
+  .hc-page .foot__copy{text-align:center}
+}
+
+/* the film is silent, so it offers only play and pause */
+.hc-page .intro__ctl #filmSound,.hc-page #filmSound{display:none !important}
+
+@media (max-width:760px){
+  /* the footer's four links read as one list, in one ink */
+  .hc-page .foot .foot__small a,.hc-page .foot .foot__small a *,
+  .hc-page .foot .foot__small button{color:var(--ink) !important;font-size:16px}
+
+  /* the starting points run in one line the thumb can push along */
+  .hc-page .ask__tags{display:flex !important;flex-wrap:nowrap !important;justify-content:flex-start;
+    overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    gap:8px;padding-block:2px;
+    width:100vw;margin-left:calc(50% - 50vw);padding-left:24px}
+  .hc-page .ask__tags::-webkit-scrollbar{display:none}
+  .hc-page .ask__tags > li{flex:0 0 auto}
+  .hc-page .ask__tags .tag{white-space:nowrap}
+  .hc-page .ask__tags::after{content:"";flex:0 0 24px}
+}
+
+@media (max-width:760px){
+  /* the hero's starting points: one line, pushed sideways by the thumb */
+  .hc-page .hero .chat__tags,.hc-page .hero .chat__tags--split{
+    display:flex !important;flex-wrap:nowrap !important;justify-content:flex-start !important;
+    align-items:center;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;gap:8px !important;padding-block:2px;
+    width:calc(100vw - 48px);max-width:calc(100vw - 48px);min-width:0;
+    margin-inline:0;padding-inline:0}
+  .hc-page .hero .chat__tags .tag__br{display:none !important}
+  .hc-page .hero .chat__tags::-webkit-scrollbar{display:none}
+  .hc-page .hero .chat__tags > li{flex:0 0 auto;margin:0 !important}
+  .hc-page .hero .chat__tags .tag{white-space:nowrap}
+  .hc-page .hero .chat__tags::after{content:"";flex:0 0 2px}
+}
+
+/* the follow row is names only */
+.hc-page .foot__so svg{display:none !important}
+.hc-page .foot__so{gap:0 !important}
+
+/* ═══ the footer's links read the same on every screen ═════════════════════════════════════════ */
+.hc-page .foot .foot__small{align-items:flex-start}
+.hc-page .foot .foot__small li:nth-child(1){order:1}
+.hc-page .foot .foot__small li:nth-child(3){order:2}
+.hc-page .foot .foot__small li:nth-child(2){order:3}
+.hc-page .foot .foot__small li:nth-child(4){order:4}
+.hc-page .foot .foot__small a,.hc-page .foot .foot__small a *,
+.hc-page .foot .foot__small button{color:var(--ink) !important}
+
+@media (max-width:760px){
+  /* the band sits on the same left edge as the links */
+  .hc-page .foot__band{align-items:flex-start;text-align:left}
+  .hc-page .foot__social{justify-content:flex-start;margin-inline:0}
+  .hc-page .foot__legal{align-items:flex-start}
+  .hc-page .foot__brand{margin:0}
+  .hc-page .foot__copy{text-align:left}
+}
+
+@media (max-width:760px){
+  /* the hero breathes: more air over the title and between every part of it */
+  .hc-page .hero{padding-top:128px !important;padding-bottom:104px !important}
+  .hc-page .hero .hero__lede{margin-top:24px !important}
+  .hc-page .hero .chat{margin-top:40px !important}
+  .hc-page .hero .chat__tags{margin-top:30px !important}
+  .hc-page .intro{padding-top:20px !important;padding-bottom:20px !important}
+}
+
+@media (max-width:760px){
+  /* the chat still says what the microphone is for */
+  .hc-page .hero .askbox__voice{width:auto !important;padding:0 14px 0 12px;gap:8px;
+    border-radius:999px;white-space:nowrap}
+  .hc-page .hero .askbox__voice > span{display:inline !important;font-size:13px}
+}
+
+@media (max-width:760px){
+  /* the film is a block on the page here, not a screen to scroll through */
+  .hc-page .intro__more{display:none !important}
+}
+
+@media (max-width:760px){
+  /* the starting points run edge to edge, like the Products tabs */
+  .hc-page .hero .chat__tags,.hc-page .hero .chat__tags--split{
+    width:100vw !important;max-width:100vw !important;
+    margin-inline:-24px !important;padding-inline:24px !important}
+  .hc-page .hero .chat__tags::after{content:"";flex:0 0 0px}
+}
+
+@media (max-width:760px){
+  /* the suite's row: the arrows on the left, the way to every product on the right */
+  .hc-page .hcs__nav{display:flex;align-items:center;gap:10px;
+    padding-left:24px !important;padding-right:24px !important}
+  .hc-page .hcs__nav .hcs__acts{margin-left:auto;display:flex}
+  .hc-page .hcs__nav .hcs__all{white-space:nowrap}
+}
+
+@media (max-width:760px){
+  /* the section titles carry more weight than a single name inside a list */
+  .hc-page .display--port,.hc-page .display--port *,
+  .hc-page .hcs__h,.hc-page .hcs__h *,
+  .hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+    font-size:36px !important;line-height:1.08}
+}
+
+@media (max-width:760px){
+  /* the type grows with the phone, not a single fixed size */
+  .hc-page .hero .display--hero,.hc-page .hero .display--hero *{
+    font-size:clamp(36px,10.8vw,46px) !important}
+  .hc-page .display--port,.hc-page .display--port *,
+  .hc-page .hcs__h,.hc-page .hcs__h *,
+  .hc-page .intro__over .display--intro,.hc-page .intro__over .display--intro *{
+    font-size:clamp(40px,10.6vw,50px) !important}
+
+  /* Products keeps the same gutter as the rest of the page */
+  .hc-page .hc-port .wrap{padding-left:24px !important;padding-right:24px !important}
+}
+
+@media (max-width:760px){
+  /* the desktop line breaks don't fit a phone: let the words find their own lines */
+  .hc-page .display--port br,.hc-page .hcs__h br,
+  .hc-page .intro__over .display--intro br{display:none}
+  .hc-page .display--port,.hc-page .hcs__h,
+  .hc-page .intro__over .display--intro,.hc-page .hero .display--hero{
+    overflow-wrap:break-word;text-wrap:balance}
+}
+
+@media (max-width:760px){
+  /* each display line is held on one line by design; on a phone it may take two */
+  .hc-page .display--port .ln__in,.hc-page .hcs__h .ln__in,
+  .hc-page .intro__over .display--intro .ln__in,
+  .hc-page .display--end .ln__in,.hc-page .why .display--cos .ln__in{
+    white-space:normal}
+  /* the hero keeps its three written lines */
+  .hc-page .hero .display--hero .ln__in{white-space:nowrap}
+}
+
+/* ═══ the suite's cards: less air under the mark, and a picture behind them on hover ═══════════ */
+.hc-page .hcs__ic{margin:0 0 12px !important}
+.hc-page .hcs__card{position:relative;isolation:isolate;overflow:hidden}
+.hc-page .hcs__card::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;
+  background-image:linear-gradient(rgba(7,12,20,.66),rgba(7,12,20,.66)),var(--hcs-bg,none);
+  background-size:cover,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;
+  opacity:0;transition:opacity .3s ease}
+.hc-page .hcs__card:hover::after,.hc-page .hcs__card:focus-visible::after{opacity:1}
+/* the words and the mark read on the picture */
+.hc-page .hcs__card:hover .hcs__kind,.hc-page .hcs__card:focus-visible .hcs__kind{color:#FFFFFF !important}
+.hc-page .hcs__card:hover .hcs__desc,.hc-page .hcs__card:focus-visible .hcs__desc{
+  color:rgba(255,255,255,.82) !important}
+.hc-page .hcs__card:hover .hcs__ic,.hc-page .hcs__card:focus-visible .hcs__ic{
+  color:#FFFFFF !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.44) !important;
+  border-color:rgba(255,255,255,.44) !important}
+.hc-page .hcs__card:hover .hcs__go{background:#FFFFFF !important;color:var(--ink) !important}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hcs__card::after{transition:none}
+}
+/* the mark keeps the top and the words keep the foot; the air between them narrows because the
+   card is shorter, not because the words moved up into the mark */
+.hc-page .hcs__ic{margin:0 0 auto !important}
+.hc-page .hcs__rail > li{height:clamp(360px,32vw,420px)}
+
+/* ═══ the products menu: a drawn mark, a name, a line ══════════════════════════════════════════ */
+.hc-page .nav__panel{padding:10px;border-radius:16px;
+  box-shadow:0 18px 48px rgba(11,18,32,.14),inset 0 0 0 1px var(--hc-edge)}
+.hc-page .nav__pitem{display:flex;align-items:center;gap:14px;padding:11px 12px;border-radius:12px}
+.hc-page .nav__pitem:hover{background:#F4F4F1}
+.hc-page .nav__pmark{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;
+  border-radius:11px;box-shadow:inset 0 0 0 1px rgba(11,18,32,.16);color:var(--ink)}
+.hc-page .nav__pmark svg{width:20px;height:20px}
+.hc-page .nav__pitem:hover .nav__pmark{box-shadow:inset 0 0 0 1px rgba(11,18,32,.3)}
+.hc-page .nav__pname{font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
+.hc-page .nav__pdesc{font-size:12.5px;line-height:1.4;color:var(--hc-quiet);margin-top:2px}
+.hc-page .nav__pall,.hc-page .nav__panel .nav__pfoot a{font-size:13.5px}
+/* the suite's cards lose a third of their height */
+.hc-page .hcs__rail > li{height:clamp(255px,22vw,300px)}
+/* ═══ "Call me" is the shared widget again ═══════════════════════════════════════════════════════
+   Both of C's Call me buttons were hand-written markup driven by a block that used to live in
+   home.js. That block moved out to call.js when the widget was rebuilt (progressive disclosure:
+   the number first, then who to ask for, the consent line and the two policy links), and C never
+   loaded the new file — so both buttons went dead. They are `[data-call]` mounts now, like every
+   other page's, and call.js owns them.
+
+   Everything above is C's design and stays: the bar's outlined pill, the two 170px closing tiles,
+   the gradient, the field that opens inside the blue one. The only thing that has to give is the
+   HEIGHT, and only in the one state that did not exist when those rules were written — `details`,
+   the short card that asks for a name and an email. A fixed height clipped it to a strip of ink
+   with the fields hanging out below, unreadable. */
+.hc-page .call[data-state="details"],
+.hc-page .call[data-state="done"]{height:auto !important}
+.hc-page .ask-end .call[data-state="details"]{height:auto !important;border-radius:14px}
+/* the tile's gradient and its arrow belong to the tile; the card that opens out of it is the
+   widget's own ink, the same card the bar and the chat show, so the fields read the same
+   everywhere. The button stays behind it, filling it, so no page shows through the corners. */
+.hc-page .ask-end .call[data-state="details"] .call__btn{height:100% !important;padding:0 !important;
+  background:var(--ink) !important;background-image:none !important}
+.hc-page .ask-end .call[data-state="details"] .call__btn::after{display:none !important}
+.hc-page .call__more{z-index:1}
+/* …and the card's own send is a send, not one of the closing panel's 170px tiles: those rules
+   reach it because it carries .btn and sits inside .ask-end__ways */
+.hc-page .ask-end .ask-end__ways .call .call__send,
+.hc-page .ask-end .ask-end__ways .call .btn.call__send{height:46px !important;width:100% !important;
+  padding:0 16px !important;font-size:15px !important;align-items:center !important;justify-content:center !important;
+  gap:0 !important;border-radius:999px !important;background:#FFFFFF !important;background-image:none !important;
+  color:var(--ink) !important;letter-spacing:.01em;flex:0 0 auto !important}
+.hc-page .ask-end .ask-end__ways .call .call__send:hover{background:#F0F1F2 !important;filter:none;transform:none}
+.hc-page .ask-end .ask-end__ways .call .call__send::after{display:none !important;content:none !important}
+
+/* the bar's pill: 42px at rest with the rest of the bar's buttons, and out of the flow the moment
+   it opens, so the bar's own height never changes and nothing beside it moves */
+.hc-page .call--nav[data-state="phone"]{height:56px !important}
+.hc-page .call--nav[data-state="phone"] .call__form{height:56px}
+
+/* ── video title: wider on desktop (840 → 1140, client: at least 1100) ───────────────────────── */
+@media (min-width:1024px){
+  .hc-page .intro__over .display--intro{width:min(100%,1140px) !important;max-width:none !important}
+}
+
+/* ── H1: Medium (500), not Regular, not Black ─────────────────────────────── */
+.hc-page h1:not(#_),.hc-page h1:not(#_) *{font-weight:500 !important}
+
+/* ── video title: the dash is gone; the second half sits on its own line, quieter ── */
+.hc-page .intro__over .display--intro .intro__sub:not(#_){display:block;margin-top:1.1em;opacity:.82;font-size:.42em !important;line-height:1.35;letter-spacing:0 !important}
+
+/* ── suite card icons in the palette blue, styled like "Use your voice" (client, 2026-09-17) ── */
+.hc-page .hcs__card .hcs__ic{background:rgba(0,156,189,.09);box-shadow:inset 0 0 0 1px rgba(0,156,189,.42);color:#009CBD}
+.hc-page .hcs__card:hover .hcs__ic,.hc-page .hcs__card:focus-visible .hcs__ic{background:rgba(255,255,255,.08)}
+/* hover: the card's Learn more button in the Ask Stagwell AI blue, white text */
+.hc-page .hcs__card:hover .hcs__go:not(#_),.hc-page .hcs__card:focus-visible .hcs__go:not(#_){background:#009CBD !important;border-color:#009CBD !important;color:#FFFFFF !important}
+
+/* ── title highlights in the brand palette (client, 2026-09-17)
+   The key words paint in from left to right as the title comes into view: a hard-edged
+   wipe, not a fade. JS arms each .hl (reads the title colour into --hl-base, adds
+   .hl--armed); without JS the words simply stay in the title colour. ── */
+.hl{--hl:#009CBD}
+.hl[data-hl="blue"]{--hl:#009CBD}
+.hl[data-hl="orange"]{--hl:#FF6D24}
+.hl[data-hl="cyan"]{--hl:#77E3F6}
+.hl.hl--armed:not(#_){
+  color:transparent !important;-webkit-text-fill-color:transparent;
+  background-image:linear-gradient(90deg,var(--hl) 0 50%,var(--hl-base,#0B1220) 50% 100%);
+  background-size:200.5% 100%;background-position:calc(100% - var(--hl-p,0) * 100%) 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+/* the hero title: timed, after its lines have risen */
+.hl.hl--armed.hl--timed:not(#_){transition:background-position .65s cubic-bezier(.65,0,.35,1) var(--hl-d,0s)}
+.hl.hl--armed.hl--timed.is-in:not(#_){background-position:0 0}
+/* every other title: scrubbed by the scroll (JS writes --hl-p, 0 → 1, both ways) */
+@media (prefers-reduced-motion:reduce){
+  .hl.hl--armed:not(#_){transition:none !important;background-position:0 0 !important}
+}
+
+
+/* ── Why Stagwell AI (client, 2026-09-17) ──
+   the eyebrow is one colour, still; each point makes room on its right for an
+   image or partner logos (placeholders until the assets arrive) */
+.hc-page #why .display--cos:not(#_),.hc-page #why .display--cos:not(#_) *{color:#009CBD !important}
+.hc-page #why .why__slot{display:grid;place-items:center;aspect-ratio:16/9;border-radius:12px;
+  background:#F2F5F7;margin-top:20px}
+.hc-page #why .why__slot span{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(11,18,32,.38)}
+.hc-page #why .why__item:not(#_){padding-right:52px !important}
+.hc-page #why .why__item:not(#_) > .why__slot{grid-column:1 / -1 !important;width:100%;justify-self:stretch !important}
+@media (min-width:720px){
+  .hc-page #why .why__item:not(#_){display:grid !important;
+    grid-template-columns:minmax(0,1fr) clamp(240px,36%,420px) !important;grid-template-rows:auto auto 1fr !important;
+    column-gap:clamp(32px,4vw,64px) !important;align-items:start;padding-right:clamp(52px,5.3vw,76px) !important}
+  .hc-page #why .why__item:not(#_) > .why__head{display:block !important;grid-column:1 / 2 !important;grid-row:1 !important}
+  .hc-page #why .why__item:not(#_) > .why__d--lead{grid-column:1 / 2 !important;grid-row:2 !important}
+  .hc-page #why .why__item:not(#_) > .why__d:not(.why__d--lead){grid-column:1 / 2 !important;grid-row:3 !important}
+  .hc-page #why .why__item:not(#_) > .why__slot{grid-column:2 / 3 !important;grid-row:1 / 4 !important;margin-top:0;align-self:center !important;width:100%;height:auto !important;min-height:0 !important;aspect-ratio:16/9 !important}
+}
+/* no numbers; the slot is square-cornered and as tall as the words beside it */
+.hc-page #why .why__item:not(#_)::after{content:none !important;display:none !important}
+.hc-page #why .why__item:not(#_){padding-right:0 !important}
+.hc-page #why .why__slot:not(#_){border-radius:0 !important}
+@media (min-width:720px){
+  .hc-page #why .why__item:not(#_) > .why__slot{align-self:stretch !important;aspect-ratio:auto !important;height:auto !important;min-height:160px !important}
+}
+.hc-page #why .why__slot--img{background:#0B0B0B;overflow:hidden}
+.hc-page #why .why__slot--img img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Experience: the brands, one at a time, each rising in from below the box's edge and
+   carried out the top as the next arrives (a moving clip, not a fade). One ink colour. */
+.hc-page #why .why__slot--logos{position:relative;overflow:hidden}
+.hc-page #why .why__logo{position:absolute;inset:0;margin:auto;width:46%;height:30%;
+  background:#0B1220;-webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat;
+  transform:translateY(340%);will-change:transform;
+  animation:whyLogo calc(var(--n,7) * 2.4s) cubic-bezier(.7,0,.3,1) calc(var(--i) * 2.4s) infinite both}
+@keyframes whyLogo{
+  0%{transform:translateY(340%)}
+  4%{transform:translateY(0)}
+  13%{transform:translateY(0)}
+  17.3%{transform:translateY(-340%)}
+  100%{transform:translateY(-340%)}
+}
+@media (prefers-reduced-motion:reduce){
+  .hc-page #why .why__logo{animation:none}
+  .hc-page #why .why__logo[style*="--i:0;"]{transform:none}
+}
+
+/* Edge: the two partners side by side, still, a hairline between them */
+.hc-page #why .why__slot--pair{display:flex !important;align-items:center;justify-content:center;gap:clamp(18px,3vw,36px)}
+.hc-page #why .why__mark{display:block;width:32%;aspect-ratio:4 / 1;background:#0B1220;
+  -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat}
+.hc-page #why .why__sep{display:block;width:1px;height:30%;background:rgba(11,18,32,.24)}
+
+/* Extensible: a living dot network (canvas, home-c.js) instead of a picture */
+.hc-page #why .why__slot--dots{position:relative;overflow:hidden}
+.hc-page #why .why__dots{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* every Why box is square (client, 2026-09-17), even if the row grows */
+.hc-page #why .why__item:not(#_) > .why__slot{aspect-ratio:1 / 1 !important;height:auto !important;min-height:0 !important}
+@media (min-width:720px){
+  .hc-page #why .why__item:not(#_) > .why__slot{align-self:start !important}
+}
+.hc-page #why .why__slot--img img{object-fit:contain}
+@media (min-width:720px){
+  .hc-page #why .why__item:not(#_){grid-template-rows:auto auto auto 1fr !important}
+  .hc-page #why .why__item:not(#_) > .why__slot{grid-row:1 / 5 !important}
+}
+
+/* Edge on a soft palette blue; Extensible on dark, white dots only */
+.hc-page #why .why__slot--pair:not(#_){background:#D6F5FC !important}
+.hc-page #why .why__slot--dots:not(#_){background:#0B1220 !important}
+/* desktop: the Why paragraphs about 300px narrower (624 → 340) */
+@media (min-width:1024px){
+  .hc-page #why .why__item:not(#_) > .why__d{max-width:340px !important}
+}
+
+/* Experience: the logos travel through a short window in the middle of the box, not
+   the whole height; the window crops them as they pass */
+.hc-page #why .why__reel{position:absolute;inset:0;margin:auto;width:52%;height:18%;overflow:hidden}
+.hc-page #why .why__reel .why__logo{width:100%;height:100%;animation-name:whyReel}
+@keyframes whyReel{
+  0%{transform:translateY(112%)}
+  4%{transform:translateY(0)}
+  13%{transform:translateY(0)}
+  17.3%{transform:translateY(-112%)}
+  100%{transform:translateY(-112%)}
+}
+/* desktop: wider paragraphs; the boxes 100px shorter than square */
+@media (min-width:1024px){
+  .hc-page #why .why__item:not(#_) > .why__d{max-width:430px !important}
+  .hc-page #why .why__item:not(#_){container-type:inline-size}
+  .hc-page #why .why__item:not(#_) > .why__slot{aspect-ratio:auto !important;height:calc(clamp(240px,36cqi,420px) - 100px) !important}
+}
+
+/* ═══ closing Call my phone: no robot. Dark ground, a voice drawn in small squares ═══ */
+.hc-page .ask-end .call__btn:not(#_),
+.hc-page .ask-end .call__btn:not(#_):hover{
+  background:#0B1220 !important;position:relative;overflow:hidden;isolation:isolate}
+.hc-page .ask-end .call__btn:not(#_):hover{background:#050A14 !important}
+.hc-page .ask-end .call__btn > :not(.call__voice){position:relative;z-index:1}
+.hc-page .ask-end .call__voice{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.hc-page .hc-port__slide[data-i="2"] .hc-port__pic:not(#_){object-position:center}
+
+/* desktop: the two closing tiles 60px taller (170 → 230) */
+@media (min-width:1024px){
+  .hc-page .ask-end .ask-end__ways > .btn:not(#_),
+  .hc-page .ask-end .call__btn:not(#_),
+  .hc-page .ask-end .call:not(#_){height:230px !important}
+}
+
+/* the film: "what's next" in orange, so its Book a demo turns blue */
+.hc-page .intro__act .btn[data-cta]:not(#_){background:#009CBD !important;border-color:#009CBD !important;color:#FFFFFF !important}
+.hc-page .intro__act .btn[data-cta]:not(#_):hover{background:#0E5F8E !important;border-color:#0E5F8E !important}
+
+/* ═══ Our clients: five logos under the closing tiles, all turning together with the
+   Experience motion (rise in from below, carried out the top) ═══ */
+.hc-page .ask-end .hc-clients{grid-column:1 / -1;margin-top:clamp(28px,4vw,48px)}
+.hc-page .ask-end .hc-clients__t{margin:0 0 16px;font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:#009CBD}
+.hc-page .ask-end .hc-clients__row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.hc-page .ask-end .hc-clients__cell{position:relative;height:clamp(64px,7vw,96px)}
+.hc-page .ask-end .hc-clients__cell + .hc-clients__cell::before{content:'';position:absolute;left:0;top:25%;bottom:25%;width:1px;background:rgba(11,18,32,.14)}
+.hc-page .ask-end .hc-clients__reel{position:absolute;inset:0;margin:auto;width:58%;height:34%;overflow:hidden}
+.hc-page .ask-end .hc-clients__logo{position:absolute;inset:0;background:#0B1220;
+  -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat;
+  transform:translateY(112%);will-change:transform;
+  animation:whyReel calc(var(--n,7) * 2.4s) cubic-bezier(.7,0,.3,1) calc(var(--i) * 2.4s) infinite both}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .ask-end .hc-clients__logo{animation:none}
+  .hc-page .ask-end .hc-clients__logo[style^="--i:0;"]{transform:none}
+}
+.hc-page .ask-end .hc-clients__cell + .hc-clients__cell::before{content:none}
+.hc-page .ask-end .hc-clients__t{font-size:15px;letter-spacing:0;text-transform:none;color:rgba(11,18,32,.62)}
+/* the five cells keep their own time: each its own pace and offset, so they turn at different moments */
+.hc-page .ask-end .hc-clients__logo{animation-duration:calc(var(--n,7) * var(--step,2.4s)) !important;
+  animation-delay:calc(var(--i) * var(--step,2.4s) - var(--d,0s)) !important}
+
+/* the clients row now leads the closing block: under the suite, above the two tiles */
+.hc-page .ask-end .hc-clients:not(#_){margin:0 0 clamp(64px,7vw,104px)}
+/* the footer's content keeps the closing tiles' edges */
+@media (min-width:761px){
+  .hc-page .foot .foot__in:not(#_){max-width:1240px !important;padding-inline:min(40px,4vw) !important;margin-inline:auto !important}
+}
+
+/* Products menu: the icon tiles in the palette blue, like the suite cards */
+.hc-page .nav__pmark:not(#_){background:rgba(0,156,189,.09) !important;box-shadow:inset 0 0 0 1px rgba(0,156,189,.42) !important;color:#009CBD !important}
+.hc-page .nav__pmark:not(#_) svg{color:#009CBD !important}
+.hc-page .nav__pitem:hover .nav__pmark:not(#_){background:rgba(0,156,189,.16) !important;box-shadow:inset 0 0 0 1px rgba(0,156,189,.7) !important}
+
+/* New Voices, drawn: the voice canvas standing in for its picture */
+.call__voice--pic{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;border-radius:inherit}
+.pc-page .pp-more__media{position:relative;overflow:hidden}
+
+/* phones: the film takes more of the screen (was 4:5, ~480px) — tall, not full-screen */
+@media (max-width:760px){
+  .hc-page .intro__media:not(#_){aspect-ratio:auto !important;height:clamp(520px,72svh,680px) !important}
+  .hc-page .intro__media:not(#_) .intro__pic{width:100%;height:100%;object-fit:cover}
+}
+
+/* phones: three client logos, bigger; the Why boxes wide and low instead of square */
+@media (max-width:760px){
+  .hc-page .ask-end .hc-clients__row:not(#_){grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hc-page .ask-end .hc-clients__cell:nth-child(n+4){display:none}
+  .hc-page .ask-end .hc-clients__cell:not(#_){height:84px}
+  .hc-page .ask-end .hc-clients__reel:not(#_){width:78%;height:42%}
+  .hc-page #why .why__item:not(#_) > .why__slot{aspect-ratio:16 / 9 !important}
+}
+
+/* ═══ VERSION B (/hero-b): a compact hero, tags on one line, the film already there ═══ */
+.hc-b .hero:not(#_){padding-top:clamp(96px,11vh,128px) !important;padding-bottom:clamp(18px,2.4vh,28px) !important;min-height:0 !important}
+.hc-b .hero .display--hero:not(#_){margin-bottom:clamp(20px,2.6vh,30px) !important}
+.hc-b .askbox:not(#_){min-height:112px !important;padding:16px 18px 12px !important}
+.hc-b .hero .chat:not(#_){margin-bottom:0 !important}
+/* the tag row: one line, sideways, arrows at the ends */
+.hc-b .hcb-tags{position:relative;width:min(100%,760px);margin:16px auto 0}
+.hc-b .hcb-tags .chat__tags:not(#_){display:flex !important;flex-wrap:nowrap !important;justify-content:flex-start !important;
+  gap:10px !important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;
+  margin:0 !important;padding:2px 0 !important;width:100% !important;max-width:none !important;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 44px,#000 calc(100% - 64px),transparent);
+          mask-image:linear-gradient(90deg,transparent 0,#000 44px,#000 calc(100% - 64px),transparent)}
+.hc-b .hcb-tags.is-start .chat__tags:not(#_){-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 64px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 64px),transparent)}
+.hc-b .hcb-tags.is-end .chat__tags:not(#_){-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 44px);mask-image:linear-gradient(90deg,transparent 0,#000 44px)}
+.hc-b .hcb-tags.is-start.is-end .chat__tags:not(#_){-webkit-mask-image:none;mask-image:none;justify-content:center !important}
+.hc-b .hcb-tags .chat__tags::-webkit-scrollbar{display:none}
+.hc-b .hcb-tags .chat__tags > li{flex:0 0 auto;scroll-snap-align:start}
+.hc-b .hcb-tags__arw{position:absolute;top:50%;z-index:2;width:36px;height:36px;margin-top:-18px;border-radius:50%;
+  display:grid;place-items:center;border:1px solid rgba(11,18,32,.12);background:#FFFFFF;color:#0B1220;cursor:pointer}
+.hc-b .hcb-tags__arw[hidden]{display:none}
+.hc-b .hcb-tags__arw svg{width:16px;height:16px}
+.hc-b .hcb-tags__arw:hover{background:#F2F3F5}
+.hc-b .hcb-tags__arw--prev{left:-4px}
+.hc-b .hcb-tags__arw--next{right:-4px}
+
+/* the film: a card the width of the page's content, playing, no scroll choreography */
+.hc-b .intro:not(#_){height:auto !important;min-height:0 !important;padding:clamp(20px,3vh,32px) min(40px,4vw) clamp(56px,7vw,104px) !important;display:block !important}
+.hc-b .intro__stage:not(#_){height:auto !important;position:relative !important;max-width:1160px;margin:0 auto !important;width:100% !important}
+.hc-b .intro__media:not(#_){position:relative !important;top:auto !important;width:100% !important;height:auto !important;
+  aspect-ratio:16 / 9 !important;clip-path:none !important;border-radius:18px !important;overflow:hidden !important;max-width:100% !important;margin:0 !important}
+.hc-b .intro__media:not(#_) .intro__pic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0 !important}
+.hc-b .intro__over:not(#_){position:absolute !important;inset:0 !important;height:auto !important}
+.hc-b .intro__more:not(#_){display:none !important}
+.hc-b .intro__ctl:not(#_){top:auto !important;bottom:20px !important;left:20px !important}
+@media (max-width:760px){
+  .hc-b .intro:not(#_){padding-inline:16px !important}
+  .hc-b .intro__media:not(#_){aspect-ratio:4 / 5 !important;height:auto !important}
+  .hc-b .hcb-tags__arw{display:none !important}
+}
+.hc-b .hcb-tags:not(#_){width:100%;max-width:760px;min-width:0;justify-self:center}
+.hc-b .hero :has(> .hcb-tags){min-width:0}
+/* version B, round two: the film runs the full viewport width less 20px a side, square-cornered,
+   with more air above the title and between the tags and the film */
+@media (min-width:761px){
+  .hc-b .hero:not(#_){padding-top:clamp(128px,15vh,168px) !important}
+  .hc-b .intro:not(#_){padding:clamp(48px,7vh,80px) 20px clamp(56px,7vw,104px) !important}
+  .hc-b .intro__stage:not(#_){max-width:none !important}
+}
+.hc-b .intro__media:not(#_){border-radius:0 !important}
+.hc-page .hc-port.is-auto .hc-port__tab.is-on:not(.is-timing)::before{transform:scaleX(0);transition:none}
+
+/* the suite header is symmetric: the button keeps the same distance from the right edge
+   as the title (and the first card) keep from the left */
+.hc-page .hcs__head:not(#_){padding-right:clamp(20px,6vw,120px) !important}
+
+/* the full-screen chat: a quieter title, and the block stays in the middle of any window
+   (the fixed 120px top/bottom padding pushed it to the top on shorter screens) */
+.hc-page .chat-over:not(#_){padding-block:clamp(72px,9vh,120px) clamp(24px,6vh,96px) !important;align-items:safe center !important;overflow-y:auto}
+.hc-page .chat-over:not(.chat-over--live) .chat-over__title:not(#_),
+.hc-page .chat-over:not(.chat-over--live) .chat-over__title:not(#_) *{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
+.hc-page .chat-over .chat-over__title:not(#_),.hc-page .chat-over .chat-over__title:not(#_) *{letter-spacing:-.035em !important;font-weight:500 !important}
+.hc-page .chat-over .chat-over__title:not(#_) em,.hc-page .chat-over .chat-over__title:not(#_) em *{color:#009CBD !important}
+
+/* the clients row, straight after the film (A and B) */
+.hc-page .hcb-trust{padding:0 20px clamp(80px,9vw,136px)}
+.hc-page .hcb-trust .hc-clients{max-width:1240px;margin:0 auto;text-align:center}
+.hc-page .hcb-trust .hc-clients__t{margin:0 0 20px;font-size:15px;line-height:1.4;color:rgba(11,18,32,.62)}
+.hc-page .hcb-trust .hc-clients__row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.hc-page .hcb-trust .hc-clients__cell{position:relative;height:clamp(64px,7vw,96px)}
+.hc-page .hcb-trust .hc-clients__reel{position:absolute;inset:0;margin:auto;width:58%;height:34%;overflow:hidden}
+.hc-page .hcb-trust .hc-clients__logo{position:absolute;inset:0;background:#0B1220;
+  -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat;
+  transform:translateY(112%);will-change:transform;
+  animation:whyReel calc(var(--n,7) * var(--step,2.4s)) cubic-bezier(.7,0,.3,1) calc(var(--i) * var(--step,2.4s) - var(--d,0s)) infinite both}
+@media (prefers-reduced-motion:reduce){
+  .hc-page .hcb-trust .hc-clients__logo{animation:none}
+  .hc-page .hcb-trust .hc-clients__logo[style^="--i:0;"]{transform:none}
+}
+@media (max-width:760px){
+  .hc-page .hcb-trust{padding-inline:16px}
+  .hc-page .hcb-trust .hc-clients__row{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hc-page .hcb-trust .hc-clients__cell:nth-child(n+4){display:none}
+  .hc-page .hcb-trust .hc-clients__cell{height:84px}
+  .hc-page .hcb-trust .hc-clients__reel{width:78%;height:42%}
+}
+

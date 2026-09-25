@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+/* Theme, before first paint — carried over unchanged from the agent page. */
+(function(){var d=document.documentElement,sys='light',t=null;
+try{sys=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}catch(e){}
+try{var raw=localStorage.getItem('sw-theme');
+  if(raw&&raw!=='light'&&raw!=='dark'){var o=JSON.parse(raw);
+    if(o&&(o.choice==='light'||o.choice==='dark')&&o.sys===sys)t=o.choice;}
+  else if(raw){localStorage.removeItem('sw-theme');}
+}catch(e){}
+d.setAttribute('data-theme',t||sys);})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{if('scrollRestoration' in history)history.scrollRestoration='manual';}catch(e){}</script>
+<title>QuestDIY | Stagwell AI</title>
+<meta name="description" content="Run real consumer research yourself in days: AI drafts the questionnaire, fields it in 100+ countries and helps you read the results.">
+
+<link rel="canonical" href="https://stagwell.vercel.app/s/questdiy">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stagwell AI">
+<meta property="og:title" content="QuestDIY | Stagwell AI">
+<meta property="og:description" content="Run real consumer research yourself in days: AI drafts the questionnaire, fields it in 100+ countries and helps you read the results.">
+<meta property="og:url" content="https://stagwell.vercel.app/s/questdiy">
+<!-- a new file name on purpose: WhatsApp and the rest cache the card by URL -->
+<meta property="og:image" content="https://stagwell.vercel.app/next/assets/share/og-v5.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stagwell AI">
+<meta name="twitter:image" content="https://stagwell.vercel.app/next/assets/share/og-v5.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F6F6F7">
+
+<link rel="icon" href="/next/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/next/assets/share/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/next/assets/share/apple-touch-icon.png">
+<link rel="stylesheet" href="/next/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/next/lead.css?v=7">
+<link rel="stylesheet" href="/next/call.css">
+<link rel="stylesheet" href="/next/home.css">
+<link rel="stylesheet" href="/next/product.css">
+<link rel="stylesheet" href="/next/home-c.css?v=237">
+<link rel="stylesheet" href="/next/prod-c.css?v=123">
+<link rel="stylesheet" href="/next/hero-b.css?v=101">
+<!-- Contentsquare: funnel analysis and heatmaps (client, 2026-09-17) -->
+<script src="/next/consent.js"></script>
+<script src="/next/mixpanel.js" defer></script>
+</head>
+<!-- data-lead-cta: the shared booking modal (lead.js) delegates every [data-cta] click -->
+<body class="home pp hc-page hc-b pc-page sp--questdiy" data-lead-cta>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="sw-logo" viewBox="0 0 1870 153">
+    <path class="m-ink" d="M93.1156 110.812H0V152.999H68.5964C83.69 152.999 93.1156 143.575 93.1156 128.483V110.812Z"/>
+    <path class="m-amber" d="M65.0454 42.2235H158.161V0H89.5529C74.471 0 65.0454 9.42489 65.0454 24.5169V42.2235Z"/>
+    <path class="m-teal" d="M0 97.6127H133.665C148.747 97.6127 158.185 88.1881 158.185 73.1079V55.4258H24.5195C9.4259 55.4258 0 64.8504 0 79.9429V97.6127Z"/>
+    <path class="m-ink" d="M308.166 60.8018H261.261C251.788 60.8018 245.742 54.5706 245.742 44.8919C245.742 35.2123 251.788 29.0018 261.261 29.0018H344.997V22.9575C345.065 19.9247 344.517 16.9097 343.388 14.0942C342.258 11.2788 340.57 8.72141 338.425 6.57636C336.28 4.4314 333.722 2.74325 330.906 1.61393C328.091 0.484608 325.075 -0.0624364 322.042 0.00565917H261.261C233.674 0.00565917 215.56 17.7232 215.56 44.7048C215.56 71.6857 233.674 89.3829 261.261 89.3829H308.145C318.428 89.3829 324.867 95.8221 324.867 105.999C324.867 116.177 318.428 122.616 308.145 122.616H218.821V128.661C218.767 131.685 219.325 134.688 220.461 137.491C221.596 140.295 223.286 142.839 225.43 144.973C227.574 147.107 230.127 148.787 232.936 149.909C235.744 151.032 238.751 151.576 241.775 151.508H308.249C336.646 151.508 355.362 133.188 355.362 105.812C355.362 78.4363 336.438 60.532 308.249 60.532"/>
+    <path class="m-ink" d="M378.113 28.9962H433.474V151.772H463.656V28.9962H518.809V0H378.113V28.9962Z"/>
+    <path class="m-ink" d="M659.706 76.2919H581.807V53.1527C581.807 38.6131 591.258 29.2039 605.758 29.2039H635.734C650.275 29.2039 659.706 38.6546 659.706 53.1527V76.2919ZM635.734 0H605.758C573.144 0 551.603 21.1448 551.603 53.1527V151.772H581.807V104.872H659.706V151.772H689.89V53.1527C689.89 21.1448 668.347 0 635.734 0Z"/>
+    <path class="m-ink" d="M808.447 83.8816V88.3064H856.223V98.6917C856.223 113.231 846.773 122.827 832.269 122.827H797.188C782.646 122.827 773.236 113.168 773.236 98.6917V53.2035C773.236 38.6637 782.688 29.0467 797.188 29.0467H875.685V23.0024C875.761 19.9697 875.21 16.9546 874.08 14.1392C872.95 11.3238 871.259 8.76634 869.122 6.62137C866.975 4.47641 864.411 2.78827 861.599 1.65895C858.778 0.529625 855.767 -0.0175153 852.737 0.0505802H797.188C764.573 0.0505802 743.032 21.1953 743.032 53.2035V98.6917C743.032 130.679 764.573 151.823 797.188 151.823H832.212C864.829 151.823 886.342 130.679 886.342 98.6917V61.0549H831.404C828.384 60.9979 825.392 61.5506 822.59 62.6789C819.788 63.8072 817.252 65.4882 815.115 67.6213C812.987 69.7544 811.306 72.2949 810.176 75.0928C809.045 77.8907 808.494 80.8871 808.551 83.9025"/>
+    <path class="m-ink" d="M1088.87 100.859C1088.87 114.942 1079.81 123.997 1065.53 123.997C1051.23 123.997 1042.38 114.942 1042.38 100.859V1.63672H1012.2V100.859C1012.2 114.942 1003.14 123.997 988.848 123.997C974.563 123.997 965.691 114.942 965.691 100.859V1.63672H935.506V100.859C935.506 132.452 956.63 152.994 988.848 152.994C996.238 153.091 1003.54 151.49 1010.2 148.313C1016.87 145.137 1022.71 140.47 1027.28 134.674C1031.88 140.396 1037.7 145.014 1044.32 148.184C1050.94 151.355 1058.19 152.999 1065.53 152.994C1097.94 152.994 1119.08 132.223 1119.08 100.859V1.63672H1088.87V100.859Z"/>
+    <path class="m-ink" d="M1269.81 1.63672H1218.77C1189.97 1.63672 1170.66 20.5589 1170.66 48.7239V104.805C1170.66 132.971 1189.78 151.706 1218.77 151.706H1269.89C1272.9 151.763 1275.91 151.21 1278.71 150.082C1281.5 148.953 1284.05 147.272 1286.17 145.139C1288.31 143.007 1289.99 140.466 1291.12 137.668C1292.24 134.871 1292.8 131.874 1292.75 128.858V122.814H1218.77C1207.89 122.814 1200.84 115.773 1200.84 104.91V90.2242H1282.17V61.8311H1200.76V48.5577C1200.76 37.6741 1207.8 30.6328 1218.69 30.6328H1292.75V24.6092C1292.81 21.5846 1292.27 18.577 1291.15 15.7673C1290.03 12.9577 1288.35 10.4039 1286.21 8.25984C1284.08 6.11573 1281.53 4.4255 1278.73 3.29086C1275.92 2.15622 1272.91 1.60063 1269.89 1.65742"/>
+    <path class="m-ink" d="M1371.67 104.889V1.63672H1341.46V105.283C1341.46 133.262 1360.8 151.789 1389.57 151.789H1429.64C1432.65 151.845 1435.66 151.294 1438.45 150.165C1441.25 149.037 1443.8 147.356 1445.92 145.223C1448.06 143.09 1449.74 140.548 1450.87 137.751C1451.99 134.953 1452.55 131.957 1452.5 128.941V122.897H1389.49C1378.62 122.897 1371.58 115.855 1371.58 104.992"/>
+    <path class="m-ink" d="M1538.97 122.793C1528.1 122.793 1521.07 115.752 1521.07 104.889V1.63672H1490.95V105.283C1490.95 133.262 1510.27 151.789 1539.06 151.789H1579.1C1582.12 151.843 1585.11 151.288 1587.91 150.159C1590.71 149.029 1593.25 147.348 1595.38 145.216C1597.52 143.084 1599.2 140.544 1600.33 137.748C1601.45 134.952 1602.01 131.956 1601.95 128.942V122.897L1538.97 122.793Z"/>
+    <path class="m-orange" d="M1767.44 76.2919H1689.54V53.1527C1689.54 38.6131 1698.99 29.2039 1713.49 29.2039H1743.46C1758.01 29.2039 1767.44 38.6546 1767.44 53.1527V76.2919ZM1743.46 0H1713.49C1680.87 0 1659.33 21.1448 1659.33 53.1527V151.772H1689.54V104.872H1767.44V151.772H1797.62V53.1527C1797.62 21.1448 1776.08 0 1743.46 0Z"/>
+    <path class="m-orange" d="M1840.53 1.30078H1855.59C1863.11 1.30078 1869.21 7.39451 1869.21 14.9115V151.209H1840.53V1.30078Z"/>
+  </symbol>
+</svg>
+
+<header class="nav" id="nav">
+  <nav class="nav__in" aria-label="Primary">
+    <a class="nav__brand" href="/" aria-label="Stagwell AI — home">
+      <svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg>
+    </a>
+    <ul class="nav__links">
+      <li><a href="/#why">Why Stagwell AI</a></li>
+      <!-- products:nav — a temporary dropdown to the product pages, generated by
+           build-product-pages.py (behaviour: navdrop.js; styles: end of home.css) -->
+      <li class="nav__drop">
+        <button type="button" class="nav__droptrig" aria-expanded="false" aria-controls="navDrop">Products<svg class="nav__chev" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav__panel" id="navDrop">
+          <div class="nav__mega nav__mega--two">
+            <div class="nav__mcol"><ul class="nav__plist">
+              <li><a class="nav__pitem" href="/the-machine"><img class="nav__pthumb" src="/assets/img/products/thumb-the-machine.jpg" alt="" width="48" height="48" decoding="async"><span class="nav__ptext"><span class="nav__pname">Machine OS</span><span class="nav__pdesc">Enterprise agentic marketing operating system</span></span></a></li>
+              <li><a class="nav__pitem" href="/targeting-machine"><img class="nav__pthumb" src="/assets/img/products/thumb-targeting-machine.jpg" alt="" width="48" height="48" decoding="async"><span class="nav__ptext"><span class="nav__pname">The Targeting Machine</span><span class="nav__pdesc">Privacy-first audience intelligence and activation</span></span></a></li>
+            </ul></div>
+            <div class="nav__mcol"><ul class="nav__plist">
+              <li><a class="nav__pitem" href="/newvoices"><img class="nav__pthumb" src="/assets/img/products/thumb-newvoices.jpg" alt="" width="48" height="48" decoding="async"><span class="nav__ptext"><span class="nav__pname">New Voices</span><span class="nav__pdesc">AI voice agents and insight campaigns</span></span></a></li>
+              <li><a class="nav__pitem" href="/agent-cloud"><img class="nav__pthumb" src="/assets/img/products/thumb-agent-cloud.jpg" alt="" width="48" height="48" decoding="async"><span class="nav__ptext"><span class="nav__pname">Agent Cloud</span><span class="nav__pdesc">Secure AI workspace and marketing agent toolkit</span></span></a></li>
+            </ul></div>
+            <a class="nav__mcta" href="/products"><video src="/assets/video/lab/loops/mosaic.mp4" poster="/assets/video/lab/loops/mosaic-poster.jpg" muted loop playsinline autoplay preload="metadata" aria-hidden="true"></video><span class="nav__mcta__in"><span class="nav__mcta__t">View all products</span><span class="nav__mcta__arw" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></a>
+          </div>
+        </div>
+      </li>
+      <!-- /products:nav -->
+    </ul>
+    <div class="nav__acts">
+      <!-- a chat bubble with the AI spark, not a magnifier: it opens the chat over the
+           page, it is not a search (client, 2026-09-10) -->
+      <button type="button" class="nav__search" id="navSearch" aria-label="Ask Stagwell AI" aria-haspopup="dialog" aria-expanded="false">
+        <svg class="ic-ask" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M6 3.5h12A3.5 3.5 0 0 1 21.5 7v8a3.5 3.5 0 0 1-3.5 3.5h-6.6L7 21.8v-3.3H6A3.5 3.5 0 0 1 2.5 15V7A3.5 3.5 0 0 1 6 3.5zM12 6.6Q12.55 10.45 16.4 11Q12.55 11.55 12 15.4Q11.45 11.55 7.6 11Q11.45 10.45 12 6.6Z"/></svg>
+      </button>
+      <button type="button" class="btn btn--ink" data-cta="session">Book a demo</button>
+      <!-- the phone's way in: the links and both buttons live in the sheet -->
+      <button type="button" class="nav__burger" id="navBurger" aria-expanded="false" aria-controls="navMenu"><span class="nav__blbl">Menu</span><span class="nav__bl"></span><span class="nav__bl"></span><span class="nav__bl"></span></button>
+    </div>
+  </nav>
+</header>
+
+<!-- the menu, on a phone: under the bar, the pages then the two ways in -->
+<nav class="menu" id="navMenu" aria-label="Menu" hidden>
+  <div class="menu__top">
+    <ul class="menu__links">
+      <li><a href="/#why">Why Stagwell AI</a></li>
+      <!-- products:menu -->
+      <li class="menu__group"><span class="menu__label">Products</span>
+        <ul class="menu__sub">
+          <li><a href="/the-machine"><img class="menu__thumb" src="/assets/img/products/thumb-the-machine.jpg" alt="" width="48" height="48" decoding="async" loading="lazy"><span class="menu__ptext"><span class="menu__pname">Machine OS</span><span class="menu__pdesc">Enterprise agentic marketing operating system</span></span></a></li>
+          <li><a href="/targeting-machine"><img class="menu__thumb" src="/assets/img/products/thumb-targeting-machine.jpg" alt="" width="48" height="48" decoding="async" loading="lazy"><span class="menu__ptext"><span class="menu__pname">The Targeting Machine</span><span class="menu__pdesc">Privacy-first audience intelligence and activation</span></span></a></li>
+          <li><a href="/newvoices"><img class="menu__thumb" src="/assets/img/products/thumb-newvoices.jpg" alt="" width="48" height="48" decoding="async" loading="lazy"><span class="menu__ptext"><span class="menu__pname">New Voices</span><span class="menu__pdesc">AI voice agents and insight campaigns</span></span></a></li>
+          <li><a href="/agent-cloud"><img class="menu__thumb" src="/assets/img/products/thumb-agent-cloud.jpg" alt="" width="48" height="48" decoding="async" loading="lazy"><span class="menu__ptext"><span class="menu__pname">Agent Cloud</span><span class="menu__pdesc">Secure AI workspace and marketing agent toolkit</span></span></a></li>
+        </ul>
+        <a class="menu__all" href="/products">View all products</a>
+      </li>
+      <!-- /products:menu -->
+    </ul>
+  </div>
+  <div class="menu__acts">
+    <!-- the Ask field at the foot, over Book a demo: in reach of a thumb (client) -->
+    <button type="button" class="menu__search" id="menuSearch" aria-haspopup="dialog">
+      <svg class="ic-ask" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M6 3.5h12A3.5 3.5 0 0 1 21.5 7v8a3.5 3.5 0 0 1-3.5 3.5h-6.6L7 21.8v-3.3H6A3.5 3.5 0 0 1 2.5 15V7A3.5 3.5 0 0 1 6 3.5zM12 6.6Q12.55 10.45 16.4 11Q12.55 11.55 12 15.4Q11.45 11.55 7.6 11Q11.45 10.45 12 6.6Z"/></svg>
+      <span>Ask Stagwell</span>
+    </button>
+    <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
+  </div>
+</nav>
+
+<!-- the chat, full screen over the page: the Ask Stagwell block itself,
+     in light. The magnifier opens it; the arrow or Enter sends to the agent. -->
+<div class="chat-over" id="chatOver" role="dialog" aria-modal="true" aria-label="Ask Stagwell" hidden>
+  <a class="chat-over__brand" href="/" aria-label="Stagwell AI — home"><svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg></a>
+  <button type="button" class="hero__disc chat-over__close" id="chatOverClose" aria-label="Close"><svg class="ic ic-x" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <div class="wrap ask__in chat-over__in">
+    <h2 class="display display--ask chat-over__title">How can we <em>help<span class="q">?</span></em></h2>
+    <p class="ask__lede">Ask anything. Stagwell AI finds the right expertise, <br>technology and people to solve it.</p>
+    <form class="ask__form" id="askFormOver" autocomplete="off">
+      <label class="vh" for="askInputOver">Ask Stagwell</label>
+      <div class="ask__field">
+        <input class="ask__input" id="askInputOver" name="q" type="text"
+               placeholder="Ask Stagwell" spellcheck="false">
+        <button class="ask__go" type="submit" aria-label="Ask Stagwell">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </form>
+    <ul class="ask__tags" role="group" aria-label="Pick a starting point">
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Increase brand awareness" data-domain="brand_health" data-goal="brand_awareness"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 13.5 7.5 9l3.5 3.5L17 6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 6.5h4v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Increase brand awareness</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Grow your audience" data-domain="audiences" data-goal="audience_growth"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="13.6" cy="8.4" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 15.4c.6-2.2 2.3-3.4 4.5-3.4s3.9 1.2 4.5 3.4M13.2 12.2c1.9 0 3.2 1 3.8 2.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Grow your audience</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Protect brand reputation" data-domain="reputation" data-goal="reputation"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.8 4 5.2v4.6c0 3.5 2.6 6.2 6 7.4 3.4-1.2 6-3.9 6-7.4V5.2L10 2.8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m7.4 10 1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Protect brand reputation</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Track your competition" data-domain="competitive" data-goal="competition"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.6" cy="8.6" r="4.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12.4 12.4 16.5 16.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Track your competition</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Measure brand impact" data-domain="business_impact" data-goal="brand_impact"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 16V9M8.5 16V5M13.5 16v-4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.5 16H2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Measure brand impact</button></li>
+      <li><button type="button" class="tag" aria-pressed="false" data-q="Scale business operations" data-domain="marketing_ops" data-goal="operations"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="3" y="3" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="11.5" y="3" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11.5" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14.25 11.5v5.5M11.5 14.25h5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Scale business operations</button></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Generated by next/build-solution-pages-c.py (content: build-product-pages.py) — edit there, not here. -->
+<main id="top">
+
+<section class="pp-hero sp-hero">
+  <div class="pp-wrap pp-hero__in">
+    <p class="sp-mark">QuestDIY</p>
+    <p class="pp-eyebrow">Teams that need answers before the deadline</p>
+    <h1 class="pp-title">Run real consumer research yourself — in days.</h1>
+    <p class="pp-lede">Run real consumer research yourself in days: AI drafts the questionnaire, fields it in 100+ countries and helps you read the results.</p>
+    <div class="pp-acts">
+      <button type="button" class="btn btn--accent btn--lg" data-cta="session" data-where="hero">Book a demo</button>
+      <a class="pp-site" href="https://www.harrisquest.com/suite/questdiy" target="_blank" rel="noopener" data-product-site>Visit website<svg class="pp-site__ic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6.5 5H11v4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+  <figure class="sp-hero__pic"><img src="/assets/img/glass.jpg" alt="" decoding="async" fetchpriority="high"></figure>
+</section>
+
+<section class="pp-about">
+  <div class="pp-wrap">
+    <p class="pp-about__text rv">Describe what you want to learn; AI helps draft the questionnaire, fields it to respondents in 100+ countries, and helps you read the results. No agency required.</p>
+  </div>
+</section>
+
+<section class="pp-more sp-tabs">
+  <div class="pp-wrap">
+    <div class="sp-tabs__head"><div class="pp-more__head">
+      <p class="pp-sign rv">How it works</p>
+      <h2 class="pp-h2 rv" style="--d:.1s">What <span>QuestDIY</span> does</h2>
+    </div></div>
+    <div class="sp-tabs__bar" role="tablist" aria-label="What it does">
+      <button type="button" class="sp-tabs__tab is-on" role="tab" id="spt-questdiy-0" aria-controls="spp-questdiy-0" aria-selected="true">Surveys</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-questdiy-1" aria-controls="spp-questdiy-1" aria-selected="false" tabindex="-1">Global panel</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-questdiy-2" aria-controls="spp-questdiy-2" aria-selected="false" tabindex="-1">Testing</button>
+      <button type="button" class="sp-tabs__tab" role="tab" id="spt-questdiy-3" aria-controls="spp-questdiy-3" aria-selected="false" tabindex="-1">Speed</button>
+    </div>
+    <div class="sp-tabs__panels">
+      <article class="sp-tabs__panel is-on" role="tabpanel" id="spp-questdiy-0" aria-labelledby="spt-questdiy-0">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">01 / 04</p><h3>AI-drafted surveys</h3><p>Say what you want to learn. The questionnaire is drafted for you to edit.</p></div>
+        <div class="sp-tabs__pic" data-vis="screen:1"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-questdiy-1" aria-labelledby="spt-questdiy-1">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">02 / 04</p><h3>Respondents in 100+ countries</h3><p>A built-in panel fields the study in more than 100 countries.</p></div>
+        <div class="sp-tabs__pic"><video src="/assets/video/lab/loops/world.mp4" poster="/assets/video/lab/loops/world-poster.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-questdiy-2" aria-labelledby="spt-questdiy-2">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">03 / 04</p><h3>Concept &amp; message testing</h3><p>Put concepts, messages and ads in front of real people before launch.</p></div>
+        <div class="sp-tabs__pic" data-vis="pic"></div>
+      </article>
+      <article class="sp-tabs__panel" role="tabpanel" id="spp-questdiy-3" aria-labelledby="spt-questdiy-3">
+        <div class="sp-tabs__txt"><p class="sp-tabs__n">04 / 04</p><h3>Same-day reads</h3><p>Built, fielded and read in as little as four hours.</p></div>
+        <div class="sp-tabs__pic" data-vis="screen:2"></div>
+      </article>
+    </div>
+    <p class="pp-mid"><button type="button" class="btn btn--ink btn--lg" data-cta="session" data-where="mid">Book a demo</button></p>
+  </div>
+</section>
+<script>
+(function () {
+  var sec = document.currentScript && document.currentScript.previousElementSibling;
+  if (!sec || !sec.classList.contains('sp-tabs')) return;
+  var tabs = [].slice.call(sec.querySelectorAll('.sp-tabs__tab')), panels = [].slice.call(sec.querySelectorAll('.sp-tabs__panel'));
+  var bar = sec.querySelector('.sp-tabs__bar');
+  function pick(i, focus) {
+    tabs.forEach(function (t, n) { var on = n === i; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    panels.forEach(function (p, n) { p.hidden = n !== i; p.classList.toggle('is-on', n === i); var v = p.querySelector('video'); if (v) { if (n === i) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); } });
+    if (focus) tabs[i].focus();
+    if (bar.scrollWidth > bar.clientWidth + 2) bar.scrollTo({ left: Math.max(0, tabs[i].offsetLeft - 20), behavior: 'smooth' });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { pick(i); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % tabs.length, true); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); pick((i - 1 + tabs.length) % tabs.length, true); }
+    });
+  });
+  sec.classList.add('is-tabbed');
+  pick(0);
+})();
+</script>
+
+<section class="sp-also">
+  <div class="pp-wrap">
+    <p class="pp-sign rv">Related</p>
+    <h2 class="pp-h2 sp-also__h rv" style="--d:.08s">Teams solving this also ask about</h2>
+    <ul class="sp-also__list">
+        <li><a class="sp-also__item" href="/s/questbrand"><span class="sp-also__pic" style="--sp-pic:url('/assets/img/tabs/questbrand-women.jpg')" aria-hidden="true"></span><span><b class="sp-also__n">QuestBrand</b><span class="sp-also__w">Insights and brand leaders</span></span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="ask-end" id="start">
+  <canvas class="hero__think" id="agentThink" aria-hidden="true"></canvas>
+  <div class="wrap ask-end__in">
+    <h2 class="display display--end rv"><span class="ln"><span class="ln__in"><span class="navy" style="font-weight:600;font-size:80px;color:#FF6D24">How can we help?</span></span></span></h2>
+    <p class="ask-end__lede rv" style="--d:.15s">Whatever the challenge, we deliver results</p>
+    <div class="ask-end__acts">
+      <form class="ask-mini rv" id="ppAsk" style="--d:.3s" autocomplete="off">
+        <label class="vh" for="ppAskInput">Ask Stagwell AI</label>
+        <span class="ask-mini__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="ask-mini__hint" aria-hidden="true"><span class="ask-mini__hint-w is-on">Maybe just start with your site.</span></span>
+        <input class="ask-mini__input" id="ppAskInput" name="q" type="text" placeholder="Ask Stagwell AI" spellcheck="false">
+        <button class="ask-mini__go" type="submit" aria-label="Ask Stagwell AI"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
+      <div class="hero__in pp-ask" id="ask" hidden>
+    <div class="chat">
+      
+      <!-- the field as a box, not a pill: the question sits at the top of it
+           and the send disc waits on its floor -->
+      <form class="askbox chat__form" id="agentForm" autocomplete="off">
+        <label class="vh" for="agentInput">Ask Stagwell AI</label>
+        <!-- the conversation happens in here, above the line you type on -->
+        <div class="askbox__thread" id="agentThread" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <!-- the sound bubble (voice.js, voice-wave.js): who is talking, drawn
+             as waves — ink for the visitor, teal for the agent. Shown only
+             while a voice session is open. -->
+        <div class="voice" id="voiceStrip" data-state="ended" hidden>
+          <canvas class="voice__wave" id="voiceWave" aria-hidden="true"></canvas>
+          <span class="voice__status" id="voiceStatus" role="status" aria-live="polite"></span>
+          <button type="button" class="voice__ctl" id="voiceMute" aria-pressed="false" hidden>Mute</button>
+          <button type="button" class="voice__ctl voice__ctl--end" id="voiceEnd" hidden>End</button>
+        </div>
+        <!-- a caret blinks at the head of the line, tight to the first letter,
+             so the field reads as waiting to be typed in (client) -->
+        <div class="askbox__line">
+          <span class="askbox__caret" aria-hidden="true"></span>
+          <!-- a textarea, not an input: a long message wraps onto more lines
+               instead of scrolling sideways out of the frame (client). Enter
+               sends, Shift+Enter breaks a line; home.js grows it as you type -->
+          <textarea class="askbox__input" id="agentInput" name="q" rows="1" placeholder="What do you need help solving?" spellcheck="false" enterkeyhint="send"></textarea>
+        </div>
+        <div class="askbox__bar">
+          <!-- a way back to an empty box, once there is a conversation to
+               leave (client, 2026-09-10). Hidden until the first turn. -->
+          <button type="button" class="askbox__restart" id="agentRestart" hidden>
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.8 3.2v3.4h-3.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Start over
+          </button>
+          <!-- "Chat with me": a spoken conversation in the same thread (client,
+               2026-09-11). voice.js hides it where the browser cannot do it. -->
+          <button type="button" class="askbox__voice" id="voiceStart" aria-pressed="false">Chat with me</button>
+          <button class="askbox__go" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </form>
+
+      <!-- the same callback widget as the closing section, in the hero so it is
+           reachable without scrolling (client, 2026-09-15). It sits OUTSIDE
+           #agentForm: its two steps are forms, and a nested form is dropped
+           by the parser. -->
+
+    <!-- the starting points are the only thing under the box now: six, three
+         to a line (client, Category_Routes.odt, 2026-09-09). Each carries the
+         routing domain it seeds, so a pill never goes through the classifier;
+         data-q is the words shown as the visitor's turn. -->
+    <ul class="chat__tags chat__tags--split" id="agentTags" aria-label="Pick a starting point">
+      <li><button type="button" class="tag" data-q="Increase brand awareness" data-domain="brand_health" data-goal="brand_awareness"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 13.5 7.5 9l3.5 3.5L17 6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 6.5h4v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Increase brand awareness</button></li>
+      <li><button type="button" class="tag" data-q="Grow your audience" data-domain="audiences" data-goal="audience_growth"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="7.5" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="13.6" cy="8.4" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 15.4c.6-2.2 2.3-3.4 4.5-3.4s3.9 1.2 4.5 3.4M13.2 12.2c1.9 0 3.2 1 3.8 2.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Grow your audience</button></li>
+      <li><button type="button" class="tag" data-q="Protect brand reputation" data-domain="reputation" data-goal="reputation"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 2.8 4 5.2v4.6c0 3.5 2.6 6.2 6 7.4 3.4-1.2 6-3.9 6-7.4V5.2L10 2.8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m7.4 10 1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Protect brand reputation</button></li>
+      <li class="tag__br" aria-hidden="true"></li>
+      <li><button type="button" class="tag" data-q="Track your competition" data-domain="competitive" data-goal="competition"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.6" cy="8.6" r="4.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12.4 12.4 16.5 16.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Track your competition</button></li>
+      <li><button type="button" class="tag" data-q="Measure brand impact" data-domain="business_impact" data-goal="brand_impact"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3.5 16V9M8.5 16V5M13.5 16v-4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.5 16H2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Measure brand impact</button></li>
+      <li><button type="button" class="tag" data-q="Scale business operations" data-domain="marketing_ops" data-goal="operations"><svg class="tag__ic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="3" y="3" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="11.5" y="3" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11.5" width="5.5" height="5.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14.25 11.5v5.5M11.5 14.25h5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Scale business operations</button></li>
+    </ul>
+      </div>
+      <div class="ask-end__ways">
+        <div class="hc-clients" style="--n:7"><p class="hc-clients__t">10+ years with 5,000 of the world’s most ambitious brands.</p><div class="hc-clients__row" role="img" aria-label="Our clients include Google, Amazon, Apple, Microsoft, Diageo, Adobe and United Airlines"><div class="hc-clients__cell" style="--d:1.24s;--step:2.6s"><div class="hc-clients__reel"><span class="hc-clients__logo" style="--i:0;--logo:url(/assets/img/why/logos/apple.svg)"></span><span class="hc-clients__logo" style="--i:1;--logo:url(/assets/img/why/logos/diageo.png)"></span><span class="hc-clients__logo" style="--i:2;--logo:url(/assets/img/why/logos/united.svg)"></span><span class="hc-clients__logo" style="--i:3;--logo:url(/assets/img/why/logos/amazon.webp)"></span><span class="hc-clients__logo" style="--i:4;--logo:url(/assets/img/why/logos/microsoft.svg)"></span><span class="hc-clients__logo" style="--i:5;--logo:url(/assets/img/why/logos/adobe.webp)"></span><span class="hc-clients__logo" style="--i:6;--logo:url(/assets/img/why/logos/google.webp)"></span></div></div><div class="hc-clients__cell" style="--d:2.28s;--step:2.6s"><div class="hc-clients__reel"><span class="hc-clients__logo" style="--i:0;--logo:url(/assets/img/why/logos/diageo.png)"></span><span class="hc-clients__logo" style="--i:1;--logo:url(/assets/img/why/logos/united.svg)"></span><span class="hc-clients__logo" style="--i:2;--logo:url(/assets/img/why/logos/amazon.webp)"></span><span class="hc-clients__logo" style="--i:3;--logo:url(/assets/img/why/logos/microsoft.svg)"></span><span class="hc-clients__logo" style="--i:4;--logo:url(/assets/img/why/logos/adobe.webp)"></span><span class="hc-clients__logo" style="--i:5;--logo:url(/assets/img/why/logos/google.webp)"></span><span class="hc-clients__logo" style="--i:6;--logo:url(/assets/img/why/logos/apple.svg)"></span></div></div><div class="hc-clients__cell" style="--d:0.2s;--step:2.6s"><div class="hc-clients__reel"><span class="hc-clients__logo" style="--i:0;--logo:url(/assets/img/why/logos/google.webp)"></span><span class="hc-clients__logo" style="--i:1;--logo:url(/assets/img/why/logos/apple.svg)"></span><span class="hc-clients__logo" style="--i:2;--logo:url(/assets/img/why/logos/diageo.png)"></span><span class="hc-clients__logo" style="--i:3;--logo:url(/assets/img/why/logos/united.svg)"></span><span class="hc-clients__logo" style="--i:4;--logo:url(/assets/img/why/logos/amazon.webp)"></span><span class="hc-clients__logo" style="--i:5;--logo:url(/assets/img/why/logos/microsoft.svg)"></span><span class="hc-clients__logo" style="--i:6;--logo:url(/assets/img/why/logos/adobe.webp)"></span></div></div><div class="hc-clients__cell" style="--d:1.76s;--step:2.6s"><div class="hc-clients__reel"><span class="hc-clients__logo" style="--i:0;--logo:url(/assets/img/why/logos/microsoft.svg)"></span><span class="hc-clients__logo" style="--i:1;--logo:url(/assets/img/why/logos/adobe.webp)"></span><span class="hc-clients__logo" style="--i:2;--logo:url(/assets/img/why/logos/google.webp)"></span><span class="hc-clients__logo" style="--i:3;--logo:url(/assets/img/why/logos/apple.svg)"></span><span class="hc-clients__logo" style="--i:4;--logo:url(/assets/img/why/logos/diageo.png)"></span><span class="hc-clients__logo" style="--i:5;--logo:url(/assets/img/why/logos/united.svg)"></span><span class="hc-clients__logo" style="--i:6;--logo:url(/assets/img/why/logos/amazon.webp)"></span></div></div><div class="hc-clients__cell" style="--d:0.72s;--step:2.6s"><div class="hc-clients__reel"><span class="hc-clients__logo" style="--i:0;--logo:url(/assets/img/why/logos/amazon.webp)"></span><span class="hc-clients__logo" style="--i:1;--logo:url(/assets/img/why/logos/microsoft.svg)"></span><span class="hc-clients__logo" style="--i:2;--logo:url(/assets/img/why/logos/adobe.webp)"></span><span class="hc-clients__logo" style="--i:3;--logo:url(/assets/img/why/logos/google.webp)"></span><span class="hc-clients__logo" style="--i:4;--logo:url(/assets/img/why/logos/apple.svg)"></span><span class="hc-clients__logo" style="--i:5;--logo:url(/assets/img/why/logos/diageo.png)"></span><span class="hc-clients__logo" style="--i:6;--logo:url(/assets/img/why/logos/united.svg)"></span></div></div></div></div>
+        <button type="button" class="btn btn--ink btn--lg" data-cta="session">Book a demo</button>
+        <div data-call="callEnd"></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in" style="background:linear-gradient(30deg,#003349,#009CBD,#FF6D24);color:#FFFFFF;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px 47px;width:100%;padding-block:clamp(48px,7vw,88px)">
+    <ul class="foot__big" style="flex:1 1 260px;min-width:0">
+      <li><a href="/products">Products</a></li>
+      <li><a href="/#why">About Stagwell AI</a></li>
+    </ul>
+    <ul class="foot__small" style="flex:1 1 320px;min-width:0;display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:flex-start">
+      <li><button type="button" data-cta="session" style="color:#FFFFFF;text-align:left">Book a strategy session</button></li>
+      <li><a href="https://www.stagwellglobal.com/privacy-policy/" target="_blank" rel="noopener" style="color:#FFFFFF">Privacy Notice</a></li>
+      <li><button type="button" data-cta="expert" style="color:#FFFFFF">Talk to an AI expert</button></li>
+      <li><a href="https://www.stagwellglobal.com/wp-content/uploads/2021/11/Stagwell-Inc-Terms-of-Use_Oct-2021.pdf" target="_blank" rel="noopener" style="color:#FFFFFF">Terms of Use</a></li>
+    </ul>
+  </div>
+  <div class="wrap foot__band">
+    <div class="foot__social">
+      <a class="foot__so" href="https://www.linkedin.com/company/stagwell" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.4 7.6h2.4V16H4.4zM5.6 3.8a1.4 1.4 0 110 2.8 1.4 1.4 0 010-2.8zM8.4 7.6h2.3v1.2c.4-.7 1.3-1.4 2.7-1.4 2.8 0 3.3 1.8 3.3 4.2V16h-2.4v-3.9c0-.9 0-2.1-1.3-2.1s-1.5 1-1.5 2V16H8.4z" fill="currentColor"/></svg></a>
+      <span class="foot__follow">Follow us</span>
+    </div>
+    <div class="foot__legal">
+      <span class="foot__copy">Copyright 2026</span>
+      <a class="foot__brand" href="/" aria-label="Stagwell AI"><svg viewBox="0 0 1870 153"><use href="#sw-logo"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script src="/next/data-loader.js"></script>
+<script src="/next/engine.js"></script>
+<script src="/next/flow.js"></script>
+<script src="/next/research.js"></script>
+<script src="/next/lead.js"></script>
+<script src="/next/call.js"></script>
+<script src="/next/home.js"></script>
+<script src="/next/navdrop.js"></script>
+<script src="/next/recommend.js"></script>
+<script src="/next/select-question.js"></script>
+<script src="/next/cards.js"></script>
+<script src="/next/analytics.js"></script>
+<script src="/next/kimi-flow.js"></script>
+<script src="/next/voice-reducer.js"></script>
+<script src="/next/voice-wave.js"></script>
+<script src="/next/voice-stage.js"></script>
+<script src="/next/voice.js"></script>
+<script src="/next/hero-agent.js"></script>
+<script>
+/* the film: poster and a play disc until it is asked for; controls once it plays; back to
+   the poster when it ends */
+(function () {
+  const f = document.querySelector('.pp-film'); if (!f) return;
+  const v = f.querySelector('video'), b = f.querySelector('.pp-film__play'); if (!v || !b) return;
+  b.addEventListener('click', () => { v.controls = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); });
+  v.addEventListener('play', () => f.classList.add('is-playing'));
+  v.addEventListener('ended', () => { f.classList.remove('is-playing'); v.controls = false; v.load(); });
+})();
+</script>
+<script>
+/* the close's field on a product page: there is no hero chat to hand over to,
+   so the conversation opens right here, in place of the field */
+(function () {
+  const f = document.getElementById('ppAsk'), i = document.getElementById('ppAskInput'),
+        chat = document.getElementById('ask'), form = document.getElementById('agentForm'), input = document.getElementById('agentInput');
+  if (!f || !i || !chat || !form || !input) return;
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = i.value.trim(); if (!v) { i.focus(); return; }
+    f.hidden = true; chat.hidden = false; input.value = v; i.value = ''; form.requestSubmit();
+  });
+})();
+</script>
+<div class="hc-launch" id="hcLaunch" hidden>
+  <button type="button" class="hc-launch__x" aria-label="Hide this message"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <p class="hc-launch__say"><svg class="hc-launch__mic" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="7.2" y="2.4" width="5.6" height="9.4" rx="2.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.6 9.4a5.4 5.4 0 0 0 10.8 0M10 14.8v2.6M7.6 17.4h4.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>I can talk, try my voice feature!</span></p>
+  <button type="button" class="hc-launch__btn" id="hcLaunchBtn">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2.8l1.7 4.8 4.8 1.7-4.8 1.7L12 15.8l-1.7-4.8L5.5 9.3l4.8-1.7z"/><path fill="currentColor" d="M18.6 14.6l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z"/></svg>
+    <span>Ask Stagwell AI</span>
+  </button>
+</div>
+<script src="/next/home-c.js?v=205"></script>
+<script src="/next/prod-c.js?v=79"></script>
+</body>
+</html>

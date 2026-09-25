@@ -1,0 +1,461 @@
+{
+  "_comment": "The client's 'Stagwell AI Chatbot Prompts to Products' sheet (2026-09-16): 15 products × 3 prompts × 3 keywords. This is the golden set for the matcher — tests/kimi/prompts.golden.test.mjs runs every prompt through the model-free path (keyword intents → scorer) and asserts the product. `accept` widens a row where the sheet contradicts itself. Numetrix appears twice in the sheet (Measurement, Mobility & Location Intelligence) and is one product page here. Not in the sheet: NewVoices, NewIntel, the ID Graph.",
+  "source": "Stagwell_AI_Chatbot_Prompts_to_ProductsIndividual_Prompts.csv",
+  "rows": [
+    {
+      "sheetProduct": "QuestBrand",
+      "product": "questbrand",
+      "prompt": "I want to track my brand health over time.",
+      "keywords": [
+        "brand health tracking",
+        "brand perception",
+        "competitive benchmarking"
+      ]
+    },
+    {
+      "sheetProduct": "QuestBrand",
+      "product": "questbrand",
+      "prompt": "How do consumers feel about my brand?",
+      "keywords": [
+        "brand health tracking",
+        "brand perception",
+        "competitive benchmarking"
+      ]
+    },
+    {
+      "sheetProduct": "QuestBrand",
+      "product": "questbrand",
+      "prompt": "I need to measure the impact of my campaigns on brand perception.",
+      "keywords": [
+        "brand health tracking",
+        "brand perception",
+        "competitive benchmarking"
+      ]
+    },
+    {
+      "sheetProduct": "QuestDIY",
+      "product": "questdiy",
+      "prompt": "I need to build and launch my own survey.",
+      "keywords": [
+        "build surveys",
+        "consumer feedback",
+        "concept testing"
+      ]
+    },
+    {
+      "sheetProduct": "QuestDIY",
+      "product": "questdiy",
+      "prompt": "I want quick consumer feedback before a product launch.",
+      "keywords": [
+        "build surveys",
+        "consumer feedback",
+        "concept testing"
+      ]
+    },
+    {
+      "sheetProduct": "QuestDIY",
+      "product": "questdiy",
+      "prompt": "How can I test messaging or creative before it goes live?",
+      "keywords": [
+        "build surveys",
+        "consumer feedback",
+        "concept testing"
+      ]
+    },
+    {
+      "sheetProduct": "BERA.ai",
+      "product": "bera",
+      "prompt": "I need to prove whether my brand investment is driving revenue.",
+      "keywords": [
+        "brand ROI",
+        "audience prioritization",
+        "brand performance"
+      ]
+    },
+    {
+      "sheetProduct": "BERA.ai",
+      "product": "bera",
+      "prompt": "Which audiences will generate the highest ROI?",
+      "keywords": [
+        "brand ROI",
+        "audience prioritization",
+        "brand performance"
+      ]
+    },
+    {
+      "sheetProduct": "BERA.ai",
+      "product": "bera",
+      "prompt": "Why is my brand performance changing?",
+      "keywords": [
+        "brand ROI",
+        "audience prioritization",
+        "brand performance"
+      ]
+    },
+    {
+      "sheetProduct": "The Machine",
+      "product": "machines_family",
+      "prompt": "I want all my marketing tools and data connected.",
+      "keywords": [
+        "connect marketing tools",
+        "workflow orchestration",
+        "marketing operating system"
+      ]
+    },
+    {
+      "sheetProduct": "The Machine",
+      "product": "machines_family",
+      "prompt": "My teams are duplicating work and operating in silos. How can I get my teams to work together?",
+      "keywords": [
+        "connect marketing tools",
+        "workflow orchestration",
+        "marketing operating system"
+      ]
+    },
+    {
+      "sheetProduct": "The Machine",
+      "product": "machines_family",
+      "prompt": "How can I orchestrate campaigns, insights, and audiences in one place?",
+      "keywords": [
+        "connect marketing tools",
+        "workflow orchestration",
+        "marketing operating system"
+      ]
+    },
+    {
+      "sheetProduct": "Stagwell Search+",
+      "product": "search_plus",
+      "prompt": "How do I improve my visibility in ChatGPT and AI search?",
+      "keywords": [
+        "AI search visibility",
+        "ChatGPT optimization",
+        "AI brand representation"
+      ]
+    },
+    {
+      "sheetProduct": "Stagwell Search+",
+      "product": "search_plus",
+      "prompt": "Why are competitors being recommended in ChatGPT and AI search instead of my brand?",
+      "keywords": [
+        "AI search visibility",
+        "ChatGPT optimization",
+        "AI brand representation"
+      ]
+    },
+    {
+      "sheetProduct": "Stagwell Search+",
+      "product": "search_plus",
+      "prompt": "How can I influence how AI represents my brand?",
+      "keywords": [
+        "AI search visibility",
+        "ChatGPT optimization",
+        "AI brand representation"
+      ]
+    },
+    {
+      "sheetProduct": "The Media Machine",
+      "product": "media_machine",
+      "prompt": "How can I improve media performance across channels?",
+      "keywords": [
+        "media optimization",
+        "campaign performance",
+        "media planning"
+      ]
+    },
+    {
+      "sheetProduct": "The Media Machine",
+      "product": "media_machine",
+      "prompt": "I want to automate media planning and campaign optimization.",
+      "keywords": [
+        "media optimization",
+        "campaign performance",
+        "media planning"
+      ]
+    },
+    {
+      "sheetProduct": "The Media Machine",
+      "product": "media_machine",
+      "prompt": "How can I manage and measure campaigns across multiple advertising platforms from one place?",
+      "keywords": [
+        "media optimization",
+        "campaign performance",
+        "media planning"
+      ]
+    },
+    {
+      "sheetProduct": "The Knowledge Machine",
+      "product": "knowledge_machine",
+      "prompt": "I want to identify reputation risks before they become crises.",
+      "keywords": [
+        "reputation monitoring",
+        "risk detection",
+        "emerging issues"
+      ]
+    },
+    {
+      "sheetProduct": "The Knowledge Machine",
+      "product": "knowledge_machine",
+      "prompt": "What's driving changes in public perception of my brand?",
+      "keywords": [
+        "reputation monitoring",
+        "risk detection",
+        "emerging issues"
+      ]
+    },
+    {
+      "sheetProduct": "The Knowledge Machine",
+      "product": "knowledge_machine",
+      "prompt": "How can I spot emerging PR issues sooner?",
+      "keywords": [
+        "reputation monitoring",
+        "risk detection",
+        "emerging issues"
+      ]
+    },
+    {
+      "sheetProduct": "The Targeting Machine",
+      "product": "targeting_machine",
+      "prompt": "How can i grow my audience? I need help finding my highest-value audiences.",
+      "keywords": [
+        "audience targeting",
+        "audience segmentation",
+        "first-party data activation"
+      ]
+    },
+    {
+      "sheetProduct": "The Targeting Machine",
+      "product": "targeting_machine",
+      "prompt": "How can I combine first-party and third-party data for audience targeting?",
+      "keywords": [
+        "audience targeting",
+        "audience segmentation",
+        "first-party data activation"
+      ]
+    },
+    {
+      "sheetProduct": "The Targeting Machine",
+      "product": "targeting_machine",
+      "prompt": "I want to build and activate audience segments across channels.",
+      "keywords": [
+        "audience targeting",
+        "audience segmentation",
+        "first-party data activation"
+      ]
+    },
+    {
+      "sheetProduct": "UNICEPTA",
+      "product": "unicepta",
+      "prompt": "I need global media monitoring.",
+      "keywords": [
+        "media monitoring",
+        "executive alerts",
+        "narrative intelligence"
+      ]
+    },
+    {
+      "sheetProduct": "UNICEPTA",
+      "product": "unicepta",
+      "prompt": "How can I stay ahead of reputation threats?",
+      "keywords": [
+        "media monitoring",
+        "executive alerts",
+        "narrative intelligence"
+      ]
+    },
+    {
+      "sheetProduct": "UNICEPTA",
+      "product": "unicepta",
+      "prompt": "I want alerts on important developments affecting my brand.",
+      "keywords": [
+        "media monitoring",
+        "executive alerts",
+        "narrative intelligence"
+      ]
+    },
+    {
+      "sheetProduct": "IMAI (Enterprise)",
+      "product": "imai",
+      "prompt": "I need help finding the right influencers.",
+      "keywords": [
+        "influencer marketing",
+        "creator discovery",
+        "influencer management"
+      ]
+    },
+    {
+      "sheetProduct": "IMAI (Enterprise)",
+      "product": "imai",
+      "prompt": "How can I manage influencer campaigns at scale?",
+      "keywords": [
+        "influencer marketing",
+        "creator discovery",
+        "influencer management"
+      ]
+    },
+    {
+      "sheetProduct": "IMAI (Enterprise)",
+      "product": "imai",
+      "prompt": "Which creators are driving the best results?",
+      "keywords": [
+        "influencer marketing",
+        "creator discovery",
+        "influencer management"
+      ]
+    },
+    {
+      "sheetProduct": "Stagwell AI for SMBs",
+      "product": "smb_platform",
+      "prompt": "I need an easy way to manage influencer campaigns.",
+      "keywords": [
+        "influencer campaigns",
+        "creator management",
+        "influencer ROI"
+      ]
+    },
+    {
+      "sheetProduct": "Stagwell AI for SMBs",
+      "product": "smb_platform",
+      "prompt": "How do I find influencers without a big team?",
+      "keywords": [
+        "influencer campaigns",
+        "creator management",
+        "influencer ROI"
+      ]
+    },
+    {
+      "sheetProduct": "Stagwell AI for SMBs",
+      "product": "smb_platform",
+      "prompt": "I want a simpel way to measure influencer campaign ROI.",
+      "keywords": [
+        "influencer campaigns",
+        "creator management",
+        "influencer ROI"
+      ]
+    },
+    {
+      "sheetProduct": "GEOPulse",
+      "product": "geopulse",
+      "prompt": "How visible is my brand across AI platforms?",
+      "keywords": [
+        "AI visibility",
+        "prompt optimization",
+        "AI citations"
+      ]
+    },
+    {
+      "sheetProduct": "GEOPulse",
+      "product": "geopulse",
+      "prompt": "Why isn't my brand being cited by AI tools?",
+      "keywords": [
+        "AI visibility",
+        "prompt optimization",
+        "AI citations"
+      ]
+    },
+    {
+      "sheetProduct": "GEOPulse",
+      "product": "geopulse",
+      "prompt": "How can I improve my AI search visibility?",
+      "keywords": [
+        "AI visibility",
+        "prompt optimization",
+        "AI citations"
+      ],
+      "accept": [
+        "geopulse",
+        "search_plus"
+      ],
+      "_why": "The sheet sends 'improve my visibility in ChatGPT and AI search' to Search+ (row 14) and this near-identical line to GEOPulse. The rule we apply is the sheet's own majority: 'improve / change / influence' is Search+, 'how visible / am I cited' is GEOPulse. Either is accepted here until the authors rule."
+    },
+    {
+      "sheetProduct": "Numetrix (Measurement)",
+      "product": "numetrix",
+      "prompt": "How many people are actually seeing my advertising?",
+      "keywords": [
+        "audience measurement",
+        "brand lift",
+        "ad effectiveness"
+      ]
+    },
+    {
+      "sheetProduct": "Numetrix (Measurement)",
+      "product": "numetrix",
+      "prompt": "Can I measure brand lift from my campaigns?",
+      "keywords": [
+        "audience measurement",
+        "brand lift",
+        "ad effectiveness"
+      ]
+    },
+    {
+      "sheetProduct": "Numetrix (Measurement)",
+      "product": "numetrix",
+      "prompt": "I need better audience measurement.",
+      "keywords": [
+        "audience measurement",
+        "brand lift",
+        "ad effectiveness"
+      ]
+    },
+    {
+      "sheetProduct": "Numetrix (Mobility & Location Intelligence)",
+      "product": "numetrix",
+      "prompt": "I want to understand where my customers go in the real world.",
+      "keywords": [
+        "location intelligence",
+        "consumer movement",
+        "visitation insights"
+      ]
+    },
+    {
+      "sheetProduct": "Numetrix (Mobility & Location Intelligence)",
+      "product": "numetrix",
+      "prompt": "How can I use location data to improve targeting?",
+      "keywords": [
+        "location intelligence",
+        "consumer movement",
+        "visitation insights"
+      ]
+    },
+    {
+      "sheetProduct": "Numetrix (Mobility & Location Intelligence)",
+      "product": "numetrix",
+      "prompt": "I need visibility into consumer movement patterns.",
+      "keywords": [
+        "location intelligence",
+        "consumer movement",
+        "visitation insights"
+      ]
+    },
+    {
+      "sheetProduct": "Agent Cloud",
+      "product": "agent_cloud",
+      "prompt": "I want to build custom AI agents for my team.",
+      "keywords": [
+        "AI agents",
+        "workflow automation",
+        "AI governance"
+      ]
+    },
+    {
+      "sheetProduct": "Agent Cloud",
+      "product": "agent_cloud",
+      "prompt": "How can I securely use AI across my organization?",
+      "keywords": [
+        "AI agents",
+        "workflow automation",
+        "AI governance"
+      ]
+    },
+    {
+      "sheetProduct": "Agent Cloud",
+      "product": "agent_cloud",
+      "prompt": "I need to automate repetitive marketing work.",
+      "keywords": [
+        "AI agents",
+        "workflow automation",
+        "AI governance"
+      ]
+    }
+  ]
+}

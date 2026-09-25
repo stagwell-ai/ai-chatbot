@@ -1,0 +1,75 @@
+/* TWEAKS — the panel's own styles.
+   Self-contained on purpose: this file is meant to be dropped into the next
+   project as-is, so it depends on no token, no reset and no utility from the
+   site it lands in. Every value here is literal for that reason. */
+
+.tw{
+  position:fixed;top:12px;right:12px;z-index:2147483000;
+  width:300px;max-height:calc(100vh - 24px);
+  display:flex;flex-direction:column;
+  border-radius:12px;background:#101014;color:#f4f4f2;
+  box-shadow:0 12px 40px rgb(0 0 0 / 34%);
+  font-family:'Montserrat',Helvetica,Arial,sans-serif;font-size:11px;
+  overscroll-behavior:contain;
+  text-align:left;letter-spacing:0;line-height:1.4;
+}
+.tw *{box-sizing:border-box;text-transform:none;font-family:inherit}
+.tw button{border-radius:5px!important;min-height:0!important;height:auto!important}
+.tw-shut{width:40px;height:40px;max-height:40px;border-radius:10px;overflow:hidden}
+.tw-shut .tw-head{padding:0;height:40px;justify-content:center;border-bottom:0}
+.tw-toggle__mark{display:none;font-size:15px;font-weight:700;letter-spacing:0;color:#f4f4f2}
+.tw-shut .tw-toggle__word{display:none}
+.tw-shut .tw-toggle__mark{display:inline}
+.tw-shut .tw-toggle{width:40px;height:40px;display:grid;place-items:center}
+.tw-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:9px 10px;border-bottom:1px solid rgb(255 255 255 / 12%)}
+.tw-toggle{padding:0;border:0;background:none;color:rgb(255 255 255 / 66%);font:inherit;
+  letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.tw-acts{display:flex;gap:6px}
+.tw-btn{padding:4px 8px;border:1px solid rgb(255 255 255 / 22%);border-radius:5px;background:none;
+  color:inherit;font:inherit;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.tw-btn:hover:not(:disabled){border-color:rgb(255 255 255 / 55%)}
+/* disabled, not hidden — a control that disappears when idle makes the panel
+   change height while you are reading it */
+.tw-btn:disabled{opacity:.32;cursor:default}
+.tw-body{display:flex;flex-direction:column;gap:6px;padding:8px 10px 12px;overflow-y:auto}
+
+/* a role: one heading, four controls */
+.tw-role{border-top:1px solid rgb(255 255 255 / 9%);padding:8px 0 0!important;margin:2px 0 0!important;min-height:0!important;max-width:none!important}
+.tw-role:first-child{border-top:0;padding-top:0;margin-top:0}
+.tw-role__h{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  width:100%;padding:4px 0;border:0;background:none;color:#f4f4f2;font:inherit;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-align:left}
+.tw-role__h small{color:rgb(255 255 255 / 40%);letter-spacing:.04em;text-transform:none;
+  font-size:10px;font-weight:400}
+.tw-role__h::after{content:"−";color:rgb(255 255 255 / 40%)}
+.tw-role[data-shut] .tw-role__h::after{content:"+"}
+.tw-role[data-shut] .tw-rows{display:none}
+.tw-rows{display:flex;flex-direction:column;gap:8px;padding:4px 0 6px}
+
+.tw-row{margin:0!important;padding:0!important;max-width:none!important;display:flex;flex-direction:column;gap:4px;font-size:11px!important;line-height:1.4!important;color:inherit!important}
+/* nothing on this page matches the selector, so there is nothing to move */
+.tw-row[data-off]{opacity:.34}
+.tw-label{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  color:rgb(255 255 255 / 56%);letter-spacing:.07em;text-transform:uppercase}
+.tw-val{display:inline-flex;align-items:center;gap:5px;color:#f4f4f2;
+  /* tabular, or the number jitters sideways as it counts */
+  font-variant-numeric:tabular-nums}
+/* which controls are yours rather than the site's */
+.tw-dot{width:5px;height:5px;border-radius:50%;background:#FFB81C}
+
+.tw-slider{-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:999px;
+  background:rgb(255 255 255 / 20%);cursor:pointer;margin:0}
+.tw-slider:disabled{cursor:default}
+.tw-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:12px;height:12px;
+  border:0;border-radius:50%;background:#f4f4f2}
+.tw-slider::-moz-range-thumb{width:12px;height:12px;border:0;border-radius:50%;background:#f4f4f2}
+
+.tw-out{margin:4px 0 0;padding:8px;border-radius:7px;background:rgb(255 255 255 / 7%);
+  color:rgb(255 255 255 / 78%);font:inherit;line-height:1.55;white-space:pre-wrap;user-select:all;
+  max-height:180px;overflow:auto}
+.tw-hint{margin:2px 0 0;color:rgb(255 255 255 / 44%);line-height:1.55;text-transform:none;letter-spacing:0}
+@media print{.tw{display:none}}
+/* the body is a column flexbox with a max height: without this, every group
+   flex-shrinks to fit and their rows pile on top of each other */
+.tw-role,.tw-out,.tw-hint{flex:0 0 auto!important}

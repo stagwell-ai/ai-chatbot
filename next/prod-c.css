@@ -1,0 +1,1530 @@
+/* ── OPTION C ON THE PRODUCT PAGES ───────────────────────────────────────────
+   The four product pages keep every word, link and script they had; this file
+   dresses them in the homepage's language: paper ground, Roobert titles, the
+   film edge to edge, the steps read as a list, a light footer. Everything is
+   scoped to body.pc-page and loaded after product.css.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Light.ttf') format('truetype');font-weight:300;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Bold.ttf') format('truetype');font-weight:600 700;font-display:swap}
+@font-face{font-family:'Roobert';src:url('/next/assets/fonts/roobert/Roobert-Heavy.ttf') format('truetype');font-weight:800 900;font-display:swap}
+@font-face{font-family:'Tiro Tamil';font-style:normal;font-weight:400;font-display:swap;
+  src:url(/next/assets/fonts/tiro-tamil-normal.woff2) format('woff2')}
+
+/* the tokens come from the homepage's own stylesheet, so the ground, the ink and the faces are
+   literally the same values it uses; only the hairline is named here */
+body.pc-page{--hc-rule:rgba(11,18,32,.16)}
+
+/* every title on the page is Roobert; the words stay Montserrat */
+.pc-page .pp-title,.pc-page .pp-title *,.pc-page .pp-h2,.pc-page .pp-h2 *,
+.pc-page .pp-steps h3,.pc-page .pp-figs strong,
+.pc-page .display,.pc-page .display *{font-family:var(--hc-title) !important;
+  font-weight:400 !important;letter-spacing:-.02em}
+
+/* ── the bar sits on paper ────────────────────────────────────────────────────────────────────── */
+.pc-page .nav:not(.is-stuck){color:var(--ink);background:transparent}
+.pc-page .nav:not(.is-stuck) .nav__links a,.pc-page .nav:not(.is-stuck) .nav__droptrig,
+.pc-page .nav:not(.is-stuck) .nav__ask{color:var(--ink-2,#3B4252)}
+.pc-page .nav:not(.is-stuck) .nav__brand,.pc-page .nav:not(.is-stuck) .nav__burger{color:var(--ink)}
+.pc-page .nav:not(.is-stuck) .btn--ink{background:var(--ink);color:#FFFFFF}
+.pc-page .nav:not(.is-stuck) .nav__search,.pc-page .nav:not(.is-stuck) .nav__search:hover{
+  background:var(--hc-card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--hc-edge)}
+.pc-page .nav.is-stuck{background:var(--hc-ground)}
+
+/* ── the hero: the name large at the left, the sentence and the demo at the right ─────────────── */
+.pc-page .pp-hero,.pc-page .pp-hero--photo,.pc-page .pp-hero--light{
+  background:var(--hc-ground) !important;background-image:none !important;color:var(--ink) !important;
+  padding:calc(var(--nav-h) + clamp(48px,7vh,104px)) 0 clamp(40px,5vw,72px);min-height:auto}
+.pc-page .pp-hero::before,.pc-page .pp-hero::after{display:none !important}
+.pc-page .pp-hero__in{max-width:1180px;display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);
+  column-gap:clamp(28px,5vw,88px);row-gap:clamp(14px,1.6vw,22px);align-items:start}
+.pc-page .pp-logo{grid-area:1 / 1 / 2 / 2;max-width:min(260px,52%);height:auto;
+  margin:0 0 clamp(10px,1.4vw,18px);filter:none}
+.pc-page .pp-title{grid-area:2 / 1 / 4 / 2;margin:0;color:var(--ink) !important;
+  font-size:clamp(38px,1rem + 4.4vw,84px);line-height:1.02;letter-spacing:-.03em}
+.pc-page .pp-eyebrow{grid-area:1 / 2 / 2 / 3;margin:0;color:var(--hc-quiet) !important;
+  font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.pc-page .pp-lede{grid-area:2 / 2 / 3 / 3;margin:0;color:var(--ink) !important;
+  font-size:clamp(17px,1.25vw,21px);line-height:1.5;max-width:46ch}
+.pc-page .pp-acts{grid-area:3 / 2 / 4 / 3;display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;
+  margin:clamp(20px,2.4vw,32px) 0 0;padding-top:clamp(18px,2vw,26px);
+  border-top:1px solid var(--hc-rule)}
+.pc-page .pp-acts .btn--accent,.pc-page .pp-acts .btn--lg{background:var(--ink) !important;
+  color:#FFFFFF !important;border:0 !important}
+.pc-page .pp-acts .btn--accent:hover{background:#05080F !important}
+.pc-page .pp-site{color:var(--hc-quiet) !important}
+.pc-page .pp-site:hover{color:var(--ink) !important}
+
+/* ── the film runs the width of the page, square cornered, and plays as it is reached ─────────── */
+.pc-page .pp-film{background:var(--hc-ground);padding:0}
+.pc-page .pp-film__frame{width:100%;max-width:100%;margin-inline:0;
+  border-radius:0 !important;aspect-ratio:16 / 9;height:auto;overflow:hidden;background:#0B1220}
+.pc-page .pp-film__frame video{width:100%;height:100%;object-fit:cover;display:block;border-radius:0}
+.pc-page .pp-film__play{width:44px;height:44px;border-radius:50%;left:clamp(16px,2.4vw,34px);
+  top:auto;bottom:clamp(16px,2.4vw,34px);transform:none;
+  background:rgba(255,255,255,.9);color:var(--ink);border:0;box-shadow:none}
+.pc-page .pp-film__play:hover{background:#FFFFFF}
+.pc-page .pp-film__play svg{width:18px;height:18px}
+
+/* ── the statement under the film, in the serif the homepage uses ────────────────────────────── */
+.pc-page .pp-about{padding:clamp(56px,7vw,110px) 0 clamp(20px,3vw,44px)}
+.pc-page .pp-about .pp-wrap{max-width:1180px}
+.pc-page .pp-about__text{font-family:var(--hc-serif);font-weight:400;
+  font-size:clamp(24px,1rem + 1.7vw,40px);line-height:1.28;letter-spacing:-.01em;
+  color:var(--ink) !important;max-width:22ch;max-width:min(980px,100%)}
+
+/* ── how it works: the steps read as the homepage's list ─────────────────────────────────────── */
+.pc-page .pp-more{padding:clamp(44px,6vw,92px) 0 clamp(56px,7vw,104px)}
+.pc-page .pp-more .pp-wrap{max-width:1180px}
+.pc-page .pp-more__head{display:block;margin:0 0 clamp(22px,2.6vw,36px)}
+.pc-page .pp-sign{color:var(--hc-quiet) !important;font-size:13px;letter-spacing:.06em;
+  text-transform:uppercase;margin:0 0 10px}
+.pc-page .pp-h2,.pc-page .pp-h2 span{color:var(--ink) !important;
+  font-size:clamp(34px,1rem + 3.4vw,68px);line-height:1.04;letter-spacing:-.03em;margin:0}
+.pc-page .pp-more__grid{display:block}
+.pc-page .pp-more__media{width:100%;margin:0 0 clamp(28px,3.4vw,52px);border-radius:0;overflow:hidden}
+.pc-page .pp-more__media img{width:100%;height:auto;max-height:clamp(320px,46vh,560px);
+  object-fit:cover;display:block}
+.pc-page .pp-steps{display:block;counter-reset:none;margin:0;padding:0;list-style:none}
+.pc-page .pp-steps > li{display:block;position:relative;margin:0;
+  padding:clamp(26px,3vw,42px) 76px clamp(28px,3.2vw,46px) 0;
+  border:0;border-top:1px solid var(--hc-rule)}
+.pc-page .pp-steps > li:last-child{border-bottom:1px solid var(--hc-rule)}
+.pc-page .pp-steps > li > b{position:absolute;top:clamp(26px,3vw,42px);right:0;
+  font-family:var(--ui);font-weight:400;font-size:13px;color:var(--hc-quiet);letter-spacing:.02em;
+  background:none;width:auto;height:auto;border-radius:0;display:block}
+.pc-page .pp-steps > li > b::before{content:"/0."}
+.pc-page .pp-steps h3{color:var(--ink) !important;
+  font-size:clamp(36px,1rem + 3.6vw,76px);line-height:1.02;letter-spacing:-.03em;
+  margin:0 0 clamp(14px,1.6vw,22px)}
+.pc-page .pp-steps p{color:var(--hc-quiet) !important;font-size:17px;line-height:1.5;
+  max-width:76ch;margin:0}
+.pc-page .pp-mid{margin:clamp(30px,3.4vw,48px) 0 0}
+.pc-page .pp-mid .btn--ink{background:var(--ink) !important;color:#FFFFFF !important}
+
+/* ── the numbers, on the same hairlines ──────────────────────────────────────────────────────── */
+.pc-page .pp-proof{padding:0 0 clamp(56px,7vw,104px);background:var(--hc-ground)}
+.pc-page .pp-proof .pp-wrap{max-width:1180px}
+.pc-page .pp-proof__head{display:block;margin:0 0 clamp(20px,2.4vw,32px)}
+.pc-page .pp-flag{display:inline-block;margin-top:10px;color:var(--hc-quiet) !important;
+  background:none;border:1px solid var(--hc-rule);border-radius:999px;padding:4px 12px;font-size:12px}
+.pc-page .pp-figs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;
+  border-top:1px solid var(--hc-rule);border-bottom:1px solid var(--hc-rule);margin:0;padding:0}
+.pc-page .pp-figs > li{background:none;border:0;border-left:1px solid var(--hc-rule);
+  border-radius:0;padding:clamp(24px,2.6vw,36px) clamp(16px,1.8vw,26px)}
+.pc-page .pp-figs > li:first-child{border-left:0;padding-left:0}
+.pc-page .pp-figs strong{display:block;color:var(--ink) !important;
+  font-size:clamp(30px,1rem + 2vw,46px);line-height:1.04;letter-spacing:-.03em}
+.pc-page .pp-figs span{display:block;margin-top:10px;color:var(--hc-quiet) !important;
+  font-size:14.5px;line-height:1.45}
+.pc-page .pp-proof__note{margin-top:16px;color:var(--hc-quiet) !important;font-size:13.5px}
+
+/* ── the phone ───────────────────────────────────────────────────────────────────────────────── */
+@media (max-width:860px){
+  .pc-page .pp-hero__in{grid-template-columns:1fr}
+  .pc-page .pp-logo,.pc-page .pp-title,.pc-page .pp-eyebrow,.pc-page .pp-lede,.pc-page .pp-acts{
+    grid-area:auto !important}
+  .pc-page .pp-eyebrow{order:-1}
+  .pc-page .pp-figs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pc-page .pp-figs > li{border-left:0;border-top:1px solid var(--hc-rule);padding-left:0}
+  .pc-page .pp-figs > li:nth-child(-n+2){border-top:0}
+}
+@media (max-width:760px){
+  .pc-page .pp-steps > li{padding-right:52px}
+  .pc-page .pp-steps h3{font-size:clamp(28px,8vw,40px)}
+  .pc-page .pp-film__frame{aspect-ratio:4 / 3}
+  .pc-page .pp-figs{grid-template-columns:1fr}
+  .pc-page .pp-figs > li:nth-child(2){border-top:1px solid var(--hc-rule)}
+}
+
+/* ── corrections against product.css ──────────────────────────────────────────────────────────── */
+.pc-page .pp-about__text{text-align:left !important;margin-inline:0 !important}
+.pc-page .pp-film__play{left:clamp(16px,2.4vw,34px) !important;right:auto !important;
+  top:auto !important;bottom:clamp(16px,2.4vw,34px) !important;transform:none !important}
+.pc-page .pp-more__head,.pc-page .pp-proof__head{text-align:left !important}
+.pc-page .pp-sign,.pc-page .pp-h2,.pc-page .pp-mid{text-align:left !important}
+.pc-page .pp-mid{margin-inline:0 !important}
+.pc-page .pp-film{margin-top:0 !important;padding:0 !important}
+.pc-page .pp-hero{overflow:visible !important}
+/* the product wordmarks exist only white-on-black, so on paper the name is set as type */
+.pc-page .pp-logo{display:none !important}
+.pc-page .pp-hero,.pc-page .pp-hero__in,.pc-page .pp-title,
+.pc-page .pp-eyebrow,.pc-page .pp-lede,.pc-page .pp-acts{text-align:left !important}
+.pc-page .pp-acts{justify-content:flex-start}
+
+/* the closing pair needs room here: the product page's acts row is a block, not a flex */
+.pc-page .ask-end .ask-end__acts{display:flex !important;justify-content:center;width:100%}
+.pc-page .ask-end .ask-end__ways{width:min(100%,1000px) !important;max-width:100% !important;
+  flex:1 1 auto}
+
+/* ── the closing section: a product page has no two-block pair, so its own ask stays ──────────── */
+.pc-page .ask-end .display--end,.pc-page .ask-end .display--end *{display:block !important;
+  color:var(--ink) !important;font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(34px,1rem + 3.4vw,68px) !important;line-height:1.04;letter-spacing:-.03em;
+  text-align:center}
+.pc-page .ask-end .ask-end__lede{display:block !important;color:var(--hc-quiet) !important;
+  text-align:center;margin-top:14px}
+.pc-page .ask-end .ask-mini{display:grid !important}
+.pc-page .ask-end .ask-end__acts{display:flex !important;justify-content:center;width:100%;
+  margin-top:clamp(24px,3vw,38px)}
+.pc-page .ask-end{padding:clamp(64px,8vw,120px) 0 clamp(56px,7vw,100px) !important}
+
+/* ═══ THE LISTING: every product on one set of hairlines (the Offerings reference, in light) ════
+   Each problem keeps its heading; under it every product reads as a row — the name at the left,
+   what it does in the middle, the way in at the right. */
+.pl-c .pl-hero .pp-hero__in{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr)}
+.pl-c .pl-hero .pp-title{grid-area:1 / 1 / 4 / 2}
+.pl-c .pl-hero .pp-eyebrow{grid-area:1 / 2 / 2 / 3}
+.pl-c .pl-hero .pp-lede{grid-area:2 / 2 / 3 / 3}
+.pl-c .pl-hero .pp-acts{grid-area:3 / 2 / 4 / 3}
+
+.pl-c .prodbody{max-width:1180px;margin-inline:auto;padding-inline:var(--gutter,24px)}
+.pl-c .prodgroup{padding:clamp(40px,5vw,76px) 0 0;background:none;border:0}
+.pl-c .prodgroup__head{display:flex;align-items:baseline;gap:14px;padding:0;background:none;
+  border:0;margin:0 0 clamp(8px,1.2vw,16px)}
+.pl-c .prodgroup__pic{display:none}
+.pl-c .prodgroup__words{display:flex;align-items:baseline;gap:14px}
+.pl-c .prodgroup__n{margin:0;color:var(--hc-quiet) !important;font-family:var(--ui);font-size:13px;
+  letter-spacing:.02em;background:none;width:auto;height:auto}
+.pl-c .prodgroup__n::before{content:"/"}
+.pl-c .prodgroup__h{margin:0;color:var(--ink) !important;font-family:var(--hc-title) !important;
+  font-weight:400 !important;font-size:clamp(20px,1rem + .6vw,26px);line-height:1.25;
+  letter-spacing:-.02em}
+.pl-c .prodgroup__cards{display:block;gap:0;margin:0;padding:0}
+.pl-c .prodcard{display:block;background:none !important;border:0 !important;border-radius:0 !important;
+  box-shadow:none !important;padding:0;margin:0}
+.pl-c .prodcard__top,.pl-c .prodcard__head{display:contents}
+.pl-c .prodcard{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.15fr) minmax(170px,auto);
+  column-gap:clamp(20px,3vw,56px);align-items:start;
+  padding:clamp(22px,2.6vw,34px) 0;border-top:1px solid var(--hc-rule) !important}
+.pl-c .prodgroup__cards > .prodcard:last-child{border-bottom:1px solid var(--hc-rule) !important}
+.pl-c .prodcard__name{grid-column:1;margin:0;color:var(--ink) !important;
+  font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(26px,1rem + 1.5vw,40px);line-height:1.08;letter-spacing:-.03em}
+.pl-c .prodcard__pos{grid-column:2;grid-row:1;margin:0;color:var(--ink) !important;
+  font-size:16px;line-height:1.5}
+.pl-c .prodcard__who{grid-column:2;grid-row:2;margin:10px 0 0;color:var(--hc-quiet) !important;
+  font-size:14px}
+.pl-c .prodcard__pills{grid-column:2;grid-row:3;display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;
+  padding:0;list-style:none}
+.pl-c .prodcard__pills li{background:none;border:1px solid var(--hc-rule);border-radius:999px;
+  padding:3px 10px;color:var(--hc-quiet) !important;font-size:12.5px}
+.pl-c .prodcard__link{grid-column:3;grid-row:1;justify-self:end;align-self:start;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;
+  padding:0 0 10px;border-bottom:1px solid var(--hc-rule);
+  color:var(--hc-quiet) !important;background:none !important;font-size:15px;text-decoration:none}
+.pl-c .prodcard__link::after{content:"→";font-size:16px}
+.pl-c .prodcard:hover .prodcard__link{color:var(--ink) !important;border-bottom-color:var(--ink)}
+
+/* the chooser at the top of the list */
+.pl-c .ptoc{max-width:1180px;margin-inline:auto;padding:clamp(24px,3vw,44px) var(--gutter,24px) 0}
+.pl-c .ptoc__btn{background:var(--hc-card);border:1px solid var(--hc-edge);color:var(--ink)}
+
+@media (max-width:860px){
+  .pl-c .prodcard{grid-template-columns:1fr;row-gap:12px}
+  .pl-c .prodcard__name,.pl-c .prodcard__pos,.pl-c .prodcard__who,
+  .pl-c .prodcard__pills,.pl-c .prodcard__link{grid-column:1;grid-row:auto}
+  .pl-c .prodcard__link{justify-self:start;width:auto;min-width:180px}
+}
+/* listing.css lays each group out in two columns; here the heading sits above its rows */
+.pl-c .prodgroup{display:block !important;grid-template-columns:none !important}
+.pl-c .prodgroup__cards{display:block !important;width:100% !important;
+  grid-template-columns:none !important}
+.pl-c .prodgroup__head{position:static;width:auto}
+/* the group head carried a dark scrim over its picture; on paper neither is needed */
+.pl-c .prodgroup__head::after,.pl-c .prodgroup__head::before{display:none !important;content:none !important}
+.pl-c .prodgroup__head{background:none !important;min-height:0 !important;overflow:visible !important;
+  border-radius:0 !important;color:var(--ink) !important}
+.pl-c .prodgroup__words{position:static !important;padding:0 !important;color:var(--ink) !important}
+
+/* ═══ the listing, second pass (client) ════════════════════════════════════════════════════════
+   The title gives room back, the right column reads top-to-bottom with the demo on its rule at
+   the foot, the statement is set in the sans, and each row is quieter. */
+.pl-c .pl-hero .pp-title{font-size:clamp(32px,1rem + 2.6vw,54px) !important;line-height:1.06;
+  max-width:16ch}
+.pl-c .pl-hero .pp-hero__in{grid-template-rows:auto auto 1fr;align-items:start;
+  row-gap:clamp(12px,1.4vw,18px)}
+.pl-c .pl-hero .pp-acts{align-self:end;margin-top:0}
+.pl-c .pl-hero .pp-lede{font-size:17px;max-width:40ch}
+
+/* the serif belongs to the chat; every statement on these pages is set in the sans */
+.pc-page .pp-about__text,.pl-c .pp-about__text{font-family:var(--ui) !important;
+  font-size:clamp(19px,1rem + .8vw,27px) !important;line-height:1.45;letter-spacing:-.01em;
+  color:var(--ink) !important;max-width:66ch}
+
+/* the problem reads as a label over its rows, not as a heading competing with the names */
+.pl-c .prodgroup__h{font-family:var(--ui) !important;font-size:13px !important;
+  font-weight:600 !important;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--hc-quiet) !important;line-height:1.35}
+.pl-c .prodgroup__n{font-size:12px}
+.pl-c .prodgroup__head{margin-bottom:clamp(4px,.8vw,10px)}
+
+/* the row: the name and everything about it at the left, the way in at the right */
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(150px,auto);
+  column-gap:clamp(20px,3vw,56px);row-gap:8px}
+.pl-c .prodcard__name{grid-column:1;grid-row:1;font-size:clamp(24px,1rem + 1.2vw,34px)}
+.pl-c .prodcard__pos{grid-column:1;grid-row:2;font-size:16px;max-width:72ch;color:var(--hc-quiet) !important}
+.pl-c .prodcard__who{grid-column:1;grid-row:3;margin-top:4px;font-size:13.5px}
+.pl-c .prodcard__pills{grid-column:1;grid-row:4;margin-top:10px;gap:6px}
+.pl-c .prodcard__pills li{border:0;background:rgba(11,18,32,.05);color:var(--hc-quiet) !important;
+  font-size:12px;letter-spacing:.01em;padding:4px 10px}
+.pl-c .prodcard__link{grid-column:2;grid-row:1;align-self:start;min-width:150px}
+.pl-c .prodgroup__words{flex:1 1 auto;min-width:0;max-width:none}
+.pl-c .prodgroup__h{max-width:none;white-space:normal}
+
+/* the chooser sits on the page's own left edge and wears the homepage's tab shape */
+.pl-c .ptoc{padding-top:clamp(20px,2.4vw,36px);padding-bottom:0}
+.pl-c .ptoc__line{display:flex;align-items:center;gap:12px;justify-content:flex-start;
+  width:auto;margin:0;text-align:left}
+.pl-c .ptoc__lead{color:var(--hc-quiet) !important;font-size:13px;letter-spacing:.06em;
+  text-transform:uppercase;margin:0}
+.pl-c .ptoc__btn{height:44px;padding:0 16px;border-radius:10px;background:var(--hc-card) !important;
+  border:1px solid var(--hc-edge) !important;color:var(--ink) !important;font-size:15px;
+  display:inline-flex;align-items:center;gap:10px;width:auto}
+.pl-c .ptoc__btn:hover{background:#F1F1EE !important}
+.pl-c .ptoc__label{font-size:15px !important;color:var(--ink) !important}
+
+/* ═══ the listing runs the width of the screen, the way the reference does ══════════════════════
+   The hairlines start near the left edge and end near the right; the name takes the first half,
+   the words the next third, the way in sits at the far right. */
+.pl-c .prodbody,.pl-c .ptoc{max-width:none !important;
+  padding-inline:clamp(20px,3.6vw,72px) !important}
+.pl-c .prodgroup{padding-top:clamp(36px,4vw,64px)}
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(0,.74fr) minmax(190px,.3fr) !important;
+  column-gap:clamp(24px,3vw,60px);row-gap:10px;
+  padding:clamp(34px,3.4vw,52px) 0 clamp(38px,3.8vw,60px)}
+.pl-c .prodcard__name{grid-column:1 !important;grid-row:1 !important;
+  font-size:clamp(28px,1rem + 2vw,46px) !important}
+.pl-c .prodcard__pos{grid-column:2 !important;grid-row:1 !important;color:var(--ink) !important;
+  font-size:17px;max-width:46ch}
+.pl-c .prodcard__who{grid-column:2 !important;grid-row:2 !important;margin-top:12px}
+.pl-c .prodcard__pills{grid-column:2 !important;grid-row:3 !important}
+.pl-c .prodcard__link{grid-column:3 !important;grid-row:1 !important;justify-self:stretch;
+  align-self:start;min-width:0}
+/* the hero and the statement keep the same edges as the rows */
+.pl-c .pl-hero .pp-hero__in,.pl-c .pl-about .pp-wrap{max-width:none !important;
+  padding-inline:clamp(20px,3.6vw,72px) !important}
+.pl-c .pl-hero .pp-title{max-width:20ch}
+.pl-c .pp-about__text{max-width:80ch}
+
+@media (max-width:980px){
+  .pl-c .prodcard{grid-template-columns:1fr !important}
+  .pl-c .prodcard__name,.pl-c .prodcard__pos,.pl-c .prodcard__who,
+  .pl-c .prodcard__pills,.pl-c .prodcard__link{grid-column:1 !important;grid-row:auto !important}
+  .pl-c .prodcard__link{justify-self:start;min-width:190px}
+}
+
+/* ═══ the listing, third pass (client): one ground, hairlines, nothing boxed ════════════════════
+   The hero puts the demo directly under the title where it is seen; the rows drop every stroke —
+   the tags read as words and the way in is a plain link with its arrow. */
+.pl-c .pl-hero .pp-hero__in{grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);
+  grid-template-rows:auto auto auto;align-items:start;row-gap:clamp(14px,1.6vw,22px)}
+.pl-c .pl-hero .pp-eyebrow{grid-area:1 / 1 / 2 / 2 !important;margin:0}
+.pl-c .pl-hero .pp-title{grid-area:2 / 1 / 3 / 2 !important;max-width:18ch}
+.pl-c .pl-hero .pp-acts{grid-area:3 / 1 / 4 / 2 !important;align-self:start;
+  border-top:0 !important;padding-top:0 !important;margin-top:clamp(8px,1vw,14px) !important}
+.pl-c .pl-hero .pp-lede{grid-area:2 / 2 / 4 / 3 !important;font-size:19px;line-height:1.5;
+  max-width:36ch;color:var(--hc-quiet) !important;padding-top:10px}
+
+/* the rows: no strokes anywhere */
+.pl-c .prodcard__pills{gap:0 !important;margin-top:12px}
+.pl-c .prodcard__pills li{background:none !important;border:0 !important;border-radius:0 !important;
+  padding:0 !important;color:var(--hc-quiet) !important;font-size:13.5px}
+.pl-c .prodcard__pills li + li::before{content:"·";margin:0 8px;color:rgba(11,18,32,.34)}
+.pl-c .prodcard__link{border-bottom:0 !important;padding:0 !important;justify-self:end;
+  width:auto;min-width:0;gap:10px;font-size:15px;letter-spacing:.02em}
+.pl-c .prodcard__link::after{content:"→";transition:transform .24s ease}
+.pl-c .prodcard:hover .prodcard__link::after{transform:translateX(3px)}
+.pl-c .ptoc{display:block !important;text-align:left !important}
+.pl-c .ptoc__line{display:inline-flex !important;justify-content:flex-start !important;
+  margin-inline:0 !important}
+.pl-c .ptoc__label,.pl-c .ptoc__btn{color:var(--ink) !important;opacity:1 !important}
+.pl-c .ptoc__btn svg{color:var(--hc-quiet)}
+
+/* ═══ the listing, fourth pass (client) ════════════════════════════════════════════════════════
+   The hero reads title → the statement → the two ways in. Every section sits on one ground, every
+   line starts on the same left edge, and each row leads with what the product does, the name
+   above it as a quiet tag. */
+.pl-c .pl-hero .pp-hero__in{grid-template-columns:1fr !important;
+  grid-template-rows:auto !important;row-gap:clamp(12px,1.4vw,20px);max-width:none}
+.pl-c .pl-hero .pp-eyebrow{grid-area:auto !important;order:1}
+.pl-c .pl-hero .pp-title{grid-area:auto !important;order:2;max-width:20ch}
+.pl-c .pl-hero .pp-lede{display:none !important}
+.pl-c .pl-hero .pl-say{grid-area:auto !important;order:3;margin:clamp(6px,.8vw,12px) 0 0;
+  max-width:74ch;font-size:clamp(17px,1rem + .45vw,21px) !important;line-height:1.5;
+  color:var(--hc-quiet) !important}
+.pl-c .pl-hero .pp-acts{grid-area:auto !important;order:4;
+  margin-top:clamp(14px,1.8vw,24px) !important;border-top:0 !important;padding-top:0 !important}
+.pl-c .pl-about{display:none !important}
+
+/* one ground for the whole page, one colour for every hairline, one left edge */
+.pl-c,.pl-c main,.pl-c .pp-hero,.pl-c .prodbody,.pl-c .prodgroup,.pl-c .ask-end,
+.pl-c .ptoc,.pl-c .prodgroup__head{background:var(--hc-ground) !important}
+.pl-c .prodcard,.pl-c .prodgroup__head{border-color:var(--hc-rule) !important}
+.pl-c .prodgroup__cards > .prodcard:last-child{border-bottom-color:var(--hc-rule) !important}
+.pl-c .prodgroup,.pl-c .prodcard,.pl-c .prodgroup__head,.pl-c .ptoc,
+.pl-c .pl-hero .pp-hero__in{text-align:left !important}
+
+/* the row: what it does reads large, the product's name is the tag above it */
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(190px,.26fr) !important;
+  row-gap:0;padding:clamp(30px,3vw,46px) 0 clamp(32px,3.2vw,50px)}
+.pl-c .prodcard__name{grid-column:1 !important;grid-row:1 !important;
+  font-family:var(--ui) !important;font-weight:600 !important;
+  font-size:13px !important;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--hc-quiet) !important;margin:0 0 12px}
+.pl-c .prodcard__pos{grid-column:1 !important;grid-row:2 !important;
+  font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(26px,1rem + 1.7vw,42px) !important;line-height:1.08;letter-spacing:-.03em;
+  color:var(--ink) !important;max-width:22ch;margin:0}
+.pl-c .prodcard__who{grid-column:1 !important;grid-row:3 !important;margin:18px 0 0 !important;
+  font-size:14px}
+.pl-c .prodcard__pills{grid-column:1 !important;grid-row:4 !important;margin:8px 0 0 !important;
+  row-gap:4px}
+.pl-c .prodcard__link{grid-column:2 !important;grid-row:1 !important;align-self:start;
+  justify-self:end}
+
+/* ═══ the listing, settled (client) ════════════════════════════════════════════════════════════
+   Hero: the title at the left with its two buttons beneath it, the statement facing it at the
+   right. The chooser sits in the centre. Each row keeps the division we had — the name, then what
+   it does facing it, then the way in — with every column starting on the same line. */
+.pl-c .pl-hero .pp-hero__in{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr) !important;
+  grid-template-rows:auto auto auto !important;column-gap:clamp(32px,5vw,96px);
+  row-gap:clamp(12px,1.4vw,20px);align-items:start}
+.pl-c .pl-hero .pp-eyebrow{grid-area:1 / 1 / 2 / 2 !important;order:0}
+.pl-c .pl-hero .pp-title{grid-area:2 / 1 / 3 / 2 !important;order:0;max-width:18ch}
+.pl-c .pl-hero .pp-acts{grid-area:3 / 1 / 4 / 2 !important;order:0;display:flex;gap:12px;
+  align-items:center;margin-top:clamp(14px,1.8vw,24px) !important}
+.pl-c .pl-hero .pl-say{grid-area:2 / 2 / 4 / 3 !important;order:0;margin:0;max-width:46ch;
+  font-size:clamp(17px,1rem + .4vw,20px) !important;line-height:1.5;color:var(--ink) !important}
+/* both ways in read as buttons */
+.pl-c .pl-hero .pp-site{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 20px;
+  border-radius:999px;border:1px solid var(--hc-rule);color:var(--ink) !important;
+  font-size:15px;font-weight:500;text-decoration:none}
+.pl-c .pl-hero .pp-site:hover{background:#FFFFFF;border-color:rgba(11,18,32,.32)}
+
+/* the chooser, centred */
+.pl-c .ptoc{text-align:center !important;padding-block:clamp(28px,3.4vw,52px) 0}
+.pl-c .ptoc__line{display:inline-flex !important;justify-content:center !important}
+
+/* the row: the name, what it does facing it, the way in — all starting on one line */
+.pl-c .prodcard{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr) minmax(170px,.26fr) !important;
+  column-gap:clamp(24px,3.2vw,64px);row-gap:0;align-items:start !important}
+.pl-c .prodcard__name{grid-column:1 !important;grid-row:1 !important;
+  font-family:var(--hc-title) !important;font-weight:400 !important;text-transform:none !important;
+  letter-spacing:-.03em !important;font-size:clamp(22px,1rem + 1vw,30px) !important;
+  line-height:1.15;color:var(--ink) !important;margin:0 !important}
+.pl-c .prodcard__pos{grid-column:2 !important;grid-row:1 !important;
+  font-family:var(--ui) !important;font-size:17px !important;line-height:1.5;letter-spacing:0 !important;
+  color:var(--ink) !important;max-width:46ch !important;margin:0 !important}
+.pl-c .prodcard__who{grid-column:2 !important;grid-row:2 !important;margin:14px 0 0 !important}
+.pl-c .prodcard__pills{grid-column:2 !important;grid-row:3 !important;margin:6px 0 0 !important}
+.pl-c .prodcard__link{grid-column:3 !important;grid-row:1 !important;align-self:start !important;
+  justify-self:end}
+/* the tags read quietly, on one flowing line */
+.pl-c .prodcard__pills{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 !important;
+  font-size:13.5px;line-height:1.7}
+.pl-c .prodcard__pills li{font-weight:400 !important;color:var(--hc-quiet) !important;
+  letter-spacing:0 !important;text-transform:none !important}
+/* the way in starts on the same line as the name and the words */
+.pl-c .prodcard__link{line-height:25.5px;padding:0 !important;margin:0 !important}
+/* the separator hugs the word before it, so a wrapped line never begins with a dot */
+.pl-c .prodcard__pills li + li::before{content:none !important}
+.pl-c .prodcard__pills li:not(:last-child)::after{content:"·";margin:0 8px;color:rgba(11,18,32,.3)}
+/* the two ways in start on the title's left edge, not centred */
+.pl-c .pl-hero .pp-acts{justify-content:flex-start !important;text-align:left !important}
+
+/* the page title is set in the serif, exactly as the homepage sets its own */
+.pc-page .pp-title,.pc-page .pp-title *,.pl-c .pl-hero .pp-title,.pl-c .pl-hero .pp-title *{
+  font-family:'Montserrat','Montserrat',Georgia,'Times New Roman',serif !important;
+  font-weight:400 !important;letter-spacing:-.02em}
+/* the two ways in sit side by side, on the title's left edge */
+.pl-c .pl-hero .pp-acts{display:flex !important;flex-direction:row !important;flex-wrap:nowrap;
+  align-items:center;justify-content:flex-start !important;gap:12px}
+@media (max-width:620px){.pl-c .pl-hero .pp-acts{flex-wrap:wrap}}
+
+/* ═══ the listing's rows, to the sketch ════════════════════════════════════════════════════════
+   /NN and the product's name small at the top left, the problem it answers set large beneath it,
+   what it does facing them, and Explore as a button at the right. No arrows anywhere. */
+.pl-c .prodgroup__head{display:none !important}
+.pl-c .prodgroup:first-of-type{padding-top:clamp(28px,3vw,48px)}
+.pl-c .prodgroup{padding-top:0}
+.pl-c .prodcard{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr) minmax(150px,auto) !important;
+  column-gap:clamp(28px,3.6vw,72px);align-items:start !important;
+  padding:clamp(30px,3.2vw,48px) 0 clamp(34px,3.6vw,54px)}
+.pl-c .prodcard__name{grid-column:1 !important;grid-row:1 !important;
+  font-family:var(--ui) !important;font-weight:500 !important;font-size:13px !important;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--hc-quiet) !important;
+  margin:0 0 clamp(12px,1.4vw,18px) !important;line-height:1.4}
+.pl-c .prodcard .pc-n{color:rgba(11,18,32,.34)}
+.pl-c .prodcard .pc-row__h{grid-column:1 !important;grid-row:2 !important;margin:0 !important;
+  font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(26px,1rem + 1.7vw,42px) !important;line-height:1.08;letter-spacing:-.03em;
+  color:var(--ink) !important;max-width:18ch}
+.pl-c .prodcard__pos{grid-column:2 !important;grid-row:1 / span 2 !important;
+  font-family:var(--ui) !important;font-size:17px !important;line-height:1.5;
+  color:var(--ink) !important;max-width:44ch !important;margin:0 !important}
+.pl-c .prodcard__who{grid-column:2 !important;grid-row:3 !important;margin:20px 0 0 !important;
+  font-size:15px;color:var(--ink) !important;display:block}
+.pl-c .prodcard .pc-lab{display:block;font-family:var(--ui);font-size:11.5px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--hc-quiet) !important;margin:0 0 4px}
+.pl-c .prodcard .pc-lab--own{grid-column:2 !important;grid-row:4 !important;margin:16px 0 4px !important}
+.pl-c .prodcard__pills{grid-column:2 !important;grid-row:5 !important;margin:0 !important;
+  font-size:15px}
+.pl-c .prodcard__pills li{color:var(--ink) !important}
+/* Explore, a button */
+.pl-c .prodcard__link{grid-column:3 !important;grid-row:1 !important;justify-self:end;
+  display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 22px !important;
+  border-radius:999px;border:1px solid var(--hc-rule);background:transparent !important;
+  color:var(--ink) !important;font-size:14px;font-weight:500;letter-spacing:.04em;
+  text-transform:uppercase;line-height:1 !important;width:auto;min-width:0}
+.pl-c .prodcard__link:hover{background:var(--ink) !important;border-color:var(--ink);
+  color:#FFFFFF !important}
+/* no page on this site puts an arrow inside a button */
+.pl-c .prodcard__link::after,.pl-c .pp-site svg,.pl-c .prodcard__link svg{display:none !important;
+  content:none !important}
+@media (max-width:980px){
+  .pl-c .prodcard{grid-template-columns:1fr !important}
+  .pl-c .prodcard__name,.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,.pl-c .prodcard__who,
+  .pl-c .prodcard .pc-lab--own,.pl-c .prodcard__pills,.pl-c .prodcard__link{
+    grid-column:1 !important;grid-row:auto !important}
+  .pl-c .prodcard__pos{margin-top:14px !important}
+  .pl-c .prodcard__link{justify-self:start;margin-top:22px !important}
+}
+/* nothing on these pages puts an arrow inside a button, as on the homepage */
+.pc-page .pp-acts .btn svg,.pc-page .pp-site svg,.pc-page .pp-mid .btn svg,
+.pc-page .ask-end .btn svg:not(.btn__ic--wave){display:none !important}
+
+/* the name carries the row's eyebrow; the number stays quiet beside it */
+.pl-c .prodcard__name{color:var(--ink) !important;font-weight:600 !important;font-size:13.5px !important;
+  letter-spacing:.07em}
+.pl-c .prodcard .pc-n{color:var(--hc-quiet) !important;font-weight:500}
+/* Explore is a solid black button, the way the homepage draws its own */
+.pl-c .prodcard__link{background:var(--ink) !important;border:0 !important;color:#FFFFFF !important;
+  box-shadow:none !important}
+.pl-c .prodcard__link:hover{background:#05080F !important;color:#FFFFFF !important}
+/* the row's eyebrow carries the product's name, so it reads four pixels larger */
+.pl-c .prodcard__name{font-size:17.5px !important}
+
+/* the label stays white whether the row is hovered or not (an earlier outline rule turned it ink) */
+.pl-c .prodcard:hover .prodcard__link,.pl-c .prodcard__link,
+.pl-c .prodcard:hover .prodcard__link:hover{color:#FFFFFF !important}
+/* the chooser sits closer under the hero */
+.pl-c .pl-hero{padding-bottom:clamp(18px,2vw,30px) !important}
+.pl-c .ptoc{padding-top:clamp(14px,1.6vw,24px) !important;padding-bottom:0 !important}
+.pl-c .prodgroup:first-of-type{padding-top:clamp(18px,2vw,32px)}
+/* the product's name sits a shade lighter */
+.pl-c .prodcard__name{font-weight:500 !important}
+
+/* ═══ the row's foot: who it's for and what it does, each behind its own mark ══════════════════ */
+.pl-c .prodcard__name.pc-hide{display:none !important}
+.pl-c .prodcard__who{grid-column:1 !important;grid-row:3 !important;
+  margin:clamp(22px,2.4vw,34px) 0 0 !important;display:block;font-size:15px;
+  color:var(--ink) !important;max-width:none}
+.pl-c .prodcard .pc-foot__what{grid-column:2 / -1 !important;grid-row:3 !important;
+  margin:clamp(22px,2.4vw,34px) 0 0 !important}
+.pl-c .prodcard .pc-lab--own{margin:0 !important;display:inline}
+.pl-c .prodcard__pills{display:inline !important;margin:0 !important;font-size:15px;
+  color:var(--ink) !important}
+.pl-c .prodcard__pills li{display:inline}
+.pl-c .prodcard .pc-lab{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--hc-quiet) !important;margin:0 8px 0 0;display:inline;white-space:nowrap}
+.pl-c .prodcard .pc-ic{width:16px;height:16px;color:var(--hc-quiet);display:inline-block;
+  vertical-align:-3px;margin-right:7px}
+
+/* ═══ each problem keeps its picture: the number and the words in white on top ═════════════════ */
+.pl-c .prodgroup{display:grid !important;
+  grid-template-columns:minmax(0,.46fr) minmax(0,1fr) !important;
+  column-gap:clamp(28px,3.6vw,72px);align-items:start;
+  padding:clamp(34px,4vw,68px) 0 !important}
+.pl-c .prodgroup + .prodgroup{border-top:1px solid var(--hc-rule)}
+.pl-c .prodgroup__head{display:block !important;position:relative;margin:0 !important;
+  border-radius:18px !important;overflow:hidden !important;background:#0B1220 !important;
+  aspect-ratio:4 / 3;min-height:0 !important}
+.pl-c .prodgroup__pic{display:block !important;width:100%;height:100%;object-fit:cover;
+  position:absolute;inset:0}
+.pl-c .prodgroup__head::after{content:"" !important;display:block !important;position:absolute;
+  inset:0;background:linear-gradient(180deg,rgba(7,12,20,.12) 28%,rgba(7,12,20,.72) 100%)}
+.pl-c .prodgroup__words{position:absolute !important;left:clamp(18px,1.8vw,28px);
+  right:clamp(18px,1.8vw,28px);bottom:clamp(18px,1.8vw,28px);z-index:2;display:block !important}
+.pl-c .prodgroup__n{color:rgba(255,255,255,.72) !important;font-family:var(--ui);font-size:13px;
+  letter-spacing:.22em;margin:0 0 8px !important}
+.pl-c .prodgroup__n::before{content:none}
+.pl-c .prodgroup__h{color:#FFFFFF !important;font-family:var(--hc-title) !important;
+  font-weight:400 !important;text-transform:none !important;letter-spacing:-.03em !important;
+  font-size:clamp(24px,1rem + 1.2vw,34px) !important;line-height:1.1;margin:0 !important}
+/* the rows live beside the picture */
+.pl-c .prodgroup__cards{grid-column:2}
+.pl-c .prodgroup__cards > .prodcard:first-child{border-top:0 !important;padding-top:0}
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(150px,auto) !important}
+.pl-c .prodcard .pc-row__h{grid-column:1 !important;grid-row:1 !important;max-width:24ch;
+  font-size:clamp(22px,1rem + 1vw,32px) !important}
+.pl-c .prodcard__pos{grid-column:1 !important;grid-row:2 !important;margin:14px 0 0 !important;
+  max-width:52ch !important}
+.pl-c .prodcard__link{grid-column:2 !important;grid-row:1 !important}
+.pl-c .prodcard__who{grid-column:1 / -1 !important;grid-row:3 !important}
+.pl-c .prodcard .pc-foot__what{grid-column:1 / -1 !important;grid-row:4 !important;
+  margin-top:10px !important}
+@media (max-width:980px){
+  .pl-c .prodgroup{grid-template-columns:1fr !important;row-gap:22px}
+  .pl-c .prodgroup__cards{grid-column:1}
+  .pl-c .prodgroup__head{aspect-ratio:16 / 9}
+}
+.pl-c .prodgroup__pic{transform:none !important;max-width:none;border-radius:0 !important}
+
+/* ═══ the row's foot, the closing block, and one line between groups ═══════════════════════════ */
+/* one divider, not two: the rows carry the line, the group does not */
+.pl-c .prodgroup + .prodgroup{border-top:0 !important}
+.pl-c .prodgroup__cards > .prodcard{border-top:0 !important;
+  border-bottom:1px solid var(--hc-rule) !important}
+
+/* the marks sit in the homepage's own rounded containers */
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{display:flex;align-items:flex-start;gap:12px}
+.pl-c .prodcard .pc-ic{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;
+  border-radius:12px;box-shadow:inset 0 0 0 1px rgba(11,18,32,.16);color:var(--ink);
+  vertical-align:0;margin:0;transform:none;padding:9px}
+.pl-c .prodcard .pc-lab{display:block;margin:0 0 3px}
+.pl-c .prodcard__who > span:not(.pc-lab),.pl-c .prodcard .pc-foot__what > *{min-width:0}
+.pl-c .prodcard .pc-foot__what{flex-wrap:nowrap}
+.pl-c .prodcard .pc-lab--own{display:block}
+
+/* the ask keeps the homepage's measure, and the two ways in follow it */
+.pc-page .ask-end .ask-end__acts{flex-direction:column;align-items:center;gap:clamp(18px,2.2vw,28px)}
+.pc-page .ask-end .ask-mini{width:min(100%,620px) !important}
+.pc-page .ask-end .ask-end__ways{display:grid !important;grid-template-columns:1fr 1fr;gap:16px;
+  width:min(100%,920px) !important;max-width:100% !important}
+@media (max-width:760px){
+  .pc-page .ask-end .ask-end__ways{grid-template-columns:1fr !important}
+}
+/* each list: the mark, then its label over its words */
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{display:flex !important;align-items:flex-start;
+  gap:12px;flex-wrap:nowrap}
+.pl-c .prodcard .pc-col{display:block;min-width:0;padding-top:2px}
+.pl-c .prodcard .pc-lab{display:block;margin:0 0 2px}
+.pl-c .prodcard .pc-lab--own{display:contents}
+.pl-c .prodcard__pills{display:block !important;margin:0 !important}
+
+/* ═══ the listing, polished (client) ═══════════════════════════════════════════════════════════ */
+/* a line only between one product and the next */
+.pl-c .prodgroup__cards > .prodcard{border-bottom:0 !important;border-top:0 !important}
+.pl-c .prodgroup__cards > .prodcard + .prodcard{
+  border-top:1px solid var(--hc-rule) !important;margin-top:clamp(26px,2.8vw,40px);
+  padding-top:clamp(26px,2.8vw,40px)}
+.pl-c .prodgroup__cards > .prodcard:last-child{padding-bottom:0}
+
+/* the picture stands a little taller, and its words sit on more ground */
+.pl-c .prodgroup__head{aspect-ratio:5 / 4}
+.pl-c .prodgroup__head::after{background:linear-gradient(180deg,rgba(7,12,20,.06) 24%,
+  rgba(7,12,20,.52) 62%,rgba(7,12,20,.86) 100%) !important}
+
+/* the two lists share one rhythm, side by side */
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{grid-row:3 !important;
+  margin:clamp(24px,2.6vw,34px) 0 0 !important;align-items:flex-start}
+.pl-c .prodcard__who{grid-column:1 !important}
+.pl-c .prodcard .pc-foot__what{grid-column:2 / -1 !important}
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap:clamp(24px,2.6vw,44px)}
+.pl-c .prodcard .pc-row__h{grid-column:1 / -1 !important;max-width:26ch}
+.pl-c .prodcard__pos{grid-column:1 / -1 !important;max-width:62ch !important}
+/* Explore rests on the foot of the row */
+.pl-c .prodcard__link{grid-column:1 / -1 !important;grid-row:4 !important;justify-self:start !important;
+  margin-top:clamp(24px,2.6vw,34px) !important}
+
+/* the closing block keeps the two ways in; the ask steps aside */
+.pc-page .ask-end .ask-mini,.pc-page .ask-end .display--end,
+.pc-page .ask-end .ask-end__lede{display:none !important}
+.pl-c .prodfoot{max-width:none;margin:clamp(22px,2.6vw,34px) auto 0;text-align:center;
+  color:var(--hc-quiet) !important;font-size:13px;line-height:1.55;
+  padding-inline:clamp(20px,3.6vw,72px)}
+.pl-c .prodgroup__cards > .prodcard:last-child,
+.pl-c .prodgroup__cards > .prodcard:only-child{border-bottom:0 !important}
+/* the marks were taking room the words need: the labels carry it on their own */
+.pl-c .prodcard .pc-ic{display:none !important}
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{gap:0}
+
+/* Explore keeps its own column at the right and rests on the foot of it */
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(150px,auto) !important}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos{grid-column:1 / 3 !important}
+.pl-c .prodcard__who{grid-column:1 !important;grid-row:3 !important}
+.pl-c .prodcard .pc-foot__what{grid-column:2 !important;grid-row:3 !important}
+.pl-c .prodcard__link{grid-column:3 !important;grid-row:1 / -1 !important;
+  align-self:end !important;justify-self:end !important;margin:0 !important}
+@media (max-width:980px){
+  .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,.pl-c .prodcard__who,
+  .pl-c .prodcard .pc-foot__what,.pl-c .prodcard__link{
+    grid-column:1 !important;grid-row:auto !important;justify-self:start !important}
+  .pl-c .prodcard__link{margin-top:22px !important}
+}
+/* pin it to the last row so its foot is the row's foot */
+.pl-c .prodcard__link{grid-row:3 !important;align-self:end !important}
+
+/* the picture runs the full height of its problem, so its foot meets the last Explore */
+.pl-c .prodgroup{align-items:stretch}
+.pl-c .prodgroup__head{aspect-ratio:auto !important;height:auto !important;
+  min-height:clamp(260px,25vw,380px);align-self:stretch !important}
+.pl-c .prodgroup__cards{display:flex;flex-direction:column;height:100%}
+.pl-c .prodgroup__cards > .prodcard:last-child{flex:1 1 auto}
+/* a long problem should not stretch its picture into a strip */
+.pl-c .prodgroup__head{max-height:clamp(300px,34vw,540px)}
+/* the two lists read one under the other, not side by side */
+.pl-c .prodcard__who{grid-column:1 / 3 !important;grid-row:3 !important}
+.pl-c .prodcard .pc-foot__what{grid-column:1 / 3 !important;grid-row:4 !important;
+  margin-top:clamp(14px,1.5vw,20px) !important}
+.pl-c .prodcard__link{grid-row:4 !important;align-self:end !important}
+@media (max-width:980px){
+  .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what,.pl-c .prodcard__link{
+    grid-column:1 !important;grid-row:auto !important}
+}
+/* a line of the description runs eight or nine words, no more */
+.pl-c .prodcard__pos{max-width:50ch !important}
+/* and the pictures stand taller */
+.pl-c .prodgroup__head{min-height:clamp(320px,28vw,450px);max-height:clamp(360px,38vw,600px)}
+/* eight or nine words a line, measured; and the earlier reset had floored the picture's height */
+.pl-c .prodcard__pos{max-width:37ch !important}
+.pl-c .prodgroup__head{min-height:clamp(320px,28vw,450px) !important}
+/* the hero's statement breaks like the rest, and the descriptions lose their last long line */
+.pl-c .pl-hero .pl-say{max-width:36ch !important}
+.pl-c .prodcard__pos{max-width:34ch !important}
+/* the description and the two lists share one measure */
+.pl-c .prodcard__pos,.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+  max-width:42ch !important}
+.pl-c .prodcard .pc-foot__what .pc-col,.pl-c .prodcard__who .pc-col{max-width:100%}
+/* the who block was still sized to its content, so all three now share one width */
+.pl-c .prodcard__who{width:auto !important;max-width:40ch !important}
+.pl-c .prodcard__pos,.pl-c .prodcard .pc-foot__what{max-width:40ch !important}
+
+/* ═══ three columns on one rhythm: picture, words, the way in ══════════════════════════════════ */
+.pl-c{--pc-gap:clamp(32px,3.4vw,64px)}
+.pl-c .prodgroup{column-gap:var(--pc-gap) !important}
+.pl-c .prodcard{grid-template-columns:minmax(0,40ch) auto !important;
+  column-gap:var(--pc-gap) !important;justify-content:start}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{grid-column:1 !important;max-width:100% !important}
+.pl-c .prodcard .pc-row__h{grid-row:1 !important}
+.pl-c .prodcard__pos{grid-row:2 !important}
+.pl-c .prodcard__who{grid-row:3 !important}
+.pl-c .prodcard .pc-foot__what{grid-row:4 !important}
+.pl-c .prodcard__link{grid-column:2 !important;grid-row:4 !important;
+  justify-self:start !important;align-self:end !important}
+@media (max-width:980px){
+  .pl-c .prodcard{grid-template-columns:1fr !important}
+  .pl-c .prodcard__link{grid-column:1 !important;grid-row:auto !important;margin-top:22px !important}
+}
+
+/* the way in sits on the page's right edge, the words evenly between it and the picture */
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) auto !important;column-gap:0 !important}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+  grid-column:1 !important;width:40ch;max-width:100% !important;justify-self:start !important}
+.pl-c .prodcard__link{grid-column:2 !important;justify-self:end !important}
+@media (max-width:980px){
+  .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+  .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{width:auto;justify-self:start !important}
+}
+
+/* the words sit centred between the picture and the way in, and the button rests on the
+   picture's own foot */
+.pl-c .prodcard{height:100%;grid-template-rows:auto auto auto 1fr !important}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+  width:40ch;max-width:100% !important;justify-self:center !important}
+.pl-c .prodcard__link{align-self:end !important;justify-self:end !important;
+  grid-row:4 !important;margin-bottom:0 !important}
+@media (max-width:980px){
+  .pl-c .prodcard{height:auto;grid-template-rows:none !important}
+  .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+  .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{width:auto;justify-self:start !important}
+}
+/* one measure in absolute terms, so the big title and the small words share a width */
+.pl-c{--pc-measure:clamp(340px,30vw,460px)}
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+  width:var(--pc-measure) !important;max-width:100% !important;justify-self:center !important}
+@media (max-width:980px){
+  .pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+  .pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{
+    width:auto !important;justify-self:start !important}
+}
+
+/* only the last row of a group stretches to meet the picture's foot; the others size to
+   their own content (height:100% on every row was making each one a full column tall) */
+.pl-c .prodcard{height:auto !important;grid-template-rows:auto auto auto auto !important}
+.pl-c .prodgroup__cards > .prodcard:last-child{flex:1 1 auto;
+  grid-template-rows:auto auto auto 1fr !important}
+
+/* ═══ a problem with more than one product: each one keeps its own way in, beneath it ══════════ */
+.pl-c .prodgroup[data-pc-multi] .prodcard{grid-template-columns:minmax(0,1fr) !important;
+  grid-template-rows:auto auto auto auto auto !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-row__h,
+.pl-c .prodgroup[data-pc-multi] .prodcard__pos,
+.pl-c .prodgroup[data-pc-multi] .prodcard__who,
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what{
+  grid-column:1 !important;justify-self:start !important;width:var(--pc-measure) !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:1 !important;grid-row:5 !important;
+  justify-self:start !important;align-self:start !important;
+  margin-top:clamp(22px,2.4vw,32px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards > .prodcard:last-child{flex:0 0 auto;
+  grid-template-rows:auto auto auto auto auto !important}
+
+/* a single-product problem lets its row stretch to the picture's foot (an earlier fix had forced
+   this column back to a block, so nothing could stretch); a multi-product one simply stacks */
+.pl-c .prodgroup:not([data-pc-multi]) .prodgroup__cards{display:flex !important;
+  flex-direction:column;height:100%}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards{display:block !important;height:auto}
+.pl-c .prodgroup[data-pc-multi] .prodcard{height:auto !important}
+
+/* ═══ the picture matches its words, and a line falls only between one problem and the next ════ */
+.pl-c .prodgroup__head{min-height:0 !important;max-height:none !important;height:auto !important;
+  align-self:stretch !important;aspect-ratio:auto !important}
+/* no line inside a problem — the products under one picture read as one block */
+.pl-c .prodgroup__cards > .prodcard,
+.pl-c .prodgroup__cards > .prodcard + .prodcard{border:0 !important;margin-top:0 !important;
+  padding-top:0 !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards > .prodcard + .prodcard{
+  margin-top:clamp(30px,3.2vw,48px) !important}
+/* one line between problems */
+.pl-c .prodgroup + .prodgroup{border-top:1px solid var(--hc-rule) !important}
+.pl-c .prodgroup{padding-block:clamp(34px,4vw,64px) !important}
+
+/* ═══ on a single-product problem the way in sits on the picture, under its words ══════════════ */
+.pl-c .prodgroup__words .prodcard__link{position:static !important;display:inline-flex;
+  margin-top:clamp(14px,1.6vw,20px) !important;background:#FFFFFF !important;color:var(--ink) !important;
+  border:0 !important;height:42px;padding:0 20px !important;border-radius:999px;
+  font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+  justify-self:start !important;align-self:auto !important;grid-column:auto !important;
+  grid-row:auto !important}
+.pl-c .prodgroup__words .prodcard__link:hover{background:#F1F1EE !important;color:var(--ink) !important}
+
+/* every title and paragraph starts on the same left edge, one gap from the picture */
+.pl-c .prodcard .pc-row__h,.pl-c .prodcard__pos,
+.pl-c .prodcard__who,.pl-c .prodcard .pc-foot__what{justify-self:start !important}
+.pl-c .prodcard{grid-template-columns:minmax(0,1fr) !important}
+
+/* more air between the picture and the words, as in the hero */
+.pl-c{--pc-gap:clamp(44px,5vw,96px)}
+/* a problem with several products keeps its picture a card at the top, not a long strip whose
+   words drift to the foot */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{align-self:start !important;
+  height:clamp(320px,26vw,420px) !important;max-height:none !important}
+
+/* every problem's picture stands the same height */
+.pl-c .prodgroup__head{align-self:start !important;
+  height:clamp(320px,26vw,420px) !important;min-height:0 !important;max-height:none !important}
+/* a little more length to the lines */
+.pl-c{--pc-measure:clamp(380px,34vw,520px)}
+/* a tag in "what it does" never breaks mid-phrase; it moves to the next line whole */
+.pl-c .prodcard__pills li{display:inline-block;white-space:nowrap}
+.pl-c .prodcard__pills li:not(:last-child)::after{white-space:normal}
+
+/* the pictures sit fifteen percent deeper in black (the ::before was switched off earlier, so it
+   is switched back on and given its own layer) */
+.pl-c .prodgroup__head::before{content:"" !important;display:block !important;position:absolute;
+  inset:0;background:rgba(7,12,20,.15) !important;opacity:1 !important;filter:none;mask:none;
+  z-index:1;pointer-events:none}
+.pl-c .prodgroup__head::after{z-index:1}
+.pl-c .prodgroup__words{z-index:2 !important}
+
+/* ═══ several products under one problem: tabs that turn, one product shown at a time ══════════ */
+.pl-c .pc-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 clamp(22px,2.4vw,32px)}
+.pl-c .pc-tab{height:40px;padding:0 16px;border-radius:10px;background:#FFFFFF;
+  border:1px solid var(--hc-edge);color:var(--ink);font-family:var(--ui);font-size:14px;
+  font-weight:500;letter-spacing:-.005em;cursor:pointer;
+  transition:background .2s ease,border-color .2s ease}
+.pl-c .pc-tab:hover{background:#F2F2EF;border-color:rgba(11,18,32,.2)}
+.pl-c .pc-tab.is-on{background:#EBEBE8;border-color:rgba(11,18,32,.12)}
+.pl-c .prodgroup[data-pc-tabs] .prodcard{display:none !important;margin-top:0 !important}
+.pl-c .prodgroup[data-pc-tabs] .prodcard.is-on{display:grid !important}
+/* the homepage's thinking field belongs to the homepage */
+.pc-page .ask-end .hero__think,.pc-page #agentThink,.pc-page #endThink{display:none !important}
+
+/* ═══ the two multi-product problems break the grid and run wide ═══════════════════════════════
+   The picture becomes a stage across the whole page, the tabs sit under it, and the product it
+   turns to reads beneath them — the homepage's Products rhythm, twice down this page. */
+.pl-c .prodgroup[data-pc-multi]{display:block !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{width:100% !important;
+  height:clamp(340px,40vw,560px) !important;border-radius:18px !important;
+  margin:0 0 clamp(22px,2.4vw,34px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__h{font-size:clamp(28px,1rem + 2vw,44px) !important;
+  max-width:20ch}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards{width:100% !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard.is-on{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap:var(--pc-gap) !important;row-gap:0}
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-row__h{grid-column:1 !important;grid-row:1 !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__pos{grid-column:1 !important;grid-row:2 !important;
+  margin-top:12px !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__who{grid-column:2 !important;grid-row:1 !important;
+  margin:0 !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what{grid-column:2 !important;grid-row:2 !important;
+  margin-top:18px !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:2 !important;grid-row:3 !important;
+  justify-self:start !important;align-self:start !important;
+  margin-top:clamp(20px,2.2vw,30px) !important}
+@media (max-width:980px){
+  .pl-c .prodgroup[data-pc-multi] .prodcard.is-on{grid-template-columns:1fr !important}
+  .pl-c .prodgroup[data-pc-multi] .prodcard .pc-row__h,
+  .pl-c .prodgroup[data-pc-multi] .prodcard__pos,
+  .pl-c .prodgroup[data-pc-multi] .prodcard__who,
+  .pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what,
+  .pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:1 !important;grid-row:auto !important}
+}
+
+/* the heading steps off the picture, the tabs sit under it, and the caption card carries the
+   product across the still — the homepage's own component, adapted */
+.pl-c .prodgroup[data-pc-multi] > .prodgroup__words{position:static !important;display:block;
+  margin:0 0 clamp(16px,1.8vw,24px) !important;left:auto;right:auto;bottom:auto}
+.pl-c .prodgroup[data-pc-multi] > .prodgroup__words .prodgroup__n{color:var(--hc-quiet) !important;
+  letter-spacing:.06em}
+.pl-c .prodgroup[data-pc-multi] > .prodgroup__words .prodgroup__h{color:var(--ink) !important;
+  font-size:clamp(30px,1rem + 2.6vw,52px) !important;max-width:24ch}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{background:linear-gradient(90deg,
+  rgba(7,12,20,.34) 0%,rgba(7,12,20,.06) 56%,rgba(7,12,20,0) 100%) !important}
+.pl-c .pc-cap{position:absolute;z-index:3;left:clamp(16px,2.2vw,32px);top:clamp(16px,2.2vw,32px);
+  display:none;max-width:min(560px,52%);background:var(--ink);color:#FFFFFF;border-radius:14px;
+  padding:clamp(18px,2vw,26px) clamp(46px,4vw,58px) clamp(20px,2.2vw,28px) clamp(18px,2vw,26px);
+  text-decoration:none}
+.pl-c .pc-cap.is-on{display:block}
+.pl-c .pc-cap__eb{display:block;font-family:var(--ui);font-size:12px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72);margin:0 0 10px}
+.pl-c .pc-cap__h{display:block;font-family:var(--hc-title);font-weight:400;
+  font-size:clamp(20px,1rem + 1vw,30px);line-height:1.18;letter-spacing:-.02em;color:#FFFFFF}
+.pl-c .pc-cap__arw{position:absolute;top:clamp(18px,2vw,26px);right:clamp(18px,2vw,26px);
+  width:19px;height:19px;color:#FFFFFF;transition:transform .24s ease}
+.pl-c .pc-cap:hover{background:#05080F}
+.pl-c .pc-cap:hover .pc-cap__arw{transform:translate(2px,-2px)}
+/* below the still: what the product is for, what it does, and the way in */
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-row__h,
+.pl-c .prodgroup[data-pc-multi] .prodcard__pos{display:none !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard.is-on{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__who{grid-column:1 !important;grid-row:1 !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what{grid-column:2 !important;grid-row:1 !important;
+  margin-top:0 !important}
+.pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:3 !important;grid-row:1 !important;
+  justify-self:end !important;align-self:start !important;margin-top:0 !important}
+@media (max-width:980px){
+  .pl-c .pc-cap{position:static;max-width:none;margin:0;border-radius:0 0 18px 18px}
+  .pl-c .prodgroup[data-pc-multi] .prodcard.is-on{grid-template-columns:1fr !important}
+  .pl-c .prodgroup[data-pc-multi] .prodcard__who,
+  .pl-c .prodgroup[data-pc-multi] .prodcard .pc-foot__what,
+  .pl-c .prodgroup[data-pc-multi] .prodcard__link{grid-column:1 !important;grid-row:auto !important;
+    justify-self:start !important;margin-top:18px !important}
+}
+
+/* ═══ the wide problems, exactly the homepage's Products component ═════════════════════════════ */
+.pl-c .prodgroup[data-pc-multi] > .prodgroup__words .prodgroup__h{
+  font-size:clamp(34px,1rem + 3.4vw,68px) !important;line-height:1.04;max-width:20ch}
+/* the still runs the width of the screen */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{width:100vw !important;max-width:100vw !important;
+  margin-left:calc(50% - 50vw) !important;margin-right:calc(50% - 50vw) !important;
+  border-radius:0 !important;height:clamp(420px,46vw,660px) !important}
+.pl-c .prodgroup[data-pc-multi]{overflow:hidden}
+/* everything the product has to say sits in the dark card */
+.pl-c .pc-cap{left:clamp(20px,3.6vw,72px);top:clamp(20px,2.6vw,40px);
+  max-width:min(620px,46%);padding:clamp(20px,2.2vw,30px) clamp(46px,4vw,58px)
+  clamp(22px,2.4vw,32px) clamp(20px,2.2vw,30px)}
+.pl-c .pc-cap .prodcard__who,.pl-c .pc-cap .pc-foot__what{grid-column:auto !important;
+  grid-row:auto !important;display:block !important;width:auto !important;max-width:none !important;
+  margin:clamp(16px,1.8vw,22px) 0 0 !important;color:#FFFFFF !important}
+.pl-c .pc-cap .pc-lab{color:rgba(255,255,255,.62) !important}
+.pl-c .pc-cap .prodcard__pills li{color:rgba(255,255,255,.88) !important}
+.pl-c .pc-cap .prodcard__pills li:not(:last-child)::after{color:rgba(255,255,255,.4)}
+/* Explore sits on the still, at the bottom right */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go{position:absolute !important;z-index:3;
+  right:clamp(20px,3.6vw,72px);bottom:clamp(20px,2.6vw,40px);left:auto;top:auto;
+  grid-column:auto !important;grid-row:auto !important;margin:0 !important;
+  background:#FFFFFF !important;color:var(--ink) !important;display:inline-flex}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go:hover{background:#F1F1EE !important;
+  color:var(--ink) !important}
+/* the row beneath the still is now empty of everything but its hidden pieces */
+.pl-c .prodgroup[data-pc-multi] .prodcard.is-on{display:block !important;min-height:0}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__cards{margin-top:0}
+@media (max-width:980px){
+  .pl-c .pc-cap{position:static;max-width:none;margin:0;border-radius:0}
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go{position:static !important;
+    margin:16px 0 0 !important}
+}
+/* the still grows to hold the card, instead of the card spilling out of it */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{display:grid !important;align-items:start;
+  height:auto !important;min-height:clamp(420px,46vw,620px) !important;
+  padding:clamp(22px,2.6vw,40px) clamp(20px,3.6vw,72px) clamp(78px,7vw,104px) !important}
+.pl-c .prodgroup[data-pc-multi] .pc-cap{position:static !important;grid-column:1;grid-row:1;
+  width:min(620px,48%);max-width:100%;margin:0 !important}
+.pl-c .pc-cap__h{font-size:clamp(19px,1rem + .8vw,26px)}
+.pl-c .pc-cap .prodcard__who,.pl-c .pc-cap .pc-foot__what{font-size:14px}
+.pl-c .pc-cap .prodcard__pills{font-size:14px}
+/* the marks stay hidden inside the card too */
+.pl-c .pc-cap .pc-ic{display:none !important}
+.pl-c .pc-cap .pc-col{display:block}
+
+/* the product's name reads as the card's title, its sentence beneath it */
+.pl-c .pc-cap__eb{font-family:var(--hc-title) !important;font-weight:400 !important;
+  font-size:clamp(24px,1rem + 1.4vw,36px) !important;letter-spacing:-.03em;text-transform:none;
+  color:#FFFFFF !important;line-height:1.1;margin:0 0 10px !important}
+.pl-c .pc-cap__h{font-family:var(--ui) !important;font-size:16px !important;line-height:1.5;
+  letter-spacing:0;color:rgba(255,255,255,.82) !important}
+
+/* the ground is white on these pages, not the homepage's off-white */
+body.pc-page{--hc-ground:#FFFFFF}
+.pc-page,.pc-page main,.pc-page .pp-hero,.pc-page .prodbody,.pc-page .prodgroup,
+.pc-page .ask-end,.pc-page .ptoc,.pc-page .foot,.pc-page .foot__band,.pc-page .foot__in{
+  background-color:#FFFFFF !important}
+
+/* ═══ two dark columns on the still: the product, and what it is for ═══════════════════════════ */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap:clamp(14px,1.4vw,22px);align-items:stretch}
+.pl-c .prodgroup[data-pc-multi] .pc-cap{grid-column:1;grid-row:1;width:auto !important;
+  max-width:none !important}
+.pl-c .pc-side{display:none;grid-column:2;grid-row:1;background:var(--ink);color:#FFFFFF;
+  border-radius:14px;padding:clamp(20px,2.2vw,30px)}
+.pl-c .pc-side.is-on{display:block}
+.pl-c .pc-side .prodcard__who,.pl-c .pc-side .pc-foot__what{display:block !important;
+  grid-column:auto !important;grid-row:auto !important;width:auto !important;
+  max-width:none !important;color:#FFFFFF !important;margin:0 !important;font-size:14px}
+.pl-c .pc-side .pc-foot__what{margin-top:clamp(16px,1.8vw,22px) !important}
+.pl-c .pc-side .pc-lab{color:rgba(255,255,255,.62) !important}
+.pl-c .pc-side .pc-ic{display:none !important}
+.pl-c .pc-side .prodcard__pills li{color:rgba(255,255,255,.88) !important;font-size:14px}
+.pl-c .pc-side .prodcard__pills li:not(:last-child)::after{color:rgba(255,255,255,.4)}
+/* the two cards together take the left half of the still */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{
+  grid-template-columns:minmax(0,.34fr) minmax(0,.34fr) minmax(0,.32fr) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head > .prodgroup__pic{grid-area:1 / 1 / -1 / -1}
+@media (max-width:980px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head{grid-template-columns:1fr !important;row-gap:12px}
+  .pl-c .pc-side{grid-column:1;grid-row:auto}
+}
+
+/* listing.css paints a full-bleed #F5F7F8 band behind every even problem — that is the grey */
+.pl-c .prodgroup::before,.pl-c .prodgroup:nth-of-type(even)::before{
+  content:none !important;display:none !important;background:none !important}
+/* the still spans the whole stage; it had been auto-placed into the last column */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__pic{grid-area:1 / 1 / -1 / -1 !important;
+  position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;
+  object-fit:cover !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::before{grid-area:1 / 1 / -1 / -1 !important}
+/* the still covers the whole stage, padding and all */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{--pc-py:clamp(22px,2.6vw,40px);
+  --pc-px:clamp(20px,3.6vw,72px);
+  padding:var(--pc-py) var(--pc-px) clamp(78px,7vw,104px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__pic,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::before{
+  top:calc(-1 * var(--pc-py)) !important;left:calc(-1 * var(--pc-px)) !important;
+  right:calc(-1 * var(--pc-px)) !important;bottom:calc(-1 * clamp(78px,7vw,104px)) !important;
+  width:auto !important;height:auto !important}
+/* the stage carries the still itself */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
+  background-size:cover !important;background-position:center !important;
+  background-repeat:no-repeat !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__pic{display:none !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{
+  top:calc(-1 * var(--pc-py)) !important;left:calc(-1 * var(--pc-px)) !important;
+  right:calc(-1 * var(--pc-px)) !important;bottom:calc(-1 * clamp(78px,7vw,104px)) !important}
+/* an earlier fix set background:none !important on this header, so the still is carried in a
+   custom property and applied with the same weight */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
+  background-image:var(--pc-bg) !important;background-size:cover !important;
+  background-position:center !important;background-repeat:no-repeat !important;
+  background-color:#0B1220 !important}
+/* Explore sits under the two cards, on the left, as drawn */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go{
+  position:static !important;grid-column:1 !important;grid-row:2 !important;
+  justify-self:start !important;align-self:start !important;
+  margin:clamp(16px,1.8vw,24px) 0 0 !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{grid-template-rows:auto auto !important;
+  align-content:start;padding-bottom:clamp(28px,3vw,44px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{
+  bottom:calc(-1 * clamp(28px,3vw,44px)) !important}
+.pl-c .prodgroup[data-pc-multi] .pc-cap,.pl-c .prodgroup[data-pc-multi] .pc-side{grid-row:1}
+/* both cards stand above the scrim, so they read as one colour */
+.pl-c .pc-side,.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-go{position:relative;z-index:3}
+.pl-c .pc-cap{z-index:3}
+
+/* the darkening travels with the picture as background layers on the same box, so nothing can
+   fall short of an edge or drift as the tabs turn */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
+  background-image:
+    linear-gradient(90deg,rgba(7,12,20,.62) 0%,rgba(7,12,20,.34) 46%,rgba(7,12,20,.12) 100%),
+    linear-gradient(rgba(7,12,20,.15),rgba(7,12,20,.15)),
+    var(--pc-bg) !important;
+  background-size:cover,cover,cover !important;
+  background-position:center,center,center !important;
+  background-repeat:no-repeat,no-repeat,no-repeat !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::before,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head::after{content:none !important;display:none !important}
+/* bleed by the page's own gutter rather than 100vw, so a scrollbar cannot leave a gap */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{
+  width:auto !important;max-width:none !important}
+/* the homepage lays no darkening over this still — the words live in the card, so the picture
+   stays as bright as it was shot */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-bg]{
+  background-image:var(--pc-bg) !important;background-size:cover !important;
+  background-position:center !important;background-repeat:no-repeat !important}
+/* Explore lives in the left card, under the paragraph */
+.pl-c .pc-cap .pc-go{position:static !important;display:inline-flex;align-items:center;
+  justify-content:center;height:42px;padding:0 20px !important;border-radius:999px;
+  background:#FFFFFF !important;color:var(--ink) !important;border:0 !important;
+  font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+  margin:clamp(16px,1.8vw,22px) 0 0 !important;grid-column:auto !important;grid-row:auto !important;
+  justify-self:start !important;align-self:auto !important;width:auto}
+.pl-c .pc-cap .pc-go:hover{background:#F1F1EE !important;color:var(--ink) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{grid-template-rows:auto !important}
+/* more air inside and between the two cards */
+.pl-c .pc-cap,.pl-c .pc-side{padding:clamp(24px,2.6vw,34px) !important}
+.pl-c .pc-cap{padding-right:clamp(46px,4vw,58px) !important}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{column-gap:clamp(16px,1.8vw,28px) !important}
+
+/* ═══ the cards: their own heights, their own rhythm ═══════════════════════════════════════════ */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{align-items:start !important}
+.pl-c .pc-cap,.pl-c .pc-side{align-self:start !important;height:auto !important}
+/* the label sits on its own line, above what it names */
+.pl-c .pc-side .pc-lab,.pl-c .pc-cap .pc-lab{display:block !important;margin:0 0 6px !important}
+/* more air between the product's name and its paragraph */
+.pl-c .pc-cap__eb{margin:0 0 clamp(14px,1.6vw,20px) !important}
+/* the margins are set from JS, so the stylesheet must not fight them */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head{margin-left:0;margin-right:0}
+
+/* the group must not clip: the stage bleeds past its box on purpose */
+.pl-c .prodgroup[data-pc-multi]{overflow:visible !important}
+
+/* the tabs fill as their turn runs down, as on the homepage */
+.pl-c .pc-tab{position:relative;overflow:hidden;isolation:isolate}
+.pl-c .pc-tab::before{content:"";position:absolute;inset:0;transform-origin:0 50%;
+  transform:scaleX(0);background:#DCDCD7;z-index:-1}
+.pl-c .pc-tab.is-on.is-timing::before{animation:pcFill 4.2s linear forwards}
+@keyframes pcFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){
+  .pl-c .pc-tab.is-on.is-timing::before{animation:none;transform:scaleX(1)}
+}
+/* both cards keep one tone, hover or not */
+.pl-c .pc-cap,.pl-c .pc-cap:hover,.pl-c .pc-side{background:var(--ink) !important}
+
+/* ═══ the product page, polished ═══════════════════════════════════════════════════════════════
+   The hero reads like the listing's: the name at a civil size, the sentence facing it, both ways
+   in beneath. The how-it-works picture stands taller. The numbers sit on the page's own hairlines.
+   The page ends on the two blocks the homepage ends on. */
+.pc-page:not(.pl-c) .pp-hero__in{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) !important;
+  column-gap:clamp(32px,5vw,88px);align-items:start}
+.pc-page:not(.pl-c) .pp-title{grid-area:2 / 1 / 3 / 2 !important;
+  font-size:clamp(34px,1rem + 2.8vw,58px) !important;line-height:1.06;max-width:18ch}
+.pc-page:not(.pl-c) .pp-eyebrow{grid-area:1 / 1 / 2 / 2 !important}
+.pc-page:not(.pl-c) .pp-lede{grid-area:2 / 2 / 3 / 3 !important;font-size:19px;max-width:40ch;
+  padding-top:8px}
+.pc-page:not(.pl-c) .pp-acts{grid-area:3 / 1 / 4 / 2 !important;display:flex;flex-wrap:nowrap;
+  gap:12px;align-items:center;justify-content:flex-start !important;
+  border-top:0 !important;padding-top:0 !important;margin-top:clamp(20px,2.4vw,32px) !important}
+.pc-page:not(.pl-c) .pp-site{display:inline-flex;align-items:center;height:48px;padding:0 20px;
+  border-radius:999px;border:1px solid var(--hc-rule);color:var(--ink) !important;font-size:15px;
+  font-weight:500;text-decoration:none;white-space:nowrap}
+.pc-page:not(.pl-c) .pp-site:hover{background:#F4F4F1}
+
+/* the picture of how it works stands taller and stays inside the page */
+.pc-page .pp-more__media{width:100%;margin-inline:0;overflow:hidden;border-radius:18px}
+.pc-page .pp-more__media img{width:100%;height:clamp(420px,52vh,660px) !important;
+  max-height:none !important;object-fit:cover;display:block}
+
+/* the numbers read like the rest of the site */
+.pc-page .pp-proof{padding-top:clamp(40px,5vw,80px)}
+.pc-page .pp-proof .pp-h2{font-size:clamp(30px,1rem + 2.4vw,50px) !important}
+.pc-page .pp-figs{border-top:1px solid var(--hc-rule);border-bottom:1px solid var(--hc-rule)}
+.pc-page .pp-figs > li{border-left:1px solid var(--hc-rule)}
+.pc-page .pp-figs strong{font-family:var(--hc-title) !important;font-weight:400 !important}
+
+/* the closing pair, as on the homepage */
+.pc-page:not(.pl-c) .ask-end .ask-end__ways{display:grid !important;grid-template-columns:1fr 1fr;
+  gap:16px;width:min(100%,920px) !important;max-width:100% !important;margin-inline:auto}
+.pc-page:not(.pl-c) .ask-end .ask-end__acts{display:flex !important;justify-content:center;width:100%}
+@media (max-width:760px){
+  .pc-page:not(.pl-c) .pp-hero__in{grid-template-columns:1fr !important}
+  .pc-page:not(.pl-c) .pp-title,.pc-page:not(.pl-c) .pp-eyebrow,
+  .pc-page:not(.pl-c) .pp-lede,.pc-page:not(.pl-c) .pp-acts{grid-area:auto !important}
+  .pc-page:not(.pl-c) .ask-end .ask-end__ways{grid-template-columns:1fr !important}
+}
+/* the how-it-works picture stays inside the page */
+.pc-page .pp-more__grid{display:block !important}
+.pc-page .pp-more__media,.pc-page .pp-more__media picture{display:block !important;
+  width:100% !important;max-width:100% !important;margin-inline:0 !important;
+  transform:none !important;overflow:hidden;border-radius:18px}
+.pc-page .pp-more__media img{width:100% !important;max-width:100% !important;
+  height:clamp(420px,52vh,660px) !important;object-fit:cover !important;
+  margin:0 !important;transform:none !important;display:block}
+/* when a product has no "who it's for", "what it does" starts at the card's own padding */
+.pl-c .pc-side .pc-foot__what:first-child,.pl-c .pc-cap .pc-foot__what:first-child{
+  margin-top:0 !important}
+.pl-c .pc-side .prodcard__who:first-child{margin-top:0 !important}
+
+/* ═══ the product page: the two ways in stand side by side on the title's edge ═════════════════ */
+.pc-page:not(.pl-c) .pp-acts{display:flex !important;flex-direction:row !important;
+  flex-wrap:nowrap !important;align-items:center !important;
+  justify-content:flex-start !important;text-align:left !important;
+  margin-inline:0 !important;width:auto;gap:12px}
+.pc-page:not(.pl-c) .pp-acts > *{margin:0 !important}
+
+/* ═══ the numbers, as quiet as the rest of the page ═══════════════════════════════════════════ */
+.pc-page .pp-figs > li::before,.pc-page .pp-figs > li::after{content:none !important;
+  display:none !important}
+.pc-page .pp-figs > li{background:none !important;text-align:left !important;
+  padding:clamp(24px,2.6vw,36px) clamp(18px,2vw,28px)}
+.pc-page .pp-figs > li:first-child{padding-left:0}
+.pc-page .pp-figs strong{color:var(--ink) !important;letter-spacing:-.03em}
+.pc-page .pp-figs span{color:var(--hc-quiet) !important}
+.pc-page .pp-proof__head,.pc-page .pp-proof .pp-sign,.pc-page .pp-proof .pp-h2,
+.pc-page .pp-proof__note{text-align:left !important;margin-inline:0 !important}
+.pc-page .pp-flag{margin-top:14px}
+
+/* the dark side card keeps its words inside it: the multi-group measure (488px) was outranking it */
+.pl-c .pc-side .prodcard__who:not(#_),.pl-c .pc-side .pc-foot__what:not(#_),
+.pl-c .pc-side .prodcard__who:not(#_) *{width:auto !important;max-width:100% !important;overflow-wrap:anywhere}
+
+/* ═══ tab films: the product's own video behind its cards ═══ */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]{position:relative;overflow:hidden}
+.pl-c .prodgroup__head .pc-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  z-index:0;opacity:0;transition:opacity .35s ease;pointer-events:none;background:#1B1B1C}
+.pl-c .prodgroup__head .pc-vid.is-on{opacity:1}
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-cap,
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-side{position:relative;z-index:2}
+@media (prefers-reduced-motion:reduce){.pl-c .prodgroup__head .pc-vid{transition:none}}
+
+/* phones: the picture (or film) is its own 16:9 strip on top; the two cards stack under it */
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head:not(#_){display:flex !important;flex-direction:column !important;
+    gap:12px !important;padding:calc(56.25vw + 16px) 20px 8px !important;min-height:0 !important;height:auto !important;
+    background-size:100% 56.25vw !important;background-position:top center !important;background-repeat:no-repeat !important;
+    background-color:transparent !important}
+  .pl-c .prodgroup__head .pc-vid:not(#_){bottom:auto;height:56.25vw}
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-cap.is-on:not(#_),
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-side.is-on:not(#_){position:relative !important;
+    grid-row:auto !important;grid-column:auto !important;width:100% !important;margin:0 !important;top:auto !important;left:auto !important}
+}
+/* tablets: one column, so the side card goes under the caption instead of on top of it */
+@media (min-width:761px) and (max-width:980px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-cap:not(#_){grid-row:1 !important;grid-column:1 !important}
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head .pc-side:not(#_){grid-row:2 !important;grid-column:1 !important}
+}
+/* phones: the listing's title and statement stack instead of squeezing into two columns */
+@media (max-width:760px){
+  .pc-page .pp-hero__in:not(#_){grid-template-columns:1fr !important;row-gap:20px !important}
+  .pc-page .pp-hero__in:not(#_) > *{grid-column:1 !important;grid-row:auto !important}
+}
+@media (max-width:760px){
+  .pc-page:not(.pl-c) .pp-hero__in:not(#_){grid-template-columns:minmax(0,1fr) !important}
+  .pc-page .pp-hero__in .pp-acts:not(#_){flex-wrap:wrap !important;row-gap:12px !important}
+}
+/* a tab with films: no photo underneath, and the films cut, never cross-fade */
+.pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]:not(#_){background-image:none !important;background-color:#1B1B1C !important}
+.pl-c .prodgroup__head .pc-vid:not(#_){transition:none !important}
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]:not(#_){background-color:transparent !important}
+}
+/* phones: the films are composed for the right-hand side, so show that side bigger */
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head[data-pc-film]:not(#_){padding-top:calc(75vw + 16px) !important}
+  .pl-c .prodgroup__head[data-pc-film] .pc-vid:not(#_){height:75vw;object-position:94% 50%}
+}
+
+/* the product's sentence runs a little longer before it wraps (client, 2026-09-17) */
+.pl-c .prodcard .prodcard__pos:not(#_){width:clamp(420px,42vw,640px) !important;max-width:100% !important}
+
+/* Explore on the pictures and in the dark cards: palette blue, white words */
+.pl-c .prodgroup__words .prodcard__link:not(#_),.pl-c .pc-cap .pc-go:not(#_),.pl-c .pc-cap .prodcard__link:not(#_){
+  background:#009CBD !important;border-color:#009CBD !important;color:#FFFFFF !important}
+.pl-c .prodgroup__words .prodcard__link:not(#_) *,.pl-c .pc-cap .prodcard__link:not(#_) *{color:#FFFFFF !important}
+.pl-c .prodgroup__words .prodcard__link:not(#_):hover,.pl-c .pc-cap .pc-go:not(#_):hover,.pl-c .pc-cap .prodcard__link:not(#_):hover{
+  background:#0E5F8E !important;border-color:#0E5F8E !important;color:#FFFFFF !important}
+
+/* the last problem runs into the clients row without a gulf */
+.pl-c .prodgroup:last-of-type:not(#_){padding-bottom:0 !important}
+.pl-c .ask-end:not(#_){padding-top:clamp(40px,4.5vw,64px) !important}
+
+/* ═══ Show me: a dropdown under the button with every section (the old full-screen sheet
+   was styled for .pl only, so on this page it opened invisible) ═══ */
+.ptoc__panel--drop{position:fixed;z-index:300;overflow:auto;background:#FFFFFF;
+  border:1px solid rgba(11,18,32,.12);border-radius:14px;padding:8px;font-family:'Montserrat',-apple-system,sans-serif}
+.ptoc__panel--drop[hidden]{display:none !important}
+.ptoc__panel--drop .ptoc__close{display:none}
+.ptoc__panel--drop .ptoc__sheet{display:flex;flex-direction:column;gap:2px}
+.ptoc__panel--drop .ptoc__item{display:flex;align-items:baseline;gap:14px;padding:11px 12px;border-radius:9px;
+  color:#0B1220;text-decoration:none;font-size:15px;line-height:1.3;text-align:left;border:0;background:transparent}
+.ptoc__panel--drop .ptoc__num{flex:0 0 22px;font-size:12px;letter-spacing:.06em;color:#009CBD}
+.ptoc__panel--drop .ptoc__item:hover,.ptoc__panel--drop .ptoc__item:focus-visible{background:rgba(0,156,189,.09);outline:0}
+@media (prefers-reduced-motion:no-preference){
+  .ptoc__panel--drop:not([hidden]){animation:ptocDrop .18s cubic-bezier(.2,.8,.2,1)}
+  @keyframes ptocDrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+}
+/* the dropdown shows its scrollbar from the moment it opens, so it never looks like five options and stuck */
+@supports not selector(::-webkit-scrollbar){.ptoc__panel--drop{scrollbar-width:thin;scrollbar-color:rgba(11,18,32,.35) transparent}}
+.ptoc__panel--drop::-webkit-scrollbar{width:10px}
+.ptoc__panel--drop::-webkit-scrollbar-track{background:transparent;margin:10px 0}
+.ptoc__panel--drop::-webkit-scrollbar-thumb{background:rgba(11,18,32,.28);border-radius:10px;border:3px solid #FFFFFF}
+.ptoc__panel--drop::-webkit-scrollbar-thumb:hover{background:rgba(11,18,32,.45)}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════════
+   PRODUCT PAGES, re-laid (client, 2026-09-17) — patterns taken from the homepage
+   ═══════════════════════════════════════════════════════════════════════════════════════════ */
+/* hero: the product's own site is a link with an arrow, not a second button */
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_){background:none !important;border:0 !important;box-shadow:none !important;
+  padding:0 !important;height:auto !important;min-height:0 !important;color:#0B1220 !important;font-weight:500;
+  text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;display:inline-flex;align-items:center;gap:6px}
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_):hover{color:#009CBD !important}
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_) .pp-site__ic{display:inline-block !important;width:14px;height:14px;transform:rotate(-45deg)}
+
+/* how it works: steps on the left, one picture on the right with the live step's card */
+.pc-page .pc-how:not(#_){display:grid !important;grid-template-columns:minmax(0,.85fr) minmax(0,1.35fr) !important;
+  gap:clamp(28px,4vw,64px) !important;align-items:stretch}
+.pc-page .pc-how__list{display:flex;flex-direction:column;justify-content:center}
+.pc-page .pc-how__tab{position:relative;display:grid;grid-template-columns:40px 1fr;align-items:baseline;gap:8px;
+  width:100%;padding:18px 0;border:0;border-top:1px solid rgba(11,18,32,.12);background:none;text-align:left;cursor:pointer;
+  font:inherit;color:rgba(11,18,32,.45);transition:color .25s ease}
+.pc-page .pc-how__tab:last-child{border-bottom:1px solid rgba(11,18,32,.12)}
+.pc-page .pc-how__n{font-size:13px;letter-spacing:.06em;color:#009CBD}
+.pc-page .pc-how__t{font-size:clamp(17px,.9rem + .4vw,21px);font-weight:500;letter-spacing:-.01em;line-height:1.25}
+.pc-page .pc-how__tab:hover,.pc-page .pc-how__tab.is-on{color:#0B1220}
+.pc-page .pc-how__bar{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:#009CBD;transform:scaleX(0);transform-origin:left}
+.pc-page .pc-how__tab.is-on.is-timing .pc-how__bar{animation:pcHowFill 5.5s linear forwards}
+.pc-page .pc-how__list.is-taken .pc-how__tab.is-on .pc-how__bar{transform:scaleX(1)}
+@keyframes pcHowFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.pc-page .pc-how .pp-more__media:not(#_){position:relative;margin:0 !important;height:auto !important;min-height:clamp(420px,46vw,620px);
+  border-radius:18px;overflow:hidden;aspect-ratio:auto !important}
+.pc-page .pc-how .pp-more__media:not(#_) picture,.pc-page .pc-how .pp-more__media:not(#_) img{position:absolute;inset:0;width:100%;height:100% !important;object-fit:cover;border-radius:0}
+.pc-page .pc-how__card{position:absolute;left:clamp(14px,1.6vw,24px);right:clamp(14px,1.6vw,24px);bottom:clamp(14px,1.6vw,24px);z-index:2;
+  max-width:520px;padding:clamp(20px,2vw,28px);border-radius:14px;background:#0B1220;color:#FFFFFF}
+.pc-page .pc-how__cn{display:block;font-size:12px;letter-spacing:.08em;color:#77E3F6;margin:0 0 10px}
+.pc-page .pc-how__card h3{margin:0 0 10px;font-size:clamp(20px,1rem + .6vw,26px);font-weight:500;letter-spacing:-.02em;line-height:1.15;color:#FFFFFF}
+.pc-page .pc-how__card p{margin:0;font-size:15px;line-height:1.55;color:rgba(255,255,255,.78)}
+@media (prefers-reduced-motion:reduce){.pc-page .pc-how__tab.is-on .pc-how__bar{animation:none;transform:scaleX(1)}}
+
+/* what sets it apart: three even cards, the homepage's blue tile for the number */
+.pc-page .pp-diff__grid:not(#_){display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:16px !important}
+.pc-page .pp-diff__item:not(#_){background:#F2F5F7 !important;border:0 !important;border-radius:16px !important;padding:clamp(22px,2.4vw,32px) !important;
+  display:flex;flex-direction:column;gap:12px;min-height:280px}
+.pc-page .pp-diff__n:not(#_){display:grid;place-items:center;width:44px;height:44px;border-radius:12px;margin:0 0 auto !important;
+  background:rgba(0,156,189,.09);box-shadow:inset 0 0 0 1px rgba(0,156,189,.42);color:#009CBD !important;font-size:14px;letter-spacing:.04em}
+.pc-page .pp-diff__item:not(#_) h3{margin:28px 0 0 !important;font-size:clamp(20px,1rem + .6vw,26px);font-weight:500;letter-spacing:-.02em;line-height:1.15}
+.pc-page .pp-diff__item:not(#_) p{margin:0 !important;font-size:15px;line-height:1.55;color:rgba(11,18,32,.62)}
+
+/* a picture between the reasons and the uses */
+.pc-page .pc-break{margin:clamp(24px,4vw,56px) 20px;height:clamp(260px,38vw,560px);overflow:hidden}
+.pc-page .pc-break img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* use cases: the names only, grouped, easy to scan */
+.pc-page .pp-uses__grid:not(#_){display:grid !important;grid-template-columns:repeat(5,minmax(0,1fr)) !important;gap:clamp(16px,2vw,28px) !important;
+  columns:auto !important}
+.pc-page .pp-uses__group:not(#_){break-inside:auto;margin:0 !important;padding:0 !important;border:0 !important}
+.pc-page .pp-uses__group:not(#_) > h3{margin:0 0 14px !important;padding:0 0 12px;border-bottom:2px solid #009CBD;
+  font-size:12px !important;letter-spacing:.1em;text-transform:uppercase;font-weight:500;color:#0B1220}
+.pc-page .pp-uses__list:not(#_){list-style:none;margin:0 !important;padding:0 !important;display:flex;flex-direction:column}
+.pc-page .pp-uses__list:not(#_) li{padding:12px 0 !important;border-bottom:1px solid rgba(11,18,32,.1);margin:0 !important}
+.pc-page .pp-uses__list:not(#_) h4{margin:0 !important;font-size:16px;font-weight:500;line-height:1.3;letter-spacing:-.005em}
+.pc-page .pp-uses__list:not(#_) p{display:none !important}
+
+/* what it connects to: four cards with the blue icon tile */
+.pc-page .pp-with__grid:not(#_){display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:16px !important;list-style:none;padding:0 !important}
+.pc-page .pp-with__grid:not(#_) > li{display:flex !important;flex-direction:column;gap:18px;background:#F2F5F7;border:0 !important;border-radius:16px;
+  padding:clamp(20px,2.2vw,28px) !important;margin:0 !important}
+.pc-page .pp-with__grid:not(#_) > li > svg{width:44px;height:44px;padding:11px;border-radius:12px;background:rgba(0,156,189,.09);
+  box-shadow:inset 0 0 0 1px rgba(0,156,189,.42);color:#009CBD;flex:0 0 auto}
+.pc-page .pp-with__grid:not(#_) b{display:block;font-size:18px;font-weight:500;letter-spacing:-.01em;line-height:1.25;margin:0 0 8px}
+.pc-page .pp-with__grid:not(#_) span{display:block;font-size:14px;line-height:1.5;color:rgba(11,18,32,.62)}
+
+/* proof: a scoreboard on navy */
+.pc-page .pp-proof:not(#_){background:#003349 !important;color:#FFFFFF;margin:clamp(24px,4vw,56px) 20px !important;padding-block:clamp(48px,6vw,88px) !important}
+.pc-page .pp-proof:not(#_) .pp-sign{color:#77E3F6 !important}
+.pc-page .pp-proof:not(#_) .pp-h2,.pc-page .pp-proof:not(#_) .pp-h2 *{color:#FFFFFF !important}
+.pc-page .pp-proof:not(#_) .pp-flag{background:rgba(255,184,28,.14) !important;color:#FFB81C !important;border:0 !important}
+.pc-page .pp-proof:not(#_) .pp-figs{display:grid !important;grid-template-columns:repeat(auto-fit,minmax(180px,1fr)) !important;gap:0 !important;
+  margin-top:clamp(28px,3.6vw,48px) !important;border-top:1px solid rgba(255,255,255,.18);list-style:none;padding:0 !important}
+.pc-page .pp-proof:not(#_) .pp-figs li{padding:28px 24px 8px 0 !important;border:0 !important;border-left:0 !important;background:none !important;margin:0 !important}
+.pc-page .pp-proof:not(#_) .pp-figs li + li{padding-left:24px !important;border-left:1px solid rgba(255,255,255,.18) !important}
+.pc-page .pp-proof:not(#_) .pp-figs strong{display:block;font-size:clamp(40px,1.4rem + 3vw,72px) !important;font-weight:500 !important;
+  letter-spacing:-.04em;line-height:1;color:#FFFFFF !important;margin:0 0 12px}
+.pc-page .pp-proof:not(#_) .pp-figs span{display:block;font-size:15px;line-height:1.45;color:rgba(255,255,255,.72) !important;max-width:24ch}
+.pc-page .pp-proof:not(#_) .pp-proof__note{color:rgba(255,255,255,.5) !important;margin-top:28px}
+
+/* tablets and phones */
+@media (max-width:1100px){
+  .pc-page .pp-uses__grid:not(#_){grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+  .pc-page .pp-with__grid:not(#_){grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+@media (max-width:860px){
+  .pc-page .pc-how:not(#_){grid-template-columns:1fr !important}
+  .pc-page .pc-how__list{flex-direction:row;overflow-x:auto;gap:8px;scrollbar-width:none;margin:0 -20px;padding:0 20px}
+  .pc-page .pc-how__list::-webkit-scrollbar{display:none}
+  .pc-page .pc-how__tab{flex:0 0 auto;width:auto;display:flex;gap:8px;align-items:center;padding:10px 14px;border:1px solid rgba(11,18,32,.14) !important;
+    border-radius:999px;overflow:hidden}
+  .pc-page .pc-how__tab.is-on{border-color:#0B1220 !important}
+  .pc-page .pc-how__t{font-size:14px;white-space:nowrap}
+  .pc-page .pc-how__bar{bottom:0}
+  .pc-page .pc-how .pp-more__media:not(#_){min-height:0;aspect-ratio:4 / 5 !important}
+  .pc-page .pp-diff__grid:not(#_){grid-template-columns:1fr !important}
+  .pc-page .pp-diff__item:not(#_){min-height:0}
+  .pc-page .pp-uses__grid:not(#_){grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  .pc-page .pc-break{margin-inline:0;height:56vw}
+  .pc-page .pp-proof:not(#_){margin-inline:0 !important}
+  .pc-page .pp-proof:not(#_) .pp-figs{grid-template-columns:1fr 1fr !important}
+  .pc-page .pp-proof:not(#_) .pp-figs li,.pc-page .pp-proof:not(#_) .pp-figs li + li{padding:22px 12px 12px 0 !important;border-left:0 !important;border-bottom:1px solid rgba(255,255,255,.18) !important}
+}
+@media (max-width:520px){
+  .pc-page .pp-uses__grid:not(#_),.pc-page .pp-with__grid:not(#_){grid-template-columns:1fr !important}
+}
+.pc-page .pp-diff__n:not(#_){margin:0 !important}
+.pc-page .pp-diff__item:not(#_){min-height:0 !important;justify-content:flex-start}
+.pc-page .pp-diff__item:not(#_) h3{margin-top:40px !important}
+@media (min-width:861px){.pc-page .pp-uses__group:not(#_) > h3{min-height:calc(2 * 1.35em + 12px);line-height:1.35;display:flex;align-items:flex-end}}
+.pc-page .pp-proof:not(#_) .pp-figs li,.pc-page .pp-proof:not(#_) .pp-figs strong{text-align:left !important}
+@media (max-width:860px){.pc-page .pp-diff__item:not(#_) h3{margin-top:18px !important}}
+
+/* ═══ /products on phones (client, 2026-09-17) ═══════════════════════════════════════════════ */
+.pl-c .pc-pic,.pl-c .pc-arrows{display:none}
+@media (max-width:760px){
+  /* the title as big as the homepage's; one clear action and a link */
+  .pc-page .pp-hero .pp-title:not(#_),.pc-page .pp-hero .pp-title:not(#_) *{font-size:clamp(36px,10.8vw,46px) !important;line-height:1.05 !important}
+  .pc-page .pp-acts:not(#_){flex-direction:column !important;align-items:stretch !important;gap:16px !important}
+  .pc-page .pp-acts:not(#_) .btn{width:100% !important}
+  .pc-page .pp-acts .pp-site:not(#_){align-self:flex-start;background:none !important;border:0 !important;box-shadow:none !important;padding:0 !important;
+    height:auto !important;min-height:0 !important;width:auto !important;color:#0B1220 !important;font-weight:500;
+    text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;display:inline-flex;align-items:center;gap:6px;font-size:15px}
+  .pc-page .pp-acts .pp-site:not(#_) .pp-site__ic{display:inline-block !important;width:14px;height:14px}
+
+  /* single-product problems: a sideways carousel */
+  .pl-c .pc-rail-wrap{margin:0 0 clamp(40px,10vw,64px)}
+  .pl-c .pc-rail{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+    margin:0 -20px;padding:0 20px 4px;scroll-padding-left:20px;position:relative}
+  .pl-c .pc-rail::-webkit-scrollbar{display:none}
+  .pl-c .pc-rail::after{content:'';flex:0 0 8px}
+  .pl-c .pc-rail > .prodgroup:not(#_){flex:0 0 84%;scroll-snap-align:start;margin:0 !important;padding:0 !important;border:0 !important}
+  .pl-c .pc-rail > .prodgroup:not(#_)::before,.pl-c .pc-rail > .prodgroup:not(#_)::after{display:none !important;content:none !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__head{aspect-ratio:4 / 5 !important;height:auto !important;min-height:0 !important;margin-bottom:18px !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodcard__pos{font-size:15px !important;line-height:1.45 !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .pc-row__h{font-size:22px !important}
+
+  .pl-c .pc-arrows{display:flex;gap:10px;margin-top:18px}
+  .pl-c .pc-arrow{width:44px;height:44px;border-radius:50%;border:0;background:#0B1220;color:#FFFFFF;display:grid;place-items:center;cursor:pointer}
+  .pl-c .pc-arrow svg{width:18px;height:18px}
+
+  /* several products in one problem: the homepage's order — tabs on one line, card, picture, card, arrows */
+  .pl-c .prodgroup[data-pc-multi] .pc-tabs:not(#_){flex-wrap:nowrap !important;overflow-x:auto;scrollbar-width:none;margin-inline:-20px;padding-inline:20px;justify-content:flex-start !important}
+  .pl-c .prodgroup[data-pc-multi] .pc-tabs::-webkit-scrollbar{display:none}
+  .pl-c .prodgroup[data-pc-multi] .pc-tab:not(#_){flex:0 0 auto;white-space:nowrap}
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head:not(#_){background:none !important;padding:0 !important;display:flex !important;flex-direction:column !important;gap:12px !important;overflow:visible !important;border-radius:0 !important}
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head:not(#_)::before,.pl-c .prodgroup[data-pc-multi] .prodgroup__head:not(#_)::after{display:none !important}
+  .pl-c .prodgroup[data-pc-multi] .pc-cap.is-on:not(#_){order:0}
+  .pl-c .prodgroup[data-pc-multi] .pc-pic{display:block;order:1;aspect-ratio:4 / 3;border-radius:18px;background:var(--pc-bg) center / cover no-repeat}
+  .pl-c .prodgroup[data-pc-multi] .pc-side.is-on:not(#_){order:2}
+  .pl-c .prodgroup[data-pc-multi] .pc-arrows{margin-top:16px}
+}
+@media (max-width:760px){
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__cards{margin-top:0 !important;padding-top:0 !important;gap:0 !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodcard{margin-top:0 !important;padding-top:0 !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__head{aspect-ratio:1 / 1 !important}
+}
+@media (max-width:760px){
+  .pl-c .pc-rail > .prodgroup:not(#_){display:block !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__head{margin-bottom:16px !important}
+}
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head:not(#_){margin-left:0 !important;margin-right:0 !important;width:auto !important}
+  .pl-c .prodgroup[data-pc-multi] .pc-cap.is-on:not(#_),.pl-c .prodgroup[data-pc-multi] .pc-side.is-on:not(#_){border-radius:16px !important;margin:0 !important}
+  .pl-c .prodgroup[data-pc-multi] .pc-pic:not(#_){width:100% !important;height:auto !important;aspect-ratio:4 / 3 !important;flex:0 0 auto;min-height:0}
+}
+
+/* ═══ product pages, round two (client, 2026-09-17) ═════════════════════════════════════════ */
+/* hero: centred like the homepage; the action and the link on one line */
+.pc-page:not(.pl-c) .pp-hero__in:not(#_){display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center !important;
+  max-width:980px !important;margin-inline:auto !important}
+.pc-page:not(.pl-c) .pp-hero__in:not(#_) > *{grid-column:auto !important;grid-row:auto !important;margin-inline:auto !important}
+.pc-page:not(.pl-c) .pp-hero .pp-title:not(#_){text-align:center !important;max-width:18ch}
+.pc-page:not(.pl-c) .pp-hero .pp-lede:not(#_){text-align:center !important;max-width:560px !important;margin-top:18px !important}
+.pc-page:not(.pl-c) .pp-acts:not(#_){flex-direction:row !important;align-items:center !important;justify-content:center !important;gap:28px !important;flex-wrap:wrap !important;margin-top:28px !important}
+.pc-page:not(.pl-c) .pp-acts:not(#_) .btn{width:auto !important}
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_){align-self:center !important;text-decoration:none !important;border-bottom:1px solid currentColor !important;padding-bottom:2px !important}
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_) .pp-site__ic{transform:none !important;width:13px !important;height:13px !important}
+
+/* how it works on phones: the homepage's tabs, with the fill */
+@media (max-width:860px){
+  .pc-page .pc-how__tab:not(#_){height:40px;padding:0 14px;border-radius:8px !important;border:1px solid rgba(11,18,32,.12) !important;background:#FFFFFF;
+    color:#0B1220;isolation:isolate}
+  .pc-page .pc-how__tab.is-on:not(#_){border-color:rgba(11,18,32,.12) !important}
+  .pc-page .pc-how__tab:not(#_) .pc-how__bar{top:0;bottom:0;height:auto;z-index:-1;background:#DCDCD7}
+  .pc-page .pc-how__list.is-taken .pc-how__tab.is-on .pc-how__bar{transform:scaleX(1)}
+  .pc-page .pc-how__n{display:none}
+}
+
+/* what sets it apart: the homepage's Why rows — a big name, the words beside it, a rule between */
+.pc-page .pp-diff__grid:not(#_){display:block !important}
+.pc-page .pp-diff__item:not(#_){display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,430px);column-gap:clamp(32px,5vw,96px);
+  align-items:start;background:none !important;border-radius:0 !important;padding:clamp(28px,3.4vw,44px) 0 !important;
+  border-top:1px solid rgba(11,18,32,.12) !important}
+.pc-page .pp-diff__item:not(#_):last-child{border-bottom:1px solid rgba(11,18,32,.12) !important}
+.pc-page .pp-diff__n:not(#_){display:none !important}
+.pc-page .pp-diff__item:not(#_) h3{margin:0 !important;font-size:clamp(32px,1.2rem + 2.6vw,60px) !important;font-weight:400;letter-spacing:-.03em;line-height:1.02}
+.pc-page .pp-diff__item:not(#_) p{margin:6px 0 0 !important;font-size:16px;line-height:1.55;color:rgba(11,18,32,.62)}
+
+/* use cases: group tabs, then the group's uses as rows */
+.pc-page .pc-utabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 clamp(20px,2.6vw,32px)}
+.pc-page .pc-utab{height:40px;padding:0 16px;border-radius:8px;border:1px solid rgba(11,18,32,.12);background:#FFFFFF;color:#0B1220;font:inherit;font-size:14px;cursor:pointer}
+.pc-page .pc-utab:hover{border-color:rgba(11,18,32,.34)}
+.pc-page .pc-utab.is-on{background:#DCDCD7;border-color:#DCDCD7}
+.pc-page .pc-uses:not(#_){display:block !important}
+.pc-page .pc-uses .pp-uses__group[hidden]{display:none !important}
+.pc-page .pc-uses .pp-uses__group:not(#_) > h3{display:none !important}
+.pc-page .pc-uses .pp-uses__list:not(#_) li{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,430px);column-gap:clamp(32px,5vw,96px);
+  padding:clamp(20px,2.4vw,28px) 0 !important;border-top:1px solid rgba(11,18,32,.12);border-bottom:0 !important}
+.pc-page .pc-uses .pp-uses__list:not(#_) li:last-child{border-bottom:1px solid rgba(11,18,32,.12) !important}
+.pc-page .pc-uses .pp-uses__list:not(#_) h4{font-size:clamp(22px,1rem + 1vw,32px) !important;font-weight:400 !important;letter-spacing:-.02em;line-height:1.12}
+.pc-page .pc-uses .pp-uses__list:not(#_) p{display:block !important;margin:4px 0 0 !important;font-size:15px;line-height:1.55;color:rgba(11,18,32,.62)}
+
+/* what it connects to: four quiet columns under a rule, the mark small and blue */
+.pc-page .pp-with__grid:not(#_) > li{background:none !important;border-radius:0 !important;padding:22px 0 0 !important;
+  border-top:1px solid rgba(11,18,32,.14) !important;gap:14px !important}
+.pc-page .pp-with__grid:not(#_) > li > svg{width:24px !important;height:24px !important;padding:0 !important;background:none !important;box-shadow:none !important;color:#009CBD}
+.pc-page .pp-with__grid:not(#_){gap:clamp(20px,2.4vw,36px) !important}
+
+/* proof: back on white; big ink numbers that count up, fine rules */
+.pc-page .pp-proof:not(#_){background:none !important;color:#0B1220 !important;margin:0 !important}
+.pc-page .pp-proof:not(#_) .pp-sign{color:rgba(11,18,32,.55) !important}
+.pc-page .pp-proof:not(#_) .pp-h2,.pc-page .pp-proof:not(#_) .pp-h2 *{color:#0B1220 !important}
+.pc-page .pp-proof:not(#_) .pp-flag{background:#F2F3F5 !important;color:rgba(11,18,32,.6) !important}
+.pc-page .pp-proof:not(#_) .pp-figs{border-top:1px solid rgba(11,18,32,.14) !important}
+.pc-page .pp-proof:not(#_) .pp-figs li + li{border-left:1px solid rgba(11,18,32,.14) !important}
+.pc-page .pp-proof:not(#_) .pp-figs strong{color:#0B1220 !important;font-variant-numeric:tabular-nums;font-weight:400 !important}
+.pc-page .pp-proof:not(#_) .pp-figs span{color:rgba(11,18,32,.6) !important}
+.pc-page .pp-proof:not(#_) .pp-proof__note{color:rgba(11,18,32,.45) !important}
+
+@media (max-width:860px){
+  .pc-page .pp-diff__item:not(#_),.pc-page .pc-uses .pp-uses__list:not(#_) li{grid-template-columns:1fr !important;row-gap:10px}
+  .pc-page .pc-utabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-20px;padding-inline:20px}
+  .pc-page .pc-utabs::-webkit-scrollbar{display:none}
+  .pc-page .pc-utab{flex:0 0 auto;white-space:nowrap}
+  .pc-page .pp-proof:not(#_) .pp-figs li,.pc-page .pp-proof:not(#_) .pp-figs li + li{border-left:0 !important;border-bottom:1px solid rgba(11,18,32,.14) !important}
+  .pc-page:not(.pl-c) .pp-acts:not(#_){gap:18px !important}
+}
+.pc-page:not(.pl-c) .pp-hero .pp-eyebrow:not(#_){text-align:center !important;width:auto !important}
+.pc-page:not(.pl-c) .pp-acts .pp-site:not(#_){border-radius:0 !important}
+@media (max-width:860px){.pc-page .pc-how__list:not(#_){justify-content:flex-start !important}}
+
+/* proof: figures sit left, over their labels, at every width */
+.pp-proof .pp-figs li:not(#_){align-items:flex-start !important;text-align:left !important}
+@media (max-width:860px){
+  .pc-how__tab:not(#_){max-width:min(240px,64vw) !important}
+  .pc-how__tab:not(#_) .pc-how__t{display:block !important;min-width:0 !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important}
+}
+
+/* the phone carousel of products: the groups were stretched by the rail, so the cards' height:100%
+   resolved to the whole group and ran 300px past its bottom; the rail then scrolled vertically too and
+   trapped the page. Content heights only, and the rail never scrolls vertically. */
+@media (max-width:760px){
+  .pl-c .pc-rail:not(#_){align-items:flex-start;overflow-y:hidden}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__cards,.pl-c .pc-rail > .prodgroup:not(#_) .prodcard{height:auto !important;min-height:0 !important}
+}
+
+/* the phone listing: more air between the tabs, the caption card, the picture and the side card */
+@media (max-width:760px){
+  .pl-c .prodgroup[data-pc-multi] .prodgroup__head:not(#_){gap:20px !important}
+  .pl-c .prodgroup[data-pc-multi] .pc-tabs:not(#_){margin-bottom:18px}
+  .pl-c .pc-cap.is-on:not(#_),.pl-c .pc-side.is-on:not(#_){padding:24px !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodgroup__head{margin-bottom:22px !important}
+  .pl-c .pc-rail > .prodgroup:not(#_) .prodcard{padding-top:4px !important}
+}

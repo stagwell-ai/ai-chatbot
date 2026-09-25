@@ -1,0 +1,8 @@
+.DS_Store
+.vercel
+*.log
+.env*
+.claude/
+
+!.env.example
+tests/kimi/.rehearsal/

@@ -1,0 +1,1165 @@
+{
+  "_comment": "The normalised intent vocabulary (brief §10). Free text is turned into these ids — by the model through /api/ask mode:'interpret', or by the keyword lists below when no model answers — and the deterministic scorer maps ids to products through solutions.json intentTags. `need` is the phrase the 'Why this fits' line quotes back to the visitor ('you want to …'), so it is written in their language, not ours. Keywords are matched as whole words/phrases, case-insensitive, plural-tolerant; a phrase beats a word when both hit (the longest match orders the answer, as in engine.js).",
+  "version": "2026-09-10",
+  "intents": [
+    {
+      "id": "brand_health",
+      "need": "know how your brand is really doing",
+      "keywords": [
+        "brand health",
+        "brand tracking",
+        "brand tracker",
+        "awareness",
+        "consideration",
+        "brand equity",
+        "brand momentum",
+        "brand perception",
+        "how our brand is doing",
+        "brand metrics",
+        "brand strength",
+        "brand health tracking",
+        "how consumers feel",
+        "consumers feel",
+        "feel about my brand",
+        "feel about our brand",
+        "how people feel about",
+        "how customers feel",
+        "track my brand",
+        "brand over time"
+      ],
+      "examples": [
+        "I want to track my brand health over time.",
+        "How do consumers feel about my brand?"
+      ]
+    },
+    {
+      "id": "campaign_measurement",
+      "need": "see whether campaigns moved the numbers",
+      "keywords": [
+        "campaign impact",
+        "campaign lift",
+        "did the campaign work",
+        "campaign effectiveness",
+        "measure the campaign",
+        "campaign performance",
+        "campaign tracking",
+        "impact of my campaigns",
+        "impact of our campaigns",
+        "campaigns on brand"
+      ],
+      "examples": [
+        "I need to measure the impact of my campaigns on brand perception."
+      ]
+    },
+    {
+      "id": "brand_benchmarking",
+      "need": "see how your brand compares",
+      "keywords": [
+        "how we compare",
+        "how our brand compares",
+        "brand benchmarking",
+        "compare our brand",
+        "where we stand against",
+        "brand comparison"
+      ]
+    },
+    {
+      "id": "business_impact",
+      "need": "prove that brand investment drives business results",
+      "keywords": [
+        "revenue",
+        "pricing power",
+        "roi",
+        "return on investment",
+        "cfo",
+        "board",
+        "prove impact",
+        "prove the impact",
+        "business impact",
+        "market value",
+        "business value",
+        "justify the spend",
+        "justify our budget",
+        "brand spend",
+        "commercial impact",
+        "shareholder",
+        "brand roi",
+        "brand investment",
+        "driving revenue",
+        "drive revenue",
+        "highest roi",
+        "audience prioritization",
+        "audience prioritisation",
+        "brand performance",
+        "brand performance changing",
+        "why is my brand performance"
+      ],
+      "examples": [
+        "I need to prove whether my brand investment is driving revenue.",
+        "Which audiences will generate the highest ROI?",
+        "Why is my brand performance changing?"
+      ]
+    },
+    {
+      "id": "consumer_research",
+      "need": "run your own research quickly",
+      "keywords": [
+        "survey",
+        "questionnaire",
+        "poll",
+        "polling",
+        "concept test",
+        "concept testing",
+        "message testing",
+        "test our messaging",
+        "test creative",
+        "focus group",
+        "consumer research",
+        "market research",
+        "research study",
+        "run research",
+        "respondents",
+        "build surveys",
+        "build a survey",
+        "my own survey",
+        "own survey",
+        "launch a survey",
+        "consumer feedback",
+        "customer feedback",
+        "quick feedback",
+        "feedback before",
+        "before a product launch",
+        "before launch",
+        "test messaging",
+        "test my messaging",
+        "test our creative",
+        "before it goes live"
+      ],
+      "examples": [
+        "I need to build and launch my own survey.",
+        "I want quick consumer feedback before a product launch.",
+        "How can I test messaging or creative before it goes live?"
+      ]
+    },
+    {
+      "id": "behavioral_measurement",
+      "need": "measure what people actually do, not what they say",
+      "keywords": [
+        "foot traffic",
+        "footfall",
+        "store visits",
+        "real-world behavior",
+        "real world behaviour",
+        "real-world behaviour",
+        "location data",
+        "who actually visited",
+        "say do gap",
+        "say/do gap",
+        "in-store",
+        "visits to our stores",
+        "physical locations",
+        "location intelligence",
+        "consumer movement",
+        "visitation",
+        "visitation insights",
+        "movement patterns",
+        "where my customers go",
+        "where customers go",
+        "where people go",
+        "in the real world",
+        "real world",
+        "mobility data",
+        "mobility"
+      ],
+      "examples": [
+        "I want to understand where my customers go in the real world.",
+        "How can I use location data to improve targeting?",
+        "I need visibility into consumer movement patterns."
+      ]
+    },
+    {
+      "id": "ad_measurement",
+      "need": "know who your advertising actually reached",
+      "keywords": [
+        "audience measurement",
+        "brand lift",
+        "ad effectiveness",
+        "ad reach",
+        "advertising reach",
+        "seeing my advertising",
+        "seeing my ads",
+        "see my ads",
+        "how many people are seeing",
+        "how many people saw",
+        "actually seeing",
+        "ad exposure",
+        "campaign reach",
+        "measure my advertising",
+        "advertising measurement",
+        "reach measurement"
+      ],
+      "_source": "Stagwell AI Chatbot Prompts to Products (client sheet, 2026-09-16) — Numetrix (Measurement)",
+      "examples": [
+        "How many people are actually seeing my advertising?",
+        "Can I measure brand lift from my campaigns?",
+        "I need better audience measurement."
+      ]
+    },
+    {
+      "id": "audience_targeting",
+      "need": "build and activate better audiences",
+      "keywords": [
+        "audience",
+        "audiences",
+        "segments",
+        "segmentation",
+        "targeting",
+        "target the right people",
+        "activate audiences",
+        "lookalike",
+        "reach the right people",
+        "wasted spend",
+        "custom audiences",
+        "audience building",
+        "audience segmentation",
+        "highest-value audiences",
+        "highest value audiences",
+        "grow my audience",
+        "grow our audience",
+        "audience segments",
+        "activate audience segments"
+      ],
+      "examples": [
+        "How can i grow my audience? I need help finding my highest-value audiences.",
+        "I want to build and activate audience segments across channels."
+      ]
+    },
+    {
+      "id": "first_party_data",
+      "need": "put your first-party data to work",
+      "keywords": [
+        "first-party data",
+        "first party data",
+        "1p data",
+        "cdp",
+        "customer data",
+        "crm data",
+        "our own data",
+        "data onboarding",
+        "data clean room",
+        "warehouse data",
+        "first-party data activation",
+        "first-party and third-party",
+        "first party and third party",
+        "combine first-party",
+        "third-party data"
+      ],
+      "examples": [
+        "How can I combine first-party and third-party data for audience targeting?"
+      ]
+    },
+    {
+      "id": "identity_graph",
+      "need": "connect and enrich your customer data across identities",
+      "keywords": [
+        "identity",
+        "identity graph",
+        "id graph",
+        "identity resolution",
+        "match rate",
+        "households",
+        "household-level",
+        "enrich our data",
+        "data enrichment",
+        "resolve identities",
+        "device graph"
+      ]
+    },
+    {
+      "id": "media_planning",
+      "need": "plan media against brand outcomes",
+      "keywords": [
+        "media plan",
+        "media planning",
+        "media strategy",
+        "allocate budget",
+        "channel mix",
+        "media mix",
+        "where to spend",
+        "media investment",
+        "planning and buying",
+        "media performance",
+        "improve media performance",
+        "media performance across channels",
+        "media optimization",
+        "media optimisation",
+        "campaign optimization",
+        "campaign optimisation",
+        "optimize campaigns",
+        "optimise campaigns",
+        "automate media planning",
+        "advertising platforms",
+        "multiple advertising platforms",
+        "manage and measure campaigns",
+        "campaigns across multiple",
+        "across multiple platforms",
+        "cross-channel media",
+        "cross-platform media",
+        "ad platforms",
+        "paid media"
+      ],
+      "examples": [
+        "How can I improve media performance across channels?",
+        "I want to automate media planning and campaign optimization.",
+        "How can I manage and measure campaigns across multiple advertising platforms from one place?"
+      ]
+    },
+    {
+      "id": "media_buying",
+      "need": "buy media more effectively",
+      "keywords": [
+        "media buying",
+        "buy media",
+        "programmatic",
+        "ad buying",
+        "media activation",
+        "buying and activation",
+        "dsp"
+      ]
+    },
+    {
+      "id": "creator_discovery",
+      "need": "find the right creators",
+      "keywords": [
+        "creator",
+        "creators",
+        "influencer",
+        "influencers",
+        "tiktok creator",
+        "ugc",
+        "find creators",
+        "creator discovery",
+        "influencer marketing",
+        "influencer discovery",
+        "micro-influencers",
+        "find influencers",
+        "finding the right influencers",
+        "right influencers"
+      ],
+      "examples": [
+        "I need help finding the right influencers.",
+        "I need an easy way to manage influencer campaigns.",
+        "How do I find influencers without a big team?"
+      ]
+    },
+    {
+      "id": "creator_management",
+      "need": "run creator programs end to end",
+      "keywords": [
+        "influencer campaign",
+        "creator campaign",
+        "creator contracts",
+        "manage creators",
+        "creator outreach",
+        "influencer program",
+        "creator program",
+        "influencer platform",
+        "briefs and approvals",
+        "creator payments",
+        "influencer management",
+        "influencer campaigns",
+        "creator management",
+        "manage influencer campaigns",
+        "manage influencer"
+      ],
+      "examples": [
+        "How can I manage influencer campaigns at scale?"
+      ]
+    },
+    {
+      "id": "creator_measurement",
+      "need": "prove what creators deliver",
+      "keywords": [
+        "influencer roi",
+        "creator roi",
+        "creator performance",
+        "influencer performance",
+        "measure influencers",
+        "audience quality",
+        "fake followers",
+        "influencer fraud",
+        "influencer campaign roi",
+        "campaign roi",
+        "measure influencer",
+        "influencer campaign performance",
+        "which creators are driving",
+        "creators are driving",
+        "best results"
+      ],
+      "examples": [
+        "Which creators are driving the best results?",
+        "I want a simpel way to measure influencer campaign ROI."
+      ]
+    },
+    {
+      "id": "reputation_risk",
+      "need": "see reputation risks before they become stories",
+      "keywords": [
+        "reputation",
+        "reputational risk",
+        "crisis",
+        "early warning",
+        "before it breaks",
+        "narrative risk",
+        "risk to the brand",
+        "issues management",
+        "protect our reputation",
+        "brand safety",
+        "backlash",
+        "controversy",
+        "reputation monitoring",
+        "risk detection",
+        "emerging issues",
+        "emerging pr",
+        "pr issues",
+        "pr issue",
+        "spot emerging",
+        "before they become",
+        "become crises",
+        "before it becomes a crisis"
+      ],
+      "examples": [
+        "I want to identify reputation risks before they become crises.",
+        "How can I spot emerging PR issues sooner?"
+      ]
+    },
+    {
+      "id": "media_monitoring",
+      "need": "monitor everything said about you",
+      "keywords": [
+        "media monitoring",
+        "monitoring",
+        "monitor coverage",
+        "press coverage",
+        "news coverage",
+        "mentions",
+        "social listening",
+        "listening",
+        "in every language",
+        "every market",
+        "global coverage",
+        "broadcast monitoring",
+        "daily briefing",
+        "media intelligence",
+        "global media monitoring",
+        "global monitoring",
+        "developments affecting"
+      ],
+      "examples": [
+        "I need global media monitoring."
+      ]
+    },
+    {
+      "id": "executive_alerts",
+      "need": "be alerted to the developments that matter",
+      "keywords": [
+        "alerts",
+        "alert",
+        "alerting",
+        "executive alerts",
+        "important developments",
+        "developments affecting my brand",
+        "notify me",
+        "notifications",
+        "stay ahead of",
+        "stay ahead",
+        "threats",
+        "reputation threats",
+        "early alerts"
+      ],
+      "_source": "Stagwell AI Chatbot Prompts to Products (client sheet, 2026-09-16) — UNICEPTA",
+      "examples": [
+        "How can I stay ahead of reputation threats?",
+        "I want alerts on important developments affecting my brand."
+      ]
+    },
+    {
+      "id": "narrative_intelligence",
+      "need": "understand the narratives forming around your brand",
+      "keywords": [
+        "narrative",
+        "narratives",
+        "sentiment",
+        "what people are saying about us",
+        "public perception",
+        "stakeholder perception",
+        "story forming",
+        "discourse"
+      ],
+      "examples": [
+        "What's driving changes in public perception of my brand?"
+      ]
+    },
+    {
+      "id": "competitive_activity",
+      "need": "know what competitors are doing right now",
+      "keywords": [
+        "what competitors are doing",
+        "what our competitors are doing",
+        "competitor activity",
+        "competitor pricing",
+        "competitor hiring",
+        "competitor moves",
+        "competitor launches",
+        "this week",
+        "right now",
+        "competitive intelligence",
+        "competitor intelligence",
+        "competitor signals",
+        "competitor tracking",
+        "track competitors",
+        "competitor promotions"
+      ]
+    },
+    {
+      "id": "competitive_benchmarking",
+      "need": "benchmark your brand against competitors",
+      "keywords": [
+        "benchmark",
+        "benchmarking",
+        "share of voice",
+        "competitive benchmark",
+        "against competitors",
+        "versus competitors",
+        "vs competitors",
+        "competitive position",
+        "market share perception",
+        "compare against the category",
+        "category leader"
+      ]
+    },
+    {
+      "id": "competitive_media",
+      "need": "track the coverage and narratives around your competitors",
+      "keywords": [
+        "competitor coverage",
+        "what the media says about competitors",
+        "competitor press",
+        "competitor narratives",
+        "coverage of our competitors",
+        "competitor sentiment",
+        "what the media is saying"
+      ]
+    },
+    {
+      "id": "competitive_ai_visibility",
+      "need": "see how competitors show up in AI answers",
+      "keywords": [
+        "competitors in chatgpt",
+        "competitors in ai answers",
+        "how competitors appear in ai",
+        "ai recommends competitors",
+        "competitors show up in ai",
+        "rivals in ai search"
+      ]
+    },
+    {
+      "id": "ai_search_visibility",
+      "need": "show up when AI assistants answer",
+      "keywords": [
+        "chatgpt",
+        "gemini",
+        "perplexity",
+        "claude",
+        "copilot",
+        "ai search",
+        "ai answers",
+        "ai overview",
+        "ai overviews",
+        "llm visibility",
+        "recommends us",
+        "recommend us",
+        "ai visibility",
+        "generative search",
+        "geo",
+        "answer engine",
+        "show up in ai",
+        "ai assistants",
+        "how ai describes",
+        "how ai describes us",
+        "how ai represents us",
+        "what ai says about us",
+        "what chatgpt says about us",
+        "visibility in ai",
+        "how we appear in ai",
+        "how we show up in ai"
+      ],
+      "examples": [
+        "How can I improve my AI search visibility?"
+      ]
+    },
+    {
+      "id": "ai_citations",
+      "need": "see whether and how AI tools cite your brand",
+      "keywords": [
+        "cited",
+        "cite",
+        "citations",
+        "ai citations",
+        "being cited",
+        "not being cited",
+        "ai tools",
+        "ai platforms",
+        "across ai platforms",
+        "how visible",
+        "visible is my brand",
+        "visible in ai",
+        "prompt optimization",
+        "prompt optimisation",
+        "ai visibility measurement"
+      ],
+      "_source": "Stagwell AI Chatbot Prompts to Products (client sheet, 2026-09-16) — GEOPulse",
+      "examples": [
+        "How visible is my brand across AI platforms?",
+        "Why isn't my brand being cited by AI tools?"
+      ]
+    },
+    {
+      "id": "ai_search_influence",
+      "need": "change how AI assistants describe and recommend you",
+      "keywords": [
+        "influence how ai",
+        "influence what ai",
+        "change how ai",
+        "shape how ai",
+        "fix how ai",
+        "improve our ai search",
+        "improve my ai search",
+        "improve ai search results",
+        "improve how ai",
+        "show up more",
+        "showing up more",
+        "get recommended by ai",
+        "be recommended by chatgpt",
+        "recommended in chatgpt",
+        "get cited by ai",
+        "cited in ai answers",
+        "ai seo",
+        "answer engine optimisation",
+        "answer engine optimization",
+        "generative engine optimisation",
+        "generative engine optimization",
+        "rank in ai",
+        "rank in chatgpt",
+        "rank higher in ai",
+        "appear more in ai",
+        "get into ai answers",
+        "be found by ai",
+        "improve my visibility",
+        "improve our visibility",
+        "improve visibility",
+        "visibility in chatgpt",
+        "chatgpt optimization",
+        "chatgpt optimisation",
+        "ai brand representation",
+        "how ai represents",
+        "instead of my brand",
+        "instead of our brand",
+        "competitors being recommended",
+        "recommended instead",
+        "change what it says",
+        "change what ai says",
+        "change what chatgpt says",
+        "influence what it says"
+      ],
+      "examples": [
+        "How do I improve my visibility in ChatGPT and AI search?",
+        "Why are competitors being recommended in ChatGPT and AI search instead of my brand?",
+        "How can I influence how AI represents my brand?"
+      ]
+    },
+    {
+      "id": "customer_voice_ai",
+      "need": "answer every customer call and inbound lead",
+      "keywords": [
+        "call center",
+        "call centre",
+        "contact center",
+        "phone",
+        "calls",
+        "missed calls",
+        "voice agent",
+        "voice agents",
+        "voice ai",
+        "answer leads",
+        "inbound leads",
+        "callback",
+        "call back",
+        "overnight",
+        "after hours",
+        "after-hours",
+        "hold times",
+        "inbound calls",
+        "phone leads",
+        "qualify leads",
+        "book appointments",
+        "lapsed customers",
+        "win back"
+      ]
+    },
+    {
+      "id": "customer_chat_ai",
+      "need": "handle customer conversations with AI agents",
+      "keywords": [
+        "chatbot",
+        "chat agent",
+        "chat agents",
+        "live chat",
+        "support tickets",
+        "customer service",
+        "customer support",
+        "tier-1 support",
+        "tier 1 support",
+        "conversational ai",
+        "whatsapp",
+        "sms",
+        "messaging app",
+        "messaging channels",
+        "customer messaging",
+        "business messaging"
+      ]
+    },
+    {
+      "id": "employee_ai_access",
+      "need": "give your team secure access to the leading AI models",
+      "keywords": [
+        "access to ai",
+        "chatgpt for the team",
+        "ai for our team",
+        "enterprise llm",
+        "enterprise ai",
+        "secure ai",
+        "ai tools for employees",
+        "ai workspace",
+        "one login",
+        "ai subscriptions",
+        "copilot for staff",
+        "give the team ai",
+        "models under one contract",
+        "frontier models",
+        "ai assistants for the team",
+        "custom assistants",
+        "ai agents",
+        "custom ai agents",
+        "build custom ai agents",
+        "build ai agents",
+        "build agents",
+        "agents for my team",
+        "agents for our team",
+        "securely use ai",
+        "use ai securely",
+        "ai across my organization",
+        "ai across the organization",
+        "ai across our organisation",
+        "roll out ai",
+        "deploy ai across"
+      ],
+      "examples": [
+        "I want to build custom AI agents for my team.",
+        "How can I securely use AI across my organization?"
+      ]
+    },
+    {
+      "id": "ai_governance",
+      "need": "govern how AI is used across the business",
+      "keywords": [
+        "governance",
+        "ai governance",
+        "shadow ai",
+        "unsanctioned ai",
+        "compliance",
+        "data never trains",
+        "training on our data",
+        "security standard",
+        "ai policy",
+        "responsible ai",
+        "data privacy with ai"
+      ]
+    },
+    {
+      "id": "marketing_operations",
+      "need": "connect marketing operations into one system",
+      "keywords": [
+        "marketing ops",
+        "marketing operations",
+        "workflows",
+        "workflow",
+        "operating system",
+        "one platform",
+        "connect our tools",
+        "scale operations",
+        "scale our operations",
+        "orchestration",
+        "agentic",
+        "tech stack",
+        "martech",
+        "too many tools",
+        "one system",
+        "operational efficiency",
+        "scale the business",
+        "connect marketing tools",
+        "tools connected",
+        "tools and data connected",
+        "connect my tools",
+        "all my marketing tools",
+        "marketing tools",
+        "silos",
+        "siloed",
+        "silo",
+        "duplicating work",
+        "duplicate work",
+        "duplicated work",
+        "work together",
+        "teams to work together",
+        "orchestrate campaigns",
+        "marketing operating system",
+        "workflow orchestration",
+        "connected system",
+        "insights and audiences in one place",
+        "tools in one place",
+        "everything in one place"
+      ],
+      "examples": [
+        "I want all my marketing tools and data connected.",
+        "My teams are duplicating work and operating in silos. How can I get my teams to work together?",
+        "How can I orchestrate campaigns, insights, and audiences in one place?"
+      ]
+    },
+    {
+      "id": "workflow_automation",
+      "need": "automate the repetitive work so the team can do the valuable work",
+      "keywords": [
+        "workflow automation",
+        "automate repetitive",
+        "repetitive work",
+        "repetitive tasks",
+        "repetitive marketing work",
+        "automate marketing work",
+        "automate our work",
+        "automate the work",
+        "manual work",
+        "busywork",
+        "automate workflows",
+        "automate our workflows"
+      ],
+      "_source": "Stagwell AI Chatbot Prompts to Products (client sheet, 2026-09-16) — Agent Cloud",
+      "examples": [
+        "I need to automate repetitive marketing work."
+      ]
+    },
+    {
+      "id": "brand_orchestration",
+      "need": "orchestrate paid, owned and earned media together",
+      "keywords": [
+        "paid owned earned",
+        "paid, owned and earned",
+        "paid owned and earned",
+        "search strategy",
+        "seo",
+        "search+",
+        "search plus",
+        "organic search",
+        "search visibility",
+        "content performance",
+        "earned media",
+        "owned media"
+      ]
+    }
+  ],
+  "bands": {
+    "companySize": [
+      {
+        "id": "micro",
+        "label": "Under 20 people",
+        "tier": "smb",
+        "max": 20,
+        "keywords": [
+          "just me",
+          "solo",
+          "one person",
+          "two of us",
+          "tiny team",
+          "founder-led",
+          "single store",
+          "family business",
+          "sole trader",
+          "freelance"
+        ]
+      },
+      {
+        "id": "small",
+        "label": "21 to 50 people",
+        "tier": "smb",
+        "max": 50,
+        "keywords": [
+          "small team",
+          "small company",
+          "small business",
+          "boutique",
+          "small brand",
+          "small agency",
+          "small shop",
+          "small ecommerce",
+          "small e-commerce",
+          "small online",
+          "local business",
+          "startup",
+          "start-up",
+          "without a big team",
+          "no big team",
+          "lean team",
+          "small marketing team",
+          "team of one",
+          "simple way",
+          "easy way",
+          "on my own",
+          "by myself",
+          "do it myself",
+          "without an agency",
+          "no agency",
+          "simpel way",
+          "a simple way to",
+          "an easy way to",
+          "simple tool",
+          "easy tool"
+        ]
+      },
+      {
+        "id": "mid",
+        "label": "51 to 250 people",
+        "tier": "smb",
+        "max": 250,
+        "keywords": [
+          "smb",
+          "growing company",
+          "scaleup",
+          "scale-up",
+          "midsize",
+          "mid-size",
+          "medium-sized",
+          "a couple of hundred"
+        ]
+      },
+      {
+        "id": "large",
+        "label": "251 or more people",
+        "tier": "mid_market",
+        "keywords": [
+          "mid-market",
+          "mid market",
+          "enterprise",
+          "global brand",
+          "multinational",
+          "fortune 500",
+          "large company",
+          "multi-brand",
+          "holding company",
+          "public company",
+          "thousands of employees"
+        ]
+      }
+    ],
+    "creatorVolume": [
+      {
+        "id": "under_100",
+        "label": "Under 100 creators a year",
+        "keywords": [
+          "a few creators",
+          "handful of creators",
+          "a dozen creators",
+          "small creator program"
+        ]
+      },
+      {
+        "id": "100_plus",
+        "label": "100 or more creators a year",
+        "keywords": [
+          "hundreds of creators",
+          "thousands of creators",
+          "creators at scale",
+          "large creator program",
+          "enterprise creator program"
+        ]
+      }
+    ],
+    "geographicScope": [
+      {
+        "id": "single_market",
+        "label": "One market",
+        "keywords": [
+          "one market",
+          "single market",
+          "domestic",
+          "just the us",
+          "uk only",
+          "one country",
+          "one language"
+        ]
+      },
+      {
+        "id": "global",
+        "label": "Many markets and languages",
+        "keywords": [
+          "global",
+          "worldwide",
+          "international",
+          "multi-market",
+          "many markets",
+          "every market",
+          "many languages",
+          "multi-language",
+          "multilingual",
+          "across regions",
+          "emea",
+          "apac",
+          "latam"
+        ]
+      }
+    ]
+  },
+  "_contactNote": "contactRequests: the visitor asking to be CONTACTED rather than advised — the fast track (client, 2026-09-10: \"if the person just ever cuts the chase that they want to be contacted, or they want to book a demo, or they want to try out something, we should just fast-track them to filling out the form\"). Phrases are request-shaped on purpose: a bare \"pricing\" or \"sign up\" is ordinary marketing vocabulary (\"prove pricing power\", \"our sign-up rates\") and must never send a visitor to a form they did not ask for.",
+  "contactRequests": [
+    {
+      "id": "call",
+      "label": "a call",
+      "keywords": [
+        "call me",
+        "call me back",
+        "give me a call",
+        "give us a call",
+        "can you call",
+        "could you call",
+        "would you call",
+        "ring me",
+        "phone me",
+        "call us",
+        "get a call",
+        "someone call me",
+        "have someone call"
+      ]
+    },
+    {
+      "id": "demo",
+      "label": "a demo",
+      "keywords": [
+        "book a demo",
+        "get a demo",
+        "see a demo",
+        "schedule a demo",
+        "set up a demo",
+        "arrange a demo",
+        "demo please",
+        "request a demo",
+        "walk me through",
+        "book a meeting",
+        "schedule a meeting",
+        "set up a meeting",
+        "book a call",
+        "schedule a call",
+        "set up a call",
+        "hop on a call",
+        "jump on a call",
+        "get on a call",
+        "book time",
+        "book some time",
+        "set up a time",
+        "want a demo",
+        "wants a demo",
+        "id like a demo",
+        "i would like a demo",
+        "looking for a demo",
+        "after a demo",
+        "interested in a demo",
+        "can i get a demo",
+        "have a demo"
+      ]
+    },
+    {
+      "id": "trial",
+      "label": "a trial",
+      "keywords": [
+        "free trial",
+        "start a trial",
+        "start the trial",
+        "try it",
+        "try it out",
+        "try this out",
+        "try your",
+        "try for free",
+        "sign me up",
+        "get started",
+        "start now",
+        "test it out",
+        "give it a go",
+        "have a go"
+      ]
+    },
+    {
+      "id": "expert",
+      "label": "a specialist",
+      "keywords": [
+        "talk to someone",
+        "speak to someone",
+        "talk to a person",
+        "speak to a person",
+        "talk to a human",
+        "speak to a human",
+        "talk to sales",
+        "contact sales",
+        "speak to sales",
+        "talk to an expert",
+        "speak to an expert",
+        "speak with an expert",
+        "talk to a rep",
+        "speak to a rep",
+        "contact me",
+        "email me",
+        "reach me",
+        "get in touch",
+        "put me in touch",
+        "connect me",
+        "have someone contact me",
+        "someone reach out",
+        "reach out to me",
+        "have someone reach out",
+        "real person",
+        "human being",
+        "can i talk to",
+        "i want to be contacted",
+        "want to be contacted"
+      ]
+    },
+    {
+      "id": "pricing",
+      "label": "pricing",
+      "keywords": [
+        "how much does it cost",
+        "how much does this cost",
+        "what does it cost",
+        "how much is it",
+        "how much would it cost",
+        "your pricing",
+        "pricing for",
+        "pricing plans",
+        "pricing options",
+        "get a quote",
+        "request a quote",
+        "send me a quote",
+        "what are your rates",
+        "how much do you charge"
+      ]
+    }
+  ],
+  "_sheetNote": "2026-09-16: the client's 'Chatbot Prompts to Products' sheet (15 products × 3 prompts × 3 keywords) is the golden set — data/prompts-golden.json, tests/kimi/prompts.golden.test.mjs. Its keywords and the phrasing of its prompts were folded into the lists below; four intents were added for products that had no words of their own (ai_citations, executive_alerts, ad_measurement, workflow_automation).",
+  "_examplesNote": "`examples`: the client sheet's prompts, filed under the intent that carries their product. api/ask.js quotes them in the interpreter's vocabulary so a paraphrase lands on the same id the keywords would; tests/kimi/prompts.golden.test.mjs checks they are there."
+}

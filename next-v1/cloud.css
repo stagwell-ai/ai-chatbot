@@ -1,0 +1,257 @@
+/* ═══════════════════════════════════════════════════════════
+   THE MARKETING CLOUD — carousel, ported from the Catalogue (c.css)
+   so the main page can show the product family between the dashboard
+   flow and the CTA. Class names are the Catalogue's own and collide
+   with nothing in b.css. Driven by cloud.js.
+   ═══════════════════════════════════════════════════════════ */
+.crail{margin:clamp(72px,10vh,120px) 0 0;overflow:hidden}
+.crail__t{margin:0 0 22px;text-align:center;
+  font-family:var(--sans);font-weight:600;letter-spacing:-.03em;
+  font-size:clamp(1.375rem,2.4vw,1.875rem)}
+
+/* rows are driven from JS (c.js flowEngine) so the constant drift and
+   the arrow paddles share one transform */
+.flow{position:relative;overflow:hidden;width:100%}
+.flow + .flow{margin-top:12px}
+.flow__row{display:flex;width:max-content;will-change:transform}
+
+/* the paddles float inside each carousel, centred, quiet until hover */
+.paddle{position:absolute;top:50%;transform:translateY(-50%);z-index:6;
+  width:40px;height:40px;border:0;border-radius:50%;cursor:pointer;
+  display:grid;place-items:center;color:var(--navy);opacity:.92;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(10px);box-shadow:0 4px 14px rgba(0,0,0,.25);
+  -webkit-backdrop-filter:blur(10px);
+  transition:opacity var(--d-1),background var(--d-1)}
+.paddle--l{left:18px}
+.paddle--r{right:18px}
+.paddle:hover,.flow:hover .paddle{opacity:1}
+.paddle:active{background:#fff}
+
+/* big showcase — the art IS the card; text sits on top of it */
+.fcard{position:relative;overflow:hidden;flex:none;margin-right:12px;
+  width:clamp(540px,52vw,780px);height:clamp(380px,54vh,520px);
+  border:0;border-radius:0;cursor:default;text-align:left;padding:0;
+  background:var(--surface);color:var(--ink)}
+/* cards are <a> elements now (real links out), not <button> — reset the
+   anchor defaults so they render identically to the old buttons. .fcard
+   had no explicit display (buttons default to inline-block, which its
+   width/height rely on); .scard already declares display:flex below and
+   is left alone here so that rule keeps governing it. */
+a.fcard{display:block}
+a.fcard,a.scard{text-decoration:none;color:inherit;cursor:pointer}
+.fcard--dark{background:linear-gradient(160deg,#004766,#003349);color:var(--on-void)}
+.fcard--sky{background:linear-gradient(165deg,#DDEEF4,#F4FAFC)}
+.fcard--amber{background:linear-gradient(160deg,#FFE9B8,#FFF9EC)}
+.fcard--teal{background:linear-gradient(160deg,#009CBD,#003349);color:var(--on-void)}
+.fcard--teal .fcard__k{color:#fff}
+.fcard--teal .fcard__t i{color:#D7E4E9}
+.fcard--teal .btn{background:#fff;color:var(--navy)}
+.fcard--teal .btn:hover{background:#D8E6EC}
+/* image art inside a card */
+img.scard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+/* the image card owns its whole surface — no art strip, no mask fade */
+.scard--img .scard__art{inset:0;height:100%;
+  -webkit-mask-image:none;mask-image:none}
+.scard--img::after{content:"";position:absolute;inset:0;z-index:1;
+  background:rgba(0,0,0,.52)}
+.scard--img .scard__t{z-index:2}
+.scard--img .scard__t b{color:#fff}
+.scard--img .scard__t i{color:rgba(255,255,255,.85)}
+
+.fcard__k{position:absolute;top:22px;left:26px;z-index:2;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--teal)}
+.fcard--dark .fcard__k{color:#fff}
+.fcard__t{position:absolute;left:26px;bottom:24px;z-index:2;
+  display:flex;flex-direction:column;align-items:flex-start;gap:5px;max-width:60%}
+.fcard__t b{font-family:var(--sans);font-weight:600;letter-spacing:-.032em;
+  font-size:clamp(1.75rem,3vw,2.5rem);line-height:1.05}
+.fcard__t i{font-style:normal;font-size:1.0625rem;color:var(--ink)}
+.fcard--dark .fcard__t i{color:#D7E4E9}
+.fcard__t .btn{margin-top:8px}
+.fcard--dark .btn{background:#fff;color:var(--navy)}
+.fcard--dark .btn:hover{background:#D8E6EC}
+/* ── framed minis on the small cards ──────────────────────────
+   One bordered fragment per card, centred between the copy and the
+   button — a piece of that product's dashboard. Micro-motion only. */
+/* the fragment sits on a soft grey stage, per Julian's artboards —
+   grounded, not floating */
+.scard__mini{flex:1;width:100%;display:flex;align-items:center;
+  justify-content:center;padding:14px;margin:16px 0;
+  background:#F5F6F7;border-radius:10px;color:var(--ink-3)}
+.cmini{display:inline-flex;align-items:center;gap:8px;max-width:100%;
+  border:1px solid var(--line);border-radius:10px;padding:9px 12px;
+  background:var(--surface)}
+.cmini b{font-family:var(--mono);font-weight:400;font-size:9px;letter-spacing:.04em;
+  color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmini em{font-style:normal;font-family:var(--mono);font-size:9px;flex:none}
+.cmini u{text-decoration:none;color:var(--teal)}
+.mini-row .up{animation:nudgeUp 3.4s var(--ease-io) infinite;
+  transition:opacity 240ms var(--ease)}
+@keyframes nudgeUp{0%,74%,100%{transform:none;opacity:1}82%{transform:translateY(-2px);opacity:.75}90%{transform:none}}
+
+.mini-ask{border-radius:var(--r-full)}
+.mini-ask b{max-width:0;animation:miniType 7s steps(44) infinite;text-overflow:clip}
+@keyframes miniType{8%{max-width:0}56%,80%{max-width:200px}98%{max-width:0}}
+.mini-caret{width:1px;height:10px;background:var(--teal);flex:none;
+  animation:blinkCaret 1s steps(1) infinite}
+@keyframes blinkCaret{50%{opacity:0}}
+
+.mini-col{flex-direction:column;gap:5px}
+.mini-col svg{width:96px;height:26px;color:var(--teal)}
+.mini-line{stroke-dasharray:130;stroke-dashoffset:130;
+  animation:miniDraw 6.5s var(--ease) 400ms infinite}
+@keyframes miniDraw{
+  0%{stroke-dashoffset:130;opacity:1}
+  38%,80%{stroke-dashoffset:0;opacity:1}
+  90%{stroke-dashoffset:0;opacity:0}
+  96%,100%{stroke-dashoffset:130;opacity:0}
+}
+
+.mini-feed{flex-direction:column;align-items:stretch;gap:6px}
+.mini-feed > span{display:flex;align-items:center;gap:6px;min-width:0}
+.mini-feed em{margin-left:auto;color:var(--ink-4)}
+.pulse--amber{background:var(--amber)}
+
+/* Agent Cloud: its agents as quiet chips */
+.mini-agents{gap:5px}
+.agchip{font-family:var(--mono);font-weight:400;font-size:9px;letter-spacing:.03em;
+  color:var(--ink-2);border:1px solid var(--line);border-radius:var(--r-full);
+  padding:3px 9px;white-space:nowrap;
+  animation:chipTurn 5.4s var(--ease-io) infinite}
+.agchip:nth-child(2){animation-delay:1.8s}
+.agchip:nth-child(3){animation-delay:3.6s}
+@keyframes chipTurn{
+  0%,26%,100%{border-color:var(--line);color:var(--ink-2)}
+  7%,18%{border-color:var(--teal);color:var(--navy)}
+}
+.agchip--more{background:var(--ink);border-color:var(--ink);color:#fff;animation:none}
+
+.mini-saydo{flex-direction:column;align-items:stretch;gap:6px;min-width:64%}
+.mini-saydo > span{display:flex;align-items:center;gap:7px}
+.mini-saydo b{width:20px;flex:none}
+.mini-bar{flex:1;min-width:0;height:5px;border-radius:var(--r-full);background:var(--line)}
+.mini-bar i{display:block;height:100%;width:var(--w);border-radius:var(--r-full);
+  background:var(--teal);transform-origin:left;
+  animation:miniGrow 7s var(--ease) 300ms infinite}
+.mini-saydo > span:last-child .mini-bar i{animation-delay:700ms}
+@keyframes miniGrow{
+  0%{transform:scaleX(0)}
+  16%,86%{transform:scaleX(1)}
+  96%,100%{transform:scaleX(0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .mini-ask b{animation:none;max-width:200px}
+  .mini-line{animation:none;stroke-dashoffset:0}
+  .mini-bar i,.agchip,.mini-row .up{animation:none}
+}
+
+/* pause/play for background videos — bottom right, out of the way */
+.vctl{position:absolute;right:16px;bottom:16px;z-index:3;width:34px;height:34px;
+  border-radius:50%;display:grid;place-items:center;cursor:pointer;color:#fff;
+  background:rgba(0,0,0,.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:background var(--d-1)}
+.vctl:hover{background:rgba(0,0,0,.62)}
+
+/* media cards: a video or an image owns the surface — flat dark
+   overlay, white text, white button */
+.fcard__video,.fcard__img{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:1}
+.fcard--video::after,.fcard--img::after{content:"";position:absolute;inset:0;z-index:1;
+  background:rgba(0,0,0,.34)}
+.fcard--video .fcard__k,.fcard--video .fcard__t b,
+.fcard--img .fcard__k,.fcard--img .fcard__t b{color:#fff}
+.fcard--video .fcard__t i,.fcard--img .fcard__t i{color:rgba(255,255,255,.88)}
+.fcard--video .btn,.fcard--img .btn{background:#fff;color:var(--navy)}
+.fcard--video .btn:hover,.fcard--img .btn:hover{background:#D8E6EC}
+
+/* PLACEHOLDER — swap for <img class="fcard__art" src="…"> */
+.fcard__art{position:absolute;inset:0;z-index:1;opacity:.8}
+.fcard__art .ca-wave{position:absolute;inset:auto 0 0;height:52%;padding:0 5%}
+.fcard__art .ca-bars{position:absolute;inset:auto 6% 0;height:62%}
+.fcard__art .ca-film{position:absolute;inset:16% 6% 18%}
+/* GEOPulse: a scatter of citation chips, a few lit — "your brand, cited" */
+.fcard__art .ca-chips{position:absolute;inset:auto 8% 14%;display:flex;
+  flex-wrap:wrap;gap:8px;max-width:230px}
+.ca-chips i{width:32px;height:32px;border-radius:9px;background:rgba(0,51,73,.14)}
+.ca-chips i.on{background:var(--navy);opacity:.82}
+
+/* small card — drifts the other way */
+/* flex column: copy on top, fragment truly centred in the leftover
+   space, button at the foot — identical rhythm on every card */
+.scard{position:relative;overflow:hidden;flex:none;margin-right:12px;
+  width:clamp(260px,24vw,320px);min-height:236px;
+  display:flex;flex-direction:column;align-items:flex-start;
+  border:0;border-radius:0;cursor:default;text-align:left;
+  padding:22px 20px 18px;background:var(--surface);color:var(--ink)}
+.scard__ico{display:inline-grid;place-items:center;width:44px;height:44px;
+  margin-bottom:12px;border-radius:12px;color:var(--teal);
+  background:rgba(0,156,189,.09)}
+.scard__t{display:flex;flex-direction:column;gap:3px;margin-bottom:14px}
+.scard__t b{font-family:var(--sans);font-weight:600;letter-spacing:-.024em;
+  font-size:1.25rem}
+.scard__t i{font-style:normal;font-size:var(--t-sm);color:var(--ink);line-height:1.4}
+.scard .btn--xs{margin-top:auto}
+.scard__art{position:absolute;inset:auto 0 0;height:52%;z-index:1;opacity:.65;
+  -webkit-mask-image:linear-gradient(transparent,#000 40%);
+  mask-image:linear-gradient(transparent,#000 40%)}
+.scard__art .ca-rows{padding:0 20px 14px}
+.scard__art .ca-bars,.scard__art .ca-dots{margin:0 20px}
+
+.btn--xs{height:30px;padding:0 14px;font-size:var(--t-xs)}
+
+.ca-bars{display:flex;align-items:flex-end;gap:6px;height:100%}
+.ca-bars i{flex:1;border-radius:4px 4px 0 0;height:var(--h);background:var(--teal);opacity:.32}
+.ca-bars i:last-child{opacity:.88}
+.ca-rows{display:flex;flex-direction:column;justify-content:flex-end;gap:9px;height:100%}
+.ca-rows i{height:11px;border-radius:var(--r-full);background:rgba(0,35,52,.10);width:var(--w)}
+.ca-rows i:first-child{background:var(--teal);opacity:.8}
+.ca-wave{display:flex;align-items:flex-end;gap:4px;height:100%}
+.ca-wave i{flex:1;border-radius:var(--r-full) var(--r-full) 0 0;background:var(--teal);
+  opacity:.45;height:var(--h)}
+.fcard--dark .ca-wave i{opacity:.6}
+.ca-dots{position:relative;height:100%}
+.ca-dots::before,.ca-dots::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(0,156,189,.7) 1.3px,transparent 1.7px);
+  background-size:18px 18px;animation:twinkle 2.4s var(--ease-io) infinite}
+.ca-dots::after{background-position:9px 9px;animation:blink 1.7s steps(2,jump-none) infinite}
+@media (prefers-reduced-motion:reduce){
+  .ca-dots::before,.ca-dots::after{animation:none;opacity:.7}
+}
+/* the BERA world: a wireframe globe of thin lines, one slow full turn */
+/* anchored off the bottom-right corner, so the card crops it */
+.ca-globe{position:absolute;inset:0;perspective:2000px;--gs:min(440px,110vh)}
+.ca-globe__tilt{position:absolute;right:-14%;bottom:-42%;
+  width:var(--gs);height:var(--gs);transform-style:preserve-3d;
+  transform:rotateX(24deg)}
+.ca-globe__spin{position:absolute;inset:0;transform-style:preserve-3d;
+  animation:globespin 30s linear infinite}
+.ca-globe__spin i,.ca-globe__spin b{position:absolute;border-radius:50%;
+  border:1.5px solid rgba(0,45,62,.44)}
+.ca-globe__spin i{inset:0;transform:rotateY(var(--a))}
+.ca-globe__spin b{left:50%;top:50%;width:var(--d);height:var(--d);
+  transform:translate(-50%,-50%) rotateX(90deg)
+            translateZ(calc(var(--gs) * var(--z)))}
+@keyframes globespin{to{transform:rotateY(360deg)}}
+@media (prefers-reduced-motion:reduce){.ca-globe__spin{animation:none}}
+
+.ca-film{display:flex;gap:10px}
+.ca-film i{flex:1;border-radius:8px;
+  background:linear-gradient(150deg,rgba(0,156,189,.45),rgba(255,184,28,.5));opacity:var(--o)}
+
+/* ── footer ───────────────────────────────────────────────── */
+/* fine print — the reference's footnote block, on the page background */
+.fine{padding:clamp(64px,9vh,104px) clamp(20px,4vw,28px) 20px}
+.fine__in{max-width:1200px;margin:0 auto;color:var(--ink);
+  font-size:var(--t-sm);line-height:1.75}
+.fine__in p{margin:0 0 22px}
+/* phone: one card at a time (lifted from the catalogue's phone rules) */
+@media (max-width:560px){
+  .fcard{width:86vw;height:min(70vh,480px)}
+  .fcard__k{top:18px;left:20px}
+  .fcard__t{left:20px;right:20px;bottom:20px;max-width:none}
+  .scard{width:74vw}
+}
+
+/* the inner "Visit site" label is visual-only — the whole card is the link */
+.fcard .btn,.scard .btn{pointer-events:none}

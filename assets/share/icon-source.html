@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Icon source — screenshot body at each size</title>
+<style>
+  /* Rendered at 512, 192, 180 and 32. The mark alone vanishes at 16px, so
+     ?tile=1 puts a navy tile behind it for contrast in a browser tab.
+     The tile lives on a wrapper — a body background propagates to the canvas
+     and its border-radius is ignored, so the corners would come out square. */
+  *{margin:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:transparent}
+  .wrap{width:100%;height:100%;display:grid;place-items:center}
+  .wrap.tile{background:#00121C;border-radius:18%}
+  svg{width:72%;height:72%}
+</style>
+</head>
+<body>
+  <div class="wrap">
+  <svg viewBox="0 0 28.44 28" xmlns="http://www.w3.org/2000/svg">
+    <path class="ink" fill="#002334" d="M16.74,19.93H0v7.59h12.33c2.71,0,4.41-1.69,4.41-4.41v-3.18Z"/>
+    <path fill="#FFB81C" d="M11.7,7.59h16.74V0h-12.34c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+    <path fill="#009CBD" d="M0,17.55h24.04c2.71,0,4.41-1.69,4.41-4.41v-3.18H4.41c-2.71,0-4.41,1.69-4.41,4.41v3.18Z"/>
+  </svg>
+  </div>
+  <script>
+    const q = new URLSearchParams(location.search);
+    if (q.get('tile') === '1') {
+      document.querySelector('.wrap').classList.add('tile');
+      // the navy bar disappears against the navy tile — flip it to paper
+      document.querySelector('.ink').setAttribute('fill', '#EAF2F5');
+    }
+    // iOS masks icons itself — hand it a full-bleed square or its own
+    // rounding will reveal white slivers at the corners
+    if (q.get('r') === '0') document.querySelector('.wrap').style.borderRadius = '0';
+  </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADS.CSS — /ads, the campaign switchboard.
+
+   Chrome (nav, mobile drawer, .btn--gold, .vercorner) comes from campaign.css,
+   which this page loads on purpose: the hub and the four landings it points at
+   should look like one surface, and duplicating that chrome here would be two
+   places to drift.
+
+   This file owns what is new — the header block, the four-up ad grid, the card
+   and its creative plate, and the master-campaign band that closes it. The
+   plate deliberately RE-STATES campaign.css's .camplock idiom rather than
+   importing it: same composition (a product-coloured field carrying the real
+   logo, bleeding where the file ships its own matching field), different
+   scale, and ads.css stays self-contained.
+
+   Colour discipline: every product's own paint arrives from products.json as
+   --ac / --ac-ink / --tint, set inline on the card by ads.js. Nothing here
+   names a brand hue; this file only says what to do with the four it is given.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body.vAds{background:var(--paper)}
+/* every CTA on this page is a real <a> (a hub is navigation, not a form), and
+   .btn was written for <button> — so the default underline has to come off */
+body.vAds a.btn{text-decoration:none}
+
+.adhub{padding:clamp(30px,5vh,56px) clamp(20px,4vw,48px) clamp(56px,9vh,104px)}
+.adhub__in{max-width:1180px;margin:0 auto}
+
+/* ── header ─────────────────────────────────────────────────────────────── */
+.adhub__head{max-width:64ch;display:flex;flex-direction:column;gap:14px}
+.adhub__head .display{max-width:16ch}
+.adhub__sub{font-size:var(--t-lede);line-height:1.55;color:var(--ink-2);max-width:60ch}
+
+/* the honesty line, in the console's voice: a demo aid says it is one */
+.adhub__aid{
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  font-size:var(--t-sm);line-height:1.55;color:var(--ink-3);max-width:62ch;
+  border-left:2px solid var(--amber);padding:2px 0 2px 12px;
+}
+.adhub__aidtag{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);flex:none;
+}
+
+/* ── the four product ads ───────────────────────────────────────────────── */
+.adgrid{
+  margin-top:clamp(28px,4vh,42px);
+  display:grid;grid-template-columns:minmax(0,1fr);
+  gap:clamp(16px,2vw,22px);
+}
+
+.adcard{
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;gap:14px;min-width:0;
+  /* the fallbacks are what a card with no products.json entry falls back to */
+  --ac:#003349;--ac-ink:#ffffff;--tint:#F5F7F6;
+  background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-xl);
+  padding:21px 18px 20px;
+  box-shadow:0 20px 48px -34px rgba(0,35,52,.26);
+  transition:border-color var(--d-1) var(--ease-io),transform var(--d-2) var(--ease),
+             box-shadow var(--d-2) var(--ease);
+}
+/* the product's own colour, once, on the top edge — the four cards read as one
+   system and still each carry their brand */
+.adcard::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac)}
+.adcard:hover{border-color:var(--ink-4);transform:translateY(-2px);
+  box-shadow:0 26px 54px -32px rgba(0,35,52,.34)}
+@media (prefers-reduced-motion:reduce){
+  .adcard,.adcard:hover{transition:none;transform:none}
+}
+
+.adcard__top{display:flex;align-items:center;gap:10px;min-height:20px}
+.adcard__slot{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;
+  flex:none;color:color-mix(in srgb,var(--ac) 74%,var(--ink));
+}
+
+/* ── status, as the data says it today ───────────────────────────────────
+   two different states, two different weights: a whole positioning still to
+   come, versus chips already drafted from published positioning with only the
+   route left to confirm. Neither tag may imply the other. */
+.adtag{
+  margin-left:auto;flex:none;white-space:nowrap;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  border-radius:var(--r-full);padding:4px 9px;color:var(--ink-3);background:var(--surface-2);
+}
+.adtag--route{border:1px solid var(--line-2)}
+.adtag--pending{border:1px dashed var(--line-2)}
+
+/* ═══ the creative slot ═══════════════════════════════════════════════════
+   The plate is the product's own key visual; the band under it is its lockup.
+   One composition, four brand fields — and a caption that says out loud that
+   these are the PRODUCTS' visuals standing in for campaign creative nobody
+   has made yet. */
+.adcreative{margin:0;min-width:0;display:flex;flex-direction:column}
+
+.adplate{
+  position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;
+  border-radius:var(--r-lg) var(--r-lg) 0 0;
+  background:#000;  /* every photographic asset in the kit is cut out on black */
+  display:flex;align-items:center;justify-content:center;
+}
+.adplate__img{display:block;width:100%;height:100%;object-fit:contain;box-sizing:border-box}
+/* a photograph distinctly taller than the plate fills it from the top rather
+   than sitting between two fat bars — ads.js measures and tags it */
+.adplate__img.is-fill{object-fit:cover;object-position:50% 0%}
+
+/* a mark is art, not a photograph: it sits in the product's own tint, with
+   room around it, and is never cropped */
+.adplate--mark{
+  background:
+    radial-gradient(66% 66% at 50% 46%,color-mix(in srgb,var(--ac) 13%,transparent),
+      color-mix(in srgb,var(--ac) 0%,transparent) 72%),
+    var(--tint);
+}
+.adplate--mark .adplate__img{padding:clamp(16px,3.4vw,30px)}
+.adplate--diagram{background:var(--surface);border-bottom:1px solid var(--line)}
+.adplate--diagram .adplate__img{padding:12px}
+
+/* the placeholder, kept only where a product genuinely has nothing usable */
+.adplate--empty{
+  background:var(--surface-2);border:1.5px dashed var(--line-2);border-bottom:0;
+  padding:18px;text-align:center;
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.06em;line-height:1.6;
+  color:var(--ink-3);
+}
+
+/* -- the lockup band: campaign.css's .camplock, at card scale. A logo shipped
+      with its own matching field (The Machine's black-backed PNG) bleeds and
+      crops its own dead space; a product whose mark would vanish on its own
+      colour, or which has no wordmark at all, gets its name set in type. -- */
+.adlock{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;gap:4px 14px;
+  padding:11px 15px;min-height:64px;
+  border-radius:0 0 var(--r-lg) var(--r-lg);
+}
+.adlock__logo{display:block;width:auto;max-width:100%;max-height:38px;object-fit:contain}
+.adlock--bleed{padding:0}
+.adlock--bleed .adlock__logo{flex:1 1 auto;min-width:0;width:auto;
+  height:64px;max-height:none;max-width:none;object-fit:cover}
+.adlock__word{font-family:var(--sans);font-weight:600;letter-spacing:-.015em;line-height:1.15;
+  font-size:1.0625rem;color:currentColor}
+.adlock__sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  opacity:.74;color:currentColor}
+.adlock:has(.adlock__word){flex-direction:column;align-items:flex-start;justify-content:center;gap:4px}
+
+/* the category pill — /path's value-pill idiom, in the band's own ink, so a
+   wide band is never a strip of empty product colour */
+.adlock__cat{
+  flex:none;margin-left:auto;
+  font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;
+  color:currentColor;opacity:.85;border-radius:var(--r-full);
+  border:1px solid color-mix(in srgb,currentColor 42%,transparent);
+  padding:4px 10px;white-space:nowrap;max-width:56%;overflow:hidden;text-overflow:ellipsis;
+}
+/* a band already carrying two lines of identity (the product's name over its
+   official one) has no room left for the category: at card width the pill and
+   the second line collide, and a half-ellipsised category is worse than none.
+   It is on the landing this card points at. */
+.adlock:has(.adlock__sub) .adlock__cat{display:none}
+.adlock--bleed .adlock__cat{margin-right:14px}
+/* a name-set band stacks its two lines, so the pill goes back to the corner */
+.adlock:has(.adlock__word) .adlock__cat{position:absolute;right:14px;top:50%;
+  transform:translateY(-50%);margin:0}
+
+/* the honesty line under every plate that uses a product's visual */
+.adstand{
+  display:flex;align-items:flex-start;gap:8px;margin:10px 0 0;
+  font-size:var(--t-xs);line-height:1.5;color:var(--ink-3);
+}
+.adstand__tag{
+  flex:none;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--ac) 74%,var(--ink));
+  border:1px solid color-mix(in srgb,var(--ac) 34%,transparent);
+  border-radius:var(--r-full);padding:3px 8px;margin-top:1px;
+}
+.adstand__t{min-width:0}
+.adstand .src{color:var(--ink-4)}
+
+/* ── what the ad is selling ─────────────────────────────────────────────── */
+.adcard__pitch{display:flex;flex-direction:column;gap:5px;min-width:0}
+.adcard__name{
+  margin:0;font-family:var(--sans);font-weight:600;font-size:1.1875rem;letter-spacing:-.015em;
+  line-height:1.2;color:var(--ink);
+}
+/* the product's own tagline, in the site's serif-italic accent. The raw brand
+   hue is only ~3.2–3.4:1 on paper for two of the four, so it is deepened
+   toward ink — the same move campaign.css makes for .camp__kick. */
+.adcard__line{
+  margin:0;font-family:var(--serif);font-style:italic;font-weight:600;
+  font-size:.9375rem;line-height:1.35;
+  color:color-mix(in srgb,var(--ac) 78%,var(--ink));
+}
+
+/* what the ad promises, in the agent's own words */
+.adcard__opener{
+  margin:0;padding:11px 14px;
+  background:var(--surface-2);border:1px solid var(--line);border-left:2px solid var(--ac);
+  border-radius:var(--r-lg);border-top-left-radius:4px;border-bottom-left-radius:4px;
+  font-family:var(--serif);font-size:var(--t-body);font-style:italic;line-height:1.5;
+  color:var(--ink);
+}
+.adcard__opener::before{
+  content:"The agent opens with";
+  display:block;font-family:var(--mono);font-style:normal;
+  font-size:var(--t-label);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-4);margin-bottom:6px;
+}
+
+/* ── the facts: presenter detail, and styled like detail ────────────────
+   read straight off campaigns.json, never re-worded — but hairline rows under
+   the pitch rather than a second body of copy competing with it. */
+.adfacts{margin:0;border-top:1px solid var(--line)}
+.adfact{
+  display:grid;grid-template-columns:74px minmax(0,1fr);gap:10px;align-items:baseline;
+  padding:7px 0;border-bottom:1px solid var(--line);
+}
+.adfact:last-child{border-bottom:0;padding-bottom:0}
+.adfact dt{
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-4);
+}
+.adfact dd{margin:0;font-size:var(--t-xs);line-height:1.5;color:var(--ink-3);min-width:0}
+.adfact dd code{
+  font-family:var(--mono);font-size:.94em;color:var(--ink-2);
+  background:rgba(0,35,52,.05);border-radius:var(--r-sm);padding:1px 6px;
+}
+.adfact dd .none{color:var(--ink-4);font-style:italic}
+
+.adcard__go{margin-top:auto;align-self:flex-start}
+
+/* ── the master brand ad — deliberately not one of the four ─────────────── */
+.adhub__split{
+  display:flex;align-items:center;gap:14px;
+  margin:clamp(30px,4.5vh,46px) 0 clamp(16px,2vw,22px);
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-4);
+}
+.adhub__split::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.adcard--master{
+  background:var(--void);color:var(--on-void);border-color:transparent;
+  box-shadow:0 26px 60px -36px rgba(0,35,52,.5);
+  display:grid;grid-template-columns:minmax(0,1fr);
+  gap:clamp(18px,3vw,34px);align-items:center;padding:clamp(22px,3vw,30px);
+}
+/* the brand ad has no product colour to carry, so its edge is the demo's gold */
+.adcard--master::before{background:var(--amber)}
+.adcard--master:hover{border-color:transparent}
+.adcard--master .adcard__name{color:var(--on-void);font-size:1.375rem}
+.adcard--master .adcard__slot{color:var(--amber)}
+.adcard--master .adcard__body{display:flex;flex-direction:column;gap:13px;min-width:0}
+.adcard--master .adcard__opener{
+  background:rgba(234,242,245,.06);border-color:var(--line-void);
+  border-left-color:var(--amber);color:var(--on-void);
+}
+.adcard--master .adcard__opener::before{color:var(--on-void-3)}
+.adcard--master .adfacts,.adcard--master .adfact{border-color:var(--line-void)}
+.adcard--master .adfact dt{color:var(--on-void-3)}
+.adcard--master .adfact dd{color:var(--on-void-2)}
+.adcard--master .adfact dd code{color:var(--on-void);background:rgba(234,242,245,.09)}
+.adcard--master .adfact dd .none{color:var(--on-void-3)}
+.adcard--master .adcard__note{
+  margin:0;font-size:var(--t-sm);line-height:1.6;color:var(--on-void-2);max-width:52ch;
+}
+.adcard--master .adcard__aside{display:flex;flex-direction:column;gap:14px;min-width:0}
+.adcard--master .adcard__go{margin-top:0;align-self:flex-start}
+
+/* the brand plate: the Stagwell.AI lockup itself on the deep navy, the one
+   honest "creative" for an ad that names no product. .m-ink is filled with
+   var(--ink) by styles.css, so re-pointing --ink inside the plate is what
+   turns the mark for a dark field — the custom property inherits into the
+   <use> instance where a descendant selector would not. */
+.adplate--brand{
+  aspect-ratio:16/9;border-radius:var(--r-lg);border:1px solid var(--line-void);
+  background:
+    radial-gradient(120% 110% at 18% 0%,rgba(0,156,189,.30),rgba(0,156,189,0) 62%),
+    radial-gradient(90% 100% at 100% 100%,rgba(255,184,28,.18),rgba(255,184,28,0) 60%),
+    var(--void-2);
+  display:flex;align-items:center;justify-content:center;
+}
+.adlock--brand{
+  --ink:var(--on-void);
+  min-height:0;padding:0;background:none;
+  display:flex;align-items:flex-end;justify-content:center;gap:10px;
+}
+.adlock__sw{width:min(64%,300px);height:auto;aspect-ratio:1870/153;display:block}
+.adplate--brand .adlock__cat{
+  position:absolute;left:50%;bottom:14px;transform:translateX(-50%);margin:0;
+  color:var(--on-void-3);border-color:var(--line-void);
+}
+.adcard--master .adstand{color:var(--on-void-2)}
+.adcard--master .adstand .src{color:var(--on-void-3)}
+.adcard--master .adstand__tag{color:var(--amber);border-color:rgba(255,184,28,.42)}
+
+/* ── footnote ───────────────────────────────────────────────────────────── */
+.adhub__foot{
+  margin-top:clamp(28px,4vh,44px);padding-top:16px;border-top:1px solid var(--line);
+  font-size:var(--t-sm);line-height:1.65;color:var(--ink-3);max-width:78ch;
+}
+.adhub__foot code{
+  font-family:var(--mono);font-size:.92em;color:var(--ink-2);
+  background:rgba(0,35,52,.05);border-radius:var(--r-sm);padding:1px 6px;
+}
+
+/* the load / failure state — the contract is a file, and a file can be missing */
+.adhub__empty{
+  margin-top:24px;padding:22px;border:1.5px dashed var(--line-2);border-radius:var(--r-lg);
+  background:var(--surface-2);color:var(--ink-3);
+  font-family:var(--mono);font-size:var(--t-xs);letter-spacing:.03em;line-height:1.7;
+}
+
+/* ── responsive ─────────────────────────────────────────────────────────────
+   one column by default; the 2×2 grid and the master's split only above
+   1100px, where two cards can hold a 16:9 plate at a readable size. */
+@media (min-width:1100px){
+  .adgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .adcard{padding:23px 20px 22px}
+  .adcard--master{grid-template-columns:minmax(0,1.12fr) minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .adcard{padding:19px 15px 18px;gap:12px}
+  .adlock{min-height:56px;padding:10px 13px}
+  .adlock--bleed{padding:0}
+  .adlock--bleed .adlock__logo{height:56px}
+  .adlock__cat{display:none}
+  .adlock__word{font-size:1rem}
+  .adcard__go{width:100%;justify-content:center}
+}
+@media (max-width:420px){
+  .adfact{grid-template-columns:minmax(0,1fr);gap:2px}
+}
+
+/* the prototype / third-party footnote (QA, Sep 2: this page had none) */
+.adfoot{max-width:1180px;margin:28px auto 0;padding:18px clamp(20px,4vw,48px) 40px;
+  font-family:var(--mono);font-size:var(--t-xs);line-height:1.6;color:var(--ink-3)}

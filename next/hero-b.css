@@ -1,0 +1,1018 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOMEPAGE VERSION B (/hero-b) only: Roobert throughout, and no colour.
+   Titles, icons, buttons and tiles go to ink and greys. The Stagwell logo and
+   the chat (launcher, voice buttons) keep their colour. Loaded after
+   home-c.css, and every rule is scoped to body.hc-b.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@font-face{font-family:'Roobert';font-style:normal;font-weight:100 350;font-display:swap;src:url(/next/assets/fonts/roobert/roobert-light.woff2) format('woff2')}
+@font-face{font-family:'Roobert';font-style:normal;font-weight:351 550;font-display:swap;src:url(/next/assets/fonts/roobert/roobert-regular.woff2) format('woff2')}
+@font-face{font-family:'Roobert';font-style:normal;font-weight:551 900;font-display:swap;src:url(/next/assets/fonts/roobert/roobert-bold.woff2) format('woff2')}
+
+body.hc-b:not(#_),
+body.hc-b:not(#_) *:not(svg):not(svg *){font-family:'Roobert',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important}
+
+/* titles: the colour wipe resolves to the title's own colour */
+body.hc-b .hl:not(#_){--hl:var(--hl-base,#0B1220) !important}
+body.hc-b #why .display--cos:not(#_),
+body.hc-b #why .display--cos:not(#_) *,
+body.hc-b .chat-over .chat-over__title:not(#_) em,
+body.hc-b .chat-over .chat-over__title:not(#_) em *{color:inherit !important}
+body.hc-b #why .display--cos:not(#_){color:#0B1220 !important}
+body.hc-b .ask-end .hc-clients__t:not(#_){color:rgba(11,18,32,.56) !important}
+body.hc-b .call__edit:not(#_),
+body.hc-b .stat__n span:not(#_){color:#0B1220 !important}
+
+/* buttons: Book a demo goes ink; the demo button on the film goes white */
+body.hc-b .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_){background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important}
+body.hc-b .btn:is([data-cta="session"],[data-cta="demo"]):not(.why__cta):not(#_):hover{background:#3A3F47 !important;border-color:#3A3F47 !important}
+body.hc-b .intro__act .btn[data-cta]:not(#_){background:#FFFFFF !important;border-color:#FFFFFF !important;color:#0B1220 !important}
+body.hc-b .intro__act .btn[data-cta]:not(#_) *{color:#0B1220 !important}
+body.hc-b .intro__act .btn[data-cta]:not(#_):hover{background:#E6E6E3 !important;border-color:#E6E6E3 !important}
+
+/* icons: product marks and suite icons in dark grey, no tint */
+body.hc-b .nav__pmark:not(#_),
+body.hc-b .hcs__card .hcs__ic:not(#_){background:rgba(11,18,32,.05) !important;box-shadow:inset 0 0 0 1px rgba(11,18,32,.18) !important;color:#3A3F47 !important}
+body.hc-b .nav__pmark:not(#_) svg,
+body.hc-b .hcs__card .hcs__ic:not(#_) svg{color:#3A3F47 !important}
+body.hc-b .hcs__card:hover .hcs__go:not(#_),
+body.hc-b .hcs__card:focus-visible .hcs__go:not(#_){background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important}
+
+/* small marks inside the product mockups */
+body.hc-b .mk-wave i:not(#_){background:#3A3F47 !important}
+body.hc-b .mk-st i:not(#_),
+body.hc-b .ask-mini__dots i:not(#_){background:#8A8E95 !important}
+
+/* Why: the Edge box goes light grey */
+body.hc-b #why .why__slot--pair:not(#_){background:#EDEDEA !important}
+
+body.hc-b .call__hint:not(#_){color:rgba(11,18,32,.56) !important;background:transparent !important}
+body.hc-b .stat__n span:not(#_)::before{background:#8A8E95 !important;color:#8A8E95 !important}
+
+/* more air around the film */
+@media (min-width:761px){
+  body.hc-b .intro:not(#_){padding-top:clamp(80px,11vh,128px) !important;padding-bottom:clamp(72px,8vw,120px) !important}
+}
+@media (max-width:760px){
+  body.hc-b .intro:not(#_){padding-top:48px !important;padding-bottom:56px !important}
+}
+
+/* closing Book a demo tile: the crosswalk picture behind it, darkened so the label reads */
+body.hc-b .ask-end .ask-end__ways .btn[data-cta]:not(#_){
+  background:linear-gradient(180deg,rgba(11,18,32,.78) 0%,rgba(11,18,32,.36) 55%,rgba(11,18,32,.55) 100%),url(/assets/img/cta/crosswalk-woman.jpg) center 45% / cover no-repeat !important;
+  border-color:transparent !important;transition:background-size .6s cubic-bezier(.2,.7,.2,1)}
+body.hc-b .ask-end .ask-end__ways .btn[data-cta]:not(#_):hover{
+  background:linear-gradient(180deg,rgba(11,18,32,.68) 0%,rgba(11,18,32,.24) 55%,rgba(11,18,32,.45) 100%),url(/assets/img/cta/crosswalk-woman.jpg) center 45% / cover no-repeat !important}
+
+/* "Our solutions" (Extensible) keeps its blue: the words match their underline */
+body.hc-b .hc-inlink:not(#_){color:#009CBD !important}
+
+/* the hero title a touch heavier: Roobert has no Medium, so a fine stroke adds the weight */
+body.hc-b .hero .display--hero:not(#_),
+body.hc-b .hero .display--hero:not(#_) *{-webkit-text-stroke:.5px #0B1220;paint-order:stroke fill}
+
+/* Why Stagwell AI as alternating rows: a large picture beside its text, sides swapping
+   row by row, the text centred on the picture (the Manus feature-page grid) */
+body.hc-b #why .why__item:not(#_),
+body.hc-b #why .why__item:not(#_):last-child{border:0 !important;padding:0 !important;background:transparent !important}
+body.hc-b #why .why__item:not(#_) + .why__item{margin-top:clamp(64px,8vw,128px) !important}
+body.hc-b #why .why__grid:not(#_){margin-top:clamp(40px,5vw,72px) !important}
+body.hc-b #why .why__item:not(#_) .why__t{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important;letter-spacing:-.03em !important;margin:0 0 18px !important}
+body.hc-b #why .why__item:not(#_) > .why__d{max-width:520px !important;font-size:clamp(16px,.9rem + .3vw,19px) !important;line-height:1.55 !important}
+body.hc-b #why .why__item:not(#_) > .why__d--lead{color:#0B1220 !important;margin:0 0 6px !important}
+body.hc-b #why .why__item:not(#_) > .why__d:not(.why__d--lead){color:rgba(11,18,32,.6) !important}
+@media (min-width:900px){
+  body.hc-b #why .why__item:not(#_){display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;grid-template-rows:1fr auto auto auto 1fr !important;
+    column-gap:clamp(56px,7vw,112px) !important;row-gap:0 !important;align-items:start !important}
+  body.hc-b #why .why__item:not(#_) > .why__slot{grid-row:1 / 6 !important;grid-column:1 / 2 !important;align-self:stretch !important;
+    width:100% !important;aspect-ratio:11 / 10 !important;height:auto !important;max-height:600px;min-height:0 !important;margin:0 !important}
+  body.hc-b #why > .wrap:not(#_){max-width:1320px !important;padding-inline:40px !important;margin-inline:auto !important}
+  body.hc-b #why .why__item:not(#_) > .why__head{grid-row:2 !important;grid-column:2 / 3 !important}
+  body.hc-b #why .why__item:not(#_) > .why__d--lead{grid-row:3 !important;grid-column:2 / 3 !important}
+  body.hc-b #why .why__item:not(#_) > .why__d:not(.why__d--lead){grid-row:4 !important;grid-column:2 / 3 !important}
+  body.hc-b #why .why__item:not(#_):nth-child(even) > .why__slot{grid-column:2 / 3 !important}
+  body.hc-b #why .why__item:not(#_):nth-child(even) > :not(.why__slot){grid-column:1 / 2 !important}
+}
+@media (max-width:899px){
+  body.hc-b #why .why__item:not(#_){display:flex !important;flex-direction:column !important;align-items:stretch !important}
+  body.hc-b #why .why__item:not(#_) > .why__head{display:block !important;order:0 !important}
+  body.hc-b #why .why__item:not(#_) > .why__slot{order:-1 !important;width:100% !important;height:auto !important;min-height:0 !important;aspect-ratio:16 / 10 !important;margin:0 0 24px !important;align-self:stretch !important}
+}
+
+/* Why Stagwell AI: a full-size section title, centred */
+body.hc-b #why .display--cos:not(#_),
+body.hc-b #why .display--cos:not(#_) *{font-size:clamp(40px,1rem + 3.9vw,78px) !important;line-height:1.06 !important;
+  letter-spacing:-.02em !important;font-weight:400 !important;text-transform:none !important;text-align:center !important}
+body.hc-b #why .display--cos:not(#_){display:block !important;width:100% !important;max-width:none !important;margin:0 auto clamp(48px,6vw,96px) !important}
+body.hc-b #why .display--cos:not(#_) .ln{display:block !important}
+
+/* Experience: the event picture, darkened, with the turning logos small and white on top */
+body.hc-b #why .why__slot--logos:not(#_){background:linear-gradient(rgba(11,18,32,.42),rgba(11,18,32,.42)),#0B1220 url(/assets/img/why/experience-event.jpg) center / cover no-repeat !important}
+body.hc-b #why .why__slot--logos:not(#_) .why__reel{width:30% !important;height:10% !important;z-index:1}
+body.hc-b #why .why__slot--logos:not(#_) .why__logo{background:#FFFFFF !important}
+
+/* Expertise: the tunnel picture, with the Code and Theory wordmark smaller on top
+   (screen blend drops the wordmark's black ground, leaving the white letters) */
+body.hc-b #why .why__slot--img:not(#_){background:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),#0B0B0B url(/assets/img/why/expertise-tunnel.jpg) center / cover no-repeat !important;isolation:isolate}
+body.hc-b #why .why__slot--img:not(#_) img{width:62% !important;height:auto !important;object-fit:contain !important;mix-blend-mode:screen;margin:auto}
+
+/* Edge: the Adobe and Palantir marks a size down */
+body.hc-b #why .why__slot--pair:not(#_) .why__mark{width:24% !important}
+body.hc-b #why .why__slot--pair:not(#_) .why__sep{height:22% !important}
+
+/* Expertise: the wordmark's letters sit 3.8% above the middle of its own image, so it is
+   nudged down by that much to land on the centre of the box (on the dark band) */
+body.hc-b #why .why__slot--img:not(#_) img{transform:translateY(3.8%)}
+
+/* every big title carries the H1's letter spacing */
+body.hc-b :is(.display,.hcs__h,.why__t):not(#_),
+body.hc-b :is(.display,.hcs__h,.why__t):not(#_) *{letter-spacing:-.035em !important}
+body.hc-b #why :is(.display--cos,.why__t):not(#_),
+body.hc-b #why :is(.display--cos,.why__t):not(#_) *{letter-spacing:-.035em !important}
+body.hc-b #why .why__item:not(#_) .why__t:not(#_){letter-spacing:-.035em !important}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INNER PAGES (/products and the product pages) on the approved homepage B look.
+   Same grid, type scale, colours and pictures as the homepage. Scoped to .pc-page.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* one grid with the homepage and the footer: 1240px of content, 20px gutters */
+body.hc-b.pc-page .pp-wrap:not(.pp-hero__in):not(#_){max-width:1280px !important;padding-inline:20px !important;margin-inline:auto !important}
+
+/* titles: the homepage H1 and section-title scale, all at -0.035em */
+body.hc-b.pc-page .pp-title:not(#_),
+body.hc-b.pc-page .pp-title:not(#_) *{font-size:clamp(32px,1rem + 3.1vw,60px) !important;line-height:1.08 !important;letter-spacing:-.035em !important;font-weight:500 !important}
+body.hc-b.pc-page .pp-title:not(#_),
+body.hc-b.pc-page .pp-title:not(#_) *{-webkit-text-stroke:.5px #0B1220;paint-order:stroke fill}
+body.hc-b.pc-page .pp-h2:not(#_),
+body.hc-b.pc-page .pp-h2:not(#_) *,
+body.hc-b.pc-page .prodgroup > .prodgroup__words .prodgroup__h:not(#_){font-size:clamp(40px,1rem + 3.9vw,78px) !important;line-height:1.06 !important;letter-spacing:-.035em !important;font-weight:400 !important;max-width:none !important}
+body.hc-b.pc-page .pp-diff__item:not(#_) h3,
+body.hc-b.pc-page .pc-row__h:not(#_){font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important;letter-spacing:-.035em !important;font-weight:400 !important}
+body.hc-b.pc-page .pp-uses__list:not(#_) h4{font-size:clamp(22px,.9rem + 1vw,30px) !important;line-height:1.15 !important;letter-spacing:-.025em !important;font-weight:400 !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) b{font-size:clamp(18px,.9rem + .4vw,21px) !important;line-height:1.3 !important;letter-spacing:-.01em !important;font-weight:400 !important}
+
+/* body copy: the homepage paragraph size, grey under an ink lead */
+body.hc-b.pc-page :is(.pp-diff__item p,.pp-uses__list p,.pp-with__grid span,.pc-how__card p):not(#_){font-size:clamp(16px,.9rem + .3vw,19px) !important;line-height:1.55 !important;letter-spacing:0 !important}
+body.hc-b.pc-page :is(.pp-diff__item p,.pp-uses__list p,.pp-with__grid span):not(#_){color:rgba(11,18,32,.6) !important}
+body.hc-b.pc-page .pp-sign:not(#_),
+body.hc-b.pc-page .pp-eyebrow:not(#_){font-size:12px !important;letter-spacing:1.6px !important;text-transform:uppercase !important;font-weight:400 !important;color:rgba(11,18,32,.56) !important}
+
+/* no colour: steps, bars, icons and small numbers in ink and grey; one white ground */
+body.hc-b.pc-page .pc-how__n:not(#_),
+body.hc-b.pc-page .pc-how__cn:not(#_),
+body.hc-b.pc-page .ptoc__num:not(#_),
+body.hc-b.pc-page .pp-diff__n:not(#_){color:rgba(11,18,32,.4) !important}
+body.hc-b.pc-page .pc-how__card .pc-how__cn:not(#_){color:rgba(255,255,255,.6) !important}
+body.hc-b.pc-page .pc-how__tab.is-on:not(#_) .pc-how__n{color:#0B1220 !important}
+body.hc-b.pc-page .pc-how__bar:not(#_),
+body.hc-b.pc-page .pc-how__bar:not(#_)::before,
+body.hc-b.pc-page .pc-how__bar:not(#_)::after{background-color:#0B1220 !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) svg{color:#0B1220 !important;stroke:currentColor}
+body.hc-b.pc-page .pp-uses:not(#_){background:transparent !important}
+body.hc-b.pc-page .pp-hero:not(#_)::before{content:none !important}
+
+/* Explore sits on pictures and dark cards: white with ink, like the demo button on the film */
+body.hc-b.pc-page .prodcard__link:not(#_),
+body.hc-b.pc-page .prodcard__link.pc-go:not(#_){background:#FFFFFF !important;border-color:#FFFFFF !important;color:#0B1220 !important}
+body.hc-b.pc-page .prodcard__link:not(#_) *{color:#0B1220 !important}
+body.hc-b.pc-page .prodcard__link:not(#_):hover{background:#E6E6E3 !important;border-color:#E6E6E3 !important}
+
+/* pictures and film square-cornered like the homepage's; the film inset 20px like B's */
+body.hc-b.pc-page .pp-film:not(#_){padding-inline:20px !important}
+body.hc-b.pc-page .pp-film__frame:not(#_),
+body.hc-b.pc-page .pp-film__frame:not(#_) video,
+body.hc-b.pc-page .pp-more__media:not(#_),
+body.hc-b.pc-page .pc-break:not(#_),
+body.hc-b.pc-page .pc-break:not(#_) img{border-radius:0 !important}
+
+/* the closing tiles at the homepage's width */
+body.hc-b.pc-page .ask-end .ask-end__ways:not(#_){max-width:1180px !important;width:100% !important;gap:20px !important;margin-inline:auto !important}
+
+/* proof: big light figures on a fine top rule, the labels quiet beneath */
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_){display:grid !important;grid-template-columns:repeat(auto-fit,minmax(200px,1fr)) !important;gap:0 clamp(24px,3vw,48px) !important;
+  margin-top:clamp(40px,5vw,72px) !important;border:0 !important;background:none !important;padding:0 !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{border:0 !important;border-top:1px solid rgba(11,18,32,.16) !important;background:none !important;padding:28px 0 0 !important;margin:0 !important;display:block !important;text-align:left !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{display:block !important;font-size:clamp(56px,1.5rem + 4.4vw,112px) !important;line-height:.95 !important;font-weight:300 !important;
+  letter-spacing:-.045em !important;color:#0B1220 !important;font-variant-numeric:tabular-nums;white-space:nowrap}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{display:block !important;margin-top:18px !important;max-width:260px !important;font-size:clamp(15px,.85rem + .25vw,17px) !important;line-height:1.45 !important;color:rgba(11,18,32,.6) !important;letter-spacing:0 !important}
+body.hc-b.pc-page .pp-proof .pp-flag:not(#_){background:none !important;border:1px solid rgba(11,18,32,.18) !important;color:rgba(11,18,32,.56) !important}
+body.hc-b.pc-page .pp-proof .pp-proof__note:not(#_){margin-top:clamp(32px,4vw,56px) !important;color:rgba(11,18,32,.5) !important}
+body.hc-b.pc-page :is(.pp-more__head,.pp-proof__head):not(#_){max-width:1040px !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-title:not(#_),
+  body.hc-b.pc-page .pp-title:not(#_) *{font-size:clamp(36px,10.7vw,46px) !important}
+}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_){grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:0 20px !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{padding:20px 0 32px !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{font-size:clamp(38px,11vw,56px) !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{margin-top:12px !important;font-size:14px !important}
+}
+
+/* solution pages (/s/…): the product's name over the hero, in ink */
+body.hc-b.pc-page .sp-mark:not(#_){color:#0B1220 !important;font-size:clamp(20px,.9rem + .6vw,26px) !important;font-weight:400 !important;letter-spacing:-.02em !important;margin:0 0 14px !important;text-shadow:none !important}
+body.hc-b.pc-page .sp-also:not(#_){padding-block:clamp(72px,9vw,136px) clamp(24px,3vw,48px) !important;background:transparent !important}
+body.hc-b.pc-page .sp-also__list:not(#_){display:grid !important;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)) !important;gap:0 clamp(24px,3vw,48px) !important;margin-top:clamp(32px,4vw,56px) !important;padding:0 !important;list-style:none !important}
+body.hc-b.pc-page .sp-also__item:not(#_){display:flex !important;align-items:flex-start !important;justify-content:space-between !important;gap:20px !important;
+  background:none !important;border:0 !important;border-top:1px solid rgba(11,18,32,.16) !important;border-radius:0 !important;box-shadow:none !important;padding:24px 0 28px !important;color:#0B1220 !important;text-decoration:none !important}
+body.hc-b.pc-page .sp-also__n:not(#_){display:block !important;font-size:clamp(22px,.9rem + 1vw,30px) !important;font-weight:400 !important;letter-spacing:-.025em !important;line-height:1.15 !important;color:#0B1220 !important}
+body.hc-b.pc-page .sp-also__w:not(#_){display:block !important;margin-top:8px !important;font-size:clamp(15px,.85rem + .25vw,17px) !important;line-height:1.45 !important;color:rgba(11,18,32,.6) !important}
+body.hc-b.pc-page .sp-also__item:not(#_) svg{width:22px !important;height:22px !important;flex:0 0 auto !important;margin-top:6px !important;color:#0B1220 !important;transition:transform .25s ease}
+body.hc-b.pc-page .sp-also__item:not(#_):hover svg{transform:translateX(4px)}
+body.hc-b.pc-page .sp-mark:not(#_){border:0 !important;background:none !important;box-shadow:none !important;padding:0 !important;border-radius:0 !important}
+
+/* solution pages, round two: the product's picture is the hero's ground (a darkened card
+   inset 20px, like the homepage film), white type on it */
+body.hc-b.pc-page .sp-hero--pic:not(#_){position:relative !important;margin:clamp(72px,9vh,88px) 20px 0 !important;min-height:min(80vh,760px) !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;padding-block:clamp(72px,10vh,120px) !important;
+  background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(11,18,32,.42),rgba(11,18,32,0) 100%),linear-gradient(180deg,rgba(11,18,32,.66) 0%,rgba(11,18,32,.5) 50%,rgba(11,18,32,.72) 100%),#0B1220 var(--sp-pic) center / cover no-repeat !important;border-radius:0 !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) :is(.sp-mark,.pp-eyebrow,.pp-title,.pp-title *,.pp-lede){color:#FFFFFF !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) :is(.pp-title,.pp-title *){-webkit-text-stroke-color:#FFFFFF !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .pp-eyebrow{color:rgba(255,255,255,.72) !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .pp-lede{color:rgba(255,255,255,.86) !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .btn[data-cta]{background:#FFFFFF !important;border-color:#FFFFFF !important;color:#0B1220 !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .btn[data-cta] *{color:#0B1220 !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .btn[data-cta]:hover{background:#E6E6E3 !important;border-color:#E6E6E3 !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .pp-site{color:#FFFFFF !important;border-color:rgba(255,255,255,.7) !important}
+body.hc-b.pc-page .sp-hero--pic:not(#_) .pp-site *{color:#FFFFFF !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .sp-hero--pic:not(#_){margin:72px 16px 0 !important;min-height:min(86svh,680px) !important;padding-inline:4px !important}
+}
+
+/* "What it does": the capabilities as a plain numbered list, two columns */
+body.hc-b.pc-page .pp-more__grid:not(#_):has(> .sp-caps){display:block !important}
+body.hc-b.pc-page .sp-caps:not(#_){display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:0 clamp(24px,4vw,64px) !important;
+  list-style:none !important;padding:0 !important;margin:clamp(32px,4vw,56px) 0 0 !important;counter-reset:none}
+body.hc-b.pc-page .sp-caps:not(#_) > li{display:flex !important;align-items:baseline !important;gap:20px !important;border:0 !important;border-top:1px solid rgba(11,18,32,.16) !important;
+  padding:24px 0 30px !important;margin:0 !important;background:none !important;opacity:1}
+body.hc-b.pc-page .sp-caps:not(#_) > li > b{flex:0 0 32px !important;font-size:13px !important;font-weight:400 !important;letter-spacing:.04em !important;color:rgba(11,18,32,.4) !important;background:none !important;width:auto !important;height:auto !important;border:0 !important}
+body.hc-b.pc-page .sp-caps:not(#_) h3{margin:0 !important;font-size:clamp(24px,.9rem + 1.4vw,36px) !important;font-weight:400 !important;letter-spacing:-.03em !important;line-height:1.12 !important;color:#0B1220 !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .sp-caps:not(#_){grid-template-columns:1fr !important}
+}
+
+/* Related: each product as a picture card */
+body.hc-b.pc-page .sp-also__item:not(#_){display:grid !important;grid-template-columns:minmax(0,1fr) auto !important;grid-template-areas:"pic pic" "txt go" !important;
+  align-items:start !important;border-top:0 !important;padding:0 0 28px !important;column-gap:20px !important}
+body.hc-b.pc-page .sp-also__pic:not(#_){grid-area:pic;display:block;width:100%;aspect-ratio:16 / 10;margin:0 0 20px;background:#0B1220 var(--sp-pic) center / cover no-repeat;transition:opacity .3s ease}
+body.hc-b.pc-page .sp-also__item:not(#_) > span:not(.sp-also__pic){grid-area:txt;display:block}
+body.hc-b.pc-page .sp-also__item:not(#_) > svg{grid-area:go}
+body.hc-b.pc-page .sp-also__item:not(#_):hover .sp-also__pic{opacity:.88}
+body.hc-b.pc-page .sp-also__list:not(#_){grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr)) !important}
+body.hc-b.pc-page .sp-caps:not(#_) > li > b{position:static !important;inset:auto !important;order:-1 !important;transform:none !important}
+body.hc-b.pc-page .sp-caps:not(#_) > li > b::before,
+body.hc-b.pc-page .sp-caps:not(#_) > li > b::after{content:none !important}
+body.hc-b.pc-page .sp-hero .sp-mark:not(#_){order:-2 !important}
+
+/* solution pages, round three ───────────────────────────────────────────────
+   How it works: the square picture left, heading and numbered list right */
+body.hc-b.pc-page .sp-how__in:not(#_){display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;gap:clamp(40px,6vw,112px) !important;align-items:center !important}
+body.hc-b.pc-page .sp-how__pic:not(#_){aspect-ratio:1 / 1;overflow:hidden;background:#0B1220;border-radius:0}
+body.hc-b.pc-page .sp-how__pic:not(#_) img{width:100%;height:100%;object-fit:cover;display:block}
+body.hc-b.pc-page .sp-how:not(#_) .pp-more__head{max-width:none !important;margin:0 !important}
+body.hc-b.pc-page .sp-how:not(#_) .pp-h2,
+body.hc-b.pc-page .sp-how:not(#_) .pp-h2 *{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
+body.hc-b.pc-page .sp-how:not(#_) .sp-caps{grid-template-columns:1fr !important;margin-top:clamp(24px,3vw,40px) !important}
+body.hc-b.pc-page .sp-how:not(#_) .sp-caps > li{padding:20px 0 22px !important}
+body.hc-b.pc-page .sp-how:not(#_) .sp-caps h3{font-size:clamp(20px,.9rem + .8vw,26px) !important;letter-spacing:-.02em !important}
+body.hc-b.pc-page .sp-how:not(#_) .sp-caps > li:last-child{border-bottom:1px solid rgba(11,18,32,.16) !important}
+body.hc-b.pc-page .sp-how:not(#_) .pp-mid{text-align:left !important;margin:clamp(28px,3vw,40px) 0 0 !important;justify-content:flex-start !important}
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-how__in:not(#_){grid-template-columns:1fr !important;gap:32px !important}
+  body.hc-b.pc-page .sp-how__pic:not(#_){aspect-ratio:16 / 10}
+}
+
+/* Related: dark tiles like the closing Book a demo / Call my phone, the product's
+   picture darkened behind its name */
+body.hc-b.pc-page .sp-also__list:not(#_){grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)) !important;gap:20px !important}
+body.hc-b.pc-page .sp-also__item:not(#_){position:relative !important;display:flex !important;flex-direction:column !important;justify-content:flex-start !important;
+  grid-template-areas:none !important;min-height:230px !important;padding:22px 64px 22px 24px !important;border:0 !important;border-radius:10px !important;overflow:hidden !important;
+  background:#0B1220 !important;color:#FFFFFF !important;isolation:isolate}
+body.hc-b.pc-page .sp-also__pic:not(#_){position:absolute !important;inset:0 !important;width:auto !important;aspect-ratio:auto !important;margin:0 !important;z-index:-1;
+  background:linear-gradient(180deg,rgba(11,18,32,.8) 0%,rgba(11,18,32,.38) 58%,rgba(11,18,32,.58) 100%),#0B1220 var(--sp-pic) center / cover no-repeat !important;transition:opacity .3s ease}
+body.hc-b.pc-page .sp-also__item:not(#_) > span:not(.sp-also__pic){display:block !important}
+body.hc-b.pc-page .sp-also__item:not(#_) .sp-also__n{font-size:22px !important;font-weight:500 !important;letter-spacing:-.01em !important;text-transform:uppercase !important;color:#FFFFFF !important;line-height:1.15 !important}
+body.hc-b.pc-page .sp-also__item:not(#_) .sp-also__w{margin-top:10px !important;max-width:340px !important;font-size:15px !important;color:rgba(255,255,255,.78) !important}
+body.hc-b.pc-page .sp-also__item:not(#_) > svg{position:absolute !important;top:22px !important;right:24px !important;margin:0 !important;color:#FFFFFF !important}
+body.hc-b.pc-page .sp-also__item:not(#_):hover .sp-also__pic{opacity:.9}
+@media (max-width:760px){
+  body.hc-b.pc-page .sp-also__item:not(#_){min-height:180px !important}
+}
+body.hc-b.pc-page .sp-also__list:not(#_){grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr)) !important}
+body.hc-b.pc-page .sp-also:not(#_) .pp-h2,
+body.hc-b.pc-page .sp-also:not(#_) .pp-h2 *{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
+
+/* the product-site link as a button beside Book a demo: same pill and type, white with a
+   fine stroke (all product and solution pages) */
+body.hc-b.pc-page .pp-acts .pp-site:not(#_){display:inline-flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;
+  height:42px !important;padding:0 20px !important;border-radius:999px !important;border:1px solid rgba(11,18,32,.22) !important;background:#FFFFFF !important;
+  color:#0B1220 !important;font-size:13.5px !important;font-weight:600 !important;letter-spacing:.01em !important;text-transform:uppercase !important;text-decoration:none !important;line-height:1 !important;box-shadow:none !important}
+body.hc-b.pc-page .pp-acts .pp-site:not(#_):hover{border-color:#0B1220 !important;background:#FFFFFF !important}
+body.hc-b.pc-page .pp-acts .pp-site:not(#_) svg{width:12px !important;height:12px !important;transform:none !important;color:#0B1220 !important}
+body.hc-b.pc-page .pp-acts .pp-site:not(#_)::after,
+body.hc-b.pc-page .pp-acts .pp-site:not(#_)::before{content:none !important}
+body.hc-b.pc-page .pp-acts:not(#_){gap:12px !important;flex-wrap:wrap !important}
+
+/* solution pages: the hero's picture, wide under the words */
+body.hc-b.pc-page .sp-hero__pic:not(#_){display:block;max-width:1240px;margin:clamp(48px,6vw,80px) auto 0;padding:0 20px;box-sizing:content-box}
+body.hc-b.pc-page .sp-hero__pic:not(#_) img{display:block;width:100%;aspect-ratio:2 / 1;object-fit:cover;border-radius:16px;background:#0B1220}
+@media (max-width:760px){
+  body.hc-b.pc-page .sp-hero__pic:not(#_){padding:0 16px;margin-top:36px}
+  body.hc-b.pc-page .sp-hero__pic:not(#_) img{aspect-ratio:4 / 3;border-radius:12px}
+}
+
+/* solution pages: How it works as tabs over one card (after the Manus solutions pages) */
+body.hc-b.pc-page .sp-tabs:not(#_){padding-block:clamp(72px,9vw,136px) clamp(24px,3vw,48px) !important}
+body.hc-b.pc-page .sp-tabs__head:not(#_){text-align:center}
+body.hc-b.pc-page .sp-tabs__head:not(#_) .pp-more__head{max-width:none !important;margin:0 auto !important;text-align:center !important}
+body.hc-b.pc-page .sp-tabs:not(#_) .pp-h2,
+body.hc-b.pc-page .sp-tabs:not(#_) .pp-h2 *{font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
+body.hc-b.pc-page .sp-tabs__bar:not(#_){display:flex;justify-content:center;gap:6px;margin:clamp(28px,3vw,44px) auto clamp(20px,2.4vw,32px);
+  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+body.hc-b.pc-page .sp-tabs__bar:not(#_)::-webkit-scrollbar{display:none}
+body.hc-b.pc-page .sp-tabs__tab:not(#_){flex:0 0 auto;height:44px;padding:0 20px;border:0;border-radius:999px;background:transparent;color:rgba(11,18,32,.62);
+  font:inherit;font-size:16px;letter-spacing:-.005em;cursor:pointer;white-space:nowrap;transition:background .2s ease,color .2s ease}
+body.hc-b.pc-page .sp-tabs__tab:not(#_):hover{color:#0B1220}
+body.hc-b.pc-page .sp-tabs__tab.is-on:not(#_){background:#E9E9E6;color:#0B1220}
+body.hc-b.pc-page .sp-tabs__tab:not(#_):focus-visible{outline:2px solid #0B1220;outline-offset:2px}
+body.hc-b.pc-page .sp-tabs__panel:not(#_){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:clamp(420px,42vw,580px);
+  border-radius:20px;overflow:hidden;background:#F1F1EF}
+body.hc-b.pc-page .sp-tabs__panel:not(#_) + .sp-tabs__panel{margin-top:20px}
+body.hc-b.pc-page .sp-tabs.is-tabbed .sp-tabs__panel:not(#_) + .sp-tabs__panel{margin-top:0}
+body.hc-b.pc-page .sp-tabs__panel[hidden]:not(#_){display:none !important}
+body.hc-b.pc-page .sp-tabs__txt:not(#_){display:flex;flex-direction:column;justify-content:center;padding:clamp(32px,5vw,88px)}
+body.hc-b.pc-page .sp-tabs__n:not(#_){margin:0 0 16px;font-size:15px;color:rgba(11,18,32,.5);letter-spacing:.02em}
+body.hc-b.pc-page .sp-tabs__txt:not(#_) h3{margin:0 0 18px;font-size:clamp(28px,1rem + 1.6vw,44px);font-weight:400;letter-spacing:-.035em;line-height:1.1;color:#0B1220}
+body.hc-b.pc-page .sp-tabs__txt:not(#_) p:not(.sp-tabs__n){margin:0;max-width:460px;font-size:clamp(16px,.9rem + .3vw,19px);line-height:1.55;color:rgba(11,18,32,.6)}
+body.hc-b.pc-page .sp-tabs__pic:not(#_){position:relative;background:#0B1220}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+body.hc-b.pc-page .sp-tabs:not(#_) .pp-mid{text-align:center !important;margin:clamp(32px,4vw,48px) 0 0 !important;display:flex;justify-content:center}
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-tabs__bar:not(#_){justify-content:flex-start;margin-inline:-20px;padding-inline:20px}
+  body.hc-b.pc-page .sp-tabs__panel:not(#_){grid-template-columns:1fr;min-height:0;border-radius:16px}
+  body.hc-b.pc-page .sp-tabs__pic:not(#_){order:-1;aspect-ratio:16 / 10}
+  body.hc-b.pc-page .sp-tabs__txt:not(#_){padding:28px 24px 32px}
+}
+body.hc-b.pc-page .sp-tabs__head:not(#_) :is(.pp-sign,.pp-h2){text-align:center !important;margin-inline:auto !important}
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-tabs__tab:not(#_){max-width:min(260px,68vw);overflow:hidden;text-overflow:ellipsis;font-size:15px}
+}
+
+/* ── inner pages, polish round ───────────────────────────────────────────── */
+/* no eyebrows over section titles: the title says it */
+body.hc-b.pc-page .pp-sign:not(#_){display:none !important}
+
+/* hero rhythm: label, title, lede, buttons on even steps */
+body.hc-b.pc-page .pp-hero :is(.pp-eyebrow,.sp-mark):not(#_){margin:0 0 20px !important}
+body.hc-b.pc-page .pp-hero .pp-title:not(#_){margin:0 0 24px !important}
+body.hc-b.pc-page .pp-hero .pp-lede:not(#_){margin:0 0 36px !important}
+body.hc-b.pc-page .pp-hero .pp-acts:not(#_){margin:0 !important}
+/* solution pages: the product's name is the one small label over the title */
+body.hc-b.pc-page .sp-hero .pp-eyebrow:not(#_){display:none !important}
+body.hc-b.pc-page .sp-hero .sp-mark:not(#_){font-size:12px !important;letter-spacing:1.6px !important;text-transform:uppercase !important;color:rgba(11,18,32,.56) !important;font-weight:400 !important}
+
+/* product pages: the product's own picture (New Voices: the live voice) fills the first tab */
+body.hc-b.pc-page .sp-tabs__pic:not(#_) > .pp-more__media{position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;
+  margin:0 !important;border-radius:0 !important;aspect-ratio:auto !important;max-height:none !important;overflow:hidden !important}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) > .pp-more__media :is(img,picture){position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+body.hc-b.pc-page .sp-tabs:not(#_) .pp-more__head .pp-h2{max-width:none !important}
+
+/* proof: one ink card, the figures large and light in white, quiet labels */
+body.hc-b.pc-page .pp-proof:not(#_){padding-inline:20px !important;padding-block:clamp(56px,7vw,112px) !important}
+body.hc-b.pc-page .pp-proof .pp-wrap:not(#_){max-width:1240px !important;margin-inline:auto !important;padding:clamp(40px,6vw,88px) clamp(28px,5.5vw,80px) !important;
+  background:#0B1220 !important;border-radius:20px !important}
+body.hc-b.pc-page .pp-proof:not(#_) .pp-h2,
+body.hc-b.pc-page .pp-proof:not(#_) .pp-h2 *{color:#FFFFFF !important;font-size:clamp(34px,1rem + 2.2vw,52px) !important;line-height:1.08 !important}
+body.hc-b.pc-page .pp-proof .pp-flag:not(#_){border-color:rgba(255,255,255,.28) !important;color:rgba(255,255,255,.7) !important;background:none !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{border-top-color:rgba(255,255,255,.18) !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{color:#FFFFFF !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{color:rgba(255,255,255,.64) !important}
+body.hc-b.pc-page .pp-proof .pp-proof__note:not(#_){color:rgba(255,255,255,.46) !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-proof:not(#_){padding-inline:16px !important}
+  body.hc-b.pc-page .pp-proof .pp-wrap:not(#_){border-radius:16px !important}
+}
+body.hc-b.pc-page .sp-tabs .pp-more__grid[hidden]:not(#_){display:none !important}
+@media (min-width:861px){
+  body.hc-b.pc-page .sp-tabs__bar:not(#_){flex-wrap:wrap;overflow:visible;justify-content:center;row-gap:6px}
+}
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-tabs__bar:not(#_){justify-content:flex-start !important}
+}
+@media (min-width:861px){
+  body.hc-b.pc-page .sp-tabs__tab:not(#_){padding:0 16px;font-size:15px}
+}
+/* hero rhythm, corrected: the container's own 20px gap was stacking on the margins */
+body.hc-b.pc-page .pp-hero__in:not(#_){gap:0 !important;row-gap:0 !important}
+body.hc-b.pc-page .pp-hero :is(.pp-eyebrow,.sp-mark):not(#_){margin:0 0 16px !important;max-width:none !important}
+body.hc-b.pc-page .pp-hero .pp-title:not(#_){margin:0 0 20px !important}
+body.hc-b.pc-page .pp-hero .pp-lede:not(#_){margin:0 0 28px !important;padding-top:0 !important}
+
+/* hero collage (prod-c.js): the page's image in a rounded card with three small product
+   screens around it, on a soft grey ground. A 1080×480 stage scaled to fit. */
+body.hc-b.pc-page .pc-collage{position:relative;max-width:1240px;margin:clamp(48px,6vw,80px) auto 0;box-sizing:border-box}
+body.hc-b.pc-page .pc-collage__stage{position:absolute;left:60px;top:40px;transform:scale(var(--k,1));transform-origin:0 0}
+body.hc-b.pc-page .pc-collage__card{position:absolute;overflow:hidden;background:#FFFFFF;border:1px solid rgba(11,18,32,.1);border-radius:20px}
+body.hc-b.pc-page .pc-collage__main{border-radius:24px;border:0;background:#0B1220;z-index:1}
+body.hc-b.pc-page .pc-collage__main > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+body.hc-b.pc-page .pc-collage__ui--1,body.hc-b.pc-page .pc-collage__ui--2{z-index:2}
+body.hc-b.pc-page .pc-collage__ui--3{z-index:3}
+body.hc-b.pc-page .pc-collage__main .pp-film:not(#_){position:absolute !important;inset:0 !important;margin:0 !important;padding:0 !important;height:auto !important;min-height:0 !important;max-width:none !important;background:#0B1220 !important}
+body.hc-b.pc-page .pc-collage__main .pp-film__frame:not(#_){position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;max-width:none !important;margin:0 !important;aspect-ratio:auto !important;border-radius:0 !important}
+body.hc-b.pc-page .pc-collage__main .pp-film__frame:not(#_) video{position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;object-fit:cover !important;border-radius:0 !important}
+body.hc-b.pc-page .pc-collage__main .pp-film__play:not(#_){left:22px !important;top:22px !important;right:auto !important;bottom:auto !important;transform:none !important;width:52px !important;height:52px !important;z-index:2 !important}
+body.hc-b.pc-page .pc-collage__main .pp-film.is-playing .pp-film__play:not(#_){display:none !important}
+body.hc-b.pc-page .pc-collage.is-armed .pc-collage__card{opacity:0;translate:0 18px;transition:opacity .7s ease,translate .9s cubic-bezier(.2,.7,.2,1)}
+body.hc-b.pc-page .pc-collage.is-armed.is-in .pc-collage__card{opacity:1;translate:0 0}
+body.hc-b.pc-page .pc-collage.is-in .pc-collage__ui--1{transition-delay:.12s}
+body.hc-b.pc-page .pc-collage.is-in .pc-collage__ui--2{transition-delay:.22s}
+body.hc-b.pc-page .pc-collage.is-in .pc-collage__ui--3{transition-delay:.3s}
+@media (max-width:760px){
+  body.hc-b.pc-page .pc-collage__ground{inset:0 16px;border-radius:18px}
+  body.hc-b.pc-page .pc-collage__stage{left:40px;top:40px}
+}
+
+/* the product screens */
+.sx{padding:22px;color:#0B1220;font-size:13px;line-height:1.4;text-align:left;letter-spacing:0}
+.sx *{box-sizing:border-box}
+.sx ul{list-style:none;margin:0;padding:0}
+.sx-h{display:flex;flex-direction:column;gap:3px;margin:0 0 12px}
+.sx-h b{font-size:15px;font-weight:500;letter-spacing:-.01em}
+.sx-h span{font-size:12px;color:#8A8E95}
+.sx-face{display:inline-block;flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:#D6D7D3 url(/assets/img/brand-growth.jpg) 0 0 / 400% 500% no-repeat}
+.sx-legend{display:flex;gap:14px;margin:-4px 0 10px;font-size:11px;color:#5E636B}
+.sx-legend span{display:inline-flex;align-items:center;gap:6px}
+.sx-legend i{width:8px;height:8px;border-radius:2px}
+.sx-plot{display:block;overflow:visible}
+.sx-axis{display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;color:#9A9EA5}
+.sx-bars{display:flex;align-items:flex-end;gap:8px;padding-bottom:18px;position:relative}
+.sx-bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative}
+.sx-bar i{display:block;width:100%;max-width:22px;border-radius:5px 5px 2px 2px;background:#E4E4E0}
+.sx-bar.is-top i{background:#0B1220}
+.sx-bar em{position:absolute;bottom:-18px;font-style:normal;font-size:10px;color:#9A9EA5}
+.sx-donut{display:flex;align-items:center;gap:18px}
+.sx-donut ul{display:flex;flex-direction:column;gap:9px;font-size:12px}
+.sx-donut li{display:flex;align-items:center;gap:8px}
+.sx-donut li i{width:8px;height:8px;border-radius:50%}
+.sx-gauge{display:flex;flex-direction:column;align-items:center;margin-top:6px}
+.sx-scale{display:flex;justify-content:space-between;width:170px;font-size:10.5px;color:#9A9EA5;margin-top:2px}
+.sx-chat{display:flex;flex-direction:column;gap:10px;height:100%;justify-content:center}
+.sx-msg{max-width:88%;font-size:12.5px;line-height:1.45}
+.sx-msg.is-me{align-self:flex-end;background:#0B1220;color:#fff;padding:9px 13px;border-radius:14px 14px 4px 14px}
+.sx-msg:not(.is-me){display:flex;gap:9px;align-items:flex-start}
+.sx-msg p{margin:0;background:#F2F2EF;padding:9px 13px;border-radius:14px 14px 14px 4px}
+.sx-av{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:#0B1220;display:grid;place-items:center;overflow:hidden}
+.sx-av .sx-face{width:26px;height:26px}
+.sx-typing{display:flex;gap:4px;padding-left:36px}
+.sx-typing i{width:5px;height:5px;border-radius:50%;background:#C4C6C9;animation:sxDot 1.2s infinite ease-in-out}
+.sx-typing i:nth-child(2){animation-delay:.15s}.sx-typing i:nth-child(3){animation-delay:.3s}
+@keyframes sxDot{0%,80%,100%{opacity:.35;transform:translateY(0)}40%{opacity:1;transform:translateY(-2px)}}
+.sx-prompt{display:flex;flex-direction:column;gap:12px;height:100%;justify-content:center}
+.sx-chips{display:flex;gap:6px;flex-wrap:wrap}
+.sx-chips span{padding:5px 11px;border-radius:999px;border:1px solid #E1E2DE;font-size:11px;color:#5E636B}
+.sx-chips span.is-on{background:#0B1220;border-color:#0B1220;color:#fff}
+.sx-field{border:1px solid #E1E2DE;border-radius:16px;padding:14px 14px 10px;background:#fff}
+.sx-field p{margin:0 0 18px;font-size:14px;line-height:1.4;color:#0B1220}
+.sx-caret{display:inline-block;width:1.5px;height:15px;background:#0B1220;margin-left:2px;vertical-align:-2px;animation:sxBlink 1s steps(1) infinite}
+@keyframes sxBlink{50%{opacity:0}}
+.sx-field__bar{display:flex;justify-content:space-between;align-items:center}
+.sx-plus{width:26px;height:26px;border-radius:50%;border:1px solid #E1E2DE;display:grid;place-items:center;color:#8A8E95;font-size:15px}
+.sx-send{width:30px;height:30px;border-radius:50%;background:#0B1220;display:grid;place-items:center}
+.sx-list li{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #F0F0ED}
+.sx-list li:first-child{border-top:0;padding-top:2px}
+.sx-list span{flex:1;min-width:0}
+.sx-list b{display:block;font-weight:400;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sx-list em{font-style:normal;font-size:10.5px;color:#8A8E95;padding:3px 8px;border-radius:999px;background:#F2F2EF;white-space:nowrap}
+.sx-list em.is-on{background:#0B1220;color:#fff}
+.sx-ico{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:#F2F2EF;position:relative}
+.sx-ico::after{content:"";position:absolute;inset:9px;border-radius:3px;background:#C4C6C9}
+.sx-ico.is-on{background:#0B1220}.sx-ico.is-on::after{background:#fff}
+.sx-rank{display:flex;flex-direction:column;gap:6px}
+.sx-rank li{display:grid;grid-template-columns:26px 70px 1fr;align-items:center;gap:10px;font-size:12px;padding:6px 0;border-top:1px solid #F0F0ED}
+.sx-rank li:first-child{border-top:0}
+.sx-rank em{width:26px;height:26px;border-radius:8px;background:#F2F2EF;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:500;color:#5E636B}
+.sx-rank em.is-on{background:#0B1220;color:#fff}
+.sx-rank i{display:block;height:8px;border-radius:4px;background:#F0F0ED;overflow:hidden}
+.sx-rank b{display:block;height:100%;border-radius:4px;background:#C4C6C9}
+.sx-rank b.is-on{background:#0B1220}
+.sx-q{font-size:14px;font-weight:500;margin:0 0 12px;letter-spacing:-.01em}
+.sx-survey{display:flex;flex-direction:column;gap:8px}
+.sx-survey li{position:relative;display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid #E6E6E2;border-radius:10px;overflow:hidden;font-size:12.5px}
+.sx-survey li b{position:absolute;left:0;top:0;bottom:0;background:#F2F2EF;z-index:0}
+.sx-survey li > *:not(b){position:relative;z-index:1}
+.sx-survey li i{width:14px;height:14px;border-radius:50%;border:1.5px solid #C4C6C9}
+.sx-survey li.is-on{border-color:#0B1220}
+.sx-survey li.is-on i{border:4px solid #0B1220}
+.sx-map{position:relative}
+.sx-map svg{display:block}
+.sx-pin{position:absolute;left:14%;top:6%;padding:4px 9px;border-radius:999px;background:#0B1220;color:#fff;font-size:10.5px;white-space:nowrap}
+.sx-call{display:flex;align-items:center;gap:10px}
+.sx-call .sx-face{width:36px;height:36px}
+.sx-call b{display:block;font-size:13.5px;font-weight:500}
+.sx-call em{display:flex;align-items:center;gap:6px;font-style:normal;font-size:11px;color:#8A8E95}
+.sx-call em i{width:6px;height:6px;border-radius:50%;background:#0B1220;animation:sxBlink 1.4s steps(1) infinite}
+.sx-wave{display:flex;align-items:center;gap:2px;height:46%;margin:18px 0 14px}
+.sx-wave i{flex:1;border-radius:2px;background:#0B1220;min-height:3px}
+.sx-wave i:nth-child(3n){background:#8A8E95}
+.sx-call__acts{display:flex;justify-content:center;gap:14px}
+.sx-call__acts span{width:30px;height:30px;border-radius:50%;background:#F2F2EF}
+.sx-call__acts span.is-end{background:#0B1220}
+.sx-creators{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sx-creators li{position:relative;display:grid;place-items:center}
+.sx-creators .sx-face{width:54px;height:54px}
+.sx-ok{position:absolute;right:calc(50% - 30px);bottom:0;width:16px;height:16px;border-radius:50%;background:#0B1220;border:2px solid #fff}
+.sx-ok::after{content:"";position:absolute;left:3px;top:2px;width:4px;height:6px;border:solid #fff;border-width:0 1.5px 1.5px 0;transform:rotate(45deg)}
+.sx--network{position:relative}
+.sx-net{display:block}
+.sx-tag{position:absolute;transform:translate(-50%,-50%);font-weight:500;padding:3px 8px;border-radius:999px;background:#fff;border:1px solid #E1E2DE;font-size:10.5px;white-space:nowrap}
+.sx-weeks{display:grid;grid-template-columns:56px repeat(6,1fr);font-size:10px;color:#9A9EA5;margin:0 0 6px}
+.sx-flight{display:flex;flex-direction:column;gap:8px}
+.sx-flight li{display:grid;grid-template-columns:56px 1fr;align-items:center;font-size:11.5px}
+.sx-flight i{position:relative;display:block;height:14px;border-radius:7px;background:repeating-linear-gradient(90deg,#F4F4F1 0 calc(16.66% - 1px),#E8E8E4 calc(16.66% - 1px) 16.66%)}
+.sx-flight b{position:absolute;top:0;bottom:0;border-radius:7px;background:#C4C6C9}
+.sx-flight b.is-on{background:#0B1220}
+@media (prefers-reduced-motion:reduce){.sx-typing i,.sx-caret,.sx-call em i{animation:none}}
+body.hc-b.pc-page .pc-collage--F .pc-collage__main .pp-film__play:not(#_){left:auto !important;right:22px !important}
+.sx-next{display:flex;justify-content:flex-end;margin-top:12px}
+.sx-next span{padding:7px 14px;border-radius:999px;background:#0B1220;color:#fff;font-size:11px}
+
+/* the fan: tilted cards; the note: one sentence a person typed */
+body.hc-b.pc-page .pc-collage--fan .pc-collage__card{transform-origin:50% 50%}
+.sx--note{padding:0}
+.sx-note{height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:22px;background:#F2F2EF;color:#0B1220}
+.sx-note.is-ink{background:#0B1220;color:#fff}
+.sx-note__mark{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(11,18,32,.08);color:#0B1220}
+.sx-note.is-ink .sx-note__mark{background:rgba(255,255,255,.14);color:#fff}
+.sx-note p{margin:0;font-size:19px;line-height:1.25;letter-spacing:-.02em;font-weight:500}
+/* the tiles */
+.sx--tile{display:flex;flex-direction:column;justify-content:space-between;padding:24px;border-radius:22px}
+body.hc-b.pc-page .pc-collage__card.sx--tile.is-ink{background:#0B1220;color:#fff;border-color:#0B1220}
+body.hc-b.pc-page .pc-collage__card.sx--tile.is-dark{background:#2A2F3A;color:#fff;border-color:#2A2F3A}
+body.hc-b.pc-page .pc-collage__card.sx--tile.is-light{background:#F2F2EF;color:#0B1220;border-color:#F2F2EF}
+body.hc-b.pc-page .pc-collage__card.sx--tile.is-white{background:#fff;color:#0B1220}
+.sx-tile__ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(11,18,32,.08)}
+.sx--tile.is-ink .sx-tile__ico,.sx--tile.is-dark .sx-tile__ico{background:rgba(255,255,255,.14)}
+.sx-tile__ico i{width:14px;height:14px;border-radius:4px;background:currentColor;opacity:.85}
+.sx-tile__body b{display:block;font-size:22px;font-weight:500;letter-spacing:-.02em;line-height:1.1}
+.sx-tile__body span{display:block;margin-top:6px;font-size:12.5px;opacity:.6}
+.sx-tile__spark{position:absolute;right:24px;bottom:24px;opacity:.9}
+.sx--tile.is-light .sx-tile__spark,.sx--tile.is-white .sx-tile__spark{opacity:.55}
+/* the live voice as the centre piece */
+body.hc-b.pc-page .pc-collage__main.has-voice{background:#0B1220}
+body.hc-b.pc-page .pc-collage__main.has-voice .call__voice{position:absolute;inset:0;width:100%;height:100%}
+body.hc-b.pc-page .pc-collage--fan .pc-collage__ui--1{z-index:1}
+body.hc-b.pc-page .pc-collage--fan .pc-collage__ui--2{z-index:2}
+body.hc-b.pc-page .pc-collage--fan .pc-collage__ui--3{z-index:3}
+body.hc-b.pc-page .pc-collage--fan .pc-collage__ui--4{z-index:4}
+body.hc-b.pc-page .pc-collage__card.sx--note{border:0}
+/* clip sideways only: the turned cards' borders were cut at the top and bottom of the stage */
+body.hc-b.pc-page .pc-collage{overflow-x:clip;overflow-y:visible}
+body.hc-b.pc-page .pc-collage--phone .sx-tile__spark{display:none}
+body.hc-b.pc-page .pc-collage--phone .sx--tile{padding:18px}
+body.hc-b.pc-page .pc-collage--phone .sx-tile__body b{font-size:18px}
+/* nothing off-screen may widen the page (a hidden state of the call tile was doing it on Agent Cloud) */
+html:has(body.hc-b.pc-page),body.hc-b.pc-page{overflow-x:clip}
+body.hc-b.pc-page .sx-gauge{margin-top:2px}
+
+/* tiles, richer: a badge, a big label, mini bars or a sparkline, and one tile that is the picture */
+.sx-tile__pill{align-self:flex-start;padding:5px 10px;border-radius:999px;font-size:11px;background:rgba(11,18,32,.07);color:inherit;opacity:.8}
+.sx--tile.is-ink .sx-tile__pill,.sx--tile.is-dark .sx-tile__pill{background:rgba(255,255,255,.14)}
+.sx-tile__ico{display:none}
+.sx-tile__body{margin-top:auto}
+.sx-tile__body b{font-size:26px}
+.sx-tile__viz{position:absolute;right:24px;bottom:22px}
+.sx-tile__spark{position:static}
+.sx-tile__bars{display:flex;align-items:flex-end;gap:5px;height:48px;width:110px}
+.sx-tile__bars i{flex:1;border-radius:3px 3px 1px 1px;background:currentColor;opacity:.28}
+.sx-tile__bars i.is-on{opacity:1}
+.sx--tile.is-light .sx-tile__viz,.sx--tile.is-white .sx-tile__viz{opacity:.7}
+body.hc-b.pc-page .pc-collage__card.sx--tile.is-pic{padding:0;border:0;background:#0B1220}
+.sx--tile.is-pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+body.hc-b.pc-page .pc-collage--phone .sx-tile__viz{display:none}
+
+/* proof, again: off the black. Figures on white in soft cards, the label beneath */
+body.hc-b.pc-page .pp-proof .pp-wrap:not(#_){background:transparent !important;padding:0 20px !important;border-radius:0 !important}
+body.hc-b.pc-page .pp-proof:not(#_) .pp-h2,
+body.hc-b.pc-page .pp-proof:not(#_) .pp-h2 *{color:#0B1220 !important}
+body.hc-b.pc-page .pp-proof .pp-flag:not(#_){border-color:rgba(11,18,32,.18) !important;color:rgba(11,18,32,.56) !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_){grid-template-columns:repeat(auto-fit,minmax(240px,1fr)) !important;gap:20px !important;margin-top:clamp(32px,4vw,48px) !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{border:0 !important;background:#F4F4F1 !important;border-radius:20px !important;padding:32px 28px 30px !important;display:flex !important;flex-direction:column !important;justify-content:flex-end !important;min-height:220px}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{color:#0B1220 !important;font-size:clamp(48px,1.5rem + 3.6vw,88px) !important;font-weight:300 !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) span{color:rgba(11,18,32,.6) !important;margin-top:14px !important}
+body.hc-b.pc-page .pp-proof .pp-proof__note:not(#_){color:rgba(11,18,32,.5) !important;margin-top:24px !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-proof .pp-wrap:not(#_){padding:0 16px !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_){grid-template-columns:1fr 1fr !important;gap:12px !important}
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{padding:20px 18px 18px !important;min-height:150px;border-radius:16px !important}
+}
+
+/* What it connects to: the same soft cards, a small ink disc for the check */
+body.hc-b.pc-page .pp-with__grid:not(#_){gap:20px !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) li{border:0 !important;background:#F4F4F1 !important;border-radius:20px !important;padding:28px 26px 30px !important;display:flex !important;flex-direction:column !important;gap:18px !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) svg{width:16px !important;height:16px !important;color:#FFFFFF !important;background:#0B1220;border-radius:50%;padding:9px;box-sizing:content-box;flex:0 0 auto}
+body.hc-b.pc-page .pp-with__grid:not(#_) b{display:block;margin:0 0 8px !important}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-with__grid:not(#_){gap:12px !important}
+  body.hc-b.pc-page .pp-with__grid:not(#_) li{padding:22px 20px !important;border-radius:16px !important}
+}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) li{justify-content:flex-start !important}
+body.hc-b.pc-page .pp-with__grid:not(#_) svg.pp-with__ic{background:#0B1220 !important;color:#FFFFFF !important;padding:9px !important;border-radius:50% !important;width:16px !important;height:16px !important;margin:0 !important}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0B1220}
+@media (max-width:760px){
+  body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong{font-size:clamp(28px,8.6vw,40px) !important;letter-spacing:-.04em !important}
+}
+/* /products hero: the same rhythm as the product pages; the buttons never ride up on the paragraph */
+body.hc-b.pl-c .pl-hero .pp-title:not(#_){margin-bottom:28px !important}
+body.hc-b.pl-c .pl-hero .pp-acts:not(#_){margin-top:0 !important;position:static !important;transform:none !important}
+@media (max-width:760px){
+  body.hc-b.pl-c .pl-hero .pp-hero__in:not(#_){display:flex !important;flex-direction:column !important;gap:0 !important}
+  body.hc-b.pl-c .pl-hero .pp-title:not(#_){margin-bottom:20px !important}
+  body.hc-b.pl-c .pl-hero .pl-say:not(#_){margin:0 0 28px !important;order:0}
+  body.hc-b.pl-c .pl-hero .pp-acts:not(#_){order:1}
+}
+
+/* proof: numbers stay on one line at a size that fits; word figures wrap at a title size */
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong.is-num{font-size:clamp(40px,1.2rem + 3vw,72px) !important}
+body.hc-b.pc-page .pp-proof .pp-figs:not(#_) strong.is-words{font-size:clamp(24px,1rem + 1.1vw,32px) !important;line-height:1.15 !important;white-space:normal !important;font-weight:400 !important;letter-spacing:-.02em !important}
+/* fan cards are as tall as their content */
+body.hc-b.pc-page .pc-collage--fan .sx-prompt{justify-content:flex-start;height:auto}
+/* hero titles on two lines */
+body.hc-b.pc-page .pp-hero__in:not(#_){max-width:1120px !important}
+body.hc-b.pc-page .pp-hero .pp-title:not(#_){max-width:30ch !important;margin-inline:auto !important}
+/* a mockup inside a How-it-works tab */
+body.hc-b.pc-page .sp-tabs__pic .sx-in{position:absolute;inset:0;display:grid;place-items:center;padding:24px;background:#E7E7E3}
+body.hc-b.pc-page .sp-tabs__pic .sx-in .pc-collage__card{max-width:100%;border-radius:18px}
+body.hc-b.pc-page .sp-tabs__pic.is-voice{background:#0B1220}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+@media (max-width:860px){ body.hc-b.pc-page .sp-tabs__pic .sx-in{padding:16px} body.hc-b.pc-page .sp-tabs__pic .sx-in .pc-collage__card{transform:scale(.9)} }
+/* mockups: one padding, content-sized cards; the note keeps a minimum so its words breathe */
+.sx-chat{height:auto;justify-content:flex-start}
+.sx-prompt{height:auto;justify-content:flex-start}
+.sx-note{min-height:150px}
+.sx-list li:last-child{padding-bottom:0}
+/* mockups: every card as tall as its content; the charts take their height from the width */
+.sx-wave{height:90px}
+.sx-scale{width:100%;max-width:220px}
+.sx-tile__viz{position:absolute}
+.sx--network{padding-bottom:22px}
+.sx-net{margin-bottom:0}
+
+/* ── /book in the approved look: the same words and the same form (lead.js), set like the other
+      inner pages — centred title, the three points in a row, the form in one light-bordered card ── */
+body.hc-b.bk-page .bk-hero:not(#_){min-height:0;display:block;overflow:visible;background:#FFFFFF;color:#0B1220;
+  padding:calc(var(--nav-h,72px) + clamp(36px,5vw,72px)) 0 clamp(72px,9vw,136px)}
+body.hc-b.bk-page .bk-hero:not(#_)::before{display:none}
+/* desktop: the words on the left, the form on the right, so more of the form is in view */
+body.hc-b.bk-page .bk__in:not(#_){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);gap:clamp(40px,6vw,96px);align-items:start;max-width:1240px;margin:0 auto;padding:0 20px}
+body.hc-b.bk-page .bk__copy:not(#_){text-align:left;max-width:520px;position:sticky;top:calc(var(--nav-h,72px) + 32px)}
+body.hc-b.bk-page .bk__title:not(#_){font-family:'Roobert',var(--sans,ui-sans-serif),system-ui,sans-serif;font-weight:500;color:#0B1220;
+  font-size:clamp(40px,1rem + 3.4vw,68px);line-height:1.04;letter-spacing:-.035em;text-wrap:balance}
+body.hc-b.bk-page .bk__points:not(#_){margin:32px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+body.hc-b.bk-page .bk__points:not(#_) li{display:flex;align-items:center;gap:12px;max-width:none;font-size:17px;font-weight:500;line-height:1.3;color:#0B1220}
+body.hc-b.bk-page .bk__ic:not(#_){width:40px;height:40px;border-radius:50%;background:#F1F1EF;color:#0B1220;box-shadow:none;border:0}
+body.hc-b.bk-page .bk__ic:not(#_) svg{width:20px;height:20px}
+body.hc-b.bk-page .bk__card:not(#_){width:100%;max-width:none;margin:0;background:#FFFFFF;color:#0B1220;
+  border:1px solid rgba(11,18,32,.12);border-radius:24px;padding:clamp(24px,3.4vw,44px);box-shadow:none}
+body.hc-b.bk-page .bk__card .lead__lbl:not(#_){font-family:inherit;font-size:14px;font-weight:500;color:#0B1220}
+body.hc-b.bk-page .bk__card input:not(#_){height:52px;border:0;border-radius:12px;background:#F1F1EF;font-family:inherit;font-size:16px;color:#0B1220;box-shadow:none}
+body.hc-b.bk-page .bk__card input:not(#_):hover{box-shadow:inset 0 0 0 1px rgba(11,18,32,.25)}
+body.hc-b.bk-page .bk__card input:not(#_):focus{background:#FFFFFF;box-shadow:inset 0 0 0 2px #0B1220}
+body.hc-b.bk-page .bk__card .lead__pick span{font-family:inherit;font-weight:500;background:#F1F1EF;color:#0B1220}
+body.hc-b.bk-page .bk__card .lead__pick:hover span{background:#E7E7E3}
+body.hc-b.bk-page .bk__card .lead__pickshint{color:rgba(11,18,32,.56)}
+/* the submit: ink, as every Book a demo button is on B (lead.css paints it orange with an id-strength rule) */
+body.hc-b.bk-page .bk__card .lead__form .btn--dark:not(#_){background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important;
+  height:56px;border-radius:999px;font-weight:600}
+body.hc-b.bk-page .bk__card .lead__form .btn--dark:not(#_):hover{background:#000000 !important;border-color:#000000 !important;transform:none}
+body.hc-b.bk-page .bk__card .modal__fine:not(#_){color:rgba(11,18,32,.56)}
+body.hc-b.bk-page .bk__card .modal__ok h3:not(#_){font-family:inherit;font-weight:500;letter-spacing:-.02em}
+@media (max-width:760px){
+  body.hc-b.bk-page .bk-hero:not(#_){padding-top:calc(var(--nav-h,64px) + 32px)}
+  body.hc-b.bk-page .bk__title:not(#_){font-size:clamp(34px,10vw,44px)}
+  body.hc-b.bk-page .bk__in:not(#_){display:flex;flex-direction:column;gap:28px}
+  body.hc-b.bk-page .bk__copy:not(#_){width:100%;position:static;max-width:none}
+  body.hc-b.bk-page .bk__points:not(#_){flex-direction:column;align-items:flex-start;gap:12px;margin:24px 0 0;width:100%}
+  body.hc-b.bk-page .bk__points:not(#_) li{text-align:left;font-size:16px}
+  body.hc-b.bk-page .bk__card:not(#_){border-radius:20px;padding:20px}
+}
+
+/* ── the lead panel (Talk to an AI expert, the strategy session) in the approved look: the same form
+      (lead.js), set like the /book card — clean panel, light fields, ink submit, no logo in the box ── */
+body.hc-b .modal.lead:not(#_) .modal__scrim{background:rgba(11,18,32,.55);backdrop-filter:blur(8px)}
+body.hc-b .modal.lead:not(#_) .modal__panel{max-width:600px;padding:40px;border-radius:24px;border:1px solid rgba(11,18,32,.12);background:#FFFFFF;color:#0B1220;box-shadow:none}
+body.hc-b .modal.lead:not(#_) .modal__brand{display:none}
+body.hc-b .modal.lead:not(#_) .modal__x{right:18px;top:18px;width:40px;height:40px;background:#F1F1EF;color:#0B1220}
+body.hc-b .modal.lead:not(#_) .modal__x:hover{background:#E7E7E3}
+body.hc-b .modal.lead:not(#_) .modal__x svg{width:16px;height:16px}
+body.hc-b .modal.lead:not(#_) .lead__body > h3{margin:0 48px 10px 0;font-family:inherit;font-size:30px;font-weight:500;line-height:1.1;letter-spacing:-.03em;color:#0B1220}
+body.hc-b .modal.lead:not(#_) .lead__body > p{margin:0 0 24px;font-size:16px;line-height:1.5;color:rgba(11,18,32,.62)}
+body.hc-b .modal.lead:not(#_) .lead__form{display:flex;flex-direction:column;gap:12px;margin:0}
+body.hc-b .modal.lead:not(#_) .lead__pair{grid-template-columns:1fr 1fr;gap:12px}
+body.hc-b .modal.lead:not(#_) .lead__row input{height:52px;padding:0 16px;border:0;border-radius:12px;background:#F1F1EF;font-family:inherit;font-size:16px;color:#0B1220;box-shadow:none;outline:none}
+body.hc-b .modal.lead:not(#_) .lead__row input::placeholder{color:rgba(11,18,32,.5)}
+body.hc-b .modal.lead:not(#_) .lead__row input:hover{box-shadow:inset 0 0 0 1px rgba(11,18,32,.25)}
+body.hc-b .modal.lead:not(#_) .lead__row input:focus{background:#FFFFFF;box-shadow:inset 0 0 0 2px #0B1220}
+body.hc-b .modal.lead:not(#_) .lead__hint{font-family:inherit;font-size:13px;letter-spacing:0}
+body.hc-b .modal.lead:not(#_) .lead__picks{margin-top:8px}
+body.hc-b .modal.lead:not(#_) .lead__lbl{font-family:inherit;font-size:14px;font-weight:500;color:#0B1220}
+body.hc-b .modal.lead:not(#_) .lead__pickshint{color:rgba(11,18,32,.56);font-size:13px}
+body.hc-b .modal.lead:not(#_) .lead__pick span{font-family:inherit;font-weight:500;background:#F1F1EF;color:#0B1220;padding:8px 13px}
+body.hc-b .modal.lead:not(#_) .lead__pick:hover span{background:#E7E7E3}
+body.hc-b .modal.lead:not(#_) .lead__form .btn--dark{width:100%;height:56px;margin-top:8px;border-radius:999px;font-family:inherit;font-size:15px;font-weight:600;
+  background:#0B1220 !important;border-color:#0B1220 !important;color:#FFFFFF !important;display:inline-flex;align-items:center;justify-content:center}
+body.hc-b .modal.lead:not(#_) .lead__form .btn--dark:hover{background:#000000 !important;border-color:#000000 !important}
+body.hc-b .modal.lead:not(#_) .modal__fine{margin:14px 0 0;font-size:12.5px;line-height:1.5;color:rgba(11,18,32,.56);text-align:center}
+body.hc-b .modal.lead:not(#_) .lead__alt{margin-top:20px;padding-top:20px;border-top:1px solid rgba(11,18,32,.1);display:flex;flex-direction:column;align-items:center;gap:12px}
+body.hc-b .modal.lead:not(#_) .lead__or{font-size:14px;color:rgba(11,18,32,.62)}
+body.hc-b .modal.lead:not(#_) .call__btn{height:48px;padding:0 22px;border-radius:999px;border:1px solid rgba(11,18,32,.25);background:#FFFFFF;color:#0B1220;font-family:inherit;font-size:14px;font-weight:600}
+body.hc-b .modal.lead:not(#_) .call__btn:hover{border-color:#0B1220}
+body.hc-b .modal.lead:not(#_) .modal__ok h3{font-family:inherit;font-size:28px;font-weight:500;letter-spacing:-.03em;color:#0B1220}
+body.hc-b .modal.lead:not(#_) .modal__ok p{color:rgba(11,18,32,.62)}
+body.hc-b .modal.lead:not(#_) .lead__opt{border-color:rgba(11,18,32,.12);border-radius:16px}
+@media (max-width:600px){
+  body.hc-b .modal.lead:not(#_){padding:0;place-items:end center}
+  body.hc-b .modal.lead:not(#_) .modal__panel{max-height:92svh;border-radius:20px 20px 0 0;padding:28px 20px 24px;border-bottom:0}
+  body.hc-b .modal.lead:not(#_) .lead__body > h3{font-size:26px}
+  body.hc-b .modal.lead:not(#_) .lead__pair{grid-template-columns:1fr}
+}
+
+/* ── Expertise: the Code and Theory logo on the tunnel, its awards running under it (client doc, 2026-09-23) ── */
+body.hc-b #why .why__slot--ct:not(#_){display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,1.4vw,20px);padding:0 0 clamp(14px,1.6vw,22px)}
+/* the wordmark is white on black (16:9, letters in the middle band): screen blend drops the black,
+   a 16:4 crop keeps the band */
+body.hc-b #why .why__slot--ct:not(#_) img.why__ctlogo{width:76% !important;height:auto !important;aspect-ratio:16 / 4;object-fit:cover !important;object-position:center;mix-blend-mode:screen;transform:none;margin:0;display:block}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards{width:100%;overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards__reel{display:flex;width:max-content;gap:0;animation:whyAwards 32s linear infinite;will-change:transform}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards__reel span{display:inline-flex;align-items:center;gap:18px;padding-right:18px;white-space:nowrap;font-size:13px;font-weight:500;letter-spacing:.01em;color:#FFFFFF}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards__reel span::after{content:"";width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.7)}
+@keyframes whyAwards{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){body.hc-b #why .why__slot--ct:not(#_) .why__awards__reel{animation:none}}
+/* the tiles no longer link: no pointer, no arrow, the same layout */
+body.hc-b .hc-port__cap:not(#_){cursor:default;text-decoration:none}
+
+/* ── Expertise: the wordmark on the centre of the box, the awards along its bottom edge ── */
+body.hc-b #why .why__slot--ct:not(#_){display:block;position:relative;padding:0}
+body.hc-b #why .why__slot--ct:not(#_) img.why__ctlogo{position:absolute;left:50%;top:50%;translate:-50% -50%;width:62% !important;margin:0}
+body.hc-b #why .why__slot--ct:not(#_) .why__awards{position:absolute;left:0;right:0;bottom:clamp(14px,1.8vw,24px)}
+
+/* ── How it works: the mockup panes take muted tones cut from the Stagwell palette (sand from the orange,
+      dusty blue from the blue, straw from the yellow, stone from the navy), the way Manus tints its panes ── */
+body.hc-b.pc-page .sp-tabs__panel:nth-child(1) .sp-tabs__pic .sx-in{background:#F3E7DA}
+body.hc-b.pc-page .sp-tabs__panel:nth-child(4) .sp-tabs__pic .sx-in{background:#CFDBDF}
+body.hc-b.pc-page:is(.sp--questdiy,.sp--unicepta,.sp--geopulse,.sp--media_machine,.sp--id_graph,.pp--targeting-machine,.pp--agent-cloud) .sp-tabs__panel:nth-child(1) .sp-tabs__pic .sx-in{background:#E6E5D9}
+body.hc-b.pc-page:is(.sp--bera,.sp--imai,.sp--numetrix,.sp--search_plus,.pp--newvoices) .sp-tabs__panel:nth-child(4) .sp-tabs__pic .sx-in{background:#EDE7D3}
+
+/* ── the Shared context card: the tools' logos, one after another, in ink ── */
+body.hc-b.pc-page .sx-logos{position:relative;height:150px}
+body.hc-b.pc-page .sx-logos__item{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.94);
+  animation:sxLogos calc(var(--n) * 2.2s) linear infinite;animation-delay:calc(var(--i) * 2.2s)}
+body.hc-b.pc-page .sx-logos .sx-logo{display:block;width:150px;height:44px;background:#0B1220;
+  -webkit-mask:var(--logo) center / contain no-repeat;mask:var(--logo) center / contain no-repeat}
+@keyframes sxLogos{0%{opacity:0;transform:scale(.94)} 5%{opacity:1;transform:none} 17%{opacity:1;transform:none} 21%{opacity:0;transform:scale(.94)} 100%{opacity:0;transform:scale(.94)}}
+@media (prefers-reduced-motion:reduce){body.hc-b.pc-page .sx-logos__item{animation:none} body.hc-b.pc-page .sx-logos__item[style*="--i:0"]{opacity:1;transform:none}}
+
+/* ── Why boxes: a CTA under each paragraph (client, 2026-09-23), ink pill on the white box ── */
+body.hc-b #why .why__cta:not(#_){display:inline-flex !important;align-items:center;justify-content:center;align-self:flex-start;margin-top:22px;height:44px;padding:0 22px;
+  border-radius:999px;border:1px solid #0B1220;background:#0B1220 !important;color:#FFFFFF !important;font-size:14px;font-weight:600;letter-spacing:0;text-transform:none;cursor:pointer}
+body.hc-b #why .why__cta:not(#_):hover{background:#3A3F47 !important;border-color:#3A3F47 !important;color:#FFFFFF !important}
+/* the Code and Theory mark as a transparent PNG (no black ground to blend, so no box round it), bigger */
+body.hc-b #why .why__slot--ct:not(#_) img.why__ctlogo{width:78% !important;aspect-ratio:auto;object-fit:contain !important;mix-blend-mode:normal;background:none}
+/* product and solution heroes: the words a little wider, so the paragraph sits in three lines */
+body.hc-b.pc-page .pp-hero .pp-title:not(#_){max-width:36ch !important}
+body.hc-b.pc-page:not(.pl-c) .pp-hero .pp-lede:not(#_){max-width:720px !important}
+/* the Why box is a grid (picture and slot in column 1, words in column 2): the CTA takes the last row of the words column, under the paragraph */
+body.hc-b #why .why__item > .why__cta:not(#_){grid-area:5 / 2 / 6 / 3;justify-self:start;align-self:start;margin-top:18px}
+@media (max-width:760px){ body.hc-b #why .why__item > .why__cta:not(#_){grid-area:auto;margin-top:18px} }
+
+/* ── QA pass (2026-09-23): the Why titles were touching their lead line on phones ── */
+body.hc-b #why .why__item .why__head:not(#_){margin-bottom:10px}
+/* proof figures on phones: two columns of big numbers ran edge to edge in their cards */
+@media (max-width:480px){
+  body.hc-b.pc-page .pp-proof .is-num:not(#_){font-size:clamp(28px,8.6vw,38px) !important;letter-spacing:-.03em}
+}
+/* How-it-works mockup panes on phones: the pane grows to its mockup instead of cropping it */
+@media (max-width:860px){
+  body.hc-b.pc-page .sp-tabs__pic:has(.sx-in):not(#_){aspect-ratio:auto;height:auto;min-height:0}
+  body.hc-b.pc-page .sp-tabs__pic .sx-in:not(#_){position:relative;inset:auto;padding:20px;display:grid;place-items:center}
+  body.hc-b.pc-page .sp-tabs__pic .sx-in .pc-collage__card:not(#_){position:relative;left:auto !important;top:auto !important;transform:none;width:100% !important;max-width:420px;rotate:none}
+}
+/* tablets (761–899): the Why box stacks as a column, but the second paragraph kept its desktop centring */
+@media (max-width:899px){
+  body.hc-b #why .why__item:not(#_) > *{align-self:flex-start !important;margin-left:0 !important}
+  body.hc-b #why .why__item:not(#_) > .why__slot{align-self:stretch !important}
+}
+/* the About paragraph on product pages: a readable measure on tablets and up */
+body.hc-b.pc-page .pp-about .pp-wrap > p:not(#_),body.hc-b.pc-page .pp-about__text:not(#_){max-width:720px}
+/* /book on tablets: two columns left the words a sliver, so the page stacks up to 1000px */
+@media (max-width:1000px){
+  body.hc-b.bk-page .bk__in:not(#_){display:flex;flex-direction:column;gap:28px}
+  body.hc-b.bk-page .bk__copy:not(#_){width:100%;position:static;max-width:none}
+  body.hc-b.bk-page .bk__points:not(#_){flex-direction:column;align-items:flex-start;gap:12px;margin:24px 0 0;width:100%}
+  body.hc-b.bk-page .bk__points:not(#_) li{text-align:left}
+  body.hc-b.bk-page .bk__card:not(#_){max-width:640px}
+}
+
+/* ── footer links, one voice: same size, same ink, same quiet hover (no teal, no big pair) ── */
+body.hc-b .foot .foot__big:not(#_){display:flex;flex-direction:column;gap:12px}
+body.hc-b .foot .foot__big a:not(#_),body.hc-b .foot .foot__small a:not(#_),body.hc-b .foot .foot__small button:not(#_){font-family:inherit;font-size:16px !important;font-weight:500;letter-spacing:0;line-height:1.3;color:#0B1220 !important;text-decoration:none;transition:color .2s ease}
+body.hc-b .foot .foot__big a:not(#_):hover,body.hc-b .foot .foot__small a:not(#_):hover,body.hc-b .foot .foot__small button:not(#_):hover{color:rgba(11,18,32,.55) !important;text-decoration:underline;text-underline-offset:4px}
+body.hc-b.pc-page .sp-tabs__panel:nth-child(3) .sp-tabs__pic .sx-in{background:#E6E5D9}
+
+/* ── /products Explore pills: white on the dark caption, ink text (children too); the hover only where there is a
+      pointer, so a tap on a phone does not leave the pill in its hover state with white text ── */
+body.hc-b.pl-c .pc-cap .pc-go:not(#_),body.hc-b.pl-c .pc-cap .prodcard__link:not(#_),body.hc-b.pl-c .prodgroup__words .prodcard__link:not(#_){background:#FFFFFF !important;border-color:#FFFFFF !important;color:#0B1220 !important}
+body.hc-b.pl-c .pc-cap .pc-go:not(#_) *,body.hc-b.pl-c .pc-cap .prodcard__link:not(#_) *,body.hc-b.pl-c .prodgroup__words .prodcard__link:not(#_) *{color:#0B1220 !important}
+@media (hover:hover){
+  body.hc-b.pl-c .pc-cap .pc-go:not(#_):hover,body.hc-b.pl-c .pc-cap .prodcard__link:not(#_):hover,body.hc-b.pl-c .prodgroup__words .prodcard__link:not(#_):hover{background:#E7E7E3 !important;border-color:#E7E7E3 !important;color:#0B1220 !important}
+}
+
+/* ── the tab pane clips its own corners: a composited video did not honour the panel's radius (IMAI Campaigns) ── */
+body.hc-b.pc-page .sp-tabs__pic:not(#_){overflow:hidden;isolation:isolate;border-radius:0 20px 20px 0}
+body.hc-b.pc-page .sp-tabs__pic:not(#_) video{border-radius:inherit}
+@media (max-width:860px){ body.hc-b.pc-page .sp-tabs__pic:not(#_){border-radius:16px 16px 0 0} }
+
+/* ── heroes: no inner side padding on the words block (it sat 44px in from the container on both sides) ── */
+body.hc-b.pc-page .pp-hero__in:not(#_),body.hc-b.pl-c .pl-hero .pp-hero__in:not(#_){padding-inline:0 !important;margin-inline:auto !important}
+/* the About paragraph under the product heroes runs wider, so it takes fewer lines */
+body.hc-b.pc-page .pp-about .pp-wrap > p:not(#_),body.hc-b.pc-page .pp-about__text:not(#_){max-width:960px !important}
+
+/* ── footer: the two left links sit together at the top, and both bands share the same left edge ── */
+body.hc-b .foot .foot__in:not(#_){align-items:flex-start !important;padding-inline:40px !important}
+body.hc-b .foot .foot__big:not(#_){justify-content:flex-start !important;gap:14px !important;height:auto !important}
+body.hc-b .foot .foot__small:not(#_){gap:14px 28px !important}
+body.hc-b .foot .foot__band:not(#_){padding-inline:40px !important}
+body.hc-b .foot .foot__legal:not(#_),body.hc-b .foot .foot__social:not(#_){margin:0}
+body.hc-b .foot .foot__brand:not(#_){margin-left:0}
+@media (max-width:760px){
+  body.hc-b .foot .foot__in:not(#_),body.hc-b .foot .foot__band:not(#_){padding-inline:20px !important}
+}
+
+/* ── the products field on the lead forms: a dropdown that opens to a checklist (as many as they like), instead
+      of the seventeen pills in the open ── */
+.lead__picks.is-dd .lead__pickshint{display:none}
+.lead__picks.is-dd .lead__dd{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:52px;margin:6px 0 0;padding:0 16px;
+  border:0;border-radius:12px;background:#F1F1EF;font-family:inherit;font-size:16px;color:#0B1220;text-align:left;cursor:pointer}
+.lead__picks.is-dd .lead__dd:hover{box-shadow:inset 0 0 0 1px rgba(11,18,32,.25)}
+.lead__picks.is-dd .lead__dd:focus-visible{outline:none;box-shadow:inset 0 0 0 2px #0B1220}
+.lead__picks.is-dd .lead__dd__label.is-empty{color:rgba(11,18,32,.5)}
+.lead__picks.is-dd .lead__dd svg{width:16px;height:16px;flex:0 0 auto;transition:transform .2s ease}
+.lead__picks.is-dd.is-open .lead__dd svg{transform:rotate(180deg)}
+.lead__picks.is-dd .lead__pickrow{display:none;margin:8px 0 0;padding:6px;border:1px solid rgba(11,18,32,.12);border-radius:12px;background:#FFFFFF;max-height:240px;overflow:auto;flex-direction:column;flex-wrap:nowrap;gap:2px}
+.lead__picks.is-dd.is-open .lead__pickrow{display:flex}
+.lead__picks.is-dd .lead__pick{display:block}
+.lead__picks.is-dd .lead__pick span{display:flex;width:100%;padding:9px 10px;border-radius:8px;background:transparent;box-shadow:none;font-size:14px;font-weight:500;color:#0B1220}
+.lead__picks.is-dd .lead__pick:hover span{background:#F1F1EF}
+.lead__picks.is-dd .lead__pick input:checked + span{background:#F1F1EF;color:#0B1220;box-shadow:none}
+.lead__picks.is-dd .lead__pick input:checked + span::before{background:#0B1220;box-shadow:inset 0 0 0 1px #0B1220}
+.lead__picks.is-dd .lead__dd__hint{display:block;margin:8px 0 0;font-size:12.5px;line-height:1.45;color:rgba(11,18,32,.56)}
+@media (prefers-reduced-motion:reduce){.lead__picks.is-dd .lead__dd svg{transition:none}}
+/* the words block keeps 20px of side padding wherever the container's auto margins run out (phones, tablets, narrow desktops) */
+@media (max-width:1180px){
+  body.hc-b.pc-page .pp-hero__in:not(#_),body.hc-b.pl-c .pl-hero .pp-hero__in:not(#_){padding-inline:20px !important}
+}
+
+/* ── /products phone carousel: more air between cards; who/what folded behind a + ── */
+@media (max-width:760px){
+  body.hc-b.pl-c .pc-rail:not(#_){gap:24px}
+  body.hc-b.pl-c .pc-rail > .prodgroup:not(#_){flex-basis:82%}
+}
+body.hc-b.pl-c .pc-more__btn{display:inline-grid;place-items:center;width:38px;height:38px;margin:14px 0 0;padding:0;border:1px solid rgba(11,18,32,.25);border-radius:50%;background:#FFFFFF;color:#0B1220;cursor:pointer;transition:transform .2s ease,background .2s ease,border-color .2s ease}
+body.hc-b.pl-c .pc-more__btn svg{width:18px;height:18px;transition:transform .2s ease}
+body.hc-b.pl-c .pc-more__btn:hover{border-color:#0B1220}
+body.hc-b.pl-c .pc-more__btn:focus-visible{outline:2px solid #0B1220;outline-offset:2px}
+body.hc-b.pl-c .prodcard.is-more .pc-more__btn{background:#0B1220;border-color:#0B1220;color:#FFFFFF}
+body.hc-b.pl-c .prodcard.is-more .pc-more__btn svg{transform:rotate(45deg)}
+body.hc-b.pl-c .pc-more{margin:14px 0 0;padding:18px;border-radius:14px;background:#F1F1EF;display:flex;flex-direction:column;gap:14px}
+body.hc-b.pl-c .pc-more .prodcard__who,body.hc-b.pl-c .pc-more .pc-foot__what{margin:0 !important}
+@media (prefers-reduced-motion:reduce){body.hc-b.pl-c .pc-more__btn,body.hc-b.pl-c .pc-more__btn svg{transition:none}}
+/* /products: air between the Show me dropdown and the first product (it was 8px on phones) */
+body.hc-b.pl-c .ptoc:not(#_){margin-bottom:56px !important}
+@media (max-width:760px){ body.hc-b.pl-c .ptoc:not(#_){margin-bottom:40px !important} }
+
+/* ── /products phone gallery: one arrow on the picture instead of the pair under the cards ── */
+@media (max-width:760px){
+  body.hc-b.pl-c .pc-rail-wrap:not(#_){position:relative}
+  body.hc-b.pl-c .pc-arrows--rail:not(#_){position:absolute;top:var(--pic-mid,140px);right:8px;left:auto;margin:0;transform:translateY(-50%);z-index:4;pointer-events:none}
+  body.hc-b.pl-c .pc-arrows--rail.is-end:not(#_){right:auto;left:8px}
+  body.hc-b.pl-c .pc-arrows--rail:not(#_) .pc-arrow{pointer-events:auto;width:44px;height:44px;background:#FFFFFF;color:#0B1220;border:1px solid rgba(11,18,32,.12)}
+  body.hc-b.pl-c .pc-arrows--rail:not(#_) .pc-arrow[hidden]{display:none}
+}
+/* the gallery arrow is a scroll hint: it fades out the moment the rail has moved, and does not come back */
+@media (max-width:760px){
+  body.hc-b.pl-c .pc-arrows--rail:not(#_){transition:opacity .25s ease}
+  body.hc-b.pl-c .pc-arrows--rail.is-gone:not(#_){opacity:0;visibility:hidden}
+}
+
+/* ── hero starting points: on desktop the five sit in the open, wrapped and centred, no slider and no arrow;
+      solid on the hero ground so the decoration behind never shows through ── */
+body.hc-b .hcb-tags .chat__tags .tag:not(#_){background:#FAFAFA !important}
+@media (min-width:900px){
+  body.hc-b .hcb-tags:not(#_){width:min(100%,960px);max-width:960px}
+  body.hc-b .hcb-tags .chat__tags:not(#_){flex-wrap:wrap !important;justify-content:center !important;overflow:visible !important;scroll-snap-type:none !important;-webkit-mask-image:none !important;mask-image:none !important;row-gap:10px}
+  body.hc-b .hcb-tags__arw:not(#_){display:none !important}
+}
+@media (max-width:899px){
+  body.hc-b .hcb-tags__arw:not(#_){display:none !important}
+}
+/* the chat overlay on phones carried two rows of starting points: the old toggle row scrolled off to the left and
+   showed as a half-cut chip above the input. The row under the input (#agentTags) is the one that stays. */
+@media (max-width:899px){
+  body.hc-b .chat-over .ask__tags:not(#_){display:none !important}
+}
+
+/* ── the Products menu on desktop: a wide panel under the bar, three columns of products with a line each,
+      and a dark banner on the right with a loop and Book a demo (after the NewIntel reference, in our language) ── */
+@media (min-width:900px){
+  body.hc-b .nav__in:not(#_){position:relative}
+  body.hc-b .nav__drop:not(#_){position:static}
+  body.hc-b .nav__panel:not(#_){left:0;right:0;top:calc(100% + 6px);width:auto;min-width:0;max-width:none;padding:24px 24px 16px;border-radius:20px;
+    background:#FFFFFF;border:1px solid rgba(11,18,32,.12);box-shadow:none}
+  body.hc-b .nav__mega:not(#_){display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(280px,340px);gap:8px 20px;align-items:stretch}
+  body.hc-b .nav__panel:not(#_){max-width:1000px;margin-inline:auto}
+  body.hc-b .nav__mcol .nav__pitem:not(#_){display:flex;flex-direction:row;align-items:center;gap:14px;text-align:left}
+  body.hc-b .nav__mcol .nav__pthumb:not(#_){width:48px;height:48px;border-radius:12px;object-fit:cover;flex:0 0 auto}
+  body.hc-b .nav__mcol .nav__ptext:not(#_){display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
+  body.hc-b .nav__mcol .nav__pdesc:not(#_){white-space:normal}
+  body.hc-b .nav__mhead:not(#_){margin:6px 12px 6px;font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(11,18,32,.5)}
+  body.hc-b .nav__mcol .nav__plist:not(#_){display:block;margin:0;padding:0;list-style:none}
+  body.hc-b .nav__mitem:not(#_){display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px}
+  body.hc-b .nav__mitem:not(#_):hover{background:#F4F4F1}
+  body.hc-b .nav__mitem .nav__pname:not(#_){font-size:15px;font-weight:500;letter-spacing:-.01em;color:#0B1220}
+  body.hc-b .nav__mitem .nav__pdesc:not(#_){font-size:12.5px;line-height:1.4;color:rgba(11,18,32,.56)}
+  body.hc-b .nav__mcta:not(#_){position:relative;overflow:hidden;border-radius:16px;background:#0B1220;color:#FFFFFF;min-height:100%;display:flex;align-items:flex-end}
+  body.hc-b .nav__mcta:not(#_) video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7}
+  body.hc-b .nav__mcta__in:not(#_){position:relative;z-index:1;padding:24px;display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+  body.hc-b .nav__mcta__t:not(#_){margin:0;font-size:20px;font-weight:500;line-height:1.2;letter-spacing:-.02em;color:#FFFFFF;text-wrap:balance}
+  body.hc-b .nav__mcta__btn:not(#_){height:42px;padding:0 20px;border-radius:999px;border:0;background:#FFFFFF !important;color:#0B1220 !important;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+  body.hc-b .nav__mcta__btn:not(#_):hover{background:#E7E7E3 !important;color:#0B1220 !important}
+  body.hc-b .nav__pall:not(#_){display:inline-block;margin:12px 12px 0;font-size:13.5px;color:#0B1220}
+}
+
+/* ── the cookie notice in the site's own voice: white card, ink words, ink Accept, outlined Decline (consent.js
+      injects a navy card with an orange button; these outrank it) ── */
+body.hc-b #saiConsent:not(#_){background:#FFFFFF;color:#0B1220;border:1px solid rgba(11,18,32,.12);border-radius:16px;padding:20px 22px;box-shadow:none;
+  font:400 14px/1.5 'Roobert',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;left:20px;right:20px;bottom:20px;margin:0 0 0 auto}
+body.hc-b #saiConsent:not(#_) h2{color:#0B1220;font-size:15px;font-weight:500;letter-spacing:-.01em;margin:0 0 4px}
+body.hc-b #saiConsent:not(#_) p{color:rgba(11,18,32,.62);margin:0 0 14px}
+body.hc-b #saiConsent:not(#_) a{color:#0B1220;text-decoration:underline;text-underline-offset:3px}
+body.hc-b #saiConsent:not(#_) button{font:600 13px 'Roobert',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:.06em;text-transform:uppercase;height:40px;padding:0 18px}
+body.hc-b #saiConsent:not(#_) .yes{background:#0B1220;color:#FFFFFF}
+body.hc-b #saiConsent:not(#_) .yes:hover{background:#3A3F47}
+body.hc-b #saiConsent:not(#_) .no{background:transparent;color:#0B1220;border:1px solid rgba(11,18,32,.3)}
+body.hc-b #saiConsent:not(#_) .no:hover{border-color:#0B1220}
+@media (max-width:520px){ body.hc-b #saiConsent:not(#_){left:12px;right:12px;bottom:12px;margin:0 auto} }
+@media (min-width:900px){
+  body.hc-b .nav__mitem:not(#_){text-align:left;align-items:flex-start;min-width:0;white-space:normal}
+  body.hc-b .nav__mitem .nav__pname:not(#_),body.hc-b .nav__mitem .nav__pdesc:not(#_){display:block;white-space:normal;text-align:left;max-width:100%}
+  body.hc-b .nav__mcol:not(#_){min-width:0;text-align:left}
+  body.hc-b .nav__panel:not(#_){text-align:left}
+}
+
+@media (min-width:900px){
+  /* the banner is the link to every product: the loop behind, the words and an arrow in front */
+  body.hc-b .nav__mcta:not(#_){text-decoration:none;min-height:180px}
+  body.hc-b .nav__mcta__in:not(#_){flex-direction:row;align-items:center;justify-content:space-between;width:100%;gap:16px}
+  body.hc-b .nav__mcta__t:not(#_){font-size:22px}
+  body.hc-b .nav__mcta__arw:not(#_){display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#FFFFFF;color:#0B1220;flex:0 0 auto;transition:transform .2s ease}
+  body.hc-b .nav__mcta:not(#_):hover .nav__mcta__arw{transform:translateX(3px)}
+}
+
+@media (min-width:900px){
+  /* menu items: the thumbnail sits on the name's line, one size, the words in a tidy block */
+  body.hc-b .nav__mcol .nav__pitem:not(#_){align-items:flex-start;padding:10px 12px}
+  body.hc-b .nav__mcol .nav__pthumb:not(#_){width:40px;height:40px;border-radius:10px;margin-top:1px}
+  body.hc-b .nav__mcol .nav__pname:not(#_){font-size:15px;line-height:1.25}
+  body.hc-b .nav__mcol .nav__pdesc:not(#_){font-size:12.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  body.hc-b .nav__mcta:not(#_) video{opacity:.85}
+}
+@media (min-width:900px){
+  /* the drawn marks in the menu: bare, one size, on the name's line, no box round them */
+  body.hc-b .nav__mcol .nav__pitem:not(#_){gap:12px;align-items:flex-start}
+  body.hc-b .nav__mcol .nav__pmark:not(#_){flex:0 0 22px;width:22px;height:22px;margin-top:0;border-radius:0;box-shadow:none !important;background:none !important;color:#0B1220}
+  body.hc-b .nav__mcol .nav__pmark:not(#_) svg{width:20px;height:20px}
+  body.hc-b .nav__mcol .nav__pitem:not(#_):hover .nav__pmark{box-shadow:none !important;background:none !important}
+}
+@media (min-width:900px){
+  /* room for each line on one line: a wider panel, a narrower banner; the line only wraps when the screen is too small */
+  body.hc-b .nav__panel:not(#_){max-width:1180px}
+  body.hc-b .nav__mega:not(#_){grid-template-columns:repeat(2,minmax(0,1fr)) minmax(240px,280px);gap:8px 16px}
+  body.hc-b .nav__mcol .nav__pdesc:not(#_){display:block;-webkit-line-clamp:unset;overflow:visible;white-space:normal}
+}
+@media (min-width:900px){
+  /* the marks keep their containers, as in the phone menu: a 40px rounded square with a hairline, centred on the words */
+  body.hc-b .nav__mcol .nav__pitem:not(#_){align-items:center;gap:14px}
+  body.hc-b .nav__mcol .nav__pmark:not(#_){flex:0 0 40px;width:40px;height:40px;border-radius:11px;margin:0;display:grid;place-items:center;
+    box-shadow:inset 0 0 0 1px rgba(11,18,32,.16) !important;background:#FFFFFF !important;color:#0B1220}
+  body.hc-b .nav__mcol .nav__pmark:not(#_) svg{width:20px;height:20px}
+  body.hc-b .nav__mcol .nav__pitem:not(#_):hover .nav__pmark{box-shadow:inset 0 0 0 1px rgba(11,18,32,.34) !important;background:#FFFFFF !important}
+}
+@media (min-width:900px){
+  /* the banner is only as tall as the two rows of links; the loop is cropped, not stretched */
+  body.hc-b .nav__mega:not(#_){align-items:start}
+  body.hc-b .nav__mcta:not(#_){min-height:0;height:122px;align-self:start}
+  body.hc-b .nav__mcta__in:not(#_){padding:20px 22px}
+  body.hc-b .nav__mcta__t:not(#_){font-size:20px}
+  body.hc-b .nav__mcta__arw:not(#_){width:40px;height:40px}
+  body.hc-b .nav__panel:not(#_){padding:20px 20px 16px}
+}

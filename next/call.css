@@ -1,0 +1,179 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   CALL.CSS — "Call my phone", the callback widget (next/call.js).
+
+   Its own file because the widget is on every page now, including the ones
+   that never load home.css (/agent, /why) — it appears inside the lead
+   panel, which any page can open. Loaded beside lead.css.
+   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Call me: the button that becomes the phone pill. One ink pill, three
+   faces stacked in it — the button, the number form, the call's status —
+   and a width that eases between them; the chat field beside it gives up
+   the room. Nothing appears above or outside the row. */
+.call{position:relative;flex:0 0 auto;display:block;height:60px;border-radius:999px;background:var(--ink);color:#FFFFFF;
+  width:var(--call-w,auto);transition:width .38s var(--ease)}
+/* the button is the box's only in-flow child, so at rest the box is exactly
+   the button; the other two faces lie over it. (Stacked in a grid cell they
+   made the box as wide as the widest of them — 418, not 164.) */
+.call > *{transition:opacity .22s ease,visibility 0s linear .22s;opacity:0;visibility:hidden;pointer-events:none}
+.call__form,.call__done{position:absolute;inset:0}
+.call[data-state="idle"]    > .call__btn,
+.call[data-state="phone"]   > .call__form,
+.call[data-state="details"] > .call__more,
+.call[data-state="done"]    > .call__done{opacity:1;visibility:visible;pointer-events:auto;transition-delay:.12s,0s}
+.call__btn{width:100%;height:100%}
+/* at rest the pill is the white button alone: the ink behind it only belongs to
+   the number form and the call. Painted at rest, it showed as a dark hairline
+   round the button's curved ends (client: "weird border radius"), and on a
+   phone, where the box is 56 and the button was 60, as a dark cap on one side. */
+.call[data-state="idle"]{background:transparent}
+/* the number form: ✕ · +1 ▾ · number · the wave as the send */
+.call__form,.call__done{display:flex;align-items:center;gap:10px;height:60px;padding:0 6px 0 8px;white-space:nowrap}
+.call__x{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;color:rgba(255,255,255,.6);transition:background-color .2s ease,color .2s ease}
+.call__x svg{width:16px;height:16px}
+.call__x:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
+.call__x:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px}
+/* the country control: a dial code that always fits, with the real select
+   invisible on top of it. The list still reads "Switzerland (+41)"; the pill
+   reads "+41" and can never be cut to "United…" (client, 2026-09-15). */
+.call__ccwrap{position:relative;display:inline-flex;align-items:center;flex-shrink:0;height:100%}
+.call__ccv{font-family:var(--ui);font-size:16px;color:#FFFFFF;white-space:nowrap;font-variant-numeric:tabular-nums;
+  padding-right:16px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2.5 4.5l3.5 3.5 3.5-3.5' fill='none' stroke='%23FFFFFF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat:no-repeat;background-position:right center;background-size:12px}
+.call__cc{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;
+  appearance:none;-webkit-appearance:none;border:0;background:none;outline:none;font-size:16px}
+.call__ccwrap:focus-within .call__ccv{outline:2px solid #FFFFFF;outline-offset:2px;border-radius:4px}
+.call__cc option{color:var(--ink);background:#FFFFFF}
+.call__sep{width:1px;height:22px;background:rgba(255,255,255,.22);flex-shrink:0}
+.call__num{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;padding:0;
+  font-family:var(--ui);font-size:16px;color:#FFFFFF;caret-color:#FFFFFF}
+.call__num::placeholder{color:rgba(255,255,255,.5)}
+.call.is-bad .call__num::placeholder,.call.is-bad .call__num{color:var(--orange)}
+.call__go{width:48px;height:48px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:#F4F4F5;   /* a hair off white (client) */ color:var(--ink);transition:transform .3s var(--ease)}
+.call__go svg{width:20px;height:20px}   /* the send arrow, as in the chat field */
+.call__go:hover{transform:scale(1.06)}
+.call__go:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+/* the call on its way, in the same pill */
+.call__wave{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);color:#FFFFFF;display:grid;place-items:center;flex-shrink:0}
+.call__wave .btn__ic{width:22px;height:22px}
+.call__status{display:flex;flex-direction:column;gap:1px;min-width:0;padding-right:14px}
+.call__line{font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.call__to{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.25}
+.call[data-state="done"]:not(.is-placed) .call__wave{animation:place 1.6s ease-in-out infinite}
+
+/* ── step 2: the pill becomes a short card ──
+   It opens looking like it only wants a number. Once there is one, the box
+   stops being a pill and grows into the form that asks who to ask for, with
+   the consent line and the two policy links under the button (client,
+   2026-09-15). The two tall faces lay out IN FLOW, so the box takes their
+   height; the pill faces stay absolute, as they were. */
+.call[data-state="details"],.call[data-state="done"]{height:auto;border-radius:22px}
+.call[data-state="details"] > .call__btn,.call[data-state="done"] > .call__btn{position:absolute;inset:0;height:60px}
+.call__more{position:relative;display:none;flex-direction:column;gap:11px;padding:16px 18px 18px;text-align:left;white-space:normal}
+.call[data-state="details"] > .call__more{display:flex}
+.call__more .call__x{position:absolute;top:10px;right:10px}
+.call__h{margin:0;padding-right:34px;font-family:var(--display,var(--ui));font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.call__sub{margin:-4px 0 2px;font-size:12.5px;color:rgba(255,255,255,.62);line-height:1.3}
+.call__sub b{color:#FFFFFF;font-weight:600;font-variant-numeric:tabular-nums}
+.call__edit{font-size:12.5px;color:var(--teal);text-decoration:underline;text-underline-offset:2px}
+.call__edit:hover{color:#FFFFFF}
+.call__row{display:flex;gap:10px}
+.call__row .call__f{flex:1 1 0;min-width:0}
+.call__f{display:flex;flex-direction:column;gap:4px}
+.call__f > span{font-size:11.5px;font-weight:600;letter-spacing:.02em;color:rgba(255,255,255,.66)}
+.call__f input{width:100%;height:42px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);
+  color:#FFFFFF;font-family:var(--ui);font-size:15px;padding:0 12px;outline:none;transition:border-color .2s ease,background-color .2s ease}
+.call__f input::placeholder{color:rgba(255,255,255,.4)}
+.call__f input:focus{border-color:var(--teal);background:rgba(255,255,255,.14)}
+.call__hint{margin:0;font-size:12.5px;line-height:1.35;color:var(--orange)}
+.call__hint[hidden]{display:none}
+/* ── the same widget in the hero, on the picture ──
+   It sits under the ask box, above the starting points. At rest it is one
+   quiet outlined button on a dark photograph, so the outline and the label
+   go white; open, it is the same ink card as everywhere else. */
+.call--hero{align-self:center;margin:14px 0 0}   /* .chat stretches its children; this one sits at its own width */
+.call--hero[data-state="idle"] .call__btn{border-color:rgba(255,255,255,.38);color:#FFFFFF;background:rgba(10,16,28,.34);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.call--hero[data-state="idle"] .call__btn:hover{border-color:#FFFFFF;background:rgba(10,16,28,.52)}
+.call--hero[data-state="details"],.call--hero[data-state="done"]{box-shadow:0 26px 60px rgba(0,0,0,.4)}
+@media (max-width:640px){.call--hero{width:100%}.call--hero .call__btn{width:100%}}
+
+/* ── the same widget in the bar (home-c) ──
+   The bar's buttons are 44px, not 60, so at rest the pill matches them. There
+   is no room in a bar for the card it becomes, so the moment it opens it
+   leaves the flow and hangs under the bar, right-aligned with it — the bar's
+   height never changes, and nothing beside it moves. */
+.call--nav{height:44px;align-self:center}
+.call--nav .call__btn{height:44px;padding:0 20px;font-size:13px}
+.call--nav .call__form,.call--nav .call__done{height:44px}
+.call--nav[data-state="phone"],.call--nav[data-state="details"],.call--nav[data-state="done"]{
+  position:absolute;top:calc(100% + 10px);right:0;z-index:30;width:min(360px,calc(100vw - 32px));
+  box-shadow:0 26px 60px rgba(10,16,28,.34)}
+.call--nav[data-state="phone"]{height:56px;border-radius:999px}
+.call--nav[data-state="phone"] .call__form{height:56px}
+.nav__acts:has(.call--nav){position:relative}   /* what the open card hangs from */
+@media (max-width:900px){.call--nav{display:none}}   /* the sheet carries it on a phone */
+
+/* the card is ink, so the button cannot be: it goes light, like the send disc */
+.call__send{width:100%;height:46px;border-radius:999px;font-size:15px;background:#FFFFFF;color:var(--ink);
+  border:0;transition:transform .25s var(--ease),background-color .2s ease}
+.call__send:hover{background:#F0F1F2;transform:translateY(-1px)}
+.call__send:focus-visible{outline:2px solid #FFFFFF;outline-offset:3px}
+.call__send:disabled{opacity:.55;transform:none}
+.call__fine{margin:2px 0 0;font-size:11px;line-height:1.45;color:rgba(255,255,255,.55)}
+.call__fine a{color:rgba(255,255,255,.8);text-decoration:underline;text-underline-offset:2px}
+.call__fine a:hover{color:#FFFFFF}
+/* the confirmation grows the same way, so the consent line stays readable */
+.call[data-state="done"] > .call__done{position:relative;inset:auto;height:auto;flex-wrap:wrap;align-items:center;
+  padding:14px 16px 16px;white-space:normal;text-align:left}
+.call[data-state="done"] .call__status{padding-right:34px}
+.call__fine--done{flex:1 0 100%;margin-top:10px}
+.call[data-state="done"] .call__x{position:absolute;top:10px;right:10px}
+.call.is-bad .call__line{color:var(--orange)}
+@media (max-width:520px){
+  .call__row{flex-direction:column;gap:11px}
+  .call__h{font-size:17px}
+}
+@keyframes place{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.18)}50%{box-shadow:0 0 0 10px rgba(255,255,255,0)}}
+/* the chat field: a white pill with the ink stroke, the send disc inside at
+   the right — the same height as the button beside it */
+
+/* ── the widget where it is placed ─────────────────────────────────────────
+   The rules above are the widget itself; these say how it sits in each of the
+   places it now appears. */
+
+/* 1 · in the homepage hero, on the photograph */
+.call--hero{align-self:center;margin:14px 0 0}
+.call--hero[data-state="idle"] .call__btn{border-color:rgba(255,255,255,.38);color:#FFFFFF;background:rgba(10,16,28,.34);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.call--hero[data-state="idle"] .call__btn:hover{border-color:#FFFFFF;background:rgba(10,16,28,.52)}
+.call--hero[data-state="details"],.call--hero[data-state="done"]{box-shadow:0 26px 60px rgba(0,0,0,.4)}
+
+/* 2 · under the lead form — the modal on every page, and the /book panel */
+.lead__alt{margin-top:18px;padding-top:16px;border-top:1px solid rgba(11,18,32,.12);display:flex;flex-direction:column;align-items:stretch;gap:10px}
+.lead__or{font-family:var(--ui);font-size:13px;font-weight:600;color:var(--ink-2,#4a5364)}
+.call--alt{width:100%}
+.call--alt .call__btn{width:100%}
+.call--alt[data-state="idle"] .call__btn{border-color:rgba(11,18,32,.22);color:var(--ink,#0B1220);background:transparent}
+.call--alt[data-state="idle"] .call__btn:hover{border-color:var(--ink,#0B1220);background:rgba(11,18,32,.04)}
+
+/* 3 · in the conversation, under the agent's Book-a-call turn */
+.turnb .call{margin-top:10px}
+.turnb .call--thread{width:100%}
+.turnb .call--thread .call__btn{width:100%}
+.turnb .call--thread[data-state="idle"] .call__btn{border-color:rgba(11,18,32,.22);color:var(--ink,#0B1220)}
+
+@media (prefers-reduced-motion:reduce){
+  .call,.call > *{transition:none}
+  .call__wave{animation:none}
+}
+@media (max-width:640px){
+  .call--hero{width:100%}
+  .call--hero .call__btn{width:100%}
+  .call{height:56px}
+  .call__form,.call__done{height:56px}
+  .call[data-state="details"],.call[data-state="done"]{height:auto}
+}
+
+/* the lead-in above the widget wherever it is offered as the second way */
+.turnb__alt{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line,rgba(11,18,32,.12))}
+.turnb__or{font-family:var(--ui);font-size:13px;font-weight:600;color:var(--ink-2,#4a5364)}

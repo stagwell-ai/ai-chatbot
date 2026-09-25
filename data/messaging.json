@@ -1,0 +1,130 @@
+{
+  "_comment": "The 'what is Stagwell AI' answer, from Stagwell AI Messaging FINAL (2026-09-16), which supersedes the Sep 2026 framework draft. next/about.js renders /why from this file; nothing in it is invented here. The vision is internal-only in the source and is not rendered. Proof points are shown only where the framework filled in a number, under a line that says they are pending validation.",
+  "brandName": "Stagwell AI",
+  "tagline": "Agentic solutions built to transform marketing",
+  "taglineAccent": "Agentic solutions",
+  "eyebrow": "What is Stagwell AI",
+  "positioning": "Stagwell AI is a custom portfolio of agentic solutions built to transform marketing for businesses of any size, on any tech stack. Designed for flexibility, it is the only agentic portfolio that allows businesses to adopt the solutions they need, integrate with the technology they already use, and accelerate growth.",
+  "whoWeAre": "Stagwell AI is Stagwell's portfolio of agentic solutions. We combine technology with deep marketing expertise to help businesses make better decisions, execute faster, and drive stronger performance.",
+  "vision": "To bring a challenger mindset to marketing in the agentic era, helping businesses turn technology into lasting advantage.",
+  "promises": [
+    {
+      "title": "Put your data to work",
+      "line": "Turn fragmented data into actionable intelligence that improves targeting, personalization, and decision-making."
+    },
+    {
+      "title": "Drive better marketing performance",
+      "line": "Use insights and recommendations to act faster, optimize marketing, and improve ROI."
+    },
+    {
+      "title": "Get more work done",
+      "line": "Automate repetitive workflows and accelerate execution so teams can spend more time on high-value work."
+    },
+    {
+      "title": "Connect what already works",
+      "line": "Add agentic solutions to your existing technology and workflows without having to rip and replace."
+    }
+  ],
+  "portfolioTitle": "One portfolio. Multiple ways to put agentic marketing to work.",
+  "portfolioLine": "A broad portfolio of agentic capabilities designed for different levels of complexity, scale and support. Adopt one independently, or combine them as your needs evolve.",
+  "tiers": [
+    {
+      "id": "machines",
+      "color": "orange",
+      "name": "Enterprise Solutions",
+      "sub": "Stagwell Machines",
+      "headline": "Agentic capabilities for complex, enterprise-scale marketing.",
+      "line": "Advanced solutions and full-service capabilities that bring together technology, data and Stagwell expertise to solve complex marketing challenges at scale.",
+      "bestFor": "Enterprise brands, global organizations, and sophisticated marketing teams.",
+      "coreValue": "Scale, orchestration, customization, and deep expertise."
+    },
+    {
+      "id": "purpose_built",
+      "color": "cyan",
+      "name": "Purpose-Built Solutions",
+      "sub": "For specific marketing challenges",
+      "headline": "Purpose-built agentic solutions for specific marketing challenges.",
+      "line": "Focused solutions designed to help marketers solve specific needs across research, communications, media, data, and AI productivity.",
+      "bestFor": "Mid-market and enterprise marketers looking to solve a specific use case quickly.",
+      "coreValue": "Speed, specialization, and faster time to value."
+    },
+    {
+      "id": "self_service",
+      "color": "amber",
+      "name": "Self-Service Platform",
+      "sub": "For growing businesses",
+      "headline": "Agentic marketing expertise made accessible to growing businesses.",
+      "line": "Self-service tools that give small and growing businesses access to sophisticated marketing capabilities without requiring large teams, agencies or complex technology stacks.",
+      "bestFor": "Small businesses and lean marketing teams.",
+      "coreValue": "Simplicity, accessibility, productivity, and affordability."
+    }
+  ],
+  "tiersColorNote": "the category colour code is the brand board's (Concept Final V3.1): orange = Stagwell Machines, cyan = Purpose-Built Solutions, marigold = Self-Service Platform",
+  "reasons": [
+    {
+      "title": "Expertise",
+      "lead": "Built by practitioners for practitioners.",
+      "line": "Built by the leading marketers, strategists, creatives, data scientists and engineers across Stagwell’s network of agencies, including Code and Theory, the most-awarded digital agency of the agentic era."
+    },
+    {
+      "title": "Experience",
+      "lead": "Proven success over 10+ years with 5,000 of the world’s most ambitious brands.",
+      "line": "Every challenge solved sharpens the next – a decade of experience, delivered with the agility and measurable impact to prove it."
+    },
+    {
+      "title": "Edge",
+      "lead": "Powered by leading technology partners, models and infrastructure.",
+      "line": "Built with best-in-class technology partners, including Palantir and Adobe, and connected to cutting-edge models and infrastructure."
+    },
+    {
+      "title": "Extensible",
+      "lead": "Built to fit your business, not the other way around.",
+      "line": "From full service to self-service capabilities, our solutions can stand alone, integrate with existing technology stacks, or work together as an orchestrated system to adapt to evolving marketing needs."
+    }
+  ],
+  "proofPoints": [
+    {
+      "value": "70+",
+      "label": "Stagwell agencies contributing expertise"
+    },
+    {
+      "value": "5,000",
+      "label": "of the world's most ambitious brands"
+    },
+    {
+      "value": "10+",
+      "label": "agentic solutions across research, communications, media and data"
+    },
+    {
+      "value": "Palantir · Adobe · Google",
+      "label": "strategic technology partnerships"
+    }
+  ],
+  "proofNote": "From the Stagwell.AI messaging framework — figures pending validation.",
+  "proofNoteReason": "the framework itself says its proof points 'should become the quantitative evidence behind the messaging as the data is validated'; only the four it filled in are shown, the X placeholders are not",
+  "cta": {
+    "label": "Find your fit — ask the agent",
+    "line": "Tell it what you're solving and it reads your brand first."
+  },
+  "audience": {
+    "enterprise": "Bring together AI, data and deep marketing expertise to solve complex marketing challenges at enterprise scale.",
+    "midMarket": "Solve high-priority marketing challenges faster with purpose-built agentic solutions that deliver value without a massive platform transformation.",
+    "smallBusiness": "Put powerful marketing expertise to work without adding more people, tools or complexity."
+  },
+  "_visionNote": "Internal only — never rendered.",
+  "promisesTitle": "What you can do with Stagwell AI",
+  "reasonsTitle": "Why Stagwell AI",
+  "machines": {
+    "_note": "Stagwell Machines, from the same FINAL document. Built for enterprises; inherits the parent reasons to believe. The Stagwell AI story is portfolio flexibility; the Machines' story is connected intelligence.",
+    "positioning": "The Stagwell Machines is a family of agentic solutions for enterprise marketing organizations – each built for a specific job; all connected under one operating layer. Unlike point solutions that make individual tasks smarter, the Machines share context: every signal, decision, and result carries forward.",
+    "tagline": "Connected by design.",
+    "taglineAlt": "Not a better tool, a better way for work to move.",
+    "argument": [
+      "Marketing was already fragmented",
+      "AI promised to fix it and made it worse",
+      "The gap isn’t capability – it’s silos and lack of continuity",
+      "Stagwell Machines close that gap",
+      "The result compounds"
+    ]
+  }
+}
